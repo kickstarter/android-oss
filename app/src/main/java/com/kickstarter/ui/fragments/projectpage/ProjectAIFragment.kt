@@ -45,8 +45,8 @@ class ProjectAIFragment :
                 KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                     AiDisclosureScreen(
                         state = viewModel.state,
-                        clickCallback = { url ->
-                            ApplicationUtils.openUrlExternally(context, url)
+                        clickCallback = {
+                            ApplicationUtils.openUrlExternally(context, viewModel.state.openExternalUrl)
                         }
                     )
                 }

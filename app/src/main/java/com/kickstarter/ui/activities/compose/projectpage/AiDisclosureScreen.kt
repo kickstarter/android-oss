@@ -14,22 +14,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.models.AiDisclosure
+import com.kickstarter.ui.compose.designsystem.KSClickableText
+import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -56,10 +55,27 @@ fun AiDisclosureScreenPreview() {
     }
 }
 
+enum class TestTag {
+    TILE_TAG,
+    FOUNDING_SECTION_TITLE,
+    FOUNDING_SECTION_ATTRIBUTION,
+    FOUNDING_SECTION_CONSENT,
+    FOUNDING_SECTION_OPTION,
+    FOUNDING_SECTION_DIVIDER,
+    GENERATION_SECTION_TITLE,
+    GENERATION_SECTION_CONSENT,
+    GENERATION_SECTION_DETAILS,
+    GENERATION_SECTION_DIVIDER,
+    OTHER_SECTION_TITLE,
+    OTHER_SECTION_DETAILS,
+    OTHER_SECTION_DIVIDER,
+    LINK
+}
+
 @Composable
 fun AiDisclosureScreen(
     state: ProjectAIViewModel.UiState,
-    clickCallback: (String) -> Unit,
+    clickCallback: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -75,24 +91,25 @@ fun AiDisclosureScreen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingMediumSmall)
     ) {
+        Text(
+            text = stringResource(id = R.string.Use_of_ai_fpo),
+            style = typography.title2Bold,
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.TILE_TAG.name)
+        )
+
         InvolvesFundingSection(state)
 
         InvolvesGenerationSection(state)
 
         InvolvesOtherSection(state)
 
-        // - TODO: extract to reusable composable to DesignSysmtem, only requires the callback and the string resource
-        ClickableText(
-            text = AnnotatedString(
-                text = stringResource(id = R.string.Learn_about_AI_fpo),
-                spanStyle = SpanStyle(
-                    color = colors.kds_create_700,
-                    textDecoration = TextDecoration.Underline,
-                )
-            ),
-            onClick = {
-                clickCallback(state.openExternalUrl)
-            }
+        KSClickableText(
+            modifier = Modifier
+                .testTag(TestTag.LINK.name),
+            resourceId = R.string.Learn_about_AI_fpo,
+            clickCallback = clickCallback
         )
     }
 }
@@ -104,23 +121,22 @@ private fun InvolvesOtherSection(state: ProjectAIViewModel.UiState) {
         Text(
             text = stringResource(id = R.string.I_am_incorporating_AI_fpo),
             style = typography.headline,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.OTHER_SECTION_TITLE.name)
         )
 
         Text(
             text = otherDetails,
             style = typography.footnote,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.OTHER_SECTION_DETAILS.name)
         )
 
-        // - TODO: extract as reusable composable to DesignSystem
-        Spacer(
+        KSDividerLineGrey(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = colors.kds_support_300
-                )
-                .height(dimensions.dividerThickness)
+                .testTag(TestTag.OTHER_SECTION_DIVIDER.name)
         )
     }
 }
@@ -133,19 +149,25 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
         Text(
             text = stringResource(id = R.string.I_plan_to_use_AI_fpo),
             style = typography.headline,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.GENERATION_SECTION_TITLE.name)
         )
 
         Text(
             text = details,
             style = typography.footnote,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.GENERATION_SECTION_DETAILS.name)
         )
 
         Text(
             text = consent,
             style = typography.footnote,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.GENERATION_SECTION_CONSENT.name)
         )
 
         Spacer(
@@ -155,6 +177,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
                     color = colors.kds_support_300
                 )
                 .height(dimensions.dividerThickness)
+                .testTag(TestTag.GENERATION_SECTION_DIVIDER.name)
         )
     }
 }
@@ -167,19 +190,26 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
 
     if (fundingAiAttr || fundingAiConsent || fundingAiOption) {
         Text(
-            text = stringResource(id = R.string.Use_of_ai_fpo),
-            style = typography.title2Bold,
-            color = colors.kds_support_700
-        )
-        Text(
             text = stringResource(id = R.string.My_project_seeks_founding_fpo),
             style = typography.headline,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier
+                .testTag(TestTag.FOUNDING_SECTION_TITLE.name)
         )
 
-        if (fundingAiConsent) AiDisclosureRow(stringResId = R.string.For_the_database_orsource_fpo)
-        if (fundingAiAttr) AiDisclosureRow(stringResId = R.string.The_owners_of_fpo)
-        if (fundingAiOption) AiDisclosureRow(stringResId = R.string.There_is_or_will_be_fpo)
+        if (fundingAiConsent) AiDisclosureRow(
+            stringResId = R.string.For_the_database_orsource_fpo,
+            testTag = TestTag.FOUNDING_SECTION_CONSENT.name
+        )
+        if (fundingAiAttr) AiDisclosureRow(
+            stringResId = R.string.The_owners_of_fpo,
+            testTag = TestTag.FOUNDING_SECTION_ATTRIBUTION.name
+
+        )
+        if (fundingAiOption) AiDisclosureRow(
+            stringResId = R.string.There_is_or_will_be_fpo,
+            testTag = TestTag.FOUNDING_SECTION_OPTION.name
+        )
 
         Spacer(
             modifier = Modifier
@@ -188,6 +218,7 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
                     color = colors.kds_support_300
                 )
                 .height(dimensions.dividerThickness)
+                .testTag(TestTag.FOUNDING_SECTION_DIVIDER.name)
         )
     }
 }
@@ -195,7 +226,8 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
 @Composable
 fun AiDisclosureRow(
     @DrawableRes iconId: Int = R.drawable.icon__check_green,
-    @StringRes stringResId: Int
+    @StringRes stringResId: Int,
+    testTag: String
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
@@ -212,7 +244,8 @@ fun AiDisclosureRow(
         Text(
             text = stringResource(id = stringResId),
             style = typography.footnote,
-            color = colors.kds_support_700
+            color = colors.kds_support_700,
+            modifier = Modifier.testTag(testTag)
         )
     }
 }

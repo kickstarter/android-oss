@@ -1,65 +1,89 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
 import com.kickstarter.R
 import com.kickstarter.databinding.LoginToutLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity.Terms
+import com.kickstarter.ui.data.ActivityResult.Companion.create
+import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.makeLinks
 import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.viewmodels.LoginToutViewModel
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(LoginToutViewModel.ViewModel::class)
-class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
+class LoginToutActivity : AppCompatActivity() {
 
     private lateinit var binding: LoginToutLayoutBinding
     private lateinit var ksString: KSString
+
+    private lateinit var viewModelFactory: LoginToutViewModel.Factory
+    private val viewModel: LoginToutViewModel.LoginToutViewmodel by viewModels {
+        viewModelFactory
+    }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginToutLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        this.ksString = requireNotNull(environment().ksString())
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = LoginToutViewModel.Factory(env)
+            this.ksString = requireNotNull(env.ksString())
+        }
         binding.loginToolbar.loginToolbar.title = getString(R.string.login_tout_navbar_title)
 
+        val loginReason = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra(IntentKey.LOGIN_REASON, LoginReason::class.java)
+        } else {
+            intent.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason?
+        }
+
+        loginReason?.let {
+            viewModel.provideLoginReason(it)
+        }
+
         viewModel.outputs.finishWithSuccessfulResult()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { finishWithSuccessfulResult() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startLoginActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startLogin() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startSignupActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startSignup() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startFacebookConfirmationActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startFacebookConfirmationActivity(it.first, it.second) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showFacebookAuthorizationErrorDialog()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 ViewUtils.showDialog(
@@ -69,24 +93,24 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
                     getString(R.string.login_tout_errors_facebook_authorization_exception_button)
                 )
             }
+            .addToDisposable(disposables)
 
         showErrorMessageToasts()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(ViewUtils.showToast(this))
+            .subscribe { ViewUtils.showToast(this) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startTwoFactorChallenge()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startTwoFactorFacebookChallenge() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showUnauthorizedErrorDialog()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(R.string.login_tout_navbar_title), it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showFacebookErrorDialog()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.showAlertDialog(
@@ -102,6 +126,7 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
                     }
                 )
             }
+            .addToDisposable(disposables)
 
         binding.facebookLoginButton.setOnClickListener {
             facebookLoginClick()
@@ -116,18 +141,18 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
         }
 
         viewModel.outputs.showDisclaimerActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startActivity(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startResetPasswordActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startResetActivity()
             }
+            .addToDisposable(disposables)
 
         // create clickable disclaimer spannable
         binding.disclaimerTextView.parseHtmlTag()
@@ -177,10 +202,10 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
 
     private fun showErrorMessageToasts(): Observable<String?> {
         return viewModel.outputs.showMissingFacebookEmailErrorToast()
-            .map(ObjectUtils.coalesceWith(getString(R.string.login_errors_unable_to_log_in)))
+            .map(ObjectUtils.coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
             .mergeWith(
                 viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
-                    .map(ObjectUtils.coalesceWith(getString(R.string.login_errors_unable_to_log_in)))
+                    .map(ObjectUtils.coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
             )
     }
 
@@ -191,7 +216,8 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
 
     private fun startResetActivity() {
         val intent = Intent().getResetPasswordIntent(this, isResetPasswordFacebook = true)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startFacebookConfirmationActivity(
@@ -217,12 +243,18 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }
 
-    fun startTwoFactorFacebookChallenge() {
+    private fun startTwoFactorFacebookChallenge() {
         val intent = Intent(this, TwoFactorActivity::class.java)
             .putExtra(IntentKey.FACEBOOK_LOGIN, true)
             .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken()?.token)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    }
+
+    @Deprecated("Needs to be replaced with new method, but requires request code usage to go away as well")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        viewModel.provideOnActivityResult(create(requestCode, resultCode, intent))
     }
 }
 

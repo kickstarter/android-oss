@@ -22,7 +22,7 @@ import rx.observers.TestSubscriber
 import rx.subjects.BehaviorSubject
 
 class LoginToutViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: LoginToutViewModel.ViewModel
+    private lateinit var vm: LoginToutViewModel.LoginToutViewmodel
     private val finishWithSuccessfulResult = TestSubscriber<Void>()
     private val loginError = TestSubscriber<ErrorEnvelope>()
     private val startLoginActivity = TestSubscriber<Void>()
@@ -33,7 +33,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     private val showFacebookErrorDialog = TestSubscriber<Void>()
 
     private fun setUpEnvironment(environment: Environment, loginReason: LoginReason) {
-        vm = LoginToutViewModel.ViewModel(environment)
+        vm = LoginToutViewModel.LoginToutViewmodel(environment)
         vm.outputs.finishWithSuccessfulResult().subscribe(finishWithSuccessfulResult)
         vm.loginError.subscribe(loginError)
         vm.outputs.startSignupActivity().subscribe(startSignupActivity)

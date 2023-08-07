@@ -18,7 +18,7 @@ import rx.observers.TestSubscriber
 
 class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: SetPasswordViewModel.ViewModel
+    private lateinit var vm: SetPasswordViewModel.SetPasswordViewModel
     private val error = TestSubscriber<String>()
     private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -28,7 +28,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     private val setUserEmail = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = SetPasswordViewModel.ViewModel(environment)
+        this.vm = SetPasswordViewModel.SetPasswordViewModel(environment)
 
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.passwordWarning().subscribe(this.passwordWarning)

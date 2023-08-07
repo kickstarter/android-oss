@@ -1,24 +1,29 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import android.content.Intent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
 import com.kickstarter.libs.utils.extensions.maskEmail
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.viewmodels.usecases.LoginUseCase
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface SetPasswordViewModel {
 
     interface Inputs {
+        fun configureWith(intent: Intent)
+
         /** Call when the user clicks the change password button. */
         fun changePasswordClicked()
 
@@ -52,13 +57,15 @@ interface SetPasswordViewModel {
         fun setUserEmail(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<SetPasswordActivity>(environment), Inputs, Outputs {
+    class SetPasswordViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
-        private val changePasswordClicked = PublishSubject.create<Void>()
+        private val changePasswordClicked = PublishSubject.create<Unit>()
         private val confirmPassword = PublishSubject.create<String>()
         private val newPassword = PublishSubject.create<String>()
         private val isFormSubmitting = PublishSubject.create<Boolean>()
+        private val disposables = CompositeDisposable()
 
+        private val intent = BehaviorSubject.create<Intent>()
         private val error = BehaviorSubject.create<String>()
         private val passwordWarning = BehaviorSubject.create<Int>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
@@ -69,11 +76,11 @@ interface SetPasswordViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = requireNotNull(this.environment.apolloClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val apolloClientV2 = requireNotNull(this.environment.apolloClientV2())
+        private val currentUserV2 = requireNotNull(environment.currentUserV2())
         private val loginUserCase = LoginUseCase(environment)
         init {
-            intent()
+            intent
                 .filter { it.hasExtra(IntentKey.EMAIL) }
                 .map {
                     it.getStringExtra(IntentKey.EMAIL)
@@ -81,10 +88,9 @@ interface SetPasswordViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .map { it.maskEmail() }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.setUserEmail.onNext(it)
-                }
+                }.addToDisposable(disposables)
 
             val setNewPassword = Observable.combineLatest(
                 this.newPassword.startWith(""),
@@ -93,33 +99,33 @@ interface SetPasswordViewModel {
 
             setNewPassword
                 .map { it.warning() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.passwordWarning)
+                .subscribe { this.passwordWarning.onNext(it) }
+                .addToDisposable(disposables)
 
             setNewPassword
                 .map { it.isValid() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.saveButtonIsEnabled)
 
             val setNewPasswordNotification = setNewPassword
-                .compose(Transformers.takeWhen(this.changePasswordClicked))
+                .compose(takeWhenV2(this.changePasswordClicked))
                 .switchMap { cp -> submit(cp).materialize() }
-                .compose(bindToLifecycle())
                 .share()
 
             val apiError = setNewPasswordNotification
-                .compose(Transformers.errors())
+                .compose(Transformers.errorsV2())
                 .filter { ObjectUtils.isNotNull(it.localizedMessage) }
                 .map {
                     requireNotNull(it.localizedMessage)
                 }
 
             val error = setNewPasswordNotification
-                .compose(Transformers.errors())
+                .compose(Transformers.errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
-                .map { it?.errorMessage() }
+                .map { it.errorMessage() }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map {
                     requireNotNull(it)
@@ -127,31 +133,31 @@ interface SetPasswordViewModel {
 
             Observable.merge(apiError, error)
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.error.onNext(it)
-                }
+                .subscribe { this.error.onNext(it) }
+                .addToDisposable(disposables)
 
             val userHasPassword = setNewPasswordNotification
-                .compose(Transformers.values())
-                .filter { it.updateUserAccount()?.user()?.hasPassword() }
+                .compose(Transformers.valuesV2())
+                .filter { it.updateUserAccount()?.user()?.hasPassword() ?: false }
 
-            this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(userHasPassword))
-                .distinctUntilChanged()
-                .subscribe {
-                    currentUser.accessToken?.let { accessToken ->
-                        loginUserCase.login(
-                            it.first.toBuilder().needsPassword(false).build(),
-                            accessToken
-                        )
-                    }
-                    this.success.onNext(it.second.updateUserAccount()?.user()?.email())
-                }
+            userHasPassword
+                    .filter { ObjectUtils.isNotNull(it.updateUserAccount()?.user()?.email()) }
+                    .map { ObjectUtils.requireNonNull(it.updateUserAccount()?.user()?.email())}
+                    .compose(Transformers.takePairWhenV2(this.currentUserV2.loggedInUser()))
+                    .distinctUntilChanged()
+                    .subscribe {
+                        currentUserV2.accessToken?.let { accessToken ->
+                            loginUserCase.login(
+                                    it.second.toBuilder().needsPassword(false).build(),
+                                    accessToken
+                            )
+                        }
+                        this.success.onNext(it.first)
+                    }.addToDisposable(disposables)
         }
 
         private fun submit(setNewPassword: SetNewPassword): Observable<UpdateUserPasswordMutation.Data> {
-            return this.apolloClient.updateUserPassword("", setNewPassword.newPassword, setNewPassword.confirmPassword)
+            return this.apolloClientV2.updateUserPassword("", setNewPassword.newPassword, setNewPassword.confirmPassword)
                 .doOnSubscribe {
                     this.progressBarIsVisible.onNext(true)
                     this.isFormSubmitting.onNext(true)
@@ -161,9 +167,11 @@ interface SetPasswordViewModel {
                     this.isFormSubmitting.onNext(false)
                 }
         }
+        // - Inputs
+        override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 
         override fun changePasswordClicked() {
-            this.changePasswordClicked.onNext(null)
+            this.changePasswordClicked.onNext(Unit)
         }
 
         override fun confirmPassword(confirmPassword: String) {
@@ -174,6 +182,7 @@ interface SetPasswordViewModel {
             this.newPassword.onNext(newPassword)
         }
 
+        // - Outputs
         override fun error(): Observable<String> = this.error
         override fun passwordWarning(): Observable<Int> = this.passwordWarning
         override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
@@ -191,6 +200,12 @@ interface SetPasswordViewModel {
 
             fun warning(): Int? =
                 newPassword.newPasswordValidationWarnings(confirmPassword)
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return SettingsViewModel.SettingsViewModel(environment) as T
         }
     }
 }

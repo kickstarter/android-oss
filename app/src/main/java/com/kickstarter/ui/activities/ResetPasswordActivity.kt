@@ -60,12 +60,12 @@ class ResetPasswordActivity : ComponentActivity() {
         this.viewModel.outputs.isFormValid()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{ this.setFormEnabled(it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.resetError()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         binding.resetPasswordFormView.resetPasswordButton.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
 

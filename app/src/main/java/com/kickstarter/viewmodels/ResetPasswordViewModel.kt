@@ -141,7 +141,7 @@ interface ResetPasswordViewModel {
                 .compose(errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .subscribe { this.resetError.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
         }
 
         private fun success() {

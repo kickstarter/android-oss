@@ -6,16 +6,15 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ResetPasswordScreenState
 import io.reactivex.disposables.CompositeDisposable
-import org.junit.Test
 import io.reactivex.Observable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
+import org.junit.Test
 
 class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 

@@ -92,8 +92,7 @@ open class KSToolbar @JvmOverloads constructor(
             (context as BaseActivity<*>).back()
         } else if (context is ComponentActivity) {
             (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
-        }
-        else {
+        } else {
             (context as AppCompatActivity).onBackPressed()
         }
     }

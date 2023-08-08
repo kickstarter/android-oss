@@ -30,7 +30,7 @@ interface ResetPasswordViewModel {
         /** Call when the reset password button is clicked. */
         fun resetPasswordClick()
 
-        fun configureWith(intent : Intent)
+        fun configureWith(intent: Intent)
     }
 
     interface Outputs {

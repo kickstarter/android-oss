@@ -24,8 +24,8 @@ import io.reactivex.disposables.CompositeDisposable
 
 class ResetPasswordActivity : ComponentActivity() {
 
-    private lateinit var viewModelFactory : ResetPasswordViewModel.Factory
-    private val viewModel : ResetPasswordViewModel.ResetPasswordViewModel by viewModels { viewModelFactory }
+    private lateinit var viewModelFactory: ResetPasswordViewModel.Factory
+    private val viewModel: ResetPasswordViewModel.ResetPasswordViewModel by viewModels { viewModelFactory }
     private var forgotPasswordString = R.string.forgot_password_title
     private var errorMessageString = R.string.forgot_password_error
     private var errorGenericString = R.string.Something_went_wrong_please_try_again
@@ -54,12 +54,12 @@ class ResetPasswordActivity : ComponentActivity() {
 
         this.viewModel.outputs.isFormSubmitting()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{ this.setFormDisabled(it) }
-                .addToDisposable(disposables)
+            .subscribe { this.setFormDisabled(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.isFormValid()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{ this.setFormEnabled(it) }
+            .subscribe { this.setFormEnabled(it) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.resetError()
@@ -77,7 +77,6 @@ class ResetPasswordActivity : ComponentActivity() {
                 binding.resetPasswordFormView.email.setText(it)
             }.addToDisposable(disposables)
 
-
         this.viewModel.outputs.resetPasswordScreenStatus()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -87,7 +86,6 @@ class ResetPasswordActivity : ComponentActivity() {
                     binding.resetPasswordHint.isVisible = true
                 }
             }.addToDisposable(disposables)
-
 
         this.viewModel.outputs.resetFacebookLoginPasswordSuccess()
             .observeOn(AndroidSchedulers.mainThread())

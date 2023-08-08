@@ -10,8 +10,8 @@ import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ResetPasswordScreenState
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
@@ -41,8 +41,8 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val resetFacebookLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetPasswordScreenStatus = TestSubscriber<ResetPasswordScreenState>()
 
-        vm.outputs.resetLoginPasswordSuccess().subscribe{ resetLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.resetFacebookLoginPasswordSuccess().subscribe{ resetFacebookLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetLoginPasswordSuccess().subscribe { resetLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetFacebookLoginPasswordSuccess().subscribe { resetFacebookLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
         vm.outputs.resetPasswordScreenStatus().subscribe { resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.resetPasswordClick()
@@ -68,9 +68,9 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val resetFacebookLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetPasswordScreenStatus = TestSubscriber<ResetPasswordScreenState>()
 
-        vm.outputs.resetLoginPasswordSuccess().subscribe{ resetLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.resetFacebookLoginPasswordSuccess().subscribe{ resetFacebookLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.resetPasswordScreenStatus().subscribe{ resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetLoginPasswordSuccess().subscribe { resetLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetFacebookLoginPasswordSuccess().subscribe { resetFacebookLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetPasswordScreenStatus().subscribe { resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.resetPasswordClick()
         resetLoginPasswordSuccess.assertNoValues()
@@ -100,7 +100,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
             }
         val environment = environment()
             .toBuilder()
-                .apiClientV2(MockApiClientV2())
+            .apiClientV2(MockApiClientV2())
             .featureFlagClient(mockFeatureFlagClientType)
             .build()
 
@@ -109,9 +109,9 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val resetFacebookLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetPasswordScreenStatus = TestSubscriber<ResetPasswordScreenState>()
 
-        vm.outputs.resetLoginPasswordSuccess().subscribe{ resetLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.resetFacebookLoginPasswordSuccess().subscribe{ resetFacebookLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.resetPasswordScreenStatus().subscribe{ resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetLoginPasswordSuccess().subscribe { resetLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetFacebookLoginPasswordSuccess().subscribe { resetFacebookLoginPasswordSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetPasswordScreenStatus().subscribe { resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.resetPasswordClick()
         resetLoginPasswordSuccess.assertNoValues()
@@ -145,7 +145,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment)
         val errorTest = TestSubscriber<String>()
 
-        vm.outputs.resetError().subscribe{ errorTest.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetError().subscribe { errorTest.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.email("hello@kickstarter.com")
         vm.inputs.resetPasswordClick()
@@ -160,8 +160,8 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment())
 
-        vm.outputs.resetPasswordScreenStatus().subscribe{ resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.prefillEmail().subscribe{ preFillEmail.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.resetPasswordScreenStatus().subscribe { resetPasswordScreenStatus.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.prefillEmail().subscribe { preFillEmail.onNext(it) }.addToDisposable(disposables)
 
         // Start the view model with an email to prefill.
         vm.configureWith(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))

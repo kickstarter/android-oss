@@ -184,7 +184,7 @@ fun Activity.finishWithAnimation(withResult: String? = null) {
     TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())
 }
 
-fun Activity.transition(transition : Pair<Int, Int>) {
+fun Activity.transition(transition: Pair<Int, Int>) {
     overridePendingTransition(transition.first, transition.second)
 }
 

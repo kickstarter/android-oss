@@ -15,6 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.junit.Test
 import io.reactivex.Observable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 
 class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
@@ -36,7 +37,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testResetPasswordViewModel_resetSuccess() {
-        val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment())
+        val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment().toBuilder().apiClientV2(MockApiClientV2()).build())
         val resetLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetFacebookLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetPasswordScreenStatus = TestSubscriber<ResetPasswordScreenState>()
@@ -63,7 +64,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testResetFacebookPasswordViewModel_resetFailed_withDisabled_feature_flag() {
-        val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment())
+        val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment().toBuilder().apiClientV2(MockApiClientV2()).build())
         val resetLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetFacebookLoginPasswordSuccess = TestSubscriber<Unit>()
         val resetPasswordScreenStatus = TestSubscriber<ResetPasswordScreenState>()
@@ -100,6 +101,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
             }
         val environment = environment()
             .toBuilder()
+                .apiClientV2(MockApiClientV2())
             .featureFlagClient(mockFeatureFlagClientType)
             .build()
 
@@ -223,5 +225,10 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         preFillEmail.assertNoValues()
         resetPasswordScreenStatus.assertValue(ResetPasswordScreenState.ResetPassword)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

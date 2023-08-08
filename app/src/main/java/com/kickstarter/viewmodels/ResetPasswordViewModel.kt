@@ -1,22 +1,25 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel
+import android.content.Intent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.ResetPasswordActivity
 import com.kickstarter.ui.data.ResetPasswordScreenState
-import rx.Notification
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ResetPasswordViewModel {
 
@@ -26,6 +29,8 @@ interface ResetPasswordViewModel {
 
         /** Call when the reset password button is clicked. */
         fun resetPasswordClick()
+
+        fun configureWith(intent : Intent)
     }
 
     interface Outputs {
@@ -36,10 +41,10 @@ interface ResetPasswordViewModel {
         fun isFormValid(): Observable<Boolean>
 
         /** Emits when password reset is completed successfully. */
-        fun resetLoginPasswordSuccess(): Observable<Void>
+        fun resetLoginPasswordSuccess(): Observable<Unit>
 
         /** Emits when password reset is completed successfully. */
-        fun resetFacebookLoginPasswordSuccess(): Observable<Void>
+        fun resetFacebookLoginPasswordSuccess(): Observable<Unit>
 
         /** Emits when password reset fails. */
         fun resetError(): Observable<String>
@@ -51,19 +56,21 @@ interface ResetPasswordViewModel {
         fun resetPasswordScreenStatus(): Observable<ResetPasswordScreenState>
     }
 
-    class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs {
-        private val client = requireNotNull(environment.apiClient())
+    class ResetPasswordViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
+        private val client = requireNotNull(environment.apiClientV2())
 
         private val email = PublishSubject.create<String>()
-        private val resetPasswordClick = PublishSubject.create<Void>()
+        private val resetPasswordClick = PublishSubject.create<Unit>()
 
         private val isFormSubmitting = PublishSubject.create<Boolean>()
         private val isFormValid = PublishSubject.create<Boolean>()
-        private val resetLoginPasswordSuccess = PublishSubject.create<Void>()
-        private val resetFacebookLoginPasswordSuccess = PublishSubject.create<Void>()
+        private val resetLoginPasswordSuccess = PublishSubject.create<Unit>()
+        private val resetFacebookLoginPasswordSuccess = PublishSubject.create<Unit>()
         private val resetError = PublishSubject.create<ErrorEnvelope>()
         private val prefillEmail = BehaviorSubject.create<String>()
         private val resetPasswordScreenStatus = BehaviorSubject.create<ResetPasswordScreenState>()
+        private val intent = BehaviorSubject.create<Intent>()
+        private val disposables = CompositeDisposable()
 
         private val ERROR_GENERIC = "Something went wrong, please try again."
 
@@ -75,21 +82,20 @@ interface ResetPasswordViewModel {
 
         init {
 
-            intent()
+            intent
                 .filter { it.hasExtra(IntentKey.EMAIL) }
                 .map {
                     it.getStringExtra(IntentKey.EMAIL)
                 }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.prefillEmail.onNext(it)
                     resetPasswordScreenState = ResetPasswordScreenState.ForgetPassword
                     resetPasswordScreenStatus.onNext(ResetPasswordScreenState.ForgetPassword)
-                }
+                }.addToDisposable(disposables)
 
-            val resetFacebookPasswordFlag = intent()
+            val resetFacebookPasswordFlag = intent
                 .filter {
                     it.hasExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN) && environment.featureFlagClient()?.getBoolean(
                         FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE
@@ -100,7 +106,6 @@ interface ResetPasswordViewModel {
                 }
 
             resetFacebookPasswordFlag
-                .compose(bindToLifecycle())
                 .subscribe {
                     if (it) {
                         resetPasswordScreenState = ResetPasswordScreenState.ResetPassword
@@ -109,39 +114,38 @@ interface ResetPasswordViewModel {
                         resetPasswordScreenState = ResetPasswordScreenState.ForgetPassword
                         resetPasswordScreenStatus.onNext(ResetPasswordScreenState.ForgetPassword)
                     }
-                }
+                }.addToDisposable(disposables)
 
             this.email
                 .map { it.isEmail() }
-                .compose(bindToLifecycle())
-                .subscribe(this.isFormValid)
+                .subscribe { this.isFormValid.onNext(it) }
+                .addToDisposable(disposables)
 
             val resetPasswordNotification = this.email
-                .compose<String>(Transformers.takeWhen(this.resetPasswordClick))
+                .compose<String>(Transformers.takeWhenV2(this.resetPasswordClick))
                 .switchMap(this::submitEmail)
                 .share()
 
             resetPasswordNotification
-                .compose(values())
-                .compose(bindToLifecycle())
+                .compose(valuesV2())
                 .subscribe {
                     when (resetPasswordScreenState) {
                         ResetPasswordScreenState.ResetPassword -> resetFacebookLoginPasswordSuccess.onNext(
-                            null
+                            Unit
                         )
-                        else -> success()
+                        else -> this.resetLoginPasswordSuccess.onNext(Unit)
                     }
-                }
+                }.addToDisposable(disposables)
 
             resetPasswordNotification
-                .compose(errors())
+                .compose(errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.resetError)
+                .subscribe { this.resetError.onNext(it) }
+                    .addToDisposable(disposables)
         }
 
         private fun success() {
-            this.resetLoginPasswordSuccess.onNext(null)
+            this.resetLoginPasswordSuccess.onNext(Unit)
         }
 
         private fun submitEmail(email: String): Observable<Notification<User>> {
@@ -152,12 +156,14 @@ interface ResetPasswordViewModel {
                 .share()
         }
 
+        override fun configureWith(intent: Intent) = this.intent.onNext(intent)
+
         override fun email(emailInput: String) {
             this.email.onNext(emailInput)
         }
 
         override fun resetPasswordClick() {
-            this.resetPasswordClick.onNext(null)
+            this.resetPasswordClick.onNext(Unit)
         }
 
         override fun isFormSubmitting(): Observable<Boolean> {
@@ -168,11 +174,11 @@ interface ResetPasswordViewModel {
             return this.isFormValid
         }
 
-        override fun resetLoginPasswordSuccess(): Observable<Void> {
+        override fun resetLoginPasswordSuccess(): Observable<Unit> {
             return this.resetLoginPasswordSuccess
         }
 
-        override fun resetFacebookLoginPasswordSuccess(): Observable<Void> {
+        override fun resetFacebookLoginPasswordSuccess(): Observable<Unit> {
             return this.resetFacebookLoginPasswordSuccess
         }
 
@@ -185,5 +191,11 @@ interface ResetPasswordViewModel {
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
 
         override fun resetPasswordScreenStatus(): Observable<ResetPasswordScreenState> = this.resetPasswordScreenStatus
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ResetPasswordViewModel(environment) as T
+        }
     }
 }

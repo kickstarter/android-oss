@@ -133,7 +133,7 @@ interface ResetPasswordViewModel {
                         ResetPasswordScreenState.ResetPassword -> resetFacebookLoginPasswordSuccess.onNext(
                             Unit
                         )
-                        else -> this.resetLoginPasswordSuccess.onNext(Unit)
+                        else -> success()
                     }
                 }.addToDisposable(disposables)
 
@@ -142,6 +142,11 @@ interface ResetPasswordViewModel {
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .subscribe { this.resetError.onNext(it) }
                 .addToDisposable(disposables)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         private fun success() {

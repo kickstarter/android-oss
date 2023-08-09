@@ -101,6 +101,11 @@ class ResetPasswordActivity : ComponentActivity() {
         })
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
     private fun onResetSuccess() {
         setFormEnabled(false)
         val intent =

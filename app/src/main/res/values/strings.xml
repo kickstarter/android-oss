@@ -83,4 +83,11 @@
 
   <!-- Mock strings for MBL-893-->
   <string name="Use_of_ai_fpo">Use of AI</string>
+  <string name="My_project_seeks_founding_fpo">My project seeks founding for AI technology.</string>
+  <string name="For_the_database_orsource_fpo">For the database or source that I will use or will create, the consent of the persons whose works or information incorporated have been obtained.</string>
+  <string name="The_owners_of_fpo">The owners of those works is or will be attributed.</string>
+  <string name="There_is_or_will_be_fpo">There is or will be an opt-in or opt-out for those owners.</string>
+  <string name="I_plan_to_use_AI_fpo">I plan to use AI-generated content in my project.</string>
+  <string name="I_am_incorporating_AI_fpo">I am incorporating AI in my project in another way.</string>
+  <string name="Learn_about_AI_fpo">Learn about AI policy on Kickstarter.</string>
 </resources>

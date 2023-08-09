@@ -41,7 +41,9 @@ import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
 import com.kickstarter.ui.compose.designsystem.KSCheckbox
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
+import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
+import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSErrorRoundedText
 import com.kickstarter.ui.compose.designsystem.KSFacebookButton
 import com.kickstarter.ui.compose.designsystem.KSFullButtonFooter
@@ -174,6 +176,12 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                 TypographyVisuals()
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
+
+                ClickableText()
+
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
+
+                Dividers()
             }
         }
     }
@@ -543,6 +551,34 @@ fun FootersVisuals() {
             titleText = "You're a backer",
             subtitleText = "$24 Committed"
         )
+    }
+}
+
+@Composable
+fun ClickableText() {
+    Column {
+        Text(text = "Clickable Text", style = typography.title1Bold, color = colors.kds_support_700)
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSClickableText(
+            resourceId = R.string.Learn_about_AI_fpo
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+    }
+}
+
+@Composable
+fun Dividers() {
+    Column {
+        Text(text = "Dividers", style = typography.title1Bold, color = colors.kds_support_700)
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSDividerLineGrey()
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
     }
 }
 

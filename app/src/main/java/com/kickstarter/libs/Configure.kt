@@ -24,7 +24,7 @@ enum class ProjectPagerTabs {
     CAMPAIGN, // - Types.CAMPAIGN.ordinal == 1 & position == 1
     FAQS, // - Types.FAQS.ordinal == 2 & position == 2
     RISKS, // - Types.RISKS.ordinal == 3 & position ==3
-    USE_OF_AI, // - Types.USE_OF_AI.ordinal == 3 & position ==3
+    USE_OF_AI, // - Types.USE_OF_AI.ordinal == 4 & position == 4
     ENVIRONMENTAL_COMMITMENT, // - Types.ENVIRONMENTAL_COMMITMENT.ordinal == 5 & position == 5
 }
 

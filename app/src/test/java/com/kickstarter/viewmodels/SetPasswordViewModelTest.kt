@@ -13,15 +13,15 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.usecases.LoginUseCase
-import io.reactivex.disposables.CompositeDisposable
-import org.junit.Test
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.Test
 
 class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: SetPasswordViewModel.SetPasswordViewModel
-    private val disposables : CompositeDisposable = CompositeDisposable()
+    private val disposables: CompositeDisposable = CompositeDisposable()
     private val error = TestSubscriber<String>()
     private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -35,11 +35,11 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.progressBarIsVisible().subscribe{ this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.success().subscribe{this.success.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.isFormSubmitting().subscribe{this.isFormSubmitting.onNext(it)}.addToDisposable(disposables)
-        this.vm.outputs.setUserEmail().subscribe{this.setUserEmail.onNext(it)}.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isFormSubmitting().subscribe { this.isFormSubmitting.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.setUserEmail().subscribe { this.setUserEmail.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -103,7 +103,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
         this.passwordWarning.assertValueCount(2)
         this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues( R.string.Password_min_length_message, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
     }
 
     @Test

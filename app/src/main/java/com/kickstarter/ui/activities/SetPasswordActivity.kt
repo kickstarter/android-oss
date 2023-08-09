@@ -12,8 +12,8 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.viewmodels.SetPasswordViewModel
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class SetPasswordActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: SetPasswordViewModel.Factory
@@ -44,19 +44,19 @@ class SetPasswordActivity : AppCompatActivity() {
         }
 
         this.viewModel.outputs.progressBarIsVisible()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
                 binding.progressBar.isGone = !it
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.setUserEmail()
-                .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.setPasswordHint.text = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.passwordWarning()
-                .observeOn(AndroidSchedulers.mainThread())            .subscribe {
+            .observeOn(AndroidSchedulers.mainThread()).subscribe {
                 binding.warning.text = when {
                     it != null -> {
                         getString(it)
@@ -69,22 +69,22 @@ class SetPasswordActivity : AppCompatActivity() {
         this.viewModel.outputs.error()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.isFormSubmitting()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.setFormDisabled(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.setFormDisabled(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.saveButtonIsEnabled()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.setFormEnabled(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.setFormEnabled(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { finish() }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { finish() }
+            .addToDisposable(disposables)
     }
 
     override fun onDestroy() {

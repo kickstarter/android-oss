@@ -14,8 +14,8 @@ import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.usecases.LoginUseCase
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
@@ -106,7 +106,6 @@ interface SetPasswordViewModel {
                 .subscribe { this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
 
-
             setNewPassword
                 .map { it.isValid() }
                 .distinctUntilChanged()
@@ -116,7 +115,6 @@ interface SetPasswordViewModel {
                 .compose(takeWhenV2(this.changePasswordClicked))
                 .switchMap { cp -> submit(cp).materialize() }
                 .share()
-
 
             val apiError = setNewPasswordNotification
                 .compose(Transformers.errorsV2())
@@ -134,7 +132,6 @@ interface SetPasswordViewModel {
                     requireNotNull(it)
                 }
 
-
             Observable.merge(apiError, error)
                 .distinctUntilChanged()
                 .subscribe { this.error.onNext(it) }
@@ -145,17 +142,17 @@ interface SetPasswordViewModel {
                 .filter { it.updateUserAccount()?.user()?.hasPassword() ?: false }
 
             this.currentUserV2.loggedInUser()
-                    .compose(Transformers.takePairWhenV2(userHasPassword))
-                    .distinctUntilChanged()
-                    .subscribe {
-                        currentUserV2.accessToken?.let { accessToken ->
-                            loginUserCase.login(
-                                    it.first.toBuilder().needsPassword(false).build(),
-                                    accessToken
-                            )
-                        }
-                        this.success.onNext(it.second.updateUserAccount()?.user()?.email() ?: "")
-                    }.addToDisposable(disposables)
+                .compose(Transformers.takePairWhenV2(userHasPassword))
+                .distinctUntilChanged()
+                .subscribe {
+                    currentUserV2.accessToken?.let { accessToken ->
+                        loginUserCase.login(
+                            it.first.toBuilder().needsPassword(false).build(),
+                            accessToken
+                        )
+                    }
+                    this.success.onNext(it.second.updateUserAccount()?.user()?.email() ?: "")
+                }.addToDisposable(disposables)
         }
 
         override fun onCleared() {

@@ -38,7 +38,7 @@ import io.reactivex.subjects.PublishSubject
 interface LoginToutViewModel {
     interface Inputs {
         /** Call when the Login to Facebook button is clicked.  */
-        fun facebookLoginClick(activity: LoginToutActivity?, facebookPermissions: List<String>)
+        fun facebookLoginClick(activity: LoginToutActivity, facebookPermissions: List<String>)
 
         /** Call when the login button is clicked.  */
         fun loginClick()
@@ -64,10 +64,10 @@ interface LoginToutViewModel {
         fun showFacebookAuthorizationErrorDialog(): Observable<String>
 
         /** Emits when the API was unable to create a new Facebook user.  */
-        fun showFacebookInvalidAccessTokenErrorToast(): Observable<String?>
+        fun showFacebookInvalidAccessTokenErrorToast(): Observable<String>
 
         /** Emits when the API could not retrieve an email for the Facebook user.  */
-        fun showMissingFacebookEmailErrorToast(): Observable<String?>
+        fun showMissingFacebookEmailErrorToast(): Observable<String>
 
         /** Emits when a login attempt is unauthorized.  */
         fun showUnauthorizedErrorDialog(): Observable<String>
@@ -166,14 +166,12 @@ interface LoginToutViewModel {
 
         private val disposables = CompositeDisposable()
         override fun facebookLoginClick(
-            activity: LoginToutActivity?,
+            activity: LoginToutActivity,
             facebookPermissions: List<String>
         ) {
             facebookLoginClick.onNext(facebookPermissions)
-            if (activity != null) {
-                LoginManager.getInstance()
-                    .logInWithReadPermissions(activity, facebookPermissions)
-            }
+            LoginManager.getInstance()
+                .logInWithReadPermissions(activity, facebookPermissions)
         }
 
         override fun onLoginFacebookErrorDialogClicked() {
@@ -209,13 +207,13 @@ interface LoginToutViewModel {
                 .map { it.localizedMessage }
         }
 
-        override fun showFacebookInvalidAccessTokenErrorToast(): Observable<String?> {
+        override fun showFacebookInvalidAccessTokenErrorToast(): Observable<String> {
             return loginError
                 .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
                 .map { it.errorMessage() }
         }
 
-        override fun showMissingFacebookEmailErrorToast(): Observable<String?> {
+        override fun showMissingFacebookEmailErrorToast(): Observable<String> {
             return loginError
                 .filter(ErrorEnvelope::isMissingFacebookEmailError)
                 .map { it.errorMessage() }

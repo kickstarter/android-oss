@@ -38,7 +38,7 @@ import io.reactivex.subjects.PublishSubject
 interface LoginToutViewModel {
     interface Inputs {
         /** Call when the Login to Facebook button is clicked.  */
-        fun facebookLoginClick(activity: LoginToutActivity, facebookPermissions: List<String>)
+        fun facebookLoginClick(activity: LoginToutActivity?, facebookPermissions: List<String>)
 
         /** Call when the login button is clicked.  */
         fun loginClick()
@@ -166,12 +166,14 @@ interface LoginToutViewModel {
 
         private val disposables = CompositeDisposable()
         override fun facebookLoginClick(
-            activity: LoginToutActivity,
+            activity: LoginToutActivity?,
             facebookPermissions: List<String>
         ) {
             facebookLoginClick.onNext(facebookPermissions)
-            LoginManager.getInstance()
-                .logInWithReadPermissions(activity, facebookPermissions)
+            if (activity != null) {
+                LoginManager.getInstance()
+                    .logInWithReadPermissions(activity, facebookPermissions)
+            }
         }
 
         override fun onLoginFacebookErrorDialogClicked() {

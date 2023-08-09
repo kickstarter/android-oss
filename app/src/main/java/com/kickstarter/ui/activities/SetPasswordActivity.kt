@@ -16,21 +16,22 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class SetPasswordActivity : AppCompatActivity() {
+    private lateinit var viewModelFactory: SetPasswordViewModel.Factory
     private val viewModel: SetPasswordViewModel.SetPasswordViewModel by viewModels { viewModelFactory }
     private lateinit var binding: ActivitySetPasswordBinding
     private var errorTitleString = R.string.general_error_oops
-    private lateinit var viewModelFactory: SetPasswordViewModel.Factory
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         this.getEnvironment()?.let { env ->
             viewModelFactory = SetPasswordViewModel.Factory(env)
         }
-        viewModel.configureWith(intent)
 
         binding = ActivitySetPasswordBinding.inflate(layoutInflater)
 
+        viewModel.configureWith(intent)
         setContentView(binding.root)
         setSupportActionBar(binding.resetPasswordToolbar.loginToolbar)
         binding.resetPasswordToolbar.loginToolbar.setTitle(getString(R.string.Set_your_password))
@@ -84,6 +85,11 @@ class SetPasswordActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { finish() }
                 .addToDisposable(disposables)
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 
     private fun setFormEnabled(isEnabled: Boolean) {

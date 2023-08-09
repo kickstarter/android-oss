@@ -101,9 +101,11 @@ interface SetPasswordViewModel {
                 .map { it.warning() }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
+                .filter { it != 0 }
                 .distinctUntilChanged()
                 .subscribe { this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
+
 
             setNewPassword
                 .map { it.isValid() }
@@ -114,6 +116,7 @@ interface SetPasswordViewModel {
                 .compose(takeWhenV2(this.changePasswordClicked))
                 .switchMap { cp -> submit(cp).materialize() }
                 .share()
+
 
             val apiError = setNewPasswordNotification
                 .compose(Transformers.errorsV2())
@@ -131,6 +134,7 @@ interface SetPasswordViewModel {
                     requireNotNull(it)
                 }
 
+
             Observable.merge(apiError, error)
                 .distinctUntilChanged()
                 .subscribe { this.error.onNext(it) }
@@ -140,20 +144,23 @@ interface SetPasswordViewModel {
                 .compose(Transformers.valuesV2())
                 .filter { it.updateUserAccount()?.user()?.hasPassword() ?: false }
 
-            userHasPassword
-                    .filter { ObjectUtils.isNotNull(it.updateUserAccount()?.user()?.email()) }
-                    .map { ObjectUtils.requireNonNull(it.updateUserAccount()?.user()?.email())}
-                    .compose(Transformers.takePairWhenV2(this.currentUserV2.loggedInUser()))
+            this.currentUserV2.loggedInUser()
+                    .compose(Transformers.takePairWhenV2(userHasPassword))
                     .distinctUntilChanged()
                     .subscribe {
                         currentUserV2.accessToken?.let { accessToken ->
                             loginUserCase.login(
-                                    it.second.toBuilder().needsPassword(false).build(),
+                                    it.first.toBuilder().needsPassword(false).build(),
                                     accessToken
                             )
                         }
-                        this.success.onNext(it.first)
+                        this.success.onNext(it.second.updateUserAccount()?.user()?.email() ?: "")
                     }.addToDisposable(disposables)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         private fun submit(setNewPassword: SetNewPassword): Observable<UpdateUserPasswordMutation.Data> {
@@ -198,14 +205,14 @@ interface SetPasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int? =
-                newPassword.newPasswordValidationWarnings(confirmPassword)
+            fun warning(): Int =
+                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
         }
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SettingsViewModel.SettingsViewModel(environment) as T
+            return SetPasswordViewModel(environment) as T
         }
     }
 }

@@ -7,18 +7,21 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.usecases.LoginUseCase
+import io.reactivex.disposables.CompositeDisposable
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
+import io.reactivex.Observable
+import io.reactivex.subscribers.TestSubscriber
 
 class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: SetPasswordViewModel.SetPasswordViewModel
+    private val disposables : CompositeDisposable = CompositeDisposable()
     private val error = TestSubscriber<String>()
     private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -30,19 +33,19 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         this.vm = SetPasswordViewModel.SetPasswordViewModel(environment)
 
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.passwordWarning().subscribe(this.passwordWarning)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
-        this.vm.outputs.success().subscribe(this.success)
-        this.vm.outputs.isFormSubmitting().subscribe(this.isFormSubmitting)
-        this.vm.outputs.setUserEmail().subscribe(this.setUserEmail)
+        this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe{ this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe{this.success.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isFormSubmitting().subscribe{this.isFormSubmitting.onNext(it)}.addToDisposable(disposables)
+        this.vm.outputs.setUserEmail().subscribe{this.setUserEmail.onNext(it)}.addToDisposable(disposables)
     }
 
     @Test
     fun testApiError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun updateUserPassword(
                     currentPassword: String,
                     newPassword: String,
@@ -63,7 +66,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun updateUserPassword(
                     currentPassword: String,
                     newPassword: String,
@@ -86,17 +89,21 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValue(null)
+        this.passwordWarning.assertNoValues()
         this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message)
+        this.passwordWarning.assertValues(R.string.Password_min_length_message)
+        this.passwordWarning.assertValueCount(1)
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null)
+        this.passwordWarning.assertValues(R.string.Password_min_length_message)
+        this.passwordWarning.assertValueCount(1)
         this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValueCount(2)
         this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValueCount(2)
         this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
+        this.passwordWarning.assertValues( R.string.Password_min_length_message, R.string.Passwords_matching_message)
     }
 
     @Test
@@ -129,7 +136,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         val mockUser = MockCurrentUser(user)
         val currentUserV2 = MockCurrentUserV2()
 
-        val environment = environment().toBuilder().apolloClient(object : MockApolloClient() {
+        val environment = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun updateUserPassword(
                 currentPassword: String,
                 newPassword: String,
@@ -167,7 +174,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSetUserEmail() {
         setUpEnvironment(environment())
-        vm.intent(Intent().putExtra(IntentKey.EMAIL, "test@email.com"))
+        this.vm.configureWith(Intent().putExtra(IntentKey.EMAIL, "test@email.com"))
 
         this.setUserEmail.assertValue("****@email.com")
     }

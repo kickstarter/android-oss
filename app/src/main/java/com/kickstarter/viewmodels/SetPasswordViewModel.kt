@@ -81,8 +81,12 @@ interface SetPasswordViewModel {
         private val loginUserCase = LoginUseCase(environment)
         init {
             intent
-                .filter { ObjectUtils.isNotNull(it.hasExtra(IntentKey.EMAIL)) }
-                .map { requireNotNull(it.getStringExtra(IntentKey.EMAIL)) }
+                .filter { it.hasExtra(IntentKey.EMAIL) }
+                .map {
+                    it.getStringExtra(IntentKey.EMAIL)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .map { it.maskEmail() }
                 .subscribe {
                     this.setUserEmail.onNext(it)

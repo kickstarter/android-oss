@@ -128,7 +128,17 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun userPrivacy(): io.reactivex.Observable<UserPrivacy> {
-        return io.reactivex.Observable.empty<UserPrivacy>()
+        return io.reactivex.Observable.just(
+            UserPrivacy(
+                "Some Name",
+                "some@email.com",
+                true,
+                true,
+                true,
+                true,
+                "USD"
+            )
+        )
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): io.reactivex.Observable<UpdateUserCurrencyMutation.Data> {

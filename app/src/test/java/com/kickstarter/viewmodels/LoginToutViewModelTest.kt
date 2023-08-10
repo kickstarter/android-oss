@@ -1,48 +1,57 @@
 package com.kickstarter.viewmodels
 
-import android.content.Intent
 import com.facebook.FacebookAuthorizationException
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.data.LoginReason
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.subjects.BehaviorSubject
 
 class LoginToutViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: LoginToutViewModel.ViewModel
-    private val finishWithSuccessfulResult = TestSubscriber<Void>()
+    private lateinit var vm: LoginToutViewModel.LoginToutViewmodel
+    private val finishWithSuccessfulResult = TestSubscriber<Unit>()
     private val loginError = TestSubscriber<ErrorEnvelope>()
-    private val startLoginActivity = TestSubscriber<Void>()
-    private val startSignupActivity = TestSubscriber<Void>()
+    private val startLoginActivity = TestSubscriber<Unit>()
+    private val startSignupActivity = TestSubscriber<Unit>()
     private val currentUser = TestSubscriber<User?>()
     private val showDisclaimerActivity = TestSubscriber<DisclaimerItems>()
-    private val startResetPasswordActivity = TestSubscriber<Void>()
-    private val showFacebookErrorDialog = TestSubscriber<Void>()
+    private val startResetPasswordActivity = TestSubscriber<Unit>()
+    private val showFacebookErrorDialog = TestSubscriber<Unit>()
+
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment, loginReason: LoginReason) {
-        vm = LoginToutViewModel.ViewModel(environment)
-        vm.outputs.finishWithSuccessfulResult().subscribe(finishWithSuccessfulResult)
-        vm.loginError.subscribe(loginError)
-        vm.outputs.startSignupActivity().subscribe(startSignupActivity)
-        vm.outputs.startLoginActivity().subscribe(startLoginActivity)
-        vm.outputs.showFacebookErrorDialog().subscribe(showFacebookErrorDialog)
-        vm.outputs.startResetPasswordActivity().subscribe(startResetPasswordActivity)
-        vm.outputs.showDisclaimerActivity().subscribe(showDisclaimerActivity)
-        environment.currentUser()?.observable()?.subscribe(currentUser)
-        vm.intent(Intent().putExtra(IntentKey.LOGIN_REASON, loginReason))
+        vm = LoginToutViewModel.LoginToutViewmodel(environment)
+        vm.outputs.finishWithSuccessfulResult().subscribe { finishWithSuccessfulResult.onNext(it) }
+            .addToDisposable(disposables)
+        vm.loginError.subscribe { loginError.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startSignupActivity().subscribe { startSignupActivity.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.startLoginActivity().subscribe { startLoginActivity.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.showFacebookErrorDialog().subscribe { showFacebookErrorDialog.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.startResetPasswordActivity().subscribe { startResetPasswordActivity.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.showDisclaimerActivity().subscribe { showDisclaimerActivity.onNext(it) }
+            .addToDisposable(disposables)
+        environment.currentUser()?.observable()?.subscribe { currentUser.onNext(it) }
+        vm.provideLoginReason(loginReason)
     }
 
     @Test
@@ -73,14 +82,16 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         val currentUser = MockCurrentUser()
         val environment = environment()
             .toBuilder()
+            .apiClientV2(MockApiClientV2())
+            .apolloClientV2(MockApolloClientV2())
             .currentUser(currentUser)
             .build()
         val user = BehaviorSubject.create<User>()
 
         setUpEnvironment(environment, LoginReason.DEFAULT)
-        environment.currentUser()?.loggedInUser()?.subscribe(user)
+        environment.currentUser()?.loggedInUser()?.subscribe { user.onNext(it) }
 
-        this.currentUser.assertValuesAndClear(null)
+        this.currentUser.values().clear()
 
         vm.inputs.facebookLoginClick(
             null,
@@ -113,8 +124,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment, LoginReason.DEFAULT)
 
-        this.currentUser.assertValuesAndClear(null)
-
         vm.inputs.facebookLoginClick(
             null,
             listOf("public_profile", "user_friends", "email")
@@ -122,7 +131,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         vm.facebookAuthorizationError.onNext(FacebookAuthorizationException())
 
-        this.currentUser.assertNoValues()
         finishWithSuccessfulResult.assertNoValues()
         showFacebookErrorDialog.assertValueCount(1)
 
@@ -147,7 +155,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .currentUser(currentUser)
             .featureFlagClient(mockFeatureFlagClient)
-            .apiClient(object : MockApiClient() {
+            .apiClientV2(object : MockApiClientV2() {
                 override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
                     return Observable.error(
                         ApiExceptionFactory.apiError(
@@ -159,7 +167,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment, LoginReason.DEFAULT)
 
-        this.currentUser.assertValuesAndClear(null)
+        this.currentUser.values().clear()
 
         vm.inputs.facebookLoginClick(
             null,
@@ -179,7 +187,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .currentUser(currentUser)
-            .apiClient(object : MockApiClient() {
+            .apiClientV2(object : MockApiClientV2() {
                 override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
                     return Observable.error(Throwable("error"))
                 }
@@ -187,7 +195,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment, LoginReason.DEFAULT)
 
-        this.currentUser.assertValuesAndClear(null)
+        this.currentUser.values().clear()
 
         vm.inputs.facebookLoginClick(
             null,

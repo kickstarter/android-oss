@@ -81,12 +81,8 @@ interface SetPasswordViewModel {
         private val loginUserCase = LoginUseCase(environment)
         init {
             intent
-                .filter { it.hasExtra(IntentKey.EMAIL) }
-                .map {
-                    it.getStringExtra(IntentKey.EMAIL)
-                }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
+                .filter { ObjectUtils.isNotNull(it.hasExtra(IntentKey.EMAIL)) }
+                .map { requireNotNull(it.getStringExtra(IntentKey.EMAIL)) }
                 .map { it.maskEmail() }
                 .subscribe {
                     this.setUserEmail.onNext(it)
@@ -98,10 +94,8 @@ interface SetPasswordViewModel {
             ) { new, confirm -> SetNewPassword(new, confirm) }
 
             setNewPassword
-                .map { it.warning() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .filter { it != 0 }
+                .filter { ObjectUtils.isNotNull(it.warning()) }
+                .map { requireNotNull(it.warning()) }
                 .distinctUntilChanged()
                 .subscribe { this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
@@ -126,10 +120,9 @@ interface SetPasswordViewModel {
             val error = setNewPasswordNotification
                 .compose(Transformers.errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
-                .map { it.errorMessage() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { ObjectUtils.isNotNull(it.errorMessage()) }
                 .map {
-                    requireNotNull(it)
+                    requireNotNull(it.errorMessage())
                 }
 
             Observable.merge(apiError, error)
@@ -202,8 +195,8 @@ interface SetPasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int =
-                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
+            fun warning(): Int? =
+                newPassword.newPasswordValidationWarnings(confirmPassword)
         }
     }
 

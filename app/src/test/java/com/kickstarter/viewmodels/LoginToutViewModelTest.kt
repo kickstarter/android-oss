@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -36,13 +37,19 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment, loginReason: LoginReason) {
         vm = LoginToutViewModel.LoginToutViewmodel(environment)
-        vm.outputs.finishWithSuccessfulResult().subscribe { finishWithSuccessfulResult.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.finishWithSuccessfulResult().subscribe { finishWithSuccessfulResult.onNext(it) }
+            .addToDisposable(disposables)
         vm.loginError.subscribe { loginError.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.startSignupActivity().subscribe { startSignupActivity.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.startLoginActivity().subscribe { startLoginActivity.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.showFacebookErrorDialog().subscribe { showFacebookErrorDialog.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.startResetPasswordActivity().subscribe { startResetPasswordActivity.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.showDisclaimerActivity().subscribe { showDisclaimerActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startSignupActivity().subscribe { startSignupActivity.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.startLoginActivity().subscribe { startLoginActivity.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.showFacebookErrorDialog().subscribe { showFacebookErrorDialog.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.startResetPasswordActivity().subscribe { startResetPasswordActivity.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.showDisclaimerActivity().subscribe { showDisclaimerActivity.onNext(it) }
+            .addToDisposable(disposables)
         environment.currentUser()?.observable()?.subscribe { currentUser.onNext(it) }
         vm.provideLoginReason(loginReason)
     }
@@ -75,6 +82,8 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         val currentUser = MockCurrentUser()
         val environment = environment()
             .toBuilder()
+            .apiClientV2(MockApiClientV2())
+            .apolloClientV2(MockApolloClientV2())
             .currentUser(currentUser)
             .build()
         val user = BehaviorSubject.create<User>()

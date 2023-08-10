@@ -8,18 +8,20 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.User
+import io.reactivex.disposables.CompositeDisposable
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 
 class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: CreatePasswordViewModel.ViewModel
+    private lateinit var vm: CreatePasswordViewModel.CreatePasswordViewModel
 
     private val error = TestSubscriber<String>()
     private val passwordWarning = TestSubscriber<Int>()
@@ -27,15 +29,16 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
     private val currentUser = TestSubscriber<User?>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = CreatePasswordViewModel.ViewModel(environment)
+        this.vm = CreatePasswordViewModel.CreatePasswordViewModel(environment)
 
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.passwordWarning().subscribe(this.passwordWarning)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
-        this.vm.outputs.success().subscribe(this.success)
+        this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe{ this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import CreatePasswordMutation
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
@@ -73,22 +72,18 @@ interface CreatePasswordViewModel {
             val password = Observable.combineLatest(
                 this.newPassword.startWith(""),
                 this.confirmPassword.startWith("")
-                        .doOnError { Log.d("Leigh", "Leigh problem 1: ")}
             ) { new, confirm -> CreatePassword(new, confirm) }
 
             password
-                .map { it.warning() }
-                .filter { ObjectUtils.isNotNull(it)}
-                .map { ObjectUtils.requireNonNull(it) }
+                .filter { ObjectUtils.isNotNull(it.warning())}
+                .map { ObjectUtils.requireNonNull(it.warning()) }
                 .distinctUntilChanged()
-                    .doOnError { Log.d("Leigh", "Leigh problem 2: ")}
                     .subscribe{ this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
 
             password
                 .map { it.isValid() }
                 .distinctUntilChanged()
-                    .doOnError { Log.d("Leigh", "Leigh problem 3: ")}
                     .subscribe{ this.saveButtonIsEnabled.onNext(it) }
                     .addToDisposable(disposables)
 
@@ -102,7 +97,6 @@ interface CreatePasswordViewModel {
                     .map { it.localizedMessage }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { ObjectUtils.requireNonNull(it) }
-                    .doOnError { Log.d("Leigh", "Leigh problem 4: ")}
                     .subscribe { this.error.onNext(it) }
                     .addToDisposable(disposables)
 
@@ -111,7 +105,6 @@ interface CreatePasswordViewModel {
                 .map { it.updateUserAccount()?.user()?.email() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { ObjectUtils.requireNonNull(it) }
-                    .doOnError { Log.d("Leigh", "Leigh problem 5: ")}
                     .subscribe {
                     this.success.onNext(it)
                     this.analytics?.reset()

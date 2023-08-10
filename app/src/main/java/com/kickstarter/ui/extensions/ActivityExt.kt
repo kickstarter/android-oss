@@ -3,9 +3,11 @@ package com.kickstarter.ui.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -30,6 +32,10 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
 import timber.log.Timber
 
+fun Activity.startActivityWithTransition(intent: Intent, @AnimRes enterAnim: Int, @AnimRes exitAnim: Int) {
+    startActivity(intent)
+    overridePendingTransition(enterAnim, exitAnim)
+}
 fun Activity.hideKeyboard() {
     val inputManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (inputManager.isAcceptingText) {
@@ -176,6 +182,10 @@ fun Activity.finishWithAnimation(withResult: String? = null) {
     }
     finish()
     TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())
+}
+
+fun Activity.transition(transition: Pair<Int, Int>) {
+    overridePendingTransition(transition.first, transition.second)
 }
 
 fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: String? = null) {

@@ -351,8 +351,9 @@ interface LoginToutViewModel {
                 activityResult.intent()
             )
 
-            if (activityResult.isRequestCode(ActivityRequestCodes.LOGIN_FLOW)
-                && activityResult.resultCode() == Activity.RESULT_OK) {
+            if (activityResult.isRequestCode(ActivityRequestCodes.LOGIN_FLOW) &&
+                activityResult.resultCode() == Activity.RESULT_OK
+            ) {
                 finishWithSuccessfulResult.onNext(Unit)
             }
         }

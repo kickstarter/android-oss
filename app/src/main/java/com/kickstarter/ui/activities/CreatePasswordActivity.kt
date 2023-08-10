@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCreatePasswordBinding
@@ -12,17 +14,25 @@ import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.viewmodels.AccountViewModel
 import com.kickstarter.viewmodels.CreatePasswordViewModel
+import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(CreatePasswordViewModel.ViewModel::class)
-class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>() {
+class CreatePasswordActivity : AppCompatActivity() {
 
+    private lateinit var viewModelFactory: CreatePasswordViewModel.Factory
+    private val viewModel: CreatePasswordViewModel.CreatePasswordViewModel by viewModels { viewModelFactory }
     private var saveEnabled = false
     private var logout: Logout? = null
+    private val disposables = CompositeDisposable()
 
     private lateinit var binding: ActivityCreatePasswordBinding
 
@@ -30,42 +40,44 @@ class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>()
         super.onCreate(savedInstanceState)
         binding = ActivityCreatePasswordBinding.inflate(layoutInflater)
 
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = CreatePasswordViewModel.Factory(env)
+            env
+        }
+
         setContentView(binding.root)
         setSupportActionBar(binding.createPasswordActivityToolbar.createPasswordToolbar)
 
-        this.logout = environment().logout()
+        this.logout = environment?.logout()
 
         this.viewModel.outputs.progressBarIsVisible()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
             .subscribe {
                 binding.progressBar.isGone = !it
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.passwordWarning()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.warning.text = when {
                     it != null -> getString(it)
                     else -> null
                 }
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.saveButtonIsEnabled()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateMenu(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { logout(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { logout(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.error()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { showSnackbar(binding.createPasswordActivityToolbar.createPasswordToolbar, it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showSnackbar(binding.createPasswordActivityToolbar.createPasswordToolbar, it) }
+                .addToDisposable(disposables)
 
         binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
         binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }

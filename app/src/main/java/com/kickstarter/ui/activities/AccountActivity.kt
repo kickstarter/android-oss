@@ -99,8 +99,8 @@ class AccountActivity : AppCompatActivity() {
         this.viewModel.outputs.passwordRequiredContainerIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                ViewUtils.setGone(binding.createPasswordContainer, it)
-                ViewUtils.setGone(binding.passwordRequiredContainer, !it)
+                ViewUtils.setGone(binding.createPasswordContainer, false)
+                ViewUtils.setGone(binding.passwordRequiredContainer, false)
             }
             .addToDisposable(disposables)
 

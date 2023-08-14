@@ -219,13 +219,8 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
             )
         }
 
-        Spacer(
+        KSDividerLineGrey(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = colors.kds_support_300
-                )
-                .height(dimensions.dividerThickness)
                 .testTag(TestTag.GENERATION_SECTION_DIVIDER.name)
         )
     }
@@ -260,13 +255,8 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
             testTag = TestTag.FOUNDING_SECTION_OPTION.name
         )
 
-        Spacer(
+        KSDividerLineGrey(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = colors.kds_support_300
-                )
-                .height(dimensions.dividerThickness)
                 .testTag(TestTag.FOUNDING_SECTION_DIVIDER.name)
         )
     }

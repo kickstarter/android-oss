@@ -16,11 +16,11 @@ import org.jsoup.nodes.TextNode
 fun Element.extractViewElementTypeFromDiv(): ViewElementType {
     var type: ViewElementType = ViewElementType.UNKNOWN
 
-    if (this.isImageStructure()) {
+    if (this.isImageStructureFromDiv()) {
         if (this.children().getOrNull(0)?.children()?.getOrNull(0)?.tag()?.name == ViewElementType.IMAGE.tag) {
             type = ViewElementType.IMAGE
         }
-    } else if (this.isIframeStructure()) {
+    } else if (this.isIframeStructureFromDiv()) {
         if (this.children().getOrNull(0)?.tag()?.name == ViewElementType.EXTERNAL_SOURCES.tag) {
             type = ViewElementType.EXTERNAL_SOURCES
         }
@@ -29,7 +29,21 @@ fun Element.extractViewElementTypeFromDiv(): ViewElementType {
     return type
 }
 
-fun Element.isIframeStructure(): Boolean {
+fun Element.extractViewElementTypeFromFigure(): ViewElementType {
+    var type: ViewElementType = ViewElementType.UNKNOWN
+
+    if (this.isImageStructureFromFigure()) {
+            type = ViewElementType.IMAGE
+    } else if (this.isIframeStructureFromFigure()) {
+            type = ViewElementType.EXTERNAL_SOURCES
+    }
+    return type
+}
+
+/**
+ * Parent element is a DIV, structure for `draftjs` editor
+ */
+fun Element.isIframeStructureFromDiv(): Boolean {
     val isTemplateDiv = this.attributes().filter {
         it.key == "class" && it.value == "template oembed"
     }
@@ -37,12 +51,37 @@ fun Element.isIframeStructure(): Boolean {
     return !isTemplateDiv.isNullOrEmpty()
 }
 
-fun Element.isImageStructure(): Boolean {
+/**
+ * Parent element is a DIV, structure for `draftjs` editor
+ */
+fun Element.isImageStructureFromDiv(): Boolean {
     val isTemplateDiv = this.attributes().filter {
         it.key == "class" && it.value == "template asset"
     }
 
     return !isTemplateDiv.isNullOrEmpty()
+}
+
+/**
+ * Image within figure tag, structure for `ckeditor5` editor
+ */
+fun Element.isImageStructureFromFigure(): Boolean {
+    val isFigure = this.attributes().filter {
+        it.key == "class" && it.value == "image"
+    }
+
+    return !isFigure.isNullOrEmpty()
+}
+
+/**
+ * Image within figure tag, structure for `ckeditor5` editor
+ */
+fun Element.isIframeStructureFromFigure(): Boolean {
+    val isFromFigure = this.attributes().filter {
+        it.key == "class" && it.value == "media"
+    }
+
+    return !isFromFigure.isNullOrEmpty()
 }
 
 fun Element.parseAudioElement(): AudioViewElement {
@@ -61,32 +100,52 @@ fun Element.parseVideoElementThumbnailUrl(): String? {
     return this.parent()?.attr("data-image")
 }
 
-fun Element.parseImageElement(): ImageViewElement {
+fun Element.parseImageElementCK5(): ImageViewElement {
     var src = ""
     var caption: String? = null
     var href: String? = null
 
-    if (this.parent()?.tag()?.name == "a") {
-        href = this.parent()?.attr("href")
-    }
 
-    caption = this.attr("data-caption")
-    src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("src").toString()
-
-    // - it's a gif collect attribute data-src instead
-    if (src.contains(".gif")) {
-        src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("data-src").toString()
-    }
+    href = this.children().firstOrNull { it.tag().name == "a" }?.attr("href")
+    caption = this.children().firstOrNull { it.tag().name == "figcaption" }?.text()
+    src = if (!href.isNullOrEmpty()) this.children()[0].children()[0]?.attr("src").toString()
+    else this.children()[0].attr("src").toString()
 
     return ImageViewElement(src = src, href = href, caption = caption)
 }
+fun Element.parseImageElement(): ImageViewElement {
+    val parentTag = (this.parentNode() as Element).tag().name
+
+    if (parentTag == "body") {
+        return this.parseImageElementCK5()
+    } else {
+        var src = ""
+        var caption: String? = null
+        var href: String? = null
+
+        if (this.parent()?.tag()?.name == "a") {
+            href = this.parent()?.attr("href")
+        }
+
+        caption = this.attr("data-caption")
+        src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("src").toString()
+
+        // - it's a gif collect attribute data-src instead
+        if (src.contains(".gif")) {
+            src =
+                this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("data-src").toString()
+        }
+
+        return ImageViewElement(src = src, href = href, caption = caption)
+    }
+}
 
 fun Element.parseExternalElement(): ExternalSourceViewElement {
-    val sourceUrls = this.children().getOrNull(0)?.apply {
+    val htmlContent = this.children()[0]?.apply {
         this.attr("width", "100%")
     }.toString()
 
-    return ExternalSourceViewElement(sourceUrls)
+    return ExternalSourceViewElement(htmlContent)
 }
 
 /**
@@ -217,7 +276,9 @@ fun TextViewElement.getStyledComponents(
         textItem.styles.forEach { style ->
             when (style) {
                 TextComponent.TextStyleType.BOLD -> spannable.boldStyle()
-                TextComponent.TextStyleType.EMPHASIS -> spannable.italicStyle()
+                TextComponent.TextStyleType.EMPHASIS,
+                TextComponent.TextStyleType.EMPHASIS1
+                -> spannable.italicStyle()
                 TextComponent.TextStyleType.LINK -> spannable.linkStyle {
                     ApplicationUtils.openUrlExternally(
                         context,
@@ -226,8 +287,15 @@ fun TextViewElement.getStyledComponents(
                 }
                 // - The bullet style will be applied only to the FIRST child of the LI element
                 TextComponent.TextStyleType.LIST -> spannable.bulletStyle()
-                TextComponent.TextStyleType.HEADER -> {
+                TextComponent.TextStyleType.HEADER1,
+                TextComponent.TextStyleType.HEADER2,
+                TextComponent.TextStyleType.HEADER3
+                -> {
                     spannable.size(headerSize)
+                    spannable.boldStyle()
+                }
+                TextComponent.TextStyleType.SUB_HEADER -> {
+                    spannable.size(headerSize - 10)
                     spannable.boldStyle()
                 }
                 else -> {}

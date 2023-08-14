@@ -26,6 +26,9 @@ data class TextComponent(
     enum class TextBlockType(val tag: String?) {
         PARAGRAPH("p"),
         HEADER1("h1"),
+        HEADER2("h2"),
+        HEADER3("h3"),
+        SUBHEADER("h4"),
         LIST("ul");
 
         companion object {
@@ -39,10 +42,14 @@ data class TextComponent(
     enum class TextStyleType(val tag: String?) {
         BOLD("strong"),
         EMPHASIS("em"),
+        EMPHASIS1("i"),
         LIST("li"),
         LIST_END("</li>"),
         LINK("a"),
-        HEADER("h1"),
+        HEADER1("h1"),
+        HEADER2("h2"),
+        HEADER3("h3"),
+        SUB_HEADER("h4"),
         UNKNOWN(null);
 
         companion object {
@@ -66,6 +73,9 @@ data class ExternalSourceViewElement(
 enum class ViewElementType(val tag: String?) {
     IMAGE("img"),
     TEXT(null),
+    TEXT1("H1"),
+    TEXT2("H2"),
+    TEXT3("H3"),
     VIDEO("video"),
     AUDIO("audio"),
     EXTERNAL_SOURCES("iframe"),
@@ -80,6 +90,9 @@ enum class ViewElementType(val tag: String?) {
                 }
                 tag == "div" -> {
                     return element.extractViewElementTypeFromDiv()
+                }
+                tag == "figure" -> {
+                    return element.extractViewElementTypeFromFigure()
                 }
                 TextComponent.TextBlockType.values().map { it.tag }.contains(tag) -> {
                     return TEXT

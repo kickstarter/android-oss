@@ -146,5 +146,6 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         val othersTitle = context.resources.getString(R.string.I_am_incorporating_AI_fpo)
         otherSectionTitle.assertTextEquals(othersTitle)
         otherSectionDet.assertTextEquals(disclosure.otherAiDetails)
+        otherSectionDiv.assertIsDisplayed()
     }
 }

@@ -37,7 +37,9 @@ data class KSDimensions(
     val dialogWidth: Dp = Dp.Unspecified,
     val dialogButtonSpacing: Dp = Dp.Unspecified,
     val elevationMedium: Dp = Dp.Unspecified,
-    val assistiveTextTopSpacing: Dp = Dp.Unspecified
+    val assistiveTextTopSpacing: Dp = Dp.Unspecified,
+    val verticalDividerWidth: Dp = Dp.Unspecified,
+    val iconSizeMedium: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -74,5 +76,7 @@ val KSStandardDimensions = KSDimensions(
     dialogWidth = 280.dp,
     dialogButtonSpacing = 2.dp,
     elevationMedium = 8.dp,
-    assistiveTextTopSpacing = 6.dp
+    assistiveTextTopSpacing = 6.dp,
+    verticalDividerWidth = 4.dp,
+    iconSizeMedium = 18.dp
 )

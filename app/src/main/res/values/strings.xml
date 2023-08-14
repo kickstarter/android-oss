@@ -90,4 +90,6 @@
   <string name="I_plan_to_use_AI_fpo">I plan to use AI-generated content in my project.</string>
   <string name="I_am_incorporating_AI_fpo">I am incorporating AI in my project in another way.</string>
   <string name="Learn_about_AI_fpo">Learn about AI policy on Kickstarter.</string>
+  <string name="What_parts_of_your_project_will_use_AI_generated_content">What parts of your project will use AI generated content? Please be as specific as possible</string>
+  <string name="Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI">Do you have the consent of the owners of the works that were (or will be) used to produce the AI generated portion of your projects?  Please explain.</string>
 </resources>

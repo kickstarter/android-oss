@@ -7,24 +7,27 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.models.AiDisclosure
 import com.kickstarter.ui.compose.designsystem.KSClickableText
@@ -63,7 +66,11 @@ enum class TestTag {
     FOUNDING_SECTION_OPTION,
     FOUNDING_SECTION_DIVIDER,
     GENERATION_SECTION_TITLE,
+    GENERATION_SECTION_CONSENT_QUESTION,
+    GENERATION_SECTION_CONSENT_DIVIDER,
     GENERATION_SECTION_CONSENT,
+    GENERATION_SECTION_DETAILS_QUESTION,
+    GENERATION_SECTION_DETAILS_DIVIDER,
     GENERATION_SECTION_DETAILS,
     GENERATION_SECTION_DIVIDER,
     OTHER_SECTION_TITLE,
@@ -155,20 +162,62 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
         )
 
         Text(
-            text = details,
-            style = typography.footnote,
+            text = stringResource(id = R.string.What_parts_of_your_project_will_use_AI_generated_content),
+            style = typography.caption1Medium,
             color = colors.kds_support_700,
-            modifier = Modifier
-                .testTag(TestTag.GENERATION_SECTION_DETAILS.name)
+            modifier = Modifier.testTag(TestTag.GENERATION_SECTION_DETAILS_QUESTION.name)
         )
 
+        Row(
+            modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min)
+        ) {
+            Divider(
+                color = colors.kds_create_700,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(dimensions.verticalDividerWidth)
+                    .testTag(TestTag.GENERATION_SECTION_DETAILS_DIVIDER.name)
+            )
+
+            Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
+
+            Text(
+                text = details,
+                style = typography.footnote,
+                color = colors.kds_support_700,
+                modifier = Modifier
+                    .testTag(TestTag.GENERATION_SECTION_DETAILS.name)
+            )
+        }
+
         Text(
-            text = consent,
-            style = typography.footnote,
+            text = stringResource(id = R.string.Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI),
+            style = typography.caption1Medium,
             color = colors.kds_support_700,
-            modifier = Modifier
-                .testTag(TestTag.GENERATION_SECTION_CONSENT.name)
+            modifier = Modifier.testTag(TestTag.GENERATION_SECTION_CONSENT_QUESTION.name)
         )
+
+        Row(
+            modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min)
+        ) {
+            Divider(
+                color = colors.kds_create_700,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(dimensions.verticalDividerWidth)
+                    .testTag(TestTag.GENERATION_SECTION_CONSENT_DIVIDER.name)
+            )
+
+            Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
+
+            Text(
+                text = consent,
+                style = typography.footnote,
+                color = colors.kds_support_700,
+                modifier = Modifier
+                    .testTag(TestTag.GENERATION_SECTION_CONSENT.name)
+            )
+        }
 
         Spacer(
             modifier = Modifier
@@ -234,12 +283,13 @@ fun AiDisclosureRow(
     ) {
         Image(
             modifier = Modifier
-                .width(18.dp)
-                .height(18.dp),
+                .width(dimensions.iconSizeMedium)
+                .height(dimensions.iconSizeMedium),
             imageVector = ImageVector.vectorResource(
                 id = iconId
             ),
-            contentDescription = null
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(colors.kds_create_700)
         )
         Text(
             text = stringResource(id = stringResId),

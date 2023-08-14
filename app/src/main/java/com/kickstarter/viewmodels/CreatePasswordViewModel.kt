@@ -11,6 +11,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
@@ -144,13 +145,8 @@ interface CreatePasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int {
-                return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
-                    R.string.Password_min_length_message
-                else if (confirmPassword.isNotEmpty() && confirmPassword != newPassword)
-                    R.string.Passwords_matching_message
-                else 0
-            }
+            fun warning(): Int =
+                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
 
             private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
         }

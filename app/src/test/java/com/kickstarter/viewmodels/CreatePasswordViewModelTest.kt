@@ -12,12 +12,12 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import io.reactivex.disposables.CompositeDisposable
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
+import io.reactivex.Observable
+import io.reactivex.subscribers.TestSubscriber
 
 class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
@@ -44,7 +44,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
                     return Observable.error(Exception("Oops"))
                 }
@@ -62,15 +62,15 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message)
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0)
         this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message, 0)
     }
 
     @Test
@@ -99,7 +99,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSuccess() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
                     return Observable.just(
                         CreatePasswordMutation.Data(
@@ -126,7 +126,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         val trackingClient = getMockClientWithUser(user)
 
         // - Mock failed response from apollo
-        val apolloClient = object : MockApolloClient() {
+        val apolloClient = object : MockApolloClientV2() {
             override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
                 return Observable.error(Exception("Oops"))
             }
@@ -134,7 +134,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-            .apolloClient(apolloClient)
+            .apolloClientV2(apolloClient)
             .analytics(AnalyticEvents(listOf(trackingClient)))
             .build()
 
@@ -155,7 +155,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         val trackingClient = getMockClientWithUser(user)
 
         // - Mock success response from apollo
-        val apolloClient = object : MockApolloClient() {
+        val apolloClient = object : MockApolloClientV2() {
             override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
                 return Observable.just(
                     CreatePasswordMutation.Data(
@@ -170,7 +170,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-            .apolloClient(apolloClient)
+            .apolloClientV2(apolloClient)
             .analytics(AnalyticEvents(listOf(trackingClient)))
             .build()
 
@@ -190,6 +190,6 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         TrackingClientType.Type.SEGMENT,
         MockFeatureFlagClient()
     ).apply {
-        this.identifiedUser.subscribe(currentUser)
+        this.identifiedUser.subscribe{ currentUser.onNext(it) }
     }
 }

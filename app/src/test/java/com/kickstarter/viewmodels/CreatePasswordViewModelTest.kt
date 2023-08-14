@@ -195,7 +195,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     @After
-    fun clear(){
+    fun clear() {
         disposables.clear()
     }
 }

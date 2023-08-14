@@ -182,7 +182,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     @After
-    fun clear(){
+    fun clear() {
         disposables.clear()
     }
 }

@@ -14,10 +14,10 @@ import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
-import io.reactivex.disposables.CompositeDisposable
-import org.junit.Test
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.Test
 
 class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
@@ -36,7 +36,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.progressBarIsVisible().subscribe{ this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
@@ -190,6 +190,6 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         TrackingClientType.Type.SEGMENT,
         MockFeatureFlagClient()
     ).apply {
-        this.identifiedUser.subscribe{ currentUser.onNext(it) }
+        this.identifiedUser.subscribe { currentUser.onNext(it) }
     }
 }

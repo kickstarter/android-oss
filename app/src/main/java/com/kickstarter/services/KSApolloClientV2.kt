@@ -53,7 +53,6 @@ interface ApolloClientTypeV2 {
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
-
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -676,26 +675,26 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
             service.mutate(
-                    CreatePasswordMutation.builder()
-                            .password(password)
-                            .passwordConfirmation(confirmPassword)
-                            .build()
+                CreatePasswordMutation.builder()
+                    .password(password)
+                    .passwordConfirmation(confirmPassword)
+                    .build()
             )
-                    .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
-                        override fun onFailure(exception: ApolloException) {
-                            ps.onError(exception)
-                        }
+                .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
 
-                        override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
-                            if (response.hasErrors()) {
-                                ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                            }
-                            response.data?.let {
-                                ps.onNext(it)
-                            }
-                            ps.onComplete()
+                    override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
                         }
-                    })
+                        response.data?.let {
+                            ps.onNext(it)
+                        }
+                        ps.onComplete()
+                    }
+                })
             return@defer ps
         }
     }

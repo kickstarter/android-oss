@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import CreatePasswordMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
@@ -12,8 +11,8 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
@@ -78,14 +77,14 @@ interface CreatePasswordViewModel {
             password
                 .map { it.warning() }
                 .distinctUntilChanged()
-                .subscribe{ this.passwordWarning.onNext(it) }
+                .subscribe { this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
 
             password
                 .map { it.isValid() }
                 .distinctUntilChanged()
-                    .subscribe{ this.saveButtonIsEnabled.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.saveButtonIsEnabled.onNext(it) }
+                .addToDisposable(disposables)
 
             val createNewPasswordNotification = password
                 .compose(takeWhenV2(this.submitPasswordClicked))
@@ -93,19 +92,19 @@ interface CreatePasswordViewModel {
                 .share()
 
             createNewPasswordNotification
-                    .compose(errorsV2())
-                    .map { it.localizedMessage }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { ObjectUtils.requireNonNull(it) }
-                    .subscribe { this.error.onNext(it) }
-                    .addToDisposable(disposables)
+                .compose(errorsV2())
+                .map { it.localizedMessage }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { ObjectUtils.requireNonNull(it) }
+                .subscribe { this.error.onNext(it) }
+                .addToDisposable(disposables)
 
             createNewPasswordNotification
                 .compose(valuesV2())
                 .map { it.updateUserAccount()?.user()?.email() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { ObjectUtils.requireNonNull(it) }
-                    .subscribe {
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { ObjectUtils.requireNonNull(it) }
+                .subscribe {
                     this.success.onNext(it)
                     this.analytics?.reset()
                 }.addToDisposable(disposables)

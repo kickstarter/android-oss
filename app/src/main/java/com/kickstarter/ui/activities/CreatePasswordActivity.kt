@@ -9,10 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCreatePasswordBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Logout
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -20,9 +17,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.viewmodels.AccountViewModel
 import com.kickstarter.viewmodels.CreatePasswordViewModel
-import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -65,19 +60,19 @@ class CreatePasswordActivity : AppCompatActivity() {
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.saveButtonIsEnabled()
-                .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateMenu(it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { logout(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { logout(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.error()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(binding.createPasswordActivityToolbar.createPasswordToolbar, it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSnackbar(binding.createPasswordActivityToolbar.createPasswordToolbar, it) }
+            .addToDisposable(disposables)
 
         binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
         binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }

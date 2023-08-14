@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities.compose
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
@@ -140,8 +141,7 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         generatingSectionDetailsQuestion.assertTextEquals(genDetailsQuestion)
         generatingSectionDetailsDiv.assertIsDisplayed()
         generatingSectionDetails.assertTextEquals(disclosure.generatedByAiDetails)
-        // TODO: figure out why this line is not working when its displayed
-        // generatingSectionDiv.assertIsDisplayed()
+        generatingSectionDiv.assertIsEnabled()
 
         // Others section
         val othersTitle = context.resources.getString(R.string.I_am_incorporating_AI_fpo)

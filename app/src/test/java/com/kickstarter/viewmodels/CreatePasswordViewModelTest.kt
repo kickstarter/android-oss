@@ -17,6 +17,7 @@ import com.kickstarter.models.User
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class CreatePasswordViewModelTest : KSRobolectricTestCase() {
@@ -191,5 +192,10 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         MockFeatureFlagClient()
     ).apply {
         this.identifiedUser.subscribe { currentUser.onNext(it) }
+    }
+
+    @After
+    fun clear(){
+        disposables.clear()
     }
 }

@@ -16,6 +16,7 @@ import com.kickstarter.viewmodels.usecases.LoginUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class SetPasswordViewModelTest : KSRobolectricTestCase() {
@@ -178,5 +179,10 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.EMAIL, "test@email.com"))
 
         this.setUserEmail.assertValue("****@email.com")
+    }
+
+    @After
+    fun clear(){
+        disposables.clear()
     }
 }

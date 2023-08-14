@@ -59,7 +59,7 @@ class CreatePasswordActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.warning.text = when {
-                    it != null -> getString(it)
+                    it != 0 -> getString(it)
                     else -> null
                 }
             }.addToDisposable(disposables)

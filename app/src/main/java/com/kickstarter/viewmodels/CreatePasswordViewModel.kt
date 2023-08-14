@@ -75,10 +75,9 @@ interface CreatePasswordViewModel {
             ) { new, confirm -> CreatePassword(new, confirm) }
 
             password
-                .filter { ObjectUtils.isNotNull(it.warning())}
-                .map { ObjectUtils.requireNonNull(it.warning()) }
+                .map { it.warning() }
                 .distinctUntilChanged()
-                    .subscribe{ this.passwordWarning.onNext(it) }
+                .subscribe{ this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
 
             password
@@ -145,12 +144,12 @@ interface CreatePasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int? {
+            fun warning(): Int {
                 return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
                     R.string.Password_min_length_message
                 else if (confirmPassword.isNotEmpty() && confirmPassword != newPassword)
                     R.string.Passwords_matching_message
-                else null
+                else 0
             }
 
             private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH

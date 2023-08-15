@@ -508,7 +508,7 @@ class ProjectPageActivity :
         ProjectPagerTabs.CAMPAIGN -> getString(R.string.Campaign)
         ProjectPagerTabs.FAQS -> getString(R.string.Faq)
         ProjectPagerTabs.RISKS -> getString(R.string.Risks)
-        ProjectPagerTabs.USE_OF_AI -> getString(R.string.Use_of_ai_fpo)
+        ProjectPagerTabs.USE_OF_AI -> getString(R.string.Use_of_ai)
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT -> getString(R.string.Environmental_commitments)
     }
 

@@ -56,7 +56,7 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         }
 
         // Title is always visible
-        val titleText = context.resources.getString(R.string.Use_of_ai_fpo)
+        val titleText = context.resources.getString(R.string.Use_of_ai)
         title.assertTextEquals(titleText)
 
         // - Founding section does not exist, as the state.aiDisclosure is empty
@@ -82,7 +82,7 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         otherSectionDiv.assertDoesNotExist()
 
         // Link is always visible
-        val linkText = context.resources.getString(R.string.Learn_about_AI_fpo)
+        val linkText = context.resources.getString(R.string.Learn_about_AI_policy_on_Kickstarter)
         link.assertTextEquals(linkText)
     }
 
@@ -112,26 +112,26 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
             }
         }
 
-        val linkText = context.resources.getString(R.string.Learn_about_AI_fpo)
+        val linkText = context.resources.getString(R.string.Learn_about_AI_policy_on_Kickstarter)
         link.assertTextEquals(linkText)
 
         // Title is always visible
-        val titleText = context.resources.getString(R.string.Use_of_ai_fpo)
+        val titleText = context.resources.getString(R.string.Use_of_ai)
         title.assertTextEquals(titleText)
 
         // Funding sections
-        val fundingTitleText = context.resources.getString(R.string.My_project_seeks_founding_fpo)
+        val fundingTitleText = context.resources.getString(R.string.My_project_seeks_founding_for_AI_technology)
         fundingSectionTitle.assertTextEquals(fundingTitleText)
-        val fundingConsText = context.resources.getString(R.string.For_the_database_orsource_fpo)
+        val fundingConsText = context.resources.getString(R.string.For_the_database_or_source_I_will_use)
         fundingSectionCons.assertTextEquals(fundingConsText)
-        val fundingOptText = context.resources.getString(R.string.There_is_or_will_be_fpo)
+        val fundingOptText = context.resources.getString(R.string.There_is_or_will_be_an_opt)
         fundingSectionOpt.assertTextEquals(fundingOptText)
-        val fundingAttrText = context.resources.getString(R.string.The_owners_of_fpo)
+        val fundingAttrText = context.resources.getString(R.string.The_owners_of_those_works)
         fundingSectionAttr.assertTextEquals(fundingAttrText)
         fundingSectionDiv.assertIsDisplayed()
 
         // Generating section
-        val genTitle = context.resources.getString(R.string.I_plan_to_use_AI_fpo)
+        val genTitle = context.resources.getString(R.string.I_plan_to_use_AI_generated_content)
         generatingSectionTitle.assertTextEquals(genTitle)
         val genConsentQuestion = context.resources.getString(R.string.Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI)
         generatingSectionConsentQuestion.assertTextEquals(genConsentQuestion)
@@ -144,7 +144,7 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         generatingSectionDiv.assertIsEnabled()
 
         // Others section
-        val othersTitle = context.resources.getString(R.string.I_am_incorporating_AI_fpo)
+        val othersTitle = context.resources.getString(R.string.I_am_incorporating_AI_in_my_project)
         otherSectionTitle.assertTextEquals(othersTitle)
         otherSectionDet.assertTextEquals(disclosure.otherAiDetails)
     }

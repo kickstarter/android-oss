@@ -99,7 +99,7 @@ fun AiDisclosureScreen(
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingMediumSmall)
     ) {
         Text(
-            text = stringResource(id = R.string.Use_of_ai_fpo),
+            text = stringResource(id = R.string.Use_of_ai),
             style = typography.title2Bold,
             color = colors.kds_support_700,
             modifier = Modifier
@@ -115,7 +115,7 @@ fun AiDisclosureScreen(
         KSClickableText(
             modifier = Modifier
                 .testTag(TestTag.LINK.name),
-            resourceId = R.string.Learn_about_AI_fpo,
+            resourceId = R.string.Learn_about_AI_policy_on_Kickstarter,
             clickCallback = clickCallback
         )
     }
@@ -126,7 +126,7 @@ private fun InvolvesOtherSection(state: ProjectAIViewModel.UiState) {
     val otherDetails = state.aiDisclosure?.otherAiDetails ?: ""
     if (otherDetails.isNotEmpty()) {
         Text(
-            text = stringResource(id = R.string.I_am_incorporating_AI_fpo),
+            text = stringResource(id = R.string.I_am_incorporating_AI_in_my_project),
             style = typography.headline,
             color = colors.kds_support_700,
             modifier = Modifier
@@ -154,7 +154,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
     val consent = state.aiDisclosure?.generatedByAiConsent ?: ""
     if (details.isNotEmpty() || consent.isNotEmpty()) {
         Text(
-            text = stringResource(id = R.string.I_plan_to_use_AI_fpo),
+            text = stringResource(id = R.string.I_plan_to_use_AI_generated_content),
             style = typography.headline,
             color = colors.kds_support_700,
             modifier = Modifier
@@ -239,7 +239,7 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
 
     if (fundingAiAttr || fundingAiConsent || fundingAiOption) {
         Text(
-            text = stringResource(id = R.string.My_project_seeks_founding_fpo),
+            text = stringResource(id = R.string.My_project_seeks_founding_for_AI_technology),
             style = typography.headline,
             color = colors.kds_support_700,
             modifier = Modifier
@@ -247,16 +247,16 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
         )
 
         if (fundingAiConsent) AiDisclosureRow(
-            stringResId = R.string.For_the_database_orsource_fpo,
+            stringResId = R.string.For_the_database_or_source_I_will_use,
             testTag = TestTag.FOUNDING_SECTION_CONSENT.name
         )
         if (fundingAiAttr) AiDisclosureRow(
-            stringResId = R.string.The_owners_of_fpo,
+            stringResId = R.string.The_owners_of_those_works,
             testTag = TestTag.FOUNDING_SECTION_ATTRIBUTION.name
 
         )
         if (fundingAiOption) AiDisclosureRow(
-            stringResId = R.string.There_is_or_will_be_fpo,
+            stringResId = R.string.There_is_or_will_be_an_opt,
             testTag = TestTag.FOUNDING_SECTION_OPTION.name
         )
 

@@ -562,7 +562,7 @@ fun ClickableText() {
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSClickableText(
-            resourceId = R.string.Learn_about_AI_fpo
+            resourceId = R.string.Learn_about_AI_policy_on_Kickstarter
         )
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))

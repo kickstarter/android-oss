@@ -3,6 +3,7 @@ package com.kickstarter.libs.htmlparser
 import android.content.Context
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import com.kickstarter.R
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.boldStyle
 import com.kickstarter.libs.utils.extensions.bulletStyle
@@ -197,8 +198,6 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
 }
 
 fun TextViewElement.getStyledComponents(
-    bodySize: Int,
-    headerSize: Int,
     context: Context
 ): SpannableStringBuilder {
     val joinedSpanned = SpannableStringBuilder("")
@@ -212,6 +211,7 @@ fun TextViewElement.getStyledComponents(
         }
 
         val spannable = SpannableString(componentText)
+        val bodySize = context.resources.getDimensionPixelSize(R.dimen.callout)
         spannable.color()
         spannable.size(bodySize)
         textItem.styles.forEach { style ->
@@ -226,8 +226,34 @@ fun TextViewElement.getStyledComponents(
                 }
                 // - The bullet style will be applied only to the FIRST child of the LI element
                 TextComponent.TextStyleType.LIST -> spannable.bulletStyle()
-                TextComponent.TextStyleType.HEADER -> {
-                    spannable.size(headerSize)
+                TextComponent.TextStyleType.HEADER1 -> {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.parser_h1)
+                    spannable.size(size)
+                    spannable.boldStyle()
+                }
+                TextComponent.TextStyleType.HEADER2 -> {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.parser_h2)
+                    spannable.size(size)
+                    spannable.boldStyle()
+                }
+                TextComponent.TextStyleType.HEADER3 -> {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.parser_h3)
+                    spannable.size(size)
+                    spannable.boldStyle()
+                }
+                TextComponent.TextStyleType.HEADER4 -> {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.parser_h4)
+                    spannable.size(size)
+                    spannable.boldStyle()
+                }
+                TextComponent.TextStyleType.HEADER5 -> {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.parser_h5)
+                    spannable.size(size)
+                    spannable.boldStyle()
+                }
+                TextComponent.TextStyleType.HEADER6 -> {
+                    val size = context.resources.getDimensionPixelSize(R.dimen.parser_h6)
+                    spannable.size(size)
                     spannable.boldStyle()
                 }
                 else -> {}

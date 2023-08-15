@@ -22,10 +22,15 @@ data class TextComponent(
     val styles: List<TextStyleType>
 ) {
 
-    // - Direct body childs for text allows only TextBlockTypes
+    // - Direct body childs for text allows only TextBlockTypes. All header tags defined by w3school https://www.w3schools.com/tags/tag_hn.asp
     enum class TextBlockType(val tag: String?) {
         PARAGRAPH("p"),
         HEADER1("h1"),
+        HEADER2("h2"),
+        HEADER3("h3"),
+        HEADER4("h4"),
+        HEADER5("h5"),
+        HEADER6("h6"),
         LIST("ul");
 
         companion object {
@@ -42,7 +47,12 @@ data class TextComponent(
         LIST("li"),
         LIST_END("</li>"),
         LINK("a"),
-        HEADER("h1"),
+        HEADER1("h1"),
+        HEADER2("h2"),
+        HEADER3("h3"),
+        HEADER4("h4"),
+        HEADER5("h5"),
+        HEADER6("h6"),
         UNKNOWN(null);
 
         companion object {

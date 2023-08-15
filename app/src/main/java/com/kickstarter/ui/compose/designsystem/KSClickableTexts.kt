@@ -23,7 +23,7 @@ fun PreviewKSClickableText() {
             modifier = Modifier.background(KSTheme.colors.kds_white)
         ) {
             KSClickableText(
-                resourceId = R.string.Learn_about_AI_fpo
+                resourceId = R.string.Learn_about_AI_policy_on_Kickstarter
             )
         }
     }

@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities.compose
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
@@ -28,7 +29,11 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
 
     // Generating section
     private val generatingSectionTitle = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_TITLE.name)
+    private val generatingSectionConsentQuestion = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_CONSENT_QUESTION.name)
+    private val generatingSectionConsentDiv = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_CONSENT_DIVIDER.name)
     private val generatingSectionConsent = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_CONSENT.name)
+    private val generatingSectionDetailsQuestion = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_DETAILS_QUESTION.name)
+    private val generatingSectionDetailsDiv = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_DETAILS_DIVIDER.name)
     private val generatingSectionDetails = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_DETAILS.name)
     private val generatingSectionDiv = composeTestRule.onNodeWithTag(TestTag.GENERATION_SECTION_DIVIDER.name)
 
@@ -63,7 +68,11 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
 
         // - Generating section does not exist, as the state.aiDisclosure is empty
         generatingSectionTitle.assertDoesNotExist()
+        generatingSectionConsentQuestion.assertDoesNotExist()
+        generatingSectionConsentDiv.assertDoesNotExist()
         generatingSectionConsent.assertDoesNotExist()
+        generatingSectionDetailsQuestion.assertDoesNotExist()
+        generatingSectionDetailsDiv.assertDoesNotExist()
         generatingSectionDetails.assertDoesNotExist()
         generatingSectionDiv.assertDoesNotExist()
 
@@ -124,9 +133,15 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         // Generating section
         val genTitle = context.resources.getString(R.string.I_plan_to_use_AI_fpo)
         generatingSectionTitle.assertTextEquals(genTitle)
+        val genConsentQuestion = context.resources.getString(R.string.Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI)
+        generatingSectionConsentQuestion.assertTextEquals(genConsentQuestion)
+        generatingSectionConsentDiv.assertIsDisplayed()
         generatingSectionConsent.assertTextEquals(disclosure.generatedByAiConsent)
+        val genDetailsQuestion = context.resources.getString(R.string.What_parts_of_your_project_will_use_AI_generated_content)
+        generatingSectionDetailsQuestion.assertTextEquals(genDetailsQuestion)
+        generatingSectionDetailsDiv.assertIsDisplayed()
         generatingSectionDetails.assertTextEquals(disclosure.generatedByAiDetails)
-        generatingSectionDiv.assertIsDisplayed()
+        generatingSectionDiv.assertIsEnabled()
 
         // Others section
         val othersTitle = context.resources.getString(R.string.I_am_incorporating_AI_fpo)

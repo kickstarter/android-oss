@@ -33,32 +33,6 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         view = binding.root
         setContentView(view)
 
-        // - Allow clickable spans
-//        binding.text.linksClickable = true
-//        binding.text.isClickable = true
-//        binding.text.movementMethod = LinkMovementMethod.getInstance()
-
-        val url = "https://www.meneame.net/"
-        val html = "<ul>\n" +
-            "   <li><h1>This is heading 1</h1></li>\n" +
-            "   <li><h2>This is heading 2</h2></li>\n" +
-            "   <li><h3>This is heading 3</h3></li>\n" +
-            "   <li><h4>This is heading 4</h4></li>\n" +
-            "   <li><h5>This is heading 5</h5></li>\n" +
-            "   <li><h6>This is heading 6</h6></li>\n" +
-            "   <li>This</li>\n" +
-            "   <li>This and more text <a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>lalalalalala</strong></em></a></li>\n" +
-            "   <li>More text here <em><strong>lalalalalala</strong></em> and here </li>\n" +
-            "   <li><strong>is</strong></li>\n" +
-            "   <li>is <strong>is</strong> is</li>\n" +
-            "   <li><em><strong>is</strong></em> with some <strong>text</strong> in the middle <em><strong>is</strong></em></li>\n" +
-            "   <li><em>a</em></li>\n" +
-            "   <li><a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">link</a></li>\n" +
-            "   <li>text with <a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">link</a></li>\n" +
-            "   <li>Hola <strong><em>que tal </em></strong> majete</li>\n" +
-            "   <li><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>Meneane </strong></em></a><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\">Another URL in this list</a> and some text</li>"
-        "</ul>"
-
         val html2 = "<h1>This is heading 1</h1>\n" +
             "<h2>This is heading 2</h2>\n" +
             "<h3>This is heading 3</h3>\n" +
@@ -67,8 +41,9 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
             "<h6>This is heading 6</h6>"
 
         val listOfElements = HTMLParser().parse(html2)
-        // val element: TextViewElement = listOfElements.first() as TextViewElement
 
+
+        // - The parser detects 6 elements and applies the style to each one
         binding.h1.text = (listOfElements[0] as TextViewElement).getStyledComponents(this)
         binding.h2.text = (listOfElements[1] as TextViewElement).getStyledComponents(this)
         binding.h3.text = (listOfElements[2] as TextViewElement).getStyledComponents(this)

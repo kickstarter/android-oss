@@ -261,7 +261,7 @@ dependencies {
     implementation 'com.perimeterx.sdk:msdk:1.16.7'
 
     // Dependencies for HTML Parser
-    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.jsoup:jsoup:1.16.1'
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'

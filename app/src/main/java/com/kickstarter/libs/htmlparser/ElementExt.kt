@@ -33,9 +33,9 @@ fun Element.extractViewElementTypeFromFigure(): ViewElementType {
     var type: ViewElementType = ViewElementType.UNKNOWN
 
     if (this.isImageStructureFromFigure()) {
-            type = ViewElementType.IMAGE
+        type = ViewElementType.IMAGE
     } else if (this.isIframeStructureFromFigure()) {
-            type = ViewElementType.EXTERNAL_SOURCES
+        type = ViewElementType.EXTERNAL_SOURCES
     }
     return type
 }
@@ -104,7 +104,6 @@ fun Element.parseImageElementCK5(): ImageViewElement {
     var src = ""
     var caption: String? = null
     var href: String? = null
-
 
     href = this.children().firstOrNull { it.tag().name == "a" }?.attr("href")
     caption = this.children().firstOrNull { it.tag().name == "figcaption" }?.text()

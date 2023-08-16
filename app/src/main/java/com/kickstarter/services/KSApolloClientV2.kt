@@ -52,6 +52,7 @@ interface ApolloClientTypeV2 {
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
+    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -662,6 +663,34 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             val message = it.triggerThirdPartyEvent()?.message() ?: ""
                             val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
                             ps.onNext(Pair(isSuccess, message))
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CreatePasswordMutation.Data>()
+            service.mutate(
+                CreatePasswordMutation.builder()
+                    .password(password)
+                    .passwordConfirmation(confirmPassword)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.let {
+                            ps.onNext(it)
                         }
                         ps.onComplete()
                     }

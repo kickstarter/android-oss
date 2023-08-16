@@ -98,8 +98,7 @@ interface SetPasswordViewModel {
             ) { new, confirm -> SetNewPassword(new, confirm) }
 
             setNewPassword
-                .filter { ObjectUtils.isNotNull(it.warning()) }
-                .map { requireNotNull(it.warning()) }
+                .map { ObjectUtils.requireNonNull(it.warning()) }
                 .distinctUntilChanged()
                 .subscribe { this.passwordWarning.onNext(it) }
                 .addToDisposable(disposables)
@@ -199,8 +198,8 @@ interface SetPasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int? =
-                newPassword.newPasswordValidationWarnings(confirmPassword)
+            fun warning(): Int =
+                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
         }
     }
 

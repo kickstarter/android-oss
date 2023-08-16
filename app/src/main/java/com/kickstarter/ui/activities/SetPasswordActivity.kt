@@ -58,9 +58,7 @@ class SetPasswordActivity : AppCompatActivity() {
         this.viewModel.outputs.passwordWarning()
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
                 binding.warning.text = when {
-                    it != null -> {
-                        getString(it)
-                    }
+                    it != 0 -> getString(it)
                     else -> null
                 }
                 binding.warning.isVisible = (it != null)

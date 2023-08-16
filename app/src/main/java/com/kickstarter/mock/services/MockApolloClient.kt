@@ -164,6 +164,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun triggerThirdPartyEvent(eventInput: TPEventInputData): io.reactivex.Observable<Pair<Boolean, String>> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun createPassword(password: String, confirmPassword: String): io.reactivex.Observable<CreatePasswordMutation.Data> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

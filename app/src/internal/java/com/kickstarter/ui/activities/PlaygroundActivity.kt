@@ -42,7 +42,6 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
 
         val listOfElements = HTMLParser().parse(html2)
 
-
         // - The parser detects 6 elements and applies the style to each one
         binding.h1.text = (listOfElements[0] as TextViewElement).getStyledComponents(this)
         binding.h2.text = (listOfElements[1] as TextViewElement).getStyledComponents(this)

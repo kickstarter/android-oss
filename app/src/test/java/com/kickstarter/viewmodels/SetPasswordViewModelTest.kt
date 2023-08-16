@@ -16,6 +16,7 @@ import com.kickstarter.viewmodels.usecases.LoginUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class SetPasswordViewModelTest : KSRobolectricTestCase() {
@@ -89,21 +90,22 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertNoValues()
+        this.passwordWarning.assertValues(0)
         this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(R.string.Password_min_length_message)
-        this.passwordWarning.assertValueCount(1)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message)
+        this.passwordWarning.assertValueCount(2)
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(R.string.Password_min_length_message)
-        this.passwordWarning.assertValueCount(1)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0)
+        this.passwordWarning.assertValueCount(3)
         this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
-        this.passwordWarning.assertValueCount(2)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValueCount(4)
         this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
-        this.passwordWarning.assertValueCount(2)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValueCount(4)
         this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues(R.string.Password_min_length_message, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValueCount(5)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message, 0)
     }
 
     @Test
@@ -177,5 +179,10 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.EMAIL, "test@email.com"))
 
         this.setUserEmail.assertValue("****@email.com")
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

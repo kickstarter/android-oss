@@ -1,18 +1,20 @@
 package com.kickstarter.viewmodels
 
 import CreatePasswordMutation
-import androidx.annotation.NonNull
-import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
-import com.kickstarter.ui.activities.CreatePasswordActivity
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface CreatePasswordViewModel {
 
@@ -45,11 +47,11 @@ interface CreatePasswordViewModel {
         fun success(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CreatePasswordActivity>(environment), Inputs, Outputs {
+    class CreatePasswordViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
         private val confirmPassword = PublishSubject.create<String>()
         private val newPassword = PublishSubject.create<String>()
-        private val submitPasswordClicked = PublishSubject.create<Void>()
+        private val submitPasswordClicked = PublishSubject.create<Unit>()
 
         private val error = BehaviorSubject.create<String>()
         private val passwordWarning = BehaviorSubject.create<Int>()
@@ -60,8 +62,10 @@ interface CreatePasswordViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val apolloClientV2 = requireNotNull(this.environment.apolloClientV2())
         private val analytics = requireNotNull(this.environment.analytics())
+
+        private val disposables = CompositeDisposable()
 
         init {
 
@@ -73,36 +77,46 @@ interface CreatePasswordViewModel {
             password
                 .map { it.warning() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.passwordWarning)
+                .subscribe { this.passwordWarning.onNext(it) }
+                .addToDisposable(disposables)
 
             password
                 .map { it.isValid() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.saveButtonIsEnabled)
+                .subscribe { this.saveButtonIsEnabled.onNext(it) }
+                .addToDisposable(disposables)
 
             val createNewPasswordNotification = password
-                .compose(takeWhen<CreatePassword, Void>(this.submitPasswordClicked))
+                .compose(takeWhenV2(this.submitPasswordClicked))
                 .switchMap { np -> submit(np).materialize() }
-                .compose(bindToLifecycle())
                 .share()
 
             createNewPasswordNotification
-                .compose(errors())
-                .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(errorsV2())
+                .map { it.localizedMessage }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { ObjectUtils.requireNonNull(it) }
+                .subscribe { this.error.onNext(it) }
+                .addToDisposable(disposables)
 
             createNewPasswordNotification
-                .compose(values())
+                .compose(valuesV2())
                 .map { it.updateUserAccount()?.user()?.email() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { ObjectUtils.requireNonNull(it) }
                 .subscribe {
                     this.success.onNext(it)
                     this.analytics?.reset()
-                }
+                }.addToDisposable(disposables)
         }
 
-        private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {
-            return this.apolloClient.createPassword(createPassword.newPassword, createPassword.confirmPassword)
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+
+        private fun submit(createPassword: CreatePassword): Observable<CreatePasswordMutation.Data> {
+            return this.apolloClientV2.createPassword(createPassword.newPassword, createPassword.confirmPassword)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
@@ -111,7 +125,7 @@ interface CreatePasswordViewModel {
 
         override fun newPassword(newPassword: String) = this.newPassword.onNext(newPassword)
 
-        override fun createPasswordClicked() = this.submitPasswordClicked.onNext(null)
+        override fun createPasswordClicked() = this.submitPasswordClicked.onNext(Unit)
 
         override fun error(): Observable<String> = this.error
 
@@ -130,15 +144,16 @@ interface CreatePasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int? {
-                return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
-                    R.string.Password_min_length_message
-                else if (confirmPassword.isNotEmpty() && confirmPassword != newPassword)
-                    R.string.Passwords_matching_message
-                else null
-            }
+            fun warning(): Int =
+                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
 
             private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return CreatePasswordViewModel(environment) as T
         }
     }
 }

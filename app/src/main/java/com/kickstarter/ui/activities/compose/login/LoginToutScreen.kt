@@ -102,7 +102,8 @@ fun LoginToutScreen(
                             DropdownMenu(
                                 modifier = Modifier.background(color = colors.kds_support_100),
                                 expanded = expanded,
-                                onDismissRequest = { expanded = false }) {
+                                onDismissRequest = { expanded = false }
+                            ) {
                                 DropdownMenuItem(
                                     onClick = {
                                         onTermsOfUseClicked.invoke()
@@ -307,7 +308,8 @@ fun LoginToutScreen(
                                 }
                             }
                         }
-                })
+                }
+            )
         }
     }
 }

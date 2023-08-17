@@ -120,7 +120,7 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         title.assertTextEquals(titleText)
 
         // Funding sections
-        val fundingTitleText = context.resources.getString(R.string.My_project_seeks_founding_for_AI_technology)
+        val fundingTitleText = context.resources.getString(R.string.My_project_seeks_funding_for_AI_technology)
         fundingSectionTitle.assertTextEquals(fundingTitleText)
         val fundingConsText = context.resources.getString(R.string.For_the_database_or_source_I_will_use)
         fundingSectionCons.assertTextEquals(fundingConsText)

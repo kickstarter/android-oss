@@ -83,7 +83,7 @@
 
   <!-- Mock strings for MBL-893-->
   <string name="Use_of_ai">Use of AI</string>
-  <string name="My_project_seeks_founding_for_AI_technology">My project seeks founding for AI technology.</string>
+  <string name="My_project_seeks_funding_for_AI_technology">My project seeks funding for AI technology.</string>
   <string name="For_the_database_or_source_I_will_use">For the database or source that I will use or will create, the consent of the persons whose works or information incorporated have been obtained.</string>
   <string name="The_owners_of_those_works">The owners of those works is or will be attributed.</string>
   <string name="There_is_or_will_be_an_opt">There is or will be an opt-in or opt-out for those owners.</string>

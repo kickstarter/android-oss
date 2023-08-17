@@ -49,16 +49,35 @@
         android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/h1"
         app:layout_constraintTop_toBottomOf="@id/stepper"
-        android:text="testing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/text2"
-        app:layout_constraintTop_toBottomOf="@id/text"
-        android:text="testing"
+        android:id="@+id/h2"
+        app:layout_constraintTop_toBottomOf="@id/h1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/h3"
+        app:layout_constraintTop_toBottomOf="@id/h2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/h4"
+        app:layout_constraintTop_toBottomOf="@id/h3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/h5"
+        app:layout_constraintTop_toBottomOf="@id/h4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/h6"
+        app:layout_constraintTop_toBottomOf="@id/h5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
   </androidx.constraintlayout.widget.ConstraintLayout>

@@ -199,6 +199,7 @@ Cliquez pour réessayer.</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Tout sur l\'avenir du design et de la technologie.</string>
   <string name="Dismiss" formatted="false">Ignorer</string>
+  <string name="Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI" formatted="false">Avez-vous obtenu le consentement des propriétaires des œuvres utilisées (ou à utiliser) pour produire la partie de votre projet générée par IA ? Veuillez expliquer.</string>
   <string name="Done" formatted="false">Terminé</string>
   <string name="Double_tap_to_toggle_setting" formatted="false">Cliquez deux fois pour activer/désactiver le réglage</string>
   <string name="Download_your_personal_data" formatted="false">Téléchargement de vos données personnelles</string>
@@ -271,6 +272,7 @@ Cliquez pour réessayer.</string>
   <string name="Following_Disabled_Info" formatted="false">Pour retrouver vos amis Facebook, activez la fonction Abonnements sous Paramètres > Vie privée.</string>
   <string name="Following_More_Info" formatted="false">Plus d\'informations sur le suivi et l\'abonnement</string>
   <string name="Follows_friend_name" formatted="false">Abonnement aux actus de %{friend_name}.</string>
+  <string name="For_the_database_or_source_I_will_use" formatted="false">J\'ai obtenu ou j\'obtiendrai le consentement des personnes dont les œuvres ou les informations sont incorporées à la base de données ou à la source que je compte utiliser ou créer.</string>
   <string name="Frequently_asked_questions" formatted="false">Questions fréquentes</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet &lt;i>artistique&lt;/i>.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>BD&lt;/i>.</string>
@@ -308,6 +310,8 @@ Cliquez pour réessayer.</string>
   <string name="Hide_password" formatted="false">Masquer le mot de passe</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
+  <string name="I_am_incorporating_AI_in_my_project" formatted="false">Je prévois d\'incorporer une IA dans mon projet d\'une autre façon.</string>
+  <string name="I_plan_to_use_AI_generated_content" formatted="false">Je prévois d\'utiliser du contenu généré par une IA dans mon projet.</string>
   <string name="I_understand" formatted="false">Je comprends</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité le %{project_deadline}.</string>
@@ -350,6 +354,7 @@ Cliquez pour réessayer.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter prend les atteintes au droit à la propriété intellectuelle très au sérieux. Pour plus d\'information et pour des instructions sur le signalement d\'utilisations abusives, veuillez consulter nos pages {{copyrightPolicyLink}} et {{trademarkPolicyLink}}. Seules les demandes formulées par le titulaire du droit d\'auteur ou de la marque déposée seront traitées.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Comprendre la politique sur l\'IA de Kickstarter.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">En savoir plus sur la notion de responsabilité sur Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">En savoir plus sur les directives applicables aux commentaires&lt;/a></string>
@@ -395,6 +400,7 @@ Cliquez pour réessayer.</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Million_plus" formatted="false">Plus de %{total_amount} millions</string>
   <string name="More_than_number_of_items_items" formatted="false">Plus de %{number_of_items} éléments</string>
+  <string name="My_project_seeks_funding_for_AI_technology" formatted="false">Le but de mon projet est de financer une technologie d\'IA.</string>
   <string name="Name" formatted="false">Nom</string>
   <string name="Never" formatted="false">Jamais</string>
   <string name="New_email" formatted="false">Nouvelle adresse e-mail</string>
@@ -673,8 +679,10 @@ n\'ont rien soutenu.</string>
   <string name="The_live_stream_will_start_time" formatted="false">La diffusion en direct commence dans %{time}.</string>
   <string name="The_maximum_pledge_is_max_pledge" formatted="false">L\'engagement maximum est de %{max_pledge}.</string>
   <string name="The_minimum_pledge_is_min_pledge" formatted="false">L\'engagement minimum est de %{min_pledge}.</string>
+  <string name="The_owners_of_those_works" formatted="false">Les propriétaires de ces œuvres sont ou seront crédités pour leur travail.</string>
   <string name="The_replay_will_start_soon" formatted="false">La rediffusion sera bientôt disponible</string>
   <string name="The_zeitgeist_delivered_to_your_inbox_via_new" formatted="false">Nouveaux projets et témoignages qui illustrent l\'esprit du temps s\'invitent dans votre boîte de réception.</string>
+  <string name="There_is_or_will_be_an_opt" formatted="false">Ces propriétaires se verront proposer un mécanisme d\'acceptation ou de refus.</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">Un problème s\'est produit lors de ce règlement.</string>
   <string name="These_projects_could_use_your_support" formatted="false">Ces créateurs ont besoin de vous.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">L\'objectif du projet et les montants des engagements s\'afficheront ainsi dans la devise de votre choix.</string>
@@ -720,6 +728,7 @@ n\'ont rien soutenu.</string>
   <string name="Upcoming_live_streams" formatted="false">Diffusions en direct à venir</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
   <string name="Update_pledge" formatted="false">Modifier mon engagement</string>
+  <string name="Use_of_ai" formatted="false">Utilisation de l\'IA</string>
   <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Hashtag #backeditbecause : en quoi les projets que vous soutenez sont-ils importants ?</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.</string>
   <string name="Verification_email_sent" formatted="false">Nous venons de vous envoyer un e-mail de vérification. Cliquez sur le lien qu\'il contient pour vérifier votre adresse.</string>
@@ -768,6 +777,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Well_help_you_find_a_project_to_back" formatted="false">Nous sommes là pour vous aider à trouver un projet.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Votre nom et votre photo de profil seront importés. Nous aurons accès à votre liste d\'amis, mais nous ne publierons rien sans votre autorisation.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Nous vous enverrons un rappel 48 heures avant la fin de cette campagne. Vous recevrez aussi des rappels pour tous les projets que vous avez enregistré. Ceux-ci sont tous accessibles depuis votre profil.</string>
+  <string name="What_parts_of_your_project_will_use_AI_generated_content" formatted="false">Pour quelles parties de votre projet utiliserez-vous ce contenu généré par IA ? Veuillez être aussi précis que possible.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s\'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
   <string name="Which_categories_interest_you" formatted="false">Quelles sont les catégories qui vous intéressent ?</string>

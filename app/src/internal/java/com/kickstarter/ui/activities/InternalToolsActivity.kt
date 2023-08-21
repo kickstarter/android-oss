@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.View
 import android.webkit.URLUtil
@@ -111,7 +112,13 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
 
     override fun onResume() {
         super.onResume()
-        this.registerReceiver(resetDeviceIdReceiver, IntentFilter(ResetDeviceIdWorker.BROADCAST))
+        // Specifying the RECEIVER_NOT_EXPORTED flag is required by apps targeting android 34, however
+        // this flag parameter was added to registerReceiver in android 33 while our min SDK is 23
+        if (android.os.Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            this.registerReceiver(resetDeviceIdReceiver, IntentFilter(ResetDeviceIdWorker.BROADCAST), RECEIVER_NOT_EXPORTED)
+        } else {
+            this.registerReceiver(resetDeviceIdReceiver, IntentFilter(ResetDeviceIdWorker.BROADCAST))
+        }
     }
 
     override fun onPause() {

@@ -239,7 +239,7 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
 
     if (fundingAiAttr || fundingAiConsent || fundingAiOption) {
         Text(
-            text = stringResource(id = R.string.My_project_seeks_founding_for_AI_technology),
+            text = stringResource(id = R.string.My_project_seeks_funding_for_AI_technology),
             style = typography.headline,
             color = colors.kds_support_700,
             modifier = Modifier

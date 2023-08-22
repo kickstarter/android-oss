@@ -7,8 +7,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import com.kickstarter.BuildConfig
-import timber.log.Timber
 
 class ConnectivityReceiver : BroadcastReceiver() {
 
@@ -21,17 +19,11 @@ class ConnectivityReceiver : BroadcastReceiver() {
         override fun onAvailable(network: Network) { // when given network becomes available
             super.onAvailable(network)
             connectivityReceiverListener.onNetworkConnectionChanged(isConnected = true)
-            if (BuildConfig.DEBUG) {
-                Timber.d(" *************** $network has become Available")
-            }
         }
 
         override fun onLost(network: Network) { // when given network loses connectivity or is disconnected
             super.onLost(network)
             connectivityReceiverListener.onNetworkConnectionChanged(isConnected = false)
-            if (BuildConfig.DEBUG) {
-                Timber.d(" ************* $network has lost connection")
-            }
         }
     }
 
@@ -54,10 +46,6 @@ class ConnectivityReceiver : BroadcastReceiver() {
     }
 
     interface ConnectivityReceiverListener {
-        fun onNetworkConnectionChanged(isConnected: Boolean) {
-            if (BuildConfig.DEBUG) {
-                Timber.d("Network changed isConnected: $isConnected")
-            }
-        }
+        fun onNetworkConnectionChanged(isConnected: Boolean)
     }
 }

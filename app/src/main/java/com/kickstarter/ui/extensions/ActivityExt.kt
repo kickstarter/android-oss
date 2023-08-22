@@ -24,7 +24,6 @@ import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
-import com.kickstarter.services.ConnectivityReceiver
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.data.PledgeData

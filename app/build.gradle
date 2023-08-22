@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.7'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.8'
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.14'
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -51,9 +51,8 @@ if (file('signing.gradle').exists()) {
 
 
 android {
-    compileSdkVersion 34
-
     defaultConfig {
+        compileSdk 34
         applicationId "com.kickstarter"
         minSdkVersion 23
         targetSdkVersion 34

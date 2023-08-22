@@ -148,6 +148,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       this.viewModel.onPause();
     }
 
+    this.connectivityReceiver.unregister(this);
     this.unregisterReceiver(this.connectivityReceiver);
   }
 

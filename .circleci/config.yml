@@ -5,7 +5,7 @@ base_job: &base_job
   executor:
     name: android/android-machine
     resource-class: xlarge
-    tag: 2023.07.1
+    tag: 2023.08.1 #https://circleci.com/developer/images/image/cimg/android
   working_directory: "~/project"
   environment:
     TERM: dumb

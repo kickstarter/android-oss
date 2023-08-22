@@ -35,7 +35,6 @@ import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import com.kickstarter.libs.utils.extensions.AnyExt
 import com.kickstarter.libs.utils.extensions.coalesceWithV2
 
 class LoginActivity : ComponentActivity() {

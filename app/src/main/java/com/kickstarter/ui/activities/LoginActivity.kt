@@ -21,7 +21,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
@@ -208,10 +207,10 @@ class LoginActivity : ComponentActivity() {
 
     private fun errorMessages() =
         this.viewModel.outputs.invalidLoginError()
-            .map{ it.coalesceWithV2(getString(this.loginDoesNotMatchString)) }
+            .map(coalesceWithV2(getString(this.loginDoesNotMatchString)))
             .mergeWith(
                 this.viewModel.outputs.genericLoginError()
-                    .map { it.coalesceWithV2(getString(this.unableToLoginString)) }
+                    .map(coalesceWithV2(getString(this.unableToLoginString)))
             )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

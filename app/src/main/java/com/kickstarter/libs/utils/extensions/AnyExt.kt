@@ -19,11 +19,11 @@ import rx.functions.Func1
         return theDefault
     }
 
-    fun <T : Any> T.coalesceWith(theDefault: T): Func1<T, T> {
-        return Func1 {ObjectUtils.coalesce(this, theDefault) }
+    fun <T : Any> coalesceWith(theDefault: T): Func1<T, T> {
+        return Func1 {value : T -> ObjectUtils.coalesce(value, theDefault) }
     }
 
-    fun <T : Any> T.coalesceWithV2(theDefault: T): Function<T, T> {
+    fun <T : Any> coalesceWithV2(theDefault: T): Function<T, T> {
         return Function { value: T -> ObjectUtils.coalesce(value, theDefault) }
     }
 

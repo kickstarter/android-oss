@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders.projectcampaign
 
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
-import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.getStyledComponents
@@ -19,10 +18,7 @@ class TextElementViewHolder(
         textView.isClickable = true
         textView.movementMethod = LinkMovementMethod.getInstance()
 
-        val headerSize = context().resources.getDimensionPixelSize(R.dimen.title_3)
-        val bodySize = context().resources.getDimensionPixelSize(R.dimen.callout)
-
-        textView.text = element.getStyledComponents(bodySize, headerSize, context())
+        textView.text = element.getStyledComponents(context = context())
     }
 
     override fun bindData(data: Any?) {

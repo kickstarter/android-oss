@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.7'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.8'
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.14'
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -247,7 +247,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation 'net.danlew:android.joda:2.10.7'
-    implementation "org.jsoup:jsoup:1.14.3"
+    implementation "org.jsoup:jsoup:1.16.1"
 
     // Data Store (SharedPreferences like API)
     implementation "androidx.datastore:datastore-preferences:1.0.0"

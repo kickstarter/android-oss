@@ -209,7 +209,7 @@ class HTMLParserTest {
         val textElement: TextViewElement = listOfElements.last() as TextViewElement
         assert(textElement.components.size == 1)
         assert(textElement.components[0].text == "This is a headline")
-        assert(textElement.components[0].styles[0] == TextComponent.TextStyleType.HEADER)
+        assert(textElement.components[0].styles[0] == TextComponent.TextStyleType.HEADER1)
     }
 
     @Test
@@ -296,5 +296,52 @@ class HTMLParserTest {
 
         val audioElement: AudioViewElement = listOfElements.last() as AudioViewElement
         assertEquals(audioElement.sourceUrl, "")
+    }
+
+    @Test
+    fun parseHeaders() {
+        val html = "<h1>This is heading 1</h1>\n" +
+            "<h2>This is heading 2</h2>\n" +
+            "<h3>This is heading 3</h3>\n" +
+            "<h4>This is heading 4</h4>\n" +
+            "<h5>This is heading 5</h5>\n" +
+            "<h6>This is heading 6</h6>"
+
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 6)
+
+        listOfElements.map {
+            assert(it is TextViewElement)
+        }
+
+        val h1 = listOfElements[0] as TextViewElement
+        assert(h1.components.size == 1)
+        assert(h1.components[0].styles[0] == TextComponent.TextStyleType.HEADER1)
+        assert(h1.components[0].text == "This is heading 1")
+
+        val h2 = listOfElements[1] as TextViewElement
+        assert(h2.components.size == 1)
+        assert(h2.components[0].styles[0] == TextComponent.TextStyleType.HEADER2)
+        assert(h2.components[0].text == "This is heading 2")
+
+        val h3 = listOfElements[2] as TextViewElement
+        assert(h3.components.size == 1)
+        assert(h3.components[0].styles[0] == TextComponent.TextStyleType.HEADER3)
+        assert(h3.components[0].text == "This is heading 3")
+
+        val h4 = listOfElements[3] as TextViewElement
+        assert(h4.components.size == 1)
+        assert(h4.components[0].styles[0] == TextComponent.TextStyleType.HEADER4)
+        assert(h4.components[0].text == "This is heading 4")
+
+        val h5 = listOfElements[4] as TextViewElement
+        assert(h5.components.size == 1)
+        assert(h5.components[0].styles[0] == TextComponent.TextStyleType.HEADER5)
+        assert(h5.components[0].text == "This is heading 5")
+
+        val h6 = listOfElements[5] as TextViewElement
+        assert(h6.components.size == 1)
+        assert(h6.components[0].styles[0] == TextComponent.TextStyleType.HEADER6)
+        assert(h6.components[0].text == "This is heading 6")
     }
 }

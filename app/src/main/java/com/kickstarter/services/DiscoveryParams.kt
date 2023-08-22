@@ -5,13 +5,14 @@ import android.net.Uri
 import android.os.Parcelable
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
 import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.toInteger
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
@@ -404,7 +405,7 @@ class DiscoveryParams private constructor(
             if (uri.isDiscoverScopePath("successful")) {
                 builder = builder.sort(Sort.ENDING_SOON).state(State.SUCCESSFUL)
             }
-            val backed = ObjectUtils.toInteger(uri.getQueryParameter("backed"))
+            val backed = uri.getQueryParameter("backed").toInteger()
             if (backed != null) {
                 builder = builder.backed(backed)
             }
@@ -416,15 +417,15 @@ class DiscoveryParams private constructor(
             if (locationParam != null) {
                 builder = builder.locationParam(locationParam)
             }
-            val page = ObjectUtils.toInteger(uri.getQueryParameter("page"))
+            val page = uri.getQueryParameter("page").toInteger()
             if (page != null) {
                 builder = builder.page(page)
             }
-            val perPage = ObjectUtils.toInteger(uri.getQueryParameter("per_page"))
+            val perPage = uri.getQueryParameter("per_page").toInteger()
             if (perPage != null) {
                 builder = builder.perPage(perPage)
             }
-            val pledged = ObjectUtils.toInteger(uri.getQueryParameter("pledged"))
+            val pledged = uri.getQueryParameter("pledged").toInteger()
             if (pledged != null) {
                 builder = builder.pledged(pledged)
             }
@@ -432,7 +433,7 @@ class DiscoveryParams private constructor(
             if (recommended) {
                 builder = builder.recommended(recommended)
             }
-            val social = ObjectUtils.toInteger(uri.getQueryParameter("social"))
+            val social = uri.getQueryParameter("social").toInteger()
             if (social != null) {
                 builder = builder.social(social)
             }
@@ -444,7 +445,7 @@ class DiscoveryParams private constructor(
             if (sortParam != null) {
                 builder = builder.sort(Sort.fromString(sortParam))
             }
-            val starred = ObjectUtils.toInteger(uri.getQueryParameter("starred"))
+            val starred = uri.getQueryParameter("starred").toInteger()
             if (starred != null) {
                 builder = builder.starred(starred)
             }
@@ -452,7 +453,7 @@ class DiscoveryParams private constructor(
             if (stateParam != null) {
                 builder = builder.state(State.fromString(stateParam))
             }
-            val tagId = ObjectUtils.toInteger(uri.getQueryParameter("tag_id"))
+            val tagId = uri.getQueryParameter("tag_id").toInteger()
             if (tagId != null) {
                 builder = builder.tagId(tagId)
             }

@@ -43,7 +43,3 @@ fun Int?.isZeroOrHigher(): Boolean {
 fun Int?.toBoolean(): Boolean {
     return this != null && this >= 1
 }
-
-fun Int?.toString() : String? {
-    return this?.toString()
-}

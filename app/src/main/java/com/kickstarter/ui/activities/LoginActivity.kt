@@ -22,6 +22,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.coalesceWithV2
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
@@ -34,7 +35,6 @@ import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import com.kickstarter.libs.utils.extensions.coalesceWithV2
 
 class LoginActivity : ComponentActivity() {
 

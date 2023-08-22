@@ -181,7 +181,7 @@ fun String.toHashedSHAEmail(): String {
         .fold("") { str, it -> str + "%02x".format(it) }
 }
 
-fun String?.toInteger() : Int? {
+fun String?.toInteger(): Int? {
     return if (this != null) {
         try {
             this.toInt()
@@ -190,5 +190,3 @@ fun String?.toInteger() : Int? {
         }
     } else null
 }
-
-

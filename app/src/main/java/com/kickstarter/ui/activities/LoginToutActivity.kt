@@ -13,7 +13,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable

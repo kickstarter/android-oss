@@ -199,7 +199,3 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
-
-fun Activity.listenNetworkChanges() {
-    val connectivityReceiver = ConnectivityReceiver()
-}

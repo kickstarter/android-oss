@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Parcelable
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath

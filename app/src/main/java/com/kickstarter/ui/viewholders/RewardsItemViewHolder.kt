@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.databinding.RewardsItemViewBinding
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.numToString
-import com.kickstarter.libs.utils.extensions.toString2
 import com.kickstarter.models.RewardsItem
 
 class RewardsItemViewHolder(private val binding: RewardsItemViewBinding) : KSViewHolder(binding.root) {

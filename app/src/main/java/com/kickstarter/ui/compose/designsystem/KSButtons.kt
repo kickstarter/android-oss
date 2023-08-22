@@ -162,12 +162,14 @@ fun KSSmallButtonsPreview() {
 
 @Composable
 fun KSPrimaryGreenButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_create_700,
@@ -179,12 +181,14 @@ fun KSPrimaryGreenButton(
 
 @Composable
 fun KSPrimaryBlueButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_trust_500,
@@ -196,12 +200,14 @@ fun KSPrimaryBlueButton(
 
 @Composable
 fun KSPrimaryBlackButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_support_700,
@@ -213,12 +219,14 @@ fun KSPrimaryBlackButton(
 
 @Composable
 fun KSSecondaryGreyButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_support_300,
@@ -230,12 +238,14 @@ fun KSSecondaryGreyButton(
 
 @Composable
 fun KSSecondaryRedButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_alert,
@@ -247,12 +257,14 @@ fun KSSecondaryRedButton(
 
 @Composable
 fun KSSecondaryWhiteButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeGrey) {
         KSButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_white,
@@ -264,12 +276,14 @@ fun KSSecondaryWhiteButton(
 
 @Composable
 fun KSFacebookButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSIconButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.facebook_blue,
@@ -282,11 +296,13 @@ fun KSFacebookButton(
 
 @Composable
 fun KSGooglePayButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSIconButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = kds_black,
@@ -297,6 +313,7 @@ fun KSGooglePayButton(
 
 @Composable
 fun KSIconButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     isEnabled: Boolean,
     backgroundColor: Color,
@@ -306,7 +323,7 @@ fun KSIconButton(
     textColor: Color? = null,
 ) {
     Button(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
@@ -435,6 +452,7 @@ fun KSSmallButton(
 
 @Composable
 fun KSButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     isEnabled: Boolean,
     backgroundColor: Color,
@@ -442,7 +460,7 @@ fun KSButton(
     textColor: Color,
 ) {
     Button(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(

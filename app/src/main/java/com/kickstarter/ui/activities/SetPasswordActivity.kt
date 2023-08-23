@@ -8,12 +8,10 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySetPasswordBinding
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.transition
 import com.kickstarter.viewmodels.SetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

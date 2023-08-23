@@ -46,7 +46,8 @@ class CreatePasswordActivity : AppCompatActivity() {
         this.logout = environment?.logout()
 
         this.viewModel.outputs.progressBarIsVisible()
-            .subscribe {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
                 binding.progressBar.isGone = !it
             }.addToDisposable(disposables)
 

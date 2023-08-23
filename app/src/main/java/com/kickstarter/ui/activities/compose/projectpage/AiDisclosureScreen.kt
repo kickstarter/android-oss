@@ -91,13 +91,14 @@ fun AiDisclosureScreen(
             .padding(
                 PaddingValues(
                     start = dimensions.paddingMediumLarge,
-                    top = dimensions.paddingMedium,
                     end = dimensions.paddingMedium
                 )
             )
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingMediumSmall)
     ) {
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
         Text(
             text = stringResource(id = R.string.Use_of_ai),
             style = typography.title2Bold,
@@ -118,6 +119,8 @@ fun AiDisclosureScreen(
             resourceId = R.string.Learn_about_AI_policy_on_Kickstarter,
             clickCallback = clickCallback
         )
+
+        Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
     }
 }
 

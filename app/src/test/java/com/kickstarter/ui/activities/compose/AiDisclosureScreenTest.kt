@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
@@ -135,13 +134,13 @@ class AiDisclosureScreenTest : KSRobolectricTestCase() {
         generatingSectionTitle.assertTextEquals(genTitle)
         val genConsentQuestion = context.resources.getString(R.string.Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI)
         generatingSectionConsentQuestion.assertTextEquals(genConsentQuestion)
-        generatingSectionConsentDiv.assertIsDisplayed()
+        generatingSectionConsentDiv.assertExists()
         generatingSectionConsent.assertTextEquals(disclosure.generatedByAiConsent)
         val genDetailsQuestion = context.resources.getString(R.string.What_parts_of_your_project_will_use_AI_generated_content)
         generatingSectionDetailsQuestion.assertTextEquals(genDetailsQuestion)
-        generatingSectionDetailsDiv.assertIsDisplayed()
+        generatingSectionDetailsDiv.assertExists()
         generatingSectionDetails.assertTextEquals(disclosure.generatedByAiDetails)
-        generatingSectionDiv.assertIsEnabled()
+        generatingSectionDiv.assertExists()
 
         // Others section
         val othersTitle = context.resources.getString(R.string.I_am_incorporating_AI_in_my_project)

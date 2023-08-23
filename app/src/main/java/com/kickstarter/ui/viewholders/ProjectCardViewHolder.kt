@@ -13,12 +13,12 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ProjectCardViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.isProjectNamePunctuated
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
+import com.kickstarter.libs.utils.extensions.requireNonNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -249,7 +249,7 @@ class ProjectCardViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectAndParams = ObjectUtils.requireNonNull(data as? Pair<Project, DiscoveryParams>)
+        val projectAndParams = (data as? Pair<Project, DiscoveryParams>).requireNonNull()
         viewModel.inputs.configureWith(projectAndParams)
     }
 

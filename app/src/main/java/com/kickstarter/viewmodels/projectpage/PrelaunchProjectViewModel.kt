@@ -10,10 +10,11 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.TakeWhenTransformerV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.KsOptional
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -92,9 +93,9 @@ interface PrelaunchProjectViewModel {
         init {
 
             val reducedProject = this.intent.filter {
-                ObjectUtils.isNotNull(it.getParcelableExtra<Project>(IntentKey.PROJECT))
+                it.getParcelableExtra<Project>(IntentKey.PROJECT).isNotNull()
             }.map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it }
                 .withLatestFrom(
                     currentConfig.observable(),
@@ -109,7 +110,7 @@ interface PrelaunchProjectViewModel {
 
             val loadedProject = intent
                 .filter {
-                    ObjectUtils.isNull(it.getParcelableExtra<Project>(IntentKey.PROJECT))
+                    it.getParcelableExtra<Project>(IntentKey.PROJECT).isNull()
                 }.switchMap { intent ->
                     loadProject(intent)
                 }
@@ -154,7 +155,7 @@ interface PrelaunchProjectViewModel {
                     this.toggleProjectSave(it)
                 }
                 .share()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it }
 
             var currentProject = io.reactivex.Observable.merge(
@@ -209,14 +210,14 @@ interface PrelaunchProjectViewModel {
                 .doOnError {
                     println(it.message)
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it }
                 .subscribe {
                     this.project.onNext(it)
                 }.addToDisposable(disposables)
 
             projectOnUserChangeSave
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it }
                 .subscribe {
                     this.project.onNext(it)

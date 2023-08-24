@@ -1,18 +1,21 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.facebook.AccessToken
 import com.kickstarter.R
-import com.kickstarter.databinding.LoginToutLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -22,18 +25,17 @@ import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity.Terms
+import com.kickstarter.ui.activities.compose.login.LoginToutScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.extensions.makeLinks
-import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.viewmodels.LoginToutViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class LoginToutActivity : AppCompatActivity() {
+class LoginToutActivity : ComponentActivity() {
 
-    private lateinit var binding: LoginToutLayoutBinding
     private lateinit var ksString: KSString
 
     private lateinit var viewModelFactory: LoginToutViewModel.Factory
@@ -45,13 +47,35 @@ class LoginToutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = LoginToutLayoutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        var darkModeEnabled = false
         this.getEnvironment()?.let { env ->
             viewModelFactory = LoginToutViewModel.Factory(env)
             this.ksString = requireNotNull(env.ksString())
+            darkModeEnabled =
+                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
-        binding.loginToolbar.loginToolbar.title = getString(R.string.login_tout_navbar_title)
+
+        setContent {
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+                LoginToutScreen(
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() },
+                    onFacebookButtonClicked = { facebookLoginClick() },
+                    onEmailLoginClicked = { loginButtonClick() },
+                    onEmailSignupClicked = { signupButtonClick() },
+                    onTermsOfUseClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = {
+                        viewModel.inputs.disclaimerItemClicked(
+                            DisclaimerItems.PRIVACY
+                        )
+                    },
+                    onCookiePolicyClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES) },
+                    onHelpClicked = {
+                        intent = Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT))
+                        this@LoginToutActivity.startActivity(intent)
+                    }
+                )
+            }
+        }
 
         val loginReason = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra(IntentKey.LOGIN_REASON, LoginReason::class.java)
@@ -107,7 +131,13 @@ class LoginToutActivity : AppCompatActivity() {
 
         viewModel.outputs.showUnauthorizedErrorDialog()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showDialog(this, getString(R.string.login_tout_navbar_title), it) }
+            .subscribe {
+                ViewUtils.showDialog(
+                    this,
+                    getString(R.string.login_tout_navbar_title),
+                    it
+                )
+            }
             .addToDisposable(disposables)
 
         viewModel.outputs.showFacebookErrorDialog()
@@ -128,18 +158,6 @@ class LoginToutActivity : AppCompatActivity() {
             }
             .addToDisposable(disposables)
 
-        binding.facebookLoginButton.setOnClickListener {
-            facebookLoginClick()
-        }
-
-        binding.loginButton.setOnClickListener {
-            loginButtonClick()
-        }
-
-        binding.signUpButton.setOnClickListener {
-            signupButtonClick()
-        }
-
         viewModel.outputs.showDisclaimerActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -153,30 +171,6 @@ class LoginToutActivity : AppCompatActivity() {
                 startResetActivity()
             }
             .addToDisposable(disposables)
-
-        // create clickable disclaimer spannable
-        binding.disclaimerTextView.parseHtmlTag()
-
-        binding.disclaimerTextView.makeLinks(
-            Pair(
-                getString(DisclaimerItems.TERMS.itemName),
-                View.OnClickListener {
-                    viewModel.inputs.disclaimerItemClicked(DisclaimerItems.TERMS)
-                }
-            ),
-            Pair(
-                getString(DisclaimerItems.PRIVACY.itemName),
-                View.OnClickListener {
-                    viewModel.inputs.disclaimerItemClicked(DisclaimerItems.PRIVACY)
-                }
-            ),
-            Pair(
-                getString(DisclaimerItems.COOKIES.itemName),
-                View.OnClickListener {
-                    viewModel.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES)
-                }
-            ),
-        )
     }
 
     private fun startActivity(disclaimerItem: DisclaimerItems) {

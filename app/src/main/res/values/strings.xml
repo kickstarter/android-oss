@@ -81,15 +81,4 @@
   <!-- Risks Mock String-->
   <string name="risk_description">"The largest risk comes from the creation/manufacturing of the pins at the pin factory. We are working with a vendor in China, who has lots of experience in projects for us. Still, there is a chance that something may go wrong during the manufacturing process and if that happens it could cause a delay in shipping. It can be common in the pin-making world that manus are delayed or make mistakes with an order. However, we don’t anticipate this being an issue, as our vendor has done many similar projects with us, but there is always a possibility. These items are handmade! If anything does happen, we will make sure to keep everyone informed and up to date regarding where we are in the process. The timeline for shipping is NOT solid due to these factors but we will keep all backers updated each step of the way. Also- Please be aware, there might be a delay due to the situation with the COVID-19 virus. This is causing delays all over the world as shipping gets limited, cities shutting down services and other issues arise. At this point, we do not think this will impact our project timeline. However, we cannot predict how things will go and our pin factory is located in China (they are all back at work now and we have gotten pins from them within the last month, so things appear to be going well now.) If this will affect our production, I will inform everyone through an update as soon as I know."</string>
 
-  <!-- Mock strings for MBL-893-->
-  <string name="Use_of_ai">Use of AI</string>
-  <string name="My_project_seeks_founding_for_AI_technology">My project seeks founding for AI technology.</string>
-  <string name="For_the_database_or_source_I_will_use">For the database or source that I will use or will create, the consent of the persons whose works or information incorporated have been obtained.</string>
-  <string name="The_owners_of_those_works">The owners of those works is or will be attributed.</string>
-  <string name="There_is_or_will_be_an_opt">There is or will be an opt-in or opt-out for those owners.</string>
-  <string name="I_plan_to_use_AI_generated_content">I plan to use AI-generated content in my project.</string>
-  <string name="I_am_incorporating_AI_in_my_project">I am incorporating AI in my project in another way.</string>
-  <string name="Learn_about_AI_policy_on_Kickstarter">Learn about AI policy on Kickstarter.</string>
-  <string name="What_parts_of_your_project_will_use_AI_generated_content">What parts of your project will use AI generated content? Please be as specific as possible</string>
-  <string name="Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI">Do you have the consent of the owners of the works that were (or will be) used to produce the AI generated portion of your projects?  Please explain.</string>
 </resources>

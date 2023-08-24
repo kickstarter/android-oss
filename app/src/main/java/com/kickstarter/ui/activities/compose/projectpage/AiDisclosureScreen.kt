@@ -91,13 +91,14 @@ fun AiDisclosureScreen(
             .padding(
                 PaddingValues(
                     start = dimensions.paddingMediumLarge,
-                    top = dimensions.paddingMedium,
                     end = dimensions.paddingMedium
                 )
             )
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingMediumSmall)
     ) {
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
         Text(
             text = stringResource(id = R.string.Use_of_ai),
             style = typography.title2Bold,
@@ -118,6 +119,8 @@ fun AiDisclosureScreen(
             resourceId = R.string.Learn_about_AI_policy_on_Kickstarter,
             clickCallback = clickCallback
         )
+
+        Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
     }
 }
 
@@ -239,7 +242,7 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
 
     if (fundingAiAttr || fundingAiConsent || fundingAiOption) {
         Text(
-            text = stringResource(id = R.string.My_project_seeks_founding_for_AI_technology),
+            text = stringResource(id = R.string.My_project_seeks_funding_for_AI_technology),
             style = typography.headline,
             color = colors.kds_support_700,
             modifier = Modifier

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
@@ -37,19 +38,24 @@ fun ToolBarPreview() {
 
 @Composable
 fun TopToolBar(
+    modifier: Modifier = Modifier,
     title: String? = null,
-    titleColor: Color ? = null,
+    titleColor: Color? = null,
+    titleModifier: Modifier = Modifier,
     leftIcon: ImageVector = Icons.Filled.ArrowBack,
     leftOnClickAction: () -> Unit = {},
     leftIconColor: Color? = null,
+    leftIconModifier: Modifier = Modifier,
     right: @Composable () -> Unit = {},
     middle: @Composable () -> Unit = {},
     backgroundColor: Color? = null
 ) {
     TopAppBar(
+        modifier = modifier,
         title = {
             title?.let {
                 Text(
+                    modifier = titleModifier,
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -58,7 +64,10 @@ fun TopToolBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = { leftOnClickAction() }) {
+            IconButton(
+                modifier = leftIconModifier,
+                onClick = { leftOnClickAction() }
+            ) {
                 Icon(
                     imageVector = leftIcon,
                     contentDescription = stringResource(id = R.string.back),

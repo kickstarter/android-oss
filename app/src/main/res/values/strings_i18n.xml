@@ -199,6 +199,7 @@ Tap to retry</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Discover the future of Design and Tech.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
+  <string name="Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI" formatted="false">Do you have the consent of the owners of the works that were (or will be) used to produce the AI-generated portion of your projects?  Please explain.</string>
   <string name="Done" formatted="false">Done</string>
   <string name="Double_tap_to_toggle_setting" formatted="false">Double tap to toggle setting</string>
   <string name="Download_your_personal_data" formatted="false">Download your personal data</string>
@@ -271,6 +272,7 @@ Tap to retry</string>
   <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Change your account privacy settings to enable this feature.</string>
   <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">Follows %{friend_name}.</string>
+  <string name="For_the_database_or_source_I_will_use" formatted="false">For the database or source that I will use or will create, the consent of the persons whose works or information are incorporated has been or will be obtained.</string>
   <string name="Frequently_asked_questions" formatted="false">Frequently asked questions</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed an &lt;i>Art&lt;/i> project.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Comics&lt;/i> project.</string>
@@ -308,6 +310,8 @@ Tap to retry</string>
   <string name="Hide_password" formatted="false">Hide password</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
+  <string name="I_am_incorporating_AI_in_my_project" formatted="false">I am incorporating AI in my project in another way.</string>
+  <string name="I_plan_to_use_AI_generated_content" formatted="false">I plan to use AI-generated content in my project.</string>
   <string name="I_understand" formatted="false">I understand</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on %{project_deadline}.</string>
@@ -351,6 +355,7 @@ with friends.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Learn about AI policy on Kickstarter.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Learn more about comment guidelines&lt;/a></string>
@@ -396,6 +401,7 @@ with friends.</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Million_plus" formatted="false">%{total_amount} million+</string>
   <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
+  <string name="My_project_seeks_funding_for_AI_technology" formatted="false">My project seeks funding for AI technology.</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_email" formatted="false">New email</string>
@@ -676,8 +682,10 @@ catch your eye?</string>
   <string name="The_live_stream_will_start_time" formatted="false">The live stream will start %{time}.</string>
   <string name="The_maximum_pledge_is_max_pledge" formatted="false">The maximum pledge is %{max_pledge}.</string>
   <string name="The_minimum_pledge_is_min_pledge" formatted="false">The minimum pledge is %{min_pledge}.</string>
+  <string name="The_owners_of_those_works" formatted="false">The owners of these works are or will be receiving credit for their work.</string>
   <string name="The_replay_will_start_soon" formatted="false">The replay will start soon</string>
   <string name="The_zeitgeist_delivered_to_your_inbox_via_new" formatted="false">The zeitgeist delivered to your inbox, via new projects and buzzworthy stories.</string>
+  <string name="There_is_or_will_be_an_opt" formatted="false">There is or will be an opt-in or opt-out for those owners.</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">There was a problem with this payment.</string>
   <string name="These_projects_could_use_your_support" formatted="false">These projects could use your support.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">This allows you to see project goal and pledge amounts in your preferred currency.</string>
@@ -723,6 +731,7 @@ catch your eye?</string>
   <string name="Upcoming_live_streams" formatted="false">Upcoming live streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Upcoming with&lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Update pledge</string>
+  <string name="Use_of_ai" formatted="false">Use of AI</string>
   <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Use the hashtag #backeditbecause to share what projects you\'re supporting and why they\'re important to you.</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Use this to keep track of which rewards you\'ve received.</string>
   <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
@@ -771,6 +780,7 @@ Please try again later.</string>
   <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">We\'ll import your name and profile photo, and access your friend list. We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
+  <string name="What_parts_of_your_project_will_use_AI_generated_content" formatted="false">What parts of your project will use AI-generated content? Please be as specific as possible.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="Which_categories_interest_you" formatted="false">Which categories interest you?</string>

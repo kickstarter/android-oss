@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
@@ -83,6 +84,12 @@ class SetPasswordActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { finish() }
             .addToDisposable(disposables)
+
+        onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // do nothing
+            }
+        })
     }
 
     override fun onDestroy() {

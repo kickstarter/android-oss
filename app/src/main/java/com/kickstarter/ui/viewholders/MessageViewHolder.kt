@@ -51,7 +51,7 @@ class MessageViewHolder(private val binding: MessageViewBinding) : KSViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val message = ObjectUtils.requireNonNull(data as Message?)
+        val message = requireNotNull(data as Message?)
         viewModel.inputs.configureWith(message)
     }
 

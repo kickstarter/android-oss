@@ -29,7 +29,7 @@ class ShippingRuleViewHolder(private val binding: ItemShippingRuleBinding, val d
     }
 
     override fun bindData(any: Any?) {
-        val shippingRuleAndProject = ObjectUtils.requireNonNull(any as Pair<ShippingRule, Project>)
+        val shippingRuleAndProject = requireNotNull(any as Pair<ShippingRule, Project>)
         this.shippingRule = ObjectUtils.requireNonNull(shippingRuleAndProject.first, ShippingRule::class.java)
         val project = ObjectUtils.requireNonNull(shippingRuleAndProject.second, Project::class.java)
 

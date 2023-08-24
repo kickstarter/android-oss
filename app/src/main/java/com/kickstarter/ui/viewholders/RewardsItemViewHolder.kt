@@ -9,7 +9,7 @@ class RewardsItemViewHolder(private val binding: RewardsItemViewBinding) : KSVie
     private val ksString = requireNotNull(environment().ksString())
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val rewardsItem = ObjectUtils.requireNonNull(data as RewardsItem?)
+        val rewardsItem = requireNotNull(data as RewardsItem?)
         val title = ksString.format(
             "rewards_info_item_quantity_title", rewardsItem.quantity(),
             "quantity", rewardsItem.quantity().numToString(),

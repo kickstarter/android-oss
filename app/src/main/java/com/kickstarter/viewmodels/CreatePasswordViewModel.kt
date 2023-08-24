@@ -68,7 +68,7 @@ interface CreatePasswordViewModel {
                 .compose(errorsV2())
                 .map { it.localizedMessage }
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { ObjectUtils.requireNonNull(it) }
+                .map { it }
                 .subscribe { this.error.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -76,7 +76,7 @@ interface CreatePasswordViewModel {
                 .compose(valuesV2())
                 .map { it.updateUserAccount()?.user()?.email() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { ObjectUtils.requireNonNull(it) }
+                .map { it }
                 .subscribe {
                     this.success.onNext(it)
                     this.analytics?.reset()

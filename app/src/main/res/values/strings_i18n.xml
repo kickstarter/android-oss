@@ -772,7 +772,7 @@ catch your eye?</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>
   <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">We will be discontinuing the ability to log in via Facebook. To log in to your account using the email %{email}, please set a password that’s at least 6 characters long.</string>
-  <string name="We_will_email_you" formatted="false">We’ll email you when this project launches so you can be one of the first backers.</string>
+gut  <string name="We_will_email_you" formatted="false">We’ll email you when this project launches so you can be one of the first backers.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">We won’t share this with the creator.</string>
   <string name="Websites" formatted="false">Websites</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Welcome to our library. Peruse the stacks with us.</string>

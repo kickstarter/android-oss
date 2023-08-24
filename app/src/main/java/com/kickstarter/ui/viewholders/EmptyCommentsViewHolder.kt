@@ -19,7 +19,7 @@ class EmptyCommentsViewHolder(private val binding: EmptyCommentsLayoutBinding, p
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectAndUser = ObjectUtils.requireNonNull(data as? Pair<Project, User>?)
+        val projectAndUser = requireNotNull(data as? Pair<Project, User>?)
         project = ObjectUtils.requireNonNull(projectAndUser.first, Project::class.java)
         user = projectAndUser.second
     }

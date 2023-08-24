@@ -26,7 +26,7 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val messageThread = ObjectUtils.requireNonNull(data as MessageThread?)
+        val messageThread = requireNotNull(data as MessageThread?)
         viewModel.inputs.configureWith(messageThread)
     }
 

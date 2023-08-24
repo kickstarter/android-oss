@@ -20,14 +20,14 @@ fun <T : Any> T?.coalesce(theDefault: T): T {
 }
 
 fun <T : Any> coalesceWith(theDefault: T): Func1<T, T> {
-    return Func1 { value: T -> ObjectUtils.coalesce(value, theDefault) }
+    return Func1 { it.coalesce(theDefault) }
 }
 
 fun <T : Any> coalesceWithV2(theDefault: T): Function<T, T> {
-    return Function { value: T -> ObjectUtils.coalesce(value, theDefault) }
+    return Function { it.coalesce(theDefault) }
 }
 
-fun <T : Any> T?.numToString(): String? {
+fun <T : Any> T?.numToString(): String? { // remove for any kotlin code, keep for java
     return when (this) {
         is Long -> this.toString()
         is Float -> this.toString()
@@ -37,7 +37,7 @@ fun <T : Any> T?.numToString(): String? {
     }
 }
 
-fun <T : Any> T?.requireNonNull(): T {
+fun <T : Any> T?.requireNonNull(): T { // remove for any kotlin code, keep for java if it exists on old object utils
     return this.requireNonNull("Value should not be null.")
 }
 

@@ -338,15 +338,15 @@ interface DiscoveryFragmentViewModel {
 
             paramsFromActivity
                 .compose(Transformers.combineLatestPair(userIsLoggedIn))
-                .filter {
-                    it.second && featureFlagClient?.getBoolean(
-                        FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE
-                    ) == true
-                }
+//                .filter {
+//                    it.second && featureFlagClient?.getBoolean(
+//                        FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE
+//                    ) == true
+//                }
                 .compose(Transformers.combineLatestPair(currentUser.loggedInUser()))
-                .filter {
-                    it.second.needsPassword() == true
-                }
+//                .filter {
+//                    it.second.needsPassword() == true
+//                }
                 .switchMap {
                     fetchUserEmail()
                 }

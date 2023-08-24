@@ -12,7 +12,6 @@ import com.kickstarter.databinding.ItemRewardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.RewardItemDecorator
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
@@ -224,7 +223,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val projectAndReward = requireNonNull(data as Pair<ProjectData, Reward>)
+        val projectAndReward = requireNotNull(data as Pair<ProjectData, Reward>)
         val projectTracking = requireNonNull(projectAndReward.first, ProjectData::class.java)
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)
 

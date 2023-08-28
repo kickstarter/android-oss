@@ -5,6 +5,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.coalesce
 import com.kickstarter.models.Activity
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
@@ -32,7 +33,7 @@ class ProjectStateChangedPositiveViewHolder(
             when (activity().category()) {
                 Activity.CATEGORY_LAUNCH -> {
 
-                    val launchedAt = ObjectUtils.coalesce(project.launchedAt(), DateTime())
+                    val launchedAt = project.launchedAt() ?: DateTime()
                     bind(
                         ContextCompat.getColor(context, R.color.blue_darken_10),
                         ksCurrency.format(project.goal(), project),

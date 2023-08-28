@@ -30,8 +30,8 @@ class ShippingRuleViewHolder(private val binding: ItemShippingRuleBinding, val d
 
     override fun bindData(any: Any?) {
         val shippingRuleAndProject = requireNotNull(any as Pair<ShippingRule, Project>)
-        this.shippingRule = ObjectUtils.requireNonNull(shippingRuleAndProject.first, ShippingRule::class.java)
-        val project = ObjectUtils.requireNonNull(shippingRuleAndProject.second, Project::class.java)
+        this.shippingRule = requireNotNull(shippingRuleAndProject.first) { ShippingRule::class.java.toString() + " required to be non-null." }
+        val project = requireNotNull(shippingRuleAndProject.second) { Project::class.java.toString() + " required to be non-null." }
 
         this.viewModel.inputs.configureWith(this.shippingRule, project)
     }

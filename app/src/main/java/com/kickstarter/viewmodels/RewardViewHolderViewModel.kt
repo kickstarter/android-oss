@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isBacked
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -422,7 +423,7 @@ interface RewardViewHolderViewModel {
                 .subscribe(this.backersCount)
 
             reward
-                .map { RewardUtils.isNoReward(it) || ObjectUtils.isNull(it.estimatedDeliveryOn()) }
+                .map { RewardUtils.isNoReward(it) || it.estimatedDeliveryOn().isNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.estimatedDeliveryIsGone)

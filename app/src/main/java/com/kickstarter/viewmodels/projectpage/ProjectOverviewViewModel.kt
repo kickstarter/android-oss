@@ -610,7 +610,7 @@ interface ProjectOverviewViewModel {
 
             setSuccessfulProjectStateView = project
                 .filter { it.isSuccessful }
-                .map { ObjectUtils.coalesce(it.stateChangedAt(), DateTime()) }
+                .map { it.stateChangedAt() ?: DateTime() }
 
             setSuspendedProjectStateView = project
                 .filter { it.isSuspended }
@@ -618,7 +618,7 @@ interface ProjectOverviewViewModel {
 
             setUnsuccessfulProjectStateView = project
                 .filter { it.isFailed }
-                .map { ObjectUtils.coalesce(it.stateChangedAt(), DateTime()) }
+                .map { it.stateChangedAt() ?: DateTime() }
 
             startProjectSocialActivity = project.compose(
                 Transformers.takeWhen(

@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.mock.factories.RewardFactory
@@ -282,7 +283,7 @@ interface BackingFragmentViewModel {
                 }
 
             backing
-                .map { ObjectUtils.isNull(it.reward()) }
+                .map { it.reward().isNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -484,7 +485,7 @@ interface BackingFragmentViewModel {
         }
 
         private fun shouldHideShipping(it: Backing) =
-            ObjectUtils.isNull(it.locationId()) || it.reward()?.let { rw ->
+                it.locationId().isNull() || it.reward()?.let { rw ->
                 RewardUtils.isLocalPickup(rw)
             } ?: true
 

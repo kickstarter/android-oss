@@ -14,6 +14,7 @@ import com.kickstarter.libs.utils.extensions.deriveNavigationDrawerData
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.libs.utils.extensions.positionFromSort
@@ -130,7 +131,7 @@ interface DiscoveryViewModel {
         private val ffClient = environment.featureFlagClient()
 
         private fun currentDrawerMenuIcon(user: User?): Int {
-            if (ObjectUtils.isNull(user)) {
+            if (user.isNull()) {
                 return R.drawable.ic_menu
             }
             val erroredBackingsCount = user?.erroredBackingsCount().intValueOrZero()

@@ -28,7 +28,7 @@ class ProjectUpdateViewHolder(
         val photo = project?.photo()
         val update = activity().update()
         if (project != null && user != null && photo != null && update != null) {
-            val publishedAt = ObjectUtils.coalesce(update.publishedAt(), DateTime())
+            val publishedAt = update.publishedAt() ?: DateTime()
             binding.projectName.text = project.name()
             Picasso.get()
                 .load(photo.little())

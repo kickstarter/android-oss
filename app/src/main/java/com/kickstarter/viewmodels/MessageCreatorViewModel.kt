@@ -8,6 +8,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
@@ -100,7 +101,7 @@ interface MessageCreatorViewModel {
             sendMessageNotification
                 .compose(values())
                 .switchMap { fetchThread(it) }
-                .filter(ObjectUtils::isNotNull)
+                .filter { it.isNotNull() }
                 .subscribe(this.showMessageThread)
         }
 

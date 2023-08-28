@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.EditProfileActivity
 import rx.Notification
@@ -42,7 +43,7 @@ interface EditProfileViewModel {
         fun unableToSavePreferenceError(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<EditProfileActivity>(environment), Inputs, Outputs, Errors {
+    class ViewModel(val environment: Environment) : ActivityViewModel<EditProfileActivity>(environment), Inputs, Outputs, Errors {
 
         private val apiClient = requireNotNull(environment.apiClient())
         private val currentUser = requireNotNull(environment.currentUser())
@@ -101,7 +102,7 @@ interface EditProfileViewModel {
 
             currentUser
                 .compose(bindToLifecycle())
-                .filter(ObjectUtils::isNotNull)
+                .filter{ it.isNotNull() }
                 .map { user -> user.createdProjectsCount().isNonZero() }
                 .subscribe(this.hidePrivateProfileRow)
 

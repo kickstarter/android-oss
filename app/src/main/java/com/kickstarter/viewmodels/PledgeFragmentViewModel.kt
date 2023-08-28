@@ -27,6 +27,7 @@ import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.parseToDouble
@@ -682,7 +683,7 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             this.selectedReward
-                .map { ObjectUtils.isNull(it.estimatedDeliveryOn()) || RewardUtils.isNoReward(it) }
+                .map { it.estimatedDeliveryOn().isNull() || RewardUtils.isNoReward(it) }
                 .subscribe { this.estimatedDeliveryInfoIsGone.onNext(it) }
                 .addToDisposable(disposables)
 

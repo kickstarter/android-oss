@@ -22,7 +22,7 @@ class ChildFilterViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        item = ObjectUtils.requireNonNull(data as NavigationDrawerData.Section.Row?, NavigationDrawerData.Section.Row::class.java)
+        item = requireNotNull(data as NavigationDrawerData.Section.Row?) { NavigationDrawerData.Section.Row::class.java.toString() + " required to be non-null." }
     }
 
     override fun onBind() {

@@ -14,6 +14,8 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Backing
@@ -417,7 +419,7 @@ interface MessagesViewModel {
                 .distinctUntilChanged()
 
             val messageHasBody = messageEditTextChanged
-                .map { !ObjectUtils.isNull(it) && it.isPresent() }
+                .map { it.isNotNull() && it.isPresent() }
 
             messageThreadEnvelope
                 .map { it.messageThread() }
@@ -480,7 +482,7 @@ interface MessagesViewModel {
 
             initialMessageThreadEnvelope
                 .map { it.messages() }
-                .filter { ObjectUtils.isNull(it) }
+                .filter { it.isNull() }
                 .take(1)
                 .compose(Transformers.ignoreValues())
                 .compose(bindToLifecycle())
@@ -495,7 +497,7 @@ interface MessagesViewModel {
                 .subscribe { this.backingAndProject.onNext(it) }
 
             backingAndProject
-                .map { ObjectUtils.isNull(it) }
+                .map { it.isNull() }
                 .compose(bindToLifecycle())
                 .subscribe { backingInfoViewIsGone.onNext(it) }
 

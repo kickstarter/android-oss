@@ -37,18 +37,10 @@ fun <T : Any> T?.numToString(): String? { // remove for any kotlin code, keep fo
     }
 }
 
-fun <T : Any> T?.requireNonNull(): T { // remove for any kotlin code, keep for java if it exists on old object utils
-    return this.requireNonNull("Value should not be null.")
-}
-
 fun <T : Any> T?.requireNonNull(klass: Class<T>): T {
     return this.requireNonNull("$klass required to be non-null.")
 }
 
-fun <T : Any> T?.requireNonNull(message: String): T {
-    if (this.isNull()) {
-        throw NullPointerException(message)
-    } else {
-        return this!!
-    }
+private fun <T : Any> T?.requireNonNull(message: String): T {
+    return requireNotNull(this) { message }
 }

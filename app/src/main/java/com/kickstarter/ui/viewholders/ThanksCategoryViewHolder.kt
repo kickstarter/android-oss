@@ -31,7 +31,7 @@ class ThanksCategoryViewHolder(
     }
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val category = ObjectUtils.requireNonNull(data as Category?, Category::class.java)
+        val category = requireNotNull(data as Category?) { Category::class.java.toString() + " required to be non-null." }
         viewModel.inputs.configureWith(category)
     }
 

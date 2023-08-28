@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.libs.utils.extensions.isCompleted
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Category
@@ -386,7 +387,7 @@ interface ProjectCardHolderViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .map { it.photo() }
-                .map { ObjectUtils.isNull(it) }
+                .map { it.isNull() }
 
             project
                 .filter { ObjectUtils.isNotNull(it) }

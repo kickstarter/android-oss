@@ -10,7 +10,7 @@ class ProjectSocialViewHolder(private val binding: ProjectSocialViewBinding) : K
     private var user: User? = null
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        user = ObjectUtils.requireNonNull(data as User?, User::class.java)
+        user = requireNotNull(data as User?) { User::class.java.toString() + " required to be non-null." }
     }
 
     override fun onBind() {

@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.RelativeDateTimeOptions
+import com.kickstarter.libs.utils.extensions.coalesce
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Seconds
@@ -145,7 +146,7 @@ object DateTimeUtils {
         dateTime: DateTime,
         options: RelativeDateTimeOptions = RelativeDateTimeOptions.builder().build()
     ): String {
-        val relativeToDateTime = ObjectUtils.coalesce(options.relativeToDateTime(), DateTime.now())
+        val relativeToDateTime = options.relativeToDateTime() ?: DateTime.now()
         val seconds = Seconds.secondsBetween(dateTime, relativeToDateTime)
         val secondsDifference = seconds.seconds
 

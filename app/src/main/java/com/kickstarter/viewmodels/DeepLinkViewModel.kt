@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectSaveUri
@@ -304,7 +305,7 @@ interface DeepLinkViewModel {
         private fun appendRefTagIfNone(uri: Uri): Uri {
             val url = uri.toString()
             val ref = refTag(url)
-            return if (ObjectUtils.isNull(ref)) {
+            return if (ref.isNull()) {
                 Uri.parse(appendRefTag(url, RefTag.deepLink().tag()))
             } else uri
         }

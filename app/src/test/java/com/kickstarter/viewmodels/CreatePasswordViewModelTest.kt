@@ -25,9 +25,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: CreatePasswordViewModel.CreatePasswordViewModel
 
     private val error = TestSubscriber<String>()
-    private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
-    private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
     private val currentUser = TestSubscriber<User?>()
     private val disposables = CompositeDisposable()
@@ -36,9 +34,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm = CreatePasswordViewModel.CreatePasswordViewModel(environment)
 
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
 
@@ -52,49 +48,18 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
             }).build()
         )
 
-        this.vm.inputs.newPassword("passwo")
-        this.vm.inputs.confirmPassword("password")
+        this.vm.updatePasswordData("password")
         this.vm.inputs.createPasswordClicked()
         this.error.assertValue("Oops")
-    }
-
-    @Test
-    fun testPasswordWarning() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message)
-        this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0)
-        this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
-        this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
-        this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message, 0)
     }
 
     @Test
     fun testProgressBarIsVisible() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
+        this.vm.updatePasswordData("password")
         this.vm.inputs.createPasswordClicked()
         this.progressBarIsVisible.assertValues(true, false)
-    }
-
-    @Test
-    fun testSaveButtonIsEnabled() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.saveButtonIsEnabled.assertValues(false, true)
-        this.vm.inputs.confirmPassword("pass")
-        this.saveButtonIsEnabled.assertValues(false, true, false)
-        this.vm.inputs.confirmPassword("passwerd")
-        this.saveButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test
@@ -114,8 +79,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
             }).build()
         )
 
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
+        this.vm.updatePasswordData("password")
         this.vm.inputs.createPasswordClicked()
         this.success.assertValue("test@emai")
     }
@@ -141,8 +105,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.inputs.newPassword("passwo")
-        this.vm.inputs.confirmPassword("password")
+        this.vm.updatePasswordData("password")
         this.vm.inputs.createPasswordClicked()
         this.error.assertValue("Oops")
 
@@ -177,8 +140,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
+        this.vm.updatePasswordData("password")
         this.vm.inputs.createPasswordClicked()
         this.success.assertValue("test@emai")
 

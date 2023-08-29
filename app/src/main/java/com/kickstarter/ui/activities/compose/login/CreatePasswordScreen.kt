@@ -82,16 +82,16 @@ fun CreatePasswordScreen(
 
     val acceptButtonEnabled = when {
         newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
-                newPasswordLine2.isNotEmptyAndAtLeast6Chars() &&
-                newPasswordLine1 == newPasswordLine2 -> true
+            newPasswordLine2.isNotEmptyAndAtLeast6Chars() &&
+            newPasswordLine1 == newPasswordLine2 -> true
 
         else -> false
     }
 
     val warningText = when {
         newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
-                newPasswordLine2.isNotEmpty() &&
-                newPasswordLine2 != newPasswordLine1 -> {
+            newPasswordLine2.isNotEmpty() &&
+            newPasswordLine2 != newPasswordLine1 -> {
             stringResource(id = R.string.Passwords_matching_message)
         }
 

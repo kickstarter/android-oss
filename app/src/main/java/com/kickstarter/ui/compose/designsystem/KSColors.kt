@@ -200,7 +200,7 @@ data class KSCustomColors(
     val iconInfo: Color = Color.Unspecified,
     val iconDisabled: Color = Color.Unspecified,
 
-    //OLD COLORS
+    // OLD COLORS
     // Greens
     val kds_create_100: Color = Color.Unspecified,
     val kds_create_300: Color = Color.Unspecified,

@@ -5,34 +5,36 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.PhotoFactory.photo
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.models.Project
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ProjectSearchResultHolderViewModel.ViewModel
+    private lateinit var vm: ProjectSearchResultHolderViewModel.ProjectSearchResultHolderViewModel
     private val notifyDelegateOfResultClick = TestSubscriber<Project>()
     private val percentFundedTextViewText = TestSubscriber<String>()
     private val projectForDeadlineCountdownUnitTextView = TestSubscriber<Project>()
     private val projectNameTextViewText = TestSubscriber<String>()
     private val projectPhotoUrl = TestSubscriber<String>()
     private val displayPrelaunchProjectBadge = TestSubscriber<Boolean>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        vm = ProjectSearchResultHolderViewModel.ViewModel(environment)
-        vm.outputs.notifyDelegateOfResultClick().subscribe(notifyDelegateOfResultClick)
-        vm.outputs.percentFundedTextViewText().subscribe(percentFundedTextViewText)
-        vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe(
-            projectForDeadlineCountdownUnitTextView,
-        )
-        vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
-        vm.outputs.projectPhotoUrl().subscribe(projectPhotoUrl)
-        vm.outputs.displayPrelaunchProjectBadge().subscribe(displayPrelaunchProjectBadge)
+        vm = ProjectSearchResultHolderViewModel.ProjectSearchResultHolderViewModel(environment)
+        vm.outputs.notifyDelegateOfResultClick().subscribe { notifyDelegateOfResultClick.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.percentFundedTextViewText().subscribe { percentFundedTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe { projectForDeadlineCountdownUnitTextView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectNameTextViewText().subscribe { projectNameTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectPhotoUrl().subscribe { projectPhotoUrl.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.displayPrelaunchProjectBadge().subscribe { displayPrelaunchProjectBadge.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -144,5 +146,11 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectClicked()
 
         notifyDelegateOfResultClick.assertValues(project)
+    }
+
+    @After
+    fun clear() {
+        vm.onCleared()
+        disposables.clear()
     }
 }

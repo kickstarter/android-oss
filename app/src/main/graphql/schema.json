@@ -606,6 +606,33 @@
             "deprecationReason": null
           },
           {
+            "name": "order",
+            "description": "Fetches an order given its id.",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Order",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "post",
             "description": "Fetches a post given its ID.",
             "args": [
@@ -2033,6 +2060,11 @@
           {
             "kind": "OBJECT",
             "name": "Checkout",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Order",
             "ofType": null
           },
           {
@@ -5706,7 +5738,44 @@
           },
           {
             "name": "story",
-            "description": "The story behind the project.",
+            "description": "The story behind the project, parsed for presentation.",
+            "args": [
+              {
+                "name": "first",
+                "description": "The number of visible characters to fetch (does not include HTML markup).",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "assetWidth",
+                "description": "The width of embedded assets in pixels.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "HTML",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "storyForEditor",
+            "description": "The project description without conversion for usage by Rich Text Editors.",
             "args": [
               {
                 "name": "first",
@@ -12046,12 +12115,6 @@
             "deprecationReason": null
           },
           {
-            "name": "beta_business_locations_2023",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "ckeditor_project_story",
             "description": null,
             "isDeprecated": false,
@@ -12070,13 +12133,19 @@
             "deprecationReason": null
           },
           {
-            "name": "fork_ui_2023",
+            "name": "project_story_sidebar_2023",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "midas_beta_2023",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ckeditor_product_marketing",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -29373,6 +29442,156 @@
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "Order",
+        "description": "An order.",
+        "fields": [
+          {
+            "name": "backing",
+            "description": "The associated backing",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Backing",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "fundsCaptureKey",
+            "description": "The funds capture key",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shippingAmount",
+            "description": "The cost of shipping",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "shippingTax",
+            "description": "The cost of tax on shipping",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "state",
+            "description": "The order's state, e.g. draft, submitted, successful, errored, missed",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "OrderStateEnum",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "total",
+            "description": "The total cost of shipping and shipping tax",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Node",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "OrderStateEnum",
+        "description": "The state of the order, e.g. draft, submitted, successful, errored, missed.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "draft",
+            "description": "draft",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "submitted",
+            "description": "submitted",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "successful",
+            "description": "successful",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "errored",
+            "description": "errored",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "missed",
+            "description": "missed",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "GoalBuckets",
         "description": "Buckets of project goals",
@@ -44483,6 +44702,24 @@
             "defaultValue": null
           },
           {
+            "name": "faqs",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "FaqInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
             "name": "clientMutationId",
             "description": "A unique identifier for the client performing the mutation.",
             "type": {
@@ -44604,6 +44841,55 @@
           },
           {
             "name": "description",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "FaqInput",
+        "description": "A FAQ question and answer for a project.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "question",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "answer",
             "description": null,
             "type": {
               "kind": "NON_NULL",

@@ -46,9 +46,6 @@ interface ProjectOverviewViewModel {
         /** Call when the updates clicked  */
         fun updatesButtonClicked()
 
-        /** Call when the creator dashboard is clicked  */
-        fun creatorDashboardClicked()
-
         /** Called when the report project button  */
         fun reportProjectButtonClicked()
 
@@ -180,7 +177,6 @@ interface ProjectOverviewViewModel {
         fun startCreatorView(): Observable<ProjectData>
         fun startCommentsView(): Observable<ProjectData>
         fun startUpdatesView(): Observable<ProjectData>
-        fun startCreatorDashboardView(): Observable<ProjectData>
         fun startReportProjectView(): Observable<ProjectData>
         fun startLoginView(): Observable<Void>
         fun shouldShowReportProject(): Observable<Boolean>
@@ -202,7 +198,6 @@ interface ProjectOverviewViewModel {
         private val campaignClicked = PublishSubject.create<Void>()
         private val commentsClicked = PublishSubject.create<Void>()
         private val updatesClicked = PublishSubject.create<Void>()
-        private val creatorDashboardClicked = PublishSubject.create<Void>()
         private val reportProjectButtonClicked = PublishSubject.create<Void>()
         private val refreshFlagged = PublishSubject.create<String>()
         private val linkTagClicked = PublishSubject.create<String>()
@@ -250,7 +245,6 @@ interface ProjectOverviewViewModel {
         private val startCreatorView: Observable<ProjectData>
         private val startCommentsView: Observable<ProjectData>
         private val startUpdatesView: Observable<ProjectData>
-        private val creatorDashBoardView: Observable<ProjectData>
         private val startReportProjectView: Observable<ProjectData>
         private val startLogin = PublishSubject.create<Void>()
         private val shouldShowReportProject: Observable<Boolean>
@@ -276,8 +270,6 @@ interface ProjectOverviewViewModel {
         override fun commentsButtonClicked() = this.commentsClicked.onNext(null)
 
         override fun updatesButtonClicked() = this.updatesClicked.onNext(null)
-
-        override fun creatorDashboardClicked() = this.creatorDashboardClicked.onNext(null)
 
         override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(null)
 
@@ -452,10 +444,6 @@ interface ProjectOverviewViewModel {
 
         override fun startUpdatesView(): Observable<ProjectData> {
             return this.startUpdatesView
-        }
-
-        override fun startCreatorDashboardView(): Observable<ProjectData> {
-            return this.creatorDashBoardView
         }
 
         override fun startReportProjectView(): Observable<ProjectData> {
@@ -693,10 +681,6 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.takePairWhen(updatesClicked))
                 .map { it.first }
 
-            creatorDashBoardView = projectData
-                .compose(Transformers.takePairWhen(creatorDashboardClicked))
-                .map { it.first }
-
             startReportProjectView = projectData
                 .compose(Transformers.takePairWhen(reportProjectButtonClicked))
                 .map { it.first }
@@ -751,14 +735,6 @@ interface ProjectOverviewViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)
-                }
-
-            projectData
-                .compose(Transformers.takePairWhen(creatorDashboardClicked))
-                .map { it.first }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
         }
     }

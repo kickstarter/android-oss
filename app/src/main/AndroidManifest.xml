@@ -66,10 +66,6 @@
             android:name=".ui.activities.CreatePasswordActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.CreatorDashboardActivity"
-            android:parentActivityName=".ui.activities.DiscoveryActivity"
-            android:theme="@style/ProjectActivity" />
-        <activity
             android:name=".ui.activities.DiscoveryActivity"
             android:label="@string/app_name"
             android:exported="true"

@@ -256,7 +256,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testClickingInterfaceElements() {
         setUpEnvironment(environment())
         vm.outputs.showActivityFeed().subscribe(showActivityFeed)
-        vm.outputs.showCreatorDashboard().subscribe(showCreatorDashboard)
         vm.outputs.showHelp().subscribe(showHelp)
         vm.outputs.showInternalTools().subscribe(showInternalTools)
         vm.outputs.showLoginTout().subscribe(showLoginTout)
@@ -279,11 +278,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.loggedOutViewHolderActivityClick(
             Mockito.mock(
                 LoggedOutViewHolder::class.java
-            )
-        )
-        vm.inputs.loggedInViewHolderDashboardClick(
-            Mockito.mock(
-                LoggedInViewHolder::class.java
             )
         )
         vm.inputs.loggedOutViewHolderHelpClick(

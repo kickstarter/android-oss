@@ -72,7 +72,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         binding.discoveryDrawerRecyclerView.layoutManager = drawerLayoutManager
         drawerAdapter = DiscoveryDrawerAdapter(
             viewModel.inputs,
-            dashboardDrawerDeprecated = environment().featureFlagClient()?.getBoolean(FlagKey.ANDROID_CREATOR_DASHBOARD_DEPRECATION) ?: false
         )
         binding.discoveryDrawerRecyclerView.adapter = drawerAdapter
 
@@ -153,11 +152,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { startActivityFeedActivity() }
-
-        viewModel.outputs.showCreatorDashboard()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startCreatorDashboardActivity() }
 
         viewModel.outputs.showHelp()
             .compose(bindToLifecycle())
@@ -256,10 +250,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
     protected fun startActivityFeedActivity() {
         startActivity(Intent(this, ActivityFeedActivity::class.java))
-    }
-
-    protected fun startCreatorDashboardActivity() {
-        startActivity(Intent(this, CreatorDashboardActivity::class.java))
     }
 
     protected fun startHelpSettingsActivity() {

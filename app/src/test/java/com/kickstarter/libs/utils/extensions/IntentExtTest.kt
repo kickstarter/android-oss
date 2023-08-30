@@ -52,14 +52,6 @@ class IntentExtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testGetCreatorDashboardIntent() {
-        val project = ProjectFactory.project()
-        val intent = Intent().getCreatorDashboardActivityIntent(context(), project)
-        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.CreatorDashboardActivity")
-        assertEquals(intent.extras?.get(IntentKey.PROJECT), project)
-    }
-
-    @Test
     fun testGetCreatorBioIntent() {
         val project = ProjectFactory.project()
         val intent = Intent().getCreatorBioWebViewActivityIntent(context(), project)

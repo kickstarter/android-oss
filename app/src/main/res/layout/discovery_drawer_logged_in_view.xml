@@ -81,16 +81,6 @@
 
   </LinearLayout>
 
-  <TextView
-    android:id="@+id/drawer_dashboard"
-    style="@style/DrawerTextView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/tabbar_dashboard"
-    android:visibility="gone"
-    tools:visibility="visible"
-    app:drawableStartCompat="@drawable/ic_dashboard" />
-
   <LinearLayout
     android:id="@+id/drawer_activity"
     style="@style/DrawerCountContainer"

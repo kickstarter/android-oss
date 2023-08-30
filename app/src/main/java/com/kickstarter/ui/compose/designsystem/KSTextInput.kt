@@ -96,7 +96,6 @@ fun KSTextInput(
             },
             label = { Text(text = label) },
             maxLines = 1,
-            textStyle = typography.callout,
             shape = RoundedCornerShape(
                 topStart = dimensions.radiusMediumLarge,
                 topEnd = dimensions.radiusMediumLarge

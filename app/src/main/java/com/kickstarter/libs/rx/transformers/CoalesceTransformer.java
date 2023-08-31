@@ -1,8 +1,8 @@
 package com.kickstarter.libs.rx.transformers;
 
-import static com.kickstarter.libs.utils.extensions.AnyExtKt.coalesceWith;
-
 import androidx.annotation.NonNull;
+
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 
 import rx.Observable;
 
@@ -16,6 +16,6 @@ public final class CoalesceTransformer<T> implements Observable.Transformer<T, T
   @Override
   public @NonNull Observable<T> call(final @NonNull Observable<T> source) {
     return source
-      .map(coalesceWith(this.theDefault));
+      .map(AnyExtKt.coalesceWith(this.theDefault));
   }
 }

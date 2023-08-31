@@ -224,8 +224,8 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
         val projectAndReward = requireNotNull(data as Pair<ProjectData, Reward>)
-        val projectTracking = requireNonNull(projectAndReward.first, ProjectData::class.java)
-        val reward = requireNonNull(projectAndReward.second, Reward::class.java)
+        val projectTracking = requireNotNull(projectAndReward.first) {  ProjectData::class.java.toString() + "   required to be non-null." }
+        val reward = requireNotNull(projectAndReward.second) { Reward::class.java.toString() + "   required to be non-null." }
 
         this.viewModel.inputs.configureWith(projectTracking, reward)
     }

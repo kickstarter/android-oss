@@ -18,8 +18,9 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -274,7 +275,7 @@ interface LoginToutViewModel {
 
             facebookAccessTokenEnvelope
                 .compose(Transformers.valuesV2())
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .switchMap {
                     this.loginUserCase
                         .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
@@ -288,7 +289,7 @@ interface LoginToutViewModel {
             facebookAccessTokenEnvelope
                 .compose(Transformers.errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .subscribe { loginError.onNext(it) }
                 .addToDisposable(disposables)
 

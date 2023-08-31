@@ -6,8 +6,13 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectSearchResultViewBinding
+<<<<<<< HEAD
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+=======
+import com.kickstarter.libs.rx.transformers.Transformers
+
+>>>>>>> 94ef702c6 (Remove all instances of object utils)
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel

@@ -7,7 +7,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Comment
@@ -119,7 +120,7 @@ interface ThreadViewModel {
 
             val commentData = getCommentCardDataFromIntent()
                 .distinctUntilChanged()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             intent()
@@ -133,7 +134,7 @@ interface ThreadViewModel {
 
             val project = commentData
                 .map { it.project }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             project.take(1)

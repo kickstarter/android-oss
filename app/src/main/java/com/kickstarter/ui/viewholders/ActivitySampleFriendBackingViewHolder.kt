@@ -4,7 +4,6 @@ import android.text.Html
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleFriendBackingViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Activity

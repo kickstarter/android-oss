@@ -8,7 +8,8 @@ import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.NotificationsActivity
@@ -117,7 +118,7 @@ interface NotificationsViewModel {
                 .subscribe { this.currentUser.refresh(it) }
 
             val currentUser = this.currentUser.observable()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             currentUser
                 .take(1)

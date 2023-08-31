@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import com.kickstarter.databinding.ItemShippingRuleBinding
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.viewmodels.ShippingRuleViewHolderViewModel

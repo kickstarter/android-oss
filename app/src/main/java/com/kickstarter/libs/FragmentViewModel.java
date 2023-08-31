@@ -3,7 +3,7 @@ package com.kickstarter.libs;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.FragmentEvent;
 
@@ -20,7 +20,7 @@ import timber.log.Timber;
 public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
-  private final Observable<ViewType> view = this.viewChange.filter(ObjectUtils::isNotNull);
+  private final Observable<ViewType> view = this.viewChange.filter(AnyExtKt::isNotNull);
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();

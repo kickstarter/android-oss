@@ -22,8 +22,8 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
@@ -197,7 +197,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
 
         this.viewModel.outputs.projectDataAndAddOns()
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .distinctUntilChanged()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

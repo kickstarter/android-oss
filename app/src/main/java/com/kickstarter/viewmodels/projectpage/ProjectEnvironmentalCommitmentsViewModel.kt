@@ -3,8 +3,9 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
@@ -41,12 +42,12 @@ class ProjectEnvironmentalCommitmentsViewModel {
         init {
             val project = projectDataInput
                 .map { it.project() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             project.map { project ->
                 project.envCommitments()?.sortedBy { it.id }
-            }.filter { ObjectUtils.isNotNull(it) }
+            }.filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe { this.projectEnvironmentalCommitment.onNext(it) }

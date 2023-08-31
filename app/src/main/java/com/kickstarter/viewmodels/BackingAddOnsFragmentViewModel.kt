@@ -7,12 +7,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isLocalPickup
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
@@ -124,7 +125,7 @@ class BackingAddOnsFragmentViewModel {
                 .map {
                     it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .ofType(PledgeData::class.java)
 
             pledgeData
@@ -168,7 +169,7 @@ class BackingAddOnsFragmentViewModel {
             val filteredBackingReward = backingReward
                 .compose<Pair<Reward, Boolean>>(combineLatestPair(isSameReward))
                 .filter { it.second }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.first }
 
@@ -188,7 +189,7 @@ class BackingAddOnsFragmentViewModel {
                         rule.location()?.id() == it.first.locationId()
                     }
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
@@ -204,7 +205,7 @@ class BackingAddOnsFragmentViewModel {
                 .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
                 .filter { it.second }
                 .map { it.first }
-                .filter { ObjectUtils.isNotNull(it.addOns()?.toList()) }
+                .filter { it.addOns()?.toList().isNotNull() }
                 .map { it.addOns()?.toList() }
                 .distinctUntilChanged()
 
@@ -249,10 +250,10 @@ class BackingAddOnsFragmentViewModel {
                         }
                         .onErrorResumeNext(Observable.empty())
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .switchMap { it }
                 .map { it.shippingRules() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .subscribe {
                     shippingRules.onNext(it.filterNotNull())
                 }
@@ -260,7 +261,7 @@ class BackingAddOnsFragmentViewModel {
 
             val location = this.shippingRuleSelected
                 .map { it.location() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             Observable
@@ -280,7 +281,7 @@ class BackingAddOnsFragmentViewModel {
                         }
                         .onErrorResumeNext(Observable.empty())
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .subscribe { addOnsFromGraph.onNext(it) }
                 .addToDisposable(disposables)
 

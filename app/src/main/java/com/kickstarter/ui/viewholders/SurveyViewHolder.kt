@@ -7,7 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySurveyViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey

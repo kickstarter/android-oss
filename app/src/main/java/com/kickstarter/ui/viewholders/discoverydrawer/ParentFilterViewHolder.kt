@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders.discoverydrawer
 
 import android.view.View
 import com.kickstarter.databinding.DiscoveryDrawerParentFilterViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import com.kickstarter.ui.viewholders.KSViewHolder
 

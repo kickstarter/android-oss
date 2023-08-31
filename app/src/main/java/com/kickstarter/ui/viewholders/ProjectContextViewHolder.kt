@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectContextViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso
 

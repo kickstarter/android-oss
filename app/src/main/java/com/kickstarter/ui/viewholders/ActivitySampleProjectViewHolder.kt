@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleProjectViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ActivitySampleProjectViewHolderViewModel

@@ -3,7 +3,7 @@ package com.kickstarter.libs
 import com.google.gson.Gson
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.KsOptional
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
@@ -65,11 +65,9 @@ abstract class CurrentUserTypeV2 {
      * Emits only values of a logged in user. The returned observable may never emit.
      */
     fun loggedInUser(): Observable<User> {
-        return observable().filter {
-            ObjectUtils.isNotNull(
-                it.getValue()
-            )
-        }.map { it.getValue() }
+        return observable()
+                .filter { it.getValue().isNotNull() }
+                .map { it.getValue() }
     }
 }
 
@@ -84,7 +82,7 @@ class CurrentUserV2(
         user
             .map { it.getValue() }
             .skip(1)
-            .filter { `object`: User? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: User? -> `object`.isNotNull() }
             .subscribe { u: User? ->
                 userPreference.set(gson.toJson(u, User::class.java))
             }.dispose()

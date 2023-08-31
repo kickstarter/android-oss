@@ -3,8 +3,9 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
@@ -42,14 +43,14 @@ interface ProjectRiskViewModel {
         init {
             val project = projectDataInput
                 .map { it.project() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it }
 
             disposables.add(
                 project.map { project ->
                     project.risks()
                 }.filter {
-                    ObjectUtils.isNotNull(it)
+                    it.isNotNull()
                 }
                     .map { it }
                     .subscribe {

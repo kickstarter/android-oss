@@ -4,7 +4,8 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.ExpandableHeaderViewHolder
@@ -46,7 +47,7 @@ interface ExpandableHeaderViewHolderViewModel {
                 .map { it.first }
 
             reward
-                .filter { it.isAddOn() && ObjectUtils.isNotNull(it.quantity()) && it.quantity()?.let { q -> q > 0 } ?: false }
+                .filter { it.isAddOn() && it.quantity().isNotNull() && it.quantity()?.let { q -> q > 0 } ?: false }
                 .map { it.quantity().toString() + " X " + it.title() }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleForSummary)

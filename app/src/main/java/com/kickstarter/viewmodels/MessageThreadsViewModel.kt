@@ -9,10 +9,11 @@ import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
@@ -222,13 +223,13 @@ interface MessageThreadsViewModel {
                 .subscribe(hasNoUnreadMessages)
 
             unreadMessagesCount
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { if (it.intValueOrZero() > 0) R.color.accent else R.color.kds_support_400 }
                 .subscribe(unreadCountTextViewColorInt)
 
             unreadMessagesCount
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { if (it.intValueOrZero() > 0) Typeface.BOLD else Typeface.NORMAL }
                 .subscribe(unreadCountTextViewTypefaceInt)
@@ -243,7 +244,7 @@ interface MessageThreadsViewModel {
                     .map { noMessagesAndMailbox: Pair<Boolean, Mailbox> -> noMessagesAndMailbox.first || noMessagesAndMailbox.second == Mailbox.SENT }
 
             unreadMessagesCount
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .filter { it.isNonZero() }
                 .subscribe(this.unreadMessagesCount)
             unreadMessagesCountIsGone = mailbox

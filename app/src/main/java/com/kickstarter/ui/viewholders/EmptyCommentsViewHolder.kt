@@ -5,7 +5,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import com.kickstarter.R
 import com.kickstarter.databinding.EmptyCommentsLayoutBinding
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 

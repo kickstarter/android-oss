@@ -3,7 +3,8 @@ package com.kickstarter.viewmodels
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import rx.Observable
@@ -67,7 +68,7 @@ interface EditorialViewHolderViewModel {
 
             this.editorialInput
                 .map { it.graphic }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.graphic)
 

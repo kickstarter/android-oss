@@ -12,11 +12,12 @@ import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.userIsCreator
@@ -219,15 +220,15 @@ interface BackingFragmentViewModel {
             val backing = this.projectDataInput
                 .switchMap { getBackingInfo(it) }
                 .compose(neverError())
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .share()
 
             val rewardA = backing
-                .filter { ObjectUtils.isNotNull(it.reward()) }
+                .filter { it.reward().isNotNull() }
                 .map { requireNotNull(it.reward()) }
 
             val rewardB = projectDataAndReward
-                .filter { ObjectUtils.isNotNull(it.second) }
+                .filter { it.second.isNotNull() }
                 .map { requireNotNull(it.second) }
 
             val reward = Observable.merge(rewardA, rewardB)
@@ -240,13 +241,13 @@ interface BackingFragmentViewModel {
 
             backing
                 .map { it.backerName() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.backerName)
 
             backing
                 .map { it.backerUrl() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.backerAvatar)
 
@@ -257,7 +258,7 @@ interface BackingFragmentViewModel {
                 .subscribe(this.backerNumber)
 
             backing
-                .filter { ObjectUtils.isNotNull(it.pledgedAt()) }
+                .filter { it.pledgedAt().isNotNull() }
                 .map { DateTimeUtils.longDate(requireNotNull(it.pledgedAt())) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -265,7 +266,7 @@ interface BackingFragmentViewModel {
 
             backing
                 .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
@@ -298,7 +299,7 @@ interface BackingFragmentViewModel {
 
             backing
                 .map { it.shippingAmount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
                 .distinctUntilChanged()
@@ -307,14 +308,14 @@ interface BackingFragmentViewModel {
 
             backing
                 .map { it.locationName()?.let { name -> name } }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.shippingLocation)
 
             backing
                 .map { it.amount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
@@ -332,7 +333,7 @@ interface BackingFragmentViewModel {
 
             val paymentSource = backing
                 .map { it.paymentSource() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .ofType(PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
@@ -341,14 +342,14 @@ interface BackingFragmentViewModel {
                 .map { source ->
                     source.expirationDate()?.let { simpleDateFormat.format(it) } ?: ""
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.cardExpiration)
 
             paymentSource
                 .map { cardIssuer(it) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.cardIssuer)
@@ -361,7 +362,7 @@ interface BackingFragmentViewModel {
 
             paymentSource
                 .map { cardLogo(it) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.cardLogo)
@@ -409,7 +410,7 @@ interface BackingFragmentViewModel {
 
             val rewardIsReceivable = reward
                 .map {
-                    RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn())
+                    RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull()
                 }
 
             val backingIsCollected = backing
@@ -465,7 +466,7 @@ interface BackingFragmentViewModel {
 
             backing
                 .map { it.bonusAmount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
@@ -473,7 +474,7 @@ interface BackingFragmentViewModel {
                 .subscribe(this.bonusSupport)
 
             reward
-                .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                .filter { RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull() }
                 .map<DateTime> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
                 .compose(bindToLifecycle())

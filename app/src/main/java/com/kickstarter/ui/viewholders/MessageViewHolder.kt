@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.databinding.MessageViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Message
 import com.kickstarter.viewmodels.MessageHolderViewModel

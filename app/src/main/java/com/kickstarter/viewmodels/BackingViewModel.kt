@@ -5,7 +5,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BackingWrapper
 import com.kickstarter.models.Project
@@ -52,7 +53,7 @@ interface BackingViewModel {
             val project = intent()
                 .map {
                     it.getParcelableExtra<Project>(IntentKey.PROJECT)
-                }.filter { ObjectUtils.isNotNull(it) }
+                }.filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val backingInfo = intent()
@@ -70,7 +71,7 @@ interface BackingViewModel {
                     )
                 }
                 .distinctUntilChanged()
-                .filter { bk: Backing? -> ObjectUtils.isNotNull(bk) }
+                .filter { bk: Backing? -> bk.isNotNull() }
                 .compose(Transformers.neverError())
 
             backing.compose(Transformers.takeWhen(refreshBacking))
@@ -79,7 +80,7 @@ interface BackingViewModel {
                         it.id().toString()
                     )
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .subscribe { isRefreshing.onNext(false) }
 
             Observable.combineLatest(

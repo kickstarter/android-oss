@@ -7,9 +7,10 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.adapters.data.ProjectDashboardData
@@ -189,7 +190,7 @@ interface CreatorDashboardHeaderHolderViewModel {
 
             projectBackersCountText = currentProject
                 .map { obj: Project -> obj.backersCount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { NumberUtils.format(it) }
                 .compose(bindToLifecycle())
 

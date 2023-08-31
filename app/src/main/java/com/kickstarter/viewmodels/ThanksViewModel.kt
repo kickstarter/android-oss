@@ -9,10 +9,11 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
 import com.kickstarter.models.Category
@@ -123,7 +124,7 @@ interface ThanksViewModel {
                 }
                 .compose(Transformers.neverError())
                 .filter {
-                    ObjectUtils.isNotNull(it)
+                    it.isNotNull()
                 }.map { requireNotNull(it) }
 
             val isGamesCategory = rootCategory
@@ -131,7 +132,7 @@ interface ThanksViewModel {
 
             val hasSeenGamesNewsletterDialog = Observable.just(
                 hasSeenGamesNewsletterPreference?.get()
-            ).filter { ObjectUtils.isNotNull(it) }
+            ).filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val isSignedUpToGamesNewsletter = currentUser.observable()
@@ -176,7 +177,7 @@ interface ThanksViewModel {
                     it,
                     apiClient
                 )
-            }.filter { ObjectUtils.isNotNull(it) }
+            }.filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map {
                     combineProjectsAndParams(
@@ -218,7 +219,7 @@ interface ThanksViewModel {
                 .subscribe(this.showSavedPrompt)
 
             Observable.just(hasSeenAppRatingPreference?.get())
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .take(1)
                 .compose(Transformers.combineLatestPair(showGamesNewsletter))
@@ -238,14 +239,14 @@ interface ThanksViewModel {
                 .subscribe { hasSeenGamesNewsletterPreference?.set(true) }
 
             currentUser.observable()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(Transformers.takeWhen(signupToGamesNewsletterClick))
                 .flatMap { signupToGamesNewsletter(it, apiClient) }
                 .compose(bindToLifecycle())
                 .subscribe { signedUpToGamesNewsletter.onNext(it) }
 
             currentUser.observable()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(Transformers.takeWhen(signedUpToGamesNewsletter))
                 .filter {
                     it.isLocationGermany()
@@ -351,7 +352,7 @@ interface ThanksViewModel {
                 .map { ListUtils.shuffle(it) }
                 .flatMap { Observable.from(it) }
                 .take(3)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val similarToProjects = client.fetchProjects(similarToParams)

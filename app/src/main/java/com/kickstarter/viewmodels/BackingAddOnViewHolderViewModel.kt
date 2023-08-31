@@ -4,9 +4,10 @@ import android.content.Intent
 import android.util.Pair
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
@@ -151,7 +152,7 @@ class BackingAddOnViewHolderViewModel {
 
             addOn
                 .map { it.description() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.description.onNext(it) }
                 .addToDisposable(disposables)
@@ -162,7 +163,7 @@ class BackingAddOnViewHolderViewModel {
 
             addOn.filter { RewardUtils.isItemized(it) }
                 .map { if (it.isAddOn()) it.addOnsItems() else it.rewardsItems() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.rewardItems.onNext(it) }
                 .addToDisposable(disposables)
@@ -186,12 +187,12 @@ class BackingAddOnViewHolderViewModel {
                 .addToDisposable(disposables)
 
             projectDataAndAddOn
-                .map { !ObjectUtils.isNotNull(it.second.limit()) }
+                .map { !it.second.limit().isNotNull() }
                 .subscribe { this.backerLimitPillIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
             addOn
-                .map { !ObjectUtils.isNotNull(it.remaining()) }
+                .map { !it.remaining().isNotNull() }
                 .subscribe { this.remainingQuantityPillIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -200,12 +201,12 @@ class BackingAddOnViewHolderViewModel {
                 .addToDisposable(disposables)
 
             addOn
-                .filter { ObjectUtils.isNotNull(it.remaining()) }
+                .filter { it.remaining().isNotNull() }
                 .map { it.remaining().toString() }
                 .subscribe { this.remainingQuantity.onNext(it) }
                 .addToDisposable(disposables)
 
-            projectDataAndAddOn.map { ObjectUtils.isNotNull(it.second.endsAt()) }
+            projectDataAndAddOn.map { it.second.endsAt().isNotNull() }
                 .map { !it }
                 .subscribe { this.deadlineCountdownIsGone.onNext(it) }
                 .addToDisposable(disposables)
@@ -215,7 +216,7 @@ class BackingAddOnViewHolderViewModel {
                 .addToDisposable(disposables)
 
             addOn.map { it.shippingRules()?.isEmpty() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.shippingAmountIsGone.onNext(it) }
                 .addToDisposable(disposables)
@@ -223,7 +224,7 @@ class BackingAddOnViewHolderViewModel {
             projectDataAndAddOn.map {
                 getShippingCost(it.second.shippingRules(), it.first.project(), it.third)
             }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.shippingAmount.onNext(it) }
                 .addToDisposable(disposables)
@@ -236,7 +237,7 @@ class BackingAddOnViewHolderViewModel {
 
             addOn
                 .map { maximumLimit(it) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.maxQuantity.onNext(it) }
                 .addToDisposable(disposables)
@@ -255,7 +256,7 @@ class BackingAddOnViewHolderViewModel {
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
                 .map { it.localReceiptLocation()?.displayableName() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.localPickUpName.onNext(it) }
                 .addToDisposable(disposables)

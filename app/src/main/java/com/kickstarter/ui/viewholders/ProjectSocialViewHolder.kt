@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.databinding.ProjectSocialViewBinding
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.models.User
 import com.squareup.picasso.Picasso
 

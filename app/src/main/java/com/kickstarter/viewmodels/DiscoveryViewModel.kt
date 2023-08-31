@@ -9,11 +9,12 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.extensions.deriveNavigationDrawerData
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
@@ -220,7 +221,7 @@ interface DiscoveryViewModel {
 
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .switchMap { apiClient.verifyEmail(it) }
                 .materialize()
                 .share()
@@ -236,7 +237,7 @@ interface DiscoveryViewModel {
                 .compose(Transformers.errors())
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .map { it?.errorMessage() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(messageError)
 
@@ -284,7 +285,7 @@ interface DiscoveryViewModel {
                 pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
                 params.map { it.sort() }
             )
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             // Combine params with the selected sort position.
             val paramsWithSort = Observable.combineLatest(

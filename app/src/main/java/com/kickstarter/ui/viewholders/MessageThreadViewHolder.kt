@@ -10,7 +10,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.wrapInParentheses
 import com.kickstarter.models.MessageThread

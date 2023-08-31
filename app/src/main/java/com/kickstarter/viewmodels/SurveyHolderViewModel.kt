@@ -4,7 +4,8 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.viewholders.SurveyViewHolder
@@ -51,13 +52,13 @@ interface SurveyHolderViewModel {
         init {
             creatorAvatarImageUrl = surveyResponse
                 .map { it.project() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.creator().avatar().small() }
 
             creatorNameTextViewText = surveyResponse
                 .map { it.project() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.creator().name() }
 

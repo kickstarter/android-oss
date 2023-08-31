@@ -2,7 +2,7 @@ package com.kickstarter.ui.intentmappers
 
 import android.content.Intent
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
@@ -19,11 +19,11 @@ object DiscoveryIntentMapper {
     ): Observable<DiscoveryParams> {
         val paramsFromParcel = Observable.just(paramsFromIntent(intent))
             .filter {
-                ObjectUtils.isNotNull(it)
+                it.isNotNull()
             }.map { requireNotNull(it) }
 
         val paramsFromUri = Observable.just(IntentMapper.uri(intent))
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .map { requireNotNull(it) }
             .map { DiscoveryParams.fromUri(it) }
             .flatMap {
@@ -75,7 +75,7 @@ object DiscoveryIntentMapper {
             paramBuilders.add(
                 apolloClient.fetchCategory(categoryParam)
                     .compose(Transformers.neverError())
-                    .filter { ObjectUtils.isNotNull(it) }
+                    .filter { it.isNotNull() }
                     .map { requireNotNull(it) }
                     .map { DiscoveryParams.builder().category(it) }
             )

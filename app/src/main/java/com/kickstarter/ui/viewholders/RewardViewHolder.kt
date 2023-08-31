@@ -11,13 +11,14 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.RewardItemDecorator
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -191,7 +192,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
 
         this.viewModel.outputs.hasAddOnsAvailable()
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {

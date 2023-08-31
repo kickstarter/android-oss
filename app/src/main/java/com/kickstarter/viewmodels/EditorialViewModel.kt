@@ -4,7 +4,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.ObjectUtils
+
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
@@ -63,7 +64,7 @@ interface EditorialViewModel {
         init {
             val editorial = intent()
                 .map { it.getSerializableExtra(IntentKey.EDITORIAL) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .ofType(Editorial::class.java)
 
             val categoriesNotification = Observable.merge(fetchCategories(), this.retryContainerClicked.switchMap { fetchCategories() })

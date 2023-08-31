@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders.discoverydrawer
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryDrawerChildFilterViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import com.kickstarter.ui.viewholders.KSViewHolder
 import timber.log.Timber

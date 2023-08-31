@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.User
@@ -64,7 +65,7 @@ interface FrequentlyAskedQuestionViewModel {
         init {
             val projectFaqList = projectDataInput
                 .map { it.project().projectFaqs() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             projectFaqList
                 .filter { it.isNotEmpty() }

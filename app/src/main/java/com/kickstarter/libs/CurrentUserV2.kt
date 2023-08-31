@@ -66,8 +66,8 @@ abstract class CurrentUserTypeV2 {
      */
     fun loggedInUser(): Observable<User> {
         return observable()
-                .filter { it.getValue().isNotNull() }
-                .map { it.getValue() }
+            .filter { it.getValue().isNotNull() }
+            .map { it.getValue() }
     }
 }
 

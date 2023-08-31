@@ -5,7 +5,6 @@ import android.view.View
 import androidx.annotation.StringRes
 import com.kickstarter.R
 import com.kickstarter.databinding.EmptyCommentsLayoutBinding
-
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 
@@ -20,7 +19,7 @@ class EmptyCommentsViewHolder(private val binding: EmptyCommentsLayoutBinding, p
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
         val projectAndUser = requireNotNull(data as? Pair<Project, User>?)
-        project = requireNotNull(projectAndUser.first) { Project::class.java.toString() + " required to be non-null."}
+        project = requireNotNull(projectAndUser.first) { Project::class.java.toString() + " required to be non-null." }
         user = projectAndUser.second
     }
 

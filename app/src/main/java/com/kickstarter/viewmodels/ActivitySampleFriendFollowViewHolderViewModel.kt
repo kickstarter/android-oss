@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder

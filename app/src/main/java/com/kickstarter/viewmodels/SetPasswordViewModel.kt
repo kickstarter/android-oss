@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
-
 import com.kickstarter.libs.utils.extensions.addToDisposable
 <<<<<<< HEAD
 =======

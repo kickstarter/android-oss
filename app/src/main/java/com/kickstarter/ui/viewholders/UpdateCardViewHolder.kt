@@ -110,7 +110,7 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
         @Suppress("UNCHECKED_CAST")
         val projectAndUpdate = requireNotNull(data as Pair<Project, Update>)
         val project = requireNotNull(projectAndUpdate.first) { Project::class.java.toString() + " required to be non-null." }
-        val update = requireNotNull(projectAndUpdate.second) { Update::class.java.toString() + " required to be non-null."}
+        val update = requireNotNull(projectAndUpdate.second) { Update::class.java.toString() + " required to be non-null." }
 
         this.viewModel.inputs.configureWith(project, update)
     }

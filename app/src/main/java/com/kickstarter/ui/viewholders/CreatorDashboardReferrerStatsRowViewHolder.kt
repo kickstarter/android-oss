@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.kickstarter.databinding.DashboardReferrerStatsRowViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-
 import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.ReferrerStats
 import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsRowHolderViewModel

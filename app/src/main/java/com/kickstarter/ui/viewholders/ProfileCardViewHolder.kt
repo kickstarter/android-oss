@@ -4,7 +4,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ProfileCardViewBinding
-
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso

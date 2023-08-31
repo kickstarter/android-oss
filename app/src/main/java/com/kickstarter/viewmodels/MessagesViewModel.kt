@@ -11,7 +11,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
-
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull

@@ -26,7 +26,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONM
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
-
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues

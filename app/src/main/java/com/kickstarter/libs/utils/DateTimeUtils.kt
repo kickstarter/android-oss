@@ -7,7 +7,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.RelativeDateTimeOptions
-import com.kickstarter.libs.utils.extensions.coalesce
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Seconds

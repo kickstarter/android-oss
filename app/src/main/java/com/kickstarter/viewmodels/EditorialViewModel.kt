@@ -4,7 +4,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
-
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
 import com.kickstarter.services.DiscoveryParams

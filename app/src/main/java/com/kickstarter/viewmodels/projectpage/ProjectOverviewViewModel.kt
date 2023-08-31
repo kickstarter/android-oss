@@ -532,8 +532,8 @@ interface ProjectOverviewViewModel {
                 .map { it.creator() }
                 .compose(Transformers.combineLatestPair(currentUser.observable()))
                 .map { creatorAndCurrentUser: Pair<User, User> ->
-                    creatorAndCurrentUser.second.isNotNull()
-                            && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
+                    creatorAndCurrentUser.second.isNotNull() &&
+                        creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
                 }
 
             projectDisclaimerGoalReachedDateTime = project

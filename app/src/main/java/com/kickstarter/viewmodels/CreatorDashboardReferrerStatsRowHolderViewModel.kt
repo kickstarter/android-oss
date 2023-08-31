@@ -4,7 +4,6 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
-
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project

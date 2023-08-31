@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment

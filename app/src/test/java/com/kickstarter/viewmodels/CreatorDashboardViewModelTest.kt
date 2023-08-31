@@ -105,12 +105,12 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
         progressBarIsVisible.assertValues(true, false)
         projectDashboardData.assertValue(
             ProjectDashboardData(
-                    requireNotNull(
-                        ListUtils.first(
-                            projects
-                        )
-                    ),
-                    projectStatsEnvelope, false
+                requireNotNull(
+                    ListUtils.first(
+                        projects
+                    )
+                ),
+                projectStatsEnvelope, false
             )
         )
     }

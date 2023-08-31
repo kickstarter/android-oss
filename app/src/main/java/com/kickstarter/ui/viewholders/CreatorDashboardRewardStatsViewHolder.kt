@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.DashboardRewardStatsViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.sentenceCase
 import com.kickstarter.models.Project

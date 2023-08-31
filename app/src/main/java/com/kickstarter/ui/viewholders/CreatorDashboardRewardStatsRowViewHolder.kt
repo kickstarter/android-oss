@@ -6,7 +6,6 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.databinding.DashboardRewardStatsRowViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.RewardStats

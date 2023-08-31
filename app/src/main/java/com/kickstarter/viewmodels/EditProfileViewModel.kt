@@ -1,13 +1,11 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ListUtils
-
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
@@ -102,7 +100,7 @@ interface EditProfileViewModel {
 
             currentUser
                 .compose(bindToLifecycle())
-                .filter{ it.isNotNull() }
+                .filter { it.isNotNull() }
                 .map { user -> user.createdProjectsCount().isNonZero() }
                 .subscribe(this.hidePrivateProfileRow)
 

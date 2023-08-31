@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment

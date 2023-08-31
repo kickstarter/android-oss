@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.utils.DateTimeUtils
-
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.ProjectFaq

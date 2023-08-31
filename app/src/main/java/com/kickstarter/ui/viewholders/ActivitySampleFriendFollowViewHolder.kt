@@ -5,7 +5,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-
 import com.kickstarter.models.Activity
 import com.kickstarter.viewmodels.ActivitySampleFriendFollowViewHolderViewModel
 import com.squareup.picasso.Picasso

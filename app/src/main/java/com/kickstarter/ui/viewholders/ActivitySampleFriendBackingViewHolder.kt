@@ -27,7 +27,7 @@ class ActivitySampleFriendBackingViewHolder(
     private val ksString = requireNotNull(env?.ksString())
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        vm.inputs.configureWith(requireNotNull(data as Activity?) { Activity::class.java.toString() + "  required to be non-null."})
+        vm.inputs.configureWith(requireNotNull(data as Activity?) { Activity::class.java.toString() + "  required to be non-null." })
     }
 
     init {

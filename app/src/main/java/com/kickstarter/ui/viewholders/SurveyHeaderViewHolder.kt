@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.databinding.ActivitySurveyHeaderViewBinding
 
-
 class SurveyHeaderViewHolder(private val binding: ActivitySurveyHeaderViewBinding) :
     KSViewHolder(binding.root) {
     private val ksString = requireNotNull(environment().ksString())

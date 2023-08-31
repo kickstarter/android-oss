@@ -164,7 +164,7 @@ fun Uri.isWebUri(webEndpoint: String): Boolean {
 
 fun Uri.isDiscoverSortParam(): Boolean {
     return DISCOVER_SORT_PATTERN.matcher(path()).matches() &&
-            getQueryParameter("sort").isNotNull()
+        getQueryParameter("sort").isNotNull()
 }
 
 private const val VERIFICATION = "/profile/verify_email"

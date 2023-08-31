@@ -12,7 +12,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
@@ -486,7 +485,7 @@ interface BackingFragmentViewModel {
         }
 
         private fun shouldHideShipping(it: Backing) =
-                it.locationId().isNull() || it.reward()?.let { rw ->
+            it.locationId().isNull() || it.reward()?.let { rw ->
                 RewardUtils.isLocalPickup(rw)
             } ?: true
 

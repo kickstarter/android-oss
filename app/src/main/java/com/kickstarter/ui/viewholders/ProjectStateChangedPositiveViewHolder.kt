@@ -4,8 +4,6 @@ import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
 import com.kickstarter.libs.utils.DateTimeUtils
-
-import com.kickstarter.libs.utils.extensions.coalesce
 import com.kickstarter.models.Activity
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime

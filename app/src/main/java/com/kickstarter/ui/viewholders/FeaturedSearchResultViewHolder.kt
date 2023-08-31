@@ -11,8 +11,11 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 =======
 import com.kickstarter.libs.rx.transformers.Transformers
+<<<<<<< HEAD
 
 >>>>>>> 94ef702c6 (Remove all instances of object utils)
+=======
+>>>>>>> c91d8c9e3 (Linter)
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel

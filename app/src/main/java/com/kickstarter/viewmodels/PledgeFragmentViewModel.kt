@@ -19,7 +19,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.rx.transformers.Transformers.zipPairV2
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils

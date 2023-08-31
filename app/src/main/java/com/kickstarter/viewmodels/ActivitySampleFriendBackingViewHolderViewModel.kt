@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import com.kickstarter.libs.Environment
-
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity

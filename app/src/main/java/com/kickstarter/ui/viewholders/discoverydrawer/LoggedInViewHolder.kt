@@ -1,13 +1,11 @@
 package com.kickstarter.ui.viewholders.discoverydrawer
 
-import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.KSViewHolder

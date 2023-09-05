@@ -20,7 +20,6 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.TransitionUtils

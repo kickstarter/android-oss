@@ -2,21 +2,22 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isGone
-import com.kickstarter.R
-import com.kickstarter.databinding.ActivityCreatePasswordBinding
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.libs.Logout
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.compose.login.CreatePasswordScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.CreatePasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -25,83 +26,60 @@ class CreatePasswordActivity : AppCompatActivity() {
 
     private lateinit var viewModelFactory: CreatePasswordViewModel.Factory
     private val viewModel: CreatePasswordViewModel.CreatePasswordViewModel by viewModels { viewModelFactory }
-    private var saveEnabled = false
     private var logout: Logout? = null
     private val disposables = CompositeDisposable()
 
-    private lateinit var binding: ActivityCreatePasswordBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCreatePasswordBinding.inflate(layoutInflater)
+        var darkModeEnabled = false
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = CreatePasswordViewModel.Factory(env)
+            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
             env
         }
 
-        setContentView(binding.root)
-        setSupportActionBar(binding.createPasswordActivityToolbar.createPasswordToolbar)
+        setContent {
+            var showProgressBar =
+                viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
+
+            var error = viewModel.outputs.error().subscribeAsState(initial = "").value
+
+            var scaffoldState = rememberScaffoldState()
+
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+                CreatePasswordScreen(
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() },
+                    onAcceptButtonClicked = { new ->
+                        viewModel.updatePasswordData(new)
+                        viewModel.createPasswordClicked()
+                    },
+                    showProgressBar = showProgressBar,
+                    scaffoldState = scaffoldState
+                )
+            }
+
+            when {
+                error.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(error)
+                        viewModel.resetError()
+                    }
+                }
+            }
+        }
 
         this.logout = environment?.logout()
-
-        this.viewModel.outputs.progressBarIsVisible()
-            .subscribe {
-                binding.progressBar.isGone = !it
-            }.addToDisposable(disposables)
-
-        this.viewModel.outputs.passwordWarning()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.warning.text = when {
-                    it != 0 -> getString(it)
-                    else -> null
-                }
-            }.addToDisposable(disposables)
-
-        this.viewModel.outputs.saveButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { updateMenu(it) }
-            .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { logout(it) }
             .addToDisposable(disposables)
-
-        this.viewModel.outputs.error()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(binding.createPasswordActivityToolbar.createPasswordToolbar, it) }
-            .addToDisposable(disposables)
-
-        binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
-        binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.save -> {
-                this.viewModel.inputs.createPasswordClicked()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
-    }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.save, menu)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val save = menu.findItem(R.id.save)
-        save.isEnabled = saveEnabled
-        return super.onPrepareOptionsMenu(menu)
     }
 
     private fun logout(email: String) {
@@ -112,10 +90,5 @@ class CreatePasswordActivity : AppCompatActivity() {
                 .putExtra(IntentKey.LOGIN_REASON, LoginReason.CREATE_PASSWORD)
                 .putExtra(IntentKey.EMAIL, email)
         )
-    }
-
-    private fun updateMenu(saveEnabled: Boolean) {
-        this.saveEnabled = saveEnabled
-        invalidateOptionsMenu()
     }
 }

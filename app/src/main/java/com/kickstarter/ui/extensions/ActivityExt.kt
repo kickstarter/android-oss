@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
+import com.kickstarter.services.ConnectivityReceiver
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.data.PledgeData
@@ -69,6 +70,16 @@ fun Activity.showErrorSnackBar(anchor: View, message: String) {
     val backgroundColor = this.resources.getColor(R.color.kds_alert, this.theme)
     val textColor = this.resources.getColor(R.color.kds_white, this.theme)
     showSnackbarWithColor(anchor, message, backgroundColor, textColor)
+}
+
+fun Activity.getConnectivityCallback(): ConnectivityReceiver.ConnectivityReceiverListener {
+    return object : ConnectivityReceiver.ConnectivityReceiverListener {
+        override fun onNetworkConnectionChanged(isConnected: Boolean) {
+            if (!isConnected) {
+                showSnackbar(findViewById(android.R.id.content), getString(R.string.Youre_offline))
+            }
+        }
+    }
 }
 
 fun Activity.showRatingDialogWidget() {

@@ -20,8 +20,11 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
+import com.kickstarter.services.ConnectivityReceiver
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.SearchAdapter
+import com.kickstarter.ui.extensions.getConnectivityCallback
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.SearchViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,6 +39,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
     val viewModel: SearchViewModel.SearchViewModel by viewModels { viewModelFactory }
 
     private lateinit var disposables: CompositeDisposable
+    private lateinit var connectivityReceiver: ConnectivityReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,9 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
             viewModelFactory = SearchViewModel.Factory(env, intent = intent)
             env
         }
+
+        connectivityReceiver = ConnectivityReceiver(getConnectivityCallback(), this)
+        lifecycle.addObserver(connectivityReceiver)
 
         binding = SearchLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)

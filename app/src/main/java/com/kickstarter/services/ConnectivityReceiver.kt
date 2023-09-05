@@ -3,17 +3,23 @@ package com.kickstarter.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
-class ConnectivityReceiver : BroadcastReceiver() {
-
-    companion object {
-        @JvmStatic
-        lateinit var connectivityReceiverListener: ConnectivityReceiverListener
+class ConnectivityReceiver(
+    private val connectivityReceiverListener: ConnectivityReceiverListener,
+    private val context: Context
+) : BroadcastReceiver(), DefaultLifecycleObserver{
+    interface ConnectivityReceiverListener {
+        fun onNetworkConnectionChanged(isConnected: Boolean)
     }
+
+    private val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) { // when given network becomes available
@@ -40,12 +46,20 @@ class ConnectivityReceiver : BroadcastReceiver() {
         cm.registerNetworkCallback(networkRequest, networkCallback)
     }
 
-    fun unregister(context: Context) {
+    private fun unregister(context: Context) {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         cm.unregisterNetworkCallback(networkCallback)
     }
 
-    interface ConnectivityReceiverListener {
-        fun onNetworkConnectionChanged(isConnected: Boolean)
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        context.registerReceiver(this, filter)
     }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        this.unregister(context)
+        context.unregisterReceiver(this)
+    }
+
 }

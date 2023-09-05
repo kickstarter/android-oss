@@ -38,10 +38,9 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
 
   private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
-  private final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final CompositeSubscription subscriptions = new CompositeSubscription();
-  private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
+  private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver(this, this);
   protected ViewModelType viewModel;
 
   /**
@@ -95,6 +94,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     assignViewModel(savedInstanceState);
 
     this.viewModel.intent(getIntent());
+
+    super.getLifecycle().addObserver(connectivityReceiver);
   }
 
   /**
@@ -118,8 +119,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .compose(bindUntilEvent(ActivityEvent.STOP))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> goBack(), FirebaseCrashlytics.getInstance()::recordException);
-
-    ConnectivityReceiver.setConnectivityReceiverListener(this);
   }
 
   @CallSuper
@@ -133,8 +132,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
     }
-
-    this.registerReceiver(this.connectivityReceiver, this.filter);
   }
 
   @CallSuper
@@ -147,9 +144,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onPause();
     }
-
-    this.connectivityReceiver.unregister(this);
-    this.unregisterReceiver(this.connectivityReceiver);
   }
 
   @CallSuper

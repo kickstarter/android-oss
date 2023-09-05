@@ -162,11 +162,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe(binding.statsView.pledged::setText)
 
-        viewModel.outputs.projectDashboardContainerIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding.projectCreatorDashboardHeader.projectDashboardContainer.isGone = it }
-
         viewModel.outputs.projectDisclaimerGoalNotReachedString()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

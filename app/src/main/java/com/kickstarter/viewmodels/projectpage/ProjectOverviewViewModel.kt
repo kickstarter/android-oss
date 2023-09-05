@@ -105,12 +105,6 @@ interface ProjectOverviewViewModel {
         /** Emits the pledged amount for display.  */
         fun pledgedTextViewText(): Observable<String>
 
-        /** Emits the string resource ID of the project dashboard button.  */
-        fun projectDashboardButtonText(): Observable<Int>
-
-        /** Emits a boolean determining if the project dashboard container should be visible.  */
-        fun projectDashboardContainerIsGone(): Observable<Boolean>
-
         /** Emits the date time to be displayed in the disclaimer.  */
         fun projectDisclaimerGoalReachedDateTime(): Observable<DateTime>
 
@@ -219,8 +213,6 @@ interface ProjectOverviewViewModel {
         private val percentageFundedProgress: Observable<Int>
         private val percentageFundedProgressBarIsGone: Observable<Boolean>
         private val pledgedTextViewText: Observable<String>
-        private val projectDashboardButtonText: Observable<Int>
-        private val projectDashboardContainerIsGone: Observable<Boolean>
         private val projectDisclaimerGoalReachedDateTime: Observable<DateTime>
         private val projectDisclaimerGoalNotReachedString: Observable<Pair<String, DateTime>>
         private val projectDisclaimerTextViewIsGone: Observable<Boolean>
@@ -250,10 +242,6 @@ interface ProjectOverviewViewModel {
         private val shouldShowReportProject: Observable<Boolean>
         private val shouldShowProjectFlagged: Observable<Boolean>
         private val openExternally = PublishSubject.create<String>()
-
-        private val creatorDashboardDeprecated: Boolean =
-            environment.featureFlagClient()
-                ?.getBoolean(FlagKey.ANDROID_CREATOR_DASHBOARD_DEPRECATION) ?: false
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -340,14 +328,6 @@ interface ProjectOverviewViewModel {
 
         override fun pledgedTextViewText(): Observable<String> {
             return pledgedTextViewText
-        }
-
-        override fun projectDashboardButtonText(): Observable<Int> {
-            return projectDashboardButtonText
-        }
-
-        override fun projectDashboardContainerIsGone(): Observable<Boolean> {
-            return projectDashboardContainerIsGone
         }
 
         override fun projectDisclaimerGoalReachedDateTime(): Observable<DateTime> {
@@ -556,22 +536,6 @@ interface ProjectOverviewViewModel {
                     ObjectUtils.isNotNull(
                         creatorAndCurrentUser.second
                     ) && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
-                }
-
-            projectDashboardButtonText = project
-                .map { obj: Project -> obj.isLive }
-                .map { live: Boolean -> if (live) R.string.View_progress else R.string.View_dashboard }
-                .compose(Transformers.combineLatestPair(userIsCreatorOfProject))
-                .filter { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.second }
-                .map { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.first }
-
-            projectDashboardContainerIsGone = userIsCreatorOfProject
-                .map {
-                    if (creatorDashboardDeprecated) {
-                        true
-                    } else {
-                        it.negate()
-                    }
                 }
 
             projectDisclaimerGoalReachedDateTime = project

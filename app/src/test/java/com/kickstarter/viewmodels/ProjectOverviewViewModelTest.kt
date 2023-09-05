@@ -81,7 +81,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startCreatorView = TestSubscriber<ProjectData>()
     private val startCommentsView = TestSubscriber<ProjectData>()
     private val startUpdatesView = TestSubscriber<ProjectData>()
-    private val startCreatorDashboard = TestSubscriber<ProjectData>()
     private val startReportProjectView = TestSubscriber<ProjectData>()
     private val startLoginView = TestSubscriber<Void>()
     private val shouldShowReportProject = TestSubscriber<Boolean>()
@@ -108,8 +107,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.percentageFundedProgress().subscribe(percentageFundedProgress)
         vm.outputs.percentageFundedProgressBarIsGone().subscribe(percentageFundedProgressBarIsGone)
         vm.outputs.pledgedTextViewText().subscribe(pledgedTextViewText)
-        vm.outputs.projectDashboardButtonText().subscribe(projectDashboardButtonText)
-        vm.outputs.projectDashboardContainerIsGone().subscribe(projectDashboardContainerIsGone)
         vm.outputs.projectDisclaimerGoalReachedDateTime()
             .subscribe(projectDisclaimerGoalReachedDateTime)
         vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(
@@ -139,7 +136,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startUpdatesView().subscribe(startUpdatesView)
         vm.outputs.startCommentsView().subscribe(startCommentsView)
         vm.outputs.startCreatorView().subscribe(startCreatorView)
-        vm.outputs.startCreatorDashboardView().subscribe(startCreatorDashboard)
         vm.outputs.shouldShowReportProject().subscribe(shouldShowReportProject)
         vm.outputs.startLoginView().subscribe(startLoginView)
         vm.outputs.startReportProjectView().subscribe(startReportProjectView)
@@ -173,16 +169,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.commentsButtonClicked()
         startCommentsView.assertValue(projectData)
-    }
-
-    @Test
-    fun testCreatorDashboardClicked() {
-        val projectData = project(ProjectFactory.project())
-        setUpEnvironment(environment(), projectData)
-
-        this.vm.inputs.creatorDashboardClicked()
-        startCreatorDashboard.assertValue(projectData)
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

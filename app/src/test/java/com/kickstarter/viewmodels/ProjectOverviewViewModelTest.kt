@@ -54,8 +54,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val percentageFundedProgress = TestSubscriber<Int>()
     private val percentageFundedProgressBarIsGone = TestSubscriber<Boolean>()
     private val pledgedTextViewText = TestSubscriber<String>()
-    private val projectDashboardButtonText = TestSubscriber<Int>()
-    private val projectDashboardContainerIsGone = TestSubscriber<Boolean>()
     private val projectDisclaimerGoalReachedDateTime = TestSubscriber<DateTime>()
     private val projectDisclaimerGoalNotReachedString = TestSubscriber<Pair<String, DateTime>>()
     private val projectDisclaimerTextViewIsGone = TestSubscriber<Boolean>()
@@ -226,63 +224,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     fun testProgressBar_Gone() {
         setUpEnvironment(environment(), project(ProjectFactory.successfulProject()))
         percentageFundedProgressBarIsGone.assertValues(true)
-    }
-
-    @Test
-    fun testProjectDashboardButtonText_whenCurrentUserIsNotProjectCreator() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        projectDashboardButtonText.assertNoValues()
-    }
-
-    @Test
-    fun testProjectDashboardButtonText_whenCurrentUserIsProjectCreator_projectIsLive() {
-        val creator = UserFactory.creator()
-        val project = ProjectFactory.project()
-            .toBuilder()
-            .creator(creator)
-            .build()
-        val environment = environment()
-            .toBuilder()
-            .currentUser(MockCurrentUser(creator))
-            .build()
-        setUpEnvironment(environment, project(project))
-        projectDashboardButtonText.assertValue(R.string.View_progress)
-    }
-
-    @Test
-    fun testProjectDashboardButtonText_whenCurrentUserIsProjectCreator_projectIsNotLive() {
-        val creator = UserFactory.creator()
-        val project = ProjectFactory.successfulProject()
-            .toBuilder()
-            .creator(creator)
-            .build()
-        val environment = environment()
-            .toBuilder()
-            .currentUser(MockCurrentUser(creator))
-            .build()
-        setUpEnvironment(environment, project(project))
-        projectDashboardButtonText.assertValue(R.string.View_dashboard)
-    }
-
-    @Test
-    fun testProjectDashboardContainerIsGone_whenCurrentUserIsNotProjectCreator() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        projectDashboardContainerIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testProjectDashboardContainerIsGone_whenCurrentUserIsProjectCreator() {
-        val creator = UserFactory.creator()
-        val project = ProjectFactory.successfulProject()
-            .toBuilder()
-            .creator(creator)
-            .build()
-        val environment = environment()
-            .toBuilder()
-            .currentUser(MockCurrentUser(creator))
-            .build()
-        setUpEnvironment(environment, project(project))
-        projectDashboardContainerIsGone.assertValue(false)
     }
 
     @Test

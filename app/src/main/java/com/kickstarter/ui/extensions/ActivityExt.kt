@@ -14,7 +14,6 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
-import com.kickstarter.libs.utils.extensions.getCreatorDashboardActivityIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
@@ -125,11 +124,6 @@ fun Activity.startReportProjectActivity(
     startForResult: ActivityResultLauncher<Intent>
 ) {
     startForResult.launch(Intent().getReportProjectActivityIntent(this, project = project))
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-}
-
-fun Activity.startCreatorDashboardActivity(project: Project) {
-    startActivity(Intent().getCreatorDashboardActivityIntent(this, project))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 

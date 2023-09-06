@@ -1,13 +1,11 @@
 package com.kickstarter.ui.viewholders.discoverydrawer
 
-import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -16,14 +14,12 @@ import com.squareup.picasso.Picasso
 
 class LoggedInViewHolder(
     private val binding: DiscoveryDrawerLoggedInViewBinding,
-    private val delegate: Delegate,
-    private val dashboardDeprecated: Boolean = false
+    private val delegate: Delegate
 ) : KSViewHolder(binding.root) {
     private val viewModel: LoggedInViewHolderViewModel.ViewModel = LoggedInViewHolderViewModel.ViewModel(environment())
 
     interface Delegate {
         fun loggedInViewHolderActivityClick(@NonNull viewHolder: LoggedInViewHolder)
-        fun loggedInViewHolderDashboardClick(@NonNull viewHolder: LoggedInViewHolder)
         fun loggedInViewHolderInternalToolsClick(@NonNull viewHolder: LoggedInViewHolder)
         fun loggedInViewHolderMessagesClick(@NonNull viewHolder: LoggedInViewHolder)
         fun loggedInViewHolderProfileClick(@NonNull viewHolder: LoggedInViewHolder, @NonNull user: User)
@@ -72,15 +68,6 @@ class LoggedInViewHolder(
             .compose(observeForUI())
             .subscribe { binding.unseenActivityCount.setTextColor(ContextCompat.getColor(context(), it)) }
 
-        if (dashboardDeprecated) {
-            binding.drawerDashboard.visibility = View.GONE
-        } else {
-            this.viewModel.outputs.dashboardRowIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(binding.drawerDashboard, it) }
-        }
-
         this.viewModel.outputs.user()
             .subscribe { user ->
                 binding.drawerSettings.setOnClickListener { this.delegate.loggedInViewHolderSettingsClick(this, user) }
@@ -89,7 +76,6 @@ class LoggedInViewHolder(
             }
 
         binding.drawerActivity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }
-        binding.drawerDashboard.setOnClickListener { this.delegate.loggedInViewHolderDashboardClick(this) }
         binding.drawerMessages.setOnClickListener { this.delegate.loggedInViewHolderMessagesClick(this) }
         binding.internalTools.internalTools.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
     }

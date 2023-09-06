@@ -85,9 +85,6 @@ interface DiscoveryViewModel {
         /** Start activity feed activity.  */
         fun showActivityFeed(): Observable<Void?>
 
-        /** Start creator dashboard activity.  */
-        fun showCreatorDashboard(): Observable<Void?>
-
         /** Start help activity.  */
         fun showHelp(): Observable<Void?>
 
@@ -148,7 +145,6 @@ interface DiscoveryViewModel {
 
         private val activityFeedClick = PublishSubject.create<Void?>()
         private val childFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
-        private val creatorDashboardClick = PublishSubject.create<Void?>()
         private val internalToolsClick = PublishSubject.create<Void?>()
         private val loggedOutLoginToutClick = PublishSubject.create<Void?>()
         private val loggedOutSettingsClick = PublishSubject.create<Void?>()
@@ -172,7 +168,6 @@ interface DiscoveryViewModel {
         private val rootCategoriesAndPosition = BehaviorSubject.create<Pair<List<Category>, Int>>()
         private val showActivityFeed: Observable<Void?>
         private val showBuildCheckAlert: Observable<InternalBuildEnvelope>
-        private val showCreatorDashboard: Observable<Void?>
         private val showHelp: Observable<Void?>
         private val showInternalTools: Observable<Void?>
         private val showLoginTout: Observable<Void?>
@@ -188,7 +183,6 @@ interface DiscoveryViewModel {
             buildCheck.bind(this, webClient)
             showActivityFeed = activityFeedClick
             showBuildCheckAlert = newerBuildIsAvailable
-            showCreatorDashboard = creatorDashboardClick
             showHelp = loggedOutSettingsClick
             showInternalTools = internalToolsClick
             showLoginTout = loggedOutLoginToutClick
@@ -396,7 +390,6 @@ interface DiscoveryViewModel {
                 loggedOutSettingsClick.map { false },
                 activityFeedClick.map { false },
                 messagesClick.map { false },
-                creatorDashboardClick.map { false },
                 profileClick.map { false },
                 settingsClick.map { false }
             )
@@ -423,7 +416,6 @@ interface DiscoveryViewModel {
             pagerSetPrimaryPage.onNext(position)
         }
         override fun loggedInViewHolderActivityClick(viewHolder: LoggedInViewHolder) { activityFeedClick.onNext(null) }
-        override fun loggedInViewHolderDashboardClick(viewHolder: LoggedInViewHolder) { creatorDashboardClick.onNext(null) }
         override fun loggedInViewHolderInternalToolsClick(viewHolder: LoggedInViewHolder) { internalToolsClick.onNext(null) }
         override fun loggedInViewHolderMessagesClick(viewHolder: LoggedInViewHolder) { messagesClick.onNext(null) }
         override fun loggedInViewHolderProfileClick(viewHolder: LoggedInViewHolder, user: User) { profileClick.onNext(null) }
@@ -454,7 +446,6 @@ interface DiscoveryViewModel {
         override fun rootCategoriesAndPosition(): Observable<Pair<List<Category>, Int>> { return rootCategoriesAndPosition }
         override fun showActivityFeed(): Observable<Void?> { return showActivityFeed }
         override fun showBuildCheckAlert(): Observable<InternalBuildEnvelope> { return showBuildCheckAlert }
-        override fun showCreatorDashboard(): Observable<Void?> { return showCreatorDashboard }
         override fun showHelp(): Observable<Void?> { return showHelp }
         override fun showInternalTools(): Observable<Void?> { return showInternalTools }
         override fun showLoginTout(): Observable<Void?> { return showLoginTout }

@@ -16,7 +16,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CREATOR_DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
@@ -26,7 +25,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
-import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.REPLY
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
@@ -35,7 +33,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
@@ -45,7 +42,6 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_CONFIRM
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PROJECT_SELECT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
@@ -598,31 +594,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when the select another project button is tapped on the creator dashboard screen.
-     *
-     * @param projectData: The data for the current project.
-     */
-    fun trackCreatorDashboardSelectAnotherProjectCTA(project: Project) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT_SELECT.contextName)
-        props[CONTEXT_PAGE.contextName] = CREATOR_DASHBOARD.contextName
-        props[CONTEXT_SECTION.contextName] = DASHBOARD.contextName
-        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-        client.track(CTA_CLICKED.eventName, props)
-    }
-
-    /**
-     * Sends data to the client when the creator details CTA is clicked on the project screen.
-     *
-     * @param projectData: The data for the current project.
-     */
-    fun trackCreatorDetailsCTA(projectData: ProjectData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
-        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
-        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
-        client.track(CTA_CLICKED.eventName, props)
-    }
-
-    /**
      * Sends data associated with the comment screen page viewed to segment.
      * @param project: The current project.
      * @param projectUpdateId: the update id
@@ -691,21 +662,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
-    }
-
-    /**
-     * Sends data to the client when the creator dashboard screen is viewed.
-     *
-     * @param project: The current project being viewed in the dashboard.
-     *
-     */
-    fun trackCreatorDashboardPageViewed(project: Project) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CREATOR_DASHBOARD.contextName)
-
-        props[CONTEXT_SECTION.contextName] = DASHBOARD.contextName
-        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-
-        client.track(PAGE_VIEWED.eventName, props)
     }
 
     private fun createCommentPropMap(

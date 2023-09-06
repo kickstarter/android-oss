@@ -26,7 +26,6 @@ import java.util.ArrayList
 
 class DiscoveryDrawerAdapter(
     private val delegate: Delegate,
-    private val dashboardDrawerDeprecated: Boolean = false
 ) : KSAdapter() {
     private var drawerData: NavigationDrawerData? = null
 
@@ -90,7 +89,6 @@ class DiscoveryDrawerAdapter(
                     false
                 ),
                 delegate,
-                dashboardDeprecated = dashboardDrawerDeprecated
             )
             R.layout.discovery_drawer_logged_out_view -> LoggedOutViewHolder(
                 DiscoveryDrawerLoggedOutViewBinding.inflate(

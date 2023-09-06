@@ -23,6 +23,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.models.Update
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.UpdateViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
@@ -48,6 +49,9 @@ class UpdateActivity : AppCompatActivity() {
         binding = UpdateLayoutBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        setUpConnectivityStatusCheck(lifecycle)
+
         ksString = requireNotNull(getEnvironment()?.ksString())
 
         binding.updateWebView.registerRequestHandlers(

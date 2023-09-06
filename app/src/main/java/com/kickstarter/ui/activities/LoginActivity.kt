@@ -21,6 +21,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
 import com.kickstarter.ui.views.ConfirmDialog
@@ -60,6 +61,7 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        setUpConnectivityStatusCheck(lifecycle)
         this.ksString = requireNotNull(env?.ksString())
         binding.loginToolbar.loginToolbar.setTitle(getString(this.loginString))
         binding.loginFormView.forgotYourPasswordTextView.text = ViewUtils.html(getString(this.forgotPasswordString))

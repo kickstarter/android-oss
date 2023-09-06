@@ -9,6 +9,7 @@ import com.kickstarter.databinding.TwoFactorLayoutBinding
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.TwoFactorViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,6 +29,7 @@ class TwoFactorActivity : AppCompatActivity() {
         binding = TwoFactorLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpConnectivityStatusCheck(lifecycle)
         binding.loginToolbar.loginToolbar.setTitle(getString(R.string.two_factor_title))
 
         viewModel.outputs.tfaSuccess()

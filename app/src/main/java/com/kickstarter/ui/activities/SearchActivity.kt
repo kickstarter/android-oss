@@ -22,6 +22,7 @@ import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.SearchAdapter
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.SearchViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -46,6 +47,8 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
             viewModelFactory = SearchViewModel.Factory(env, intent = intent)
             env
         }
+
+        setUpConnectivityStatusCheck(lifecycle)
 
         binding = SearchLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)

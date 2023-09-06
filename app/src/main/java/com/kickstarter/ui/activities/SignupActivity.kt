@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.views.LoginPopupMenu
 import com.kickstarter.viewmodels.SignupViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,6 +32,9 @@ class SignupActivity : AppCompatActivity() {
         }
         binding = SignupLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setUpConnectivityStatusCheck(lifecycle)
+
         binding.loginToolbar.loginToolbar.title = getString(R.string.signup_button)
         viewModel.outputs.signupSuccess()
             .observeOn(AndroidSchedulers.mainThread())

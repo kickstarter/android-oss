@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showErrorSnackBar
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
@@ -49,6 +50,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsPaymentMethodsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpConnectivityStatusCheck(lifecycle)
         setUpRecyclerView()
 
         flowController = PaymentSheet.FlowController.create(

@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -46,6 +47,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        setUpConnectivityStatusCheck(lifecycle)
         if (BuildConfig.DEBUG) {
             binding.editProfileRow.visibility = View.VISIBLE
         }

@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentMethodsIntent
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.AccountViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,6 +71,7 @@ class AccountActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        setUpConnectivityStatusCheck(lifecycle)
         this.ksString = requireNotNull(env?.ksString())
 
         setUpSpinner()

@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.SetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -35,6 +36,8 @@ class SetPasswordActivity : AppCompatActivity() {
         viewModel.configureWith(intent)
         setContentView(binding.root)
         setSupportActionBar(binding.resetPasswordToolbar.loginToolbar)
+
+        setUpConnectivityStatusCheck(lifecycle)
         binding.resetPasswordToolbar.loginToolbar.setTitle(getString(R.string.Set_your_password))
         binding.resetPasswordToolbar.backButton.isGone = true
         binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }

@@ -15,6 +15,7 @@ import com.kickstarter.databinding.ActivityChangeEmailBinding
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.ChangeEmailViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,6 +45,7 @@ class ChangeEmailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.changeEmailActivityToolbar.changeEmailToolbar)
 
+        setUpConnectivityStatusCheck(lifecycle)
         binding.newEmail.onChange { this.viewModel.inputs.email(it) }
         binding.currentPassword.onChange { this.viewModel.inputs.password(it) }
         binding.sendVerificationEmail.setOnClickListener { this.viewModel.inputs.sendVerificationEmail() }

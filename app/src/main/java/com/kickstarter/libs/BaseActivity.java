@@ -1,8 +1,6 @@
 package com.kickstarter.libs;
 
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Pair;
 
@@ -95,7 +93,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
 
     this.viewModel.intent(getIntent());
 
-    super.getLifecycle().addObserver(connectivityReceiver);
+    super.getLifecycle().addObserver(this.connectivityReceiver);
   }
 
   /**

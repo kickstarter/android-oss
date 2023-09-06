@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
@@ -72,14 +73,16 @@ fun Activity.showErrorSnackBar(anchor: View, message: String) {
     showSnackbarWithColor(anchor, message, backgroundColor, textColor)
 }
 
-fun Activity.getConnectivityCallback(): ConnectivityReceiver.ConnectivityReceiverListener {
-    return object : ConnectivityReceiver.ConnectivityReceiverListener {
+fun Activity.setUpConnectivityStatusCheck(lifecycle: Lifecycle) {
+    val callBack = object : ConnectivityReceiver.ConnectivityReceiverListener {
         override fun onNetworkConnectionChanged(isConnected: Boolean) {
             if (!isConnected) {
                 showSnackbar(findViewById(android.R.id.content), getString(R.string.Youre_offline))
             }
         }
     }
+    val connectivityReceiver = ConnectivityReceiver(callBack, this)
+    lifecycle.addObserver(connectivityReceiver)
 }
 
 fun Activity.showRatingDialogWidget() {

@@ -24,7 +24,6 @@ import com.kickstarter.services.ConnectivityReceiver
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.SearchAdapter
 import com.kickstarter.ui.extensions.getConnectivityCallback
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.SearchViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers

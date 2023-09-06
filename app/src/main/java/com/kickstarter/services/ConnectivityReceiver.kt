@@ -14,7 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 class ConnectivityReceiver(
     private val connectivityReceiverListener: ConnectivityReceiverListener,
     private val context: Context
-) : BroadcastReceiver(), DefaultLifecycleObserver{
+) : BroadcastReceiver(), DefaultLifecycleObserver {
     interface ConnectivityReceiverListener {
         fun onNetworkConnectionChanged(isConnected: Boolean)
     }
@@ -61,5 +61,4 @@ class ConnectivityReceiver(
         this.unregister(context)
         context.unregisterReceiver(this)
     }
-
 }

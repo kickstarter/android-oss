@@ -53,7 +53,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val rotatedUpdateToolbarWithParams = TestSubscriber<DiscoveryParams>()
     private val showActivityFeed = TestSubscriber<Void>()
     private val showBuildCheckAlert = TestSubscriber<InternalBuildEnvelope>()
-    private val showCreatorDashboard = TestSubscriber<Void>()
     private val showHelp = TestSubscriber<Void>()
     private val showInternalTools = TestSubscriber<Void>()
     private val showLoginTout = TestSubscriber<Void>()
@@ -256,7 +255,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testClickingInterfaceElements() {
         setUpEnvironment(environment())
         vm.outputs.showActivityFeed().subscribe(showActivityFeed)
-        vm.outputs.showCreatorDashboard().subscribe(showCreatorDashboard)
         vm.outputs.showHelp().subscribe(showHelp)
         vm.outputs.showInternalTools().subscribe(showInternalTools)
         vm.outputs.showLoginTout().subscribe(showLoginTout)
@@ -264,7 +262,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showProfile().subscribe(showProfile)
         vm.outputs.showSettings().subscribe(showSettings)
         showActivityFeed.assertNoValues()
-        showCreatorDashboard.assertNoValues()
         showHelp.assertNoValues()
         showInternalTools.assertNoValues()
         showLoginTout.assertNoValues()
@@ -279,11 +276,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.loggedOutViewHolderActivityClick(
             Mockito.mock(
                 LoggedOutViewHolder::class.java
-            )
-        )
-        vm.inputs.loggedInViewHolderDashboardClick(
-            Mockito.mock(
-                LoggedInViewHolder::class.java
             )
         )
         vm.inputs.loggedOutViewHolderHelpClick(
@@ -319,7 +311,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             user()
         )
         showActivityFeed.assertValueCount(2)
-        showCreatorDashboard.assertValueCount(1)
         showHelp.assertValueCount(1)
         showInternalTools.assertValueCount(1)
         showLoginTout.assertValueCount(1)

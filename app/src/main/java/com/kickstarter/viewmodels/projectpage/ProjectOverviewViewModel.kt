@@ -4,7 +4,6 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
@@ -45,9 +44,6 @@ interface ProjectOverviewViewModel {
 
         /** Call when the updates clicked  */
         fun updatesButtonClicked()
-
-        /** Call when the creator dashboard is clicked  */
-        fun creatorDashboardClicked()
 
         /** Called when the report project button  */
         fun reportProjectButtonClicked()
@@ -107,12 +103,6 @@ interface ProjectOverviewViewModel {
 
         /** Emits the pledged amount for display.  */
         fun pledgedTextViewText(): Observable<String>
-
-        /** Emits the string resource ID of the project dashboard button.  */
-        fun projectDashboardButtonText(): Observable<Int>
-
-        /** Emits a boolean determining if the project dashboard container should be visible.  */
-        fun projectDashboardContainerIsGone(): Observable<Boolean>
 
         /** Emits the date time to be displayed in the disclaimer.  */
         fun projectDisclaimerGoalReachedDateTime(): Observable<DateTime>
@@ -180,7 +170,6 @@ interface ProjectOverviewViewModel {
         fun startCreatorView(): Observable<ProjectData>
         fun startCommentsView(): Observable<ProjectData>
         fun startUpdatesView(): Observable<ProjectData>
-        fun startCreatorDashboardView(): Observable<ProjectData>
         fun startReportProjectView(): Observable<ProjectData>
         fun startLoginView(): Observable<Void>
         fun shouldShowReportProject(): Observable<Boolean>
@@ -202,7 +191,6 @@ interface ProjectOverviewViewModel {
         private val campaignClicked = PublishSubject.create<Void>()
         private val commentsClicked = PublishSubject.create<Void>()
         private val updatesClicked = PublishSubject.create<Void>()
-        private val creatorDashboardClicked = PublishSubject.create<Void>()
         private val reportProjectButtonClicked = PublishSubject.create<Void>()
         private val refreshFlagged = PublishSubject.create<String>()
         private val linkTagClicked = PublishSubject.create<String>()
@@ -224,8 +212,6 @@ interface ProjectOverviewViewModel {
         private val percentageFundedProgress: Observable<Int>
         private val percentageFundedProgressBarIsGone: Observable<Boolean>
         private val pledgedTextViewText: Observable<String>
-        private val projectDashboardButtonText: Observable<Int>
-        private val projectDashboardContainerIsGone: Observable<Boolean>
         private val projectDisclaimerGoalReachedDateTime: Observable<DateTime>
         private val projectDisclaimerGoalNotReachedString: Observable<Pair<String, DateTime>>
         private val projectDisclaimerTextViewIsGone: Observable<Boolean>
@@ -250,16 +236,11 @@ interface ProjectOverviewViewModel {
         private val startCreatorView: Observable<ProjectData>
         private val startCommentsView: Observable<ProjectData>
         private val startUpdatesView: Observable<ProjectData>
-        private val creatorDashBoardView: Observable<ProjectData>
         private val startReportProjectView: Observable<ProjectData>
         private val startLogin = PublishSubject.create<Void>()
         private val shouldShowReportProject: Observable<Boolean>
         private val shouldShowProjectFlagged: Observable<Boolean>
         private val openExternally = PublishSubject.create<String>()
-
-        private val creatorDashboardDeprecated: Boolean =
-            environment.featureFlagClient()
-                ?.getBoolean(FlagKey.ANDROID_CREATOR_DASHBOARD_DEPRECATION) ?: false
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -276,8 +257,6 @@ interface ProjectOverviewViewModel {
         override fun commentsButtonClicked() = this.commentsClicked.onNext(null)
 
         override fun updatesButtonClicked() = this.updatesClicked.onNext(null)
-
-        override fun creatorDashboardClicked() = this.creatorDashboardClicked.onNext(null)
 
         override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(null)
 
@@ -348,14 +327,6 @@ interface ProjectOverviewViewModel {
 
         override fun pledgedTextViewText(): Observable<String> {
             return pledgedTextViewText
-        }
-
-        override fun projectDashboardButtonText(): Observable<Int> {
-            return projectDashboardButtonText
-        }
-
-        override fun projectDashboardContainerIsGone(): Observable<Boolean> {
-            return projectDashboardContainerIsGone
         }
 
         override fun projectDisclaimerGoalReachedDateTime(): Observable<DateTime> {
@@ -452,10 +423,6 @@ interface ProjectOverviewViewModel {
 
         override fun startUpdatesView(): Observable<ProjectData> {
             return this.startUpdatesView
-        }
-
-        override fun startCreatorDashboardView(): Observable<ProjectData> {
-            return this.creatorDashBoardView
         }
 
         override fun startReportProjectView(): Observable<ProjectData> {
@@ -570,22 +537,6 @@ interface ProjectOverviewViewModel {
                     ) && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
                 }
 
-            projectDashboardButtonText = project
-                .map { obj: Project -> obj.isLive }
-                .map { live: Boolean -> if (live) R.string.View_progress else R.string.View_dashboard }
-                .compose(Transformers.combineLatestPair(userIsCreatorOfProject))
-                .filter { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.second }
-                .map { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.first }
-
-            projectDashboardContainerIsGone = userIsCreatorOfProject
-                .map {
-                    if (creatorDashboardDeprecated) {
-                        true
-                    } else {
-                        it.negate()
-                    }
-                }
-
             projectDisclaimerGoalReachedDateTime = project
                 .filter { obj: Project -> obj.isFunded }
                 .map { obj: Project -> obj.deadline() }
@@ -693,10 +644,6 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.takePairWhen(updatesClicked))
                 .map { it.first }
 
-            creatorDashBoardView = projectData
-                .compose(Transformers.takePairWhen(creatorDashboardClicked))
-                .map { it.first }
-
             startReportProjectView = projectData
                 .compose(Transformers.takePairWhen(reportProjectButtonClicked))
                 .map { it.first }
@@ -751,14 +698,6 @@ interface ProjectOverviewViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)
-                }
-
-            projectData
-                .compose(Transformers.takePairWhen(creatorDashboardClicked))
-                .map { it.first }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
         }
     }

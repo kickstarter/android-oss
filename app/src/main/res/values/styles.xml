@@ -693,25 +693,6 @@
     <item name="tabTextColor">@color/kds_trust_500</item>
   </style>
 
-  <!-- Creator Dashboard -->
-  <style name="CreatorDashboardTableRowContainer">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">@dimen/grid_7</item>
-    <item name="android:gravity">center_vertical</item>
-    <item name="android:orientation">horizontal</item>
-  </style>
-
-  <style name="CreatorDashboardTableRowText" parent="BodyPrimary">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:maxLines">1</item>
-    <item name="android:ellipsize">end</item>
-  </style>
-
-  <style name="CreatorDashboardTableRowText.SecondaryColumn">
-    <item name="android:textColor">@color/kds_support_400</item>
-  </style>
-
   <style name="FacepileImageView">
     <item name="android:padding">1dp</item>
     <item name="android:foreground">@drawable/oval_white_stroke</item>

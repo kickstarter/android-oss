@@ -39,7 +39,6 @@ import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.setClickableHtml
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
-import com.kickstarter.ui.extensions.startCreatorDashboardActivity
 import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
@@ -162,16 +161,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(binding.statsView.pledged::setText)
-
-        viewModel.outputs.projectDashboardButtonText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(binding.projectCreatorDashboardHeader.projectDashboardButton::setText)
-
-        viewModel.outputs.projectDashboardContainerIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding.projectCreatorDashboardHeader.projectDashboardContainer.isGone = it }
 
         viewModel.outputs.projectDisclaimerGoalNotReachedString()
             .compose(bindToLifecycle())
@@ -327,13 +316,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startCreatorBioWebViewActivity(it.project())
             }
 
-        viewModel.outputs.startCreatorDashboardView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                activity?.startCreatorDashboardActivity(it.project())
-            }
-
         viewModel.outputs.startReportProjectView()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -368,10 +350,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .subscribe {
                 context?.let { it1 -> ApplicationUtils.openUrlExternally(it1, it) }
             }
-
-        binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
-            this.viewModel.inputs.creatorDashboardClicked()
-        }
 
         binding.creatorInfo.setOnClickListener {
             this.viewModel.inputs.creatorInfoButtonClicked()

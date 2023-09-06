@@ -6,7 +6,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.activities.CreatorBioActivity
-import com.kickstarter.ui.activities.CreatorDashboardActivity
 import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
@@ -55,16 +54,6 @@ fun Intent.getRootCommentsActivityIntent(
     commentableId?.let { this.putExtra(IntentKey.COMMENT, it) }
 
     return this
-}
-
-/**
- * Return a Intent ready to launch the Creator Dashboard with extras:
- * @param context
- * @param projectAndData
- */
-fun Intent.getCreatorDashboardActivityIntent(context: Context, project: Project): Intent {
-    return this.setClass(context, CreatorDashboardActivity::class.java)
-        .putExtra(IntentKey.PROJECT, project)
 }
 
 fun Intent.getReportProjectActivityIntent(context: Context, project: Project): Intent {

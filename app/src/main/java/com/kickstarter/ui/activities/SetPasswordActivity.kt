@@ -8,6 +8,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySetPasswordBinding
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -25,9 +26,11 @@ class SetPasswordActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var darkModeEnabled = false
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = SetPasswordViewModel.Factory(env)
+            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
 
         binding = ActivitySetPasswordBinding.inflate(layoutInflater)

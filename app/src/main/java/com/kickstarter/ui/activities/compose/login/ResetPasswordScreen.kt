@@ -67,7 +67,13 @@ fun ResetPasswordScreenPreview() {
 }
 
 enum class ResetPasswordTestTag {
-
+    PAGE_TITLE,
+    BACK_BUTTON,
+    OPTIONS_ICON,
+    PROGRESS_BAR,
+    HINT_TEXT,
+    EMAIL,
+    RESET_PASSWORD_BUTTON
 }
 
 @Composable
@@ -95,14 +101,14 @@ fun ResetPasswordScreen(
             TopToolBar(
                 title = title,
                 titleColor = KSTheme.colors.kds_support_700,
-                titleModifier = Modifier.testTag(LoginToutTestTag.PAGE_TITLE.name),
+                titleModifier = Modifier.testTag(ResetPasswordTestTag.PAGE_TITLE.name),
                 leftOnClickAction = onBackClicked,
                 leftIconColor = KSTheme.colors.kds_support_700,
-                leftIconModifier = Modifier.testTag(LoginToutTestTag.BACK_BUTTON.name),
+                leftIconModifier = Modifier.testTag(ResetPasswordTestTag.BACK_BUTTON.name),
                 backgroundColor = KSTheme.colors.kds_white,
                 right = {
                     IconButton(
-                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_ICON.name),
+                        modifier = Modifier.testTag(ResetPasswordTestTag.OPTIONS_ICON.name),
                         onClick = { expanded = !expanded },
                         enabled = true
                     ) {
@@ -150,7 +156,7 @@ fun ResetPasswordScreen(
                 KSLinearProgressIndicator(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .testTag(CreatePasswordScreenTestTag.PROGRESS_BAR.name)
+                        .testTag(ResetPasswordTestTag.PROGRESS_BAR.name)
                 )
             }
 
@@ -158,12 +164,14 @@ fun ResetPasswordScreen(
 
             if (hintText.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.padding(
-                        PaddingValues(
-                            start = KSTheme.dimensions.paddingLarge,
-                            end = KSTheme.dimensions.paddingLarge
+                    modifier = Modifier
+                        .padding(
+                            PaddingValues(
+                                start = KSTheme.dimensions.paddingLarge,
+                                end = KSTheme.dimensions.paddingLarge
+                            )
                         )
-                    ),
+                        .testTag(ResetPasswordTestTag.HINT_TEXT.name),
                     text = hintText,
                     style = KSTheme.typography.body2,
                     color = KSTheme.colors.kds_support_700
@@ -180,7 +188,8 @@ fun ResetPasswordScreen(
                             start = KSTheme.dimensions.paddingLarge,
                             end = KSTheme.dimensions.paddingLarge
                         )
-                    ),
+                    )
+                    .testTag(ResetPasswordTestTag.EMAIL.name),
                 label = stringResource(id = R.string.email),
                 initialValue = initialEmail,
                 onValueChanged = { value ->
@@ -198,12 +207,14 @@ fun ResetPasswordScreen(
             Spacer(modifier = Modifier.height(KSTheme.dimensions.paddingLarge))
 
             KSPrimaryGreenButton(
-                modifier = Modifier.padding(
-                    PaddingValues(
-                        start = KSTheme.dimensions.paddingLarge,
-                        end = KSTheme.dimensions.paddingLarge
+                modifier = Modifier
+                    .padding(
+                        PaddingValues(
+                            start = KSTheme.dimensions.paddingLarge,
+                            end = KSTheme.dimensions.paddingLarge
+                        )
                     )
-                ),
+                    .testTag(ResetPasswordTestTag.RESET_PASSWORD_BUTTON.name),
                 onClickAction = { onResetPasswordButtonClicked.invoke(emailInput) },
                 text = stringResource(id = R.string.forgot_password_buttons_reset_my_password),
                 isEnabled = emailInput.isEmail() && resetButtonEnabled

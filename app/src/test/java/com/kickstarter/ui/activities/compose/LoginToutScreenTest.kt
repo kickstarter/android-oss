@@ -8,6 +8,7 @@ import androidx.core.text.HtmlCompat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.ui.activities.compose.login.LoginDropdownTestTag
 import com.kickstarter.ui.activities.compose.login.LoginToutScreen
 import com.kickstarter.ui.activities.compose.login.LoginToutTestTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -20,17 +21,17 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
     private val backButton = composeTestRule.onNodeWithTag(LoginToutTestTag.BACK_BUTTON.name)
     private val title = composeTestRule.onNodeWithTag(LoginToutTestTag.PAGE_TITLE.name)
     private val optionsIcon = composeTestRule.onNodeWithTag(LoginToutTestTag.OPTIONS_ICON.name)
-    private val optionsMenu = composeTestRule.onNodeWithTag(LoginToutTestTag.OPTIONS_MENU.name)
+    private val optionsMenu = composeTestRule.onNodeWithTag(LoginDropdownTestTag.OPTIONS_MENU.name)
     private val optionsTerms =
-        composeTestRule.onNodeWithTag(LoginToutTestTag.OPTIONS_TERMS.name, useUnmergedTree = true)
+        composeTestRule.onNodeWithTag(LoginDropdownTestTag.OPTIONS_TERMS.name, useUnmergedTree = true)
     private val optionsPrivacyPolicy = composeTestRule.onNodeWithTag(
-        LoginToutTestTag.OPTIONS_PRIVACY_POLICY.name,
+        LoginDropdownTestTag.OPTIONS_PRIVACY_POLICY.name,
         useUnmergedTree = true
     )
     private val optionsCookie =
-        composeTestRule.onNodeWithTag(LoginToutTestTag.OPTIONS_COOKIE.name, useUnmergedTree = true)
+        composeTestRule.onNodeWithTag(LoginDropdownTestTag.OPTIONS_COOKIE.name, useUnmergedTree = true)
     private val optionsHelp =
-        composeTestRule.onNodeWithTag(LoginToutTestTag.OPTIONS_HELP.name, useUnmergedTree = true)
+        composeTestRule.onNodeWithTag(LoginDropdownTestTag.OPTIONS_HELP.name, useUnmergedTree = true)
     private val kSLogo = composeTestRule.onNodeWithTag(LoginToutTestTag.KS_LOGO.name)
     private val logoTitle = composeTestRule.onNodeWithTag(LoginToutTestTag.LOGO_TITLE.name)
     private val facebookButton =

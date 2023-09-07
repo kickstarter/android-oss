@@ -60,7 +60,7 @@ class ResetPasswordActivity : ComponentActivity() {
 
             KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 ResetPasswordScreen(
-                    scaffoldState = rememberScaffoldState(),
+                    scaffoldState = scaffoldState,
                     title = titleAndHint?.title?.let { titleId ->
                         stringResource(id = titleId)
                     },

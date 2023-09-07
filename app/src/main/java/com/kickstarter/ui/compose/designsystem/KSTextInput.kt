@@ -110,7 +110,9 @@ fun KSTextInput(
                 focusedLabelColor = colors.kds_create_700,
                 focusedIndicatorColor = colors.kds_create_700,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert
+                errorCursorColor = colors.kds_alert,
+                textColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled
             ),
             isError = isError,
             trailingIcon = trailingIcon,

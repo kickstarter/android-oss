@@ -24,8 +24,6 @@ import io.reactivex.subjects.PublishSubject
 interface ResetPasswordViewModel {
 
     interface Inputs {
-        /** Call when the email field changes. */
-        fun email(emailInput: String)
 
         /** Call when the reset password button is clicked. */
         fun resetPasswordClick()
@@ -36,9 +34,6 @@ interface ResetPasswordViewModel {
     interface Outputs {
         /** Emits a boolean that determines if the form is in the progress of being submitted. */
         fun isFormSubmitting(): Observable<Boolean>
-
-        /** Emits a boolean that determines if the form validation is passing. */
-        fun isFormValid(): Observable<Boolean>
 
         /** Emits when password reset is completed successfully. */
         fun resetLoginPasswordSuccess(): Observable<Unit>
@@ -169,20 +164,12 @@ interface ResetPasswordViewModel {
 
         override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 
-        override fun email(emailInput: String) {
-            this.email.onNext(emailInput)
-        }
-
         override fun resetPasswordClick() {
             this.resetPasswordClick.onNext(Unit)
         }
 
         override fun isFormSubmitting(): Observable<Boolean> {
             return this.isFormSubmitting
-        }
-
-        override fun isFormValid(): Observable<Boolean> {
-            return this.isFormValid
         }
 
         override fun resetLoginPasswordSuccess(): Observable<Unit> {

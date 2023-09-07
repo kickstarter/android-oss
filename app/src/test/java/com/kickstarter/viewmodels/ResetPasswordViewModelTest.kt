@@ -21,20 +21,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     @Test
-    fun testResetPasswordViewModel_formValidation() {
-        val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment())
-        val test = TestSubscriber<Boolean>()
-
-        vm.outputs.isFormValid().subscribe { test.onNext(it) }.addToDisposable(disposables)
-
-        vm.inputs.email("incorrect@kickstarter")
-        test.assertValues(false)
-
-        vm.inputs.email("hello@kickstarter.com")
-        test.assertValues(false, true)
-    }
-
-    @Test
     fun testResetPasswordViewModel_resetSuccess() {
         val vm = ResetPasswordViewModel.ResetPasswordViewModel(environment().toBuilder().apiClientV2(MockApiClientV2()).build())
         val resetLoginPasswordSuccess = TestSubscriber<Unit>()
@@ -50,7 +36,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         resetFacebookLoginPasswordSuccess.assertNoValues()
         resetPasswordScreenStatus.assertNoValues()
 
-        vm.inputs.email("hello@kickstarter.com")
+        vm.setEmail("hello@kickstarter.com")
         resetLoginPasswordSuccess.assertNoValues()
         resetFacebookLoginPasswordSuccess.assertNoValues()
         resetPasswordScreenStatus.assertNoValues()
@@ -79,7 +65,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         vm.configureWith(Intent().putExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN, true))
 
-        vm.inputs.email("hello@kickstarter.com")
+        vm.setEmail("hello@kickstarter.com")
         resetLoginPasswordSuccess.assertNoValues()
         resetFacebookLoginPasswordSuccess.assertNoValues()
         resetPasswordScreenStatus.assertNoValues()
@@ -119,7 +105,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         resetPasswordScreenStatus.assertNoValues()
 
         vm.configureWith(Intent().putExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN, true))
-        vm.inputs.email("hello@kickstarter.com")
+        vm.setEmail("hello@kickstarter.com")
         resetLoginPasswordSuccess.assertNoValues()
         resetFacebookLoginPasswordSuccess.assertNoValues()
         resetPasswordScreenStatus.assertValue(ResetPasswordScreenState.ResetPassword)
@@ -147,7 +133,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         vm.outputs.resetError().subscribe { errorTest.onNext(it) }.addToDisposable(disposables)
 
-        vm.inputs.email("hello@kickstarter.com")
+        vm.setEmail("hello@kickstarter.com")
         vm.inputs.resetPasswordClick()
 
         errorTest.assertValue("bad request")

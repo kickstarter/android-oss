@@ -72,8 +72,6 @@ interface ResetPasswordViewModel {
         private val intent = BehaviorSubject.create<Intent>()
         private val disposables = CompositeDisposable()
 
-        private val ERROR_GENERIC = "Something went wrong, please try again."
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -144,6 +142,14 @@ interface ResetPasswordViewModel {
                 .addToDisposable(disposables)
         }
 
+        fun setEmail(email: String) {
+            this.email.onNext(email)
+        }
+
+        fun resetErrorMessage() {
+            this.resetError.onNext(ErrorEnvelope.builder().build())
+        }
+
         override fun onCleared() {
             disposables.clear()
             super.onCleared()
@@ -190,7 +196,7 @@ interface ResetPasswordViewModel {
         override fun resetError(): Observable<String> {
             return this.resetError
                 .takeUntil(this.resetLoginPasswordSuccess)
-                .map { it?.errorMessage() ?: ERROR_GENERIC }
+                .map { it.errorMessage() }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

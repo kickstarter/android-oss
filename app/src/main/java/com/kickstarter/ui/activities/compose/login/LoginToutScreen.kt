@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -121,62 +119,14 @@ fun LoginToutScreen(
                                 tint = colors.kds_black
                             )
 
-                            DropdownMenu(
-                                modifier = Modifier
-                                    .background(color = colors.kds_support_100)
-                                    .testTag(LoginToutTestTag.OPTIONS_MENU.name),
+                            KSLoginDropdownMenu(
                                 expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onTermsOfUseClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_TERMS.name),
-                                        text = stringResource(id = R.string.login_tout_help_sheet_terms),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onPrivacyPolicyClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_PRIVACY_POLICY.name),
-                                        text = stringResource(id = R.string.login_tout_help_sheet_privacy),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onCookiePolicyClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_COOKIE.name),
-                                        text = stringResource(id = R.string.login_tout_help_sheet_cookie),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onHelpClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_HELP.name),
-                                        text = stringResource(id = R.string.general_navigation_buttons_help),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                            }
+                                onDismissed = { expanded = !expanded },
+                                onTermsOfUseClicked = onTermsOfUseClicked,
+                                onPrivacyPolicyClicked = onPrivacyPolicyClicked,
+                                onCookiePolicyClicked = onCookiePolicyClicked,
+                                onHelpClicked = onHelpClicked
+                            )
                         }
                     }
                 }

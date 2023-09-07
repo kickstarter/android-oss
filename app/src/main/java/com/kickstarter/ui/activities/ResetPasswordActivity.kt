@@ -63,10 +63,10 @@ class ResetPasswordActivity : ComponentActivity() {
                     scaffoldState = scaffoldState,
                     title = titleAndHint?.title?.let { titleId ->
                         stringResource(id = titleId)
-                    },
+                    } ?: stringResource(id = R.string.forgot_password_title),
                     hintText = titleAndHint?.hint?.let { hintId ->
                         stringResource(id = hintId)
-                    },
+                    } ?: "",
                     initialEmail = initialValue,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onTermsOfUseClicked = { startActivity(DisclaimerItems.TERMS) },

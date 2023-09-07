@@ -53,6 +53,7 @@ fun ResetPasswordScreenPreview() {
     KSTheme {
         ResetPasswordScreen(
             scaffoldState = rememberScaffoldState(),
+            hintText = "Hey, this is some text that could tell you something",
             onBackClicked = { },
             onTermsOfUseClicked = { },
             onPrivacyPolicyClicked = { },
@@ -65,11 +66,15 @@ fun ResetPasswordScreenPreview() {
     }
 }
 
+enum class ResetPasswordTestTag {
+
+}
+
 @Composable
 fun ResetPasswordScreen(
     scaffoldState: ScaffoldState,
-    title: String? = stringResource(id = R.string.forgot_password_title),
-    hintText: String? = "",
+    title: String = stringResource(id = R.string.forgot_password_title),
+    hintText: String = "",
     initialEmail: String = "",
     onBackClicked: () -> Unit,
     onTermsOfUseClicked: () -> Unit,
@@ -151,7 +156,7 @@ fun ResetPasswordScreen(
 
             Spacer(modifier = Modifier.height(KSTheme.dimensions.paddingLarge))
 
-            hintText?.let { hint ->
+            if (hintText.isNotEmpty()) {
                 Text(
                     modifier = Modifier.padding(
                         PaddingValues(
@@ -159,7 +164,7 @@ fun ResetPasswordScreen(
                             end = KSTheme.dimensions.paddingLarge
                         )
                     ),
-                    text = hint,
+                    text = hintText,
                     style = KSTheme.typography.body2,
                     color = KSTheme.colors.kds_support_700
                 )

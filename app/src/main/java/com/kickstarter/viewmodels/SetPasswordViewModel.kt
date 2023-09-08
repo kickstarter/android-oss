@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
@@ -85,6 +86,7 @@ interface SetPasswordViewModel {
                 .map { requireNotNull(it) }
                 .map { it.maskEmail() }
                 .subscribe {
+//                    this.setUserEmail.onNext(environment.ksString()?.format((R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it) ?: "")
                     this.setUserEmail.onNext(it)
                 }.addToDisposable(disposables)
 

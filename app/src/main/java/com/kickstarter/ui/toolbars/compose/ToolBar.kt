@@ -42,8 +42,8 @@ fun TopToolBar(
     title: String? = null,
     titleColor: Color? = null,
     titleModifier: Modifier = Modifier,
-    leftIcon: ImageVector = Icons.Filled.ArrowBack,
-    leftOnClickAction: () -> Unit = {},
+    leftIcon: ImageVector? = Icons.Filled.ArrowBack,
+    leftOnClickAction: (() -> Unit)? = {},
     leftIconColor: Color? = null,
     leftIconModifier: Modifier = Modifier,
     right: @Composable () -> Unit = {},
@@ -64,16 +64,18 @@ fun TopToolBar(
             }
         },
         navigationIcon = {
+            if (leftIcon != null && leftOnClickAction != null) {
             IconButton(
-                modifier = leftIconModifier,
-                onClick = { leftOnClickAction() }
+                    modifier = leftIconModifier,
+                    onClick = { leftOnClickAction() }
             ) {
                 Icon(
-                    imageVector = leftIcon,
-                    contentDescription = stringResource(id = R.string.back),
-                    tint = leftIconColor ?: kds_black
+                        imageVector = leftIcon,
+                        contentDescription = stringResource(id = R.string.back),
+                        tint = leftIconColor ?: kds_black
                 )
             }
+        } else null
         },
         actions = {
             middle()

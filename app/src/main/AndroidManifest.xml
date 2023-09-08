@@ -118,6 +118,7 @@
         <activity
             android:name=".ui.activities.SetPasswordActivity"
             android:parentActivityName=".ui.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.HelpActivity"

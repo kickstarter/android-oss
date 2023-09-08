@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -37,9 +38,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
+import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
+import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 
@@ -116,7 +119,8 @@ fun SetPasswordScreen(
                         title = stringResource(id = R.string.Set_your_password),
                         titleColor = KSTheme.colors.kds_support_700,
                         titleModifier = Modifier.testTag(SetPasswordScreenTestTag.PAGE_TITLE.name),
-                        leftOnClickAction = onBackClicked,
+                        leftIcon = null,
+                        leftOnClickAction = null,
                         leftIconColor = KSTheme.colors.kds_support_700,
                         leftIconModifier = Modifier.testTag(SetPasswordScreenTestTag.BACK_BUTTON.name),
                         backgroundColor = KSTheme.colors.kds_white,
@@ -227,6 +231,14 @@ fun SetPasswordScreen(
                             color = KSTheme.colors.kds_support_700
                     )
                 }
+
+                Spacer(modifier = Modifier.height(KSTheme.dimensions.listItemSpacingMedium))
+
+                KSPrimaryGreenButton(
+                        text = "Set Password",
+                        onClickAction = { onAcceptButtonClicked.invoke(newPasswordLine1) },
+                        isEnabled = acceptButtonEnabled
+                )
             }
         }
     }

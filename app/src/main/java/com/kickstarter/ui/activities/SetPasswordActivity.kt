@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
@@ -43,6 +45,8 @@ class SetPasswordActivity : AppCompatActivity() {
 
             var scaffoldState = rememberScaffoldState()
 
+//            var headline by remember { mutableStateOf("") } //observable that will once it gets the email from the observable, pass the whole headline to the screen
+
             when {
                 error.isNotEmpty() -> {
                     LaunchedEffect(scaffoldState) {
@@ -67,13 +71,9 @@ class SetPasswordActivity : AppCompatActivity() {
                 )
             }
 
+
         }
         viewModel.configureWith(intent)
-
-        this.viewModel.outputs.error()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
-            .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
             .observeOn(AndroidSchedulers.mainThread())

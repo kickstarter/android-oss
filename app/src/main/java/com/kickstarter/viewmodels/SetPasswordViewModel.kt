@@ -44,9 +44,6 @@ interface SetPasswordViewModel {
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
-        /** Emits when the save button should be enabled. */
-        fun saveButtonIsEnabled(): Observable<Boolean>
-
         /** Emits when the password update was successful. */
         fun success(): Observable<String>
 
@@ -69,7 +66,6 @@ interface SetPasswordViewModel {
         private val error = BehaviorSubject.create<String>()
         private val passwordWarning = BehaviorSubject.create<Int>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
-        private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
         private val setUserEmail = BehaviorSubject.create<String>()
 
@@ -97,17 +93,6 @@ interface SetPasswordViewModel {
                 this.confirmPassword.startWith("")
             ) { new, confirm -> SetNewPassword(new, confirm) }
 
-            setNewPassword
-                .map { ObjectUtils.requireNonNull(it.warning()) }
-                .distinctUntilChanged()
-                .subscribe { this.passwordWarning.onNext(it) }
-                .addToDisposable(disposables)
-
-            setNewPassword
-                .map { it.isValid() }
-                .distinctUntilChanged()
-                .subscribe(this.saveButtonIsEnabled)
-
             val setNewPasswordNotification = setNewPassword
                 .compose(takeWhenV2(this.changePasswordClicked))
                 .switchMap { cp -> submit(cp).materialize() }
@@ -125,6 +110,7 @@ interface SetPasswordViewModel {
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .filter { ObjectUtils.isNotNull(it.errorMessage()) }
                 .map {
+                    requireNotNull(it.errorMessage())
                     requireNotNull(it.errorMessage())
                 }
 
@@ -167,6 +153,10 @@ interface SetPasswordViewModel {
                     this.isFormSubmitting.onNext(false)
                 }
         }
+
+        fun resetError() {
+            this.error.onNext("")
+        }
         // - Inputs
         override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 
@@ -186,7 +176,6 @@ interface SetPasswordViewModel {
         override fun error(): Observable<String> = this.error
         override fun passwordWarning(): Observable<Int> = this.passwordWarning
         override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
-        override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
         override fun isFormSubmitting(): Observable<Boolean> = this.isFormSubmitting
         override fun success(): Observable<String> = this.success
         override fun setUserEmail(): Observable<String> = this.setUserEmail

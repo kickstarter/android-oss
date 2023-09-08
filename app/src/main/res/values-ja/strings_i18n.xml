@@ -766,7 +766,7 @@
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">ライブ配信への接続に失敗。</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
-  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Facebook 経由でのログイン機能の提供がまもなく終了します。メールアドレス %{email} を使ってアカウントにログインするには、6 文字以上のパスワードを設定してください。</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="true">Facebook 経由でのログイン機能の提供がまもなく終了します。メールアドレス %1$s を使ってアカウントにログインするには、6 文字以上のパスワードを設定してください。</string>
   <string name="We_will_email_you" formatted="false">あなたが一番乗りでバッカーになれるよう、このプロジェクトがローンチした際にはメールでお知らせします。</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">これはクリエイターには共有されません。</string>
   <string name="Websites" formatted="false">ウェブサイト</string>

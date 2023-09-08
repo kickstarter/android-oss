@@ -767,7 +767,7 @@ Antippen und erneut versuchen</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
-  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Wir werden die Anmeldung über Facebook einstellen. Um dich mit der E-Mail-Adresse %{email} in deinem Konto anzumelden, leg bitte ein Passwort fest, das mindestens 6 Zeichen lang ist.</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="true">Wir werden die Anmeldung über Facebook einstellen. Um dich mit der E-Mail-Adresse %1$s in deinem Konto anzumelden, leg bitte ein Passwort fest, das mindestens 6 Zeichen lang ist.</string>
   <string name="We_will_email_you" formatted="false">Wir schicken dir eine E-Mail, sobald das Projekt live geht, dann kannst du es als einer der ersten unterstützen.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">Diese Information wird nicht mit dem Projektgründer geteilt.</string>
   <string name="Websites" formatted="false">Webseiten</string>

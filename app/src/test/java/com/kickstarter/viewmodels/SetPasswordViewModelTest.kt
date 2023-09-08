@@ -37,7 +37,6 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.isFormSubmitting().subscribe { this.isFormSubmitting.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.setUserEmail().subscribe { this.setUserEmail.onNext(it) }.addToDisposable(disposables)

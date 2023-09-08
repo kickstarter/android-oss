@@ -157,6 +157,7 @@ interface SetPasswordViewModel {
         fun resetError() {
             this.error.onNext("")
         }
+
         // - Inputs
         override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 

@@ -70,8 +70,7 @@ class LoginToutActivity : ComponentActivity() {
                     },
                     onCookiePolicyClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES) },
                     onHelpClicked = {
-                        intent = Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT))
-                        this@LoginToutActivity.startActivity(intent)
+                        viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
                     }
                 )
             }
@@ -178,6 +177,10 @@ class LoginToutActivity : ComponentActivity() {
             DisclaimerItems.TERMS -> Intent(this, Terms::class.java)
             DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
             DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
+            DisclaimerItems.HELP -> Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(Secrets.HelpCenter.ENDPOINT)
+            )
         }
         startActivity(intent)
     }
@@ -255,5 +258,6 @@ class LoginToutActivity : ComponentActivity() {
 enum class DisclaimerItems(@StringRes val itemName: Int) {
     TERMS(R.string.login_tout_help_sheet_terms),
     COOKIES(R.string.login_tout_help_sheet_cookie),
-    PRIVACY(R.string.login_tout_help_sheet_privacy)
+    PRIVACY(R.string.login_tout_help_sheet_privacy),
+    HELP(R.string.general_navigation_buttons_help)
 }

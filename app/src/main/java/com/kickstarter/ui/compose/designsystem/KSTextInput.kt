@@ -75,6 +75,7 @@ fun KSTextInputPreview() {
 fun KSTextInput(
     modifier: Modifier = Modifier,
     label: String,
+    initialValue: String = "",
     onValueChanged: ((String) -> Unit)? = null,
     isError: Boolean = false,
     assistiveText: String? = null,
@@ -84,7 +85,7 @@ fun KSTextInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions()
 ) {
-    var value by rememberSaveable { mutableStateOf("") }
+    var value by rememberSaveable { mutableStateOf(initialValue) }
 
     Column {
         TextField(
@@ -97,8 +98,8 @@ fun KSTextInput(
             label = { Text(text = label) },
             maxLines = 1,
             shape = RoundedCornerShape(
-                topStart = dimensions.radiusMediumLarge,
-                topEnd = dimensions.radiusMediumLarge
+                topStart = dimensions.radiusMediumSmall,
+                topEnd = dimensions.radiusMediumSmall
             ),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = colors.kds_support_200,
@@ -109,7 +110,9 @@ fun KSTextInput(
                 focusedLabelColor = colors.kds_create_700,
                 focusedIndicatorColor = colors.kds_create_700,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert
+                errorCursorColor = colors.kds_alert,
+                textColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled
             ),
             isError = isError,
             trailingIcon = trailingIcon,
@@ -143,6 +146,7 @@ fun KSHiddenTextInput(
     modifier: Modifier = Modifier,
     onValueChanged: ((String) -> Unit)? = null,
     label: String,
+    initialValue: String = "",
     hideTextByDefault: Boolean = true,
     visibilityOffIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility_off),
     visibilityOnIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility_on),
@@ -158,6 +162,7 @@ fun KSHiddenTextInput(
     KSTextInput(
         modifier = modifier,
         label = label,
+        initialValue = initialValue,
         onValueChanged = onValueChanged,
         hideInput = !showHiddenText,
         trailingIcon = {

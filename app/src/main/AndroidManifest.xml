@@ -113,6 +113,7 @@
         <activity
             android:name=".ui.activities.ResetPasswordActivity"
             android:parentActivityName=".ui.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.SetPasswordActivity"

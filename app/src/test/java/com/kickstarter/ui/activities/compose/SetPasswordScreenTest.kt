@@ -49,7 +49,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 SetPasswordScreen(
                         onBackClicked = {},
-                        onAcceptButtonClicked = {},
+                        onSaveButtonClicked = {},
                         showProgressBar = false,
                         email = "test@test.com",
                         isFormSubmitting = false,
@@ -84,7 +84,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 SetPasswordScreen(
                         onBackClicked = {},
-                        onAcceptButtonClicked = {},
+                        onSaveButtonClicked = {},
                         showProgressBar = false,
                         email = "test@test.com",
                         isFormSubmitting = false,
@@ -134,7 +134,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 SetPasswordScreen(
                         onBackClicked = { backClickedCount++ },
-                        onAcceptButtonClicked = { acceptButtonClickedCount++ },
+                        onSaveButtonClicked = { acceptButtonClickedCount++ },
                         showProgressBar = false,
                         email = "test@test.com",
                         isFormSubmitting = false,

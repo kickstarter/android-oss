@@ -2,8 +2,8 @@ package com.kickstarter.ui.activities.compose.login
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,31 +14,31 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
-import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
@@ -52,11 +52,14 @@ import com.kickstarter.ui.toolbars.compose.TopToolBar
 fun SetPasswordPreview() {
     KSTheme {
         SetPasswordScreen(
-                onBackClicked = {},
-                onAcceptButtonClicked = {},
+                onSaveButtonClicked = {},
                 showProgressBar = false,
                 email = "test@test.com",
                 isFormSubmitting = false,
+                onTermsOfUseClicked = { },
+                onPrivacyPolicyClicked = { },
+                onCookiePolicyClicked = { },
+                onHelpClicked = { },
                 scaffoldState = rememberScaffoldState()
         )
     }
@@ -76,14 +79,18 @@ enum class SetPasswordScreenTestTag {
 
 @Composable
 fun SetPasswordScreen(
-        onBackClicked: () -> Unit,
-        onAcceptButtonClicked: (newPass: String) -> Unit,
+        onSaveButtonClicked: (newPass: String) -> Unit,
         showProgressBar: Boolean,
         email: String,
         isFormSubmitting: Boolean,
+        onTermsOfUseClicked: () -> Unit,
+        onPrivacyPolicyClicked: () -> Unit,
+        onCookiePolicyClicked: () -> Unit,
+        onHelpClicked: () -> Unit,
         scaffoldState: ScaffoldState
 ) {
 
+    var expanded by remember { mutableStateOf(false) }
     var newPasswordLine1 by rememberSaveable { mutableStateOf("") }
     var newPasswordLine2 by rememberSaveable { mutableStateOf("") }
 
@@ -126,26 +133,29 @@ fun SetPasswordScreen(
                         backgroundColor = KSTheme.colors.kds_white,
                         right = {
                             IconButton(
-                                    modifier = Modifier.testTag(SetPasswordScreenTestTag.SAVE_BUTTON.name),
-                                    onClick = {
-                                        onAcceptButtonClicked.invoke(
-                                                newPasswordLine1
-                                        )
-                                    },
-                                    enabled = acceptButtonEnabled
+                                    modifier = Modifier.testTag(ResetPasswordTestTag.OPTIONS_ICON.name),
+                                    onClick = { expanded = !expanded },
+                                    enabled = true
                             ) {
-                                Image(
-                                        modifier = Modifier.testTag(SetPasswordScreenTestTag.SAVE_IMAGE.name),
-                                        painter = painterResource(id = R.drawable.icon__check),
-                                        contentDescription = null,
-                                        colorFilter = ColorFilter.tint(
-                                                color =
-                                                if (acceptButtonEnabled) KSTheme.colors.kds_create_700
-                                                else KSTheme.colors.kds_support_300
-                                        )
-                                )
-                            }
+                                Box {
+                                    Icon(
+                                            imageVector = Icons.Default.MoreVert,
+                                            contentDescription = stringResource(
+                                                    id = R.string.general_navigation_accessibility_button_help_menu_label
+                                            ),
+                                            tint = KSTheme.colors.kds_black
+                                    )
 
+                                    KSLoginDropdownMenu(
+                                            expanded = expanded,
+                                            onDismissed = { expanded = !expanded },
+                                            onTermsOfUseClicked = onTermsOfUseClicked,
+                                            onPrivacyPolicyClicked = onPrivacyPolicyClicked,
+                                            onCookiePolicyClicked = onCookiePolicyClicked,
+                                            onHelpClicked = onHelpClicked
+                                    )
+                                }
+                            }
                         }
                 )
             },
@@ -160,7 +170,7 @@ fun SetPasswordScreen(
     ) { padding ->
         Column(
                 Modifier
-                        .background(KSTheme.colors.kds_support_100)
+                        .background(KSTheme.colors.kds_white)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                         .padding(padding)
@@ -235,8 +245,8 @@ fun SetPasswordScreen(
                 Spacer(modifier = Modifier.height(KSTheme.dimensions.listItemSpacingMedium))
 
                 KSPrimaryGreenButton(
-                        text = "Set Password",
-                        onClickAction = { onAcceptButtonClicked.invoke(newPasswordLine1) },
+                        text = stringResource(id = R.string.Save),
+                        onClickAction = { onSaveButtonClicked.invoke(newPasswordLine1) },
                         isEnabled = acceptButtonEnabled
                 )
             }

@@ -8,16 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.compose.login.SetPasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.SetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -58,8 +56,7 @@ class SetPasswordActivity : AppCompatActivity() {
 
             KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 SetPasswordScreen(
-                        onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                        onAcceptButtonClicked = { newPassword->
+                        onSaveButtonClicked = { newPassword->
                             viewModel.inputs.newPassword(newPassword)
                             viewModel.inputs.confirmPassword(newPassword)
                             viewModel.inputs.changePasswordClicked()
@@ -67,6 +64,10 @@ class SetPasswordActivity : AppCompatActivity() {
                         showProgressBar = showProgressBar,
                         email = viewModel.outputs.setUserEmail().subscribeAsState(initial = "").value ,
                         isFormSubmitting = viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value,
+                        onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                        onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                        onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                        onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
                         scaffoldState = scaffoldState
                 )
             }

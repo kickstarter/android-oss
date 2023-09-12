@@ -355,7 +355,7 @@ Toca para intentar de nuevo.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter presta suma atención a las denuncias de infracción de derecho intelectual. Para encontrar más información e instrucciones sobre cómo denunciar una infracción, visita nuestra Política de copyright y nuestra Política de marca registrada. Solo se pueden procesar las denuncias presentadas por el propietario del copyright o marca registrada.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
-  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Información sobre la política de IA en Kickstarter.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Información sobre la política de IA en Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Más información sobre el concepto de responsabilidad en Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Más información sobre las responsabilidades</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Más información sobre las reglas de los comentarios&lt;/a></string>
@@ -768,7 +768,7 @@ Toca para intentar de nuevo.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">No se pudo conectar al chat de live stream.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">No se pudieron cargar los destinos de envío.\n
 Por favor inténtalo de nuevo más tarde.</string>
-  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="true">Descontinuaremos la posibilidad de iniciar sesión a través de Facebook. Para acceder a tu cuenta con el correo electrónico %1$s, configura una contraseña que tenga al menos seis caracteres.</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Descontinuaremos la posibilidad de iniciar sesión a través de Facebook. Para acceder a tu cuenta con el correo electrónico %{email}, configura una contraseña que tenga al menos seis caracteres.</string>
   <string name="We_will_email_you" formatted="false">Te enviaremos un correo electrónico cuando se publique este proyecto así puedes ser uno de los primeros patrocinadores.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">No lo compartiremos con el creador.</string>
   <string name="Websites" formatted="false">Sitios web</string>

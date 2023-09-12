@@ -355,7 +355,7 @@ with friends.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
-  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Learn about AI policy on Kickstarter.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Learn about AI policy on Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Learn more about comment guidelines&lt;/a></string>
@@ -771,7 +771,7 @@ catch your eye?</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">We were unable to connect to the live stream chat.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>
-  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="true">We will be discontinuing the ability to log in via Facebook. To log in to your account using the email %1$s, please set a password that’s at least 6 characters long.</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">We will be discontinuing the ability to log in via Facebook. To log in to your account using the email %{email}, please set a password that’s at least 6 characters long.</string>
   <string name="We_will_email_you" formatted="false">We’ll email you when this project launches so you can be one of the first backers.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">We won’t share this with the creator.</string>
   <string name="Websites" formatted="false">Websites</string>

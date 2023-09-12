@@ -65,17 +65,18 @@ fun TopToolBar(
         },
         navigationIcon = {
             if (leftIcon != null && leftOnClickAction != null) {
-            IconButton(
+                IconButton(
                     modifier = leftIconModifier,
                     onClick = { leftOnClickAction() }
-            ) {
-                Icon(
+                ) {
+                    Icon(
                         imageVector = leftIcon,
                         contentDescription = stringResource(id = R.string.back),
                         tint = leftIconColor ?: kds_black
-                )
+                    )
+                }
+            } else {
             }
-        } else null
         },
         actions = {
             middle()

@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import UpdateUserPasswordMutation
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
@@ -24,9 +23,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: SetPasswordViewModel.SetPasswordViewModel
     private val disposables: CompositeDisposable = CompositeDisposable()
     private val error = TestSubscriber<String>()
-    private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
-    private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
     private val isFormSubmitting = TestSubscriber<Boolean>()
     private val setUserEmail = TestSubscriber<String>()
@@ -35,7 +32,6 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm = SetPasswordViewModel.SetPasswordViewModel(environment)
 
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.isFormSubmitting().subscribe { this.isFormSubmitting.onNext(it) }.addToDisposable(disposables)
@@ -58,7 +54,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
+        this.vm.inputs.savePasswordClicked()
 
         this.error.assertValue("bad request")
     }
@@ -79,32 +75,9 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
+        this.vm.inputs.savePasswordClicked()
 
         this.error.assertValue("Oops")
-    }
-
-    @Test
-    fun testPasswordWarning() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(0)
-        this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message)
-        this.passwordWarning.assertValueCount(2)
-        this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0)
-        this.passwordWarning.assertValueCount(3)
-        this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
-        this.passwordWarning.assertValueCount(4)
-        this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
-        this.passwordWarning.assertValueCount(4)
-        this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValueCount(5)
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message, 0)
     }
 
     @Test
@@ -113,22 +86,9 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
+        this.vm.inputs.savePasswordClicked()
         this.progressBarIsVisible.assertValues(true, false)
         this.isFormSubmitting.assertValues(true, false)
-    }
-
-    @Test
-    fun testSaveButtonIsEnabled() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.saveButtonIsEnabled.assertValues(false, true)
-        this.vm.inputs.confirmPassword("pass")
-        this.saveButtonIsEnabled.assertValues(false, true, false)
-        this.vm.inputs.confirmPassword("passwerd")
-        this.saveButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test
@@ -165,7 +125,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
+        this.vm.inputs.savePasswordClicked()
 
         this.success.assertValue("test@email.com")
 

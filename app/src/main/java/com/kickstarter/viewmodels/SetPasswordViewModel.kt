@@ -3,13 +3,11 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
 import com.kickstarter.libs.utils.extensions.maskEmail
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -26,7 +24,7 @@ interface SetPasswordViewModel {
         fun configureWith(intent: Intent)
 
         /** Call when the user clicks the change password button. */
-        fun changePasswordClicked()
+        fun savePasswordClicked()
 
         /** Call when the current password field changes.  */
         fun confirmPassword(confirmPassword: String)
@@ -38,9 +36,6 @@ interface SetPasswordViewModel {
     interface Outputs {
         /** Emits when the password update was unsuccessful. */
         fun error(): Observable<String>
-
-        /** Emits a string resource to display when the user's new password entries are invalid. */
-        fun passwordWarning(): Observable<Int>
 
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
@@ -57,7 +52,7 @@ interface SetPasswordViewModel {
 
     class SetPasswordViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
-        private val changePasswordClicked = PublishSubject.create<Unit>()
+        private val savePasswordClicked = PublishSubject.create<Unit>()
         private val confirmPassword = PublishSubject.create<String>()
         private val newPassword = PublishSubject.create<String>()
         private val isFormSubmitting = PublishSubject.create<Boolean>()
@@ -65,7 +60,6 @@ interface SetPasswordViewModel {
 
         private val intent = BehaviorSubject.create<Intent>()
         private val error = BehaviorSubject.create<String>()
-        private val passwordWarning = BehaviorSubject.create<Int>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
         private val setUserEmail = BehaviorSubject.create<String>()
@@ -86,7 +80,6 @@ interface SetPasswordViewModel {
                 .map { requireNotNull(it) }
                 .map { it.maskEmail() }
                 .subscribe {
-//                    this.setUserEmail.onNext(environment.ksString()?.format((R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it) ?: "")
                     this.setUserEmail.onNext(it)
                 }.addToDisposable(disposables)
 
@@ -96,7 +89,7 @@ interface SetPasswordViewModel {
             ) { new, confirm -> SetNewPassword(new, confirm) }
 
             val setNewPasswordNotification = setNewPassword
-                .compose(takeWhenV2(this.changePasswordClicked))
+                .compose(takeWhenV2(this.savePasswordClicked))
                 .switchMap { cp -> submit(cp).materialize() }
                 .share()
 
@@ -163,8 +156,8 @@ interface SetPasswordViewModel {
         // - Inputs
         override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 
-        override fun changePasswordClicked() {
-            this.changePasswordClicked.onNext(Unit)
+        override fun savePasswordClicked() {
+            this.savePasswordClicked.onNext(Unit)
         }
 
         override fun confirmPassword(confirmPassword: String) {
@@ -177,18 +170,12 @@ interface SetPasswordViewModel {
 
         // - Outputs
         override fun error(): Observable<String> = this.error
-        override fun passwordWarning(): Observable<Int> = this.passwordWarning
         override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
         override fun isFormSubmitting(): Observable<Boolean> = this.isFormSubmitting
         override fun success(): Observable<String> = this.success
         override fun setUserEmail(): Observable<String> = this.setUserEmail
 
         data class SetNewPassword(val newPassword: String, val confirmPassword: String) {
-            fun isValid(): Boolean {
-                return this.newPassword.isNotEmptyAndAtLeast6Chars() &&
-                    this.confirmPassword.isNotEmptyAndAtLeast6Chars() &&
-                    this.confirmPassword == this.newPassword
-            }
 
             fun warning(): Int =
                 newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0

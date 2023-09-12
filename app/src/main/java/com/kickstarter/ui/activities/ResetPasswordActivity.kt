@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -14,7 +13,6 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.res.stringResource
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment

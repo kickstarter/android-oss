@@ -354,7 +354,7 @@ Antippen und erneut versuchen</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Meldungen zu möglichen Verletzungen von Urheberrechten werden bei Kickstarter sehr ernst genommen. Weitere Informationen zum Melden von solchen Urheberrechtsverletzungen findest du in unserer Richtlinie zu Urheberrechten und unserer Richtlinie zu Markenrechten. Es können nur Meldungen bearbeitet werden, die vom Eigentümer des Urheberrechts oder Markenzeichens gemacht wurden.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
-  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Weitere Informationen zu KI-Richtlinie von Kickstarter.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Weitere Informationen zur KI-Richtlinie von Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Näheres zur Rechenschaftspflicht auf Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Mehr Info zu Kommentar-Richtlinien&lt;/a></string>
@@ -767,7 +767,7 @@ Antippen und erneut versuchen</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
-  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="true">Wir werden die Anmeldung über Facebook einstellen. Um dich mit der E-Mail-Adresse %1$s in deinem Konto anzumelden, leg bitte ein Passwort fest, das mindestens 6 Zeichen lang ist.</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Wir werden die Anmeldung über Facebook einstellen. Um dich mit der E-Mail-Adresse %{email} in deinem Konto anzumelden, leg bitte ein Passwort fest, das mindestens 6 Zeichen lang ist.</string>
   <string name="We_will_email_you" formatted="false">Wir schicken dir eine E-Mail, sobald das Projekt live geht, dann kannst du es als einer der ersten unterstützen.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">Diese Information wird nicht mit dem Projektgründer geteilt.</string>
   <string name="Websites" formatted="false">Webseiten</string>

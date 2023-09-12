@@ -52,42 +52,40 @@ import com.kickstarter.ui.toolbars.compose.TopToolBar
 fun SetPasswordPreview() {
     KSTheme {
         SetPasswordScreen(
-                onSaveButtonClicked = {},
-                showProgressBar = false,
-                email = "test@test.com",
-                isFormSubmitting = false,
-                onTermsOfUseClicked = { },
-                onPrivacyPolicyClicked = { },
-                onCookiePolicyClicked = { },
-                onHelpClicked = { },
-                scaffoldState = rememberScaffoldState()
+            onSaveButtonClicked = {},
+            showProgressBar = false,
+            isFormSubmitting = false,
+            onTermsOfUseClicked = { },
+            onPrivacyPolicyClicked = { },
+            onCookiePolicyClicked = { },
+            onHelpClicked = { },
+            scaffoldState = rememberScaffoldState()
         )
     }
 }
 
 enum class SetPasswordScreenTestTag {
-    BACK_BUTTON,
     PAGE_TITLE,
     SAVE_BUTTON,
-    SAVE_IMAGE,
+    OPTIONS_ICON,
     PROGRESS_BAR,
     PAGE_DISCLAIMER,
     NEW_PASSWORD_EDIT_TEXT,
     CONFIRM_PASSWORD_EDIT_TEXT,
-    WARNING_TEXT
+    WARNING_TEXT,
 }
 
 @Composable
 fun SetPasswordScreen(
-        onSaveButtonClicked: (newPass: String) -> Unit,
-        showProgressBar: Boolean,
-        email: String,
-        isFormSubmitting: Boolean,
-        onTermsOfUseClicked: () -> Unit,
-        onPrivacyPolicyClicked: () -> Unit,
-        onCookiePolicyClicked: () -> Unit,
-        onHelpClicked: () -> Unit,
-        scaffoldState: ScaffoldState
+    onSaveButtonClicked: (newPass: String) -> Unit,
+    showProgressBar: Boolean,
+    headline: String? = stringResource(id = R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB),
+    isFormSubmitting: Boolean,
+    onTermsOfUseClicked: () -> Unit,
+    onPrivacyPolicyClicked: () -> Unit,
+    onCookiePolicyClicked: () -> Unit,
+    onHelpClicked: () -> Unit,
+    scaffoldState: ScaffoldState
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -96,17 +94,17 @@ fun SetPasswordScreen(
 
     val acceptButtonEnabled = when {
         !isFormSubmitting &&
-        newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
-                newPasswordLine2.isNotEmptyAndAtLeast6Chars() &&
-                newPasswordLine1 == newPasswordLine2 -> true
+            newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
+            newPasswordLine2.isNotEmptyAndAtLeast6Chars() &&
+            newPasswordLine1 == newPasswordLine2 -> true
 
         else -> false
     }
 
     val warningText = when {
         newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
-                newPasswordLine2.isNotEmpty() &&
-                newPasswordLine2 != newPasswordLine1 -> {
+            newPasswordLine2.isNotEmpty() &&
+            newPasswordLine2 != newPasswordLine1 -> {
             stringResource(id = R.string.Passwords_matching_message)
         }
 
@@ -120,134 +118,135 @@ fun SetPasswordScreen(
     val focusManager = LocalFocusManager.current
 
     Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                TopToolBar(
-                        title = stringResource(id = R.string.Set_your_password),
-                        titleColor = KSTheme.colors.kds_support_700,
-                        titleModifier = Modifier.testTag(SetPasswordScreenTestTag.PAGE_TITLE.name),
-                        leftIcon = null,
-                        leftOnClickAction = null,
-                        leftIconColor = KSTheme.colors.kds_support_700,
-                        leftIconModifier = Modifier.testTag(SetPasswordScreenTestTag.BACK_BUTTON.name),
-                        backgroundColor = KSTheme.colors.kds_white,
-                        right = {
-                            IconButton(
-                                    modifier = Modifier.testTag(ResetPasswordTestTag.OPTIONS_ICON.name),
-                                    onClick = { expanded = !expanded },
-                                    enabled = true
-                            ) {
-                                Box {
-                                    Icon(
-                                            imageVector = Icons.Default.MoreVert,
-                                            contentDescription = stringResource(
-                                                    id = R.string.general_navigation_accessibility_button_help_menu_label
-                                            ),
-                                            tint = KSTheme.colors.kds_black
-                                    )
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopToolBar(
+                title = stringResource(id = R.string.Set_your_password),
+                titleColor = KSTheme.colors.kds_support_700,
+                titleModifier = Modifier.testTag(SetPasswordScreenTestTag.PAGE_TITLE.name),
+                leftIcon = null,
+                leftOnClickAction = null,
+                backgroundColor = KSTheme.colors.kds_white,
+                right = {
+                    IconButton(
+                        modifier = Modifier.testTag(SetPasswordScreenTestTag.OPTIONS_ICON.name),
+                        onClick = { expanded = !expanded },
+                        enabled = true
+                    ) {
+                        Box {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(
+                                    id = R.string.general_navigation_accessibility_button_help_menu_label
+                                ),
+                                tint = KSTheme.colors.kds_black
+                            )
 
-                                    KSLoginDropdownMenu(
-                                            expanded = expanded,
-                                            onDismissed = { expanded = !expanded },
-                                            onTermsOfUseClicked = onTermsOfUseClicked,
-                                            onPrivacyPolicyClicked = onPrivacyPolicyClicked,
-                                            onCookiePolicyClicked = onCookiePolicyClicked,
-                                            onHelpClicked = onHelpClicked
-                                    )
-                                }
-                            }
+                            KSLoginDropdownMenu(
+                                expanded = expanded,
+                                onDismissed = { expanded = !expanded },
+                                onTermsOfUseClicked = onTermsOfUseClicked,
+                                onPrivacyPolicyClicked = onPrivacyPolicyClicked,
+                                onCookiePolicyClicked = onCookiePolicyClicked,
+                                onHelpClicked = onHelpClicked
+                            )
                         }
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(
-                        hostState = scaffoldState.snackbarHostState,
-                        snackbar = { data ->
-                            KSErrorSnackbar(text = data.message)
-                        }
-                )
-            }
+                    }
+                }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = scaffoldState.snackbarHostState,
+                snackbar = { data ->
+                    KSErrorSnackbar(text = data.message)
+                }
+            )
+        }
     ) { padding ->
         Column(
-                Modifier
-                        .background(KSTheme.colors.kds_white)
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(padding)
+            Modifier
+                .background(KSTheme.colors.kds_white)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(padding)
         ) {
             AnimatedVisibility(visible = showProgressBar) {
                 KSLinearProgressIndicator(
-                        modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag(SetPasswordScreenTestTag.PROGRESS_BAR.name)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(SetPasswordScreenTestTag.PROGRESS_BAR.name)
                 )
             }
-            Text(
+            if (headline != null) {
+                Text(
                     modifier = Modifier
-                            .padding(KSTheme.dimensions.paddingMedium)
-                            .testTag(SetPasswordScreenTestTag.PAGE_DISCLAIMER.name),
-                    text = stringResource(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB, email),
+                        .padding(KSTheme.dimensions.paddingMedium)
+                        .testTag(SetPasswordScreenTestTag.PAGE_DISCLAIMER.name),
+                    text = headline,
                     style = KSTheme.typography.body2,
                     color = KSTheme.colors.kds_support_700
-            )
+                )
+            }
 
             Column(
-                    Modifier
-                            .background(color = KSTheme.colors.kds_white)
-                            .padding(KSTheme.dimensions.paddingMedium)
-                            .fillMaxWidth()
+                Modifier
+                    .background(color = KSTheme.colors.kds_white)
+                    .padding(KSTheme.dimensions.paddingMedium)
+                    .fillMaxWidth()
             ) {
                 KSHiddenTextInput(
-                        modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag(SetPasswordScreenTestTag.NEW_PASSWORD_EDIT_TEXT.name),
-                        onValueChanged = { newPasswordLine1 = it },
-                        label = stringResource(id = R.string.New_password),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(
-                                            focusDirection = FocusDirection.Down
-                                    )
-                                }
-                        )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(SetPasswordScreenTestTag.NEW_PASSWORD_EDIT_TEXT.name),
+                    onValueChanged = { newPasswordLine1 = it },
+                    label = stringResource(id = R.string.New_password),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(
+                                focusDirection = FocusDirection.Down
+                            )
+                        }
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(KSTheme.dimensions.listItemSpacingMedium))
 
                 KSHiddenTextInput(
-                        modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag(SetPasswordScreenTestTag.CONFIRM_PASSWORD_EDIT_TEXT.name),
-                        onValueChanged = { newPasswordLine2 = it },
-                        label = stringResource(id = R.string.Confirm_password),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(
-                                onDone = {
-                                    focusManager.clearFocus()
-                                }
-                        )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(SetPasswordScreenTestTag.CONFIRM_PASSWORD_EDIT_TEXT.name),
+                    onValueChanged = { newPasswordLine2 = it },
+                    label = stringResource(id = R.string.Confirm_password),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
                 )
 
                 Divider(color = KSTheme.colors.kds_support_300)
 
                 AnimatedVisibility(visible = warningText.isNotEmpty()) {
                     Text(
-                            modifier = Modifier
-                                    .padding(KSTheme.dimensions.paddingMedium)
-                                    .testTag(SetPasswordScreenTestTag.WARNING_TEXT.name),
-                            text = warningText,
-                            style = KSTheme.typography.body2,
-                            color = KSTheme.colors.kds_support_700
+                        modifier = Modifier
+                            .padding(KSTheme.dimensions.paddingMedium)
+                            .testTag(SetPasswordScreenTestTag.WARNING_TEXT.name),
+                        text = warningText,
+                        style = KSTheme.typography.body2,
+                        color = KSTheme.colors.kds_support_700
                     )
                 }
 
-                Spacer(modifier = Modifier.height(KSTheme.dimensions.listItemSpacingMedium))
+                Spacer(modifier = Modifier.height(KSTheme.dimensions.minButtonHeight))
 
                 KSPrimaryGreenButton(
-                        text = stringResource(id = R.string.Save),
-                        onClickAction = { onSaveButtonClicked.invoke(newPasswordLine1) },
-                        isEnabled = acceptButtonEnabled
+                    modifier = Modifier.testTag(SetPasswordScreenTestTag.SAVE_BUTTON.name),
+                    text = stringResource(id = R.string.Save),
+                    onClickAction = { onSaveButtonClicked.invoke(newPasswordLine1) },
+                    isEnabled = acceptButtonEnabled
                 )
             }
         }

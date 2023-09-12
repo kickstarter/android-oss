@@ -354,7 +354,7 @@ Cliquez pour réessayer.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter prend les atteintes au droit à la propriété intellectuelle très au sérieux. Pour plus d\'information et pour des instructions sur le signalement d\'utilisations abusives, veuillez consulter nos pages {{copyrightPolicyLink}} et {{trademarkPolicyLink}}. Seules les demandes formulées par le titulaire du droit d\'auteur ou de la marque déposée seront traitées.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
-  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Comprendre la politique sur l\'IA de Kickstarter.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Comprendre la politique sur l\'IA de Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">En savoir plus sur la notion de responsabilité sur Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">En savoir plus sur les directives applicables aux commentaires&lt;/a></string>
@@ -768,7 +768,7 @@ n\'ont rien soutenu.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Connexion au chat en direct impossible.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Nous n\'avons pas été en mesure de charger les destinations d\'expédition.\n
 Veuillez réessayer ultérieurement.</string>
-  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="true">La fonctionnalité de connexion avec Facebook va être éliminée. Pour vous connecter à votre compte avec l\'adresse %1$s, veuillez créer un mot de passe qui contient au moins 6 caractères.</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">La fonctionnalité de connexion avec Facebook va être éliminée. Pour vous connecter à votre compte avec l\'adresse %{email}, veuillez créer un mot de passe qui contient au moins 6 caractères.</string>
   <string name="We_will_email_you" formatted="false">Vous recevrez un e-mail dès que le projet sera lancé, pour que vous puissiez faire partie des premiers contributeurs.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">Le créateur ne verra pas votre réponse.</string>
   <string name="Websites" formatted="false">Sites Web</string>

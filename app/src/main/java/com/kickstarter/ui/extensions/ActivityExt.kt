@@ -197,7 +197,7 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 
-fun Activity.startDisclaimerActivity(disclaimerItem : DisclaimerItems) {
+fun Activity.startDisclaimerActivity(disclaimerItem: DisclaimerItems) {
     val intent = when (disclaimerItem) {
         DisclaimerItems.TERMS -> Intent(this, HelpActivity.Terms::class.java)
         DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)

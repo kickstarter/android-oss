@@ -23,7 +23,6 @@ import io.reactivex.disposables.CompositeDisposable
 class SetPasswordActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: SetPasswordViewModel.Factory
     private val viewModel: SetPasswordViewModel.SetPasswordViewModel by viewModels { viewModelFactory }
-    private var errorTitleString = R.string.general_error_oops
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +36,11 @@ class SetPasswordActivity : AppCompatActivity() {
 
         setContent {
             var showProgressBar =
-                    viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
+                viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
             var error = viewModel.outputs.error().subscribeAsState(initial = "").value
 
             var scaffoldState = rememberScaffoldState()
-
-//            var headline by remember { mutableStateOf("") } //observable that will once it gets the email from the observable, pass the whole headline to the screen
 
             when {
                 error.isNotEmpty() -> {
@@ -56,23 +53,21 @@ class SetPasswordActivity : AppCompatActivity() {
 
             KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 SetPasswordScreen(
-                        onSaveButtonClicked = { newPassword->
-                            viewModel.inputs.newPassword(newPassword)
-                            viewModel.inputs.confirmPassword(newPassword)
-                            viewModel.inputs.changePasswordClicked()
-                        },
-                        showProgressBar = showProgressBar,
-                        email = viewModel.outputs.setUserEmail().subscribeAsState(initial = "").value ,
-                        isFormSubmitting = viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value,
-                        onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                        onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                        onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                        onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
-                        scaffoldState = scaffoldState
+                    onSaveButtonClicked = { newPassword ->
+                        viewModel.inputs.newPassword(newPassword)
+                        viewModel.inputs.confirmPassword(newPassword)
+                        viewModel.inputs.savePasswordClicked()
+                    },
+                    showProgressBar = showProgressBar,
+                    headline = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", viewModel.outputs.setUserEmail().subscribeAsState(initial = "").value),
+                    isFormSubmitting = viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value,
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    scaffoldState = scaffoldState
                 )
             }
-
-
         }
         viewModel.configureWith(intent)
 

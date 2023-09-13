@@ -13,6 +13,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -69,7 +70,11 @@ class LoginActivity : ComponentActivity() {
 
             var isLoading = viewModel.isLoading().subscribeAsState(initial = false).value
 
-            var error = errorMessages().subscribeAsState(initial = "").value
+            var error by remember { mutableStateOf("") }
+
+            errorMessages().subscribe {
+                error = it
+            }.addToDisposable(disposables)
 
             var scaffoldState = rememberScaffoldState()
 
@@ -106,7 +111,7 @@ class LoginActivity : ComponentActivity() {
                 }
             }
 
-            var changedPasswordMessage = ""
+            var changedPasswordMessage by remember { mutableStateOf("") }
 
             this.viewModel.outputs.showChangedPasswordSnackbar()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -115,7 +120,7 @@ class LoginActivity : ComponentActivity() {
                 }
                 .addToDisposable(disposables)
 
-            var createPasswordMessage = ""
+            var createPasswordMessage by remember { mutableStateOf("") }
 
             this.viewModel.outputs.showCreatedPasswordSnackbar()
                 .observeOn(AndroidSchedulers.mainThread())

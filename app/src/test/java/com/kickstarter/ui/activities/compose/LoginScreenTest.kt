@@ -63,16 +63,16 @@ class LoginScreenTest : KSRobolectricTestCase() {
                 LoginScreen(
                     scaffoldState = rememberScaffoldState(),
                     isLoading = false,
-                    onBackClicked = {  },
+                    onBackClicked = {},
                     onLoginClicked = { _, _ -> },
-                    onTermsOfUseClicked = {  },
-                    onPrivacyPolicyClicked = {  },
-                    onCookiePolicyClicked = {  },
-                    onHelpClicked = {  },
-                    onForgotPasswordClicked = {  },
+                    onTermsOfUseClicked = {},
+                    onPrivacyPolicyClicked = {},
+                    onCookiePolicyClicked = {},
+                    onHelpClicked = {},
+                    onForgotPasswordClicked = {},
                     resetPasswordDialogMessage = "",
                     showDialog = false,
-                    setShowDialog = { _ -> }
+                    setShowDialog = {}
                 )
             }
         }
@@ -102,16 +102,16 @@ class LoginScreenTest : KSRobolectricTestCase() {
                 LoginScreen(
                     scaffoldState = rememberScaffoldState(),
                     isLoading = false,
-                    onBackClicked = {  },
+                    onBackClicked = {},
                     onLoginClicked = { _, _ -> },
-                    onTermsOfUseClicked = {  },
-                    onPrivacyPolicyClicked = {  },
-                    onCookiePolicyClicked = {  },
-                    onHelpClicked = {  },
-                    onForgotPasswordClicked = {  },
+                    onTermsOfUseClicked = {},
+                    onPrivacyPolicyClicked = {},
+                    onCookiePolicyClicked = {},
+                    onHelpClicked = {},
+                    onForgotPasswordClicked = {},
                     resetPasswordDialogMessage = "",
                     showDialog = false,
-                    setShowDialog = { _ -> }
+                    setShowDialog = {}
                 )
             }
         }
@@ -201,11 +201,11 @@ class LoginScreenTest : KSRobolectricTestCase() {
                     isLoading = isloading,
                     onBackClicked = { isloading = !isloading },
                     onLoginClicked = { _, _ -> },
-                    onTermsOfUseClicked = {  },
-                    onPrivacyPolicyClicked = {  },
-                    onCookiePolicyClicked = {  },
-                    onHelpClicked = {  },
-                    onForgotPasswordClicked = {  },
+                    onTermsOfUseClicked = {},
+                    onPrivacyPolicyClicked = {},
+                    onCookiePolicyClicked = {},
+                    onHelpClicked = {},
+                    onForgotPasswordClicked = {},
                     resetPasswordDialogMessage = "",
                     showDialog = false,
                     setShowDialog = {}

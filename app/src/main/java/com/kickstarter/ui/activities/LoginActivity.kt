@@ -101,7 +101,6 @@ class LoginActivity : ComponentActivity() {
                 }
             }
 
-
             var changedPasswordMessage = ""
 
             this.viewModel.outputs.showChangedPasswordSnackbar()

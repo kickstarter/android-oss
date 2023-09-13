@@ -2,16 +2,20 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.R
-import com.kickstarter.databinding.ActivitySetPasswordBinding
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.activities.compose.login.SetPasswordScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.SetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -19,66 +23,53 @@ import io.reactivex.disposables.CompositeDisposable
 class SetPasswordActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: SetPasswordViewModel.Factory
     private val viewModel: SetPasswordViewModel.SetPasswordViewModel by viewModels { viewModelFactory }
-    private lateinit var binding: ActivitySetPasswordBinding
-    private var errorTitleString = R.string.general_error_oops
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var darkModeEnabled = false
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = SetPasswordViewModel.Factory(env)
+            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
 
-        binding = ActivitySetPasswordBinding.inflate(layoutInflater)
+        setContent {
+            var showProgressBar =
+                viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
-        viewModel.configureWith(intent)
-        setContentView(binding.root)
-        setSupportActionBar(binding.resetPasswordToolbar.loginToolbar)
-        binding.resetPasswordToolbar.loginToolbar.setTitle(getString(R.string.Set_your_password))
-        binding.resetPasswordToolbar.backButton.isGone = true
-        binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
-        binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }
+            var error = viewModel.outputs.error().subscribeAsState(initial = "").value
 
-        binding.savePasswordButton.setOnClickListener {
-            viewModel.inputs.changePasswordClicked()
-        }
+            var scaffoldState = rememberScaffoldState()
 
-        this.viewModel.outputs.progressBarIsVisible()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.progressBar.isGone = !it
-            }.addToDisposable(disposables)
-
-        this.viewModel.outputs.setUserEmail()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.setPasswordHint.text = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it)
-            }.addToDisposable(disposables)
-
-        this.viewModel.outputs.passwordWarning()
-            .observeOn(AndroidSchedulers.mainThread()).subscribe {
-                binding.warning.text = when {
-                    it != 0 -> getString(it)
-                    else -> null
+            when {
+                error.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(error)
+                        viewModel.resetError()
+                    }
                 }
-                binding.warning.isVisible = (it != null)
-            }.addToDisposable(disposables)
+            }
 
-        this.viewModel.outputs.error()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.isFormSubmitting()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.setFormDisabled(it) }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.saveButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.setFormEnabled(it) }
-            .addToDisposable(disposables)
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+                SetPasswordScreen(
+                    onSaveButtonClicked = { newPassword ->
+                        viewModel.inputs.newPassword(newPassword)
+                        viewModel.inputs.confirmPassword(newPassword)
+                        viewModel.inputs.savePasswordClicked()
+                    },
+                    showProgressBar = showProgressBar,
+                    headline = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", viewModel.outputs.setUserEmail().subscribeAsState(initial = "").value),
+                    isFormSubmitting = viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value,
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    scaffoldState = scaffoldState
+                )
+            }
+        }
+        viewModel.configureWith(intent)
 
         this.viewModel.outputs.success()
             .observeOn(AndroidSchedulers.mainThread())
@@ -95,13 +86,5 @@ class SetPasswordActivity : AppCompatActivity() {
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
-    }
-
-    private fun setFormEnabled(isEnabled: Boolean) {
-        binding.savePasswordButton.isEnabled = isEnabled
-    }
-
-    private fun setFormDisabled(isDisabled: Boolean) {
-        setFormEnabled(!isDisabled)
     }
 }

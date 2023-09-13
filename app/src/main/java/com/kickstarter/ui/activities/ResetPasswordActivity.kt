@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -14,7 +13,6 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.res.stringResource
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -23,6 +21,7 @@ import com.kickstarter.ui.activities.compose.login.ResetPasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.ui.extensions.transition
 import com.kickstarter.viewmodels.ResetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -69,10 +68,10 @@ class ResetPasswordActivity : ComponentActivity() {
                     } ?: "",
                     initialEmail = initialValue,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                    onTermsOfUseClicked = { startActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
                     onResetPasswordButtonClicked = { email ->
                         currentEmail = email
                         viewModel.setEmail(email)
@@ -118,16 +117,6 @@ class ResetPasswordActivity : ComponentActivity() {
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
-    }
-
-    private fun startActivity(disclaimerItem: DisclaimerItems) {
-        val intent = when (disclaimerItem) {
-            DisclaimerItems.TERMS -> Intent(this, HelpActivity.Terms::class.java)
-            DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
-            DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
-            DisclaimerItems.HELP -> Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT))
-        }
-        startActivity(intent)
     }
 
     private fun onResetSuccess() {

@@ -3,6 +3,7 @@ package com.kickstarter.ui.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
@@ -24,6 +26,8 @@ import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.DisclaimerItems
+import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -191,4 +195,14 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+}
+
+fun Activity.startDisclaimerActivity(disclaimerItem: DisclaimerItems) {
+    val intent = when (disclaimerItem) {
+        DisclaimerItems.TERMS -> Intent(this, HelpActivity.Terms::class.java)
+        DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
+        DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
+        DisclaimerItems.HELP -> Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT))
+    }
+    startActivity(intent)
 }

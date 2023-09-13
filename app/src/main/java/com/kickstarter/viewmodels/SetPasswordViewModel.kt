@@ -7,11 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
-<<<<<<< HEAD
-=======
-import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
 import com.kickstarter.libs.utils.extensions.isNotNull
->>>>>>> 84d2d17b6 (Remove all instances of object utils)
 import com.kickstarter.libs.utils.extensions.maskEmail
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.services.apiresponses.ErrorEnvelope

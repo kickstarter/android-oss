@@ -1,11 +1,9 @@
 package com.kickstarter.libs.utils.extensions
 
-import com.google.android.exoplayer2.util.Assertions
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
-import java.lang.Exception
 import java.util.Locale
 
 class StringExtKtTest : KSRobolectricTestCase() {

@@ -29,6 +29,7 @@ import com.kickstarter.ui.activities.compose.login.LoginToutScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.LoginToutViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -160,7 +161,7 @@ class LoginToutActivity : ComponentActivity() {
         viewModel.outputs.showDisclaimerActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startActivity(it)
+                startDisclaimerActivity(it)
             }
             .addToDisposable(disposables)
 
@@ -170,19 +171,6 @@ class LoginToutActivity : ComponentActivity() {
                 startResetActivity()
             }
             .addToDisposable(disposables)
-    }
-
-    private fun startActivity(disclaimerItem: DisclaimerItems) {
-        val intent = when (disclaimerItem) {
-            DisclaimerItems.TERMS -> Intent(this, Terms::class.java)
-            DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
-            DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
-            DisclaimerItems.HELP -> Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(Secrets.HelpCenter.ENDPOINT)
-            )
-        }
-        startActivity(intent)
     }
 
     private fun facebookLoginClick() =

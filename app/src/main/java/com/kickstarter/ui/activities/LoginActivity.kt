@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Pair
 import androidx.activity.ComponentActivity
@@ -20,7 +19,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
@@ -30,6 +28,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -134,10 +133,10 @@ class LoginActivity : ComponentActivity() {
                         viewModel.inputs.password(password)
                         viewModel.inputs.loginClick()
                     },
-                    onTermsOfUseClicked = { startHelpActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startHelpActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startHelpActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startHelpActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
                     onForgotPasswordClicked = { startResetPasswordActivity() },
                     resetPasswordDialogMessage = resetPasswordDialogMessage,
                     showDialog = showDialog,
@@ -241,18 +240,5 @@ class LoginActivity : ComponentActivity() {
         val intent = Intent().getResetPasswordIntent(this, email = currentEmail)
         startActivityForResult(intent, ActivityRequestCodes.RESET_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startHelpActivity(disclaimerItem: DisclaimerItems) {
-        val intent = when (disclaimerItem) {
-            DisclaimerItems.TERMS -> Intent(this, HelpActivity.Terms::class.java)
-            DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
-            DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
-            DisclaimerItems.HELP -> Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(Secrets.HelpCenter.ENDPOINT)
-            )
-        }
-        startActivity(intent)
     }
 }

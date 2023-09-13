@@ -3,10 +3,10 @@ package com.kickstarter.libs.utils.extensions
 import com.kickstarter.KSRobolectricTestCase
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Assert.assertThrows
 import org.junit.Test
-import io.reactivex.subjects.PublishSubject
 
 class AnyExtKtTest : KSRobolectricTestCase() {
 
@@ -14,27 +14,27 @@ class AnyExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsNull() {
-        val nullVal : Any? = null
+        val nullVal: Any? = null
         assertTrue(nullVal.isNull())
 
-        val nonNullVal : Any = "hello"
+        val nonNullVal: Any = "hello"
 
         assertFalse(nonNullVal.isNull())
     }
 
     @Test
     fun testIsNotNull() {
-        val nullVal : Any? = null
+        val nullVal: Any? = null
         assertFalse(nullVal.isNotNull())
 
-        val nonNullVal : Any = "hello"
+        val nonNullVal: Any = "hello"
 
         assertTrue(nonNullVal.isNotNull())
     }
 
     @Test
     fun testCoalesce() {
-        val hello : Any = "hello"
+        val hello: Any = "hello"
         val thing: Any = "thing"
         assertEquals(hello, hello.coalesce(thing))
 
@@ -46,7 +46,7 @@ class AnyExtKtTest : KSRobolectricTestCase() {
         val theDefault = 100
         val source = rx.subjects.PublishSubject.create<Int?>()
         val result = source
-                .map(coalesceWith(theDefault))
+            .map(coalesceWith(theDefault))
 
         val resultTest = TestSubscriber.create<Int>()
         result.subscribe { resultTest.onNext(it) }
@@ -64,9 +64,9 @@ class AnyExtKtTest : KSRobolectricTestCase() {
     @Test
     fun testCoalesceWithV2() {
         val theDefault = "100"
-        val source : PublishSubject<Any> = PublishSubject.create()
-        val result : Observable<Any> = source
-                .map(coalesceWithV2(theDefault))
+        val source: PublishSubject<Any> = PublishSubject.create()
+        val result: Observable<Any> = source
+            .map(coalesceWithV2(theDefault))
 
         val resultTest = TestSubscriber.create<Any>()
         result.subscribe { resultTest.onNext(it) }.addToDisposable(disposables)

@@ -233,7 +233,7 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun testToInteger() {
-        val numString= "0"
+        val numString = "0"
         val errorNumString = "gfdg"
         assertEquals(0, numString.toInteger())
         assertNull(errorNumString.toInteger())

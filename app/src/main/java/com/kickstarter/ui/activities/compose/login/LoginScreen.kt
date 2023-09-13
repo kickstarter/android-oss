@@ -69,6 +69,17 @@ fun LoginScreenPreview() {
     }
 }
 
+enum class LoginTestTag {
+    LOADING,
+    PAGE_TITLE,
+    BACK_BUTTON,
+    OPTIONS_ICON,
+    EMAIL,
+    PASSWORD,
+    LOGIN_BUTTON,
+    FORGOT_PASSWORD_TEXT
+}
+
 @Composable
 fun LoginScreen(
     prefillEmail: String = "",
@@ -99,14 +110,14 @@ fun LoginScreen(
             TopToolBar(
                 title = stringResource(id = R.string.login_navbar_title),
                 titleColor = KSTheme.colors.kds_support_700,
-                titleModifier = Modifier.testTag(LoginToutTestTag.PAGE_TITLE.name),
+                titleModifier = Modifier.testTag(LoginTestTag.PAGE_TITLE.name),
                 leftOnClickAction = onBackClicked,
                 leftIconColor = KSTheme.colors.kds_support_700,
-                leftIconModifier = Modifier.testTag(LoginToutTestTag.BACK_BUTTON.name),
+                leftIconModifier = Modifier.testTag(LoginTestTag.BACK_BUTTON.name),
                 backgroundColor = KSTheme.colors.kds_white,
                 right = {
                     IconButton(
-                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_ICON.name),
+                        modifier = Modifier.testTag(LoginTestTag.OPTIONS_ICON.name),
                         onClick = { expanded = !expanded },
                         enabled = true
                     ) {
@@ -160,13 +171,19 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLoading) {
-                KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                KSLinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(LoginTestTag.LOADING.name)
+                )
             }
 
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
             KSTextInput(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(LoginTestTag.EMAIL.name),
                 label = stringResource(id = R.string.email),
                 initialValue = prefillEmail,
                 onValueChanged = { email = it }
@@ -175,7 +192,9 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
             KSHiddenTextInput(
-                Modifier.fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth()
+                    .testTag(LoginTestTag.PASSWORD.name),
                 label = stringResource(id = R.string.login_placeholder_password),
                 onValueChanged = { password = it }
             )
@@ -183,6 +202,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
             KSPrimaryGreenButton(
+                modifier = Modifier.testTag(LoginTestTag.LOGIN_BUTTON.name),
                 onClickAction = { onLoginClicked(email, password) },
                 text = stringResource(id = R.string.login_buttons_log_in),
                 isEnabled = logInButtonEnabled && !isLoading
@@ -191,6 +211,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
             KSClickableText(
+                modifier = Modifier.testTag(LoginTestTag.FORGOT_PASSWORD_TEXT.name),
                 resourceId = R.string.forgot_password_title,
                 clickCallback = onForgotPasswordClicked
             )

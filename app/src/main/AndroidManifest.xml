@@ -215,6 +215,7 @@
         <activity
             android:name=".ui.activities.TwoFactorActivity"
             android:parentActivityName=".ui.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.UpdateActivity"

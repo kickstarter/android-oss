@@ -66,7 +66,7 @@ fun KSHeadsupSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_alert,
+        backgroundColor = colors.kds_support_700,
         content = {
             KSHeadsUpRoundedText(text = text, padding = padding)
         }
@@ -79,7 +79,7 @@ fun KSSuccessSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_alert,
+        backgroundColor = colors.kds_create_300,
         content = {
             KSSuccessRoundedText(text = text, padding = padding)
         }

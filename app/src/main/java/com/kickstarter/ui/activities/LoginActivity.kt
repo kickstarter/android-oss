@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import androidx.compose.runtime.setValue
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -47,6 +49,7 @@ class LoginActivity : ComponentActivity() {
 
     private lateinit var disposables: CompositeDisposable
 
+    private var darkModeEnabled = false
     private var currentEmail = ""
     private var currentPassword = ""
 
@@ -56,6 +59,8 @@ class LoginActivity : ComponentActivity() {
 
         val env = this.getEnvironment()?.let { env ->
             viewModelFactory = LoginViewModel.Factory(env, intent = intent)
+            darkModeEnabled =
+                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
             env
         }
 
@@ -119,7 +124,7 @@ class LoginActivity : ComponentActivity() {
                 }
                 .addToDisposable(disposables)
 
-            KickstarterApp {
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 LoginScreen(
                     prefillEmail = prefillEmail,
                     scaffoldState = scaffoldState,

@@ -1,9 +1,11 @@
 package com.kickstarter.libs.utils.extensions
 
+import com.google.android.exoplayer2.util.Assertions
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
+import java.lang.Exception
 import java.util.Locale
 
 class StringExtKtTest : KSRobolectricTestCase() {
@@ -229,6 +231,15 @@ class StringExtKtTest : KSRobolectricTestCase() {
     fun testToHtml() {
         val value = RuntimeEnvironment.getApplication().getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines)
         assertEquals(value, value.toHtml().toString())
+    }
+
+    @Test
+    fun testToInteger() {
+        val numString= "0"
+        val errorNumString = "gfdg"
+        assertEquals(0, numString.toInteger())
+        assertNull(errorNumString.toInteger())
+        assertNull(null.toInteger())
     }
 
     companion object {

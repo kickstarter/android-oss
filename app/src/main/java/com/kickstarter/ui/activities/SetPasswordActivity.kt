@@ -47,9 +47,9 @@ class SetPasswordActivity : AppCompatActivity() {
             var headline: String? by remember { mutableStateOf("") }
 
             viewModel.outputs.setUserEmail()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { headline = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it) }
-                    .addToDisposable(disposables)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { headline = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it) }
+                .addToDisposable(disposables)
 
             var scaffoldState = rememberScaffoldState()
 

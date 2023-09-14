@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
-import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton

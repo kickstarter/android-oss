@@ -67,6 +67,17 @@ fun TwoFactorScreenPreview() {
     }
 }
 
+enum class TwoFactorScreenTestTag {
+    BACK_BUTTON,
+    PAGE_TITLE,
+    OPTIONS_ICON,
+    LOADING,
+    HEADLINE,
+    CODE,
+    RESEND,
+    SUBMIT
+}
+
 @Composable
 fun TwoFactorScreen(
     scaffoldState: ScaffoldState,
@@ -87,14 +98,14 @@ fun TwoFactorScreen(
             TopToolBar(
                 title = stringResource(id = R.string.two_factor_title),
                 titleColor = colors.kds_support_700,
-                titleModifier = Modifier.testTag(LoginToutTestTag.PAGE_TITLE.name),
+                titleModifier = Modifier.testTag(TwoFactorScreenTestTag.PAGE_TITLE.name),
                 leftOnClickAction = onBackClicked,
                 leftIconColor = colors.kds_support_700,
-                leftIconModifier = Modifier.testTag(LoginToutTestTag.BACK_BUTTON.name),
+                leftIconModifier = Modifier.testTag(TwoFactorScreenTestTag.BACK_BUTTON.name),
                 backgroundColor = colors.kds_white,
                 right = {
                     IconButton(
-                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_ICON.name),
+                        modifier = Modifier.testTag(TwoFactorScreenTestTag.OPTIONS_ICON.name),
                         onClick = { expanded = !expanded },
                         enabled = true
                     ) {
@@ -125,7 +136,7 @@ fun TwoFactorScreen(
             SnackbarHost(
                 hostState = scaffoldState.snackbarHostState,
                 snackbar = { data ->
-                    if (data.actionLabel == "error"){
+                    if (data.actionLabel == "error") {
                         KSErrorSnackbar(text = data.message)
                     } else {
                         KSSuccessSnackbar(text = data.message)
@@ -148,12 +159,17 @@ fun TwoFactorScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (isLoading) {
-                KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                KSLinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(TwoFactorScreenTestTag.LOADING.name)
+                )
             }
 
             Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
 
             Text(
+                modifier = Modifier.testTag(TwoFactorScreenTestTag.HEADLINE.name),
                 text = stringResource(id = R.string.two_factor_message),
                 style = typography.subheadline,
                 color = colors.kds_support_700
@@ -162,7 +178,9 @@ fun TwoFactorScreen(
             Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
             KSTextInput(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(TwoFactorScreenTestTag.CODE.name),
                 label = stringResource(id = R.string.two_factor_code_placeholder),
                 onValueChanged = { code = it }
             )
@@ -173,7 +191,8 @@ fun TwoFactorScreen(
                 KSSecondaryGreyButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .weight(1f)
+                        .testTag(TwoFactorScreenTestTag.RESEND.name),
                     onClickAction = onResendClicked,
                     isEnabled = true,
                     text = stringResource(id = R.string.two_factor_buttons_resend),
@@ -184,7 +203,8 @@ fun TwoFactorScreen(
                 KSPrimaryGreenButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .weight(1f)
+                        .testTag(TwoFactorScreenTestTag.SUBMIT.name),
                     onClickAction = { onSubmitClicked(code) },
                     text = stringResource(id = R.string.two_factor_buttons_submit),
                     isEnabled = submitEnabled

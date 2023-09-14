@@ -145,6 +145,7 @@
         <activity
             android:name=".ui.activities.LoginActivity"
             android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.LoginToutActivity"

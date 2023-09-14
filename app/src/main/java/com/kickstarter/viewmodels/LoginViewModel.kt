@@ -11,7 +11,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -52,7 +51,7 @@ interface LoginViewModel {
         fun invalidLoginError(): Observable<String>
 
         /** Emits a boolean that determines if the log in button is enabled.  */
-        fun loginButtonIsEnabled(): Observable<Boolean>
+        fun isLoading(): Observable<Boolean>
 
         /** Finish the activity with a successful result.  */
         fun loginSuccess(): Observable<Unit>
@@ -87,12 +86,13 @@ interface LoginViewModel {
         private val emailAndReason = BehaviorSubject.create<Pair<String, LoginReason>>()
         private val genericLoginError: Observable<String>
         private val invalidloginError: Observable<String>
-        private val logInButtonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val isLoading = BehaviorSubject.create<Boolean>()
         private val loginSuccess = PublishSubject.create<Unit>()
         private val prefillEmail = BehaviorSubject.create<String>()
         private val showChangedPasswordSnackbar = BehaviorSubject.create<Unit>()
         private val showCreatedPasswordSnackbar = BehaviorSubject.create<Unit>()
-        private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, Pair<String, LoginReason>>>()
+        private val showResetPasswordSuccessDialog =
+            BehaviorSubject.create<Pair<Boolean, Pair<String, LoginReason>>>()
         private val tfaChallenge: Observable<Unit>
 
         private val loginError = PublishSubject.create<ErrorEnvelope>()
@@ -114,9 +114,6 @@ interface LoginViewModel {
             val emailAndPassword = this.emailEditTextChanged
                 .compose<Pair<String, String>>(combineLatestPair(this.passwordEditTextChanged))
 
-            val isValid = emailAndPassword
-                .map<Boolean> { isValid(it.first, it.second) }
-
             internalIntent
                 .filter { it.hasExtra(IntentKey.EMAIL) }
                 .map {
@@ -137,7 +134,7 @@ interface LoginViewModel {
                 .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
                 .share()
                 .subscribe {
-                    this.logInButtonIsEnabled.onNext(true)
+                    this.isLoading.onNext(false)
                     if (it.isOnError) {
                         it.error?.let { e -> errors.onNext(e) }
                     } else {
@@ -147,7 +144,7 @@ interface LoginViewModel {
 
             logInButtonClicked
                 .subscribe {
-                    this.logInButtonIsEnabled.onNext(false)
+                    this.isLoading.onNext(true)
                     this.analyticEvents.trackLogInButtonCtaClicked()
                 }
                 .addToDisposable(disposables)
@@ -187,9 +184,6 @@ interface LoginViewModel {
                 .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
                 .map { Pair.create(it.first, it.second) }
                 .subscribe(this.showResetPasswordSuccessDialog)
-
-            isValid
-                .subscribe(this.logInButtonIsEnabled)
 
             successResponseData
                 .distinctUntilChanged()
@@ -236,13 +230,12 @@ interface LoginViewModel {
             Pair.create(
                 it.getStringExtra(IntentKey.EMAIL) ?: "",
                 if (it.hasExtra(IntentKey.LOGIN_REASON)) {
-                    (it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason?) ?: LoginReason.DEFAULT
+                    (it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason?)
+                        ?: LoginReason.DEFAULT
                 } else {
                     LoginReason.DEFAULT
                 }
             )
-
-        private fun isValid(email: String, password: String) = email.isEmail() && password.isNotEmpty()
 
         private fun success(newUser: User) {
             this.refreshUserUseCase.refresh(newUser)
@@ -263,7 +256,8 @@ interface LoginViewModel {
 
         override fun password(password: String) = this.passwordEditTextChanged.onNext(password)
 
-        override fun resetPasswordConfirmationDialogDismissed() = this.resetPasswordConfirmationDialogDismissed.onNext(true)
+        override fun resetPasswordConfirmationDialogDismissed() =
+            this.resetPasswordConfirmationDialogDismissed.onNext(true)
 
         override fun activityResult(result: ActivityResult) = this.activityResult.onNext(result)
 
@@ -272,22 +266,26 @@ interface LoginViewModel {
 
         override fun invalidLoginError() = this.invalidloginError
 
-        override fun loginButtonIsEnabled(): BehaviorSubject<Boolean> = this.logInButtonIsEnabled
+        override fun isLoading(): BehaviorSubject<Boolean> = this.isLoading
 
         override fun loginSuccess(): PublishSubject<Unit> = this.loginSuccess
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
 
-        override fun showChangedPasswordSnackbar(): Observable<Unit> = this.showChangedPasswordSnackbar
+        override fun showChangedPasswordSnackbar(): Observable<Unit> =
+            this.showChangedPasswordSnackbar
 
-        override fun showCreatedPasswordSnackbar(): Observable<Unit> = this.showCreatedPasswordSnackbar
+        override fun showCreatedPasswordSnackbar(): Observable<Unit> =
+            this.showCreatedPasswordSnackbar
 
-        override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, Pair<String, LoginReason>>> = this.showResetPasswordSuccessDialog
+        override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, Pair<String, LoginReason>>> =
+            this.showResetPasswordSuccessDialog
 
         override fun tfaChallenge() = this.tfaChallenge
     }
 
-    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent) :
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return LoginViewModel(environment, intent) as T
         }

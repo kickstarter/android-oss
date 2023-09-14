@@ -8,7 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.setValue
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -40,6 +44,13 @@ class SetPasswordActivity : AppCompatActivity() {
 
             var error = viewModel.outputs.error().subscribeAsState(initial = "").value
 
+            var headline: String? by remember { mutableStateOf("") }
+
+            viewModel.outputs.setUserEmail()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { headline = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it) }
+                    .addToDisposable(disposables)
+
             var scaffoldState = rememberScaffoldState()
 
             when {
@@ -59,7 +70,7 @@ class SetPasswordActivity : AppCompatActivity() {
                         viewModel.inputs.savePasswordClicked()
                     },
                     showProgressBar = showProgressBar,
-                    headline = getEnvironment()?.ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", viewModel.outputs.setUserEmail().subscribeAsState(initial = "").value),
+                    headline = headline,
                     isFormSubmitting = viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value,
                     onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
                     onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },

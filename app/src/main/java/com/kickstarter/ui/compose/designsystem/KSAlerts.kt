@@ -340,9 +340,9 @@ fun KSDialogVisual(
 fun KSAlertDialogNoHeadline(
     setShowDialog: (Boolean) -> Unit,
     bodyText: String,
-    leftButtonText: String,
+    leftButtonText: String? = null,
     leftButtonAction: (() -> Unit)? = null,
-    rightButtonText: String,
+    rightButtonText: String? = null,
     rightButtonAction: (() -> Unit)? = null
 ) {
     KSDialog(
@@ -377,9 +377,9 @@ fun KSAlertDialog(
     setShowDialog: (Boolean) -> Unit,
     headlineText: String,
     bodyText: String,
-    leftButtonText: String,
+    leftButtonText: String?,
     leftButtonAction: (() -> Unit)? = null,
-    rightButtonText: String,
+    rightButtonText: String?,
     rightButtonAction: (() -> Unit)? = null
 ) {
     KSDialog(

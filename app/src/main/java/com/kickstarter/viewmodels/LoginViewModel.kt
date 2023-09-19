@@ -170,7 +170,7 @@ interface LoginViewModel {
                 .ofType(LoginReason::class.java)
                 .filter { LoginReason.CHANGE_PASSWORD == it }
                 .compose(ignoreValuesV2())
-                .subscribe{
+                .subscribe {
                     this.showChangedPasswordSnackbar.onNext(true)
                 }.addToDisposable(disposables)
 
@@ -179,7 +179,7 @@ interface LoginViewModel {
                 .ofType(LoginReason::class.java)
                 .filter { LoginReason.CREATE_PASSWORD == it }
                 .compose(ignoreValuesV2())
-                .subscribe{
+                .subscribe {
                     this.showCreatedPasswordSnackbar.onNext(true)
                 }.addToDisposable(disposables)
 
@@ -255,7 +255,7 @@ interface LoginViewModel {
             showChangedPasswordSnackbar.onNext(false)
         }
 
-        fun hideCreatedPasswordSnackbar()  {
+        fun hideCreatedPasswordSnackbar() {
             showCreatedPasswordSnackbar.onNext(false)
         }
 

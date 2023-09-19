@@ -38,9 +38,6 @@ interface TwoFactorViewModel {
         /** Emits when TFA code was submitted.  */
         fun formSubmitting(): Observable<Boolean>
 
-        /** Emits when TFA code submission has completed.  */
-        fun formIsValid(): Observable<Boolean>
-
         /** Emits when resend code confirmation should be shown.  */
         fun showResendCodeConfirmation(): Observable<Unit>
 
@@ -113,8 +110,6 @@ interface TwoFactorViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
-
-        override fun formIsValid(): Observable<Boolean> = formIsValid
 
         override fun formSubmitting(): Observable<Boolean> = formSubmitting
 

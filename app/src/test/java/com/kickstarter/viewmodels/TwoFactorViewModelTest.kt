@@ -34,29 +34,6 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     @Test
-    fun testTwoFactorViewModel_FormValidation() {
-        val intent = Intent()
-
-        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
-        intent.putExtra(IntentKey.PASSWORD, "hello")
-        intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
-        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
-
-        vm = TwoFactorViewModel.TwoFactorViewModel(environment(), intent)
-
-        vm.outputs.formIsValid().subscribe { formIsValid.onNext(it) }.addToDisposable(disposables)
-        formIsValid.assertNoValues()
-
-        vm.inputs.code("444444")
-        formIsValid.assertValue(true)
-
-        vm.inputs.code("")
-
-        formIsValid.assertValues(true, false)
-        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
     fun testTwoFactorViewModel_TfaSuccess() {
         val intent = Intent()
 

@@ -171,6 +171,7 @@ class LoginActivity : ComponentActivity() {
                             actionLabel = "success"
                         )
                         changedPasswordMessage = ""
+                        viewModel.hideChangePasswordSnackbar()
                     }
                 }
 
@@ -181,6 +182,7 @@ class LoginActivity : ComponentActivity() {
                             actionLabel = "success"
                         )
                         createPasswordMessage = ""
+                        viewModel.hideCreatedPasswordSnackbar()
                     }
                 }
             }

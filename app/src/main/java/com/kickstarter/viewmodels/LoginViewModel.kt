@@ -60,10 +60,10 @@ interface LoginViewModel {
         fun prefillEmail(): Observable<String>
 
         /** Emits when a user has successfully changed their password and needs to login again.  */
-        fun showChangedPasswordSnackbar(): Observable<Unit>
+        fun showChangedPasswordSnackbar(): Observable<Boolean>
 
         /** Emits when a user has successfully created their password and needs to login again. */
-        fun showCreatedPasswordSnackbar(): Observable<Unit>
+        fun showCreatedPasswordSnackbar(): Observable<Boolean>
 
         /** Emits a boolean to determine whether reset password dialog should be shown.  */
         fun showResetPasswordSuccessDialog(): Observable<Pair<Boolean, Pair<String, LoginReason>>>
@@ -89,8 +89,8 @@ interface LoginViewModel {
         private val isLoading = BehaviorSubject.create<Boolean>()
         private val loginSuccess = PublishSubject.create<Unit>()
         private val prefillEmail = BehaviorSubject.create<String>()
-        private val showChangedPasswordSnackbar = BehaviorSubject.create<Unit>()
-        private val showCreatedPasswordSnackbar = BehaviorSubject.create<Unit>()
+        private val showChangedPasswordSnackbar = BehaviorSubject.create<Boolean>()
+        private val showCreatedPasswordSnackbar = BehaviorSubject.create<Boolean>()
         private val showResetPasswordSuccessDialog =
             BehaviorSubject.create<Pair<Boolean, Pair<String, LoginReason>>>()
         private val tfaChallenge: Observable<Unit>
@@ -170,14 +170,18 @@ interface LoginViewModel {
                 .ofType(LoginReason::class.java)
                 .filter { LoginReason.CHANGE_PASSWORD == it }
                 .compose(ignoreValuesV2())
-                .subscribe(this.showChangedPasswordSnackbar)
+                .subscribe{
+                    this.showChangedPasswordSnackbar.onNext(true)
+                }.addToDisposable(disposables)
 
             emailAndReason
                 .map { it.second }
                 .ofType(LoginReason::class.java)
                 .filter { LoginReason.CREATE_PASSWORD == it }
                 .compose(ignoreValuesV2())
-                .subscribe(this.showCreatedPasswordSnackbar)
+                .subscribe{
+                    this.showCreatedPasswordSnackbar.onNext(true)
+                }.addToDisposable(disposables)
 
             this.resetPasswordConfirmationDialogDismissed
                 .map<Boolean> { it.negate() }
@@ -247,6 +251,14 @@ interface LoginViewModel {
             super.onCleared()
         }
 
+        fun hideChangePasswordSnackbar() {
+            showChangedPasswordSnackbar.onNext(false)
+        }
+
+        fun hideCreatedPasswordSnackbar()  {
+            showCreatedPasswordSnackbar.onNext(false)
+        }
+
         // - Inputs
         override fun email(email: String) = this.emailEditTextChanged.onNext(email)
 
@@ -272,10 +284,10 @@ interface LoginViewModel {
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
 
-        override fun showChangedPasswordSnackbar(): Observable<Unit> =
+        override fun showChangedPasswordSnackbar(): Observable<Boolean> =
             this.showChangedPasswordSnackbar
 
-        override fun showCreatedPasswordSnackbar(): Observable<Unit> =
+        override fun showCreatedPasswordSnackbar(): Observable<Boolean> =
             this.showCreatedPasswordSnackbar
 
         override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, Pair<String, LoginReason>>> =

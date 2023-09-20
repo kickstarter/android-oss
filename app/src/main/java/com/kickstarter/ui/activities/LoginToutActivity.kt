@@ -13,10 +13,10 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.coalesceWithV2
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.showAlertDialog
@@ -184,10 +184,10 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun showErrorMessageToasts(): Observable<String?> {
         return viewModel.outputs.showMissingFacebookEmailErrorToast()
-            .map(ObjectUtils.coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
+            .map(coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
             .mergeWith(
                 viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
-                    .map(ObjectUtils.coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
+                    .map(coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
             )
     }
 

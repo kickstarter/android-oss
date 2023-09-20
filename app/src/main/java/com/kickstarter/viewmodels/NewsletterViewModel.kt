@@ -10,7 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isLocationGermany
@@ -102,7 +102,7 @@ interface NewsletterViewModel {
                 .subscribe(this.currentUser::refresh)
 
             val currentUser = this.currentUser.observable()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             currentUser
                 .take(1)

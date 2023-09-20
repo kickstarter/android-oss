@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders.discoverydrawer
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryDrawerChildFilterViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import com.kickstarter.ui.viewholders.KSViewHolder
 import timber.log.Timber
@@ -22,7 +21,7 @@ class ChildFilterViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        item = ObjectUtils.requireNonNull(data as NavigationDrawerData.Section.Row?, NavigationDrawerData.Section.Row::class.java)
+        item = requireNotNull(data as NavigationDrawerData.Section.Row?) { NavigationDrawerData.Section.Row::class.java.toString() + " required to be non-null." }
     }
 
     override fun onBind() {

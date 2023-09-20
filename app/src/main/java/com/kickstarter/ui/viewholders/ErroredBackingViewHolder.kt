@@ -6,7 +6,6 @@ import com.kickstarter.databinding.ItemErroredBackingBinding
 import com.kickstarter.libs.RelativeDateTimeOptions
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.viewmodels.ErroredBackingViewHolderViewModel
 import org.joda.time.DateTime
@@ -58,7 +57,7 @@ class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, v
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val erroredBacking = requireNonNull(data as ErroredBacking)
+        val erroredBacking = requireNotNull(data as ErroredBacking)
 
         this.viewModel.inputs.configureWith(erroredBacking)
     }

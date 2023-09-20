@@ -11,14 +11,13 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.RewardItemDecorator
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -192,7 +191,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
 
         this.viewModel.outputs.hasAddOnsAvailable()
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
@@ -224,9 +223,9 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val projectAndReward = requireNonNull(data as Pair<ProjectData, Reward>)
-        val projectTracking = requireNonNull(projectAndReward.first, ProjectData::class.java)
-        val reward = requireNonNull(projectAndReward.second, Reward::class.java)
+        val projectAndReward = requireNotNull(data as Pair<ProjectData, Reward>)
+        val projectTracking = requireNotNull(projectAndReward.first) { ProjectData::class.java.toString() + "   required to be non-null." }
+        val reward = requireNotNull(projectAndReward.second) { Reward::class.java.toString() + "   required to be non-null." }
 
         this.viewModel.inputs.configureWith(projectTracking, reward)
     }

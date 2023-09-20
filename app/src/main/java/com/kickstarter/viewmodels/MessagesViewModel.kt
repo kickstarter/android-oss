@@ -11,9 +11,10 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Backing
@@ -275,14 +276,14 @@ interface MessagesViewModel {
 
             val configBacking = configData
                 .map { it.right() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { PairUtils.second(it) }
                 .map { requireNotNull(it) }
 
             val configThread = configData
                 .map { it.left() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val backingOrThread: Observable<Either<Backing, MessageThread>> = Observable.merge(
@@ -299,7 +300,7 @@ interface MessagesViewModel {
                             projectAndBacking: Pair<Project?, Backing?> ->
                         projectAndBacking.first
                     }
-                }.filter { ObjectUtils.isNotNull(it) }
+                }.filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val initialMessageThreadEnvelope = backingOrThread
@@ -336,7 +337,7 @@ interface MessagesViewModel {
                             it?.first?.participant()
                         else
                             it.second?.creator()
-                    }.filter { ObjectUtils.isNotNull(it) }
+                    }.filter { it.isNotNull() }
                     .map { requireNotNull(it) }
                     .take(1)
 
@@ -417,11 +418,11 @@ interface MessagesViewModel {
                 .distinctUntilChanged()
 
             val messageHasBody = messageEditTextChanged
-                .map { !ObjectUtils.isNull(it) && it.isPresent() }
+                .map { it.isNotNull() && it.isPresent() }
 
             messageThreadEnvelope
                 .map { it.messageThread() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .switchMap {
                     client.markAsRead(
@@ -438,7 +439,7 @@ interface MessagesViewModel {
 
             val newMessages = sentMessageThreadEnvelope
                 .map { it.messages() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             // Concat distinct messages to initial message list. Return just the new messages if
@@ -464,7 +465,7 @@ interface MessagesViewModel {
 
             // Load the initial messages once, subsequently load newer messages if any.
             initialMessages
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .take(1)
                 .compose(bindToLifecycle())
                 .subscribe { v: List<Message>? -> messageList.onNext(v) }
@@ -480,7 +481,7 @@ interface MessagesViewModel {
 
             initialMessageThreadEnvelope
                 .map { it.messages() }
-                .filter { ObjectUtils.isNull(it) }
+                .filter { it.isNull() }
                 .take(1)
                 .compose(Transformers.ignoreValues())
                 .compose(bindToLifecycle())
@@ -490,12 +491,12 @@ interface MessagesViewModel {
                 .switchMap { backingAndProjectFromData(it, client) }
 
             backingAndProject
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe { this.backingAndProject.onNext(it) }
 
             backingAndProject
-                .map { ObjectUtils.isNull(it) }
+                .map { it.isNull() }
                 .compose(bindToLifecycle())
                 .subscribe { backingInfoViewIsGone.onNext(it) }
 
@@ -533,7 +534,7 @@ interface MessagesViewModel {
                 .compose(Transformers.errors())
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .map { it?.errorMessage() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe { showMessageErrorToast.onNext(it) }
@@ -553,7 +554,7 @@ interface MessagesViewModel {
                 }
                 .compose(
                     Transformers.combineLatestPair(
-                        backingAndProject.filter { ObjectUtils.isNotNull(it) }
+                        backingAndProject.filter { it.isNotNull() }
                             .map { requireNotNull(it) }
                     )
                 )

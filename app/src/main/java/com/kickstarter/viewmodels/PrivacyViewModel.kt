@@ -7,8 +7,8 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.PrivacyActivity
 import rx.Notification
@@ -81,13 +81,13 @@ interface PrivacyViewModel {
 
             currentUser
                 .take(1)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe { this.userOutput.onNext(it) }
 
             currentUser
                 .compose(bindToLifecycle())
-                .filter(ObjectUtils::isNotNull)
+                .filter { it.isNotNull() }
                 .map { user -> user.createdProjectsCount().isNonZero() }
                 .subscribe(this.hidePrivateProfileRow)
 

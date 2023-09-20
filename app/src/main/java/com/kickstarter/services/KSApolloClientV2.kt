@@ -5,7 +5,7 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
@@ -476,7 +476,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                         node.fragments().shippingRule()
                                     }
                                 }
-                                .filter { ObjectUtils.isNotNull(it) }
+                                .filter { it.isNotNull() }
                                 .subscribe { shippingList ->
                                     val shippingEnvelope = shippingRulesListTransformer(shippingList ?: emptyList())
                                     ps.onNext(shippingEnvelope)

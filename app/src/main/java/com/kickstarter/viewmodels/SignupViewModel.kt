@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -152,7 +152,7 @@ interface SignupViewModel {
 
             errorString = signupError
                 .takeUntil(signupSuccess)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it.errorMessage() }
 
             signupClick

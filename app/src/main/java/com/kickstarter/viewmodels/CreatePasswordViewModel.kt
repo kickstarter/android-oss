@@ -7,9 +7,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -67,16 +67,16 @@ interface CreatePasswordViewModel {
             createNewPasswordNotification
                 .compose(errorsV2())
                 .map { it.localizedMessage }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { ObjectUtils.requireNonNull(it) }
+                .filter { it.isNotNull() }
+                .map { it }
                 .subscribe { this.error.onNext(it) }
                 .addToDisposable(disposables)
 
             createNewPasswordNotification
                 .compose(valuesV2())
                 .map { it.updateUserAccount()?.user()?.email() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { ObjectUtils.requireNonNull(it) }
+                .filter { it.isNotNull() }
+                .map { it }
                 .subscribe {
                     this.success.onNext(it)
                     this.analytics?.reset()

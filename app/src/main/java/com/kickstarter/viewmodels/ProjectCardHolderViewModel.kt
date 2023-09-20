@@ -7,11 +7,12 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.libs.utils.extensions.isCompleted
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Category
@@ -169,7 +170,7 @@ interface ProjectCardHolderViewModel {
         }
 
         private fun areParamsAllOrSameCategoryAsProject(categoryPair: Pair<Category?, Category>): Boolean {
-            return ObjectUtils.isNotNull(categoryPair.first) && categoryPair.first?.id() == categoryPair.second.id()
+            return categoryPair.first.isNotNull() && categoryPair.first?.id() == categoryPair.second.id()
         }
 
         private val heartButtonClicked = PublishSubject.create<Void>()
@@ -309,7 +310,7 @@ interface ProjectCardHolderViewModel {
 
             project
                 .compose(Transformers.takeWhen(heartButtonClicked))
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe { notifyDelegateOfHeartButtonClicked.onNext(it) }
@@ -319,7 +320,7 @@ interface ProjectCardHolderViewModel {
 
             friendAvatarUrl1 = project
                 .filter(Project::isFriendBacking)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .map { it[0].avatar().replaceSmallImageWithMediumIfEmpty() }
@@ -327,7 +328,7 @@ interface ProjectCardHolderViewModel {
 
             friendAvatarUrl2 = project
                 .filter(Project::isFriendBacking)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .filter { it.size > 1 }
@@ -336,7 +337,7 @@ interface ProjectCardHolderViewModel {
 
             friendAvatarUrl3 = project
                 .filter(Project::isFriendBacking)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .filter { it.size > 2 }
@@ -344,14 +345,14 @@ interface ProjectCardHolderViewModel {
                 .filter { it.isNotEmpty() }
 
             friendAvatar2IsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .map { it != null && it.size > 1 }
                 .map { it.negate() }
 
             friendAvatar3IsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .map { it != null && it.size > 2 }
@@ -363,12 +364,12 @@ interface ProjectCardHolderViewModel {
 
             friendsForNamepile = project
                 .filter(Project::isFriendBacking)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
 
             fundingUnsuccessfulViewGroupIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map {
                     (
@@ -378,21 +379,21 @@ interface ProjectCardHolderViewModel {
                         )
                 }
             fundingSuccessfulViewGroupIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.state() != Project.STATE_SUCCESSFUL }
 
             imageIsInvisible = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.photo() }
-                .map { ObjectUtils.isNull(it) }
+                .map { it.isNull() }
 
             project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.location() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.displayableName() }
                 .distinctUntilChanged()
@@ -403,9 +404,7 @@ interface ProjectCardHolderViewModel {
                 .map { shouldShowLocationTag(it) }
                 .compose(Transformers.combineLatestPair(project))
                 .map { distanceSortAndProject: Pair<Boolean, Project>? ->
-                    distanceSortAndProject?.first == true && ObjectUtils.isNotNull(
-                        distanceSortAndProject.second.location(),
-                    )
+                    distanceSortAndProject?.first == true && distanceSortAndProject.second.location().isNotNull()
                 }
                 .map { it.negate() }
                 .distinctUntilChanged()
@@ -413,7 +412,7 @@ interface ProjectCardHolderViewModel {
                 .subscribe { locationContainerIsGone.onNext(it) }
 
             metadataViewGroupIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.metadataForProject() == null }
 
@@ -430,7 +429,7 @@ interface ProjectCardHolderViewModel {
                 }
 
             nameAndBlurbText = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map {
                     Pair.create(
@@ -443,7 +442,7 @@ interface ProjectCardHolderViewModel {
                 .compose(Transformers.takeWhen(projectCardClicked))
 
             percentageFundedForProgressBar = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map {
                     if (it.state() == Project.STATE_LIVE || it.state() == Project.STATE_SUCCESSFUL) {
@@ -456,7 +455,7 @@ interface ProjectCardHolderViewModel {
                 }
 
             percentageFundedProgressBarIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map {
                     it.state() == Project.STATE_CANCELED
@@ -468,7 +467,7 @@ interface ProjectCardHolderViewModel {
                 }
 
             photoUrl = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map {
                     if (it.photo() == null) {
@@ -479,35 +478,35 @@ interface ProjectCardHolderViewModel {
                 }
 
             projectCanceledAt = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_CANCELED }
                 .map { it.stateChangedAt() }
                 .compose(Transformers.coalesce(DateTime()))
 
             projectCardStatsViewGroupIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.state() != Project.STATE_LIVE }
 
             projectFailedAt = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_FAILED }
                 .map { it.stateChangedAt() }
                 .compose(Transformers.coalesce(DateTime()))
 
             projectStateViewGroupIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.isCompleted() }
                 .map { it.negate() }
 
             val projectCategory = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.category() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             projectSubcategoryIsGone = discoveryParams
@@ -521,21 +520,21 @@ interface ProjectCardHolderViewModel {
                 .map { it.name() }
 
             projectSuccessfulAt = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_SUCCESSFUL }
                 .map { it.stateChangedAt() }
                 .compose(Transformers.coalesce(DateTime()))
 
             projectSuspendedAt = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_SUSPENDED }
                 .map { it.stateChangedAt() }
                 .compose(Transformers.coalesce(DateTime()))
 
             projectWeLoveIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.staffPick() }
                 .compose(Transformers.coalesce(false))
@@ -558,15 +557,15 @@ interface ProjectCardHolderViewModel {
                     .distinctUntilChanged()
 
             rootCategoryNameForFeatured = projectCategory
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.root() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.name() }
 
             savedViewGroupIsGone = project
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.metadataForProject() !== ProjectMetadata.SAVING }
 

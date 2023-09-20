@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -163,7 +163,7 @@ interface TwoFactorViewModel {
 
             val email = internalIntent
                 .map { it.getStringExtra(IntentKey.EMAIL) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             val fbAccessToken = internalIntent
                 .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) ?: "" }
@@ -173,7 +173,7 @@ interface TwoFactorViewModel {
 
             val password = internalIntent
                 .map { it.getStringExtra(IntentKey.PASSWORD) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             val tfaData = Observable.combineLatest(
                 email,

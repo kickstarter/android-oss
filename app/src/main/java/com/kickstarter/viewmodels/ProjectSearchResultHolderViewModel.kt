@@ -7,10 +7,10 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -94,7 +94,7 @@ interface ProjectSearchResultHolderViewModel {
                         it.second,
                     )
                 }
-                .filter { ObjectUtils.isNotNull(it.first) }
+                .filter { it.first.isNotNull() }
                 .map {
                     if (it.second) {
                         it.first?.full()

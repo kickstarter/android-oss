@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectUpdateViewBinding
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Activity
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
@@ -28,7 +27,7 @@ class ProjectUpdateViewHolder(
         val photo = project?.photo()
         val update = activity().update()
         if (project != null && user != null && photo != null && update != null) {
-            val publishedAt = ObjectUtils.coalesce(update.publishedAt(), DateTime())
+            val publishedAt = update.publishedAt() ?: DateTime()
             binding.projectName.text = project.name()
             Picasso.get()
                 .load(photo.little())

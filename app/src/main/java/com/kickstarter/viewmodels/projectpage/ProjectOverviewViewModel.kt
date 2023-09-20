@@ -7,9 +7,9 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
@@ -449,12 +449,12 @@ interface ProjectOverviewViewModel {
             val project = projectData
                 .distinctUntilChanged()
                 .map { it.project() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             avatarPhotoUrl = project
                 .map { it.creator().avatar().medium() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             backersCountTextViewText = project
@@ -465,12 +465,12 @@ interface ProjectOverviewViewModel {
 
             categoryTextViewText = project
                 .map { it.category() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it?.name() ?: "" }
 
             commentsCountTextViewText = project
                 .map { it.commentsCount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { NumberUtils.format(it) }
 
@@ -515,7 +515,7 @@ interface ProjectOverviewViewModel {
 
             locationTextViewText = project
                 .map { it.location() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it?.displayableName() ?: "" }
 
             percentageFundedProgress = project
@@ -532,9 +532,8 @@ interface ProjectOverviewViewModel {
                 .map { it.creator() }
                 .compose(Transformers.combineLatestPair(currentUser.observable()))
                 .map { creatorAndCurrentUser: Pair<User, User> ->
-                    ObjectUtils.isNotNull(
-                        creatorAndCurrentUser.second
-                    ) && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
+                    creatorAndCurrentUser.second.isNotNull() &&
+                        creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
                 }
 
             projectDisclaimerGoalReachedDateTime = project
@@ -551,7 +550,7 @@ interface ProjectOverviewViewModel {
 
             projectLaunchDate = project
                 .map { it.launchedAt() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { DateTimeUtils.longDate(it) }
 
@@ -559,9 +558,7 @@ interface ProjectOverviewViewModel {
                 .map { it.launchedAt() }
                 .compose(Transformers.combineLatestPair(userIsCreatorOfProject))
                 .map { launchDateAndIsCreator: Pair<DateTime?, Boolean?> ->
-                    ObjectUtils.isNotNull(
-                        launchDateAndIsCreator.first
-                    ) && launchDateAndIsCreator.second.isTrue()
+                    launchDateAndIsCreator.first.isNotNull() && launchDateAndIsCreator.second.isTrue()
                 }
                 .map { it.negate() }
 
@@ -573,7 +570,7 @@ interface ProjectOverviewViewModel {
             projectSocialTextViewFriends = project
                 .filter { it.isFriendBacking }
                 .map { it.friends() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             projectSocialImageViewUrl = projectSocialTextViewFriends
@@ -610,7 +607,7 @@ interface ProjectOverviewViewModel {
 
             setSuccessfulProjectStateView = project
                 .filter { it.isSuccessful }
-                .map { ObjectUtils.coalesce(it.stateChangedAt(), DateTime()) }
+                .map { it.stateChangedAt() ?: DateTime() }
 
             setSuspendedProjectStateView = project
                 .filter { it.isSuspended }
@@ -618,7 +615,7 @@ interface ProjectOverviewViewModel {
 
             setUnsuccessfulProjectStateView = project
                 .filter { it.isFailed }
-                .map { ObjectUtils.coalesce(it.stateChangedAt(), DateTime()) }
+                .map { it.stateChangedAt() ?: DateTime() }
 
             startProjectSocialActivity = project.compose(
                 Transformers.takeWhen(
@@ -628,7 +625,7 @@ interface ProjectOverviewViewModel {
 
             updatesCountTextViewText = project
                 .map { it.updatesCount() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { NumberUtils.format(it) }
 

@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.viewholders.ShippingRuleViewHolder
@@ -34,7 +34,7 @@ interface ShippingRuleViewHolderViewModel {
 
         init {
             this.shippingRuleAndProject
-                .filter { ObjectUtils.isNotNull(it.first) }
+                .filter { it.first.isNotNull() }
                 .map { it.first.location()?.displayableName() }
                 .compose(bindToLifecycle())
                 .subscribe(this.shippingRuleText)

@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.VideoActivity
@@ -53,7 +53,7 @@ interface VideoViewModel {
 
             intent()
                 .map { Pair(it?.getStringExtra(IntentKey.VIDEO_URL_SOURCE), it?.getLongExtra(IntentKey.VIDEO_SEEK_POSITION, 0) ?: 0) }
-                .filter { ObjectUtils.isNotNull(it.first) }
+                .filter { it.first.isNotNull() }
                 .map { Pair(requireNotNull(it.first), it.second) }
                 .distinctUntilChanged()
                 .take(1)
@@ -62,11 +62,11 @@ interface VideoViewModel {
 
             val project = intent()
                 .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             project.map { it.video() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it?.hls() ?: it?.high() }
                 .distinctUntilChanged()
                 .take(1)

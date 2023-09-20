@@ -1,6 +1,6 @@
 package com.kickstarter.libs;
 
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.models.User;
 
 import androidx.annotation.NonNull;
@@ -58,20 +58,20 @@ public abstract class CurrentUserType {
    * each time the current user is updated.
    */
   public @NonNull Observable<Boolean> isLoggedIn() {
-    return observable().map(ObjectUtils::isNotNull);
+    return observable().map(AnyExtKt::isNotNull);
   }
 
   /**
    * Emits only values of a logged in user. The returned observable may never emit.
    */
   public @NonNull Observable<User> loggedInUser() {
-    return observable().filter(ObjectUtils::isNotNull);
+    return observable().filter(AnyExtKt::isNotNull);
   }
 
   /**
    * Emits only values of a logged out user. The returned observable may never emit.
    */
   public @NonNull Observable<User> loggedOutUser() {
-    return observable().filter(ObjectUtils::isNull);
+    return observable().filter(AnyExtKt::isNull);
   }
 }

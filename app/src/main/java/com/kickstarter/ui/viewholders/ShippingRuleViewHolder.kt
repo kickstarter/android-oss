@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import com.kickstarter.databinding.ItemShippingRuleBinding
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.viewmodels.ShippingRuleViewHolderViewModel
@@ -29,9 +28,9 @@ class ShippingRuleViewHolder(private val binding: ItemShippingRuleBinding, val d
     }
 
     override fun bindData(any: Any?) {
-        val shippingRuleAndProject = ObjectUtils.requireNonNull(any as Pair<ShippingRule, Project>)
-        this.shippingRule = ObjectUtils.requireNonNull(shippingRuleAndProject.first, ShippingRule::class.java)
-        val project = ObjectUtils.requireNonNull(shippingRuleAndProject.second, Project::class.java)
+        val shippingRuleAndProject = requireNotNull(any as Pair<ShippingRule, Project>)
+        this.shippingRule = requireNotNull(shippingRuleAndProject.first) { ShippingRule::class.java.toString() + " required to be non-null." }
+        val project = requireNotNull(shippingRuleAndProject.second) { Project::class.java.toString() + " required to be non-null." }
 
         this.viewModel.inputs.configureWith(this.shippingRule, project)
     }

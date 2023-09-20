@@ -26,7 +26,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONM
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -36,6 +35,7 @@ import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
@@ -427,13 +427,13 @@ interface ProjectPageViewModel {
             val saveProjectFromDeepUrl = intent()
                 .take(1)
                 .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
-                .filter { ObjectUtils.isNotNull(it.data) }
+                .filter { it.data.isNotNull() }
                 .map { requireNotNull(it.data) }
                 .filter {
                     ProjectIntentMapper.hasSaveQueryFromUri(it)
                 }
                 .map { UrlUtils.saveFlag(it.toString()) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
@@ -752,7 +752,7 @@ interface ProjectPageViewModel {
 
             val backing = backedProject
                 .map { it.backing() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             // - Update fragments with the backing data
@@ -901,7 +901,7 @@ interface ProjectPageViewModel {
 
             val projectPhoto = currentProject
                 .map { it.photo()?.full() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val projectVideo = currentProject.map { it.video() }

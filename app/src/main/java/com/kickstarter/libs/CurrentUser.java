@@ -2,7 +2,7 @@ package com.kickstarter.libs;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreferenceType;
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.models.User;
 
 import androidx.annotation.NonNull;
@@ -28,7 +28,7 @@ public class CurrentUser extends CurrentUserType {
 
     this.user
       .skip(1)
-      .filter(ObjectUtils::isNotNull)
+      .filter(AnyExtKt::isNotNull)
       .subscribe(u -> userPreference.set(gson.toJson(u, User.class)));
 
     this.user.onNext(gson.fromJson(userPreference.get(), User.class));

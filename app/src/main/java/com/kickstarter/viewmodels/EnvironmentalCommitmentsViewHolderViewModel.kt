@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.EnvironmentalCommitmentCategories
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -48,7 +48,7 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
                         environmentalCommitmentCategory.name == it.category
                     }?.title
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.category.onNext(it) }
                 .addToDisposable(disposables)

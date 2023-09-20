@@ -4,7 +4,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ProfileCardViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso
@@ -21,7 +20,7 @@ class ProfileCardViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        project = ObjectUtils.requireNonNull(data as Project?, Project::class.java)
+        project = requireNotNull(data as Project?) { Project::class.java.toString() + " required to be non-null." }
     }
 
     override fun onBind() {

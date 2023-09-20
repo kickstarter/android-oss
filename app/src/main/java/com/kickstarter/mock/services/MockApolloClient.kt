@@ -8,6 +8,7 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import android.util.Pair
+import com.apollographql.apollo.api.Response
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutFactory
@@ -74,6 +75,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
             )
         )
     }
+
+    override suspend fun updateUserPasswordNew(
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ): Response<UpdateUserPasswordMutation.Data> {
+        return Response(Response.builder(UpdateUserPasswordMutation.builder().build()))
+    }
     override fun updateUserEmail(
         email: String,
         currentPassword: String
@@ -139,6 +148,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
                 "USD"
             )
         )
+    }
+
+    override suspend fun userPrivacyNew(): Response<UserPrivacyQuery.Data> {
+        TODO("Not yet implemented")
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): io.reactivex.Observable<UpdateUserCurrencyMutation.Data> {

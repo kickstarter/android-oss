@@ -19,7 +19,7 @@ import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
 
 class ChangePasswordViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ChangePasswordViewModel.ChangePasswordViewModel
+    private lateinit var vm: ChangePasswordViewModel
 
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -29,7 +29,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = ChangePasswordViewModel.ChangePasswordViewModel(environment)
+        this.vm = ChangePasswordViewModel(environment)
 
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)

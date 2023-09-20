@@ -4,6 +4,7 @@ import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Checkout
@@ -39,12 +40,33 @@ interface ApolloClientTypeV2 {
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
-    fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<String>
+    fun createFlagging(
+        project: Project? = null,
+        details: String,
+        flaggingKind: String
+    ): Observable<String>
+
     fun userPrivacy(): Observable<UserPrivacy>
+    suspend fun userPrivacyNew(): Response<UserPrivacyQuery.Data>
     fun watchProject(project: Project): Observable<Project>
     fun unWatchProject(project: Project): Observable<Project>
-    fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
-    fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
+    fun updateUserPassword(
+        currentPassword: String = "",
+        newPassword: String,
+        confirmPassword: String
+    ): Observable<UpdateUserPasswordMutation.Data>
+
+    suspend fun updateUserPasswordNew(
+        currentPassword: String = "",
+        newPassword: String,
+        confirmPassword: String
+    ): Response<UpdateUserPasswordMutation.Data>
+
+    fun updateUserEmail(
+        email: String,
+        currentPassword: String
+    ): Observable<UpdateUserEmailMutation.Data>
+
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
@@ -52,13 +74,17 @@ interface ApolloClientTypeV2 {
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
-    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
+    fun createPassword(
+        password: String,
+        confirmPassword: String
+    ): Observable<CreatePasswordMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     override fun getProject(project: Project): Observable<Project> {
         return getProject(project.slug() ?: "")
     }
+
     override fun getProject(slug: String): Observable<Project> {
         return Observable.defer {
             val ps = PublishSubject.create<Project>()
@@ -270,6 +296,9 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
+    override suspend fun userPrivacyNew(): Response<UserPrivacyQuery.Data> =
+        service.query(UserPrivacyQuery.builder().build()).await()
+
     override fun watchProject(project: Project): Observable<Project> {
         return Observable.defer {
             val ps = PublishSubject.create<Project>()
@@ -365,6 +394,19 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             return@defer ps
         }
     }
+
+    override suspend fun updateUserPasswordNew(
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ): Response<UpdateUserPasswordMutation.Data> =
+        service.mutate(
+            UpdateUserPasswordMutation.builder()
+                .currentPassword(currentPassword)
+                .password(newPassword)
+                .passwordConfirmation(confirmPassword)
+                .build()
+        ).await()
 
     override fun updateUserEmail(
         email: String,

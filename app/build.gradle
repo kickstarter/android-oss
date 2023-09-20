@@ -319,6 +319,10 @@ dependencies {
 
     // Desugaring Java 8 to < API 26
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'com.apollographql.apollo:apollo-coroutines-support:2.5.14'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

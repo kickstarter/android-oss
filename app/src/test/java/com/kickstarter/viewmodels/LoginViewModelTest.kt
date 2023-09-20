@@ -39,7 +39,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val logInButtonIsEnabled = TestSubscriber<Boolean>()
     private val loginSuccess = TestSubscriber<Unit>()
     private val preFillEmail = TestSubscriber<String>()
-    private val showChangedPasswordSnackbar = TestSubscriber<Unit>()
+    private val showChangedPasswordSnackbar = TestSubscriber<Boolean>()
     private val showResetPasswordSuccessDialog = TestSubscriber<Boolean>()
     private val tfaChallenge = TestSubscriber<Unit>()
 
@@ -59,7 +59,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.loginSuccess().subscribe { this.loginSuccess.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.prefillEmail().subscribe { this.preFillEmail.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showChangedPasswordSnackbar().subscribe {
-            this.showChangedPasswordSnackbar.onNext(it)
+            this.showChangedPasswordSnackbar.onNext(true)
         }.addToDisposable(disposables)
         this.vm.outputs.showResetPasswordSuccessDialog()
             .map { showAndEmail -> showAndEmail.first }
@@ -247,7 +247,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         val rotatedPrefillEmail = TestSubscriber<String>()
         this.vm.outputs.prefillEmail().subscribe { rotatedPrefillEmail.onNext(it) }.addToDisposable(disposables)
-        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Unit>()
+        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Boolean>()
         this.vm.outputs.showChangedPasswordSnackbar().subscribe {
             rotatedShowChangedPasswordSnackbar.onNext(it)
         }.addToDisposable(disposables)

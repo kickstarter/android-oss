@@ -13,10 +13,10 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.models.Project
@@ -156,13 +156,13 @@ interface SearchViewModel {
             cookieManager = requireNotNull(environment.cookieManager())
 
             val searchParams = search
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .filter { it.isPresent() }
                 .debounce(300, TimeUnit.MILLISECONDS, scheduler)
                 .map { DiscoveryParams.builder().term(it).build() }
 
             val popularParams = search
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .filter { it.isTrimmedEmpty() }
                 .map { defaultParams }
                 .startWith(defaultParams)
@@ -198,7 +198,7 @@ interface SearchViewModel {
                 .subscribe(isFetchingProjects)
 
             search
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .filter { it.isTrimmedEmpty() }
                 .subscribe { searchProjects.onNext(ListUtils.empty()) }
                 .addToDisposable(disposables)
@@ -275,7 +275,7 @@ interface SearchViewModel {
                 .compose(Transformers.combineLatestPair(pageCount))
                 .filter { it: Pair<Pair<DiscoveryParams, DiscoverEnvelope>, Int> ->
                     (
-                        ObjectUtils.isNotNull(it.first.first.term()) &&
+                        it.first.first.term().isNotNull() &&
                             it.first.first.term()?.isPresent() ?: false &&
                             it.first.first.sort() != defaultSort &&
                             it.second.intValueOrZero() == 1

@@ -10,7 +10,6 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.wrapInParentheses
 import com.kickstarter.models.MessageThread
@@ -26,7 +25,7 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val messageThread = ObjectUtils.requireNonNull(data as MessageThread?)
+        val messageThread = requireNotNull(data as MessageThread?)
         viewModel.inputs.configureWith(messageThread)
     }
 

@@ -180,3 +180,13 @@ fun String.toHashedSHAEmail(): String {
         .digest(this.toByteArray())
         .fold("") { str, it -> str + "%02x".format(it) }
 }
+
+fun String?.toInteger(): Int? {
+    return if (this != null) {
+        try {
+            this.toInt()
+        } catch (e: NumberFormatException) {
+            null
+        }
+    } else null
+}

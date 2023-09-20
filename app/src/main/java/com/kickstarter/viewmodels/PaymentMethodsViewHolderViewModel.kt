@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
@@ -60,7 +60,7 @@ interface PaymentMethodsViewHolderViewModel {
         init {
             this.card
                 .map { it.expiration() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { sdf.format(it).toString() }
                 .subscribe(this.expirationDate)
 
@@ -80,7 +80,7 @@ interface PaymentMethodsViewHolderViewModel {
 
             this.card
                 .map { it.type() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { StoredCard.issuer(it) }
                 .subscribe(this.issuer)

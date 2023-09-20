@@ -6,7 +6,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectSearchResultViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.models.Project
@@ -73,7 +72,7 @@ class ProjectSearchResultViewHolder(private val binding: ProjectSearchResultView
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectAndIsFeatured = ObjectUtils.requireNonNull(data as Pair<Project, Boolean>?)
+        val projectAndIsFeatured = requireNotNull(data as Pair<Project, Boolean>?)
         viewModel.inputs.configureWith(projectAndIsFeatured)
     }
 

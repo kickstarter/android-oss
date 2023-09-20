@@ -7,7 +7,7 @@ import android.os.Bundle
 import com.kickstarter.databinding.DownloadBetaLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.viewmodels.DownloadBetaViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -22,7 +22,7 @@ class DownloadBetaActivity : BaseActivity<DownloadBetaViewModel>() {
 
         val build = viewModel.outputs.internalBuildEnvelope()
             .map { it.build() }
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .map { it.toString() }
 
         build

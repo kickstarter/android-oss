@@ -11,7 +11,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ThanksShareViewBinding
 import com.kickstarter.libs.TweetComposer
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 
@@ -64,7 +63,7 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val project = ObjectUtils.requireNonNull(data as Project?)
+        val project = requireNotNull(data as Project?)
         viewModel.inputs.configureWith(project)
     }
 

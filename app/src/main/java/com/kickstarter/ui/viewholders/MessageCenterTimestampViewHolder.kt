@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.databinding.MessageCenterTimestampLayoutBinding
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import org.joda.time.DateTime
 
 class MessageCenterTimestampViewHolder(private val binding: MessageCenterTimestampLayoutBinding) :
@@ -10,7 +9,7 @@ class MessageCenterTimestampViewHolder(private val binding: MessageCenterTimesta
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val dateTime = ObjectUtils.requireNonNull(data as? DateTime?)
+        val dateTime = requireNotNull(data as? DateTime?)
         binding.messageCenterTimestampTextView.text = DateTimeUtils.longDate(dateTime)
     }
 }

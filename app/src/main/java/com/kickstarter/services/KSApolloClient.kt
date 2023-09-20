@@ -26,7 +26,8 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.models.Backing
@@ -201,7 +202,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         backingObj?.fragments()?.backing()
                                     )
                                 }
-                                .filter { ObjectUtils.isNotNull(it) }
+                                .filter { it.isNotNull() }
                                 .subscribe {
                                     ps.onNext(it)
                                     ps.onCompleted()
@@ -282,7 +283,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         )
                                         .build()
                                 }
-                                .filter { ObjectUtils.isNotNull(it) }
+                                .filter { it.isNotNull() }
                                 .subscribe {
                                     ps.onNext(it)
                                     ps.onCompleted()
@@ -340,7 +341,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         )
                                         .build()
                                 }
-                                .filter { ObjectUtils.isNotNull(it) }
+                                .filter { it.isNotNull() }
                                 .subscribe {
                                     ps.onNext(it)
                                     ps.onCompleted()
@@ -403,7 +404,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         )
                                         .build()
                                 }
-                                .filter { ObjectUtils.isNotNull(it) }
+                                .filter { it.isNotNull() }
                                 .subscribe {
                                     ps.onNext(it)
                                     ps.onCompleted()
@@ -860,7 +861,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         node.fragments().shippingRule()
                                     }
                                 }
-                                .filter { ObjectUtils.isNotNull(it) }
+                                .filter { it.isNotNull() }
                                 .subscribe { shippingList ->
                                     val shippingEnvelope = shippingRulesListTransformer(shippingList ?: emptyList())
                                     ps.onNext(shippingEnvelope)
@@ -1277,7 +1278,7 @@ private fun mapGetCommentQueryResponseToComment(responseData: GetCommentQuery.Da
 
 private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
     when {
-        ObjectUtils.isNull(it) -> {
+        it.isNull() -> {
             ps.onError(Exception())
         }
         else -> {

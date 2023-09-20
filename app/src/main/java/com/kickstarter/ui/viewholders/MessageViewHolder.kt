@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.databinding.MessageViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Message
 import com.kickstarter.viewmodels.MessageHolderViewModel
@@ -51,7 +50,7 @@ class MessageViewHolder(private val binding: MessageViewBinding) : KSViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val message = ObjectUtils.requireNonNull(data as Message?)
+        val message = requireNotNull(data as Message?)
         viewModel.inputs.configureWith(message)
     }
 

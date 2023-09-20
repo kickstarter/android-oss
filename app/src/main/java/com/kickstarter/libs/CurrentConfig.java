@@ -5,7 +5,7 @@ import android.content.res.AssetManager;
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ public final class CurrentConfig implements CurrentConfigType {
     final Observable<Config> diskConfig = Observable.just(ASSET_PATH)
       .map(path -> configJSONString(path, assetManager))
       .map(json -> gson.fromJson(json, Config.class))
-      .filter(ObjectUtils::isNotNull)
+      .filter(AnyExtKt::isNotNull)
       .compose(Transformers.neverError())
       .subscribeOn(AndroidSchedulers.mainThread());
 
@@ -37,7 +37,7 @@ public final class CurrentConfig implements CurrentConfigType {
     final Observable<Config> prefConfig = Observable.just(configPreference)
       .map(StringPreferenceType::get)
       .map(json -> gson.fromJson(json, Config.class))
-      .filter(ObjectUtils::isNotNull)
+      .filter(AnyExtKt::isNotNull)
       .compose(Transformers.neverError())
       .subscribeOn(AndroidSchedulers.mainThread());
 
@@ -48,7 +48,7 @@ public final class CurrentConfig implements CurrentConfigType {
 
     // Cache any new values to preferences
     this.config.skip(1)
-      .filter(ObjectUtils::isNotNull)
+      .filter(AnyExtKt::isNotNull)
       .subscribe(c -> configPreference.set(gson.toJson(c, Config.class)));
   }
 

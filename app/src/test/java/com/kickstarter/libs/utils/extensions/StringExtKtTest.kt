@@ -231,6 +231,15 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(value, value.toHtml().toString())
     }
 
+    @Test
+    fun testToInteger() {
+        val numString = "0"
+        val errorNumString = "gfdg"
+        assertEquals(0, numString.toInteger())
+        assertNull(errorNumString.toInteger())
+        assertNull(null.toInteger())
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val VALID_GIF_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"

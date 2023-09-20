@@ -19,7 +19,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.rx.transformers.Transformers.zipPairV2
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
@@ -27,6 +26,8 @@ import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.parseToDouble
@@ -528,7 +529,7 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<ProjectData, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.second != PledgeReason.PLEDGE }
                 .map { it.first.backing() ?: it.first.project().backing() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             backing
@@ -543,7 +544,7 @@ interface PledgeFragmentViewModel {
                 .filter {
                     shouldLoadShippingRuleFromBacking(it)
                 }
-                .filter { ObjectUtils.isNotNull(it.first.locationId()) }
+                .filter { it.first.locationId().isNotNull() }
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map { shippingInfo ->
@@ -558,7 +559,7 @@ interface PledgeFragmentViewModel {
             val backingShippingRuleUpdate = backingWhenPledgeReasonUpdate
                 .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } ?: false }
                 .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
-                .filter { ObjectUtils.isNotNull(it.first.locationId()) }
+                .filter { it.first.locationId().isNotNull() }
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map { shippingInfo ->
@@ -567,9 +568,7 @@ interface PledgeFragmentViewModel {
 
             val initShippingRule = pledgeData
                 .distinctUntilChanged()
-                .filter {
-                    ObjectUtils.isNotNull(it.shippingRule())
-                }
+                .filter { it.shippingRule().isNotNull() }
                 .map { requireNotNull(it.shippingRule()) }
 
             pledgeData
@@ -581,7 +580,7 @@ interface PledgeFragmentViewModel {
                 .distinctUntilChanged()
 
             preSelectedShippingRule
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe {
                     this.shippingRule.onNext(it)
@@ -599,7 +598,7 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             backing
-                .filter { ObjectUtils.isNotNull(it.bonusAmount()) }
+                .filter { it.bonusAmount().isNotNull() }
                 .map { it.bonusAmount() }
                 .filter { it > 0 }
                 .subscribe {
@@ -668,13 +667,13 @@ interface PledgeFragmentViewModel {
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
                 .map { it.localReceiptLocation()?.displayableName() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.localPickUpName.onNext(it) }
                 .addToDisposable(disposables)
 
             this.selectedReward
-                .filter { ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                .filter { it.estimatedDeliveryOn().isNotNull() }
                 .map { requireNotNull(it.estimatedDeliveryOn()) }
                 .map { dateTime -> dateTime.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                 .distinctUntilChanged()
@@ -682,7 +681,7 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             this.selectedReward
-                .map { ObjectUtils.isNull(it.estimatedDeliveryOn()) || RewardUtils.isNoReward(it) }
+                .map { it.estimatedDeliveryOn().isNull() || RewardUtils.isNoReward(it) }
                 .subscribe { this.estimatedDeliveryInfoIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -957,7 +956,7 @@ interface PledgeFragmentViewModel {
             total
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
                 .map { Pair(this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP), it.second) }
-                .filter { ObjectUtils.isNotNull(it.second.deadline()) }
+                .filter { it.second.deadline().isNotNull() }
                 .map { totalAndProject -> totalAndProject.second.deadline()?.let { Pair(totalAndProject.first, DateTimeUtils.longDate(it)) } }
                 .map { requireNotNull(it) }
                 .distinctUntilChanged()
@@ -1075,7 +1074,7 @@ interface PledgeFragmentViewModel {
 
             val summary: Observable<String> = this.shippingRule
                 .map { it.location()?.displayableName() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .distinctUntilChanged()
 
@@ -1388,7 +1387,7 @@ interface PledgeFragmentViewModel {
                 .filter { it.backing().requiresAction().isFalse() }
 
             val successfulBacking = successfulCheckout
-                .filter { ObjectUtils.isNotNull(it.backing()) }
+                .filter { it.backing().isNotNull() }
                 .map { it.backing() }
 
             val successAndPledgeReason = Observable.merge(
@@ -1422,7 +1421,7 @@ interface PledgeFragmentViewModel {
                 .map { it.backing() }
                 .filter { it.requiresAction().isTrue() }
                 .map { it.clientSecret() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.showSCAFlow.onNext(it) }
                 .addToDisposable(disposables)
@@ -1670,7 +1669,7 @@ interface PledgeFragmentViewModel {
          * it can be edited.
          */
         private fun shouldLoadShippingRuleFromBacking(it: Pair<Backing, PledgeData>) =
-            RewardUtils.isShippable(it.second.reward()) && ObjectUtils.isNotNull(it.first.locationId()) &&
+            RewardUtils.isShippable(it.second.reward()) && it.first.locationId().isNotNull() &&
                 !hasBackedAddOns(Pair(it.first, it.second.reward())) && !hasSelectedAddOns(it.second.addOns()) &&
                 it.second.shippingRule() == null
 

@@ -4,7 +4,6 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksCategoryViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Category
 
 class ThanksCategoryViewHolder(
@@ -31,7 +30,7 @@ class ThanksCategoryViewHolder(
     }
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val category = ObjectUtils.requireNonNull(data as Category?, Category::class.java)
+        val category = requireNotNull(data as Category?) { Category::class.java.toString() + " required to be non-null." }
         viewModel.inputs.configureWith(category)
     }
 

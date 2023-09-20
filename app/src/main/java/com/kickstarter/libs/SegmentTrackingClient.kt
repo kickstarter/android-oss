@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.libs.braze.BrazeClient
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.NAME
 import com.kickstarter.models.extensions.getTraits
@@ -57,7 +57,7 @@ open class SegmentTrackingClient(
             }
 
         this.currentUser.observable()
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .map { requireNotNull(it) }
             .subscribe {
                 this.loggedInUser = it

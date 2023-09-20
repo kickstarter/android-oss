@@ -5,7 +5,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ProjectNotificationViewBinding
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.ProjectNotification
@@ -43,7 +42,7 @@ class ProjectNotificationViewHolder(binding: ProjectNotificationViewBinding) :
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectNotification = ObjectUtils.requireNonNull(data as ProjectNotification?, ProjectNotification::class.java)
+        val projectNotification = requireNotNull(data as ProjectNotification?) { ProjectNotification::class.java.toString() + " required to be non-null." }
         viewModel.projectNotification(projectNotification)
     }
 }

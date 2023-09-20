@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.maskEmail
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -76,7 +76,7 @@ interface SetPasswordViewModel {
                 .map {
                     it.getStringExtra(IntentKey.EMAIL)
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { it.maskEmail() }
                 .subscribe {
@@ -95,7 +95,7 @@ interface SetPasswordViewModel {
 
             val apiError = setNewPasswordNotification
                 .compose(Transformers.errorsV2())
-                .filter { ObjectUtils.isNotNull(it.localizedMessage) }
+                .filter { it.localizedMessage.isNotNull() }
                 .map {
                     requireNotNull(it.localizedMessage)
                 }
@@ -103,7 +103,7 @@ interface SetPasswordViewModel {
             val error = setNewPasswordNotification
                 .compose(Transformers.errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
-                .filter { ObjectUtils.isNotNull(it.errorMessage()) }
+                .filter { it.errorMessage().isNotNull() }
                 .map {
                     requireNotNull(it.errorMessage())
                     requireNotNull(it.errorMessage())

@@ -9,8 +9,8 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -202,7 +202,7 @@ interface LoginViewModel {
 
             errors
                 .map { ErrorEnvelope.fromThrowable(it) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .subscribe(this.loginError)
 
             this.genericLoginError = this.loginError

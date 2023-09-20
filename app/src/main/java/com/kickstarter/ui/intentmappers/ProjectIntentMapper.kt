@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
@@ -39,7 +39,7 @@ object ProjectIntentMapper {
                 .retry(3)
 
         val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: String? -> `object`.isNotNull() }
             .switchMap { slug: String? ->
                 slug?.let { apolloClient.getProject(it) }
             }
@@ -59,7 +59,7 @@ object ProjectIntentMapper {
                 .retry(3)
 
         val projectFromParceledParam = Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: String? -> `object`.isNotNull() }
             .switchMap { slug: String? ->
                 slug?.let { apolloClient.getProject(it) }
             }
@@ -83,7 +83,7 @@ object ProjectIntentMapper {
                 .retry(3)
 
         val projectFromParceledParam = Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: String? -> `object`.isNotNull() }
             .flatMap { param: String? ->
                 param?.let { client.fetchProject(it) }
             }

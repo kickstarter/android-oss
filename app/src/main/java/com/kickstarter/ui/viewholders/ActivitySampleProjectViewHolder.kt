@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleProjectViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ActivitySampleProjectViewHolderViewModel
@@ -26,7 +25,7 @@ class ActivitySampleProjectViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        vm.inputs.configureWith(ObjectUtils.requireNonNull(data as Activity?, Activity::class.java))
+        vm.inputs.configureWith(requireNotNull(data as Activity?) { Activity::class.java.toString() + " required to be non-null." })
     }
 
     init {

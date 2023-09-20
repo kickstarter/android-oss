@@ -7,7 +7,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySurveyViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
@@ -32,7 +31,7 @@ class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val surveyResponse = ObjectUtils.requireNonNull(data as SurveyResponse?)
+        val surveyResponse = requireNotNull(data as SurveyResponse?)
         viewModel.inputs.configureWith(surveyResponse)
     }
 

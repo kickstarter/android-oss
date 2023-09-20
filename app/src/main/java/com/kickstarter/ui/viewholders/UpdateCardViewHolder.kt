@@ -7,7 +7,6 @@ import com.kickstarter.databinding.ItemUpdateCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -109,9 +108,9 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val projectAndUpdate = requireNonNull(data as Pair<Project, Update>)
-        val project = requireNonNull(projectAndUpdate.first, Project::class.java)
-        val update = requireNonNull(projectAndUpdate.second, Update::class.java)
+        val projectAndUpdate = requireNotNull(data as Pair<Project, Update>)
+        val project = requireNotNull(projectAndUpdate.first) { Project::class.java.toString() + " required to be non-null." }
+        val update = requireNotNull(projectAndUpdate.second) { Update::class.java.toString() + " required to be non-null." }
 
         this.viewModel.inputs.configureWith(project, update)
     }

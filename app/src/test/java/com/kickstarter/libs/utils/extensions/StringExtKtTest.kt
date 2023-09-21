@@ -184,7 +184,7 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertFalse("1236".validPassword())
         assertFalse("".validPassword())
         assertFalse("   ".validPassword())
-        assertFalse("123 23".validPassword())
+        assertTrue("123 23".validPassword())
     }
 
     @Test

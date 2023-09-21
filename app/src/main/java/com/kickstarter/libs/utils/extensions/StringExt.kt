@@ -114,9 +114,9 @@ fun String.maskEmail(): String {
 }
 
 /**
- * validate password is not empty, contains at least 6 characters, and does not contain spaces
+ * validate password is not empty, contains at least 6 characters, and is not only whitespace
  */
-fun String.validPassword() = this.isNotEmpty() && this.length >= MINIMUM_PASSWORD_LENGTH && !this.contains(" ")
+fun String.validPassword() = this.isNotEmpty() && this.length >= MINIMUM_PASSWORD_LENGTH && !all { it.isWhitespace() }
 
 /**
  * new Password Validation Warnings message

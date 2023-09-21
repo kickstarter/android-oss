@@ -63,22 +63,22 @@ interface SignupViewModel {
 
         private fun submit(data: SignupData): Observable<AccessTokenEnvelope> {
             return client.signup(
-                    data.name,
-                    data.email,
-                    data.password,
-                    data.password,
-                    data.sendNewsletters
+                data.name,
+                data.email,
+                data.password,
+                data.password,
+                data.sendNewsletters
             )
-                    .compose(Transformers.pipeApiErrorsToV2(signupError))
-                    .compose(Transformers.neverErrorV2())
-                    .doOnSubscribe {
-                        this.progressBarIsVisible.onNext(true)
-                        formSubmitting.onNext(true)
-                    }
-                    .doAfterTerminate {
-                        this.progressBarIsVisible.onNext(false)
-                        formSubmitting.onNext(false)
-                    }
+                .compose(Transformers.pipeApiErrorsToV2(signupError))
+                .compose(Transformers.neverErrorV2())
+                .doOnSubscribe {
+                    this.progressBarIsVisible.onNext(true)
+                    formSubmitting.onNext(true)
+                }
+                .doAfterTerminate {
+                    this.progressBarIsVisible.onNext(false)
+                    formSubmitting.onNext(false)
+                }
         }
 
         private fun success(user: User) {
@@ -105,31 +105,31 @@ interface SignupViewModel {
             currentConfig = requireNotNull(environment.currentConfigV2())
 
             val signupData = Observable.combineLatest(
+                name,
+                email,
+                password,
+                sendNewsletters
+            ) { name: String, email: String, password: String, sendNewsletters: Boolean ->
+                SignupData(
                     name,
                     email,
                     password,
                     sendNewsletters
-            ) { name: String, email: String, password: String, sendNewsletters: Boolean ->
-                SignupData(
-                        name,
-                        email,
-                        password,
-                        sendNewsletters
                 )
             }
 
             signupData
-                    .compose(Transformers.takeWhenV2(signupClick))
-                    .switchMap {
-                        submit(it)
-                    }
-                    .distinctUntilChanged()
-                    .switchMap {
-                        this.loginUserCase
-                                .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
-                    }
-                    .subscribe { success(it) }
-                    .addToDisposable(disposables)
+                .compose(Transformers.takeWhenV2(signupClick))
+                .switchMap {
+                    submit(it)
+                }
+                .distinctUntilChanged()
+                .switchMap {
+                    this.loginUserCase
+                        .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
+                }
+                .subscribe { success(it) }
+                .addToDisposable(disposables)
 
             errorString = signupError
                     .takeUntil(signupSuccess)
@@ -137,8 +137,8 @@ interface SignupViewModel {
                     .map { it.errorMessage() }
 
             signupClick
-                    .subscribe { analyticEvents.trackSignUpSubmitCtaClicked() }
-                    .addToDisposable(disposables)
+                .subscribe { analyticEvents.trackSignUpSubmitCtaClicked() }
+                .addToDisposable(disposables)
 
             analyticEvents.trackSignUpPageViewed()
         }
@@ -175,10 +175,10 @@ interface SignupViewModel {
         }
 
         internal class SignupData(
-                val name: String,
-                val email: String,
-                val password: String,
-                val sendNewsletters: Boolean
+            val name: String,
+            val email: String,
+            val password: String,
+            val sendNewsletters: Boolean
         )
     }
 

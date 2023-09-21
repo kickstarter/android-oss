@@ -18,69 +18,69 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
-class SignupScreenKtTest : KSRobolectricTestCase () {
+class SignupScreenKtTest : KSRobolectricTestCase() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val backButton =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.BACK_BUTTON.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.BACK_BUTTON.name)
     private val pageTitle =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.PAGE_TITLE.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.PAGE_TITLE.name)
     private val signupButton =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.SIGNUP_BUTTON.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.SIGNUP_BUTTON.name)
 
     private val progressBar =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.PROGRESS_BAR.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.PROGRESS_BAR.name)
     private val newsletterOptInText =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.NEWSLETTER_OPT_IN_TEXT.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.NEWSLETTER_OPT_IN_TEXT.name)
     private val newsletterOptInSwitch =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.NEWSLETTER_OPT_IN_SWITCH.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.NEWSLETTER_OPT_IN_SWITCH.name)
     private val nameEditText =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.NAME_EDIT_TEXT.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.NAME_EDIT_TEXT.name)
     private val emailEditText =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.EMAIL_EDIT_TEXT.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.EMAIL_EDIT_TEXT.name)
     private val passwordEditText =
-            composeTestRule.onNodeWithTag(SignupScreenTestTag.PASSWORD_EDIT_TEXT.name)
+        composeTestRule.onNodeWithTag(SignupScreenTestTag.PASSWORD_EDIT_TEXT.name)
 
     private val optionsIcon =
-            composeTestRule.onNodeWithTag(
-                    SignupScreenTestTag.OPTIONS_ICON.name,
-            )
+        composeTestRule.onNodeWithTag(
+            SignupScreenTestTag.OPTIONS_ICON.name,
+        )
 
     private val optionsMenu = composeTestRule.onNodeWithTag(LoginDropdownTestTag.OPTIONS_MENU.name)
     private val optionsTerms =
-            composeTestRule.onNodeWithTag(
-                    LoginDropdownTestTag.OPTIONS_TERMS.name,
-                    useUnmergedTree = true
-            )
-    private val optionsPrivacyPolicy = composeTestRule.onNodeWithTag(
-            LoginDropdownTestTag.OPTIONS_PRIVACY_POLICY.name,
+        composeTestRule.onNodeWithTag(
+            LoginDropdownTestTag.OPTIONS_TERMS.name,
             useUnmergedTree = true
+        )
+    private val optionsPrivacyPolicy = composeTestRule.onNodeWithTag(
+        LoginDropdownTestTag.OPTIONS_PRIVACY_POLICY.name,
+        useUnmergedTree = true
     )
     private val optionsCookie =
-            composeTestRule.onNodeWithTag(
-                    LoginDropdownTestTag.OPTIONS_COOKIE.name,
-                    useUnmergedTree = true
-            )
+        composeTestRule.onNodeWithTag(
+            LoginDropdownTestTag.OPTIONS_COOKIE.name,
+            useUnmergedTree = true
+        )
     private val optionsHelp =
-            composeTestRule.onNodeWithTag(
-                    LoginDropdownTestTag.OPTIONS_HELP.name,
-                    useUnmergedTree = true
-            )
+        composeTestRule.onNodeWithTag(
+            LoginDropdownTestTag.OPTIONS_HELP.name,
+            useUnmergedTree = true
+        )
 
     @Test
     fun testComponentsVisible() {
         composeTestRule.setContent {
             KSTheme {
                 SignupScreen(
-                        onBackClicked = {},
-                        onSignupButtonClicked = {_, _, _, _ -> },
-                        showProgressBar = false,
-                        isFormSubmitting = false,
-                        onTermsOfUseClicked = { },
-                        onPrivacyPolicyClicked = { },
-                        onCookiePolicyClicked = { },
-                        onHelpClicked = { },
-                        scaffoldState = rememberScaffoldState()
+                    onBackClicked = {},
+                    onSignupButtonClicked = { _, _, _, _ -> },
+                    showProgressBar = false,
+                    isFormSubmitting = false,
+                    onTermsOfUseClicked = { },
+                    onPrivacyPolicyClicked = { },
+                    onCookiePolicyClicked = { },
+                    onHelpClicked = { },
+                    scaffoldState = rememberScaffoldState()
                 )
             }
         }
@@ -97,7 +97,7 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         progressBar.assertDoesNotExist()
 
         val newsletterOptInString =
-                context.resources.getString(R.string.signup_newsletter_full_opt_out)
+            context.resources.getString(R.string.signup_newsletter_full_opt_out)
         newsletterOptInText.assertTextEquals(newsletterOptInString)
         newsletterOptInText.assertIsDisplayed()
 
@@ -112,15 +112,15 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         composeTestRule.setContent {
             KSTheme {
                 SignupScreen(
-                        onBackClicked = {},
-                        onSignupButtonClicked = {_, _, _, _ -> signupButtonClicked++ },
-                        showProgressBar = false,
-                        isFormSubmitting = false,
-                        onTermsOfUseClicked = { },
-                        onPrivacyPolicyClicked = { },
-                        onCookiePolicyClicked = { },
-                        onHelpClicked = { },
-                        scaffoldState = rememberScaffoldState()
+                    onBackClicked = {},
+                    onSignupButtonClicked = { _, _, _, _ -> signupButtonClicked++ },
+                    showProgressBar = false,
+                    isFormSubmitting = false,
+                    onTermsOfUseClicked = { },
+                    onPrivacyPolicyClicked = { },
+                    onCookiePolicyClicked = { },
+                    onHelpClicked = { },
+                    scaffoldState = rememberScaffoldState()
                 )
             }
         }
@@ -150,18 +150,18 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         composeTestRule.setContent {
             KSTheme {
                 SignupScreen(
-                        onBackClicked = {},
-                        onSignupButtonClicked = {_, _, _, sendNewsletterClick ->
-                            sendNewsletter = sendNewsletterClick
-                            signupButtonClicked++
-                                                },
-                        showProgressBar = false,
-                        isFormSubmitting = false,
-                        onTermsOfUseClicked = { },
-                        onPrivacyPolicyClicked = { },
-                        onCookiePolicyClicked = { },
-                        onHelpClicked = { },
-                        scaffoldState = rememberScaffoldState()
+                    onBackClicked = {},
+                    onSignupButtonClicked = { _, _, _, sendNewsletterClick ->
+                        sendNewsletter = sendNewsletterClick
+                        signupButtonClicked++
+                    },
+                    showProgressBar = false,
+                    isFormSubmitting = false,
+                    onTermsOfUseClicked = { },
+                    onPrivacyPolicyClicked = { },
+                    onCookiePolicyClicked = { },
+                    onHelpClicked = { },
+                    scaffoldState = rememberScaffoldState()
                 )
             }
         }
@@ -178,7 +178,7 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         progressBar.assertDoesNotExist()
 
         val newsletterOptInString =
-                context.resources.getString(R.string.signup_newsletter_full_opt_out)
+            context.resources.getString(R.string.signup_newsletter_full_opt_out)
         newsletterOptInText.assertTextEquals(newsletterOptInString)
         newsletterOptInText.assertIsDisplayed()
 
@@ -191,12 +191,12 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         passwordEditText.performTextInput("sfdgdfgdgdhghgd")
         signupButton.assertIsEnabled()
 
-        newsletterOptInSwitch.performTouchInput {  swipeRight() }
+        newsletterOptInSwitch.performTouchInput { swipeRight() }
         signupButton.performClick()
         assertEquals(signupButtonClicked, 1)
         assertEquals(sendNewsletter, true)
 
-        newsletterOptInSwitch.performTouchInput {  swipeLeft() }
+        newsletterOptInSwitch.performTouchInput { swipeLeft() }
         signupButton.performClick()
         assertEquals(sendNewsletter, false)
     }
@@ -207,15 +207,15 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         composeTestRule.setContent {
             KSTheme {
                 SignupScreen(
-                        onBackClicked = { backClickedCount++ },
-                        onSignupButtonClicked = {_, _, _, _ -> },
-                        showProgressBar = false,
-                        isFormSubmitting = false,
-                        onTermsOfUseClicked = { },
-                        onPrivacyPolicyClicked = { },
-                        onCookiePolicyClicked = { },
-                        onHelpClicked = { },
-                        scaffoldState = rememberScaffoldState()
+                    onBackClicked = { backClickedCount++ },
+                    onSignupButtonClicked = { _, _, _, _ -> },
+                    showProgressBar = false,
+                    isFormSubmitting = false,
+                    onTermsOfUseClicked = { },
+                    onPrivacyPolicyClicked = { },
+                    onCookiePolicyClicked = { },
+                    onHelpClicked = { },
+                    scaffoldState = rememberScaffoldState()
                 )
             }
         }
@@ -231,15 +231,15 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         composeTestRule.setContent {
             KSTheme {
                 SignupScreen(
-                        onBackClicked = { backClickedCount++ },
-                        onSignupButtonClicked = {_, _, _, _ -> },
-                        showProgressBar = false,
-                        isFormSubmitting = false,
-                        onTermsOfUseClicked = { },
-                        onPrivacyPolicyClicked = { },
-                        onCookiePolicyClicked = { },
-                        onHelpClicked = { },
-                        scaffoldState = rememberScaffoldState()
+                    onBackClicked = { backClickedCount++ },
+                    onSignupButtonClicked = { _, _, _, _ -> },
+                    showProgressBar = false,
+                    isFormSubmitting = false,
+                    onTermsOfUseClicked = { },
+                    onPrivacyPolicyClicked = { },
+                    onCookiePolicyClicked = { },
+                    onHelpClicked = { },
+                    scaffoldState = rememberScaffoldState()
                 )
             }
         }
@@ -258,7 +258,6 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         progressBar.assertIsDisplayed()
     }
 
-
     @Test
     fun testDropDownButtonClicks() {
         var termsClickedCount = 0
@@ -269,15 +268,15 @@ class SignupScreenKtTest : KSRobolectricTestCase () {
         composeTestRule.setContent {
             KSTheme {
                 SignupScreen(
-                        onBackClicked = { },
-                        onSignupButtonClicked = {_, _, _, _ -> },
-                        showProgressBar = false,
-                        isFormSubmitting = false,
-                        onTermsOfUseClicked = { termsClickedCount++ },
-                        onPrivacyPolicyClicked = { privacyClickedCount++ },
-                        onCookiePolicyClicked = { cookieClickedCount++ },
-                        onHelpClicked = { helpClickedCount++ },
-                        scaffoldState = rememberScaffoldState()
+                    onBackClicked = { },
+                    onSignupButtonClicked = { _, _, _, _ -> },
+                    showProgressBar = false,
+                    isFormSubmitting = false,
+                    onTermsOfUseClicked = { termsClickedCount++ },
+                    onPrivacyPolicyClicked = { privacyClickedCount++ },
+                    onCookiePolicyClicked = { cookieClickedCount++ },
+                    onHelpClicked = { helpClickedCount++ },
+                    scaffoldState = rememberScaffoldState()
                 )
             }
         }

@@ -16,103 +16,103 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 
 @Composable
 fun LogInSignUpClickableDisclaimerText(
-        onTermsOfUseClicked: () -> Unit,
-        onPrivacyPolicyClicked: () -> Unit,
-        onCookiePolicyClicked: () -> Unit
+    onTermsOfUseClicked: () -> Unit,
+    onPrivacyPolicyClicked: () -> Unit,
+    onCookiePolicyClicked: () -> Unit
 ) {
     val formattedText = HtmlCompat.fromHtml(
-            stringResource(id = R.string.login_tout_disclaimer_agree_to_terms_html),
-            0
+        stringResource(id = R.string.login_tout_disclaimer_agree_to_terms_html),
+        0
     ).toString()
 
     val annotatedLinkString = buildAnnotatedString {
         val termsOfUseString =
-                stringResource(id = R.string.login_tout_help_sheet_terms).lowercase()
+            stringResource(id = R.string.login_tout_help_sheet_terms).lowercase()
         val termsOfUseStartIndex = formattedText.indexOf(termsOfUseString)
         val termsOfUserEndIndex = termsOfUseStartIndex + termsOfUseString.length
 
         val privacyPolicyString =
-                stringResource(id = R.string.login_tout_help_sheet_privacy).lowercase()
+            stringResource(id = R.string.login_tout_help_sheet_privacy).lowercase()
         val privacyPolicyStartIndex = formattedText.indexOf(privacyPolicyString)
         val privacyPolicyEndIndex = privacyPolicyStartIndex + privacyPolicyString.length
 
         val cookiePolicyString =
-                stringResource(id = R.string.login_tout_help_sheet_cookie).lowercase()
+            stringResource(id = R.string.login_tout_help_sheet_cookie).lowercase()
         val cookiePolicyStartIndex = formattedText.indexOf(cookiePolicyString)
         val cookiePolicyEndIndex = cookiePolicyStartIndex + cookiePolicyString.length
 
         append(formattedText)
 
         addStyle(
-                style = SpanStyle(
-                        textDecoration = TextDecoration.Underline
-                ),
-                start = termsOfUseStartIndex,
-                end = termsOfUserEndIndex
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline
+            ),
+            start = termsOfUseStartIndex,
+            end = termsOfUserEndIndex
         )
 
         addStringAnnotation(
-                tag = DisclaimerItems.TERMS.name,
-                annotation = "",
-                start = termsOfUseStartIndex,
-                end = termsOfUserEndIndex
+            tag = DisclaimerItems.TERMS.name,
+            annotation = "",
+            start = termsOfUseStartIndex,
+            end = termsOfUserEndIndex
         )
 
         addStyle(
-                style = SpanStyle(
-                        textDecoration = TextDecoration.Underline
-                ),
-                start = privacyPolicyStartIndex,
-                end = privacyPolicyEndIndex
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline
+            ),
+            start = privacyPolicyStartIndex,
+            end = privacyPolicyEndIndex
         )
 
         addStringAnnotation(
-                tag = DisclaimerItems.PRIVACY.name,
-                annotation = "",
-                start = privacyPolicyStartIndex,
-                end = privacyPolicyEndIndex
+            tag = DisclaimerItems.PRIVACY.name,
+            annotation = "",
+            start = privacyPolicyStartIndex,
+            end = privacyPolicyEndIndex
         )
 
         addStyle(
-                style = SpanStyle(
-                        textDecoration = TextDecoration.Underline
-                ),
-                start = cookiePolicyStartIndex,
-                end = cookiePolicyEndIndex
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline
+            ),
+            start = cookiePolicyStartIndex,
+            end = cookiePolicyEndIndex
         )
 
         addStringAnnotation(
-                tag = DisclaimerItems.COOKIES.name,
-                annotation = "",
-                start = cookiePolicyStartIndex,
-                end = cookiePolicyEndIndex
+            tag = DisclaimerItems.COOKIES.name,
+            annotation = "",
+            start = cookiePolicyStartIndex,
+            end = cookiePolicyEndIndex
         )
     }
 
     ClickableText(
-            modifier = Modifier.testTag(LoginToutTestTag.TOU_PP_COOKIE_DISCLAIMER.name),
-            text = annotatedLinkString,
-            style = KSTheme.typography.caption1.copy(
-                    color = KSTheme.colors.kds_support_400,
-                    textAlign = TextAlign.Center
-            ),
-            onClick = { index ->
-                annotatedLinkString.getStringAnnotations(index, index)
-                        .firstOrNull()?.let { annotation ->
-                            when (annotation.tag) {
-                                DisclaimerItems.TERMS.name -> {
-                                    onTermsOfUseClicked.invoke()
-                                }
-
-                                DisclaimerItems.PRIVACY.name -> {
-                                    onPrivacyPolicyClicked.invoke()
-                                }
-
-                                DisclaimerItems.COOKIES.name -> {
-                                    onCookiePolicyClicked.invoke()
-                                }
-                            }
+        modifier = Modifier.testTag(LoginToutTestTag.TOU_PP_COOKIE_DISCLAIMER.name),
+        text = annotatedLinkString,
+        style = KSTheme.typography.caption1.copy(
+            color = KSTheme.colors.kds_support_400,
+            textAlign = TextAlign.Center
+        ),
+        onClick = { index ->
+            annotatedLinkString.getStringAnnotations(index, index)
+                .firstOrNull()?.let { annotation ->
+                    when (annotation.tag) {
+                        DisclaimerItems.TERMS.name -> {
+                            onTermsOfUseClicked.invoke()
                         }
-            }
+
+                        DisclaimerItems.PRIVACY.name -> {
+                            onPrivacyPolicyClicked.invoke()
+                        }
+
+                        DisclaimerItems.COOKIES.name -> {
+                            onCookiePolicyClicked.invoke()
+                        }
+                    }
+                }
+        }
     )
 }

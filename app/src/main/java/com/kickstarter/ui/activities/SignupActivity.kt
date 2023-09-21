@@ -37,7 +37,7 @@ class SignupActivity : AppCompatActivity() {
             var scaffoldState = rememberScaffoldState()
 
             var showProgressBar =
-                    viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
+                viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
             var error = viewModel.outputs.errorString().subscribeAsState(initial = "").value
 
@@ -50,21 +50,21 @@ class SignupActivity : AppCompatActivity() {
             }
             KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 SignupScreen(
-                        onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                        onSignupButtonClicked = { name, email, password, sendNewsletters ->
-                            viewModel.inputs.name(name)
-                            viewModel.inputs.email(email)
-                            viewModel.inputs.password(password)
-                            viewModel.inputs.sendNewsletters(sendNewsletters)
-                            viewModel.inputs.signupClick()
-                        },
-                        showProgressBar = showProgressBar,
-                        isFormSubmitting = viewModel.outputs.formSubmitting().subscribeAsState(initial = false).value,
-                        onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                        onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                        onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                        onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
-                        scaffoldState = scaffoldState
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() },
+                    onSignupButtonClicked = { name, email, password, sendNewsletters ->
+                        viewModel.inputs.name(name)
+                        viewModel.inputs.email(email)
+                        viewModel.inputs.password(password)
+                        viewModel.inputs.sendNewsletters(sendNewsletters)
+                        viewModel.inputs.signupClick()
+                    },
+                    showProgressBar = showProgressBar,
+                    isFormSubmitting = viewModel.outputs.formSubmitting().subscribeAsState(initial = false).value,
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    scaffoldState = scaffoldState
                 )
             }
         }

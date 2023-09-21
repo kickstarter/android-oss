@@ -96,11 +96,13 @@ fun PreviewControls() {
 
 @Composable
 fun KSSwitch(
+    modifier: Modifier = Modifier,
     checked: Boolean,
     onCheckChanged: ((Boolean) -> Unit),
     enabled: Boolean = true
 ) {
     Switch(
+        modifier = modifier,
         checked = checked,
         onCheckedChange = onCheckChanged,
         colors = SwitchDefaults.colors(

@@ -36,7 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
+import com.kickstarter.libs.utils.extensions.validPassword
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
@@ -81,15 +81,15 @@ fun CreatePasswordScreen(
     var newPasswordLine2 by rememberSaveable { mutableStateOf("") }
 
     val acceptButtonEnabled = when {
-        newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
-            newPasswordLine2.isNotEmptyAndAtLeast6Chars() &&
+        newPasswordLine1.validPassword() &&
+            newPasswordLine2.validPassword() &&
             newPasswordLine1 == newPasswordLine2 -> true
 
         else -> false
     }
 
     val warningText = when {
-        newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
+        newPasswordLine1.validPassword() &&
             newPasswordLine2.isNotEmpty() &&
             newPasswordLine2 != newPasswordLine1 -> {
             stringResource(id = R.string.Passwords_matching_message)

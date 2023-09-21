@@ -21,33 +21,6 @@ import org.junit.Test
 class SignupViewModelTest : KSRobolectricTestCase() {
 
     private val disposables = CompositeDisposable()
-    @Test
-    fun testSignupViewModel_FormValidation() {
-        val environment = environment()
-
-        environment.currentConfigV2()?.config(config())
-
-        val vm = SignupViewModel.SignupViewModel(environment)
-        val formIsValidTest = TestSubscriber<Boolean>()
-
-        vm.outputs.formIsValid().subscribe { formIsValidTest.onNext(it) }.addToDisposable(disposables)
-
-        vm.inputs.name("brandon")
-
-        formIsValidTest.assertNoValues()
-
-        vm.inputs.email("incorrect@kickstarter")
-
-        formIsValidTest.assertNoValues()
-
-        vm.inputs.password("danisawesome")
-
-        formIsValidTest.assertValues(false)
-
-        vm.inputs.email("hello@kickstarter.com")
-
-        formIsValidTest.assertValues(false, true)
-    }
 
     @Test
     fun testSignupViewModel_SuccessfulSignup() {
@@ -91,13 +64,17 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         val formSubmittingTest = TestSubscriber<Boolean>()
         vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
+        val progressIndicatorVisible = TestSubscriber<Boolean>()
+        vm.outputs.progressBarIsVisible().subscribe { progressIndicatorVisible.onNext(it) }.addToDisposable(disposables)
+
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
         vm.inputs.email("incorrect@kickstarter")
         vm.inputs.password("danisawesome")
-        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.sendNewsletters(true)
         vm.inputs.signupClick()
 
+        progressIndicatorVisible.assertValues(true, false)
         formSubmittingTest.assertValues(true, false)
         signupSuccessTest.assertValueCount(1)
         environment.currentUserV2()?.observable()?.subscribe {
@@ -136,13 +113,17 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         val formSubmittingTest = TestSubscriber<Boolean>()
         vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
+        val progressIndicatorVisible = TestSubscriber<Boolean>()
+        vm.outputs.progressBarIsVisible().subscribe { progressIndicatorVisible.onNext(it) }.addToDisposable(disposables)
+
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
         vm.inputs.email("incorrect@kickstarter")
         vm.inputs.password("danisawesome")
-        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.sendNewsletters(true)
         vm.inputs.signupClick()
 
+        progressIndicatorVisible.assertValues(true, false)
         formSubmittingTest.assertValues(true, false)
         signupSuccessTest.assertValueCount(0)
         signupErrorTest.assertValueCount(1)
@@ -176,13 +157,17 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         val formSubmittingTest = TestSubscriber<Boolean>()
         vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
+        val progressIndicatorVisible = TestSubscriber<Boolean>()
+        vm.outputs.progressBarIsVisible().subscribe { progressIndicatorVisible.onNext(it) }.addToDisposable(disposables)
+
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
         vm.inputs.email("incorrect@kickstarter")
         vm.inputs.password("danisawesome")
-        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.sendNewsletters(true)
         vm.inputs.signupClick()
 
+        progressIndicatorVisible.assertValues(true, false)
         formSubmittingTest.assertValues(true, false)
         signupSuccessTest.assertValueCount(0)
         signupErrorTest.assertValueCount(1)

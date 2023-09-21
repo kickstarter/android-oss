@@ -179,10 +179,12 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun isNotEmptyAndAtLeast6Chars() {
-        assertTrue("123456".isNotEmptyAndAtLeast6Chars())
-        assertFalse("1236".isNotEmptyAndAtLeast6Chars())
-        assertFalse("".isNotEmptyAndAtLeast6Chars())
+    fun testValidPassword() {
+        assertTrue("123456".validPassword())
+        assertFalse("1236".validPassword())
+        assertFalse("".validPassword())
+        assertFalse("   ".validPassword())
+        assertFalse("123 23".validPassword())
     }
 
     @Test

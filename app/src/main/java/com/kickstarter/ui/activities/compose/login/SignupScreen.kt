@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isEmail
-import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
+import com.kickstarter.libs.utils.extensions.validPassword
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
@@ -109,7 +109,7 @@ fun SignupScreen(
         name.isNotEmpty() &&
             email.isEmail() &&
             !isFormSubmitting &&
-            password.isNotEmptyAndAtLeast6Chars() -> true
+            password.validPassword() -> true
 
         else -> false
     }

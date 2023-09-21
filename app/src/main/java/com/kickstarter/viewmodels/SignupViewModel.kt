@@ -6,7 +6,6 @@ import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -132,9 +131,9 @@ interface SignupViewModel {
                 .addToDisposable(disposables)
 
             errorString = signupError
-                    .takeUntil(signupSuccess)
-                    .filter { it.isNotNull() }
-                    .map { it.errorMessage() }
+                .takeUntil(signupSuccess)
+                .filter { it.isNotNull() }
+                .map { it.errorMessage() }
 
             signupClick
                 .subscribe { analyticEvents.trackSignUpSubmitCtaClicked() }

@@ -145,7 +145,7 @@ object DateTimeUtils {
         dateTime: DateTime,
         options: RelativeDateTimeOptions = RelativeDateTimeOptions.builder().build()
     ): String {
-        val relativeToDateTime = ObjectUtils.coalesce(options.relativeToDateTime(), DateTime.now())
+        val relativeToDateTime = options.relativeToDateTime() ?: DateTime.now()
         val seconds = Seconds.secondsBetween(dateTime, relativeToDateTime)
         val secondsDifference = seconds.seconds
 

@@ -66,7 +66,7 @@ fun KSHeadsupSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_alert,
+        backgroundColor = colors.kds_support_700,
         content = {
             KSHeadsUpRoundedText(text = text, padding = padding)
         }
@@ -79,7 +79,7 @@ fun KSSuccessSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_alert,
+        backgroundColor = colors.kds_create_300,
         content = {
             KSSuccessRoundedText(text = text, padding = padding)
         }
@@ -340,9 +340,9 @@ fun KSDialogVisual(
 fun KSAlertDialogNoHeadline(
     setShowDialog: (Boolean) -> Unit,
     bodyText: String,
-    leftButtonText: String,
+    leftButtonText: String? = null,
     leftButtonAction: (() -> Unit)? = null,
-    rightButtonText: String,
+    rightButtonText: String? = null,
     rightButtonAction: (() -> Unit)? = null
 ) {
     KSDialog(
@@ -377,9 +377,9 @@ fun KSAlertDialog(
     setShowDialog: (Boolean) -> Unit,
     headlineText: String,
     bodyText: String,
-    leftButtonText: String,
+    leftButtonText: String?,
     leftButtonAction: (() -> Unit)? = null,
-    rightButtonText: String,
+    rightButtonText: String?,
     rightButtonAction: (() -> Unit)? = null
 ) {
     KSDialog(

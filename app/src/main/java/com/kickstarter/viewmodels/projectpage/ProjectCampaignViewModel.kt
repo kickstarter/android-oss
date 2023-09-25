@@ -6,8 +6,8 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.htmlparser.HTMLParser
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -48,10 +48,10 @@ class ProjectCampaignViewModel {
         init {
             val project = projectDataInput
                 .map { it.project() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             project.distinctUntilChanged()
-                .filter { ObjectUtils.isNotNull(it.story()) }
+                .filter { it.story().isNotNull() }
                 .map { requireNotNull(it.story()) }
                 .map { htmlParser.parse(it) }
                 .subscribe {

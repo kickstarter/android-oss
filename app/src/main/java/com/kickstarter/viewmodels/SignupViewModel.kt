@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.isEmail
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -31,7 +30,7 @@ interface SignupViewModel {
         fun password(password: String)
 
         /** Call when the send newsletter toggle changes.  */
-        fun sendNewslettersClick(send: Boolean)
+        fun sendNewsletters(send: Boolean)
 
         /** Call when the signup button has been clicked.  */
         fun signupClick()
@@ -41,17 +40,13 @@ interface SignupViewModel {
         /** Emits a string to display when signup fails.  */
         fun errorString(): Observable<String>
 
-        /** Emits a boolean that determines if the sign up button is enabled.  */
-        fun formIsValid(): Observable<Boolean>
-
         /** Emits a boolean that determines if the sign up button is disabled.  */
         fun formSubmitting(): Observable<Boolean>
 
-        /** Emits a boolean that determines if the send newsletter toggle is checked.  */
-        fun sendNewslettersIsChecked(): Observable<Boolean>
-
         /** Finish the activity with a successful result.  */
         fun signupSuccess(): Observable<Unit>
+
+        fun progressBarIsVisible(): Observable<Boolean>
     }
 
     class SignupViewModel(environment: Environment) :
@@ -75,8 +70,14 @@ interface SignupViewModel {
             )
                 .compose(Transformers.pipeApiErrorsToV2(signupError))
                 .compose(Transformers.neverErrorV2())
-                .doOnSubscribe { formSubmitting.onNext(true) }
-                .doAfterTerminate { formSubmitting.onNext(false) }
+                .doOnSubscribe {
+                    this.progressBarIsVisible.onNext(true)
+                    formSubmitting.onNext(true)
+                }
+                .doAfterTerminate {
+                    this.progressBarIsVisible.onNext(false)
+                    formSubmitting.onNext(false)
+                }
         }
 
         private fun success(user: User) {
@@ -87,15 +88,13 @@ interface SignupViewModel {
         private val email = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
         private val password = PublishSubject.create<String>()
-        private val sendNewslettersClick = PublishSubject.create<Boolean>()
+        private val sendNewsletters = PublishSubject.create<Boolean>()
         private val signupClick = PublishSubject.create<Unit>()
         private val errorString: Observable<String>
         private val signupSuccess = PublishSubject.create<Unit>()
         private val formSubmitting = BehaviorSubject.create<Boolean>()
-        private val formIsValid = BehaviorSubject.create<Boolean>()
-        private val sendNewslettersIsChecked = BehaviorSubject.create<Boolean>()
-        private val showInterstitial = BehaviorSubject.create<Unit>()
         private val signupError = PublishSubject.create<ErrorEnvelope?>()
+        private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -108,7 +107,7 @@ interface SignupViewModel {
                 name,
                 email,
                 password,
-                sendNewslettersIsChecked
+                sendNewsletters
             ) { name: String, email: String, password: String, sendNewsletters: Boolean ->
                 SignupData(
                     name,
@@ -117,19 +116,6 @@ interface SignupViewModel {
                     sendNewsletters
                 )
             }
-
-            // TODO: Note this existing skip logic was moved into the VM as part of MBL-827 migration
-            //  without attempting to address this potential newsletters bug:
-            //  https://kickstarter.atlassian.net/browse/MBL-847
-            sendNewslettersClick
-                .skip(1)
-                .subscribe { sendNewslettersIsChecked.onNext(it) }
-                .addToDisposable(disposables)
-
-            signupData
-                .map { it.isValid }
-                .subscribe { formIsValid.onNext(it) }
-                .addToDisposable(disposables)
 
             signupData
                 .compose(Transformers.takeWhenV2(signupClick))
@@ -144,15 +130,9 @@ interface SignupViewModel {
                 .subscribe { success(it) }
                 .addToDisposable(disposables)
 
-            currentConfig.observable()
-                .take(1)
-                .map { false }
-                .subscribe { sendNewslettersIsChecked.onNext(it) }
-                .addToDisposable(disposables)
-
             errorString = signupError
                 .takeUntil(signupSuccess)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { it.errorMessage() }
 
             signupClick
@@ -174,8 +154,8 @@ interface SignupViewModel {
             this.password.onNext(password)
         }
 
-        override fun sendNewslettersClick(send: Boolean) {
-            sendNewslettersClick.onNext(send)
+        override fun sendNewsletters(send: Boolean) {
+            sendNewsletters.onNext(send)
         }
 
         override fun signupClick() {
@@ -183,24 +163,22 @@ interface SignupViewModel {
         }
 
         override fun errorString(): Observable<String> = errorString
-        override fun formIsValid(): BehaviorSubject<Boolean> = formIsValid
         override fun formSubmitting(): BehaviorSubject<Boolean> = formSubmitting
-        override fun sendNewslettersIsChecked(): BehaviorSubject<Boolean> = sendNewslettersIsChecked
         override fun signupSuccess(): PublishSubject<Unit> = signupSuccess
+
+        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
 
         override fun onCleared() {
             disposables.clear()
             super.onCleared()
         }
+
         internal class SignupData(
             val name: String,
             val email: String,
             val password: String,
             val sendNewsletters: Boolean
-        ) {
-            val isValid: Boolean
-                get() = name.isNotEmpty() && email.isEmail() && password.length >= 6
-        }
+        )
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

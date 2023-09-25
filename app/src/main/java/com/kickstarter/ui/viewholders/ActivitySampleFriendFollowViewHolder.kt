@@ -5,7 +5,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Activity
 import com.kickstarter.viewmodels.ActivitySampleFriendFollowViewHolderViewModel
 import com.squareup.picasso.Picasso
@@ -51,7 +50,7 @@ class ActivitySampleFriendFollowViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        vm.inputs.configureWith(ObjectUtils.requireNonNull(data as Activity?, Activity::class.java))
+        vm.inputs.configureWith(requireNotNull(data as Activity?) { Activity::class.java.toString() + " required to be non-null." })
     }
 
     private fun seeActivityOnClick() {

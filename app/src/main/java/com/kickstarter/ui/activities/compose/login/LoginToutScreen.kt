@@ -11,10 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -31,14 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.text.HtmlCompat
 import com.kickstarter.R
-import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSFacebookButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
@@ -70,11 +62,6 @@ enum class LoginToutTestTag {
     BACK_BUTTON,
     PAGE_TITLE,
     OPTIONS_ICON,
-    OPTIONS_MENU,
-    OPTIONS_TERMS,
-    OPTIONS_PRIVACY_POLICY,
-    OPTIONS_COOKIE,
-    OPTIONS_HELP,
     KS_LOGO,
     LOGO_TITLE,
     FACEBOOK_BUTTON,
@@ -121,62 +108,14 @@ fun LoginToutScreen(
                                 tint = colors.kds_black
                             )
 
-                            DropdownMenu(
-                                modifier = Modifier
-                                    .background(color = colors.kds_support_100)
-                                    .testTag(LoginToutTestTag.OPTIONS_MENU.name),
+                            KSLoginDropdownMenu(
                                 expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onTermsOfUseClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_TERMS.name),
-                                        text = stringResource(id = R.string.login_tout_help_sheet_terms),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onPrivacyPolicyClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_PRIVACY_POLICY.name),
-                                        text = stringResource(id = R.string.login_tout_help_sheet_privacy),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onCookiePolicyClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_COOKIE.name),
-                                        text = stringResource(id = R.string.login_tout_help_sheet_cookie),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onHelpClicked.invoke()
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier.testTag(LoginToutTestTag.OPTIONS_HELP.name),
-                                        text = stringResource(id = R.string.general_navigation_buttons_help),
-                                        color = colors.kds_support_700
-                                    )
-                                }
-                            }
+                                onDismissed = { expanded = !expanded },
+                                onTermsOfUseClicked = onTermsOfUseClicked,
+                                onPrivacyPolicyClicked = onPrivacyPolicyClicked,
+                                onCookiePolicyClicked = onCookiePolicyClicked,
+                                onHelpClicked = onHelpClicked
+                            )
                         }
                     }
                 }
@@ -260,107 +199,4 @@ fun LoginToutScreen(
             Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
         }
     }
-}
-
-@Composable
-fun LogInSignUpClickableDisclaimerText(
-    onTermsOfUseClicked: () -> Unit,
-    onPrivacyPolicyClicked: () -> Unit,
-    onCookiePolicyClicked: () -> Unit
-) {
-    val formattedText = HtmlCompat.fromHtml(
-        stringResource(id = R.string.login_tout_disclaimer_agree_to_terms_html),
-        0
-    ).toString()
-
-    val annotatedLinkString = buildAnnotatedString {
-        val termsOfUseString =
-            stringResource(id = R.string.login_tout_help_sheet_terms).lowercase()
-        val termsOfUseStartIndex = formattedText.indexOf(termsOfUseString)
-        val termsOfUserEndIndex = termsOfUseStartIndex + termsOfUseString.length
-
-        val privacyPolicyString =
-            stringResource(id = R.string.login_tout_help_sheet_privacy).lowercase()
-        val privacyPolicyStartIndex = formattedText.indexOf(privacyPolicyString)
-        val privacyPolicyEndIndex = privacyPolicyStartIndex + privacyPolicyString.length
-
-        val cookiePolicyString =
-            stringResource(id = R.string.login_tout_help_sheet_cookie).lowercase()
-        val cookiePolicyStartIndex = formattedText.indexOf(cookiePolicyString)
-        val cookiePolicyEndIndex = cookiePolicyStartIndex + cookiePolicyString.length
-
-        append(formattedText)
-
-        addStyle(
-            style = SpanStyle(
-                textDecoration = TextDecoration.Underline
-            ),
-            start = termsOfUseStartIndex,
-            end = termsOfUserEndIndex
-        )
-
-        addStringAnnotation(
-            tag = DisclaimerItems.TERMS.name,
-            annotation = "",
-            start = termsOfUseStartIndex,
-            end = termsOfUserEndIndex
-        )
-
-        addStyle(
-            style = SpanStyle(
-                textDecoration = TextDecoration.Underline
-            ),
-            start = privacyPolicyStartIndex,
-            end = privacyPolicyEndIndex
-        )
-
-        addStringAnnotation(
-            tag = DisclaimerItems.PRIVACY.name,
-            annotation = "",
-            start = privacyPolicyStartIndex,
-            end = privacyPolicyEndIndex
-        )
-
-        addStyle(
-            style = SpanStyle(
-                textDecoration = TextDecoration.Underline
-            ),
-            start = cookiePolicyStartIndex,
-            end = cookiePolicyEndIndex
-        )
-
-        addStringAnnotation(
-            tag = DisclaimerItems.COOKIES.name,
-            annotation = "",
-            start = cookiePolicyStartIndex,
-            end = cookiePolicyEndIndex
-        )
-    }
-
-    ClickableText(
-        modifier = Modifier.testTag(LoginToutTestTag.TOU_PP_COOKIE_DISCLAIMER.name),
-        text = annotatedLinkString,
-        style = typography.caption1.copy(
-            color = colors.kds_support_400,
-            textAlign = TextAlign.Center
-        ),
-        onClick = { index ->
-            annotatedLinkString.getStringAnnotations(index, index)
-                .firstOrNull()?.let { annotation ->
-                    when (annotation.tag) {
-                        DisclaimerItems.TERMS.name -> {
-                            onTermsOfUseClicked.invoke()
-                        }
-
-                        DisclaimerItems.PRIVACY.name -> {
-                            onPrivacyPolicyClicked.invoke()
-                        }
-
-                        DisclaimerItems.COOKIES.name -> {
-                            onCookiePolicyClicked.invoke()
-                        }
-                    }
-                }
-        }
-    )
 }

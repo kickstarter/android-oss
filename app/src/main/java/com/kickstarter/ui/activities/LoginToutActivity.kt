@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,21 +13,20 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.coalesceWithV2
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.HelpActivity.Terms
 import com.kickstarter.ui.activities.compose.login.LoginToutScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.LoginToutViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,8 +68,7 @@ class LoginToutActivity : ComponentActivity() {
                     },
                     onCookiePolicyClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES) },
                     onHelpClicked = {
-                        intent = Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT))
-                        this@LoginToutActivity.startActivity(intent)
+                        viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
                     }
                 )
             }
@@ -161,7 +158,7 @@ class LoginToutActivity : ComponentActivity() {
         viewModel.outputs.showDisclaimerActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startActivity(it)
+                startDisclaimerActivity(it)
             }
             .addToDisposable(disposables)
 
@@ -171,15 +168,6 @@ class LoginToutActivity : ComponentActivity() {
                 startResetActivity()
             }
             .addToDisposable(disposables)
-    }
-
-    private fun startActivity(disclaimerItem: DisclaimerItems) {
-        val intent = when (disclaimerItem) {
-            DisclaimerItems.TERMS -> Intent(this, Terms::class.java)
-            DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
-            DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
-        }
-        startActivity(intent)
     }
 
     private fun facebookLoginClick() =
@@ -196,10 +184,10 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun showErrorMessageToasts(): Observable<String?> {
         return viewModel.outputs.showMissingFacebookEmailErrorToast()
-            .map(ObjectUtils.coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
+            .map(coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
             .mergeWith(
                 viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
-                    .map(ObjectUtils.coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
+                    .map(coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
             )
     }
 
@@ -255,5 +243,6 @@ class LoginToutActivity : ComponentActivity() {
 enum class DisclaimerItems(@StringRes val itemName: Int) {
     TERMS(R.string.login_tout_help_sheet_terms),
     COOKIES(R.string.login_tout_help_sheet_cookie),
-    PRIVACY(R.string.login_tout_help_sheet_privacy)
+    PRIVACY(R.string.login_tout_help_sheet_privacy),
+    HELP(R.string.general_navigation_buttons_help)
 }

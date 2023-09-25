@@ -8,8 +8,8 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.UserPrivacy
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -101,7 +101,7 @@ interface AccountViewModel {
             updateCurrencyNotification
                 .compose(valuesV2())
                 .map { it.updateUserProfile()?.user()?.chosenCurrency() ?: "" }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .subscribe {
                     this.chosenCurrency.onNext(it)
                     this.success.onNext(it)

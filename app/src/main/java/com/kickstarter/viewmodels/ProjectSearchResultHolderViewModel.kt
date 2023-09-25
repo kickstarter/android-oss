@@ -1,22 +1,21 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
 import com.apollographql.apollo.api.CustomTypeValue
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
-import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ProjectSearchResultHolderViewModel {
     interface Inputs {
@@ -25,6 +24,9 @@ interface ProjectSearchResultHolderViewModel {
 
         /** Call to say user clicked a project  */
         fun projectClicked()
+
+        /** Clear subscriptions, called from ViewHolder when view is destroyed. */
+        fun onCleared()
     }
 
     interface Outputs {
@@ -50,11 +52,10 @@ interface ProjectSearchResultHolderViewModel {
         fun displayPrelaunchProjectBadge(): Observable<Boolean>
     }
 
-    class ViewModel(@NonNull environment: Environment) :
-        ActivityViewModel<ProjectSearchResultViewHolder>(environment), Inputs, Outputs {
+    class ProjectSearchResultHolderViewModel(environment: Environment) : Inputs, Outputs {
 
         private val projectAndIsFeatured = PublishSubject.create<Pair<Project, Boolean>>()
-        private val projectClicked = PublishSubject.create<Void>()
+        private val projectClicked = PublishSubject.create<Unit>()
         private val deadlineCountdownValueTextViewText: Observable<String>
         private val notifyDelegateOfResultClick: Observable<Project>
         private val percentFundedTextViewText: Observable<String>
@@ -62,6 +63,7 @@ interface ProjectSearchResultHolderViewModel {
         private val projectNameTextViewText: Observable<String>
         private val projectPhotoUrl: Observable<String>
         private val displayPrelaunchProjectBadge = BehaviorSubject.create<Boolean>()
+        private val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -92,7 +94,7 @@ interface ProjectSearchResultHolderViewModel {
                         it.second,
                     )
                 }
-                .filter { ObjectUtils.isNotNull(it.first) }
+                .filter { it.first.isNotNull() }
                 .map {
                     if (it.second) {
                         it.first?.full()
@@ -106,7 +108,7 @@ interface ProjectSearchResultHolderViewModel {
 
             notifyDelegateOfResultClick = projectAndIsFeatured
                 .map { PairUtils.first(it) }
-                .compose(Transformers.takeWhen(projectClicked))
+                .compose(Transformers.takeWhenV2(projectClicked))
 
             projectAndIsFeatured
                 .filter { ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN) }
@@ -114,10 +116,10 @@ interface ProjectSearchResultHolderViewModel {
                     it?.first?.displayPrelaunch() == true ||
                         it.first.launchedAt() ==
                         DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0))
-                }.compose(bindToLifecycle())
+                }
                 .subscribe {
                     displayPrelaunchProjectBadge.onNext(it)
-                }
+                }.addToDisposable(disposables)
         }
 
         override fun configureWith(projectAndIsFeatured: Pair<Project, Boolean>) {
@@ -125,7 +127,11 @@ interface ProjectSearchResultHolderViewModel {
         }
 
         override fun projectClicked() {
-            projectClicked.onNext(null)
+            projectClicked.onNext(Unit)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
         }
 
         override fun deadlineCountdownValueTextViewText(): Observable<String> = deadlineCountdownValueTextViewText

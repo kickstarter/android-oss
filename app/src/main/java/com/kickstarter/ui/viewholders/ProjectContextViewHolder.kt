@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectContextViewBinding
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso
 
@@ -22,7 +21,7 @@ class ProjectContextViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        project = ObjectUtils.requireNonNull(data as Project?, Project::class.java)
+        project = requireNotNull(data as Project?) { Project::class.java.toString() + " required to be non-null." }
     }
 
     override fun onBind() {

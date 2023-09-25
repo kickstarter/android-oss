@@ -1,9 +1,8 @@
 package com.kickstarter.viewmodels
 
-import androidx.lifecycle.ViewModel
 import com.kickstarter.libs.EnvironmentalCommitmentCategories
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -14,6 +13,9 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
     interface Inputs {
         /** Configure the view model with the [EnvironmentalCommitment]. */
         fun configureWith(environmentalCommitmentInput: EnvironmentalCommitment)
+
+        /** Clear subscriptions, called from ViewHolder when view is destroyed. */
+        fun onCleared()
     }
 
     interface Outputs {
@@ -23,8 +25,7 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
         fun category(): Observable<Int>
     }
 
-    class EnvironmentalCommitmentsViewHolderViewModel() :
-        ViewModel(), Inputs, Outputs {
+    class EnvironmentalCommitmentsViewHolderViewModel() : Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -47,7 +48,7 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
                         environmentalCommitmentCategory.name == it.category
                     }?.title
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe { this.category.onNext(it) }
                 .addToDisposable(disposables)
@@ -55,7 +56,6 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
 
         override fun onCleared() {
             disposables.clear()
-            super.onCleared()
         }
 
         override fun configureWith(environmentalCommitmentInput: EnvironmentalCommitment) = this.projectEnvironmentalCommitmentInput.onNext(environmentalCommitmentInput)

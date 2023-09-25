@@ -2,8 +2,8 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -29,9 +29,9 @@ class ActivitySampleFriendBackingViewHolderViewModel {
         private val disposables = CompositeDisposable()
         init {
             activityInput
-                .filter { ObjectUtils.isNotNull(it) }
-                .filter { ObjectUtils.isNotNull(it.user()) }
-                .filter { ObjectUtils.isNotNull(it.project()) }
+                .filter { it.isNotNull() }
+                .filter { it.user().isNotNull() }
+                .filter { it.project().isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe {
                     bindActivity.onNext(it)

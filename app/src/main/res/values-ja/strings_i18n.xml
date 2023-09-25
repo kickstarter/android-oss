@@ -352,7 +352,7 @@
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarterは、知的財産権侵害の報告をすべて真剣に受け止めています。違反行為の報告手順についてのさらなる情報は、著作権ポリシーおよび商標ポリシーをご参照ください。著作権者または商標権者によって提出された申し立てのみ手続きを進めることができます。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
-  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Kickstarter の AI ポリシーについて詳しく見る.</string>
+  <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Kickstarter の AI ポリシーについて詳しく見る</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Kickstarter上の説明責任について詳しく知る</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">コメントのガイドラインについてもっと詳しく&lt;/a></string>

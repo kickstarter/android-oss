@@ -11,10 +11,11 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isBacked
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -287,7 +288,7 @@ interface RewardViewHolderViewModel {
 
             reward
                 .filter { RewardUtils.isLimited(it) }
-                .filter { ObjectUtils.isNotNull(it.remaining()) }
+                .filter { it.remaining().isNotNull() }
                 .map { it.remaining() }
                 .map { remaining -> remaining?.let { NumberUtils.format(it) } }
                 .compose(bindToLifecycle())
@@ -370,7 +371,7 @@ interface RewardViewHolderViewModel {
             reward
                 .filter { RewardUtils.isShippable(it) }
                 .map { RewardUtils.shippingSummary(it) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.shippingSummary)
 
@@ -388,7 +389,7 @@ interface RewardViewHolderViewModel {
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
                 .map { it.localReceiptLocation()?.displayableName() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.localPickUpName)
 
@@ -422,13 +423,13 @@ interface RewardViewHolderViewModel {
                 .subscribe(this.backersCount)
 
             reward
-                .map { RewardUtils.isNoReward(it) || ObjectUtils.isNull(it.estimatedDeliveryOn()) }
+                .map { RewardUtils.isNoReward(it) || it.estimatedDeliveryOn().isNull() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.estimatedDeliveryIsGone)
 
             reward
-                .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                .filter { RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull() }
                 .map<DateTime> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
                 .compose(bindToLifecycle())

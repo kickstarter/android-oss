@@ -179,10 +179,12 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun isNotEmptyAndAtLeast6Chars() {
-        assertTrue("123456".isNotEmptyAndAtLeast6Chars())
-        assertFalse("1236".isNotEmptyAndAtLeast6Chars())
-        assertFalse("".isNotEmptyAndAtLeast6Chars())
+    fun testValidPassword() {
+        assertTrue("123456".validPassword())
+        assertFalse("1236".validPassword())
+        assertFalse("".validPassword())
+        assertFalse("   ".validPassword())
+        assertTrue("123 23".validPassword())
     }
 
     @Test
@@ -229,6 +231,15 @@ class StringExtKtTest : KSRobolectricTestCase() {
     fun testToHtml() {
         val value = RuntimeEnvironment.getApplication().getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines)
         assertEquals(value, value.toHtml().toString())
+    }
+
+    @Test
+    fun testToInteger() {
+        val numString = "0"
+        val errorNumString = "gfdg"
+        assertEquals(0, numString.toInteger())
+        assertNull(errorNumString.toInteger())
+        assertNull(null.toInteger())
     }
 
     companion object {

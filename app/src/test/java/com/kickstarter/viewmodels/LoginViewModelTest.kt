@@ -39,7 +39,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val logInButtonIsEnabled = TestSubscriber<Boolean>()
     private val loginSuccess = TestSubscriber<Unit>()
     private val preFillEmail = TestSubscriber<String>()
-    private val showChangedPasswordSnackbar = TestSubscriber<Unit>()
+    private val showChangedPasswordSnackbar = TestSubscriber<Boolean>()
     private val showResetPasswordSuccessDialog = TestSubscriber<Boolean>()
     private val tfaChallenge = TestSubscriber<Unit>()
 
@@ -55,34 +55,16 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.genericLoginError().subscribe { this.genericLoginError.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.invalidLoginError().subscribe { this.invalidLoginError.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.loginButtonIsEnabled().subscribe { this.logInButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isLoading().subscribe { this.logInButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.loginSuccess().subscribe { this.loginSuccess.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.prefillEmail().subscribe { this.preFillEmail.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showChangedPasswordSnackbar().subscribe {
-            this.showChangedPasswordSnackbar.onNext(it)
+            this.showChangedPasswordSnackbar.onNext(true)
         }.addToDisposable(disposables)
         this.vm.outputs.showResetPasswordSuccessDialog()
             .map { showAndEmail -> showAndEmail.first }
             .subscribe { this.showResetPasswordSuccessDialog.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.tfaChallenge().subscribe { this.tfaChallenge.onNext(it) }.addToDisposable(disposables)
-    }
-
-    @Test
-    fun testLoginButtonEnabled() {
-        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-
-        // Button should not be enabled until both a valid email and password are entered.
-        this.vm.inputs.email("hello")
-        this.logInButtonIsEnabled.assertNoValues()
-
-        this.vm.inputs.email("hello@kickstarter.com")
-        this.logInButtonIsEnabled.assertNoValues()
-
-        this.vm.inputs.password("")
-        this.logInButtonIsEnabled.assertValues(false)
-
-        this.vm.inputs.password("izzyiscool")
-        this.logInButtonIsEnabled.assertValues(false, true)
     }
 
     @Test
@@ -108,7 +90,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.loginClick()
 
-        this.logInButtonIsEnabled.assertValues(true, true, false)
+        this.logInButtonIsEnabled.assertValues(false, true)
     }
 
     @Test
@@ -265,7 +247,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         val rotatedPrefillEmail = TestSubscriber<String>()
         this.vm.outputs.prefillEmail().subscribe { rotatedPrefillEmail.onNext(it) }.addToDisposable(disposables)
-        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Unit>()
+        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Boolean>()
         this.vm.outputs.showChangedPasswordSnackbar().subscribe {
             rotatedShowChangedPasswordSnackbar.onNext(it)
         }.addToDisposable(disposables)

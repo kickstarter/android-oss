@@ -5,8 +5,8 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.bluesCategory
 import com.kickstarter.mock.factories.CategoryFactory.ceramicsCategory
@@ -337,7 +337,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         val project = project()
         setUpEnvironment(environment())
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        imageIsInvisible.assertValues(ObjectUtils.isNull(project.photo()))
+        imageIsInvisible.assertValues(project.photo().isNull())
     }
 
     @Test

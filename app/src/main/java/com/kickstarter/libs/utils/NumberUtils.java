@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.libs.NumberOptions;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -62,15 +63,15 @@ public final class NumberUtils {
 
     final NumberFormat numberFormat = numberFormat(options, locale);
     if (numberFormat instanceof DecimalFormat) {
-      numberFormat.setRoundingMode(ObjectUtils.coalesce(options.roundingMode(), RoundingMode.HALF_DOWN));
+      numberFormat.setRoundingMode(AnyExtKt.coalesce(options.roundingMode(), RoundingMode.HALF_DOWN));
     }
 
-    int precision = ObjectUtils.coalesce(options.precision(), 0);
+    int precision = AnyExtKt.coalesce(options.precision(), 0);
     float divisor = 1.0f;
     String suffix = "";
 
     // TODO: The bucketing logic works, but the suffix should be translated.
-    final float bucketAbove = ObjectUtils.coalesce(options.bucketAbove(), 0.0f);
+    final float bucketAbove = AnyExtKt.coalesce(options.bucketAbove(), 0.0f);
 
     if (bucketAbove >= 1000.0f && value >= bucketAbove) {
       if (bucketAbove > 0.0f && bucketAbove < 1_000_000.0f) {
@@ -81,7 +82,7 @@ public final class NumberUtils {
         suffix = "M";
       }
       if (options.bucketAbove() != null) {
-        precision = ObjectUtils.coalesce(options.bucketPrecision(), 0);
+        precision = AnyExtKt.coalesce(options.bucketPrecision(), 0);
       }
     }
 

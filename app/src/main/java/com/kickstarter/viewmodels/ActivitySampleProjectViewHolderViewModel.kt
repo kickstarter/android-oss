@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
 import rx.Observable
@@ -27,9 +27,9 @@ class ActivitySampleProjectViewHolderViewModel {
         private val bindActivity = BehaviorSubject.create<Activity>()
         init {
             activityInput
-                .filter { ObjectUtils.isNotNull(it) }
-                .filter { ObjectUtils.isNotNull(it.user()) }
-                .filter { ObjectUtils.isNotNull(it.project()) }
+                .filter { it.isNotNull() }
+                .filter { it.user().isNotNull() }
+                .filter { it.project().isNotNull() }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {

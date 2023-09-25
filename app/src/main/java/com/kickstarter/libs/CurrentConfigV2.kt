@@ -4,7 +4,7 @@ import android.content.res.AssetManager
 import com.google.gson.Gson
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -38,7 +38,7 @@ class CurrentConfigV2(
         val diskConfig = Observable.just(ASSET_PATH)
             .map { path: String -> configJSONString(path, assetManager) }
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
-            .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: Config? -> `object`.isNotNull() }
             .compose(Transformers.neverErrorV2())
             .subscribeOn(Schedulers.io())
 
@@ -46,7 +46,7 @@ class CurrentConfigV2(
         val prefConfig = Observable.just(configPreference)
             .map { obj: StringPreferenceType -> obj.get() }
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
-            .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: Config? -> `object`.isNotNull() }
             .compose(Transformers.neverErrorV2())
             .subscribeOn(Schedulers.io())
 
@@ -59,7 +59,7 @@ class CurrentConfigV2(
 
         // Cache any new values to preferences
         config.skip(1)
-            .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
+            .filter { `object`: Config? -> `object`.isNotNull() }
             .subscribe { c: Config? -> configPreference.set(gson.toJson(c, Config::class.java)) }.dispose()
     }
 

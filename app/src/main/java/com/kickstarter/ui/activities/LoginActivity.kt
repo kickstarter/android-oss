@@ -3,50 +3,56 @@ package com.kickstarter.ui.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
+import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.kickstarter.R
-import com.kickstarter.databinding.LoginLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.coalesceWithV2
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.compose.login.LoginScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
-import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
-import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.ui.extensions.text
-import com.kickstarter.ui.views.ConfirmDialog
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : ComponentActivity() {
 
-    private var confirmResetPasswordSuccessDialog: ConfirmDialog? = null
     private lateinit var ksString: KSString
 
-    private val forgotPasswordString = R.string.login_buttons_forgot_password_html
-    private val forgotPasswordSentEmailString = R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password
-    private val resetPasswordSentEmailString = R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_set_your_password
+    private val resetPasswordSentEmailString =
+        R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_set_your_password
     private val loginDoesNotMatchString = R.string.login_errors_does_not_match
     private val unableToLoginString = R.string.login_errors_unable_to_log_in
-    private val loginString = R.string.login_buttons_log_in
-    private val errorTitleString = R.string.login_errors_title
-    private lateinit var binding: LoginLayoutBinding
 
     private lateinit var viewModelFactory: LoginViewModel.Factory
     private val viewModel: LoginViewModel.LoginViewModel by viewModels { viewModelFactory }
 
     private lateinit var disposables: CompositeDisposable
+
+    private var darkModeEnabled = false
+    private var currentEmail = ""
+    private var currentPassword = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,25 +60,135 @@ class LoginActivity : AppCompatActivity() {
 
         val env = this.getEnvironment()?.let { env ->
             viewModelFactory = LoginViewModel.Factory(env, intent = intent)
+            darkModeEnabled =
+                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
             env
         }
 
-        binding = LoginLayoutBinding.inflate(layoutInflater)
+        setContent {
+            var prefillEmail = viewModel.outputs.prefillEmail().subscribeAsState(initial = "").value
 
-        setContentView(binding.root)
+            var isLoading = viewModel.isLoading().subscribeAsState(initial = false).value
 
-        setUpConnectivityStatusCheck(lifecycle)
+            var error by remember { mutableStateOf("") }
+
+            errorMessages().subscribe {
+                error = it
+            }.addToDisposable(disposables)
+
+            var scaffoldState = rememberScaffoldState()
+
+            var resetPasswordDialogMessage by rememberSaveable { mutableStateOf("") }
+
+            var showDialog by rememberSaveable { mutableStateOf(false) }
+
+            var showResetPasswordDialog = viewModel.outputs.showResetPasswordSuccessDialog()
+                .subscribeAsState(initial = Pair(false, Pair("", LoginReason.DEFAULT))).value
+            when {
+                showResetPasswordDialog.first -> {
+                    val emailAndReason = showResetPasswordDialog.second
+                    val message =
+                        if (emailAndReason.second == LoginReason.RESET_FACEBOOK_PASSWORD) {
+                            this.ksString.format(
+                                getString(this.resetPasswordSentEmailString),
+                                "email",
+                                emailAndReason.first
+                            )
+                        } else {
+                            this.ksString.format(
+                                getString(this.resetPasswordSentEmailString),
+                                "email",
+                                emailAndReason.first
+                            )
+                        }
+                    resetPasswordDialogMessage = message
+                    showDialog = true
+                }
+
+                else -> {
+                    resetPasswordDialogMessage = ""
+                    showDialog = false
+                }
+            }
+
+            var changedPasswordMessage by remember { mutableStateOf("") }
+
+            this.viewModel.outputs.showChangedPasswordSnackbar()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    changedPasswordMessage = getString(R.string.Got_it_your_changes_have_been_saved)
+                }
+                .addToDisposable(disposables)
+
+            var createPasswordMessage by remember { mutableStateOf("") }
+
+            this.viewModel.outputs.showCreatedPasswordSnackbar()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    createPasswordMessage = getString(R.string.Got_it_your_changes_have_been_saved)
+                }
+                .addToDisposable(disposables)
+
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+                LoginScreen(
+                    prefillEmail = prefillEmail,
+                    scaffoldState = scaffoldState,
+                    isLoading = isLoading,
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() },
+                    onLoginClicked = { email, password ->
+                        currentEmail = email
+                        currentPassword = password
+                        viewModel.inputs.email(email)
+                        viewModel.inputs.password(password)
+                        viewModel.inputs.loginClick()
+                    },
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onForgotPasswordClicked = { startResetPasswordActivity() },
+                    resetPasswordDialogMessage = resetPasswordDialogMessage,
+                    showDialog = showDialog,
+                    setShowDialog = {
+                        showDialog = it
+                        this.viewModel.inputs.resetPasswordConfirmationDialogDismissed()
+                    }
+                )
+            }
+
+            when {
+                error.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(error, actionLabel = "error")
+                        error = ""
+                    }
+                }
+
+                changedPasswordMessage.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            changedPasswordMessage,
+                            actionLabel = "success"
+                        )
+                        changedPasswordMessage = ""
+                        viewModel.hideChangePasswordSnackbar()
+                    }
+                }
+
+                createPasswordMessage.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            createPasswordMessage,
+                            actionLabel = "success"
+                        )
+                        createPasswordMessage = ""
+                        viewModel.hideCreatedPasswordSnackbar()
+                    }
+                }
+            }
+        }
+
         this.ksString = requireNotNull(env?.ksString())
-        binding.loginToolbar.loginToolbar.setTitle(getString(this.loginString))
-        binding.loginFormView.forgotYourPasswordTextView.text = ViewUtils.html(getString(this.forgotPasswordString))
-
-        binding.loginFormView.email.onChange { this.viewModel.inputs.email(it) }
-        binding.loginFormView.password.onChange { this.viewModel.inputs.password(it) }
-
-        errorMessages()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { e -> ViewUtils.showDialog(this, getString(this.errorTitleString), e) }
-            .addToDisposable(disposables)
 
         this.viewModel.outputs.tfaChallenge()
             .observeOn(AndroidSchedulers.mainThread())
@@ -84,51 +200,6 @@ class LoginActivity : AppCompatActivity() {
             .subscribe { onSuccess() }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.prefillEmail()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.loginFormView.email.setText(it)
-                binding.loginFormView.email.setSelection(it.length)
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.showChangedPasswordSnackbar()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(binding.loginToolbar.loginToolbar, R.string.Got_it_your_changes_have_been_saved) }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.showCreatedPasswordSnackbar()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(binding.loginToolbar.loginToolbar, R.string.Got_it_your_changes_have_been_saved) }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.showResetPasswordSuccessDialog()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showAndEmail ->
-                val show = showAndEmail.first
-                val email = showAndEmail.second
-                if (show) {
-                    resetPasswordSuccessDialog(email.first, showAndEmail.second.second).show()
-                } else {
-                    resetPasswordSuccessDialog(email.first, showAndEmail.second.second).dismiss()
-                }
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.loginButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.setLoginButtonEnabled(it) }
-            .addToDisposable(disposables)
-
-        binding.loginFormView.forgotYourPasswordTextView.setOnClickListener {
-            startResetPasswordActivity()
-        }
-
-        binding.loginFormView.loginButton.setOnClickListener {
-            this.viewModel.inputs.loginClick()
-            this@LoginActivity.hideKeyboard()
-        }
-
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 this@LoginActivity.finishWithAnimation()
@@ -136,33 +207,12 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    /**
-     * Lazily creates a reset password success confirmation dialog and stores it in an instance variable.
-     */
-    private fun resetPasswordSuccessDialog(email: String, loginReason: LoginReason): ConfirmDialog {
-        if (this.confirmResetPasswordSuccessDialog == null) {
-            val message = if (loginReason == LoginReason.RESET_FACEBOOK_PASSWORD) {
-                this.ksString.format(getString(this.resetPasswordSentEmailString), "email", email)
-            } else {
-                this.ksString.format(getString(this.resetPasswordSentEmailString), "email", email)
-            }
-
-            this.confirmResetPasswordSuccessDialog = ConfirmDialog(this, null, message)
-
-            this.confirmResetPasswordSuccessDialog!!
-                .setOnDismissListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
-            this.confirmResetPasswordSuccessDialog!!
-                .setOnCancelListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
-        }
-        return this.confirmResetPasswordSuccessDialog!!
-    }
-
     private fun errorMessages() =
         this.viewModel.outputs.invalidLoginError()
-            .map(ObjectUtils.coalesceWithV2(getString(this.loginDoesNotMatchString)))
+            .map(coalesceWithV2(getString(this.loginDoesNotMatchString)))
             .mergeWith(
                 this.viewModel.outputs.genericLoginError()
-                    .map(ObjectUtils.coalesceWithV2(getString(this.unableToLoginString)))
+                    .map(coalesceWithV2(getString(this.unableToLoginString)))
             )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -189,20 +239,16 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun setLoginButtonEnabled(enabled: Boolean) {
-        binding.loginFormView.loginButton.isEnabled = enabled
-    }
-
     private fun startTwoFactorActivity() {
         val intent = Intent(this, TwoFactorActivity::class.java)
-            .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text())
-            .putExtra(IntentKey.PASSWORD, binding.loginFormView.password.text())
+            .putExtra(IntentKey.EMAIL, currentEmail)
+            .putExtra(IntentKey.PASSWORD, currentPassword)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startResetPasswordActivity() {
-        val intent = Intent().getResetPasswordIntent(this, email = binding.loginFormView.email.text.toString())
+        val intent = Intent().getResetPasswordIntent(this, email = currentEmail)
         startActivityForResult(intent, ActivityRequestCodes.RESET_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

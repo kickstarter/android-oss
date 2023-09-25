@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.ProjectFaq
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -50,7 +50,7 @@ interface FrequentlyAskedQuestionsViewHolderViewModel {
                 .addToDisposable(disposables)
 
             projectFaqInput
-                .filter { ObjectUtils.isNotNull(it.createdAt) }
+                .filter { it.createdAt.isNotNull() }
                 .map { it.createdAt?.let { createdAt -> DateTimeUtils.longDate(createdAt) } }
                 .subscribe { this.updatedDate.onNext(it) }
                 .addToDisposable(disposables)

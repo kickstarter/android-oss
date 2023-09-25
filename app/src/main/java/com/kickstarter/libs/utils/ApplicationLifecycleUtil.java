@@ -18,6 +18,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -117,10 +118,10 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
     final String accessToken = this.currentUser.getAccessToken();
 
     // Check if the access token is null and the user is still logged in.
-    if (this.isLoggedIn && ObjectUtils.isNull(accessToken)) {
+    if (this.isLoggedIn && AnyExtKt.isNull(accessToken)) {
       forceLogout("access_token_null");
     } else {
-      if (ObjectUtils.isNotNull(accessToken)) {
+      if (AnyExtKt.isNotNull(accessToken)) {
         this.client.fetchCurrentUser()
           .compose(Transformers.neverError())
           .subscribe(u -> this.currentUser.refresh(u));

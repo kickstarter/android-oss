@@ -22,7 +22,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.libs.utils.extensions.IntentExtKt;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.SurveyResponse;
@@ -108,7 +108,7 @@ public final class PushNotifications {
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isMessage)
         .flatMap(this::fetchMessageThreadWithEnvelope)
-        .filter(ObjectUtils::isNotNull)
+        .filter(AnyExtKt::isNotNull)
         .observeOn(Schedulers.newThread())
         .subscribe(envelopeAndMessageThread ->
           this.displayNotificationFromMessageActivity(envelopeAndMessageThread.first, envelopeAndMessageThread.second)
@@ -136,7 +136,7 @@ public final class PushNotifications {
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isProjectUpdateActivity)
         .flatMap(this::fetchUpdateWithEnvelope)
-        .filter(ObjectUtils::isNotNull)
+        .filter(AnyExtKt::isNotNull)
         .observeOn(Schedulers.newThread())
         .subscribe(envelopeAndUpdate ->
           this.displayNotificationFromUpdateActivity(envelopeAndUpdate.first, envelopeAndUpdate.second)
@@ -148,7 +148,7 @@ public final class PushNotifications {
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isSurvey)
         .flatMap(this::fetchSurveyResponseWithEnvelope)
-        .filter(ObjectUtils::isNotNull)
+        .filter(AnyExtKt::isNotNull)
         .observeOn(Schedulers.newThread())
         .subscribe(envelopeAndSurveyResponse ->
           this.displayNotificationFromSurveyResponseActivity(
@@ -171,7 +171,7 @@ public final class PushNotifications {
       // Register the channels with the system; you can't change the importance
       // or other notification behaviors after this
       final NotificationManager notificationManager = this.context.getSystemService(NotificationManager.class);
-      if (ObjectUtils.isNotNull(notificationManager)) {
+      if (AnyExtKt.isNotNull(notificationManager)) {
         notificationManager.createNotificationChannels(channels);
       }
     }
@@ -207,7 +207,7 @@ public final class PushNotifications {
     }
 
     final Long projectId = erroredPledge.projectId();
-    final Intent projectIntent = projectIntent(envelope, ObjectUtils.toString(projectId))
+    final Intent projectIntent = projectIntent(envelope, projectId.toString())
       .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true);
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
       .setContentIntent(projectContentIntent(envelope, projectIntent))
@@ -261,7 +261,7 @@ public final class PushNotifications {
     final String projectPhoto = activity.projectPhoto();
 
     NotificationCompat.Builder notificationBuilder = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_ACTIVITY)
-      .setContentIntent(projectContentIntent(envelope, projectIntent(envelope, ObjectUtils.toString(projectId))));
+      .setContentIntent(projectContentIntent(envelope, projectIntent(envelope, projectId.toString())));
     if (projectPhoto != null) {
       notificationBuilder = notificationBuilder.setLargeIcon(fetchBitmap(projectPhoto, false));
     }
@@ -278,7 +278,7 @@ public final class PushNotifications {
       return;
     }
 
-    final Intent projectIntent = projectIntent(envelope, ObjectUtils.toString(project.id()));
+    final Intent projectIntent = projectIntent(envelope, Long.toString(project.id()));
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
       .setContentIntent(projectContentIntent(envelope, projectIntent))
       .setLargeIcon(fetchBitmap(project.photo(), false))
@@ -321,7 +321,7 @@ public final class PushNotifications {
       return;
     }
 
-    final String projectParam = ObjectUtils.toString(projectId);
+    final String projectParam = projectId.toString();
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_UPDATES)
       .setContentIntent(projectUpdateContentIntent(envelope, update, projectParam))
@@ -479,8 +479,8 @@ public final class PushNotifications {
       return null;
     }
 
-    final String projectParam = ObjectUtils.toString(projectId);
-    final String updateParam = ObjectUtils.toString(updateId);
+    final String projectParam = projectId.toString();
+    final String updateParam = updateId.toString();
 
     final Observable<Update> update = this.client.fetchUpdate(projectParam, updateParam)
       .compose(neverError());

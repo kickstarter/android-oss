@@ -5,7 +5,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
@@ -144,7 +144,7 @@ interface CommentsViewHolderViewModel {
         init {
 
             val comment = Observable.merge(this.commentInput.distinctUntilChanged().map { it.comment }, postedSuccessfully)
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             configureCommentCardWithComment(comment)
@@ -152,7 +152,7 @@ interface CommentsViewHolderViewModel {
             val commentCardStatus = this.commentInput
                 .compose(combineLatestPair(currentUser.observable()))
                 .distinctUntilChanged()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map {
                     val commentCardState = cardStatus(it.first, it.second)
                     it.first.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0)
@@ -236,25 +236,25 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .map { it.author()?.name() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentAuthorName)
 
             comment
                 .map { it.author()?.avatar()?.medium() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentAuthorAvatarUrl)
 
             comment
                 .map { it.body() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentMessageBody)
 
             comment
                 .map { it.createdAt() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentPostTime)
 

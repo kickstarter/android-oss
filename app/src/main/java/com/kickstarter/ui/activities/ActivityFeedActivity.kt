@@ -14,8 +14,8 @@ import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.getProjectIntent
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
@@ -61,7 +61,7 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
         // Only allow refreshing if there's a current user
         currentUser?.observable()
-            ?.map { `object`: User? -> ObjectUtils.isNotNull(`object`) }
+            ?.map { `object`: User? -> `object`.isNotNull() }
             ?.compose(bindToLifecycle())
             ?.compose(Transformers.observeForUI())
             ?.subscribe { binding.activityFeedSwipeRefreshLayout.isEnabled = it }

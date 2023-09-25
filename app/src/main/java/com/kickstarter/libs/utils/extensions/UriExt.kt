@@ -2,7 +2,6 @@
 package com.kickstarter.libs.utils.extensions
 
 import android.net.Uri
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import java.util.regex.Pattern
 
@@ -106,7 +105,7 @@ fun Uri.isProjectUri(webEndpoint: String): Boolean {
 fun Uri.isProjectPreviewUri(webEndpoint: String): Boolean {
     return isProjectUri(
         webEndpoint
-    ) && ObjectUtils.isNotNull(getQueryParameter("token"))
+    ) && getQueryParameter("token").isNotNull()
 }
 
 fun Uri.isSignupUri(webEndpoint: String): Boolean {
@@ -165,7 +164,7 @@ fun Uri.isWebUri(webEndpoint: String): Boolean {
 
 fun Uri.isDiscoverSortParam(): Boolean {
     return DISCOVER_SORT_PATTERN.matcher(path()).matches() &&
-        ObjectUtils.isNotNull(getQueryParameter("sort"))
+        getQueryParameter("sort").isNotNull()
 }
 
 private const val VERIFICATION = "/profile/verify_email"

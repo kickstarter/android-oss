@@ -33,12 +33,12 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentPledgeBinding
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -350,7 +350,7 @@ class PledgeFragment :
 
         this.viewModel.outputs.shippingRulesAndProject()
             .observeOn(AndroidSchedulers.mainThread())
-            .filter { ObjectUtils.isNotNull(context) }
+            .filter { context.isNotNull() }
             .subscribe {
                 displayShippingRules(it.first, it.second)
             }

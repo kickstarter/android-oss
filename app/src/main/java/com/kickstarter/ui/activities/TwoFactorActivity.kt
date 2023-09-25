@@ -1,68 +1,99 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.setValue
 import com.kickstarter.R
-import com.kickstarter.databinding.TwoFactorLayoutBinding
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.ui.activities.compose.login.TwoFactorScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.extensions.startDisclaimerActivity
 import com.kickstarter.viewmodels.TwoFactorViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
 class TwoFactorActivity : AppCompatActivity() {
-    private lateinit var binding: TwoFactorLayoutBinding
     private lateinit var viewModelFactory: TwoFactorViewModel.Factory
     private val viewModel: TwoFactorViewModel.TwoFactorViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
+    private var darkModeEnabled = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = TwoFactorViewModel.Factory(env, intent)
+            darkModeEnabled =
+                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
-        binding = TwoFactorLayoutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        setUpConnectivityStatusCheck(lifecycle)
-        binding.loginToolbar.loginToolbar.setTitle(getString(R.string.two_factor_title))
+        setContent {
+            var error by remember { mutableStateOf("") }
+
+            errorMessages().subscribe {
+                error = it
+            }.addToDisposable(disposables)
+
+            var resendMessage by remember { mutableStateOf("") }
+
+            viewModel.showResendCodeConfirmation().subscribe {
+                resendMessage = getString(R.string.messages_navigation_sent)
+            }.addToDisposable(disposables)
+
+            var scaffoldState = rememberScaffoldState()
+
+            var formSubmitting = viewModel.formSubmitting().subscribeAsState(initial = false).value
+
+            when {
+                error.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(message = error, actionLabel = "error")
+                        error = ""
+                    }
+                }
+
+                resendMessage.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(message = resendMessage, actionLabel = "action")
+                        resendMessage = ""
+                    }
+                }
+            }
+
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+                TwoFactorScreen(
+                    scaffoldState = scaffoldState,
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() },
+                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onResendClicked = { resendButtonOnClick() },
+                    onSubmitClicked = {
+                        codeEditTextOnTextChanged(it)
+                        loginButtonOnClick()
+                    },
+                    isLoading = formSubmitting
+                )
+            }
+        }
 
         viewModel.outputs.tfaSuccess()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { onSuccess() }
             .addToDisposable(disposables)
-
-        viewModel.outputs.formSubmitting()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { setFormDisabled(it) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.formIsValid()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { setFormEnabled(it) }
-            .addToDisposable(disposables)
-
-        errorMessages()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showDialog(this, getString(R.string.login_errors_title), it) }
-            .addToDisposable(disposables)
-
-        binding.twoFactorFormView.code.doOnTextChanged { text, _, _, _ ->
-            text?.let { codeEditTextOnTextChanged(it) }
-        }
-
-        binding.twoFactorFormView.loginButton.setOnClickListener {
-            loginButtonOnClick()
-        }
-
-        binding.twoFactorFormView.resendButton.setOnClickListener {
-            resendButtonOnClick()
-        }
     }
 
     override fun onDestroy() {
@@ -91,10 +122,4 @@ class TwoFactorActivity : AppCompatActivity() {
         setResult(RESULT_OK)
         finish()
     }
-
-    private fun setFormEnabled(enabled: Boolean) {
-        binding.twoFactorFormView.loginButton.isEnabled = enabled
-    }
-
-    private fun setFormDisabled(disabled: Boolean) = setFormEnabled(!disabled)
 }

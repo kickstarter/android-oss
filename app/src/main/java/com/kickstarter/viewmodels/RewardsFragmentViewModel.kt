@@ -8,10 +8,10 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.isBacked
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -131,7 +131,7 @@ class RewardsFragmentViewModel {
 
             val backedReward = project
                 .map { it.backing()?.let { backing -> getReward(backing) } }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val defaultRewardClicked = Pair(Reward.builder().id(0L).minimum(0.0).build(), false)
@@ -144,7 +144,7 @@ class RewardsFragmentViewModel {
                         return@combineLatest pledgeDataAndPledgeReason(projectData, rewardPair.first)
                     }
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -172,7 +172,7 @@ class RewardsFragmentViewModel {
                         return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first), backedReward)
                     }
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {

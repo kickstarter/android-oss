@@ -8,9 +8,9 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
@@ -24,8 +24,6 @@ import io.reactivex.subjects.PublishSubject
 interface ResetPasswordViewModel {
 
     interface Inputs {
-        /** Call when the email field changes. */
-        fun email(emailInput: String)
 
         /** Call when the reset password button is clicked. */
         fun resetPasswordClick()
@@ -36,9 +34,6 @@ interface ResetPasswordViewModel {
     interface Outputs {
         /** Emits a boolean that determines if the form is in the progress of being submitted. */
         fun isFormSubmitting(): Observable<Boolean>
-
-        /** Emits a boolean that determines if the form validation is passing. */
-        fun isFormValid(): Observable<Boolean>
 
         /** Emits when password reset is completed successfully. */
         fun resetLoginPasswordSuccess(): Observable<Unit>
@@ -72,8 +67,6 @@ interface ResetPasswordViewModel {
         private val intent = BehaviorSubject.create<Intent>()
         private val disposables = CompositeDisposable()
 
-        private val ERROR_GENERIC = "Something went wrong, please try again."
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -87,7 +80,7 @@ interface ResetPasswordViewModel {
                 .map {
                     it.getStringExtra(IntentKey.EMAIL)
                 }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .subscribe {
                     this.prefillEmail.onNext(it)
@@ -144,6 +137,14 @@ interface ResetPasswordViewModel {
                 .addToDisposable(disposables)
         }
 
+        fun setEmail(email: String) {
+            this.email.onNext(email)
+        }
+
+        fun resetErrorMessage() {
+            this.resetError.onNext(ErrorEnvelope.builder().build())
+        }
+
         override fun onCleared() {
             disposables.clear()
             super.onCleared()
@@ -163,20 +164,12 @@ interface ResetPasswordViewModel {
 
         override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 
-        override fun email(emailInput: String) {
-            this.email.onNext(emailInput)
-        }
-
         override fun resetPasswordClick() {
             this.resetPasswordClick.onNext(Unit)
         }
 
         override fun isFormSubmitting(): Observable<Boolean> {
             return this.isFormSubmitting
-        }
-
-        override fun isFormValid(): Observable<Boolean> {
-            return this.isFormValid
         }
 
         override fun resetLoginPasswordSuccess(): Observable<Unit> {
@@ -190,7 +183,7 @@ interface ResetPasswordViewModel {
         override fun resetError(): Observable<String> {
             return this.resetError
                 .takeUntil(this.resetLoginPasswordSuccess)
-                .map { it?.errorMessage() ?: ERROR_GENERIC }
+                .map { it.errorMessage() }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

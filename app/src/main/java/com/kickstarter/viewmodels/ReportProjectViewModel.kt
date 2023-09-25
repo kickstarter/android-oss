@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
@@ -59,7 +59,7 @@ interface ReportProjectViewModel {
         private val flaggingKind = PublishSubject.create<String>()
         private val urlTag = PublishSubject.create<String>()
 
-        private fun arguments() = Observable.just(this.arguments).filter { ObjectUtils.isNotNull(it) }.map { requireNotNull(it) }
+        private fun arguments() = Observable.just(this.arguments).filter { it.isNotNull() }.map { requireNotNull(it) }
         private val disposables = CompositeDisposable()
 
         init {
@@ -82,7 +82,7 @@ interface ReportProjectViewModel {
 
             disposables.add(
                 apolloClient.userPrivacy()
-                    .filter { ObjectUtils.isNotNull(it) }
+                    .filter { it.isNotNull() }
                     .map { it.email ?: "email@email.com" }
                     .subscribe {
                         userEmail.onNext(it)

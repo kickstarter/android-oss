@@ -31,6 +31,7 @@ class EnvironmentalCommitmentsViewHolder(
     }
 
     override fun destroy() {
+        viewModel.inputs.onCleared()
         disposables.clear()
         super.destroy()
     }

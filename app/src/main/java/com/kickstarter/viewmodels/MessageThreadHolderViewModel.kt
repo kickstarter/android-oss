@@ -5,7 +5,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.MessageThread
 import com.kickstarter.ui.SharedPreferenceKey
@@ -103,11 +103,11 @@ interface MessageThreadHolderViewModel {
             )
 
             val lastMessage = messageThread.map { it.lastMessage() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             val participant = messageThread.map { it.participant() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
             cardViewIsElevated = hasUnreadMessages

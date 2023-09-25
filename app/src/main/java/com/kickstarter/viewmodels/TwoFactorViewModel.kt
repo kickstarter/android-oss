@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -37,9 +37,6 @@ interface TwoFactorViewModel {
 
         /** Emits when TFA code was submitted.  */
         fun formSubmitting(): Observable<Boolean>
-
-        /** Emits when TFA code submission has completed.  */
-        fun formIsValid(): Observable<Boolean>
 
         /** Emits when resend code confirmation should be shown.  */
         fun showResendCodeConfirmation(): Observable<Unit>
@@ -114,8 +111,6 @@ interface TwoFactorViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        override fun formIsValid(): Observable<Boolean> = formIsValid
-
         override fun formSubmitting(): Observable<Boolean> = formSubmitting
 
         override fun genericTfaError(): Observable<Unit> {
@@ -168,7 +163,7 @@ interface TwoFactorViewModel {
 
             val email = internalIntent
                 .map { it.getStringExtra(IntentKey.EMAIL) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             val fbAccessToken = internalIntent
                 .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) ?: "" }
@@ -178,7 +173,7 @@ interface TwoFactorViewModel {
 
             val password = internalIntent
                 .map { it.getStringExtra(IntentKey.PASSWORD) }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
 
             val tfaData = Observable.combineLatest(
                 email,

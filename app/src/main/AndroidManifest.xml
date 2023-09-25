@@ -113,10 +113,12 @@
         <activity
             android:name=".ui.activities.ResetPasswordActivity"
             android:parentActivityName=".ui.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.SetPasswordActivity"
             android:parentActivityName=".ui.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.HelpActivity"
@@ -143,6 +145,7 @@
         <activity
             android:name=".ui.activities.LoginActivity"
             android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.LoginToutActivity"
@@ -202,6 +205,7 @@
         <activity
             android:name=".ui.activities.SignupActivity"
             android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.SurveyResponseActivity"
@@ -213,6 +217,7 @@
         <activity
             android:name=".ui.activities.TwoFactorActivity"
             android:parentActivityName=".ui.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.UpdateActivity"

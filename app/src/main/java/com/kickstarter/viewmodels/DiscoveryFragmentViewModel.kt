@@ -9,10 +9,10 @@ import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.fillRootCategoryForFeaturedProjects
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
 import com.kickstarter.models.Activity
@@ -528,7 +528,7 @@ interface DiscoveryFragmentViewModel {
                 .filter { it.hasValue() }
                 .map { it.value }
                 .map { it.me()?.email() }
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .onErrorResumeNext(Observable.empty())
         }

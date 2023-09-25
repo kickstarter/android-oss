@@ -22,13 +22,13 @@ import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.getSetPasswordActivity
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
@@ -71,7 +71,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.lifecycle()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .filter { ObjectUtils.isNotNull(it) }
+            .filter { it.isNotNull() }
             .subscribe {
                 this.viewModel.inputs.fragmentLifeCycle(it)
             }

@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperatorV2;
 import com.kickstarter.libs.rx.operators.OperatorsV2;
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Backing;
@@ -279,8 +279,8 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
 
   @Override
   public @NonNull Observable<Update> fetchUpdate(final @NonNull Update update) {
-    final String projectParam = ObjectUtils.toString(update.projectId());
-    final String updateParam = ObjectUtils.toString(update.id());
+    final String projectParam = AnyExtKt.numToString(update.projectId());
+    final String updateParam = AnyExtKt.numToString(update.id());
 
     return fetchUpdate(projectParam, updateParam)
       .startWith(update);

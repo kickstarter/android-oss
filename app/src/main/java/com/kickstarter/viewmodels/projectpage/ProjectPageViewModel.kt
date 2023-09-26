@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.ViewModel
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
@@ -46,7 +47,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.MediaElement
 import com.kickstarter.ui.data.PledgeData
@@ -66,6 +66,7 @@ data class PagerTabConfig(val tab: ProjectPagerTabs, val isActive: Boolean)
 
 interface ProjectPageViewModel {
     interface Inputs {
+        fun configureWith(intent: Intent)
 
         /** Call when the cancel pledge option is clicked.  */
         fun cancelPledgeClicked()
@@ -259,8 +260,8 @@ interface ProjectPageViewModel {
         fun updateVideoCloseSeekPosition(): Observable<Long>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        ActivityViewModel<ProjectPageActivity>(environment),
+    class ProjectPageViewModel(@NonNull val environment: Environment) :
+        ViewModel(),
         Inputs,
         Outputs {
 
@@ -273,6 +274,7 @@ interface ProjectPageViewModel {
         private val currentConfig = requireNotNull(environment.currentConfig())
         private val featureFlagClient = requireNotNull(environment.featureFlagClient())
 
+        private val intent = BehaviorSubject.create<Intent>()
         private val closeFullScreenVideo = BehaviorSubject.create<Long>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
@@ -352,8 +354,8 @@ interface ProjectPageViewModel {
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(
-                intent(),
-                intent()
+                intent,
+                intent
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
                 .switchMap {
@@ -377,7 +379,7 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
 
-            intent()
+            intent
                 .take(1)
                 .filter { it.getBooleanExtra(IntentKey.EXPAND_PLEDGE_SHEET, false) }
                 .compose(bindToLifecycle())
@@ -413,10 +415,10 @@ interface ProjectPageViewModel {
                 .take(1)
                 .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
-            val refTag = intent()
+            val refTag = intent
                 .flatMap { ProjectIntentMapper.refTag(it) }
 
-            val saveProjectFromDeepLinkActivity = intent()
+            val saveProjectFromDeepLinkActivity = intent
                 .take(1)
                 .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
@@ -424,7 +426,7 @@ interface ProjectPageViewModel {
                 }
                 .flatMap { ProjectIntentMapper.deepLinkSaveFlag(it) }
 
-            val saveProjectFromDeepUrl = intent()
+            val saveProjectFromDeepUrl = intent
                 .take(1)
                 .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter { it.data.isNotNull() }
@@ -1035,6 +1037,8 @@ interface ProjectPageViewModel {
                 .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
                 .build()
         }
+
+        override fun configureWith(intent: Intent) = this.intent.onNext(intent)
 
         override fun tabSelected(position: Int) {
             this.tabSelected.onNext(position)

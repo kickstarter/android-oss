@@ -8,6 +8,7 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.CategoryFactory
@@ -16,7 +17,7 @@ import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -25,18 +26,20 @@ import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUI
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES_TAG
-import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
+import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 import type.FlaggingKind
 import java.util.Arrays
 
 class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: ProjectOverviewViewModel.ViewModel
+    private lateinit var vm: ProjectOverviewViewModel
 
     private val avatarPhotoUrl = TestSubscriber<String>()
     private val backersCountTextViewText = TestSubscriber<String>()
@@ -68,10 +71,10 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val projectStateViewGroupBackgroundColorInt = TestSubscriber<Int>()
     private val projectStateViewGroupIsGone = TestSubscriber<Boolean>()
     private val shouldSetDefaultStatsMargins = TestSubscriber<Boolean>()
-    private val setCanceledProjectStateView = TestSubscriber<Void>()
-    private val setProjectSocialClickListener = TestSubscriber<Void>()
+    private val setCanceledProjectStateView = TestSubscriber<Unit>()
+    private val setProjectSocialClickListener = TestSubscriber<Unit>()
     private val setSuccessfulProjectStateView = TestSubscriber<DateTime>()
-    private val setSuspendedProjectStateView = TestSubscriber<Void>()
+    private val setSuspendedProjectStateView = TestSubscriber<Unit>()
     private val setUnsuccessfulProjectStateView = TestSubscriber<DateTime>()
     private val startProjectSocialActivity = TestSubscriber<Project>()
     private val updatesCountTextViewText = TestSubscriber<String>()
@@ -79,66 +82,72 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startCommentsView = TestSubscriber<ProjectData>()
     private val startUpdatesView = TestSubscriber<ProjectData>()
     private val startReportProjectView = TestSubscriber<ProjectData>()
-    private val startLoginView = TestSubscriber<Void>()
+    private val startLoginView = TestSubscriber<Unit>()
     private val shouldShowReportProject = TestSubscriber<Boolean>()
     private val shouldShowProjectFlagged = TestSubscriber<Boolean>()
     private val urlToOpen = TestSubscriber<String>()
 
+    private val disposables = CompositeDisposable()
+
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
-        vm = ProjectOverviewViewModel.ViewModel(environment)
-        vm.outputs.avatarPhotoUrl().subscribe(avatarPhotoUrl)
-        vm.outputs.backersCountTextViewText().subscribe(backersCountTextViewText)
-        vm.outputs.blurbTextViewText().subscribe(blurbTextViewText)
-        vm.outputs.categoryTextViewText().subscribe(categoryTextViewText)
-        vm.outputs.commentsCountTextViewText().subscribe(commentsCountTextViewText)
-        vm.outputs.conversionPledgedAndGoalText().subscribe(conversionPledgedAndGoalText)
-        vm.outputs.conversionTextViewIsGone().subscribe(conversionTextViewIsGone)
-        vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe(
-            creatorDetailsLoadingContainerIsVisible
-        )
-        vm.outputs.creatorDetailsIsGone().subscribe(creatorDetailsIsGone)
-        vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
-        vm.outputs.deadlineCountdownTextViewText().subscribe(deadlineCountdownTextViewText)
-        vm.outputs.goalStringForTextView().subscribe(goalStringForTextView)
-        vm.outputs.locationTextViewText().subscribe(locationTextViewText)
-        vm.outputs.percentageFundedProgress().subscribe(percentageFundedProgress)
-        vm.outputs.percentageFundedProgressBarIsGone().subscribe(percentageFundedProgressBarIsGone)
-        vm.outputs.pledgedTextViewText().subscribe(pledgedTextViewText)
-        vm.outputs.projectDisclaimerGoalReachedDateTime()
-            .subscribe(projectDisclaimerGoalReachedDateTime)
-        vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(
-            projectDisclaimerGoalNotReachedString
-        )
-        vm.outputs.projectDisclaimerTextViewIsGone().subscribe(projectDisclaimerTextViewIsGone)
-        vm.outputs.projectLaunchDate().subscribe(projectLaunchDate)
-        vm.outputs.projectLaunchDateIsGone().subscribe(projectLaunchDateIsGone)
-        vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
-        vm.outputs.projectOutput().subscribe(projectOutput)
-        vm.outputs.projectSocialImageViewIsGone().subscribe(projectSocialImageViewIsGone)
-        vm.outputs.projectSocialImageViewUrl().subscribe(projectSocialImageViewUrl)
-        vm.outputs.projectSocialTextViewFriends().subscribe(projectSocialTextViewFriends)
-        vm.outputs.projectSocialViewGroupIsGone().subscribe(projectSocialViewGroupIsGone)
-        vm.outputs.projectStateViewGroupBackgroundColorInt().subscribe(
-            projectStateViewGroupBackgroundColorInt
-        )
-        vm.outputs.projectStateViewGroupIsGone().subscribe(projectStateViewGroupIsGone)
-        vm.outputs.shouldSetDefaultStatsMargins().subscribe(shouldSetDefaultStatsMargins)
-        vm.outputs.setCanceledProjectStateView().subscribe(setCanceledProjectStateView)
-        vm.outputs.setProjectSocialClickListener().subscribe(setProjectSocialClickListener)
-        vm.outputs.setSuccessfulProjectStateView().subscribe(setSuccessfulProjectStateView)
-        vm.outputs.setSuspendedProjectStateView().subscribe(setSuspendedProjectStateView)
-        vm.outputs.setUnsuccessfulProjectStateView().subscribe(setUnsuccessfulProjectStateView)
-        vm.outputs.startProjectSocialActivity().subscribe(startProjectSocialActivity)
-        vm.outputs.updatesCountTextViewText().subscribe(updatesCountTextViewText)
-        vm.outputs.startUpdatesView().subscribe(startUpdatesView)
-        vm.outputs.startCommentsView().subscribe(startCommentsView)
-        vm.outputs.startCreatorView().subscribe(startCreatorView)
-        vm.outputs.shouldShowReportProject().subscribe(shouldShowReportProject)
-        vm.outputs.startLoginView().subscribe(startLoginView)
-        vm.outputs.startReportProjectView().subscribe(startReportProjectView)
-        vm.outputs.shouldShowProjectFlagged().subscribe(shouldShowProjectFlagged)
-        vm.outputs.openExternallyWithUrl().subscribe(urlToOpen)
+        vm = ProjectOverviewViewModel(environment, null)
+        vm.outputs.avatarPhotoUrl().subscribe { avatarPhotoUrl.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.backersCountTextViewText().subscribe { backersCountTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.blurbTextViewText().subscribe { blurbTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.categoryTextViewText().subscribe { categoryTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.commentsCountTextViewText().subscribe { commentsCountTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.conversionPledgedAndGoalText().subscribe { conversionPledgedAndGoalText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.conversionTextViewIsGone().subscribe { conversionTextViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe {
+            creatorDetailsLoadingContainerIsVisible.onNext(it)
+        }.addToDisposable(disposables)
+        vm.outputs.creatorDetailsIsGone().subscribe { creatorDetailsIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.creatorNameTextViewText().subscribe { creatorNameTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.deadlineCountdownTextViewText().subscribe { deadlineCountdownTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.goalStringForTextView().subscribe { goalStringForTextView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.locationTextViewText().subscribe { locationTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.percentageFundedProgress().subscribe { percentageFundedProgress.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.percentageFundedProgressBarIsGone().subscribe { percentageFundedProgressBarIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.pledgedTextViewText().subscribe { pledgedTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe { projectDisclaimerGoalReachedDateTime.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectDisclaimerGoalNotReachedString().subscribe {
+            projectDisclaimerGoalNotReachedString.onNext(it)
+        }.addToDisposable(disposables)
+        vm.outputs.projectDisclaimerTextViewIsGone().subscribe { projectDisclaimerTextViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectLaunchDate().subscribe { projectLaunchDate.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectLaunchDateIsGone().subscribe { projectLaunchDateIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectNameTextViewText().subscribe { projectNameTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectOutput().subscribe { projectOutput.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectSocialImageViewIsGone().subscribe { projectSocialImageViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectSocialImageViewUrl().subscribe { projectSocialImageViewUrl.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectSocialTextViewFriends().subscribe { projectSocialTextViewFriends.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectSocialViewGroupIsGone().subscribe { projectSocialViewGroupIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectStateViewGroupBackgroundColorInt().subscribe {
+            projectStateViewGroupBackgroundColorInt.onNext(it)
+        }.addToDisposable(disposables)
+        vm.outputs.projectStateViewGroupIsGone().subscribe { projectStateViewGroupIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.shouldSetDefaultStatsMargins().subscribe { shouldSetDefaultStatsMargins.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.setCanceledProjectStateView().subscribe { setCanceledProjectStateView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.setProjectSocialClickListener().subscribe { setProjectSocialClickListener.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.setSuccessfulProjectStateView().subscribe { setSuccessfulProjectStateView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.setSuspendedProjectStateView().subscribe { setSuspendedProjectStateView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.setUnsuccessfulProjectStateView().subscribe { setUnsuccessfulProjectStateView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startProjectSocialActivity().subscribe { startProjectSocialActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.updatesCountTextViewText().subscribe { updatesCountTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startUpdatesView().subscribe { startUpdatesView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startCommentsView().subscribe { startCommentsView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startCreatorView().subscribe { startCreatorView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.shouldShowReportProject().subscribe { shouldShowReportProject.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startLoginView().subscribe { startLoginView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startReportProjectView().subscribe { startReportProjectView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.shouldShowProjectFlagged().subscribe { shouldShowProjectFlagged.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.openExternallyWithUrl().subscribe { urlToOpen.onNext(it) }.addToDisposable(disposables)
         vm.inputs.configureWith(projectData)
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 
     @Test
@@ -528,7 +537,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.inputs.reportProjectButtonClicked()
 
         this.startLoginView.assertValueCount(1)
-        this.startLoginView.assertValue(null)
+        this.startLoginView.assertValue(Unit)
     }
 
     @Test
@@ -589,7 +598,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private fun environmentWithUnsuccessfulCreatorDetailsQuery(): Environment {
         return environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun creatorDetails(slug: String): Observable<CreatorDetails> {
                     return Observable.error(Throwable("failure"))
                 }
@@ -600,7 +609,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private fun environmentWithSuccessfulCreatorDetailsQuery(): Environment {
         return environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun creatorDetails(slug: String): Observable<CreatorDetails> {
                     return Observable.just(CreatorDetails(1, 1))
                 }

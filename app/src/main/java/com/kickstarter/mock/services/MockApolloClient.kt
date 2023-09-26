@@ -168,6 +168,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun createPassword(password: String, confirmPassword: String): io.reactivex.Observable<CreatePasswordMutation.Data> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun creatorDetails(slug: String): io.reactivex.Observable<CreatorDetails> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

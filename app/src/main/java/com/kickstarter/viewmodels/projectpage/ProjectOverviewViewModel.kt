@@ -1,13 +1,17 @@
 package com.kickstarter.viewmodels.projectpage
 
+import android.os.Bundle
 import android.util.Pair
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -15,15 +19,15 @@ import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES_TAG
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 
 interface ProjectOverviewViewModel {
     interface Inputs {
@@ -147,16 +151,16 @@ interface ProjectOverviewViewModel {
         fun shouldSetDefaultStatsMargins(): Observable<Boolean>
 
         /** Emits when we should set the canceled state view.  */
-        fun setCanceledProjectStateView(): Observable<Void>
+        fun setCanceledProjectStateView(): Observable<Unit>
 
         /** Emits when we should set an on click listener to the social view.  */
-        fun setProjectSocialClickListener(): Observable<Void>
+        fun setProjectSocialClickListener(): Observable<Unit>
 
         /** Emits when we should set the successful state view.  */
         fun setSuccessfulProjectStateView(): Observable<DateTime>
 
         /** Emits when we should set the suspended state view.  */
-        fun setSuspendedProjectStateView(): Observable<Void>
+        fun setSuspendedProjectStateView(): Observable<Unit>
 
         /** Emits when we should set the unsuccessful state view.  */
         fun setUnsuccessfulProjectStateView(): Observable<DateTime>
@@ -171,27 +175,31 @@ interface ProjectOverviewViewModel {
         fun startCommentsView(): Observable<ProjectData>
         fun startUpdatesView(): Observable<ProjectData>
         fun startReportProjectView(): Observable<ProjectData>
-        fun startLoginView(): Observable<Void>
+        fun startLoginView(): Observable<Unit>
         fun shouldShowReportProject(): Observable<Boolean>
         fun shouldShowProjectFlagged(): Observable<Boolean>
         fun openExternallyWithUrl(): Observable<String>
     }
 
-    class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
+    class ProjectOverviewViewModel(
+        private val environment: Environment,
+        private val bundle: Bundle? = null
+    ) : ViewModel(), Inputs, Outputs {
 
-        private val apolloClient = requireNotNull(environment.apolloClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        val kSString = requireNotNull(environment.ksString())
+        private val analyticEvents = requireNotNull(environment.analytics())
+        val ksString = requireNotNull(environment.ksString())
 
         // Inputs
         private val projectData = PublishSubject.create<ProjectData>()
-        private val projectSocialViewGroupClicked = PublishSubject.create<Void>()
-        private val creatorInfoClicked = PublishSubject.create<Void>()
-        private val campaignClicked = PublishSubject.create<Void>()
-        private val commentsClicked = PublishSubject.create<Void>()
-        private val updatesClicked = PublishSubject.create<Void>()
-        private val reportProjectButtonClicked = PublishSubject.create<Void>()
+        private val projectSocialViewGroupClicked = PublishSubject.create<Unit>()
+        private val creatorInfoClicked = PublishSubject.create<Unit>()
+        private val campaignClicked = PublishSubject.create<Unit>()
+        private val commentsClicked = PublishSubject.create<Unit>()
+        private val updatesClicked = PublishSubject.create<Unit>()
+        private val reportProjectButtonClicked = PublishSubject.create<Unit>()
         private val refreshFlagged = PublishSubject.create<String>()
         private val linkTagClicked = PublishSubject.create<String>()
 
@@ -225,10 +233,10 @@ interface ProjectOverviewViewModel {
         private val projectSocialViewGroupIsGone: Observable<Boolean>
         private val projectStateViewGroupBackgroundColorInt: Observable<Int>
         private val projectStateViewGroupIsGone: Observable<Boolean>
-        private val setCanceledProjectStateView: Observable<Void>
-        private val setProjectSocialClickListener: Observable<Void>
+        private val setCanceledProjectStateView: Observable<Unit>
+        private val setProjectSocialClickListener: Observable<Unit>
         private val setSuccessfulProjectStateView: Observable<DateTime>
-        private val setSuspendedProjectStateView: Observable<Void>
+        private val setSuspendedProjectStateView: Observable<Unit>
         private val setUnsuccessfulProjectStateView: Observable<DateTime>
         private val startProjectSocialActivity: Observable<Project>
         private val shouldSetDefaultStatsMargins: Observable<Boolean>
@@ -237,10 +245,12 @@ interface ProjectOverviewViewModel {
         private val startCommentsView: Observable<ProjectData>
         private val startUpdatesView: Observable<ProjectData>
         private val startReportProjectView: Observable<ProjectData>
-        private val startLogin = PublishSubject.create<Void>()
+        private val startLogin = PublishSubject.create<Unit>()
         private val shouldShowReportProject: Observable<Boolean>
         private val shouldShowProjectFlagged: Observable<Boolean>
         private val openExternally = PublishSubject.create<String>()
+
+        private val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -248,17 +258,17 @@ interface ProjectOverviewViewModel {
         // - Inputs
         override fun configureWith(projectData: ProjectData) = this.projectData.onNext(projectData)
 
-        override fun projectSocialViewGroupClicked() = projectSocialViewGroupClicked.onNext(null)
+        override fun projectSocialViewGroupClicked() = projectSocialViewGroupClicked.onNext(Unit)
 
-        override fun creatorInfoButtonClicked() = this.creatorInfoClicked.onNext(null)
+        override fun creatorInfoButtonClicked() = this.creatorInfoClicked.onNext(Unit)
 
-        override fun campaignButtonClicked() = this.campaignClicked.onNext(null)
+        override fun campaignButtonClicked() = this.campaignClicked.onNext(Unit)
 
-        override fun commentsButtonClicked() = this.commentsClicked.onNext(null)
+        override fun commentsButtonClicked() = this.commentsClicked.onNext(Unit)
 
-        override fun updatesButtonClicked() = this.updatesClicked.onNext(null)
+        override fun updatesButtonClicked() = this.updatesClicked.onNext(Unit)
 
-        override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(null)
+        override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(Unit)
 
         override fun refreshFlaggedState(flaggingKind: String) = this.refreshFlagged.onNext(flaggingKind)
 
@@ -385,11 +395,11 @@ interface ProjectOverviewViewModel {
             return startProjectSocialActivity
         }
 
-        override fun setCanceledProjectStateView(): Observable<Void> {
+        override fun setCanceledProjectStateView(): Observable<Unit> {
             return setCanceledProjectStateView
         }
 
-        override fun setProjectSocialClickListener(): Observable<Void> {
+        override fun setProjectSocialClickListener(): Observable<Unit> {
             return setProjectSocialClickListener
         }
 
@@ -397,7 +407,7 @@ interface ProjectOverviewViewModel {
             return setSuccessfulProjectStateView
         }
 
-        override fun setSuspendedProjectStateView(): Observable<Void> {
+        override fun setSuspendedProjectStateView(): Observable<Unit> {
             return setSuspendedProjectStateView
         }
 
@@ -429,7 +439,7 @@ interface ProjectOverviewViewModel {
             return this.startReportProjectView
         }
 
-        override fun startLoginView(): Observable<Void> {
+        override fun startLoginView(): Observable<Unit> {
             return this.startLogin
         }
 
@@ -501,10 +511,10 @@ interface ProjectOverviewViewModel {
                 .share()
 
             creatorDetailsNotification
-                .compose(Transformers.errors())
+                .compose(Transformers.errorsV2())
                 .map { _: Throwable? -> true }
-                .compose(bindToLifecycle())
                 .subscribe { creatorDetailsIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             deadlineCountdownTextViewText = project
                 .map { proj -> proj.deadlineCountdownValue() }
@@ -531,15 +541,14 @@ interface ProjectOverviewViewModel {
             val userIsCreatorOfProject = project
                 .map { it.creator() }
                 .compose(Transformers.combineLatestPair(currentUser.observable()))
-                .map { creatorAndCurrentUser: Pair<User, User> ->
+                .map { creatorAndCurrentUser: Pair<User, KsOptional<User>> ->
                     creatorAndCurrentUser.second.isNotNull() &&
-                        creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
+                        creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second?.getValue()?.id()
                 }
 
             projectDisclaimerGoalReachedDateTime = project
                 .filter { obj: Project -> obj.isFunded }
                 .map { obj: Project -> obj.deadline() }
-                .compose(bindToLifecycle())
 
             projectDisclaimerGoalNotReachedString = project
                 .filter { p: Project -> p.deadline() != null && p.isLive && !p.isFunded }
@@ -597,13 +606,13 @@ interface ProjectOverviewViewModel {
 
             setCanceledProjectStateView = project
                 .filter { it.isCanceled }
-                .compose(Transformers.ignoreValues())
+                .compose(Transformers.ignoreValuesV2())
 
             setProjectSocialClickListener = project
                 .filter { it.isFriendBacking }
                 .map { it.friends() }
                 .filter { it.size > 2 }
-                .compose(Transformers.ignoreValues())
+                .compose(Transformers.ignoreValuesV2())
 
             setSuccessfulProjectStateView = project
                 .filter { it.isSuccessful }
@@ -611,14 +620,14 @@ interface ProjectOverviewViewModel {
 
             setSuspendedProjectStateView = project
                 .filter { it.isSuspended }
-                .compose(Transformers.ignoreValues())
+                .compose(Transformers.ignoreValuesV2())
 
             setUnsuccessfulProjectStateView = project
                 .filter { it.isFailed }
                 .map { it.stateChangedAt() ?: DateTime() }
 
             startProjectSocialActivity = project.compose(
-                Transformers.takeWhen(
+                Transformers.takeWhenV2(
                     projectSocialViewGroupClicked
                 )
             )
@@ -630,19 +639,19 @@ interface ProjectOverviewViewModel {
                 .map { NumberUtils.format(it) }
 
             startCreatorView = projectData
-                .compose(Transformers.takePairWhen(creatorInfoClicked))
+                .compose(Transformers.takePairWhenV2(creatorInfoClicked))
                 .map { it.first }
 
             startCommentsView = projectData
-                .compose(Transformers.takePairWhen(commentsClicked))
+                .compose(Transformers.takePairWhenV2(commentsClicked))
                 .map { it.first }
 
             startUpdatesView = projectData
-                .compose(Transformers.takePairWhen(updatesClicked))
+                .compose(Transformers.takePairWhenV2(updatesClicked))
                 .map { it.first }
 
             startReportProjectView = projectData
-                .compose(Transformers.takePairWhen(reportProjectButtonClicked))
+                .compose(Transformers.takePairWhenV2(reportProjectButtonClicked))
                 .map { it.first }
                 .withLatestFrom(this.currentUser.isLoggedIn) { pData, isLoggedIn ->
                     return@withLatestFrom Pair(pData, isLoggedIn)
@@ -655,10 +664,10 @@ interface ProjectOverviewViewModel {
                     return@withLatestFrom isUser
                 }
                 .filter { !it }
-                .compose(bindToLifecycle())
                 .subscribe {
-                    this.startLogin.onNext(null)
+                    this.startLogin.onNext(Unit)
                 }
+                .addToDisposable(disposables)
 
             shouldShowProjectFlagged = project
                 .map { it.isFlagged() ?: false }
@@ -683,19 +692,33 @@ interface ProjectOverviewViewModel {
                     else ""
                 }
                 .filter { it.isNotEmpty() }
-                .compose(bindToLifecycle())
                 .subscribe {
                     openExternally.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             projectData
-                .compose(Transformers.takePairWhen(campaignClicked))
+                .compose(Transformers.takePairWhenV2(campaignClicked))
                 .map { it.first }
                 .filter { it.project().isLive && !it.project().isBacking() }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)
                 }
+                .addToDisposable(disposables)
+        }
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        class Factory(private val environment: Environment, private val bundle: Bundle? = null) : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ProjectOverviewViewModel(
+                    environment,
+                    bundle = bundle
+                ) as T
+            }
         }
     }
 }

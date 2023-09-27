@@ -80,7 +80,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
         super.onViewCreated(view, savedInstanceState)
 
         this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = ProjectOverviewViewModel.Factory(env, bundle = arguments)
+            viewModelFactory = ProjectOverviewViewModel.Factory(env)
             env
         }
 

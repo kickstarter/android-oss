@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.os.Bundle
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -182,8 +181,7 @@ interface ProjectOverviewViewModel {
     }
 
     class ProjectOverviewViewModel(
-        private val environment: Environment,
-        private val bundle: Bundle? = null
+        private val environment: Environment
     ) : ViewModel(), Inputs, Outputs {
 
         private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -564,10 +562,9 @@ interface ProjectOverviewViewModel {
                 .map { DateTimeUtils.longDate(it) }
 
             projectLaunchDateIsGone = project
-                .map { it.launchedAt() }
                 .compose(Transformers.combineLatestPair(userIsCreatorOfProject))
-                .map { launchDateAndIsCreator: Pair<DateTime?, Boolean?> ->
-                    launchDateAndIsCreator.first.isNotNull() && launchDateAndIsCreator.second.isTrue()
+                .map { launchDateAndIsCreator: Pair<Project, Boolean> ->
+                    launchDateAndIsCreator.first.launchedAt().isNotNull() && launchDateAndIsCreator.second.isTrue()
                 }
                 .map { it.negate() }
 
@@ -578,13 +575,12 @@ interface ProjectOverviewViewModel {
 
             projectSocialTextViewFriends = project
                 .filter { it.isFriendBacking }
-                .map { it.friends() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.friends().isNotNull() }
+                .map { requireNotNull(it.friends()) }
 
             projectSocialImageViewUrl = projectSocialTextViewFriends
-                .map { it.first() }
-                .map { requireNotNull(it) }
+                .filter { it.first().isNotNull() }
+                .map { requireNotNull(it.first()) }
                 .map { it.avatar().medium() }
 
             projectSocialViewGroupIsGone = project
@@ -712,11 +708,10 @@ interface ProjectOverviewViewModel {
         }
 
         @Suppress("UNCHECKED_CAST")
-        class Factory(private val environment: Environment, private val bundle: Bundle? = null) : ViewModelProvider.Factory {
+        class Factory(private val environment: Environment) : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return ProjectOverviewViewModel(
-                    environment,
-                    bundle = bundle
+                    environment
                 ) as T
             }
         }

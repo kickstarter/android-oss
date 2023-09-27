@@ -5,7 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -90,7 +90,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
-        vm = ProjectOverviewViewModel(environment, null)
+        vm = ProjectOverviewViewModel(environment )
         vm.outputs.avatarPhotoUrl().subscribe { avatarPhotoUrl.onNext(it) }.addToDisposable(disposables)
         vm.outputs.backersCountTextViewText().subscribe { backersCountTextViewText.onNext(it) }.addToDisposable(disposables)
         vm.outputs.blurbTextViewText().subscribe { blurbTextViewText.onNext(it) }.addToDisposable(disposables)
@@ -322,7 +322,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .build()
         val environment = environment()
             .toBuilder()
-            .currentUser(MockCurrentUser(creator))
+            .currentUserV2(MockCurrentUserV2(creator))
             .build()
         setUpEnvironment(environment, project(project))
         projectLaunchDateIsGone.assertValue(false)
@@ -544,7 +544,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     fun testProjectReport_when_NoUser() {
         val envWithUser = environment()
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.germanUser()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.germanUser()))
             .build()
 
         val projectData = project(ProjectFactory.project())

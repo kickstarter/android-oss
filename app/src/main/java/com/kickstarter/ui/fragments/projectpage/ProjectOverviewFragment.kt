@@ -17,22 +17,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
@@ -43,15 +43,21 @@ import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
-import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
+import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 
-@RequiresFragmentViewModel(ProjectOverviewViewModel.ViewModel::class)
-class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>(), Configure {
+class ProjectOverviewFragment : Fragment(), Configure {
 
     private lateinit var binding: FragmentProjectOverviewBinding
     private lateinit var ksString: KSString
+
+    private lateinit var viewModelFactory: ProjectOverviewViewModel.Factory
+    private val viewModel: ProjectOverviewViewModel by viewModels { viewModelFactory }
+
+    private var disposables = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -73,145 +79,150 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ksString = viewModel.kSString
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = ProjectOverviewViewModel.Factory(env)
+            env
+        }
+
+        ksString = viewModel.ksString
 
         viewModel.outputs.avatarPhotoUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setAvatar(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.backersCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(binding.statsView.backersCount::setText)
+            .addToDisposable(disposables)
 
         viewModel.outputs.blurbTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setBlurbTextViews(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.categoryTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.category.text = it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.commentsCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectCreatorInfoLayout.commentsCount.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.creatorDetailsLoadingContainerIsVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.loadingPlaceholderCreatorInfoLayout.creatorInfoLoadingContainer.isGone = !it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.creatorDetailsIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.creatorInfo.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.creatorNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.creatorName.text = it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.deadlineCountdownTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(binding.statsView.deadlineCountdownTextView::setText)
+            .addToDisposable(disposables)
 
         viewModel.outputs.goalStringForTextView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setGoalTextView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.locationTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.location.text = it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectOutput()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 context?.let { currentContext ->
-                    // setLandscapeOverlayText(it)
                     binding.statsView.deadlineCountdownUnitTextView.text =
                         it.deadlineCountdownDetail(currentContext, ksString)
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.percentageFundedProgress()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(binding.percentageFunded::setProgress)
+            .addToDisposable(disposables)
 
         viewModel.outputs.percentageFundedProgressBarIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.percentageFunded.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.pledgedTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(binding.statsView.pledged::setText)
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectDisclaimerGoalNotReachedString()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setProjectDisclaimerGoalNotReachedString(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectDisclaimerGoalReachedDateTime()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setProjectDisclaimerGoalReachedString(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectDisclaimerTextViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectCreatorInfoLayout.projectDisclaimerTextView.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectLaunchDate()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setProjectLaunchDateString(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectLaunchDateIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectCreatorDashboardHeader.projectLaunchDate.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.projectName.text = it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSocialTextViewFriends()
-            .compose(bindToLifecycle())
-            .compose<List<User?>>(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 context?.let { currentContext ->
                     binding.projectSocialText.text =
                         SocialUtils.projectCardFriendNamepile(currentContext, it, ksString)
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSocialImageViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectSocialImage.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSocialImageViewUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url: String? ->
                 url?.let {
                     Picasso.get()
@@ -220,15 +231,15 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                         .into(binding.projectSocialImage)
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSocialViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectSocialView.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectStateViewGroupBackgroundColorInt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 context?.let { currentContext ->
                     binding.projectStateViewGroup.setBackgroundColor(
@@ -239,117 +250,118 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                     )
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectStateViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectStateViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setCanceledProjectStateView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setCanceledProjectStateView() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setProjectSocialClickListener()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setProjectSocialClickListener() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setSuccessfulProjectStateView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setSuccessfulProjectStateView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setSuspendedProjectStateView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setSuspendedProjectStateView() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setUnsuccessfulProjectStateView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setUnsuccessfulProjectStateView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.shouldSetDefaultStatsMargins()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setStatsMargins(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectSocialActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectSocialActivity(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.updatesCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(binding.projectCreatorInfoLayout.updatesCount::setText)
+            .addToDisposable(disposables)
 
         viewModel.outputs.conversionPledgedAndGoalText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { pledgedAndGoal: Pair<String, String> -> setConvertedCurrencyView(pledgedAndGoal) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.conversionTextViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.usdConversionTextView.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startCommentsView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 activity?.startRootCommentsActivity(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startUpdatesView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 activity?.startProjectUpdatesActivity(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startCreatorView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 activity?.startCreatorBioWebViewActivity(it.project())
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startReportProjectView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 activity?.startReportProjectActivity(it.project(), startForResult)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startLoginView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 activity?.startLoginActivity()
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.shouldShowReportProject()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.projectCreatorInfoLayout.reportProject.isGone = !it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.shouldShowProjectFlagged()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.projectCreatorInfoLayout.projectFlagged.isGone = !it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.openExternallyWithUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 context?.let { it1 -> ApplicationUtils.openUrlExternally(it1, it) }
             }
+            .addToDisposable(disposables)
 
         binding.creatorInfo.setOnClickListener {
             this.viewModel.inputs.creatorInfoButtonClicked()

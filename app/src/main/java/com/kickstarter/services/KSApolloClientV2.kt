@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -53,6 +54,7 @@ interface ApolloClientTypeV2 {
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
+    fun creatorDetails(slug: String): Observable<CreatorDetails>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -693,6 +695,39 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             ps.onNext(it)
                         }
                         ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun creatorDetails(slug: String): Observable<CreatorDetails> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CreatorDetails>()
+            service.query(
+                ProjectCreatorDetailsQuery.builder()
+                    .slug(slug)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<ProjectCreatorDetailsQuery.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<ProjectCreatorDetailsQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+
+                        response.data?.project()?.creator()?.let {
+                            ps.onNext(
+                                CreatorDetails.builder()
+                                    .backingsCount(it.backingsCount())
+                                    .launchedProjectsCount(it.launchedProjects()?.totalCount() ?: 1)
+                                    .build()
+                            )
+                            ps.onComplete()
+                        }
                     }
                 })
             return@defer ps

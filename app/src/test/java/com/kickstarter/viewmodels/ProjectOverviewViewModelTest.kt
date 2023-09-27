@@ -90,7 +90,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
-        vm = ProjectOverviewViewModel(environment )
+        vm = ProjectOverviewViewModel(environment)
         vm.outputs.avatarPhotoUrl().subscribe { avatarPhotoUrl.onNext(it) }.addToDisposable(disposables)
         vm.outputs.backersCountTextViewText().subscribe { backersCountTextViewText.onNext(it) }.addToDisposable(disposables)
         vm.outputs.blurbTextViewText().subscribe { blurbTextViewText.onNext(it) }.addToDisposable(disposables)

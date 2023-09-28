@@ -5,9 +5,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectEnvironmentalCommitmentFactory.Companion.getEnvironmentalCommitments
-import com.kickstarter.viewmodels.projectpage.ProjectEnvironmentalCommitmentsViewModel.ProjectEnvironmentalCommitmentsViewModel
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.EnvironmentalCommitment
+import com.kickstarter.viewmodels.projectpage.ProjectEnvironmentalCommitmentsViewModel.ProjectEnvironmentalCommitmentsViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
@@ -25,10 +25,11 @@ class ProjectEnvironmentalCommitmentsViewModelTest : KSRobolectricTestCase() {
         this.vm = com.kickstarter.viewmodels.projectpage.ProjectEnvironmentalCommitmentsViewModel.Factory(
             environment
         ).create(
-            ProjectEnvironmentalCommitmentsViewModel::class.java)
+            ProjectEnvironmentalCommitmentsViewModel::class.java
+        )
 
-        this.vm.outputs.projectEnvironmentalCommitment().subscribe{ this.projectEnvironmentalCommitment.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.openVisitOurEnvironmentalResourcesCenter().subscribe{ this.openVisitOurEnvironmentalResourcesCenter.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.projectEnvironmentalCommitment().subscribe { this.projectEnvironmentalCommitment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.openVisitOurEnvironmentalResourcesCenter().subscribe { this.openVisitOurEnvironmentalResourcesCenter.onNext(it) }.addToDisposable(disposables)
     }
 
     @After

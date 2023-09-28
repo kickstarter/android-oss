@@ -42,7 +42,10 @@ data class KSDimensions(
     val elevationMedium: Dp = Dp.Unspecified,
     val assistiveTextTopSpacing: Dp = Dp.Unspecified,
     val verticalDividerWidth: Dp = Dp.Unspecified,
-    val iconSizeMedium: Dp = Dp.Unspecified
+    val iconSizeMedium: Dp = Dp.Unspecified,
+    val featuredSearchImageHeight: Dp = Dp.Unspecified,
+    val projectSearchImageHeight: Dp = Dp.Unspecified,
+    val projectSearchImageWidth: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -84,5 +87,8 @@ val KSStandardDimensions = KSDimensions(
     elevationMedium = 8.dp,
     assistiveTextTopSpacing = 6.dp,
     verticalDividerWidth = 4.dp,
-    iconSizeMedium = 18.dp
+    iconSizeMedium = 18.dp,
+    featuredSearchImageHeight = 200.dp,
+    projectSearchImageHeight = 45.dp,
+    projectSearchImageWidth = 80.dp
 )

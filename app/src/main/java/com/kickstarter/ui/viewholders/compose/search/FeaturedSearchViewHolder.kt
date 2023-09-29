@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -59,9 +61,9 @@ fun FeaturedSearchViewHolder(
     timeRemainingString: String = "",
     onClickAction: () -> Unit
 ) {
-
     Column(modifier = Modifier
         .background(color = colors.kds_white)
+        .border(width = 1.dp, color = colors.kds_support_300)
         .padding(bottom = dimensions.paddingMediumSmall)
         .clickable { onClickAction.invoke() }) {
         AsyncImage(

@@ -34,21 +34,18 @@ fun ProjectSearchViewHolderPreview() {
                 title = "This is a test This is a test This is a test This is a test",
                 isLaunched = true,
                 fundedAmount = 224,
-                timeRemainingString = "24 days to go"
-            ) {
-
-            }
+                timeRemainingString = "24 days to go",
+                onClickAction = {}
+            )
 
             Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
             ProjectSearchViewHolder(
                 title = "This is a test This is a test This is a test This is a test",
-                isLaunched = false
-            ) {
-
-            }
+                isLaunched = false,
+                onClickAction = {}
+            )
         }
-
     }
 }
 

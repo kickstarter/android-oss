@@ -47,7 +47,6 @@ fun FeaturedSearchViewHolderPreview() {
                 onClickAction = {}
             )
         }
-
     }
 }
 
@@ -61,11 +60,13 @@ fun FeaturedSearchViewHolder(
     timeRemainingString: String = "",
     onClickAction: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .background(color = colors.kds_white)
-        .border(width = 1.dp, color = colors.kds_support_300)
-        .padding(bottom = dimensions.paddingMediumSmall)
-        .clickable { onClickAction.invoke() }) {
+    Column(
+        modifier = Modifier
+            .background(color = colors.kds_white)
+            .border(width = 1.dp, color = colors.kds_support_300)
+            .padding(bottom = dimensions.paddingMediumSmall)
+            .clickable { onClickAction.invoke() }
+    ) {
         AsyncImage(
             model = imageUrl,
             contentDescription = imageContentDescription,

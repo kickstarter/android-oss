@@ -10,7 +10,7 @@ class KsOptional<T> {
     }
 
     private constructor(value: T) {
-        this.value = Objects.requireNonNull(value)
+        this.value = value
     }
 
     interface Action<T> {

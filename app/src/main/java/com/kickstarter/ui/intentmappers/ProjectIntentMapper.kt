@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
@@ -119,15 +120,15 @@ object ProjectIntentMapper {
     /**
      * Returns a [RefTag] observable. If there is no parceled RefTag, emit `null`.
      */
-    fun refTag(intent: Intent): Observable<RefTag?> {
-        return Observable.just(intent.getParcelableExtra(IntentKey.REF_TAG))
+    fun refTag(intent: Intent): io.reactivex.Observable<KsOptional<RefTag?>> {
+        return io.reactivex.Observable.just(KsOptional.of(intent.getParcelableExtra(IntentKey.REF_TAG)))
     }
 
     /**
      * Returns a [deepLinkSaveFlag] observable. If there is no deepLink Save Flag
      */
-    fun deepLinkSaveFlag(intent: Intent): Observable<Boolean> {
-        return Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
+    fun deepLinkSaveFlag(intent: Intent): io.reactivex.Observable<Boolean> {
+        return io.reactivex.Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
     }
 
     /**

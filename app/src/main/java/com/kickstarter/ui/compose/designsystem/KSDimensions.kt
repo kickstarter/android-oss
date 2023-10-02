@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 data class KSDimensions(
     val dividerThickness: Dp = Dp.Unspecified,
     val none: Dp = 0.dp,
+    val paddingXSmall: Dp = Dp.Unspecified,
     val paddingSmall: Dp = Dp.Unspecified,
     val paddingMediumSmall: Dp = Dp.Unspecified,
     val paddingMedium: Dp = Dp.Unspecified,
@@ -54,6 +55,7 @@ val LocalKSCustomDimensions = staticCompositionLocalOf {
 
 val KSStandardDimensions = KSDimensions(
     dividerThickness = 1.dp,
+    paddingXSmall = 4.dp,
     paddingSmall = 8.dp,
     paddingMediumSmall = 12.dp,
     paddingMedium = 16.dp,

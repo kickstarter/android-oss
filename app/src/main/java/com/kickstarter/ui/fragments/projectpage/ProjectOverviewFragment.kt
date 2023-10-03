@@ -484,7 +484,9 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 R.drawable.click_indicator_light_masked,
                 null
             )
-            binding.projectSocialView.setOnClickListener { viewModel.inputs.projectSocialViewGroupClicked() }
+            binding.projectSocialView.setOnClickListener {
+                viewModel.inputs.projectSocialViewGroupClicked()
+            }
         }
     }
 
@@ -539,11 +541,10 @@ class ProjectOverviewFragment : Fragment(), Configure {
 
     private fun startProjectSocialActivity(project: Project) {
         context?.let { currentContext ->
-            val activity = currentContext as BaseActivity<*>
             val intent = Intent(currentContext, ProjectSocialActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
-            activity.startActivity(intent)
-            activity.overridePendingTransition(
+            activity?.startActivity(intent)
+            activity?.overridePendingTransition(
                 R.anim.slide_in_right,
                 R.anim.fade_out_slide_out_left
             )

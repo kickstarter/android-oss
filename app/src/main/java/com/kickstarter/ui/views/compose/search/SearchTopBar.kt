@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -57,6 +58,7 @@ fun SearchTopBar(
 ) {
     var value by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Row(
         modifier = modifier
@@ -93,6 +95,7 @@ fun SearchTopBar(
             keyboardActions = KeyboardActions(
                 onSearch = {
                     keyboardController?.hide()
+                    focusManager.clearFocus()
                 }
             ),
             trailingIcon = {
@@ -115,14 +118,14 @@ fun SearchTopBar(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = colors.kds_white,
                 errorLabelColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.textSecondary,
+                focusedLabelColor = colors.borderActive,
                 cursorColor = colors.kds_create_700,
                 errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
+                textColor = colors.textAccentGrey,
                 disabledTextColor = colors.textDisabled,
-                focusedBorderColor = colors.borderBoldHover,
-                unfocusedBorderColor = colors.borderBoldHover
+                focusedBorderColor = colors.borderActive,
+                unfocusedBorderColor = colors.borderBold
             ),
             label = {
                 Text(text = stringResource(id = R.string.tabbar_search))

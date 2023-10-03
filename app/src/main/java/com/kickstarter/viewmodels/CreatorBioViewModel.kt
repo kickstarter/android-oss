@@ -43,7 +43,7 @@ interface CreatorBioViewModel {
 
         private val messageButtonClicked = PublishSubject.create<Unit>()
 
-        private val messageIconIsGone = BehaviorSubject.create<Boolean>()
+        private val messageIconIsGone = BehaviorSubject.createDefault(true)
         private val startComposeMessageActivity = PublishSubject.create<Project>()
         private val startMessageActivity = PublishSubject.create<Project>()
         private val url = BehaviorSubject.create<String>()

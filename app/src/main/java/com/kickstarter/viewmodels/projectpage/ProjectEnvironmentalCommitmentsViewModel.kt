@@ -1,15 +1,16 @@
 package com.kickstarter.viewmodels.projectpage
 
-import androidx.annotation.NonNull
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
-import rx.Observable
-import rx.subjects.BehaviorSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 class ProjectEnvironmentalCommitmentsViewModel {
     interface Inputs {
@@ -25,18 +26,20 @@ class ProjectEnvironmentalCommitmentsViewModel {
         fun openVisitOurEnvironmentalResourcesCenter(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        FragmentViewModel<ProjectEnvironmentalCommitmentsFragment>(environment),
+    class ProjectEnvironmentalCommitmentsViewModel(private val environment: Environment) :
+        ViewModel(),
         Inputs,
         Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
-        private val onVisitOurEnvironmentalResourcesCenterClicked = BehaviorSubject.create<Void>()
+        private val onVisitOurEnvironmentalResourcesCenterClicked = BehaviorSubject.create<Unit>()
 
         private val projectEnvironmentalCommitment = BehaviorSubject.create<List<EnvironmentalCommitment>>()
         private val openVisitOurEnvironmentalResourcesCenter = BehaviorSubject.create<String>()
+
+        private val disposables = CompositeDisposable()
 
         init {
             val project = projectDataInput
@@ -44,15 +47,15 @@ class ProjectEnvironmentalCommitmentsViewModel {
                 .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
 
-            project.map { project ->
-                project.envCommitments()?.sortedBy { it.id }
-            }.filter { it.isNotNull() }
+            project.map { pj ->
+                pj.envCommitments()?.sortedBy { it.id }
+            }
+                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
                 .subscribe { this.projectEnvironmentalCommitment.onNext(it) }
+                .addToDisposable(disposables)
 
             onVisitOurEnvironmentalResourcesCenterClicked
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.openVisitOurEnvironmentalResourcesCenter.onNext(
                         UrlUtils
@@ -62,18 +65,31 @@ class ProjectEnvironmentalCommitmentsViewModel {
                             )
                     )
                 }
+                .addToDisposable(disposables)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun configureWith(projectData: ProjectData) =
             this.projectDataInput.onNext(projectData)
 
         override fun onVisitOurEnvironmentalResourcesCenterClicked() =
-            this.onVisitOurEnvironmentalResourcesCenterClicked.onNext(null)
+            this.onVisitOurEnvironmentalResourcesCenterClicked.onNext(Unit)
 
-        @NonNull
         override fun projectEnvironmentalCommitment(): Observable<List<EnvironmentalCommitment>> = this.projectEnvironmentalCommitment
-        @NonNull
         override fun openVisitOurEnvironmentalResourcesCenter(): Observable<String> = this.openVisitOurEnvironmentalResourcesCenter
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ProjectEnvironmentalCommitmentsViewModel(
+                environment
+            ) as T
+        }
     }
 
     companion object {

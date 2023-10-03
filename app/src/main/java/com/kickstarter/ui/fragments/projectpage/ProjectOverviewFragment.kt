@@ -551,7 +551,12 @@ class ProjectOverviewFragment : Fragment(), Configure {
     }
 
     override fun configureWith(projectData: ProjectData) {
-        this.viewModel?.inputs?.configureWith(projectData)
+        this.viewModel.inputs.configureWith(projectData)
+    }
+
+    override fun onDestroyView() {
+        disposables.clear()
+        super.onDestroyView()
     }
 
     companion object {

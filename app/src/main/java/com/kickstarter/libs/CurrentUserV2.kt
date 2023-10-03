@@ -80,6 +80,7 @@ class CurrentUserV2(
     val user = BehaviorSubject.create<KsOptional<User>>()
     init {
         user
+                .filter { it.isPresent()}
             .map { it.getValue() }
             .skip(1)
             .filter { `object`: User? -> `object`.isNotNull() }

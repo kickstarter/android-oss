@@ -51,6 +51,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.selectPledgeFragment
 import com.kickstarter.ui.extensions.showSnackbar
@@ -376,7 +377,8 @@ class ProjectPageActivity :
             }.addToDisposable(disposables)
 
         binding.backIcon.setOnClickListener {
-            (this as BaseActivity<*>).back()
+            onBackPressedDispatcher.onBackPressed()
+            finishWithAnimation()
         }
         setClickListeners()
 
@@ -871,11 +873,17 @@ class ProjectPageActivity :
         super.onDestroy()
     }
 
-    private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
-        menu?.let {
-            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
-        } ?: run {
-            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
+    private fun updateManagePledgeMenu(@MenuRes menu: Int) {
+        when {
+            (menu != 0) -> binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(menu)
+            else -> run {
+                binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
+            }
         }
+//        menu?.let {
+//            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
+//        } ?: run {
+//            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
+//        }
     }
 }

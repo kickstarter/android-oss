@@ -237,7 +237,6 @@ interface ProjectCardHolderViewModel {
             projectCardClicked.onNext(null)
         }
 
-        @NonNull
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
         override fun backersCountTextViewText(): Observable<String> = backersCountTextViewText
         override fun backingViewGroupIsGone(): Observable<Boolean> = backingViewGroupIsGone
@@ -412,9 +411,7 @@ interface ProjectCardHolderViewModel {
                 .subscribe { locationContainerIsGone.onNext(it) }
 
             metadataViewGroupIsGone = project
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                .map { it.metadataForProject() == null }
+                .map { it.metadataForProject() == ProjectMetadata.NONE }
 
             metadataViewGroupBackground = backingViewGroupIsGone
                 .compose(Transformers.combineLatestPair(comingSoonViewGroupIsGone))

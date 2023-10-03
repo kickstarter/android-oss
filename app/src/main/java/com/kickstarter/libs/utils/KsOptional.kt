@@ -10,7 +10,7 @@ class KsOptional<T> {
     }
 
     private constructor(value: T) {
-        this.value = value
+        this.value = Objects.requireNonNull(value)
     }
 
     interface Action<T> {
@@ -33,6 +33,7 @@ class KsOptional<T> {
         }
 
         fun <T> of(value: T): KsOptional<T> {
+            if (value == null) return empty()
             return KsOptional(value)
         }
     }

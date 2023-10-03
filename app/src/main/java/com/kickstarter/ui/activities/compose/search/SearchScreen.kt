@@ -32,7 +32,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
-import com.kickstarter.libs.utils.extensions.timeInDaysOfDuration
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
@@ -169,7 +168,6 @@ fun SearchScreen(
 
                             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
                         }
-
                     } else {
                         ProjectSearchViewHolder(
                             imageUrl = project.photo()?.med(),

@@ -74,8 +74,7 @@ class SearchActivity : ComponentActivity() {
 
             val shouldStatePaginate = remember {
                 derivedStateOf {
-                    (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                        ?: -4) >= lazyListState.layoutInfo.totalItemsCount - 9
+                    (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -4) >= lazyListState.layoutInfo.totalItemsCount - 9
                 }
             }
 
@@ -93,10 +92,10 @@ class SearchActivity : ComponentActivity() {
                         searchedProjects
                     },
                     lazyColumnListState = lazyListState,
-                    showEmptyView = !isLoading
-                            && !isTyping
-                            && !currentSearchTerm.isTrimmedEmpty()
-                            && searchedProjects.isEmpty(),
+                    showEmptyView = !isLoading &&
+                        !isTyping &&
+                        !currentSearchTerm.isTrimmedEmpty() &&
+                        searchedProjects.isEmpty(),
                     onSearchTermChanged = { searchTerm ->
                         if (searchTerm.isEmpty()) viewModel.clearSearchedProjects()
                         currentSearchTerm = searchTerm

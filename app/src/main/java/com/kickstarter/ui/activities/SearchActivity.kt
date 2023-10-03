@@ -68,6 +68,8 @@ class SearchActivity : ComponentActivity() {
 
             var isLoading = viewModel.isFetchingProjects().subscribeAsState(initial = false).value
 
+            var isTyping by remember { mutableStateOf(false) }
+
             val lazyListState = rememberLazyListState()
 
             val shouldStatePaginate = remember {
@@ -91,7 +93,10 @@ class SearchActivity : ComponentActivity() {
                         searchedProjects
                     },
                     lazyColumnListState = lazyListState,
-                    showEmptyView = false,
+                    showEmptyView = !isLoading
+                            && !isTyping
+                            && !currentSearchTerm.isTrimmedEmpty()
+                            && searchedProjects.isEmpty(),
                     onSearchTermChanged = { searchTerm ->
                         if (searchTerm.isEmpty()) viewModel.clearSearchedProjects()
                         currentSearchTerm = searchTerm
@@ -108,8 +113,11 @@ class SearchActivity : ComponentActivity() {
                     return@LaunchedEffect
                 }
 
-                delay(500)
+                isTyping = true
+                delay(750)
                 viewModel.search(currentSearchTerm)
+                viewModel.setIsFetching(true)
+                isTyping = false
             }
 
             LaunchedEffect(key1 = shouldStatePaginate.value) {

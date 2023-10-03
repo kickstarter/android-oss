@@ -239,6 +239,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
             .takeUntil { it.isEmpty() }
             .doOnSubscribe { _isFetching.onNext(true) }
             .doAfterTerminate { _isFetching.onNext(false) }
+            .doFinally { _isFetching.onNext(false) }
     }
 
     private fun keepMorePath(envelope: Envelope) {

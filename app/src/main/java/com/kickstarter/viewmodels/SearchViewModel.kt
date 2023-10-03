@@ -139,6 +139,10 @@ interface SearchViewModel {
             return isFetchingProjects
         }
 
+        fun setIsFetching(fetching: Boolean) {
+            isFetchingProjects.onNext(fetching)
+        }
+
         override fun popularProjects(): Observable<List<Project>> {
             return popularProjects
         }

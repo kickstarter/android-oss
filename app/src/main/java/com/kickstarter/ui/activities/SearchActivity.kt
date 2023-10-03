@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -41,6 +42,7 @@ class SearchActivity : ComponentActivity() {
 
     private var darkModeEnabled: Boolean = false
     private lateinit var disposables: CompositeDisposable
+    var environment: Environment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,7 @@ class SearchActivity : ComponentActivity() {
             viewModelFactory = SearchViewModel.Factory(env, intent = intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            environment = env
             env
         }
 
@@ -76,6 +79,8 @@ class SearchActivity : ComponentActivity() {
 
             KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 SearchScreen(
+                    // GET RID OF THIS WHEN WE CAN
+                    environment = environment,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     scaffoldState = rememberScaffoldState(),
                     isLoading = isLoading,
@@ -98,7 +103,10 @@ class SearchActivity : ComponentActivity() {
             }
 
             LaunchedEffect(key1 = currentSearchTerm) {
-                if (currentSearchTerm.isTrimmedEmpty()) return@LaunchedEffect
+                if (currentSearchTerm.isTrimmedEmpty()) {
+                    viewModel.search("")
+                    return@LaunchedEffect
+                }
 
                 delay(500)
                 viewModel.search(currentSearchTerm)

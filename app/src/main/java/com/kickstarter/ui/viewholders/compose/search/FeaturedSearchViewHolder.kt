@@ -89,7 +89,7 @@ fun FeaturedSearchViewHolder(
 
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-        if (isLaunched) {
+        if (isLaunched || fundedAmount > 0) {
             Row {
                 Text(
                     text = "$fundedAmount%",

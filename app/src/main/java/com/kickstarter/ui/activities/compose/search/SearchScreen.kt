@@ -22,10 +22,17 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
+import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.timeInDaysOfDuration
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
@@ -84,6 +91,7 @@ fun SearchScreenPreviewEmpty() {
 
 @Composable
 fun SearchScreen(
+    environment: Environment? = null,
     onBackClicked: () -> Unit,
     scaffoldState: ScaffoldState,
     isPopularList: Boolean = true,
@@ -94,6 +102,8 @@ fun SearchScreen(
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -127,9 +137,11 @@ fun SearchScreen(
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                         Text(
+                            modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.Popular_Projects),
                             style = typography.title2,
-                            color = colors.kds_support_700
+                            color = colors.kds_support_700,
+                            textAlign = TextAlign.Start
                         )
                     }
 
@@ -140,7 +152,12 @@ fun SearchScreen(
                             imageUrl = project.photo()?.full(),
                             title = project.name(),
                             isLaunched = project.isLive,
-                            fundedAmount = project.percentageFunded().toInt()
+                            fundedAmount = project.percentageFunded().toInt(),
+                            timeRemainingString = environment?.ksString()?.let {
+                                NumberUtils.format(
+                                    project.deadlineCountdownValue(),
+                                ) + " " + project.deadlineCountdownDetail(context, it)
+                            } ?: ""
                         ) {
                             onItemClicked(project)
                         }
@@ -158,7 +175,12 @@ fun SearchScreen(
                             imageUrl = project.photo()?.med(),
                             title = project.name(),
                             isLaunched = project.isLive,
-                            fundedAmount = project.percentageFunded().toInt()
+                            fundedAmount = project.percentageFunded().toInt(),
+                            timeRemainingString = environment?.ksString()?.let {
+                                NumberUtils.format(
+                                    project.deadlineCountdownValue(),
+                                ) + " " + project.deadlineCountdownDetail(context, it)
+                            } ?: ""
                         ) {
                             onItemClicked(project)
                         }

@@ -82,7 +82,7 @@ fun ProjectSearchViewHolder(
 
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
-            if (isLaunched) {
+            if (isLaunched || fundedAmount > 0) {
                 Row {
                     Text(
                         text = "$fundedAmount%",

@@ -40,20 +40,9 @@ fun SearchEmptyView() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
-        Image(imageVector = ImageVector.vectorResource(id = R.drawable.logo), contentDescription = null)
-
-        Spacer(Modifier.height(dimensions.paddingMedium))
-
         Text(
             text = stringResource(id = R.string.No_Results),
             style = typography.title2,
-            color = colors.kds_support_700
-        )
-
-        Text(
-            text = "Please try adjusting your search",
-            style = typography.headline,
             color = colors.kds_support_700
         )
     }

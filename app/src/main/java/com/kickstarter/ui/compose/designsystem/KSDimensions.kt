@@ -46,7 +46,11 @@ data class KSDimensions(
     val iconSizeMedium: Dp = Dp.Unspecified,
     val featuredSearchImageHeight: Dp = Dp.Unspecified,
     val projectSearchImageHeight: Dp = Dp.Unspecified,
-    val projectSearchImageWidth: Dp = Dp.Unspecified
+    val projectSearchImageWidth: Dp = Dp.Unspecified,
+    val searchAppBarHeight: Dp = Dp.Unspecified,
+    val appBarEndPadding: Dp = Dp.Unspecified,
+    val appBarSearchPadding: Dp = Dp.Unspecified,
+    val clickableButtonHeight: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -92,5 +96,9 @@ val KSStandardDimensions = KSDimensions(
     iconSizeMedium = 18.dp,
     featuredSearchImageHeight = 200.dp,
     projectSearchImageHeight = 45.dp,
-    projectSearchImageWidth = 80.dp
+    projectSearchImageWidth = 80.dp,
+    searchAppBarHeight = 68.dp,
+    appBarEndPadding = 12.dp,
+    appBarSearchPadding = 6.dp,
+    clickableButtonHeight = 48.dp
 )

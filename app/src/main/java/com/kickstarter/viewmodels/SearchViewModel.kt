@@ -111,6 +111,10 @@ interface SearchViewModel {
         @JvmField
         val outputs: Outputs = this
 
+        fun clearSearchedProjects() {
+            searchProjects.onNext(listOf())
+        }
+
         override fun nextPage() {
             nextPage.onNext(Unit)
         }

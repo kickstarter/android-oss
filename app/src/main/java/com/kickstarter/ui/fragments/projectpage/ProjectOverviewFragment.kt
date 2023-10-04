@@ -483,9 +483,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 R.drawable.click_indicator_light_masked,
                 null
             )
-            binding.projectSocialView.setOnClickListener {
-                viewModel.inputs.projectSocialViewGroupClicked()
-            }
+            binding.projectSocialView.setOnClickListener { viewModel.inputs.projectSocialViewGroupClicked() }
         }
     }
 

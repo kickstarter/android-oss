@@ -12,7 +12,6 @@ import com.kickstarter.ui.adapters.ProjectSocialAdapter
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.ProjectSocialViewModel.Factory
 import com.kickstarter.viewmodels.ProjectSocialViewModel.ProjectSocialViewModel
-
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -30,7 +29,6 @@ class ProjectSocialActivity : AppCompatActivity() {
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = Factory(env, intent = intent)
-            env
         }
 
         binding = ProjectSocialLayoutBinding.inflate(layoutInflater)

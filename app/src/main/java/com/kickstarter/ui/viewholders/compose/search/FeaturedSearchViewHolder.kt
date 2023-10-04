@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -52,6 +55,7 @@ fun FeaturedSearchViewHolderPreview() {
 
 @Composable
 fun FeaturedSearchViewHolder(
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     imageContentDescription: String? = null,
     title: String,
@@ -61,19 +65,23 @@ fun FeaturedSearchViewHolder(
     onClickAction: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(color = colors.kds_white)
             .border(width = 1.dp, color = colors.kds_support_300)
             .padding(bottom = dimensions.paddingMediumSmall)
             .clickable { onClickAction.invoke() }
     ) {
         AsyncImage(
-            model = imageUrl,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
             contentDescription = imageContentDescription,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensions.featuredSearchImageHeight),
-            placeholder = painterResource(id = R.drawable.logo)
+            placeholder = ColorPainter(color = colors.backgroundDisabled),
+            contentScale = ContentScale.FillWidth
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -89,7 +97,7 @@ fun FeaturedSearchViewHolder(
 
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-        if (isLaunched) {
+        if (isLaunched || fundedAmount > 0) {
             Row {
                 Text(
                     text = "$fundedAmount%",

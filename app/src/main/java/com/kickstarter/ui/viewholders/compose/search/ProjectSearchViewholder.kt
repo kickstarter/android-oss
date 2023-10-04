@@ -54,6 +54,7 @@ fun ProjectSearchViewHolderPreview() {
 
 @Composable
 fun ProjectSearchViewHolder(
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     imageContentDescription: String? = null,
     title: String,
@@ -63,7 +64,7 @@ fun ProjectSearchViewHolder(
     onClickAction: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(color = colors.kds_white)
             .padding(all = dimensions.paddingSmall)
             .fillMaxWidth()

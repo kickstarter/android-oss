@@ -55,6 +55,7 @@ fun FeaturedSearchViewHolderPreview() {
 
 @Composable
 fun FeaturedSearchViewHolder(
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     imageContentDescription: String? = null,
     title: String,
@@ -64,7 +65,7 @@ fun FeaturedSearchViewHolder(
     onClickAction: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(color = colors.kds_white)
             .border(width = 1.dp, color = colors.kds_support_300)
             .padding(bottom = dimensions.paddingMediumSmall)

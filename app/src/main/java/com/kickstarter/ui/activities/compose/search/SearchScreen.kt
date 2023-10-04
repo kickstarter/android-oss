@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -88,6 +89,18 @@ fun SearchScreenPreviewEmpty() {
     }
 }
 
+enum class SearchScreenTestTag {
+    BACK_BUTTON,
+    SEARCH_TEXT_INPUT,
+    EMPTY_VIEW,
+    LOADING_VIEW,
+    IN_LIST_LOADING_VIEW,
+    LIST_VIEW,
+    POPULAR_PROJECTS_TITLE,
+    FEATURED_PROJECT_VIEW,
+    NORMAL_PROJECT_VIEW
+}
+
 @Composable
 fun SearchScreen(
     environment: Environment? = null,
@@ -118,10 +131,11 @@ fun SearchScreen(
         backgroundColor = colors.kds_white
     ) { padding ->
         if (showEmptyView) {
-            SearchEmptyView()
+            SearchEmptyView(modifier = Modifier.testTag(SearchScreenTestTag.EMPTY_VIEW.name))
         } else {
             LazyColumn(
                 modifier = Modifier
+                    .testTag(SearchScreenTestTag.LIST_VIEW.name)
                     .padding(padding)
                     .fillMaxWidth(),
                 contentPadding = PaddingValues(
@@ -136,7 +150,9 @@ fun SearchScreen(
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.POPULAR_PROJECTS_TITLE.name)
+                                .fillMaxWidth(),
                             text = stringResource(id = R.string.Popular_Projects),
                             style = typography.title2,
                             color = colors.kds_support_700,
@@ -148,6 +164,8 @@ fun SearchScreen(
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                         FeaturedSearchViewHolder(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
                             imageUrl = project.photo()?.full(),
                             title = project.name(),
                             isLaunched = project.isLive,
@@ -170,6 +188,8 @@ fun SearchScreen(
                         }
                     } else {
                         ProjectSearchViewHolder(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
                             imageUrl = project.photo()?.med(),
                             title = project.name(),
                             isLaunched = project.isLive,
@@ -199,7 +219,11 @@ fun SearchScreen(
                     if (isLoading && itemsList.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                        KSCircularProgressIndicator(Modifier.size(size = dimensions.imageSizeLarge))
+                        KSCircularProgressIndicator(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
+                                .size(size = dimensions.imageSizeLarge)
+                        )
 
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                     }
@@ -210,6 +234,7 @@ fun SearchScreen(
         if (isLoading && itemsList.isEmpty()) {
             Box(
                 modifier = Modifier
+                    .testTag(SearchScreenTestTag.LOADING_VIEW.name)
                     .fillMaxSize()
                     .background(color = colors.kds_black.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center

@@ -26,9 +26,11 @@ fun SearchEmptyViewPreview() {
 }
 
 @Composable
-fun SearchEmptyView() {
+fun SearchEmptyView(
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = colors.kds_white),
         horizontalAlignment = Alignment.CenterHorizontally,

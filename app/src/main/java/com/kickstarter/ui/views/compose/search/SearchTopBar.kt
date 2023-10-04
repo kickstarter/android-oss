@@ -29,10 +29,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.ui.activities.compose.search.SearchScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -69,7 +71,9 @@ fun SearchTopBar(
     ) {
         IconButton(
             onClick = onBackPressed,
-            modifier = Modifier.size(dimensions.clickableButtonHeight)
+            modifier = Modifier
+                .testTag(SearchScreenTestTag.BACK_BUTTON.name)
+                .size(dimensions.clickableButtonHeight)
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
@@ -80,6 +84,7 @@ fun SearchTopBar(
 
         OutlinedTextField(
             modifier = Modifier
+                .testTag(SearchScreenTestTag.SEARCH_TEXT_INPUT.name)
                 .padding(
                     start = dimensions.appBarSearchPadding,
                     end = dimensions.appBarEndPadding,

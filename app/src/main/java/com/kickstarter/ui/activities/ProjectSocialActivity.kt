@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,12 +9,12 @@ import com.kickstarter.databinding.ProjectSocialLayoutBinding
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.adapters.ProjectSocialAdapter
-import com.kickstarter.ui.viewholders.ProjectContextViewHolder
+import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.ProjectSocialViewModel.ProjectSocialViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class ProjectSocialActivity : AppCompatActivity(), ProjectSocialAdapter.Delegate {
+class ProjectSocialActivity : AppCompatActivity() {
 
     private lateinit var binding: ProjectSocialLayoutBinding
 
@@ -33,7 +34,7 @@ class ProjectSocialActivity : AppCompatActivity(), ProjectSocialAdapter.Delegate
         binding = ProjectSocialLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = ProjectSocialAdapter(this)
+        val adapter = ProjectSocialAdapter()
         binding.projectSocialRecyclerView.adapter = adapter
         binding.projectSocialRecyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -41,25 +42,15 @@ class ProjectSocialActivity : AppCompatActivity(), ProjectSocialAdapter.Delegate
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter.takeProject(it) }
             .addToDisposable(disposables)
+
+        this.onBackPressedDispatcher.addCallback {
+            finishWithAnimation()
+        }
     }
 
     override fun onDestroy() {
         disposables.clear()
-        super.onDestroy()
         binding.projectSocialRecyclerView.adapter = null
+        super.onDestroy()
     }
-
-    override fun projectContextClicked(viewHolder: ProjectContextViewHolder?) {
-
-    }
-    override fun onBackPressed() {
-//            super.onBackPressed()
-//            val exitTransitions = exitTransition()
-//            if (exitTransitions != null) {
-//                overridePendingTransition(exitTransitions.first, exitTransitions.second)
-//            }
-    }
-
-
-//    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 }

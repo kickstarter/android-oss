@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.transformations.CircleTransformation

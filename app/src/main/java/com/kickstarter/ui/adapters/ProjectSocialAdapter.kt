@@ -6,14 +6,12 @@ import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectContextViewBinding
 import com.kickstarter.databinding.ProjectSocialViewBinding
-import com.kickstarter.models.Empty
 import com.kickstarter.models.Project
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder
 import com.kickstarter.ui.viewholders.ProjectSocialViewHolder
 
-class ProjectSocialAdapter(private val delegate: Delegate) : KSListAdapter() {
-    interface Delegate : ProjectContextViewHolder.Delegate
+class ProjectSocialAdapter : KSListAdapter() {
 
     override fun layout(sectionRow: SectionRow): Int {
         return if (sectionRow.section() == 0) {
@@ -48,7 +46,7 @@ class ProjectSocialAdapter(private val delegate: Delegate) : KSListAdapter() {
                     LayoutInflater.from(viewGroup.context),
                     viewGroup,
                     false
-                ), delegate
+                )
             )
         } else {
             ProjectSocialViewHolder(

@@ -42,7 +42,7 @@ import kotlin.jvm.Throws
 )
 abstract class KSRobolectricTestCase : TestCase() {
     private val application: Application = ApplicationProvider.getApplicationContext()
-    private lateinit var environment: Environment
+    lateinit var environment: Environment
 
     lateinit var segmentTrack: TestSubscriber<String>
     lateinit var segmentIdentify: TestSubscriber<User>

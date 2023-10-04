@@ -10,7 +10,9 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.adapters.ProjectSocialAdapter
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.viewmodels.ProjectSocialViewModel.Factory
 import com.kickstarter.viewmodels.ProjectSocialViewModel.ProjectSocialViewModel
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -18,7 +20,7 @@ class ProjectSocialActivity : AppCompatActivity() {
 
     private lateinit var binding: ProjectSocialLayoutBinding
 
-    private lateinit var viewModelFactory: ProjectSocialViewModel.Factory
+    private lateinit var viewModelFactory: Factory
     private val viewModel: ProjectSocialViewModel by viewModels { viewModelFactory }
 
     private var disposables = CompositeDisposable()
@@ -27,7 +29,7 @@ class ProjectSocialActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
-            viewModelFactory = ProjectSocialViewModel.Factory(env, intent = intent)
+            viewModelFactory = Factory(env, intent = intent)
             env
         }
 

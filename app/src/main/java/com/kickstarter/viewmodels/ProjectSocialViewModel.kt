@@ -16,7 +16,7 @@ interface ProjectSocialViewModel {
         fun project(): Observable<Project>
     }
 
-    class ProjectSocialViewModel(environment: Environment, private val intent: Intent? = null) :
+    class ProjectSocialViewModel(private val environment: Environment, private val intent: Intent? = null) :
         ViewModel(), Outputs {
 
         private val project = BehaviorSubject.create<Project>()
@@ -38,15 +38,15 @@ interface ProjectSocialViewModel {
 
         override fun project(): Observable<Project> = project
 
-        class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ProjectSocialViewModel(environment, intent) as T
-            }
-        }
-
         override fun onCleared() {
             disposables.clear()
             super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ProjectSocialViewModel(environment, intent) as T
         }
     }
 }

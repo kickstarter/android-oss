@@ -607,7 +607,7 @@ interface ProjectOverviewViewModel {
             setProjectSocialClickListener = project
                 .filter { it.isFriendBacking }
                 .map { it.friends() }
-                .filter { it.size > 2 }
+                .filter { it.size >= 2 }
                 .compose(Transformers.ignoreValuesV2())
 
             setSuccessfulProjectStateView = project

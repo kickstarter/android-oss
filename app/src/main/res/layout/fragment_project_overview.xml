@@ -271,7 +271,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/grid_2"
-                android:textIsSelectable="true"
                 tools:text="Gina Binetti, Christopher Wright, and 5 more are backers" />
 
         </LinearLayout>

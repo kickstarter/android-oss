@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -42,7 +41,6 @@ class SearchActivity : ComponentActivity() {
 
     private var darkModeEnabled: Boolean = false
     private lateinit var disposables: CompositeDisposable
-    var environment: Environment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +51,6 @@ class SearchActivity : ComponentActivity() {
             viewModelFactory = SearchViewModel.Factory(env, intent = intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
-            environment = env
             env
         }
 
@@ -74,14 +71,14 @@ class SearchActivity : ComponentActivity() {
 
             val shouldStatePaginate = remember {
                 derivedStateOf {
-                    (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -4) >= lazyListState.layoutInfo.totalItemsCount - 9
+                    (lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) >= lazyListState.layoutInfo.totalItemsCount - 6
                 }
             }
 
             KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 SearchScreen(
-                    // GET RID OF THIS WHEN WE CAN
-                    environment = environment,
+                    // GET RID OF ENVIRONMENT WHEN WE CAN
+                    environment = env,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     scaffoldState = rememberScaffoldState(),
                     isLoading = isLoading,

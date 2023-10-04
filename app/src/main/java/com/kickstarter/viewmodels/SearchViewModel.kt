@@ -111,6 +111,10 @@ interface SearchViewModel {
         @JvmField
         val outputs: Outputs = this
 
+        fun clearSearchedProjects() {
+            searchProjects.onNext(listOf())
+        }
+
         override fun nextPage() {
             nextPage.onNext(Unit)
         }
@@ -133,6 +137,10 @@ interface SearchViewModel {
 
         override fun isFetchingProjects(): Observable<Boolean> {
             return isFetchingProjects
+        }
+
+        fun setIsFetching(fetching: Boolean) {
+            isFetchingProjects.onNext(fetching)
         }
 
         override fun popularProjects(): Observable<List<Project>> {

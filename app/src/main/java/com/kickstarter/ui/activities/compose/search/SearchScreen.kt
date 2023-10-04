@@ -20,6 +20,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -115,6 +120,7 @@ fun SearchScreen(
     onItemClicked: (Project) -> Unit
 ) {
     val context = LocalContext.current
+    var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -124,6 +130,7 @@ fun SearchScreen(
                     onBackPressed = onBackClicked,
                     onValueChanged = {
                         onSearchTermChanged.invoke(it)
+                        currentSearchTerm = it
                     },
                 )
             }
@@ -131,7 +138,11 @@ fun SearchScreen(
         backgroundColor = colors.kds_white
     ) { padding ->
         if (showEmptyView) {
-            SearchEmptyView(modifier = Modifier.testTag(SearchScreenTestTag.EMPTY_VIEW.name))
+            SearchEmptyView(
+                modifier = Modifier.testTag(SearchScreenTestTag.EMPTY_VIEW.name),
+                environment = environment,
+                currentSearchTerm = currentSearchTerm
+            )
         } else {
             LazyColumn(
                 modifier = Modifier

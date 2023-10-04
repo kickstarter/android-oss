@@ -2,62 +2,75 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
-import androidx.annotation.NonNull
+import androidx.activity.addCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.kickstarter.databinding.ActivityCreatorBioBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.MessagePreviousScreenType
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.viewmodels.CreatorBioViewModel
-import rx.android.schedulers.AndroidSchedulers
+import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.viewmodels.CreatorBioViewModel.CreatorBioViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(CreatorBioViewModel.ViewModel::class)
-class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>() {
+class CreatorBioActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreatorBioBinding
+    private lateinit var viewModelFactory: CreatorBioViewModel.Factory
+    private val viewModel: CreatorBioViewModel by viewModels { viewModelFactory }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatorBioBinding.inflate(layoutInflater)
 
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = CreatorBioViewModel.Factory(env, intent = intent)
+            env
+        }
+
         setContentView(binding.root)
 
         this.viewModel.outputs.messageIconIsGone()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe {
                 binding.messageButton.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.url()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe { binding.webView.loadUrl(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startComposeMessageActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe { startComposeMessageActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startMessagesActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe { startMessagesActivity(it) }
+            .addToDisposable(disposables)
 
         binding.messageButton.setOnClickListener {
             this.viewModel.inputs.messageButtonClicked()
         }
+
+        this.onBackPressedDispatcher.addCallback {
+            finishWithAnimation()
+        }
     }
 
-    @NonNull
-    override fun exitTransition(): Pair<Int, Int>? {
-        return slideInFromLeft()
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
-
     private fun startComposeMessageActivity(it: Project?) {
         startActivity(
             Intent(this, MessageCreatorActivity::class.java)

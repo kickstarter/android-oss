@@ -64,6 +64,7 @@ import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
+import com.kickstarter.viewmodels.projectpage.dropBreadcrumb
 import com.stripe.android.view.CardInputWidget
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -184,7 +185,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.goBack()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { onBackPressed() }
+            .subscribe { onBackPressedDispatcher.onBackPressed() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.heartDrawableId()
@@ -249,6 +250,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.showCancelPledgeSuccess()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { showCancelPledgeSuccess() }
                 .addToDisposable(disposables)
 
@@ -259,11 +261,13 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.showCancelPledgeFragment()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { showCancelPledgeFragment(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.showPledgeNotCancelableDialog()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { showPledgeNotCancelableDialog() }
                 .addToDisposable(disposables)
 
@@ -873,17 +877,12 @@ class ProjectPageActivity :
         super.onDestroy()
     }
 
-    private fun updateManagePledgeMenu(@MenuRes menu: Int) {
-        when {
-            (menu != 0) -> binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(menu)
-            else -> run {
-                binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
-            }
+    private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
+        menu?.let {
+            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
+            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
+        } ?: run {
+            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
         }
-//        menu?.let {
-//            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
-//        } ?: run {
-//            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
-//        }
     }
 }

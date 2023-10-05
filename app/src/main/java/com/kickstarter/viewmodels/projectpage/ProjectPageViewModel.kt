@@ -168,7 +168,7 @@ interface ProjectPageViewModel {
         fun heartDrawableId(): Observable<Int>
 
         /** Emits a menu for managing your pledge or null if there's no menu. */
-        fun managePledgeMenu(): Observable<Int>
+        fun managePledgeMenu(): Observable<Int?>
 
         /** Emits the color resource ID for the pledge action button. */
         fun pledgeActionButtonColor(): Observable<Int>
@@ -316,7 +316,7 @@ interface ProjectPageViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val goBack = PublishSubject.create<Unit>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val managePledgeMenu = BehaviorSubject.create<Int>()
+        private val managePledgeMenu = BehaviorSubject.create<Int?>()
         private val pledgeActionButtonColor = BehaviorSubject.create<Int>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeActionButtonText = BehaviorSubject.create<Int>()
@@ -730,7 +730,7 @@ interface ProjectPageViewModel {
                 .filter { it <= 0 }
                 .map { Pair(false, true) }
                     .dropBreadcrumb()
-                    .subscribe { this.expandPledgeSheet }
+                    .subscribe { this.expandPledgeSheet.onNext(it) }
                     .addToDisposable(disposables)
 
             fragmentStackCount
@@ -738,7 +738,7 @@ interface ProjectPageViewModel {
                 .filter { it > 0 }
                 .compose(ignoreValuesV2())
                     .dropBreadcrumb()
-                    .subscribe { this.goBack }
+                    .subscribe { this.goBack.onNext(it) }
                     .addToDisposable(disposables)
 
             Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyCreated)
@@ -792,7 +792,8 @@ interface ProjectPageViewModel {
 
             currentProject
                 .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
-                .map { managePledgeMenu(it) }
+                .filter { managePledgeMenu(it).isNotNull() }
+                .map { requireNotNull(managePledgeMenu(it)) }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
                     .subscribe { this.managePledgeMenu.onNext(it) }
@@ -843,7 +844,7 @@ interface ProjectPageViewModel {
                 .compose<Project>(takeWhenV2(this.cancelPledgeClicked))
                 .filter { (it.backing()?.cancelable() ?: false).isTrue() }
                     .dropBreadcrumb()
-                    .subscribe { this.showCancelPledgeFragment }
+                    .subscribe { this.showCancelPledgeFragment.onNext(it) }
                     .addToDisposable(disposables)
 
             backedProject
@@ -857,7 +858,7 @@ interface ProjectPageViewModel {
             currentProject
                 .compose(takeWhenV2(this.contactCreatorClicked))
                     .dropBreadcrumb()
-                    .subscribe { this.startMessagesActivity }
+                    .subscribe { this.startMessagesActivity.onNext(it) }
                     .addToDisposable(disposables)
 
             val projectDataAndBackedReward = projectData
@@ -892,7 +893,7 @@ interface ProjectPageViewModel {
 
             this.viewRewardsClicked
                     .dropBreadcrumb()
-                    .subscribe{ this.revealRewardsFragment }
+                    .subscribe{ this.revealRewardsFragment.onNext(it) }
                     .addToDisposable(disposables)
 
             currentProject
@@ -907,16 +908,18 @@ interface ProjectPageViewModel {
                 .map { if (it.backing()?.isErrored() == true) R.string.Payment_failure else R.string.Youre_a_backer }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
-                    .subscribe{ this.backingDetailsTitle }
+                    .subscribe{ this.backingDetailsTitle.onNext(it) }
                     .addToDisposable(disposables)
 
             currentProject
                 .filter { it.isBacking() }
-                .filter { backingDetailsSubtitle(it).isNotNull() }
-                    .map { requireNotNull(backingDetailsSubtitle(it)) }
+                .filter {
+                    backingDetailsSubtitle(it).isNotNull()
+                }
+                .map { requireNotNull(backingDetailsSubtitle(it)) }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
-                    .subscribe { this.backingDetailsSubtitle }
+                    .subscribe { this.backingDetailsSubtitle.onNext(it) }
                     .addToDisposable(disposables)
 
             val currentProjectAndUser = currentProject
@@ -938,21 +941,21 @@ interface ProjectPageViewModel {
                 .map { if (it.second <= 0) R.drawable.ic_arrow_down else R.drawable.ic_arrow_back }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
-                    .subscribe { this.pledgeToolbarNavigationIcon }
+                    .subscribe { this.pledgeToolbarNavigationIcon.onNext(it) }
                     .addToDisposable(disposables)
 
             currentProjectAndUser
                 .map { ProjectViewUtils.pledgeToolbarTitle(it.first, it.second.getValue()) }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
-                    .subscribe { this.pledgeToolbarTitle }
+                    .subscribe { this.pledgeToolbarTitle.onNext(it) }
                     .addToDisposable(disposables)
 
             currentProjectAndUser
                 .map { ProjectViewUtils.pledgeActionButtonColor(it.first, it.second.getValue()) }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
-                    .subscribe{ this.pledgeActionButtonColor }
+                    .subscribe{ this.pledgeActionButtonColor.onNext(it) }
                     .addToDisposable(disposables)
 
             this.pledgePaymentSuccessfullyUpdated
@@ -1087,11 +1090,11 @@ interface ProjectPageViewModel {
             else -> OVERVIEW.contextName
         }
 
-        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
+        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
             return when {
-                !project.isBacking() || count.isNonZero() -> 0
+                !project.isBacking() || count.isNonZero() -> null
                 project.isLive -> when {
                     project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
                     else -> R.menu.manage_pledge_live
@@ -1242,7 +1245,7 @@ interface ProjectPageViewModel {
 
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
-        override fun managePledgeMenu(): Observable<Int> = this.managePledgeMenu
+        override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
 
         override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
 

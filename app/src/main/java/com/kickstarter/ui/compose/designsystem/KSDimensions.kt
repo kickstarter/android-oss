@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 data class KSDimensions(
     val dividerThickness: Dp = Dp.Unspecified,
     val none: Dp = 0.dp,
+    val paddingXSmall: Dp = Dp.Unspecified,
     val paddingSmall: Dp = Dp.Unspecified,
     val paddingMediumSmall: Dp = Dp.Unspecified,
     val paddingMedium: Dp = Dp.Unspecified,
@@ -17,6 +18,7 @@ data class KSDimensions(
     val paddingXLarge: Dp = Dp.Unspecified,
     val paddingXXLarge: Dp = Dp.Unspecified,
     val paddingDoubleLarge: Dp = Dp.Unspecified,
+    val paddingTripleLarge: Dp = Dp.Unspecified,
     val minButtonHeight: Dp = Dp.Unspecified,
     val stepperHeight: Dp = Dp.Unspecified,
     val stepperWidth: Dp = Dp.Unspecified,
@@ -45,7 +47,11 @@ data class KSDimensions(
     val iconSizeMedium: Dp = Dp.Unspecified,
     val featuredSearchImageHeight: Dp = Dp.Unspecified,
     val projectSearchImageHeight: Dp = Dp.Unspecified,
-    val projectSearchImageWidth: Dp = Dp.Unspecified
+    val projectSearchImageWidth: Dp = Dp.Unspecified,
+    val searchAppBarHeight: Dp = Dp.Unspecified,
+    val appBarEndPadding: Dp = Dp.Unspecified,
+    val appBarSearchPadding: Dp = Dp.Unspecified,
+    val clickableButtonHeight: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -54,6 +60,7 @@ val LocalKSCustomDimensions = staticCompositionLocalOf {
 
 val KSStandardDimensions = KSDimensions(
     dividerThickness = 1.dp,
+    paddingXSmall = 4.dp,
     paddingSmall = 8.dp,
     paddingMediumSmall = 12.dp,
     paddingMedium = 16.dp,
@@ -62,6 +69,7 @@ val KSStandardDimensions = KSDimensions(
     paddingXLarge = 32.dp,
     paddingXXLarge = 40.dp,
     paddingDoubleLarge = 48.dp,
+    paddingTripleLarge = 72.dp,
     minButtonHeight = 48.dp,
     stepperHeight = 36.dp,
     stepperWidth = 108.dp,
@@ -90,5 +98,9 @@ val KSStandardDimensions = KSDimensions(
     iconSizeMedium = 18.dp,
     featuredSearchImageHeight = 200.dp,
     projectSearchImageHeight = 45.dp,
-    projectSearchImageWidth = 80.dp
+    projectSearchImageWidth = 80.dp,
+    searchAppBarHeight = 68.dp,
+    appBarEndPadding = 12.dp,
+    appBarSearchPadding = 6.dp,
+    clickableButtonHeight = 48.dp
 )

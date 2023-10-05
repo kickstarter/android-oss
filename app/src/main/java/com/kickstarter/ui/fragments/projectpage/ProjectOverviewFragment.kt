@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.transformations.CircleTransformation
@@ -539,11 +538,10 @@ class ProjectOverviewFragment : Fragment(), Configure {
 
     private fun startProjectSocialActivity(project: Project) {
         context?.let { currentContext ->
-            val activity = currentContext as BaseActivity<*>
             val intent = Intent(currentContext, ProjectSocialActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
-            activity.startActivity(intent)
-            activity.overridePendingTransition(
+            activity?.startActivity(intent)
+            activity?.overridePendingTransition(
                 R.anim.slide_in_right,
                 R.anim.fade_out_slide_out_left
             )

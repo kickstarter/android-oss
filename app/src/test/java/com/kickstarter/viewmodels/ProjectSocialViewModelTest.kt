@@ -2,29 +2,45 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.viewmodels.ProjectSocialViewModel.Factory
+import com.kickstarter.viewmodels.ProjectSocialViewModel.ProjectSocialViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ProjectSocialViewModelTest : KSRobolectricTestCase() {
     private val project = TestSubscriber<Project>()
+    private val disposables = CompositeDisposable()
+    private lateinit var vm: ProjectSocialViewModel
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+
+    private fun setUpEnvironment(environment: Environment = environment(), intent: Intent) {
+        vm = Factory(environment, intent).create(ProjectSocialViewModel::class.java)
+        vm.outputs.project().subscribe { this.project.onNext(it) }.addToDisposable(disposables)
+    }
 
     @Test
     fun testProjectInit() {
         val project = ProjectFactory.project()
+            .toBuilder()
+            .friends(listOf(UserFactory.user(), UserFactory.canadianUser(), UserFactory.socialUser()))
+            .build()
 
         val intent = Intent().apply {
             putExtra(IntentKey.PROJECT, project)
         }
 
-        val vm = ProjectSocialViewModel.ViewModel(environment())
-            .also {
-                it.intent(intent)
-            }
-
-        vm.outputs.project().subscribe(this.project)
+        setUpEnvironment(intent = intent)
 
         this.project.assertValue(project)
     }

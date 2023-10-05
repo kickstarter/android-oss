@@ -10,4 +10,11 @@ inline fun <T> Observable<T>.dropBreadcrumb(): Observable<T> {
     }
 }
 
+inline fun <T> rx.Observable<T>.dropBreadcrumb(): rx.Observable<T> {
+    val breadcrumb = BreadcrumbException()
+    return this.onErrorResumeNext { error: Throwable ->
+        throw rx.exceptions.CompositeException(error, breadcrumb)
+    }
+}
+
 class BreadcrumbException : Exception()

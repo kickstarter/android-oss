@@ -150,6 +150,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.projectData()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
@@ -158,6 +159,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.updateTabs()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { updateTabs ->
                 configureTabs(updateTabs)
                 configurePager(pagerAdapterList)
@@ -165,86 +167,103 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.backingDetailsSubtitle()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { setBackingDetailsSubtitle(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.backingDetailsTitle()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.backingDetailsTitle.setText(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.backingDetailsIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { styleProjectActionButton(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.expandPledgeSheet()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { expandPledgeSheet(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.goBack()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { onBackPressedDispatcher.onBackPressed() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.heartDrawableId()
                 .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.managePledgeMenu()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { updateManagePledgeMenu(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonColor()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.pledgeActionButton.backgroundTintList = ContextCompat.getColorStateList(this, it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = (!it).toVisibility() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonText()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { setPledgeActionButtonCTA(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeToolbarNavigationIcon()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.pledgeToolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeToolbarTitle()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.pledgeToolbar.title = getString(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.prelaunchUrl()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { openProjectAndFinish(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.visibility = (!it).toVisibility() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.reloadProgressBarIsGone()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar.visibility = (!it).toVisibility() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.scrimIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { animateScrimVisibility(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.setInitialRewardsContainerY()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { setInitialRewardsContainerY() }
                 .addToDisposable(disposables)
 
@@ -256,6 +275,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { showUpdatePledgeSuccess() }
                 .addToDisposable(disposables)
 
@@ -273,44 +293,52 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.revealRewardsFragment()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { revealRewardsFragment() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.showSavedPrompt()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { this.showStarToast() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.showShareSheet()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { startShareIntent(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdatePledge()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { showPledgeFragment(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.startRootCommentsActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 startRootCommentsActivity(it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.startRootCommentsForCommentsThreadActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 startRootCommentsActivity(it.second, it.first)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.startProjectUpdateActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 startUpdatesActivity(it.second.first, it.first.first, it.first.second)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.startProjectUpdateToRepliesDeepLinkActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 startUpdatesActivity(
                     it.second.first,
@@ -322,58 +350,69 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.startLoginToutActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { this.startLoginToutActivity() }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.startMessagesActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { startMessagesActivity(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.startThanksActivity()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { showCreatePledgeSuccess(it) }
                 .addToDisposable(disposables)
 
         this.viewModel.outputs.projectMedia()
             .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.mediaHeader.inputs.setProjectMedia(it) }
                 .addToDisposable(disposables)
 
         viewModel.outputs.playButtonIsVisible()
                 .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.mediaHeader.inputs.setPlayButtonVisibility(it) }
                 .addToDisposable(disposables)
 
         viewModel.outputs.updateVideoCloseSeekPosition()
                 .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe { binding.mediaHeader.inputs.setPlayerSeekPosition(it) }
                 .addToDisposable(disposables)
 
         binding.mediaHeader.outputs.onFullScreenClicked()
             .compose(Transformers.observeForUI())
+                .dropBreadcrumb()
             .subscribe { viewModel.inputs.fullScreenVideoButtonClicked(it) }
 
         binding.mediaHeader.outputs.playButtonClicks()
             .compose(Transformers.observeForUI())
+                .dropBreadcrumb()
             .subscribe { viewModel.inputs.onVideoPlayButtonClicked() }
 
         this.viewModel.outputs.onOpenVideoInFullScreen()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 this.startVideoActivity(startForResult, it.first, it.second)
             }.addToDisposable(disposables)
 
         viewModel.outputs.backingViewGroupIsVisible()
                 .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 binding.backingGroup.visibility = it.toVisibility()
             }.addToDisposable(disposables)
 
         viewModel.outputs.hideVideoPlayer()
                 .observeOn(AndroidSchedulers.mainThread())
+                .dropBreadcrumb()
             .subscribe {
                 if (it) {
                     binding.projectAppBarLayout.setExpanded(false)

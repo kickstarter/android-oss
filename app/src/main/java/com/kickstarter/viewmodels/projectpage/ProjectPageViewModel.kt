@@ -870,8 +870,9 @@ interface ProjectPageViewModel {
                 }
 
             projectDataAndBackedReward
-                .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.fixPaymentMethodButtonClicked))
+                .compose(takeWhenV2(this.fixPaymentMethodButtonClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
+                    .dropBreadcrumb()
                 .subscribe { this.updatePledgeData.onNext(it) }
                     .addToDisposable(disposables)
 

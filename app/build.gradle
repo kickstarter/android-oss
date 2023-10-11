@@ -253,8 +253,8 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Analytics Segment-Braze
-    implementation 'com.segment.analytics.android:analytics:4.10.4'
-    implementation 'com.appboy:appboy-segment-integration:13.0.0'
+    implementation 'com.segment.analytics.android:analytics:4.11.3'
+    implementation 'com.appboy:appboy-segment-integration:15.0.1'
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.16.7'

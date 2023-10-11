@@ -49,8 +49,6 @@ import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.perimeterx.PerimeterXClient;
 import com.kickstarter.libs.perimeterx.PerimeterXClientType;
-import com.kickstarter.libs.preferences.BooleanDataStore;
-import com.kickstarter.libs.preferences.BooleanDataStoreType;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -442,14 +440,6 @@ public class ApplicationModule {
   @NonNull
   static BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, SharedPreferenceKey.HAS_SEEN_APP_RATING);
-  }
-
-  @Provides
-  @Singleton
-  @AppRatingPreference
-  @NonNull
-  static BooleanDataStoreType provideBooleanDataStoreType(final @ApplicationContext @NonNull Context context) {
-    return new BooleanDataStore(context, SharedPreferenceKey.FIRST_SESSION);
   }
 
   @Provides

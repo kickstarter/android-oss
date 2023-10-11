@@ -182,14 +182,6 @@
     <item name="android:text">@string/project_checkout_share_buttons_share</item>
   </style>
 
-  <style name="FacebookButton" parent="Button">
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/kds_white</item>
-    <item name="backgroundTint">@color/facebook_blue</item>
-    <item name="icon">@drawable/ic_social_facebook</item>
-    <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
-  </style>
-
   <style name="PledgeActionButton" parent="Button">
     <item name="android:paddingTop">@dimen/grid_2</item>
     <item name="android:paddingBottom">@dimen/grid_2</item>
@@ -768,8 +760,6 @@
     <item name="passwordToggleEnabled">true</item>
     <item name="passwordToggleTint">@color/password_toggle</item>
   </style>
-
-  <style name="FormPasswordTextInputLayout" parent="BasePasswordTextInputLayout" />
 
   <style name="SettingsPasswordTextInputLayout" parent="BasePasswordTextInputLayout">
     <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>

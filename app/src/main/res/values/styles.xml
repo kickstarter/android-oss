@@ -576,11 +576,6 @@
 
   <style name="Title1" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_1</item>
-    <item name="android:fontFamily">@string/font_family_maison_neue_book</item>
-  </style>
-
-  <style name="CalloutPrimaryMaison" parent="CalloutPrimary">
-    <item name="android:fontFamily">@string/font_family_maison_neue_book</item>
   </style>
 
   <style name="Warning" parent="TextPrimary">

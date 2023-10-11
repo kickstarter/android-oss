@@ -36,7 +36,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/grid_2"
                     android:ellipsize="end"
-                    android:fontFamily="@string/font_family_maison_neue_book"
                     android:gravity="center"
                     tools:text="This Cool Project I Backed" />
 

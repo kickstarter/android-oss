@@ -2,11 +2,13 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleProjectViewBinding
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ActivitySampleProjectViewHolderViewModel
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class ActivitySampleProjectViewHolder(
     private val binding: ActivitySampleProjectViewBinding,
@@ -14,8 +16,9 @@ class ActivitySampleProjectViewHolder(
 ) : KSViewHolder(binding.root) {
 
     private val ksString = requireNotNull(environment().ksString())
-    private val vm: ActivitySampleProjectViewHolderViewModel.ViewModel =
-        ActivitySampleProjectViewHolderViewModel.ViewModel(environment())
+    private val vm: ActivitySampleProjectViewHolderViewModel.ActivitySampleProjectHolderViewModel =
+        ActivitySampleProjectViewHolderViewModel.ActivitySampleProjectHolderViewModel()
+    private val disposables = CompositeDisposable()
 
     interface Delegate {
         fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder?)
@@ -32,8 +35,7 @@ class ActivitySampleProjectViewHolder(
 
         val context = context()
         this.vm.outputs.bindActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { activity ->
                 activity.project()?.let { project ->
                     val photo = project.photo()
@@ -73,7 +75,7 @@ class ActivitySampleProjectViewHolder(
                 binding.activityClickArea.setOnClickListener {
                     activityProjectOnClick(activity)
                 }
-            }
+            }.addToDisposable(disposables)
     }
 
     fun seeActivityOnClick() {
@@ -84,5 +86,10 @@ class ActivitySampleProjectViewHolder(
         delegate.activitySampleProjectViewHolderUpdateClicked(this, activity)
     } else {
         delegate.activitySampleProjectViewHolderProjectClicked(this, activity?.project())
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
     }
 }

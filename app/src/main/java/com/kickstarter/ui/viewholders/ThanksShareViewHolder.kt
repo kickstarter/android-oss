@@ -111,4 +111,9 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
             .uri(Uri.parse(shareUrl))
             .show()
     }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
+    }
 }

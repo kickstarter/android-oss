@@ -10,6 +10,7 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
@@ -99,5 +100,10 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             .name("Best Project 2K19")
             .urls(Urls.builder().web(webUrls).build())
             .build()
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

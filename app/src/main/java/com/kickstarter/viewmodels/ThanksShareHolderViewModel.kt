@@ -119,5 +119,10 @@ interface ThanksShareHolderViewModel {
         override fun startShareOnFacebook(): Observable<Pair<Project, String>> = startShareOnFacebook
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
         override fun projectName(): Observable<String> = projectName
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 }

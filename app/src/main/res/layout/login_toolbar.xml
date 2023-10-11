@@ -3,7 +3,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/login_layout"
   style="@style/Toolbar"
   android:id="@+id/login_toolbar"
   android:elevation="0dp"

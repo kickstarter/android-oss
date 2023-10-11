@@ -10,33 +10,38 @@ import com.facebook.share.widget.ShareDialog
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksShareViewBinding
 import com.kickstarter.libs.TweetComposer
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
-    private val viewModel = ThanksShareHolderViewModel.ViewModel(environment())
+    private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel()
     private val ksString = requireNotNull(environment().ksString())
-    private val shareDialog: ShareDialog
+    private val shareDialog: ShareDialog = ShareDialog(context() as Activity)
+    private var disposables = CompositeDisposable()
 
     init {
-        shareDialog = ShareDialog(context() as Activity)
         viewModel.outputs.projectName()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showBackedProject(it) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.startShare()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startShare(it) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.startShareOnFacebook()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startShareOnFacebook(it) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.startShareOnTwitter()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startShareOnTwitter(it) }
+            .addToDisposable(disposables)
 
         binding.shareButton.setOnClickListener {
             shareButtonClicked()
@@ -49,15 +54,15 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         }
     }
 
-    fun shareButtonClicked() {
+    private fun shareButtonClicked() {
         viewModel.inputs.shareClick()
     }
 
-    fun shareOnFacebookButtonClicked() {
+    private fun shareOnFacebookButtonClicked() {
         viewModel.inputs.shareOnFacebookClick()
     }
 
-    fun shareOnTwitterButtonClicked() {
+    private fun shareOnTwitterButtonClicked() {
         viewModel.inputs.shareOnTwitterClick()
     }
 
@@ -89,9 +94,7 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         if (!ShareDialog.canShow(ShareLinkContent::class.java)) {
             return
         }
-        val project = projectAndShareUrl.first
         val shareUrl = projectAndShareUrl.second
-        val photo = project.photo()
 
         val content = ShareLinkContent.Builder()
             .setContentUrl(Uri.parse(shareUrl))

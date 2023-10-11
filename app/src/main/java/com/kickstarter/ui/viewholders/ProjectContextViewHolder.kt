@@ -3,44 +3,51 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectContextViewBinding
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadImage
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 class ProjectContextViewHolder(
-    private val binding: ProjectContextViewBinding,
-    private val delegate: Delegate
-) :
-    KSViewHolder(binding.root) {
+    private val binding: ProjectContextViewBinding
+) : KSViewHolder(binding.root) {
 
     private val ksString = requireNotNull(environment().ksString())
-    private var project: Project? = null
-
-    interface Delegate {
-        fun projectContextClicked(viewHolder: ProjectContextViewHolder?)
-    }
+    private var projectObserver = BehaviorSubject.create<Project>()
+    private val disposables = CompositeDisposable()
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        project = requireNotNull(data as Project?) { Project::class.java.toString() + " required to be non-null." }
+        val project = requireNotNull(data as Project?) { Project::class.java.toString() + " required to be non-null." }
+        if (project.isNotNull()) projectObserver.onNext(project)
     }
 
-    override fun onBind() {
-        val photo = project?.photo()
-        if (photo != null) {
-            binding.projectContextImageView.visibility = View.VISIBLE
-            Picasso.get().load(photo.full()).into(binding.projectContextImageView)
-        } else {
-            binding.projectContextImageView.visibility = View.INVISIBLE
-        }
-        binding.projectContextProjectName.text = project?.name()
-        binding.projectContextCreatorName.text = ksString.format(
-            context().getString(R.string.project_creator_by_creator),
-            "creator_name",
-            project?.creator()?.name()
-        )
+    init {
+        projectObserver
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val photo = it?.photo()
+                if (photo != null) {
+                    binding.projectContextImageView.visibility = View.VISIBLE
+                    binding.projectContextImageView.loadImage(photo.full())
+                } else {
+                    binding.projectContextImageView.visibility = View.INVISIBLE
+                }
+                binding.projectContextProjectName.text = it?.name()
+                binding.projectContextCreatorName.text = ksString.format(
+                    context().getString(R.string.project_creator_by_creator),
+                    "creator_name",
+                    it?.creator()?.name()
+                )
+            }
+            .addToDisposable(disposables)
     }
 
-    override fun onClick(view: View) {
-        delegate.projectContextClicked(this)
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
     }
 }

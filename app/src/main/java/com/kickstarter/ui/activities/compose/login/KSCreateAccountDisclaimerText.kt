@@ -28,65 +28,80 @@ fun LogInSignUpClickableDisclaimerText(
     val annotatedLinkString = buildAnnotatedString {
         val termsOfUseString =
             stringResource(id = R.string.login_tout_help_sheet_terms).lowercase()
-        val termsOfUseStartIndex = formattedText.indexOf(termsOfUseString)
+        val termsOfUseStartIndex = formattedText.indexOf(
+            string = termsOfUseString,
+            ignoreCase = true
+        )
         val termsOfUserEndIndex = termsOfUseStartIndex + termsOfUseString.length
 
         val privacyPolicyString =
             stringResource(id = R.string.login_tout_help_sheet_privacy).lowercase()
-        val privacyPolicyStartIndex = formattedText.indexOf(privacyPolicyString)
+        val privacyPolicyStartIndex = formattedText.indexOf(
+            string = privacyPolicyString,
+            ignoreCase = true
+        )
         val privacyPolicyEndIndex = privacyPolicyStartIndex + privacyPolicyString.length
 
         val cookiePolicyString =
             stringResource(id = R.string.login_tout_help_sheet_cookie).lowercase()
-        val cookiePolicyStartIndex = formattedText.indexOf(cookiePolicyString)
+        val cookiePolicyStartIndex = formattedText.indexOf(
+            string = cookiePolicyString,
+            ignoreCase = true
+        )
         val cookiePolicyEndIndex = cookiePolicyStartIndex + cookiePolicyString.length
 
         append(formattedText)
 
-        addStyle(
-            style = SpanStyle(
-                textDecoration = TextDecoration.Underline
-            ),
-            start = termsOfUseStartIndex,
-            end = termsOfUserEndIndex
-        )
+        if (termsOfUseStartIndex != -1) {
+            addStyle(
+                style = SpanStyle(
+                    textDecoration = TextDecoration.Underline
+                ),
+                start = termsOfUseStartIndex,
+                end = termsOfUserEndIndex
+            )
 
-        addStringAnnotation(
-            tag = DisclaimerItems.TERMS.name,
-            annotation = "",
-            start = termsOfUseStartIndex,
-            end = termsOfUserEndIndex
-        )
+            addStringAnnotation(
+                tag = DisclaimerItems.TERMS.name,
+                annotation = "",
+                start = termsOfUseStartIndex,
+                end = termsOfUserEndIndex
+            )
+        }
 
-        addStyle(
-            style = SpanStyle(
-                textDecoration = TextDecoration.Underline
-            ),
-            start = privacyPolicyStartIndex,
-            end = privacyPolicyEndIndex
-        )
+        if (privacyPolicyStartIndex != -1) {
+            addStyle(
+                style = SpanStyle(
+                    textDecoration = TextDecoration.Underline
+                ),
+                start = privacyPolicyStartIndex,
+                end = privacyPolicyEndIndex
+            )
 
-        addStringAnnotation(
-            tag = DisclaimerItems.PRIVACY.name,
-            annotation = "",
-            start = privacyPolicyStartIndex,
-            end = privacyPolicyEndIndex
-        )
+            addStringAnnotation(
+                tag = DisclaimerItems.PRIVACY.name,
+                annotation = "",
+                start = privacyPolicyStartIndex,
+                end = privacyPolicyEndIndex
+            )
+        }
 
-        addStyle(
-            style = SpanStyle(
-                textDecoration = TextDecoration.Underline
-            ),
-            start = cookiePolicyStartIndex,
-            end = cookiePolicyEndIndex
-        )
+        if (cookiePolicyStartIndex != -1) {
+            addStyle(
+                style = SpanStyle(
+                    textDecoration = TextDecoration.Underline
+                ),
+                start = cookiePolicyStartIndex,
+                end = cookiePolicyEndIndex
+            )
 
-        addStringAnnotation(
-            tag = DisclaimerItems.COOKIES.name,
-            annotation = "",
-            start = cookiePolicyStartIndex,
-            end = cookiePolicyEndIndex
-        )
+            addStringAnnotation(
+                tag = DisclaimerItems.COOKIES.name,
+                annotation = "",
+                start = cookiePolicyStartIndex,
+                end = cookiePolicyEndIndex
+            )
+        }
     }
 
     ClickableText(

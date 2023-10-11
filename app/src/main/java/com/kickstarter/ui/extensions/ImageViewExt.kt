@@ -21,6 +21,15 @@ fun ImageView.loadCircleImage(url: String?) {
     }
 }
 
+fun ImageView.loadImage(url: String?) {
+    url?.let {
+        Picasso
+            .get()
+            .load(it)
+            .into(this)
+    }
+}
+
 fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: AppCompatImageView? = null) {
     val target = this
     if (context.applicationContext.isKSApplication()) {

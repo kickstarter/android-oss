@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.8'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.14'
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -216,7 +216,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.14'
-    implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
+    implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"
@@ -274,7 +274,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+    implementation platform('com.google.firebase:firebase-bom:32.3.1')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging'

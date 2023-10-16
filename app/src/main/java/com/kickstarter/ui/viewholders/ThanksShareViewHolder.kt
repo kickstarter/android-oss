@@ -113,6 +113,7 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
     }
 
     override fun destroy() {
+        viewModel.inputs.onCleared()
         disposables.clear()
         super.destroy()
     }

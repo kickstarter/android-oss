@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.lifecycle.ViewModel
 import com.kickstarter.libs.RefTag.Companion.thanksFacebookShare
 import com.kickstarter.libs.RefTag.Companion.thanksShare
 import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
@@ -27,6 +26,8 @@ interface ThanksShareHolderViewModel {
 
         /** Call when the share on Twitter button is clicked.  */
         fun shareOnTwitterClick()
+
+        fun onCleared()
     }
 
     interface Outputs {
@@ -43,7 +44,7 @@ interface ThanksShareHolderViewModel {
         fun startShareOnTwitter(): Observable<Pair<String, String>>
     }
 
-    class ThanksShareViewHolderViewModel : ViewModel(), Inputs, Outputs {
+    class ThanksShareViewHolderViewModel : Inputs, Outputs {
 
         private val project = PublishSubject.create<Project>()
         private val shareClick = PublishSubject.create<Unit>()
@@ -122,7 +123,6 @@ interface ThanksShareHolderViewModel {
 
         override fun onCleared() {
             disposables.clear()
-            super.onCleared()
         }
     }
 }

@@ -104,6 +104,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
     @After
     fun clear() {
+        vm.inputs.onCleared()
         disposables.clear()
     }
 }

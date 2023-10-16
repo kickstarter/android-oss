@@ -63,16 +63,16 @@ interface FrequentlyAskedQuestionViewModel {
 
         init {
             val projectFaqList = projectDataInput
-                .map { it.project().projectFaqs() }
-                .filter { it.isNotNull() }
+                .filter { it.project().projectFaqs().isNotNull()}
+                .map { requireNotNull(it.project().projectFaqs()) }
 
             projectFaqList
                 .filter { it.isNotEmpty() }
-                .subscribe { it?.let { this.projectFaqList.onNext(it) } }
+                .subscribe { this.projectFaqList.onNext(it) }
                 .addToDisposable(disposables)
 
-            projectFaqList
-                .filter { it.isNullOrEmpty() }
+            projectDataInput
+                .filter { it.project().projectFaqs().isNullOrEmpty() }
                 .subscribe {
                     this.bindEmptyState.onNext(Unit)
                 }
@@ -110,18 +110,14 @@ interface FrequentlyAskedQuestionViewModel {
             this.askQuestionButtonClicked.onNext(Unit)
         }
 
-        @NonNull
         override fun askQuestionButtonIsGone(): Observable<Boolean> = this.askQuestionButtonIsGone
 
-        @NonNull
         override fun startComposeMessageActivity(): Observable<Project> = this.startComposeMessageActivity
 
-        @NonNull
         override fun startMessagesActivity(): Observable<Project> = this.startMessageActivity
 
-        @NonNull
         override fun projectFaqList(): Observable<List<ProjectFaq>> = this.projectFaqList
-        @NonNull
+
         override fun bindEmptyState(): Observable<Unit> = this.bindEmptyState
 
         override fun onCleared() {

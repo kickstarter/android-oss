@@ -456,14 +456,12 @@ interface ProjectOverviewViewModel {
         init {
             val project = projectData
                 .distinctUntilChanged()
-                .map { it.project() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.project().isNotNull() }
+                .map { requireNotNull(it.project()) }
 
             avatarPhotoUrl = project
-                .map { it.creator().avatar().medium() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.creator().avatar().medium().isNotNull() }
+                .map { requireNotNull(it.creator().avatar().medium()) }
 
             backersCountTextViewText = project
                 .map { NumberUtils.format(it.backersCount()) }
@@ -472,14 +470,13 @@ interface ProjectOverviewViewModel {
                 .map { it.blurb() }
 
             categoryTextViewText = project
+                    .filter { it.category().isNotNull() }
                 .map { it.category() }
-                .filter { it.isNotNull() }
                 .map { it?.name() ?: "" }
 
             commentsCountTextViewText = project
-                .map { it.commentsCount() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter() { it.commentsCount().isNotNull() }
+                    .map { requireNotNull(it.commentsCount()) }
                 .map { NumberUtils.format(it) }
 
             conversionTextViewIsGone = project
@@ -511,6 +508,7 @@ interface ProjectOverviewViewModel {
             creatorDetailsNotification
                 .compose(Transformers.errorsV2())
                 .map { _: Throwable? -> true }
+                    .dropBreadcrumb()
                 .subscribe { creatorDetailsIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -522,8 +520,8 @@ interface ProjectOverviewViewModel {
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.goal(), p) }
 
             locationTextViewText = project
-                .map { it.location() }
-                .filter { it.isNotNull() }
+                    .filter { it.location().isNotNull() }
+                    .map { it.location() }
                 .map { it?.displayableName() ?: "" }
 
             percentageFundedProgress = project
@@ -556,9 +554,8 @@ interface ProjectOverviewViewModel {
                 project.map { p: Project -> p.deadline() == null || !p.isLive }
 
             projectLaunchDate = project
-                .map { it.launchedAt() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.launchedAt().isNotNull() }
+                .map { requireNotNull(it.launchedAt()) }
                 .map { DateTimeUtils.longDate(it) }
 
             projectLaunchDateIsGone = project
@@ -629,9 +626,8 @@ interface ProjectOverviewViewModel {
             )
 
             updatesCountTextViewText = project
-                .map { it.updatesCount() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.updatesCount().isNotNull() }
+                .map { requireNotNull(it.updatesCount()) }
                 .map { NumberUtils.format(it) }
 
             startCreatorView = projectData
@@ -660,6 +656,7 @@ interface ProjectOverviewViewModel {
                     return@withLatestFrom isUser
                 }
                 .filter { !it }
+                    .dropBreadcrumb()
                 .subscribe {
                     this.startLogin.onNext(Unit)
                 }
@@ -688,6 +685,7 @@ interface ProjectOverviewViewModel {
                     else ""
                 }
                 .filter { it.isNotEmpty() }
+                    .dropBreadcrumb()
                 .subscribe {
                     openExternally.onNext(it)
                 }
@@ -697,6 +695,7 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.takePairWhenV2(campaignClicked))
                 .map { it.first }
                 .filter { it.project().isLive && !it.project().isBacking() }
+                    .dropBreadcrumb()
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)
                 }

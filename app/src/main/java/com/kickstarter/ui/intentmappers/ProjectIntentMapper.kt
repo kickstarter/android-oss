@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Build
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.KsOptional
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType

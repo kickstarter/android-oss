@@ -38,6 +38,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -916,11 +917,11 @@ class ProjectPageActivity :
         super.onDestroy()
     }
 
-    private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
-        menu?.let {
+    private fun updateManagePledgeMenu(@MenuRes menu: Int) {
+        if (menu != 0) {
             binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
-            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
-        } ?: run {
+            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(menu)
+        } else run {
             binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
         }
     }

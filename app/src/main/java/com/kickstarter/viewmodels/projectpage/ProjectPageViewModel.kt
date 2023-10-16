@@ -168,7 +168,7 @@ interface ProjectPageViewModel {
         fun heartDrawableId(): Observable<Int>
 
         /** Emits a menu for managing your pledge or null if there's no menu. */
-        fun managePledgeMenu(): Observable<Int?>
+        fun managePledgeMenu(): Observable<Int>
 
         /** Emits the color resource ID for the pledge action button. */
         fun pledgeActionButtonColor(): Observable<Int>
@@ -316,7 +316,7 @@ interface ProjectPageViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val goBack = PublishSubject.create<Unit>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val managePledgeMenu = BehaviorSubject.create<Int?>()
+        private val managePledgeMenu = BehaviorSubject.create<Int>()
         private val pledgeActionButtonColor = BehaviorSubject.create<Int>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeActionButtonText = BehaviorSubject.create<Int>()
@@ -468,10 +468,10 @@ interface ProjectPageViewModel {
                 .compose<User>(takeWhenV2(this.heartButtonClicked))
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                    .filter { it.isPresent() }
-                    .map { it.getValue() }
-                .compose<User>(takeWhenV2(this.heartButtonClicked))
-                .filter { it.isNull() }
+                    .filter { !it.isPresent() }
+                    .compose(ignoreValuesV2())
+                .compose<Unit>(takeWhenV2(this.heartButtonClicked))
+//                .filter { it.isNull() }
 
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhenV2<Project, User>(loggedInUserOnHeartClick))
@@ -547,10 +547,6 @@ interface ProjectPageViewModel {
                         this.unSaveProject(it.second)
                     }
                 }.share()
-
-            val refresh2 = refreshedProjectNotification
-                    .filter { it.isNotNull() }
-                    .compose(valuesV2())
 
             val currentProject = Observable.mergeArray(
                 initialProject.dropBreadcrumb(),
@@ -792,8 +788,7 @@ interface ProjectPageViewModel {
 
             currentProject
                 .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
-                .filter { managePledgeMenu(it).isNotNull() }
-                .map { requireNotNull(managePledgeMenu(it)) }
+                .map { managePledgeMenu(it) }
                 .distinctUntilChanged()
                     .dropBreadcrumb()
                     .subscribe { this.managePledgeMenu.onNext(it) }
@@ -863,6 +858,8 @@ interface ProjectPageViewModel {
 
             val projectDataAndBackedReward = projectData
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                .filter { it.first.project().backing().isNotNull() }
+                .filter { it.first.project().backing()?.backedReward(it.first.project()).isNotNull() }
                 .map { pD ->
                     pD.first.project().backing()?.backedReward(pD.first.project())?.let {
                         Pair(pD.first.toBuilder().backing(pD.second).build(), it)
@@ -990,6 +987,7 @@ interface ProjectPageViewModel {
             currentProject
                 .map { p -> if (p.isStarred()) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                     .dropBreadcrumb()
+                    .distinctUntilChanged()
                     .subscribe { this.heartDrawableId.onNext(it) }
                     .addToDisposable(disposables)
 
@@ -1012,6 +1010,7 @@ interface ProjectPageViewModel {
 
             currentProject
                 .map { it.hasVideo() }
+                    .distinctUntilChanged()
                     .dropBreadcrumb()
                     .subscribe { this.playButtonIsVisible.onNext(it) }
                     .addToDisposable(disposables)
@@ -1091,11 +1090,11 @@ interface ProjectPageViewModel {
             else -> OVERVIEW.contextName
         }
 
-        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {
+        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
             return when {
-                !project.isBacking() || count.isNonZero() -> null
+                !project.isBacking() || count.isNonZero() -> 0
                 project.isLive -> when {
                     project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
                     else -> R.menu.manage_pledge_live
@@ -1246,7 +1245,7 @@ interface ProjectPageViewModel {
 
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
-        override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
+        override fun managePledgeMenu(): Observable<Int> = this.managePledgeMenu
 
         override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
 

@@ -11,9 +11,12 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.KsOptional
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
@@ -22,7 +25,7 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.AiDisclosure
 import com.kickstarter.models.Backing
 import com.kickstarter.models.EnvironmentalCommitment
@@ -40,22 +43,24 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.TestScheduler
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.schedulers.TestScheduler
-import rx.subjects.BehaviorSubject
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
 class ProjectPageViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ProjectPageViewModel.ViewModel
+    private lateinit var vm: ProjectPageViewModel.ProjectPageViewModel
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
     private val backingDetailsSubtitle = TestSubscriber<Either<String, Int>?>()
     private val backingDetailsTitle = TestSubscriber<Int>()
     private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
-    private val goBack = TestSubscriber<Void>()
+    private val goBack = TestSubscriber<Unit>()
     private val heartDrawableId = TestSubscriber<Int>()
     private val managePledgeMenu = TestSubscriber<Int?>()
     private val pledgeActionButtonColor = TestSubscriber<Int>()
@@ -67,22 +72,22 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val projectData = TestSubscriber<ProjectData>()
     private val reloadProjectContainerIsGone = TestSubscriber<Boolean>()
     private val reloadProgressBarIsGone = TestSubscriber<Boolean>()
-    private val revealRewardsFragment = TestSubscriber<Void>()
+    private val revealRewardsFragment = TestSubscriber<Unit>()
     private val savedTest = TestSubscriber<Boolean>()
     private val scrimIsVisible = TestSubscriber<Boolean>()
-    private val setInitialRewardsContainerY = TestSubscriber<Void>()
+    private val setInitialRewardsContainerY = TestSubscriber<Unit>()
     private val showCancelPledgeFragment = TestSubscriber<Project>()
-    private val showCancelPledgeSuccess = TestSubscriber<Void>()
-    private val showPledgeNotCancelableDialog = TestSubscriber<Void>()
-    private val showSavedPromptTest = TestSubscriber<Void>()
+    private val showCancelPledgeSuccess = TestSubscriber<Unit>()
+    private val showPledgeNotCancelableDialog = TestSubscriber<Unit>()
+    private val showSavedPromptTest = TestSubscriber<Unit>()
     private val showShareSheet = TestSubscriber<Pair<String, String>>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
-    private val showUpdatePledgeSuccess = TestSubscriber<Void>()
+    private val showUpdatePledgeSuccess = TestSubscriber<Unit>()
     private val startRootCommentsActivity = TestSubscriber<ProjectData>()
     private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, ProjectData>>()
     private val startProjectUpdateActivity = TestSubscriber<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
-    private val startLoginToutActivity = TestSubscriber<Void>()
+    private val startLoginToutActivity = TestSubscriber<Unit>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val updateFragments = TestSubscriber<ProjectData>()
@@ -94,59 +99,65 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
 
+    private val disposables = CompositeDisposable()
+
+    @After
+    fun clear() {
+        disposables.clear()
+    }
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = ProjectPageViewModel.ViewModel(environment)
-        this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
-        this.vm.outputs.backingDetailsSubtitle().subscribe(this.backingDetailsSubtitle)
-        this.vm.outputs.backingDetailsTitle().subscribe(this.backingDetailsTitle)
-        this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
-        this.vm.outputs.goBack().subscribe(this.goBack)
-        this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
-        this.vm.outputs.pledgeActionButtonColor().subscribe(this.pledgeActionButtonColor)
-        this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe(this.pledgeActionButtonContainerIsGone)
-        this.vm.outputs.pledgeActionButtonText().subscribe(this.pledgeActionButtonText)
-        this.vm.outputs.pledgeToolbarNavigationIcon().subscribe(this.pledgeToolbarNavigationIcon)
-        this.vm.outputs.pledgeToolbarTitle().subscribe(this.pledgeToolbarTitle)
-        this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
-        this.vm.outputs.projectData().subscribe(this.projectData)
-        this.vm.outputs.reloadProgressBarIsGone().subscribe(this.reloadProgressBarIsGone)
-        this.vm.outputs.reloadProjectContainerIsGone().subscribe(this.reloadProjectContainerIsGone)
-        this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
-        this.vm.outputs.scrimIsVisible().subscribe(this.scrimIsVisible)
-        this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
-        this.vm.outputs.showCancelPledgeFragment().subscribe(this.showCancelPledgeFragment)
-        this.vm.outputs.showCancelPledgeSuccess().subscribe(this.showCancelPledgeSuccess)
-        this.vm.outputs.showPledgeNotCancelableDialog().subscribe(this.showPledgeNotCancelableDialog)
-        this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
-        this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
-        this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
-        this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
-        this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectData().map { pD -> pD.project().isStarred() }.subscribe(this.savedTest)
-        this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivity)
-        this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
-        this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
-        this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
-        this.vm.outputs.updateFragments().subscribe(this.updateFragments)
-        this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
-        this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
-        this.vm.outputs.updateTabs().subscribe(this.updateTabs)
-        this.vm.outputs.projectMedia().subscribe(this.projectMedia)
-        this.vm.outputs.playButtonIsVisible().subscribe(this.playButtonIsVisible)
-        this.vm.outputs.backingViewGroupIsVisible().subscribe(this.backingViewGroupIsVisible)
-        this.vm.outputs.hideVideoPlayer().subscribe(this.hideVideoPlayer)
-        this.vm.outputs.onOpenVideoInFullScreen().subscribe(this.onOpenVideoInFullScreen)
-        this.vm.outputs.updateVideoCloseSeekPosition().subscribe(this.updateVideoCloseSeekPosition)
+        this.vm = ProjectPageViewModel.ProjectPageViewModel(environment)
+        this.vm.outputs.backingDetailsIsVisible().subscribe { this.backingDetailsIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.backingDetailsSubtitle().subscribe { this.backingDetailsSubtitle.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.backingDetailsTitle().subscribe{ this.backingDetailsTitle.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.expandPledgeSheet().subscribe { this.expandPledgeSheet.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.goBack().subscribe { this.goBack.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.heartDrawableId().subscribe { this.heartDrawableId.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.managePledgeMenu().subscribe { this.managePledgeMenu.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeActionButtonColor().subscribe { this.pledgeActionButtonColor.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeActionButtonText().subscribe { this.pledgeActionButtonText.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeToolbarNavigationIcon().subscribe { this.pledgeToolbarNavigationIcon.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeToolbarTitle().subscribe { this.pledgeToolbarTitle.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.prelaunchUrl().subscribe { this.prelaunchUrl.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.projectData().subscribe { this.projectData.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.reloadProgressBarIsGone().subscribe { this.reloadProgressBarIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.reloadProjectContainerIsGone().subscribe { this.reloadProjectContainerIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.revealRewardsFragment().subscribe { this.revealRewardsFragment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.scrimIsVisible().subscribe { this.scrimIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.setInitialRewardsContainerY().subscribe { this.setInitialRewardsContainerY.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showCancelPledgeFragment().subscribe { this.showCancelPledgeFragment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showCancelPledgeSuccess().subscribe { this.showCancelPledgeSuccess.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showPledgeNotCancelableDialog().subscribe { this.showPledgeNotCancelableDialog.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showSavedPrompt().subscribe { this.showSavedPromptTest.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showShareSheet().subscribe { this.showShareSheet.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showUpdatePledge().subscribe { this.showUpdatePledge.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showUpdatePledgeSuccess().subscribe { this.showUpdatePledgeSuccess.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startLoginToutActivity().subscribe { this.startLoginToutActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.projectData().map { pD -> pD.project().isStarred() }.subscribe { this.savedTest.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startRootCommentsActivity().subscribe { this.startRootCommentsActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startProjectUpdateActivity().subscribe { this.startProjectUpdateActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startMessagesActivity().subscribe { this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startThanksActivity().subscribe { this.startThanksActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.updateFragments().subscribe { this.updateFragments.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe { this.startRootCommentsForCommentsThreadActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.updateTabs().subscribe { this.updateTabs.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.projectMedia().subscribe { this.projectMedia.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.playButtonIsVisible().subscribe { this.playButtonIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.backingViewGroupIsVisible().subscribe { this.backingViewGroupIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.hideVideoPlayer().subscribe { this.hideVideoPlayer.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.onOpenVideoInFullScreen().subscribe { this.onOpenVideoInFullScreen.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.updateVideoCloseSeekPosition().subscribe { this.updateVideoCloseSeekPosition.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testProjectMedia_whenPhotoNull_shouldNotEmit() {
-        val project = ProjectFactory.initialProject().toBuilder().photo(null).build()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh1").photo(null).build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
@@ -154,185 +165,212 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         // Start the view model with an almost completed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         val media = projectMedia.value
         assertEquals(null, media)
+        disposables.clear()
     }
 
     @Test
     fun testProjectMedia_whenNotNull_shouldEmitPhoto() {
-        val project = ProjectFactory.initialProject()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh2").build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         val media = projectMedia.value
         assertEquals(
             "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959",
-            media.thumbnailUrl
+            media?.thumbnailUrl
         )
         assertEquals(
             "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4",
-            media.videoModelElement?.sourceUrl
+            media?.videoModelElement?.sourceUrl
         )
         assertEquals(
             0L,
-            media.videoModelElement?.seekPosition
+            media?.videoModelElement?.seekPosition
         )
+        disposables.clear()
     }
 
     @Test
     fun testProjectMedia_whenFullScreenOpened_shouldEmitOpenVideoInFullScreen() {
-        val project = ProjectFactory.initialProject()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh3").build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
         val videoInfo = kotlin.Pair("https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4", 12L)
         this.vm.fullScreenVideoButtonClicked(videoInfo)
 
         onOpenVideoInFullScreen.assertValue(videoInfo)
+        disposables.clear()
+
     }
 
     @Test
     fun testProjectMedia_whenCloseFullScreenVideo_shouldEmitUpdateVideoCloseSeekPosition() {
-        val project = ProjectFactory.initialProject()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh4").build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.closeFullScreenVideo(15L)
 
         updateVideoCloseSeekPosition.assertValue(15L)
+        disposables.clear()
+
     }
 
     @Test
     fun testMediaPlayButton_whenHasVideoFalse_shouldEmitFalse() {
-        val project = ProjectFactory.initialProject().toBuilder().video(null).build()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh6").video(null).build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override fun getProject(project: Project): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         playButtonIsVisible.assertValues(false)
+        disposables.clear()
+
     }
 
     @Test
     fun testMediaPlayButton_whenHasVideoTrue_shouldEmitTrue() {
-        val project = ProjectFactory.initialProject()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh7").build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+                .currentUserV2(currentUser)
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override fun getProject(project: Project): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         playButtonIsVisible.assertValues(true)
+        disposables.clear()
+
     }
 
     @Test
     fun testBackingViewGroup_whenBacking_shouldEmitTrue() {
-        val project = ProjectFactory.initialProject().toBuilder().isBacking(true).build()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh8").isBacking(true).build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         backingViewGroupIsVisible.assertValues(true)
+        disposables.clear()
+
     }
 
     @Test
     fun testBackingViewGroup_whenPlayButtonClicked_shouldEmitFalse() {
-        val project = ProjectFactory.initialProject().toBuilder().isBacking(true).build()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh9").isBacking(true).build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
         this.vm.inputs.onVideoPlayButtonClicked()
 
         backingViewGroupIsVisible.assertValues(true, false)
+        disposables.clear()
+
     }
 
     @Test
     fun testBackingViewGroup_whenNotBacking_shouldEmitFalse() {
-        val project = ProjectFactory.initialProject().toBuilder().isBacking(false).build()
-        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.initialProject().toBuilder().name("leigh10").isBacking(false).build()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         backingViewGroupIsVisible.assertValues(false)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_isSuccessful() {
-        val initialProject = ProjectFactory.initialProject()
-        val refreshedProject = ProjectFactory.project()
+        val initialProject = ProjectFactory.initialProject().toBuilder().name("leigh11").build()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh2043r03u").build()
         val environment = environment()
             .toBuilder()
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
@@ -342,13 +380,15 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
         assertEquals(null, this.vm.onThirdPartyEventSent.value)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_sendThirdPartyEvent_withFeatureFlag_on_isSuccessful() {
-        val initialProject = ProjectFactory.initialProject()
+        val initialProject = ProjectFactory.initialProject().toBuilder().name("leigh12").build()
         val refreshedProject =
-            ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+            ProjectFactory.project().toBuilder().name("leigh12839e423u").sendThirdPartyEvents(true).build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -363,23 +403,25 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .sharedPreferences(sharedPreferences)
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .featureFlagClient(mockFeatureFlagClient)
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
         assertEquals(true, this.vm.onThirdPartyEventSent.value)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_sendThirdPartyEvent_withConsentManagement_off_isFailed() {
-        val initialProject = ProjectFactory.initialProject()
-        val refreshedProject = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+        val initialProject = ProjectFactory.initialProject().toBuilder().name("leigh13").build()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh14").sendThirdPartyEvents(true).build()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -394,21 +436,23 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .sharedPreferences(sharedPreferences)
             .featureFlagClient(mockFeatureFlagClient)
-            .currentUser(MockCurrentUser(UserFactory.user()))
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
         assertEquals(null, this.vm.onThirdPartyEventSent.value)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_sendThirdPartyEvent_withProjectmNotHaveThirdPartyEnabled_isFailed() {
-        val initialProject = ProjectFactory.initialProject()
+        val initialProject = ProjectFactory.initialProject().toBuilder().name("leigh15").build()
         val refreshedProject = ProjectFactory.project().toBuilder().sendThirdPartyEvents(false).build()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -424,33 +468,37 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .sharedPreferences(sharedPreferences)
             .featureFlagClient(mockFeatureFlagClient)
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
         assertEquals(null, this.vm.onThirdPartyEventSent.value)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectWithoutEnVCommitment() {
-        val initialProject = ProjectFactory.initialProject().toBuilder().envCommitments(
+        val initialProject = ProjectFactory.initialProject().toBuilder().name("leigh16").envCommitments(
             emptyList
             ()
         ).build()
 
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
             PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)
         )
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
@@ -464,6 +512,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                     .builder()
                     .build()
             )
+                .name("leigh24r23")
             .build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -480,7 +529,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, true),
@@ -488,6 +537,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         )
 
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
@@ -501,6 +552,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                     .builder()
                     .build()
             )
+                .name("leigh12312")
             .build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -517,7 +569,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
@@ -525,6 +577,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         )
 
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
@@ -537,7 +591,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 AiDisclosure
                     .builder()
                     .build()
-            )
+            ).name("leigh723984")
             .build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -554,7 +608,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, true),
@@ -562,6 +616,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         )
 
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
@@ -574,7 +630,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 AiDisclosure
                     .builder()
                     .build()
-            )
+            ).name("leigh18985")
             .build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -591,7 +647,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
@@ -599,79 +655,87 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         )
 
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectWithEnvCommitment() {
-        val initialProject = ProjectFactory.project()
-        val refreshedProject = ProjectFactory.project()
+        val initialProject = ProjectFactory.project().toBuilder().name("leigh958").build()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh09234").build()
         val environment = environment()
             .toBuilder()
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
             PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
         )
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectWithEnvCommitmentAndStoryTabFFDisabled() {
-        val initialProject = ProjectFactory.project()
-        val refreshedProject = ProjectFactory.project()
+        val initialProject = ProjectFactory.project().toBuilder().name("leigh9746281").build()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh092439").build()
 
         val environment = environment()
             .toBuilder()
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
             PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
         )
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectWithEnvCommitmentAndStoryTabFFEnabled() {
-        val initialProject = ProjectFactory.project()
-        val refreshedProject = ProjectFactory.project()
+        val initialProject = ProjectFactory.project().toBuilder().name("leigh24uu43").build()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh02493").build()
 
         val environment = environment()
             .toBuilder()
-            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
             PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
             PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
         )
         this.updateTabs.assertValue(list)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_isUnsuccessful() {
         var error = true
-        val initialProject = ProjectFactory.initialProject()
-        val refreshedProject = ProjectFactory.project()
+        val initialProject = ProjectFactory.initialProject().toBuilder().name("leigh175028312").build()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh524139").build()
 
         val environment = environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProject(project: Project): Observable<Project> {
                     val observable = when {
                         error -> Observable.error(Throwable("boop"))
@@ -685,7 +749,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertNoValues()
@@ -706,15 +770,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromDeepLink_isSuccessful() {
-        val project = ProjectFactory.project()
+        val project = ProjectFactory.project().toBuilder().name("leigh451038221fedf").build()
 
         val environment = environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProject(param: String): Observable<Project> {
                     return Observable.just(project)
                 }
@@ -723,7 +789,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
         val intent = deepLinkIntent()
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
@@ -731,23 +797,25 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(project))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenSaveProjectFromDeepLink_isSuccessful() {
-        val currentUser = MockCurrentUser()
-        val project = ProjectFactory.successfulProject()
+        val currentUser = MockCurrentUserV2()
+        val project = ProjectFactory.successfulProject().toBuilder().name("leigh183923492dnskdnfv").build()
         val testScheduler = TestScheduler()
 
         setUpEnvironment(
             environment().toBuilder()
-                .currentUser(currentUser)
-                .apolloClient(object : MockApolloClient() {
+                .currentUserV2(currentUser)
+                .apolloClientV2(object : MockApolloClientV2() {
                     override fun getProject(param: String): Observable<Project> {
                         return Observable.just(project)
                     }
                 })
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -756,7 +824,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.SAVE_FLAG_VALUE, true)
         }
         currentUser.refresh(UserFactory.user())
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
@@ -764,16 +832,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
+        disposables.clear()
+
     }
 
     @Test
     fun testUIOutputs_whenFetchProjectFromDeepLink_isUnsuccessful() {
         var error = true
-        val refreshedProject = ProjectFactory.project()
+        val refreshedProject = ProjectFactory.project().toBuilder().name("leigh34jf192").build()
 
         val environment = environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProject(slug: String): Observable<Project> {
                     val observable = when {
                         error -> Observable.error(Throwable("boop"))
@@ -785,7 +855,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment)
 
-        this.vm.intent(deepLinkIntent())
+        this.vm.configureWith(deepLinkIntent())
 
         this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertNoValues()
@@ -804,6 +874,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
@@ -813,7 +885,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProject(param: String): Observable<Project> {
                     return Observable.just(project)
                 }
@@ -822,7 +894,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
         val uri = Uri.parse(url)
-        this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
+        this.vm.configureWith(Intent(Intent.ACTION_VIEW, uri))
 
         this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertValue(url)
@@ -831,20 +903,28 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProjectContainerIsGone.assertNoValues()
         this.updateFragments.assertNoValues()
         this.segmentTrack.assertNoValues()
+        disposables.clear()
+
     }
 
     @Test
     fun testLoggedOutStarProjectFlow() {
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
+        val project = ProjectFactory.halfWayProject().toBuilder().name("leigh1nf1839fn").build()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override fun getProject(param: String): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
             .build()
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
         // Start the view model with a project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.savedTest.assertValues(false)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
@@ -869,6 +949,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.showSavedPromptTest.assertValueCount(1)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        disposables.clear()
+
     }
 
     @Test
@@ -890,7 +972,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.shareButtonClicked()
         val expectedName = "Best Project 2K19"
@@ -899,25 +981,27 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showShareSheet().subscribe {
             assertTrue(it.first == expectedName)
             assertTrue(it.second == expectedShareUrl)
-        }
+        }.addToDisposable(disposables)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testStarProjectThatIsAlmostCompleted() {
-        val project = ProjectFactory.almostCompletedProject()
+        val project = ProjectFactory.almostCompletedProject().toBuilder().name("leigh0ur92u312").build()
 
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
         // Start the view model with an almost completed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         // Login
         currentUser.refresh(UserFactory.user())
@@ -933,20 +1017,22 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             ProjectDataFactory.project(project),
             ProjectDataFactory.project(project.toBuilder().isStarred(true).build())
         )
+        disposables.clear()
+
     }
 
     @Test
     fun testSaveProjectThatIsSuccessful() {
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
         // Start the view model with a successful project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject().toBuilder().name("leighnew091efr92").build()))
 
         // Login
         currentUser.refresh(UserFactory.user())
@@ -958,22 +1044,24 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
+        disposables.clear()
+
     }
 
     @Test
     fun testUnStarProjectThatIsAlmostCompleted() {
-        val project = ProjectFactory.almostCompletedProject().toBuilder().isStarred(true).build()
+        val project = ProjectFactory.almostCompletedProject().toBuilder().name("leigh2943034kmvedl").isStarred(true).build()
 
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
         // Start the view model with an almost completed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         // Login
         currentUser.refresh(UserFactory.user())
@@ -989,18 +1077,20 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             ProjectDataFactory.project(project),
             ProjectDataFactory.project(project.toBuilder().isStarred(false).build())
         )
+        disposables.clear()
+
     }
 
     @Test
     fun testStartCommentsActivityFromDeepLink() {
-        val project = ProjectFactory.project()
+        val project = ProjectFactory.project().toBuilder().name("leigh240r82fn2r").build()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
         val testScheduler = TestScheduler()
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -1009,17 +1099,19 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.PROJECT, project)
         }
 
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startRootCommentsActivity.assertValues(projectData)
+        disposables.clear()
+
     }
 
     @Test
     fun testStartCommentsThreadActivityFromDeepLink() {
         val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
-        val project = ProjectFactory.project()
+        val project = ProjectFactory.project().toBuilder().name("leigh3uf9e8urf").build()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
         val deepLinkDate = Pair.create(commentableId, projectData)
@@ -1027,7 +1119,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -1037,16 +1129,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.COMMENT, commentableId)
         }
 
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startRootCommentsForCommentsThreadActivity.assertValues(deepLinkDate)
+        disposables.clear()
+
     }
 
     @Test
     fun testStartUpdateActivityFromDeepLink() {
-        val project = ProjectFactory.project()
+        val project = ProjectFactory.project().toBuilder().name("leigh1r2i98d12").build()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
         val postId = "3254626"
@@ -1055,7 +1149,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -1064,17 +1158,19 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.PROJECT, project)
         }
 
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
+        disposables.clear()
+
     }
 
     @Test
     fun testStartUpdateActivityFromDeepLinkToThreadActivity() {
         val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
-        val project = ProjectFactory.project()
+        val project = ProjectFactory.project().toBuilder().name("leigh13ue2").build()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
         val postId = "3254626"
@@ -1083,7 +1179,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -1093,16 +1189,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.COMMENT, commentableId)
         }
 
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateToRepliesDeepLinkActivity.assertValues(updateProjectAndData)
+        disposables.clear()
+
     }
 
     @Test
     fun testStartUpdateActivityToCommentFromDeepLink() {
-        val project = ProjectFactory.project()
+        val project = ProjectFactory.project().toBuilder().name("leigh1939ufo13ye").build()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
         val postId = "3254626"
@@ -1111,7 +1209,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -1121,64 +1219,76 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.PROJECT, project)
         }
 
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeActionButtonUIOutputs_whenProjectIsLiveAndBacked() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leigh0912746").build()))
 
-        this.pledgeActionButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
-        this.pledgeActionButtonText.assertValuesAndClear(R.string.Manage)
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_manage)
+        this.pledgeActionButtonText.assertValue(R.string.Manage)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh34583b2fb91").build()))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
         this.pledgeActionButtonText.assertValue(R.string.Back_this_project)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_control() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh3ue0u239ru2r").build()))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
         this.pledgeActionButtonText.assertValue(R.string.Back_this_project)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeActionButtonUIOutputs_whenProjectIsEndedAndBacked() {
         setUpEnvironment(environment())
-        val backedSuccessfulProject = ProjectFactory.backedProject()
+        val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().name("leigh03r93u4r").build()
             .toBuilder()
             .state(Project.STATE_SUCCESSFUL)
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
         this.pledgeActionButtonText.assertValue(R.string.View_your_pledge)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeActionButtonUIOutputs_whenProjectIsEndedAndNotBacked() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject().toBuilder().name("leigh2397y7234yrferfhvekdfrgewkr").build()))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
-        this.pledgeActionButtonText.assertValuesAndClear(R.string.View_rewards)
+        this.pledgeActionButtonText.assertValue(R.string.View_rewards)
+        disposables.clear()
+
     }
 
     @Test
@@ -1187,38 +1297,48 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val creatorProject = ProjectFactory.project()
             .toBuilder()
             .creator(creator)
+                .name("leigh29839427u2349")
             .build()
         val environment = environment()
             .toBuilder()
-            .currentUser(MockCurrentUser(creator))
+            .currentUserV2(MockCurrentUserV2(creator))
             .build()
         setUpEnvironment(environment)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, creatorProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, creatorProject))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
-        this.pledgeActionButtonText.assertValuesAndClear(R.string.View_your_rewards)
+        this.pledgeActionButtonText.assertValues(R.string.View_your_rewards)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeActionButtonUIOutputs_whenBackingIsErrored() {
-        setUpEnvironment(environment())
-        val backedSuccessfulProject = ProjectFactory.backedProject()
+        val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().name("leighr934jdfdkjn").build()
             .toBuilder()
             .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
             .state(Project.STATE_SUCCESSFUL)
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
-        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_error)
+        setUpEnvironment(environment().toBuilder().apolloClientV2( object : MockApolloClientV2() {
+            override fun getProject(project: Project): Observable<Project> {
+                return Observable.just(backedSuccessfulProject)
+            }
+        }).build())
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+
+        this.pledgeActionButtonColor.assertValues(R.color.button_pledge_error)
         this.pledgeActionButtonText.assertValue(R.string.Manage)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeToolbarNavigationIcon() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh382y38713").build()))
 
         this.pledgeToolbarNavigationIcon.assertValue(R.drawable.ic_arrow_down)
 
@@ -1229,33 +1349,41 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.fragmentStackCount(0)
 
         this.pledgeToolbarNavigationIcon.assertValues(R.drawable.ic_arrow_down, R.drawable.ic_arrow_back, R.drawable.ic_arrow_down)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeToolbarTitle_whenProjectIsLiveAndUnbacked() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leighjodif7328yuer").build()))
 
         this.pledgeToolbarTitle.assertValue(R.string.Back_this_project)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeToolbarTitle_whenProjectIsLiveAndBacked() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leigh71bv32o94").build()))
 
         this.pledgeToolbarTitle.assertValue(R.string.Manage_your_pledge)
+        disposables.clear()
+
     }
 
     @Test
     fun testPledgeToolbarTitle_whenProjectIsEndedAndUnbacked() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject().toBuilder().name("leigh9u73627327318237823").build()))
 
-        this.pledgeToolbarTitle.assertValuesAndClear(R.string.View_rewards)
+        this.pledgeToolbarTitle.assertValue(R.string.View_rewards)
+        disposables.clear()
+
     }
 
     @Test
@@ -1265,16 +1393,19 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val backedSuccessfulProject = ProjectFactory.backedProject()
             .toBuilder()
             .state(Project.STATE_SUCCESSFUL)
+                .name("leigh8126fdjbjd")
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
         this.pledgeToolbarTitle.assertValue(R.string.View_your_pledge)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenCollapsingSheet() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh283773478rjgfb s").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.expandPledgeSheet.assertValue(Pair(true, true))
@@ -1283,134 +1414,158 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
         this.goBack.assertNoValues()
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectLiveAndNotBacked() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh0djfu173").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectLiveAndBacked() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leigh0frjd82yte4bikv9sw").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectBackedAndErrored() {
         setUpEnvironment(environment())
         val backing = BackingFactory.backing(Backing.STATUS_ERRORED)
-        val project = ProjectFactory.backedSuccessfulProject().toBuilder().backing(backing).build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        val project = ProjectFactory.backedSuccessfulProject().toBuilder().name("leigh19823893").backing(backing).build()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectEndedAndNotBacked() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject().toBuilder().name("leigh3u929823").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectEndedAndBacked() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject().toBuilder().name("leigh080dfidf887b1o2b ").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenComingBackFromProjectPage_OKResult() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh-2390ui4").build()))
 
         this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SHOW_REWARDS, Activity.RESULT_OK, null))
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenComingBackFromProjectPage_CanceledResult() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leighokdfnmujv761g2 voof").build()))
 
         this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SHOW_REWARDS, Activity.RESULT_CANCELED, null))
 
         this.expandPledgeSheet.assertNoValues()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isTrue() {
         setUpEnvironment(environment())
         val intent = Intent()
-            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh08wer80de").build())
             .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         this.expandPledgeSheet.assertValues(Pair(true, true))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isFalse() {
         setUpEnvironment(environment())
         val intent = Intent()
-            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh9238fdhkn all").build())
             .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, false)
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         this.expandPledgeSheet.assertNoValues()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isNull() {
         setUpEnvironment(environment())
         val intent = Intent()
-            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
-        this.vm.intent(intent)
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh49ur394u").build())
+        this.vm.configureWith(intent)
 
         this.expandPledgeSheet.assertNoValues()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testGoBack_whenFragmentBackStackIsEmpty() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leighoreuhfier").build()))
 
         this.vm.inputs.pledgeToolbarNavigationClicked()
         this.goBack.assertNoValues()
+        disposables.clear()
+
     }
 
     @Test
     fun testGoBack_whenFragmentBackStackIsNotEmpty() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leighwiyr8723").build()))
 
         this.vm.inputs.fragmentStackCount(3)
         this.vm.inputs.pledgeToolbarNavigationClicked()
@@ -1420,6 +1575,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeToolbarNavigationClicked()
         this.goBack.assertValueCount(2)
         this.expandPledgeSheet.assertNoValues()
+        disposables.clear()
+
     }
 
     @Test
@@ -1427,15 +1584,19 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         this.vm.inputs.onGlobalLayout()
         this.setInitialRewardsContainerY.assertValueCount(1)
+        disposables.clear()
+
     }
 
     @Test
     fun testBackingDetails_whenProjectNotBacked() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh084rhdf").build()))
         this.backingDetailsIsVisible.assertValue(false)
         this.backingDetailsSubtitle.assertNoValues()
         this.backingDetailsTitle.assertNoValues()
+        disposables.clear()
+
     }
 
     @Test
@@ -1458,14 +1619,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
             .backing(backing)
+                .name("lednrgier")
             .rewards(listOf(reward))
             .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetailsIsVisible.assertValue(true)
         val expectedCurrency = expectedCurrency(environment, backedProject, amount)
         this.backingDetailsSubtitle.assertValue(Either.Left("$expectedCurrency • Digital Bundle"))
         this.backingDetailsTitle.assertValue(R.string.Youre_a_backer)
+        disposables.clear()
+
     }
 
     @Test
@@ -1481,14 +1645,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
+                .name("srjih234")
             .backing(noRewardBacking)
             .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetailsIsVisible.assertValue(true)
         val expectedCurrency = expectedCurrency(environment, backedProject, amount)
         this.backingDetailsSubtitle.assertValue(Either.Left(expectedCurrency))
         this.backingDetailsTitle.assertValue(R.string.Youre_a_backer)
+        disposables.clear()
+
     }
 
     @Test
@@ -1497,20 +1664,23 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
             .toBuilder()
+                .name("defrjngiejrhgie")
             .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
             .state(Project.STATE_SUCCESSFUL)
             .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
         this.backingDetailsIsVisible.assertValue(true)
         this.backingDetailsSubtitle.assertValue(Either.Right(R.string.We_cant_process_your_pledge))
         this.backingDetailsTitle.assertValue(R.string.Payment_failure)
+        disposables.clear()
+
     }
 
     @Test
     fun testScrimIsVisible_whenNotBackedProject() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh4394u93").build()))
 
         this.vm.inputs.fragmentStackCount(0)
         this.scrimIsVisible.assertValue(false)
@@ -1526,12 +1696,14 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.fragmentStackCount(1)
         this.scrimIsVisible.assertValues(false)
+        disposables.clear()
+
     }
 
     @Test
     fun testScrimIsVisible_whenBackedProject() {
         setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leighorfo93ujerodvn").build()))
 
         this.vm.inputs.fragmentStackCount(0)
         this.scrimIsVisible.assertValue(false)
@@ -1547,6 +1719,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.fragmentStackCount(2)
         this.scrimIsVisible.assertValues(false)
+        disposables.clear()
+
     }
 
     @Test
@@ -1554,7 +1728,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leigh8293urfejwcdnos").build()))
 
         this.projectData.assertValueCount(1)
 
@@ -1562,6 +1736,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.showCancelPledgeSuccess.assertValueCount(1)
         this.projectData.assertValueCount(2)
+        disposables.clear()
+
     }
 
     @Test
@@ -1569,9 +1745,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leighwerogjvouwj").build()))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
+        disposables.clear()
+
     }
 
     @Test
@@ -1585,11 +1763,14 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .build()
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
+                .name("eruihgfve9d7fvhuo")
             .backing(backing)
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_preauth)
+        disposables.clear()
+
     }
 
     @Test
@@ -1600,10 +1781,13 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val successfulBackedProject = ProjectFactory.backedProject()
             .toBuilder()
             .state(Project.STATE_SUCCESSFUL)
+                .name("doifjvboiudhgbjnv ")
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, successfulBackedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, successfulBackedProject))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_ended)
+        disposables.clear()
+
     }
 
     @Test
@@ -1611,9 +1795,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigh79802345trgfv").build()))
 
-        this.managePledgeMenu.assertValue(null)
+        this.managePledgeMenu.assertNoValues()
+        disposables.clear()
+
     }
 
     @Test
@@ -1621,16 +1807,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leigh9w472rughefvodsnjdaeqcfsvfbgetriwoed").build()))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
 
         this.vm.inputs.cancelPledgeClicked()
         this.vm.inputs.fragmentStackCount(1)
-        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, null)
+        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, 0)
 
         this.vm.inputs.fragmentStackCount(0)
-        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, null, R.menu.manage_pledge_live)
+        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, 0, R.menu.manage_pledge_live)
+        disposables.clear()
+
     }
 
     @Test
@@ -1645,14 +1833,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
             .backing(backing)
+                .name("erfghuvwshd o231242")
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.cancelPledgeClicked()
 
         this.showCancelPledgeFragment.assertValue(backedProject)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
@@ -1666,15 +1857,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
+                .name("lsdfjnvesowrf")
             .backing(backing)
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.cancelPledgeClicked()
 
         this.showCancelPledgeFragment.assertNoValues()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
@@ -1682,14 +1876,16 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        val backedProject = ProjectFactory.backedProject()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        val backedProject = ProjectFactory.backedProject().toBuilder().name("leigh2389rfvn qe8wef").build()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.contactCreatorClicked()
 
         this.startMessagesActivity.assertValue(backedProject)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
@@ -1703,12 +1899,15 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
+                .name("djgnfbkdjnfslv")
             .backing(backing)
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.cancelPledgeClicked()
         this.showPledgeNotCancelableDialog.assertNoValues()
+        disposables.clear()
+
     }
 
     @Test
@@ -1722,12 +1921,15 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
+                .name("fvdofjvos")
             .backing(backing)
             .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.cancelPledgeClicked()
         this.showPledgeNotCancelableDialog.assertValueCount(1)
+        disposables.clear()
+
     }
 
     @Test
@@ -1735,13 +1937,15 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("leigh023u0urf").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.viewRewardsClicked()
 
         this.revealRewardsFragment.assertValueCount(1)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
@@ -1749,7 +1953,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject().toBuilder().name("leighrhugvw9q0813nkvfvnkknkn").build()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.viewRewardsClicked()
@@ -1757,6 +1961,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.revealRewardsFragment.assertValueCount(1)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     // TODO this will be fixed in https://kickstarter.atlassian.net/browse/NT-1390
@@ -1776,7 +1982,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 .rewards(listOf(RewardFactory.noReward(), reward))
                 .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.fixPaymentMethodButtonClicked()
 
@@ -1804,7 +2010,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 .rewards(listOf(RewardFactory.noReward(), reward))
                 .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.updatePledgeClicked()
 
@@ -1832,7 +2038,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 .rewards(listOf(RewardFactory.noReward(), reward))
                 .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.updatePaymentClicked()
 
@@ -1859,30 +2065,33 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                     .rewardId(reward.id())
                     .build()
             )
+                .name("rfgjoeidjrg")
             .rewards(listOf(RewardFactory.noReward(), reward))
             .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.updatePaymentClicked()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        disposables.clear()
+
     }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
-        val initialBackedProject = ProjectFactory.backedProject()
+        val initialBackedProject = ProjectFactory.backedProject().toBuilder().name("leigh2o03ru2").build()
         val refreshedProject = initialBackedProject.toBuilder()
             .id(9L)
             .build()
         val environment = environment()
             .toBuilder()
-            .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
             .build()
         setUpEnvironment(environment)
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
         this.projectData.assertValues(ProjectDataFactory.project(initialBackedProject))
         this.showUpdatePledgeSuccess.assertNoValues()
@@ -1899,22 +2108,24 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             ProjectDataFactory.project(refreshedProject),
             ProjectDataFactory.project(refreshedProject)
         )
+        disposables.clear()
+
     }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
-        val initialBackedProject = ProjectFactory.backedProject()
+        val initialBackedProject = ProjectFactory.backedProject().toBuilder().name("leigh0238u4r02").build()
         val refreshedProject = initialBackedProject.toBuilder()
             .id(9L)
             .build()
         val environment = environment()
             .toBuilder()
-            .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+            .apolloClientV2(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
             .build()
         setUpEnvironment(environment)
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
         this.projectData.assertValues(ProjectDataFactory.project(initialBackedProject))
         this.showUpdatePledgeSuccess.assertNoValues()
@@ -1931,6 +2142,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             ProjectDataFactory.project(refreshedProject),
             ProjectDataFactory.project(refreshedProject)
         )
+        disposables.clear()
+
     }
 
     @Test
@@ -1938,8 +2151,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a unbacked project
-        val project = ProjectFactory.project()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        val project = ProjectFactory.project().toBuilder().name("leighorefhvs").build()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.projectData.assertValueCount(1)
 
@@ -1949,6 +2162,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
         this.projectData.assertValueCount(2)
+        disposables.clear()
+
     }
 
     @Test
@@ -1956,12 +2171,14 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject().toBuilder().name("fvkjn dxszhaouefndvlsdf").build()))
 
         this.projectData.assertValueCount(1)
 
         this.vm.inputs.refreshProject()
         this.projectData.assertValueCount(2)
+        disposables.clear()
+
     }
 
     @Test
@@ -1970,10 +2187,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigherofhvgewor").build()))
         this.projectData.assertValueCount(1)
 
         // - the tab of the viewpager on position 1 has been pressed
@@ -1992,6 +2209,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 .eventName,
             EventName.PAGE_VIEWED.eventName
         )
+        disposables.clear()
+
     }
 
     @Test
@@ -2000,15 +2219,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("leigherofuehvorgw").build()))
 
         this.vm.inputs.tabSelected(0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.hideVideoPlayer.assertValues(false)
+        disposables.clear()
+
     }
 
     @Test
@@ -2017,27 +2238,29 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project().toBuilder().name("lrfnvoaiq1").build()))
 
         this.vm.inputs.tabSelected(1)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.hideVideoPlayer.assertValues(true)
+        disposables.clear()
+
     }
 
-    private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClient {
-        return object : MockApolloClient() {
+    private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClientV2 {
+        return object : MockApolloClientV2() {
             override fun getProject(project: Project): Observable<Project> {
                 return Observable.just(refreshedProject)
             }
         }
     }
 
-    private fun apiClientWithSuccessFetchingProjectFromSlug(refreshedProject: Project): MockApolloClient {
-        return object : MockApolloClient() {
+    private fun apiClientWithSuccessFetchingProjectFromSlug(refreshedProject: Project): MockApolloClientV2 {
+        return object : MockApolloClientV2() {
             override fun getProject(slug: String): Observable<Project> {
                 return Observable.just(refreshedProject)
             }
@@ -2046,19 +2269,19 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUIOutputs_whenSaveProjectFromDeepLinkURI_isSuccessful() {
-        val currentUser = MockCurrentUser()
-        val project = ProjectFactory.successfulProject()
+        val currentUser = MockCurrentUserV2()
+        val project = ProjectFactory.successfulProject().toBuilder().name("wqeefcnvs dlp").build()
         val testScheduler = TestScheduler()
 
         setUpEnvironment(
             environment().toBuilder()
-                .currentUser(currentUser)
-                .apolloClient(object : MockApolloClient() {
+                .currentUserV2(currentUser)
+                .apolloClientV2(object : MockApolloClientV2() {
                     override fun getProject(param: String): Observable<Project> {
                         return Observable.just(project)
                     }
                 })
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Start the view model with a project.
@@ -2066,7 +2289,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             data = Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee?save=true")
         }
         currentUser.refresh(UserFactory.user())
-        this.vm.intent(intent)
+        this.vm.configureWith(intent)
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
@@ -2074,6 +2297,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
+        disposables.clear()
+
     }
 
     private fun deepLinkIntent(): Intent {

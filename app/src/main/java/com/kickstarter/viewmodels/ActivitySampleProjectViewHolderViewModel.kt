@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import androidx.lifecycle.ViewModel
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
@@ -12,13 +11,15 @@ class ActivitySampleProjectViewHolderViewModel {
     interface Inputs {
         /** Configure with current [Activity]. */
         fun configureWith(activity: Activity)
+
+        fun onCleared()
     }
 
     interface Outputs {
         fun bindActivity(): Observable<Activity>
     }
 
-    class ActivitySampleProjectHolderViewModel : ViewModel(), Inputs, Outputs {
+    class ActivitySampleProjectHolderViewModel : Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -42,7 +43,6 @@ class ActivitySampleProjectViewHolderViewModel {
 
         override fun onCleared() {
             disposables.clear()
-            super.onCleared()
         }
     }
 }

@@ -89,6 +89,7 @@ class ActivitySampleProjectViewHolder(
     }
 
     override fun destroy() {
+        vm.inputs.onCleared()
         disposables.clear()
         super.destroy()
     }

@@ -54,6 +54,7 @@ class ActivitySampleProjectViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @After
     fun clear() {
+        vm.inputs.onCleared()
         disposables.clear()
     }
 }

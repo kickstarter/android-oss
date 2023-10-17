@@ -11,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import com.facebook.AccessToken
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.TransitionUtils
@@ -26,7 +27,7 @@ import com.kickstarter.ui.activities.compose.login.LoginToutScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.extensions.startDisclaimerActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.LoginToutViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -41,12 +42,15 @@ class LoginToutActivity : ComponentActivity() {
         viewModelFactory
     }
 
+    private var environment: Environment? = null
+
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var darkModeEnabled = false
         this.getEnvironment()?.let { env ->
+            environment = env
             viewModelFactory = LoginToutViewModel.Factory(env)
             this.ksString = requireNotNull(env.ksString())
             darkModeEnabled =
@@ -158,7 +162,7 @@ class LoginToutActivity : ComponentActivity() {
         viewModel.outputs.showDisclaimerActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startDisclaimerActivity(it)
+                startDisclaimerChromeTab(it, environment)
             }
             .addToDisposable(disposables)
 

@@ -14,8 +14,10 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
@@ -26,6 +28,7 @@ import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.services.ConnectivityReceiver
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.DisclaimerItems
@@ -37,14 +40,22 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
 import timber.log.Timber
 
-fun Activity.startActivityWithTransition(intent: Intent, @AnimRes enterAnim: Int, @AnimRes exitAnim: Int) {
+fun Activity.startActivityWithTransition(
+    intent: Intent,
+    @AnimRes enterAnim: Int,
+    @AnimRes exitAnim: Int
+) {
     startActivity(intent)
     overridePendingTransition(enterAnim, exitAnim)
 }
+
 fun Activity.hideKeyboard() {
     val inputManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (inputManager.isAcceptingText) {
-        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        inputManager.hideSoftInputFromWindow(
+            currentFocus?.windowToken,
+            InputMethodManager.HIDE_NOT_ALWAYS
+        )
         currentFocus?.clearFocus()
     }
 }
@@ -94,7 +105,7 @@ fun Activity.showRatingDialogWidget() {
 
     requestReviewTask.addOnCompleteListener { request ->
         if (request.isSuccessful) {
-            Timber.v("${this.localClassName } : showRatingDialogWidget request: ${request.isSuccessful} ")
+            Timber.v("${this.localClassName} : showRatingDialogWidget request: ${request.isSuccessful} ")
             // Request succeeded and a ReviewInfo instance was received
             val reviewInfo: ReviewInfo = request.result
 
@@ -102,18 +113,18 @@ fun Activity.showRatingDialogWidget() {
             val flow = manager.launchReviewFlow(this, reviewInfo)
 
             flow.addOnSuccessListener {
-                Timber.v("${this.localClassName } : showRatingDialogWidget launchReviewFlow: Success")
+                Timber.v("${this.localClassName} : showRatingDialogWidget launchReviewFlow: Success")
             }
 
             flow.addOnFailureListener {
-                Timber.v("${this.localClassName } : showRatingDialogWidget launchReviewFlow: Failure")
+                Timber.v("${this.localClassName} : showRatingDialogWidget launchReviewFlow: Failure")
             }
 
             flow.addOnCompleteListener {
-                Timber.v("${this.localClassName } : showRatingDialogWidget launchReviewFlow: Complete")
+                Timber.v("${this.localClassName} : showRatingDialogWidget launchReviewFlow: Complete")
             }
         } else {
-            Timber.v("${this.localClassName } : showRatingDialogWidget request: ${request.isSuccessful} ")
+            Timber.v("${this.localClassName} : showRatingDialogWidget request: ${request.isSuccessful} ")
         }
     }
 }
@@ -173,7 +184,15 @@ fun Activity.startUpdatesActivity(
     isUpdateComment: Boolean? = null,
     comment: String? = null
 ) {
-    startActivity(Intent().getUpdatesActivityIntent(this, project, updatePostId, isUpdateComment, comment))
+    startActivity(
+        Intent().getUpdatesActivityIntent(
+            this,
+            project,
+            updatePostId,
+            isUpdateComment,
+            comment
+        )
+    )
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
@@ -211,12 +230,36 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 
-fun Activity.startDisclaimerActivity(disclaimerItem: DisclaimerItems) {
+fun Activity.startDisclaimerChromeTab(disclaimerItem: DisclaimerItems, environment: Environment?) {
+    val path = when (disclaimerItem) {
+        DisclaimerItems.TERMS -> HelpActivity.TERMS_OF_USE
+        DisclaimerItems.PRIVACY -> HelpActivity.PRIVACY
+        DisclaimerItems.COOKIES -> HelpActivity.COOKIES
+        DisclaimerItems.HELP -> Secrets.HelpCenter.ENDPOINT
+    }
+
+    val url = if (disclaimerItem == DisclaimerItems.HELP) {
+        path
+    } else environment?.let {
+        UrlUtils.appendPath(it.webEndpoint(), path)
+    } ?: run {
+        ""
+    }
+
     val intent = when (disclaimerItem) {
         DisclaimerItems.TERMS -> Intent(this, HelpActivity.Terms::class.java)
         DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
         DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
         DisclaimerItems.HELP -> Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT))
     }
-    startActivity(intent)
+
+    val uri = Uri.parse(url)
+
+    val fallback = object : ChromeTabsHelperActivity.CustomTabFallback {
+        override fun openUri(activity: Activity, uri: Uri) {
+            activity.startActivity(intent)
+        }
+    }
+
+    ChromeTabsHelperActivity.openCustomTab(this, UrlUtils.baseCustomTabsIntent(this), uri, fallback)
 }

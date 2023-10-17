@@ -1,10 +1,7 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
-import com.kickstarter.ui.activities.HelpSettingsActivity
-import rx.subjects.PublishSubject
+import androidx.lifecycle.ViewModel
+import io.reactivex.subjects.PublishSubject
 
 interface HelpSettingsViewModel {
 
@@ -13,14 +10,12 @@ interface HelpSettingsViewModel {
         fun contactClicked()
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<HelpSettingsActivity>(environment), HelpSettingsViewModel.Inputs {
+    class HelpSettingsViewModel : ViewModel(), Inputs {
 
-        private val contactClicked = PublishSubject.create<Void>()
+        private val contactClicked = PublishSubject.create<Unit>()
 
         val inputs: Inputs = this
 
-        init { }
-
-        override fun contactClicked() = this.contactClicked.onNext(null)
+        override fun contactClicked() = this.contactClicked.onNext(Unit)
     }
 }

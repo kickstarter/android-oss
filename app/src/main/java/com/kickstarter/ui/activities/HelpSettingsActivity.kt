@@ -5,25 +5,28 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityHelpSettingsBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.UrlUtils.baseCustomTabsIntent
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(HelpSettingsViewModel.ViewModel::class)
-class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
+class HelpSettingsActivity : AppCompatActivity() {
 
+    private var environment: Environment? = null
     private lateinit var build: Build
     private lateinit var currentUser: CurrentUserType
+    private val viewModel: HelpSettingsViewModel.HelpSettingsViewModel by viewModels()
 
     private val mailto = R.string.mailto
     private val supportEmail = R.string.support_email_to_android
@@ -38,11 +41,12 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         val view = binding.root
         setContentView(view)
 
-        this.build = requireNotNull(environment().build())
-        this.currentUser = requireNotNull(environment().currentUser())
+        environment = this.getEnvironment()
+        this.build = requireNotNull(environment?.build())
+        this.currentUser = requireNotNull(environment?.currentUser())
 
         binding.contact.setOnClickListener {
-            this.viewModel.contactClicked()
+            viewModel.contactClicked()
 
             this.currentUser.observable()
                 .take(1)
@@ -51,11 +55,17 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
 
         binding.accessibilityStatement.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(HelpActivity.ACCESSIBILITY), Intent(this, HelpActivity.AccessibilityStatement::class.java))
+            startChromeTab(
+                buildWebEndpointUrl(HelpActivity.ACCESSIBILITY),
+                Intent(this, HelpActivity.AccessibilityStatement::class.java)
+            )
         }
 
         binding.cookiePolicy.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(HelpActivity.COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
+            startChromeTab(
+                buildWebEndpointUrl(HelpActivity.COOKIES),
+                Intent(this, HelpActivity.CookiePolicy::class.java)
+            )
         }
 
         binding.helpCenter.setOnClickListener {
@@ -63,16 +73,26 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
 
         binding.privacyPolicy.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(HelpActivity.PRIVACY), Intent(this, HelpActivity.Privacy::class.java))
+            startChromeTab(
+                buildWebEndpointUrl(HelpActivity.PRIVACY),
+                Intent(this, HelpActivity.Privacy::class.java)
+            )
         }
 
         binding.termsOfUse.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(HelpActivity.TERMS_OF_USE), Intent(this, HelpActivity.Terms::class.java))
+            startChromeTab(
+                buildWebEndpointUrl(HelpActivity.TERMS_OF_USE),
+                Intent(this, HelpActivity.Terms::class.java)
+            )
         }
     }
 
     private fun buildWebEndpointUrl(path: String): String {
-        return UrlUtils.appendPath(this.environment().webEndpoint(), path)
+        return environment?.let {
+            UrlUtils.appendPath(it.webEndpoint(), path)
+        } ?: run {
+            return ""
+        }
     }
 
     private fun composeContactEmail(user: User?) {
@@ -90,7 +110,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
             .setData(Uri.parse(getString(this.mailto)))
             .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + getString(this.supportEmailSubject))
             .putExtra(Intent.EXTRA_TEXT, body)
-            .putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(getString(this.supportEmail)))
+            .putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(this.supportEmail)))
 
         val emailIntent = Intent.createChooser(intent, getString(R.string.support_email_chooser))
 

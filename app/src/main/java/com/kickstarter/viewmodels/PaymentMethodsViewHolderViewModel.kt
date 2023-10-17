@@ -38,7 +38,7 @@ interface PaymentMethodsViewHolderViewModel {
         fun lastFour(): Observable<String>
     }
 
-    class PaymentMethodsViewHolderViewModel: Inputs, Outputs {
+    class PaymentMethodsViewHolderViewModel : Inputs, Outputs {
 
         private val card = PublishSubject.create<StoredCard>()
         private val deleteCardClick = PublishSubject.create<Unit>()

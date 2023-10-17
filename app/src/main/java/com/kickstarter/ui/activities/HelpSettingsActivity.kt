@@ -11,12 +11,12 @@ import com.kickstarter.databinding.ActivityHelpSettingsBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.UrlUtils.baseCustomTabsIntent
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import rx.android.schedulers.AndroidSchedulers
 
 class HelpSettingsActivity : AppCompatActivity() {
@@ -57,28 +57,19 @@ class HelpSettingsActivity : AppCompatActivity() {
         }
 
         binding.cookiePolicy.setOnClickListener {
-            startChromeTab(
-                buildWebEndpointUrl(HelpActivity.COOKIES),
-                Intent(this, HelpActivity.CookiePolicy::class.java)
-            )
+            startDisclaimerChromeTab(DisclaimerItems.COOKIES, environment)
         }
 
         binding.helpCenter.setOnClickListener {
-            startChromeTab(Secrets.HelpCenter.ENDPOINT, null)
+            startDisclaimerChromeTab(DisclaimerItems.HELP, environment)
         }
 
         binding.privacyPolicy.setOnClickListener {
-            startChromeTab(
-                buildWebEndpointUrl(HelpActivity.PRIVACY),
-                Intent(this, HelpActivity.Privacy::class.java)
-            )
+            startDisclaimerChromeTab(DisclaimerItems.PRIVACY, environment)
         }
 
         binding.termsOfUse.setOnClickListener {
-            startChromeTab(
-                buildWebEndpointUrl(HelpActivity.TERMS_OF_USE),
-                Intent(this, HelpActivity.Terms::class.java)
-            )
+            startDisclaimerChromeTab(DisclaimerItems.TERMS, environment)
         }
     }
 

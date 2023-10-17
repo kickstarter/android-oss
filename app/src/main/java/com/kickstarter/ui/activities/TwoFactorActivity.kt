@@ -13,12 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.compose.login.TwoFactorScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import com.kickstarter.ui.extensions.startDisclaimerActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.TwoFactorViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,11 +30,13 @@ class TwoFactorActivity : AppCompatActivity() {
     private val viewModel: TwoFactorViewModel.TwoFactorViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
     private var darkModeEnabled = false
+    private var environment: Environment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
+            environment = env
             viewModelFactory = TwoFactorViewModel.Factory(env, intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
@@ -76,10 +79,10 @@ class TwoFactorActivity : AppCompatActivity() {
                 TwoFactorScreen(
                     scaffoldState = scaffoldState,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerScreen(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerScreen(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerScreen(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) },
                     onResendClicked = { resendButtonOnClick() },
                     onSubmitClicked = {
                         codeEditTextOnTextChanged(it)
@@ -99,6 +102,10 @@ class TwoFactorActivity : AppCompatActivity() {
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
+    }
+
+    private fun startDisclaimerScreen(disclaimerItems: DisclaimerItems) {
+        startDisclaimerChromeTab(disclaimerItems, environment)
     }
 
     private fun errorMessages(): Observable<String> {

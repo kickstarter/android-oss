@@ -8,12 +8,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.compose.login.SignupScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import com.kickstarter.ui.extensions.startDisclaimerActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.SignupViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -24,11 +25,13 @@ class SignupActivity : AppCompatActivity() {
     private val viewModel: SignupViewModel.SignupViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
     var darkModeEnabled = false
+    private var environment: Environment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
+            environment = env
             viewModelFactory = SignupViewModel.Factory(env)
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
@@ -60,10 +63,10 @@ class SignupActivity : AppCompatActivity() {
                     },
                     showProgressBar = showProgressBar,
                     isFormSubmitting = viewModel.outputs.formSubmitting().subscribeAsState(initial = false).value,
-                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerScreen(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerScreen(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerScreen(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) },
                     scaffoldState = scaffoldState
                 )
             }
@@ -83,5 +86,9 @@ class SignupActivity : AppCompatActivity() {
     private fun onSuccess() {
         setResult(RESULT_OK)
         finish()
+    }
+
+    private fun startDisclaimerScreen(disclaimerItems: DisclaimerItems) {
+        startDisclaimerChromeTab(disclaimerItems, environment)
     }
 }

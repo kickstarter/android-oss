@@ -190,11 +190,11 @@ class MessagesActivity : AppCompatActivity() {
         }
 
         binding.messagesToolbar.messagesToolbarBackButton.setOnClickListener {
-            backOrCloseButtonClicked()
+            finishWithAnimation()
         }
 
         binding.messagesToolbar.messagesToolbarCloseButton.setOnClickListener {
-            backOrCloseButtonClicked()
+            finishWithAnimation()
         }
 
         binding.messageReplyLayout.messageEditText.doOnTextChanged { message, _, _, _ ->
@@ -205,9 +205,6 @@ class MessagesActivity : AppCompatActivity() {
             finishWithAnimation()
         }
     }
-
-    private fun backOrCloseButtonClicked() =
-        viewModel.inputs.backOrCloseButtonClicked()
 
     private fun sendMessageButtonClicked() =
         viewModel.inputs.sendMessageButtonClicked()

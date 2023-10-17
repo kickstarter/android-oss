@@ -45,9 +45,6 @@ interface MessagesViewModel {
         /** Call with the app bar's total scroll range.  */
         fun appBarTotalScrollRange(totalScrollRange: Int)
 
-        /** Call when the back or close button has been clicked.  */
-        fun backOrCloseButtonClicked()
-
         /** Call when the message edit text changes.  */
         fun messageEditTextChanged(messageBody: String)
 
@@ -76,9 +73,6 @@ interface MessagesViewModel {
 
         /** Emits the creator name to be displayed.  */
         fun creatorNameTextViewText(): Observable<String>
-
-        /** Emits when we should navigate back.  */
-        fun goBack(): Observable<Unit>
 
         /** Emits a boolean to determine if the loading indicator should be gone.  */
         fun loadingIndicatorViewIsGone(): Observable<Boolean>
@@ -148,7 +142,6 @@ interface MessagesViewModel {
 
         private val appBarOffset = PublishSubject.create<Int>()
         private val appBarTotalScrollRange = PublishSubject.create<Int>()
-        private val backOrCloseButtonClicked = PublishSubject.create<Unit>()
         private val messageEditTextChanged = PublishSubject.create<String>()
         private val messageEditTextIsFocused = PublishSubject.create<Boolean>()
         private val sendMessageButtonClicked = PublishSubject.create<Unit>()
@@ -158,7 +151,6 @@ interface MessagesViewModel {
         private val backingInfoViewIsGone = BehaviorSubject.create<Boolean>()
         private val closeButtonIsGone: Observable<Boolean>
         private val creatorNameTextViewText = BehaviorSubject.create<String>()
-        private val goBack: Observable<Unit>
         private val loadingIndicatorViewIsGone: Observable<Boolean>
         private val messageEditTextHint = BehaviorSubject.create<String>()
         private val messageEditTextShouldRequestFocus = PublishSubject.create<Unit>()
@@ -187,10 +179,6 @@ interface MessagesViewModel {
             appBarTotalScrollRange.onNext(totalScrollRange)
         }
 
-        override fun backOrCloseButtonClicked() {
-            backOrCloseButtonClicked.onNext(Unit)
-        }
-
         override fun messageEditTextChanged(messageBody: String) {
             messageEditTextChanged.onNext(messageBody)
         }
@@ -211,7 +199,6 @@ interface MessagesViewModel {
         override fun backingAndProject(): Observable<Pair<Backing, Project>> = backingAndProject
         override fun backingInfoViewIsGone(): Observable<Boolean> = backingInfoViewIsGone
         override fun closeButtonIsGone(): Observable<Boolean> = closeButtonIsGone
-        override fun goBack(): Observable<Unit> = goBack
         override fun loadingIndicatorViewIsGone(): Observable<Boolean> = loadingIndicatorViewIsGone
         override fun messageEditTextHint(): Observable<String> = messageEditTextHint
         override fun messageEditTextShouldRequestFocus(): Observable<Unit> = messageEditTextShouldRequestFocus
@@ -521,8 +508,6 @@ interface MessagesViewModel {
             backButtonIsGone = viewPledgeButtonIsGone.map { it.negate() }
 
             closeButtonIsGone = backButtonIsGone.map { it.negate() }
-
-            goBack = backOrCloseButtonClicked
 
             projectNameToolbarTextViewText = projectNameTextViewText
 

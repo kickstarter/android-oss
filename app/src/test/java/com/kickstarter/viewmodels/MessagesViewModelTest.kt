@@ -68,7 +68,6 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         vm.outputs.backingAndProject().subscribe { backingAndProject.onNext(it) }.addToDisposable(disposables)
         vm.outputs.backingInfoViewIsGone().subscribe { backingInfoViewIsGone.onNext(it) }.addToDisposable(disposables)
         vm.outputs.closeButtonIsGone().subscribe { closeButtonIsGone.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.goBack().subscribe { goBack.onNext(it) }.addToDisposable(disposables)
         vm.outputs.messageEditTextHint().subscribe { messageEditTextHint.onNext(it) }.addToDisposable(disposables)
         vm.outputs.messageEditTextShouldRequestFocus()
             .subscribe { messageEditTextShouldRequestFocus.onNext(it) }.addToDisposable(disposables)
@@ -222,13 +221,6 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         // Creator name is the project creator, edit text hint is always the participant.
         creatorNameTextViewText.assertValues(creator.name())
         messageEditTextHint.assertValues(participant.name())
-    }
-
-    @Test
-    fun testGoBack() {
-        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(), messagesContextIntent(messageThread()))
-        vm.inputs.backOrCloseButtonClicked()
-        goBack.assertValueCount(1)
     }
 
     @Test

@@ -86,7 +86,7 @@ class HelpSettingsActivity : AppCompatActivity() {
         return environment?.let {
             UrlUtils.appendPath(it.webEndpoint(), path)
         } ?: run {
-            return ""
+            ""
         }
     }
 

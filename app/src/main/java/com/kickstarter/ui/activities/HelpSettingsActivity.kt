@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityHelpSettingsBinding
@@ -18,7 +17,6 @@ import com.kickstarter.libs.utils.UrlUtils.baseCustomTabsIntent
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
-import com.kickstarter.viewmodels.HelpSettingsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
 class HelpSettingsActivity : AppCompatActivity() {
@@ -26,7 +24,6 @@ class HelpSettingsActivity : AppCompatActivity() {
     private var environment: Environment? = null
     private lateinit var build: Build
     private lateinit var currentUser: CurrentUserType
-    private val viewModel: HelpSettingsViewModel.HelpSettingsViewModel by viewModels()
 
     private val mailto = R.string.mailto
     private val supportEmail = R.string.support_email_to_android
@@ -46,8 +43,6 @@ class HelpSettingsActivity : AppCompatActivity() {
         this.currentUser = requireNotNull(environment?.currentUser())
 
         binding.contact.setOnClickListener {
-            viewModel.contactClicked()
-
             this.currentUser.observable()
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())

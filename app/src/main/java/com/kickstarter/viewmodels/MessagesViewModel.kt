@@ -280,16 +280,15 @@ interface MessagesViewModel {
                 .ofType(MessagePreviousScreenType::class.java)
 
             val configBacking = configData
+                .filter { it.right().isNotNull() }
                 .map { it.right() }
-                .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { PairUtils.second(it) }
                 .map { requireNotNull(it) }
 
             val configThread = configData
-                .map { it.left() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.left().isNotNull() }
+                .map { requireNotNull(it.left()) }
 
             val backingOrThread: Observable<Either<Backing, MessageThread>> = Observable.merge(
                 configBacking.map { Left(it) },
@@ -310,20 +309,24 @@ interface MessagesViewModel {
 
             val initialMessageThreadEnvelope = backingOrThread
                 .switchMap {
-                    val response = it.either({ backing ->
-                        client.fetchMessagesForBacking(
-                            backing
-                        )
-                    }) { messageThread ->
-                        client.fetchMessagesForThread(
-                            messageThread
-                        )
-                    }
-                    response
+                    it.either(
+                        ifLeft = { backing ->
+                            client.fetchMessagesForBacking(backing)
+                        },
+                        ifRight = { messageThread ->
+                            client.fetchMessagesForThread(messageThread)
+                        }
+                    )
+                        .map {
+                            it
+                        }
                         .doOnSubscribe { messagesAreLoading.onNext(true) }
                         .doAfterTerminate { messagesAreLoading.onNext(false) }
                         .compose(Transformers.neverErrorV2())
                         .share()
+                }
+                .map {
+                    it
                 }
 
             loadingIndicatorViewIsGone = messagesAreLoading
@@ -334,7 +337,9 @@ interface MessagesViewModel {
             // the project creator.
             val participant =
                 Observable.combineLatest(
-                    initialMessageThreadEnvelope.map { it.messageThread() },
+                    initialMessageThreadEnvelope.map {
+                        it.messageThread()
+                    },
                     project
                 ) { a: MessageThread, b: Project -> Pair.create(a, b) }
                     .map {
@@ -498,7 +503,9 @@ interface MessagesViewModel {
 
             backingAndProject
                 .filter { it.isNotNull() }
-                .subscribe { this.backingAndProject.onNext(it) }
+                .subscribe {
+                    this.backingAndProject.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             backingAndProject

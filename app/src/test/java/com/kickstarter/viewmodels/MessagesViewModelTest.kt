@@ -171,7 +171,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         val messageThread = messageThread()
         // Start the view model with a message thread.
         setUpEnvironment(
-            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            environment().toBuilder().apiClientV2(MockApiClientV2()).currentUserV2(MockCurrentUserV2(user())).build(),
             messagesContextIntent(messageThread)
         )
 
@@ -186,7 +186,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a backing and a project.
         setUpEnvironment(
-            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            environment().toBuilder().apiClientV2(MockApiClientV2()).currentUserV2(MockCurrentUserV2(user())).build(),
             backerModalContextIntent(backing, project)
         )
 

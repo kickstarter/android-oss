@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class MessageThreadEnvelope private constructor(
-    private val messages: List<Message>?,
+    private val messages: List<Message>,
     private val messageThread: MessageThread?,
     private val participants: List<User>,
 ) : Parcelable {
@@ -18,11 +18,11 @@ class MessageThreadEnvelope private constructor(
 
     @Parcelize
     data class Builder(
-        private var messages: List<Message>? = null,
+        private var messages: List<Message> = emptyList(),
         private var messageThread: MessageThread? = null,
         private var participants: List<User> = emptyList()
     ) : Parcelable {
-        fun messages(messages: List<Message>?) = apply { this.messages = messages }
+        fun messages(messages: List<Message>?) = apply { this.messages = messages ?: emptyList() }
         fun messageThread(messageThread: MessageThread?) = apply { this.messageThread = messageThread }
         fun participants(participants: List<User>) = apply { this.participants = participants }
         fun build() = MessageThreadEnvelope(

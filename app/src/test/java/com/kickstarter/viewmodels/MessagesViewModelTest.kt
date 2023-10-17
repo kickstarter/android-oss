@@ -3,10 +3,12 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.BackingFactory.backing
 import com.kickstarter.mock.factories.MessageFactory.message
@@ -16,7 +18,7 @@ import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.creator
 import com.kickstarter.mock.factories.UserFactory.user
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BackingWrapper
 import com.kickstarter.models.Message
@@ -26,65 +28,69 @@ import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.MessageSubject
+import com.kickstarter.viewmodels.MessagesViewModel.Factory
+import com.kickstarter.viewmodels.MessagesViewModel.MessagesViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class MessagesViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: MessagesViewModel.ViewModel
+    private lateinit var vm: MessagesViewModel
 
     private val backButtonIsGone = TestSubscriber<Boolean>()
     private val backingAndProject = TestSubscriber<Pair<Backing, Project>>()
     private val backingInfoViewIsGone = TestSubscriber<Boolean>()
     private val closeButtonIsGone = TestSubscriber<Boolean>()
     private val creatorNameTextViewText = TestSubscriber<String>()
-    private val goBack = TestSubscriber<Void>()
+    private val goBack = TestSubscriber<Unit>()
     private val messageEditTextHint = TestSubscriber<String>()
-    private val messageEditTextShouldRequestFocus = TestSubscriber<Void>()
+    private val messageEditTextShouldRequestFocus = TestSubscriber<Unit>()
     private val messageList = TestSubscriber<List<Message>>()
     private val projectNameTextViewText = TestSubscriber<String>()
     private val projectNameToolbarTextViewText = TestSubscriber<String>()
-    private val recyclerViewDefaultBottomPadding = TestSubscriber<Void>()
+    private val recyclerViewDefaultBottomPadding = TestSubscriber<Unit>()
     private val recyclerViewInitialBottomPadding = TestSubscriber<Int>()
-    private val scrollRecyclerViewToBottom = TestSubscriber<Void>()
+    private val scrollRecyclerViewToBottom = TestSubscriber<Unit>()
     private val sendMessageButtonIsEnabled = TestSubscriber<Boolean>()
     private val setMessageEditText = TestSubscriber<String>()
     private val showMessageErrorToast = TestSubscriber<String>()
     private val startBackingActivity = TestSubscriber<BackingWrapper>()
-    private val successfullyMarkedAsRead = TestSubscriber<Void>()
+    private val successfullyMarkedAsRead = TestSubscriber<Unit>()
     private val toolbarIsExpanded = TestSubscriber<Boolean>()
     private val viewPledgeButtonIsGone = TestSubscriber<Boolean>()
 
-    protected fun setUpEnvironment(environment: Environment) {
-        vm = MessagesViewModel.ViewModel(environment)
-        vm.outputs.backButtonIsGone().subscribe(backButtonIsGone)
-        vm.outputs.backingAndProject().subscribe(backingAndProject)
-        vm.outputs.backingInfoViewIsGone().subscribe(backingInfoViewIsGone)
-        vm.outputs.closeButtonIsGone().subscribe(closeButtonIsGone)
-        vm.outputs.goBack().subscribe(goBack)
-        vm.outputs.messageEditTextHint().subscribe(messageEditTextHint)
+    private val disposables = CompositeDisposable()
+
+    private fun setUpEnvironment(environment: Environment, intent: Intent) {
+        vm = Factory(environment, intent).create(MessagesViewModel::class.java)
+        vm.outputs.backButtonIsGone().subscribe { backButtonIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.backingAndProject().subscribe { backingAndProject.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.backingInfoViewIsGone().subscribe { backingInfoViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.closeButtonIsGone().subscribe { closeButtonIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.goBack().subscribe { goBack.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageEditTextHint().subscribe { messageEditTextHint.onNext(it) }.addToDisposable(disposables)
         vm.outputs.messageEditTextShouldRequestFocus()
-            .subscribe(messageEditTextShouldRequestFocus)
-        vm.outputs.messageList().subscribe(messageList)
-        vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
-        vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
-        vm.outputs.projectNameToolbarTextViewText().subscribe(projectNameToolbarTextViewText)
-        vm.outputs.recyclerViewDefaultBottomPadding().subscribe(recyclerViewDefaultBottomPadding)
-        vm.outputs.recyclerViewInitialBottomPadding().subscribe(recyclerViewInitialBottomPadding)
-        vm.outputs.scrollRecyclerViewToBottom().subscribe(scrollRecyclerViewToBottom)
-        vm.outputs.sendMessageButtonIsEnabled().subscribe(sendMessageButtonIsEnabled)
-        vm.outputs.setMessageEditText().subscribe(setMessageEditText)
-        vm.outputs.showMessageErrorToast().subscribe(showMessageErrorToast)
-        vm.outputs.startBackingActivity().subscribe(startBackingActivity)
-        vm.outputs.successfullyMarkedAsRead().subscribe(successfullyMarkedAsRead)
-        vm.outputs.toolbarIsExpanded().subscribe(toolbarIsExpanded)
-        vm.outputs.viewPledgeButtonIsGone().subscribe(viewPledgeButtonIsGone)
+            .subscribe { messageEditTextShouldRequestFocus.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageList().subscribe { messageList.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.creatorNameTextViewText().subscribe { creatorNameTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectNameTextViewText().subscribe { projectNameTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectNameToolbarTextViewText().subscribe { projectNameToolbarTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.recyclerViewDefaultBottomPadding().subscribe { recyclerViewDefaultBottomPadding.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.recyclerViewInitialBottomPadding().subscribe { recyclerViewInitialBottomPadding.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.scrollRecyclerViewToBottom().subscribe { scrollRecyclerViewToBottom.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.sendMessageButtonIsEnabled().subscribe { sendMessageButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.setMessageEditText().subscribe { setMessageEditText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showMessageErrorToast().subscribe { showMessageErrorToast.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startBackingActivity().subscribe { startBackingActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.successfullyMarkedAsRead().subscribe { successfullyMarkedAsRead.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.toolbarIsExpanded().subscribe { toolbarIsExpanded.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.viewPledgeButtonIsGone().subscribe { viewPledgeButtonIsGone.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testBackButton_IsGone() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(), messagesContextIntent(messageThread()))
 
         // Back button is gone if navigating from non-backer modal view.
         backButtonIsGone.assertValues(true)
@@ -93,8 +99,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testBackButton_IsVisible() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(backerModalContextIntent(backing(), project()))
+        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(), backerModalContextIntent(backing(), project()))
 
         // Back button is visible if navigating from backer modal view.
         backButtonIsGone.assertValues(false)
@@ -113,7 +118,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .project(project)
             .backing(backing)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(messageThread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope())
             }
@@ -122,15 +127,16 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(backing)
             }
         }
-        setUpEnvironment(
-            environment().toBuilder()
-                .apiClient(apiClient)
-                .currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread))
+        setUpEnvironment(
+            environment().toBuilder()
+                .apiClientV2(apiClient)
+                .currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread)
+        )
+
         backingAndProject.assertValues(Pair.create(backing, backing.project()))
         backingInfoViewIsGone.assertValues(false)
     }
@@ -144,18 +150,18 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .project(project)
             .backing(null)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchProjectBacking(project: Project, user: User): Observable<Backing> {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
         }
+        // Start the view model with a message thread.
         setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread)
         )
 
-        // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread))
         backingAndProject.assertNoValues()
         backingInfoViewIsGone.assertValues(true)
     }
@@ -163,10 +169,12 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testConfiguredWithThread() {
         val messageThread = messageThread()
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread))
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            messagesContextIntent(messageThread)
+        )
+
         backingAndProject.assertValueCount(1)
         messageList.assertValueCount(1)
     }
@@ -175,10 +183,13 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testConfiguredWithProject_AndBacking() {
         val backing = backing()
         val project = project()
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
 
         // Start the view model with a backing and a project.
-        vm.intent(backerModalContextIntent(backing, project))
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            backerModalContextIntent(backing, project)
+        )
+
         backingAndProject.assertValueCount(1)
         messageList.assertValueCount(1)
     }
@@ -187,25 +198,26 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testCreatorViewingProjectMessages() {
         val creator = creator().toBuilder().name("Sharon").build()
         val participant = user().toBuilder().name("Timothy").build()
-        val currentUser: CurrentUserType = MockCurrentUser(creator)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(creator)
         val messageThread = messageThread()
             .toBuilder()
             .project(project().toBuilder().creator(creator).build())
             .participant(participant)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(thread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(
                     messageThreadEnvelope().toBuilder().messageThread(messageThread).build()
                 )
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(currentUser).build(),
+            messagesContextIntent(messageThread)
+        )
 
         // Creator name is the project creator, edit text hint is always the participant.
         creatorNameTextViewText.assertValues(creator.name())
@@ -214,8 +226,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testGoBack() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(), messagesContextIntent(messageThread()))
         vm.inputs.backOrCloseButtonClicked()
         goBack.assertValueCount(1)
     }
@@ -223,18 +234,19 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectData_ExistingMessages() {
         val messageThread = messageThread()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(thread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope())
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread)
+        )
+
         creatorNameTextViewText.assertValues(messageThread.project()?.creator()?.name())
         projectNameTextViewText.assertValues(messageThread.project()?.name())
         projectNameToolbarTextViewText.assertValues(messageThread.project()?.name())
@@ -243,18 +255,19 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testMessageEditTextHint() {
         val messageThread = messageThread()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(thread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope())
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread)
+        )
+
         messageEditTextHint.assertValues(messageThread.project()?.creator()?.name())
     }
 
@@ -264,18 +277,18 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .messages(listOf(message()))
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(messageThread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(envelope)
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread())
+        )
 
         // Messages emit, keyboard not shown.
         messageList.assertValueCount(1)
@@ -286,18 +299,18 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testNoMessages() {
         val backing = backing()
         val project = project()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(empty())
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a backing and a project.
-        vm.intent(backerModalContextIntent(backing, project))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            backerModalContextIntent(backing, project)
+        )
 
         // All data except for messages should emit.
         messageList.assertNoValues()
@@ -308,10 +321,12 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testRecyclerViewBottomPadding() {
         val appBarTotalScrolLRange = 327
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(
+            environment().toBuilder().currentUser(MockCurrentUser(user())).build(),
+            messagesContextIntent(messageThread())
+        )
 
         // View initially loaded with a 0 (expanded) offset.
         vm.inputs.appBarOffset(0)
@@ -340,7 +355,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendMessage_Error() {
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun sendMessage(
                 messageSubject: MessageSubject,
                 body: String
@@ -348,13 +363,13 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread())
+        )
 
         // Send a message unsuccessfully.
         vm.inputs.messageEditTextChanged("Hello there")
@@ -368,7 +383,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendMessage_Success() {
         val sentMessage = message()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun sendMessage(
                 messageSubject: MessageSubject,
                 body: String
@@ -376,13 +391,13 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(sentMessage)
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a message thread.
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            messagesContextIntent(messageThread())
+        )
 
         // Initial messages emit.
         messageList.assertValueCount(1)
@@ -401,8 +416,11 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendMessageButtonIsEnabled() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            messagesContextIntent(messageThread())
+        )
+
         sendMessageButtonIsEnabled.assertNoValues()
         vm.inputs.messageEditTextChanged("hello")
         sendMessageButtonIsEnabled.assertValues(true)
@@ -417,18 +435,19 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .messages(null)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(envelope)
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a backing and project.
-        vm.intent(backerModalContextIntent(backing, project()))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            backerModalContextIntent(backing, project())
+        )
+
         messageEditTextShouldRequestFocus.assertValueCount(1)
     }
 
@@ -445,16 +464,17 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .messageThread(messageThread)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope)
             }
         }
         setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user))
-                .build()
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user))
+                .build(),
+            backerModalContextIntent(backing, project)
         )
-        vm.intent(backerModalContextIntent(backing, project))
+
         vm.inputs.viewPledgeButtonClicked()
         startBackingActivity.assertValues(BackingWrapper(backing, user, project))
     }
@@ -464,16 +484,17 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         val user = user()
         val project = project().toBuilder().isBacking(true).build()
         val backing = backing()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(empty())
             }
         }
         setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user))
-                .build()
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user))
+                .build(),
+            creatorBioModalContextIntent(backing, project)
         )
-        vm.intent(creatorBioModalContextIntent(backing, project))
+
         vm.inputs.viewPledgeButtonClicked()
         startBackingActivity.assertValues(BackingWrapper(backing, user, project))
     }
@@ -494,7 +515,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .messageThread(messageThread)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(messageThread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope)
             }
@@ -504,10 +525,11 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             }
         }
         setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(creator))
-                .build()
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(creator))
+                .build(),
+            messagesContextIntent(messageThread)
         )
-        vm.intent(messagesContextIntent(messageThread))
+
         vm.inputs.viewPledgeButtonClicked()
 
         startBackingActivity.assertValues(
@@ -522,16 +544,17 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSuccessfullyMarkedAsRead() {
         val messageThread = messageThread()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun markAsRead(thread: MessageThread): Observable<MessageThread> {
                 return Observable.just(messageThread)
             }
         }
         setUpEnvironment(
-            environment().toBuilder().currentUser(MockCurrentUser(user())).apiClient(apiClient)
-                .build()
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).apiClientV2(apiClient)
+                .build(),
+            messagesContextIntent(messageThread)
         )
-        vm.intent(messagesContextIntent(messageThread))
+
         successfullyMarkedAsRead.assertValueCount(1)
     }
 
@@ -542,18 +565,19 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .messages(null)
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(envelope)
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a backing and project.
-        vm.intent(backerModalContextIntent(backing, project()))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            backerModalContextIntent(backing, project())
+        )
+
         vm.inputs.messageEditTextIsFocused(true)
 
         // Toolbar stays expanded when keyboard opens and no messages.
@@ -567,18 +591,19 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .messages(listOf(message()))
             .build()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(envelope)
             }
         }
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(MockCurrentUser(user()))
-                .build()
-        )
 
         // Start the view model with a backing and project.
-        vm.intent(backerModalContextIntent(backing, project()))
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
+                .build(),
+            backerModalContextIntent(backing, project())
+        )
+
         vm.inputs.messageEditTextIsFocused(true)
 
         // Toolbar collapsed when keyboard opens and there are messages.
@@ -587,8 +612,8 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testViewMessages_FromPush() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(pushContextIntent())
+        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(), pushContextIntent())
+
         backButtonIsGone.assertValues(true)
         closeButtonIsGone.assertValues(false)
         viewPledgeButtonIsGone.assertValues(false)
@@ -596,8 +621,10 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testViewPledgeButton_IsGone_backerModal() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(backerModalContextIntent(backing(), project()))
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            backerModalContextIntent(backing(), project())
+        )
 
         // View pledge button is hidden when context is from the backer modal.
         viewPledgeButtonIsGone.assertValues(true)
@@ -605,8 +632,10 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testViewPledgeButton_IsVisible_creatorBioModal() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(creatorBioModalContextIntent(backing(), project()))
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            creatorBioModalContextIntent(backing(), project())
+        )
 
         // View pledge button is shown when context is from the creator bio modal.
         viewPledgeButtonIsGone.assertValues(false)
@@ -614,8 +643,10 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testViewPledgeButton_IsVisible() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user())).build())
-        vm.intent(messagesContextIntent(messageThread()))
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
+            messagesContextIntent(messageThread())
+        )
 
         // View pledge button is shown when context is from anywhere but the backer modal.
         viewPledgeButtonIsGone.assertValues(false)

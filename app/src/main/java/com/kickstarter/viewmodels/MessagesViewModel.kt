@@ -2,8 +2,9 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Either.Left
 import com.kickstarter.libs.Either.Right
@@ -12,6 +13,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
@@ -23,16 +25,17 @@ import com.kickstarter.models.Message
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.MessagesActivity
 import com.kickstarter.ui.data.MessageSubject
 import com.kickstarter.ui.data.MessagesData
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface MessagesViewModel {
     interface Inputs {
@@ -75,7 +78,7 @@ interface MessagesViewModel {
         fun creatorNameTextViewText(): Observable<String>
 
         /** Emits when we should navigate back.  */
-        fun goBack(): Observable<Void>
+        fun goBack(): Observable<Unit>
 
         /** Emits a boolean to determine if the loading indicator should be gone.  */
         fun loadingIndicatorViewIsGone(): Observable<Boolean>
@@ -84,10 +87,10 @@ interface MessagesViewModel {
         fun messageEditTextHint(): Observable<String>
 
         /** Emits when the edit text should request focus.  */
-        fun messageEditTextShouldRequestFocus(): Observable<Void>
+        fun messageEditTextShouldRequestFocus(): Observable<Unit>
 
         /** Emits a list of messages to be displayed.  */
-        fun messageList(): Observable<List<Message>?>
+        fun messageList(): Observable<List<Message>>
 
         /** Emits the project name to be displayed.  */
         fun projectNameTextViewText(): Observable<String>
@@ -96,13 +99,13 @@ interface MessagesViewModel {
         fun projectNameToolbarTextViewText(): Observable<String>
 
         /** Emits the bottom padding for the recycler view.  */
-        fun recyclerViewDefaultBottomPadding(): Observable<Void>
+        fun recyclerViewDefaultBottomPadding(): Observable<Unit>
 
         /** Emits the initial bottom padding for the recycler view to account for the app bar scroll range.  */
         fun recyclerViewInitialBottomPadding(): Observable<Int>
 
         /** Emits when the RecyclerView should be scrolled to the bottom.  */
-        fun scrollRecyclerViewToBottom(): Observable<Void>
+        fun scrollRecyclerViewToBottom(): Observable<Unit>
 
         /** Emits a boolean that determines if the Send button should be enabled.  */
         fun sendMessageButtonIsEnabled(): Observable<Boolean>
@@ -117,7 +120,7 @@ interface MessagesViewModel {
         fun startBackingActivity(): Observable<BackingWrapper>
 
         /** Emits when the thread has been marked as read.  */
-        fun successfullyMarkedAsRead(): Observable<Void>
+        fun successfullyMarkedAsRead(): Observable<Unit>
 
         /** Emits a boolean to determine when the toolbar should be expanded.  */
         fun toolbarIsExpanded(): Observable<Boolean>
@@ -126,13 +129,15 @@ interface MessagesViewModel {
         fun viewPledgeButtonIsGone(): Observable<Boolean>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<MessagesActivity?>(environment),
+    class MessagesViewModel(environment: Environment, private val intent: Intent? = null) :
+        ViewModel(),
         Inputs,
         Outputs {
-        private val client: ApiClientType
-        private val currentUser: CurrentUserType
+        private val client: ApiClientTypeV2
+        private val currentUser: CurrentUserTypeV2
+        private val disposables = CompositeDisposable()
 
+        private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
         private fun projectAndBacker(envelopeAndData: Pair<MessageThreadEnvelope, MessagesData>): Pair<Project, User> {
             val project = envelopeAndData.second.project
             val backer =
@@ -143,31 +148,31 @@ interface MessagesViewModel {
 
         private val appBarOffset = PublishSubject.create<Int>()
         private val appBarTotalScrollRange = PublishSubject.create<Int>()
-        private val backOrCloseButtonClicked = PublishSubject.create<Void>()
+        private val backOrCloseButtonClicked = PublishSubject.create<Unit>()
         private val messageEditTextChanged = PublishSubject.create<String>()
-        private val messageEditTextIsFocused = PublishSubject.create<Boolean?>()
-        private val sendMessageButtonClicked = PublishSubject.create<Void>()
-        private val viewPledgeButtonClicked = PublishSubject.create<Void>()
+        private val messageEditTextIsFocused = PublishSubject.create<Boolean>()
+        private val sendMessageButtonClicked = PublishSubject.create<Unit>()
+        private val viewPledgeButtonClicked = PublishSubject.create<Unit>()
         private val backButtonIsGone: Observable<Boolean>
-        private val backingAndProject = BehaviorSubject.create<Pair<Backing, Project>?>()
+        private val backingAndProject = BehaviorSubject.create<Pair<Backing, Project>>()
         private val backingInfoViewIsGone = BehaviorSubject.create<Boolean>()
         private val closeButtonIsGone: Observable<Boolean>
         private val creatorNameTextViewText = BehaviorSubject.create<String>()
-        private val goBack: Observable<Void>
+        private val goBack: Observable<Unit>
         private val loadingIndicatorViewIsGone: Observable<Boolean>
         private val messageEditTextHint = BehaviorSubject.create<String>()
-        private val messageEditTextShouldRequestFocus = PublishSubject.create<Void>()
+        private val messageEditTextShouldRequestFocus = PublishSubject.create<Unit>()
         private val messageList = BehaviorSubject.create<List<Message>?>()
         private val projectNameTextViewText = BehaviorSubject.create<String>()
         private val projectNameToolbarTextViewText: Observable<String>
-        private val recyclerViewDefaultBottomPadding: Observable<Void>
+        private val recyclerViewDefaultBottomPadding: Observable<Unit>
         private val recyclerViewInitialBottomPadding: Observable<Int>
-        private val scrollRecyclerViewToBottom: Observable<Void>
+        private val scrollRecyclerViewToBottom: Observable<Unit>
         private val showMessageErrorToast = PublishSubject.create<String>()
         private val sendMessageButtonIsEnabled: Observable<Boolean>
         private val setMessageEditText: Observable<String>
         private val startBackingActivity = PublishSubject.create<BackingWrapper>()
-        private val successfullyMarkedAsRead = BehaviorSubject.create<Void>()
+        private val successfullyMarkedAsRead = BehaviorSubject.create<Unit>()
         private val toolbarIsExpanded: Observable<Boolean>
         private val viewPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
 
@@ -183,7 +188,7 @@ interface MessagesViewModel {
         }
 
         override fun backOrCloseButtonClicked() {
-            backOrCloseButtonClicked.onNext(null)
+            backOrCloseButtonClicked.onNext(Unit)
         }
 
         override fun messageEditTextChanged(messageBody: String) {
@@ -195,67 +200,67 @@ interface MessagesViewModel {
         }
 
         override fun sendMessageButtonClicked() {
-            sendMessageButtonClicked.onNext(null)
+            sendMessageButtonClicked.onNext(Unit)
         }
 
         override fun viewPledgeButtonClicked() {
-            viewPledgeButtonClicked.onNext(null)
+            viewPledgeButtonClicked.onNext(Unit)
         }
 
         override fun backButtonIsGone(): Observable<Boolean> = backButtonIsGone
         override fun backingAndProject(): Observable<Pair<Backing, Project>> = backingAndProject
         override fun backingInfoViewIsGone(): Observable<Boolean> = backingInfoViewIsGone
         override fun closeButtonIsGone(): Observable<Boolean> = closeButtonIsGone
-        override fun goBack(): Observable<Void> = goBack
+        override fun goBack(): Observable<Unit> = goBack
         override fun loadingIndicatorViewIsGone(): Observable<Boolean> = loadingIndicatorViewIsGone
         override fun messageEditTextHint(): Observable<String> = messageEditTextHint
-        override fun messageEditTextShouldRequestFocus(): Observable<Void> = messageEditTextShouldRequestFocus
-        override fun messageList(): Observable<List<Message>?> = messageList
+        override fun messageEditTextShouldRequestFocus(): Observable<Unit> = messageEditTextShouldRequestFocus
+        override fun messageList(): Observable<List<Message>> = messageList
         override fun creatorNameTextViewText(): Observable<String> = creatorNameTextViewText
         override fun projectNameTextViewText(): Observable<String> = projectNameTextViewText
         override fun projectNameToolbarTextViewText(): Observable<String> = projectNameToolbarTextViewText
-        override fun recyclerViewDefaultBottomPadding(): Observable<Void> = recyclerViewDefaultBottomPadding
+        override fun recyclerViewDefaultBottomPadding(): Observable<Unit> = recyclerViewDefaultBottomPadding
         override fun recyclerViewInitialBottomPadding(): Observable<Int> = recyclerViewInitialBottomPadding
-        override fun scrollRecyclerViewToBottom(): Observable<Void> = scrollRecyclerViewToBottom
+        override fun scrollRecyclerViewToBottom(): Observable<Unit> = scrollRecyclerViewToBottom
         override fun showMessageErrorToast(): Observable<String> = showMessageErrorToast
         override fun sendMessageButtonIsEnabled(): Observable<Boolean> = sendMessageButtonIsEnabled
         override fun setMessageEditText(): Observable<String> = setMessageEditText
         override fun startBackingActivity(): Observable<BackingWrapper> = startBackingActivity
-        override fun successfullyMarkedAsRead(): Observable<Void> = successfullyMarkedAsRead
+        override fun successfullyMarkedAsRead(): Observable<Unit> = successfullyMarkedAsRead
         override fun toolbarIsExpanded(): Observable<Boolean> = toolbarIsExpanded
         override fun viewPledgeButtonIsGone(): Observable<Boolean> = viewPledgeButtonIsGone
 
         companion object {
             private fun backingAndProjectFromData(
                 data: MessagesData,
-                client: ApiClientType
-            ): Observable<Pair<Backing, Project>?>? {
-                return data.backingOrThread.either(
-                    { Observable.just(Pair.create(it, data.project)) }
-                ) {
-                    val backingNotification =
-                        if (data.project.isBacking()) client.fetchProjectBacking(
-                            data.project,
-                            data.currentUser
-                        ).materialize().share() else client.fetchProjectBacking(
-                            data.project,
-                            data.participant
-                        ).materialize().share()
+                client: ApiClientTypeV2
+            ): Observable<Pair<Backing, Project>> {
+                val backingAndProjectObs = data.backingOrThread.either(
+                    ifLeft = { return@either Observable.just(Pair.create<Backing, Project>(it, data.project)) },
+                    ifRight = {
+                        val backingNotification: Observable<Notification<Backing>> =
+                            if (data.project.isBacking()) client.fetchProjectBacking(
+                                data.project,
+                                data.currentUser
+                            ).materialize().share() else client.fetchProjectBacking(
+                                data.project,
+                                data.participant
+                            ).materialize().share()
 
-                    Observable.merge(
-                        backingNotification.compose(Transformers.errors())
-                            .map { null },
-                        backingNotification.compose(Transformers.values())
+                        return@either backingNotification
+                            .compose(Transformers.valuesV2())
                             .map { Pair.create(it, data.project) }
-                    )
-                        .take(1)
-                }
+                            .take(1)
+                    }
+                )
+
+                return backingAndProjectObs
             }
         }
 
         init {
-            client = requireNotNull(environment.apiClient())
-            currentUser = requireNotNull(environment.currentUser())
+            client = requireNotNull(environment.apiClientV2())
+            currentUser = requireNotNull(environment.currentUserV2())
 
             val configData = intent()
                 .map { i: Intent ->
@@ -317,7 +322,7 @@ interface MessagesViewModel {
                     response
                         .doOnSubscribe { messagesAreLoading.onNext(true) }
                         .doAfterTerminate { messagesAreLoading.onNext(false) }
-                        .compose(Transformers.neverError())
+                        .compose(Transformers.neverErrorV2())
                         .share()
                 }
 
@@ -331,7 +336,7 @@ interface MessagesViewModel {
                 Observable.combineLatest(
                     initialMessageThreadEnvelope.map { it.messageThread() },
                     project
-                ) { a: MessageThread?, b: Project? -> Pair.create(a, b) }
+                ) { a: MessageThread, b: Project -> Pair.create(a, b) }
                     .map {
                         if (it.first != null)
                             it?.first?.participant()
@@ -343,20 +348,21 @@ interface MessagesViewModel {
 
             participant
                 .map { it.name() }
-                .compose(bindToLifecycle())
-                .subscribe(messageEditTextHint)
+                .subscribe { messageEditTextHint.onNext(it) }
+                .addToDisposable(disposables)
 
-            val messagesData = Observable.combineLatest(
+            val messagesData: Observable<MessagesData> = Observable.combineLatest(
                 backingOrThread,
                 project,
                 participant,
                 currentUser.observable()
-            ) { backingOrThread: Either<Backing, MessageThread>, project: Project, participant: User, currentUser: User ->
-                MessagesData(
+            ) { backingOrThread, project, participant, currentUserOptional ->
+
+                return@combineLatest MessagesData(
                     backingOrThread,
                     project,
                     participant,
-                    currentUser
+                    requireNotNull(currentUserOptional.getValue())
                 )
             }
 
@@ -378,7 +384,7 @@ interface MessagesViewModel {
             val messageNotification = messageSubject
                 .compose(Transformers.combineLatestPair(messageEditTextChanged))
                 .compose(
-                    Transformers.takeWhen(
+                    Transformers.takeWhenV2(
                         sendMessageButtonClicked
                     )
                 )
@@ -391,12 +397,12 @@ interface MessagesViewModel {
                 .materialize()
                 .share()
 
-            val messageSent = messageNotification.compose(Transformers.values()).ofType(
+            val messageSent = messageNotification.compose(Transformers.valuesV2()).ofType(
                 Message::class.java
             )
 
             val sentMessageThreadEnvelope = backingOrThread
-                .compose(Transformers.takeWhen(messageSent))
+                .compose(Transformers.takeWhenV2(messageSent))
                 .switchMap {
                     it.either({ backing: Backing ->
                         client.fetchMessagesForBacking(
@@ -408,7 +414,7 @@ interface MessagesViewModel {
                         )
                     }
                 }
-                .compose(Transformers.neverError())
+                .compose(Transformers.neverErrorV2())
                 .share()
 
             val messageThreadEnvelope = Observable.merge(
@@ -430,9 +436,9 @@ interface MessagesViewModel {
                     )
                 }
                 .materialize()
-                .compose(Transformers.ignoreValues())
-                .compose(bindToLifecycle())
+                .compose(Transformers.ignoreValuesV2())
                 .subscribe { successfullyMarkedAsRead.onNext(it) }
+                .addToDisposable(disposables)
 
             val initialMessages = initialMessageThreadEnvelope
                 .map { it.messages() }
@@ -446,7 +452,7 @@ interface MessagesViewModel {
             // initial list is null, i.e. a new message thread.
             val updatedMessages = initialMessages
                 .compose(
-                    Transformers.takePairWhen(
+                    Transformers.takePairWhenV2(
                         newMessages
                     )
                 )
@@ -467,43 +473,43 @@ interface MessagesViewModel {
             initialMessages
                 .filter { it.isNotNull() }
                 .take(1)
-                .compose(bindToLifecycle())
-                .subscribe { v: List<Message>? -> messageList.onNext(v) }
+                .subscribe { messageList.onNext(it) }
+                .addToDisposable(disposables)
 
             updatedMessages
-                .compose(bindToLifecycle())
-                .subscribe { v: List<Message>? -> messageList.onNext(v) }
+                .subscribe { v: List<Message> -> messageList.onNext(v) }
+                .addToDisposable(disposables)
 
             project
                 .map { it.creator().name() }
-                .compose(bindToLifecycle())
                 .subscribe { v: String -> creatorNameTextViewText.onNext(v) }
+                .addToDisposable(disposables)
 
             initialMessageThreadEnvelope
                 .map { it.messages() }
                 .filter { it.isNull() }
                 .take(1)
-                .compose(Transformers.ignoreValues())
-                .compose(bindToLifecycle())
+                .compose(Transformers.ignoreValuesV2())
                 .subscribe { messageEditTextShouldRequestFocus.onNext(it) }
+                .addToDisposable(disposables)
 
             val backingAndProject = messagesData
                 .switchMap { backingAndProjectFromData(it, client) }
 
             backingAndProject
                 .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
                 .subscribe { this.backingAndProject.onNext(it) }
+                .addToDisposable(disposables)
 
             backingAndProject
                 .map { it.isNull() }
-                .compose(bindToLifecycle())
                 .subscribe { backingInfoViewIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             messageAccountTypeObservable
                 .map { c: MessagePreviousScreenType -> c == MessagePreviousScreenType.BACKER_MODAL }
-                .compose(bindToLifecycle())
                 .subscribe { v: Boolean -> viewPledgeButtonIsGone.onNext(v) }
+                .addToDisposable(disposables)
 
             backButtonIsGone = viewPledgeButtonIsGone.map { it.negate() }
 
@@ -513,7 +519,7 @@ interface MessagesViewModel {
 
             projectNameToolbarTextViewText = projectNameTextViewText
 
-            scrollRecyclerViewToBottom = updatedMessages.compose(Transformers.ignoreValues())
+            scrollRecyclerViewToBottom = updatedMessages.compose(Transformers.ignoreValuesV2())
 
             sendMessageButtonIsEnabled = Observable.merge(
                 messageHasBody, messageIsSending.map { it.negate() }
@@ -523,7 +529,7 @@ interface MessagesViewModel {
 
             toolbarIsExpanded = messageList
                 .compose(
-                    Transformers.takePairWhen(
+                    Transformers.takePairWhenV2(
                         messageEditTextIsFocused
                     )
                 )
@@ -531,22 +537,22 @@ interface MessagesViewModel {
                 .map { it.negate() }
 
             messageNotification
-                .compose(Transformers.errors())
+                .compose(Transformers.errorsV2())
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .map { it?.errorMessage() }
                 .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
                 .subscribe { showMessageErrorToast.onNext(it) }
+                .addToDisposable(disposables)
 
             project
                 .map { it.name() }
-                .compose(bindToLifecycle())
                 .subscribe { projectNameTextViewText.onNext(it) }
+                .addToDisposable(disposables)
 
             messageThreadEnvelope
                 .compose(Transformers.combineLatestPair(messagesData))
-                .compose(Transformers.takeWhen(viewPledgeButtonClicked))
+                .compose(Transformers.takeWhenV2(viewPledgeButtonClicked))
                 .map {
                     projectAndBacker(
                         it
@@ -563,8 +569,8 @@ interface MessagesViewModel {
                         it.second.first, it.first.second, it.first.first
                     )
                 }
-                .compose(bindToLifecycle())
                 .subscribe { v: BackingWrapper -> startBackingActivity.onNext(v) }
+                .addToDisposable(disposables)
 
             // Set only the initial padding once to counteract the appbar offset.
             recyclerViewInitialBottomPadding = appBarTotalScrollRange.take(1)
@@ -572,8 +578,19 @@ interface MessagesViewModel {
             // Take only the first instance in which the offset changes.
             recyclerViewDefaultBottomPadding = appBarOffset
                 .filter { it.isNonZero() }
-                .compose(Transformers.ignoreValues())
+                .compose(Transformers.ignoreValuesV2())
                 .take(1)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return MessagesViewModel(environment, intent) as T
         }
     }
 }

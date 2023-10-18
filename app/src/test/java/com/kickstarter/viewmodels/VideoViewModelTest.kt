@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.VideoFactory.hlsVideo
@@ -18,8 +19,8 @@ class VideoViewModelTest : KSRobolectricTestCase() {
 
     lateinit var vm: VideoViewModel
     private val disposables = CompositeDisposable()
-    val preparePlayerWithUrl = TestSubscriber<String>()
-    val preparePlayerWithUrlAndPosition = TestSubscriber<Pair<String, Long>>()
+    private val preparePlayerWithUrl = TestSubscriber<String>()
+    private val preparePlayerWithUrlAndPosition = TestSubscriber<Pair<String, Long>>()
 
     @After
     fun cleanUp() {
@@ -27,7 +28,7 @@ class VideoViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun setUpEnvironment(environment: Environment, intent: Intent) {
-        vm = Factory(environment(), intent).create(VideoViewModel::class.java)
+        vm = Factory(environment, intent).create(VideoViewModel::class.java)
         vm.outputs.preparePlayerWithUrl().subscribe { preparePlayerWithUrl.onNext(it) }.addToDisposable(disposables)
         vm.outputs.preparePlayerWithUrlAndPosition().subscribe { preparePlayerWithUrlAndPosition.onNext(it) }.addToDisposable(disposables)
     }
@@ -35,56 +36,76 @@ class VideoViewModelTest : KSRobolectricTestCase() {
     fun testVideoViewModel_EmitsVideoUrl_WhenHls() {
 
         val project = project().toBuilder().video(hlsVideo()).build()
+        val videoUrl = project.video()!!.hls()
+
         // Configure the view model with a project intent.
-        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.VIDEO_URL_SOURCE, videoUrl)
+
         setUpEnvironment(environment(), intent)
 
-        preparePlayerWithUrl.assertValue(project.video()!!.hls())
+        vm.inputs.resume()
+//        vm.inputs.onVideoStarted(0,0)
+//        vm.inputs.onVideoCompleted(100, 100)
+
+        preparePlayerWithUrl.assertValue(videoUrl)
         preparePlayerWithUrlAndPosition.assertNoValues()
     }
 
-/*
-  @Test
-  public void testVideoViewModel_EmitsVideoUrl_WhenNotHls() {
-    final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.project();
+    @Test
+    fun testVideoViewModel_EmitsVideoUrl_WhenNotHls() {
+        val project = project()
+        val videoUrl = project.video()?.high() ?: ""
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.VIDEO_URL_SOURCE, videoUrl)
 
-    final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
-    vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl);
+        setUpEnvironment(environment(), intent)
 
-    // Configure the view model with a project intent.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+        vm.inputs.resume()
+        preparePlayerWithUrl.assertValue(videoUrl)
+        preparePlayerWithUrlAndPosition.assertNoValues()
+    }
 
-    preparePlayerWithUrl.assertValue(project.video().high());
-  }
+    @Test
+    fun testVideoViewModel_StartVideo_WhenAdvancedPosition() {
+        val project = project()
+        val videoUrl = project.video()?.high() ?: ""
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.VIDEO_URL_SOURCE, videoUrl)
+            .putExtra(IntentKey.VIDEO_SEEK_POSITION, 20L)
 
-  @Test
-  public void testVideoViewModel_VideoPlayStart() {
-    final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.project();
+        setUpEnvironment(environment(), intent)
 
-    final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
-    vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl);
-    vm.inputs.onVideoStarted(100, 0);
+        vm.inputs.resume()
+        preparePlayerWithUrl.assertNoValues()
+        preparePlayerWithUrlAndPosition.assertValue(Pair(videoUrl, 20L))
+    }
 
-    // Configure the view model with a project intent.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    @Test
+    fun testVideoViewModel_SendEvents_WhenStartEnd() {
+        val project = project()
+        val videoUrl = project.video()?.high() ?: ""
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.VIDEO_URL_SOURCE, videoUrl)
+            .putExtra(IntentKey.VIDEO_SEEK_POSITION, 20L)
 
-    preparePlayerWithUrl.assertValue(project.video().high());
-    this.segmentTrack.assertValues(EventName.VIDEO_PLAYBACK_STARTED.getEventName());
-  }
+        setUpEnvironment(environment(), intent)
 
-  @Test
-  public void testVideoViewModel_VideoPlayCompleted() {
-    final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.project();
+        vm.inputs.resume()
+        vm.inputs.onVideoStarted(0L, 0L)
 
-    final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
-    vm.inputs.onVideoCompleted(10, 2);
+        preparePlayerWithUrl.assertNoValues()
+        preparePlayerWithUrlAndPosition.assertValue(Pair(videoUrl, 20L))
 
-    // Configure the view model with a project intent.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+        vm.inputs.onVideoCompleted(100L, 100L)
 
-    this.segmentTrack.assertValues(EventName.VIDEO_PLAYBACK_COMPLETED.getEventName());
-  }*/
+        this.segmentTrack.assertValues(
+            EventName.VIDEO_PLAYBACK_STARTED.eventName,
+            EventName.VIDEO_PLAYBACK_COMPLETED.eventName
+        )
+    }
 }

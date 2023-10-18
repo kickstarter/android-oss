@@ -95,7 +95,7 @@ class VideoActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         super.onDestroy()
-        releasePlayer()
+        player = null
     }
 
     public override fun onPause() {

@@ -72,8 +72,8 @@ interface VideoViewModel {
                 .map { Pair(requireNotNull(it.first), it.second) }
                 .distinctUntilChanged()
                 .take(1)
-                .withLatestFrom(this.resume()) { it, _ ->
-                    it
+                .withLatestFrom(this.resume()) { p, _ ->
+                    p
                 }
                 .subscribe {
                     if (it.first.isNotEmpty() && it.second >= 0) {

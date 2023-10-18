@@ -1,18 +1,17 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag.Companion.thanksFacebookShare
 import com.kickstarter.libs.RefTag.Companion.thanksShare
 import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
-import com.kickstarter.ui.viewholders.ThanksShareViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ThanksShareHolderViewModel {
     interface Inputs {
@@ -27,6 +26,8 @@ interface ThanksShareHolderViewModel {
 
         /** Call when the share on Twitter button is clicked.  */
         fun shareOnTwitterClick()
+
+        fun onCleared()
     }
 
     interface Outputs {
@@ -43,13 +44,12 @@ interface ThanksShareHolderViewModel {
         fun startShareOnTwitter(): Observable<Pair<String, String>>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<ThanksShareViewHolder>(environment), Inputs, Outputs {
+    class ThanksShareViewHolderViewModel : Inputs, Outputs {
 
         private val project = PublishSubject.create<Project>()
-        private val shareClick = PublishSubject.create<Void>()
-        private val shareOnFacebookClick = PublishSubject.create<Void>()
-        private val shareOnTwitterClick = PublishSubject.create<Void>()
+        private val shareClick = PublishSubject.create<Unit>()
+        private val shareOnFacebookClick = PublishSubject.create<Unit>()
+        private val shareOnTwitterClick = PublishSubject.create<Unit>()
         private val projectName = BehaviorSubject.create<String>()
         private val startShare = PublishSubject.create<Pair<String, String>>()
         private val startShareOnFacebook = PublishSubject.create<Pair<Project, String>>()
@@ -58,11 +58,13 @@ interface ThanksShareHolderViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private var disposables = CompositeDisposable()
+
         init {
             project
                 .map { it.name() }
-                .compose(bindToLifecycle())
                 .subscribe { projectName.onNext(it) }
+                .addToDisposable(disposables)
 
             project
                 .map {
@@ -71,9 +73,9 @@ interface ThanksShareHolderViewModel {
                         appendRefTag(it.webProjectUrl(), thanksShare().tag())
                     )
                 }
-                .compose(Transformers.takeWhen(shareClick))
-                .compose(bindToLifecycle())
+                .compose(Transformers.takeWhenV2(shareClick))
                 .subscribe { startShare.onNext(it) }
+                .addToDisposable(disposables)
 
             project
                 .map {
@@ -82,9 +84,9 @@ interface ThanksShareHolderViewModel {
                         appendRefTag(it.webProjectUrl(), thanksFacebookShare().tag())
                     )
                 }
-                .compose(Transformers.takeWhen(shareOnFacebookClick))
-                .compose(bindToLifecycle())
+                .compose(Transformers.takeWhenV2(shareOnFacebookClick))
                 .subscribe { startShareOnFacebook.onNext(it) }
+                .addToDisposable(disposables)
 
             project
                 .map {
@@ -93,9 +95,9 @@ interface ThanksShareHolderViewModel {
                         appendRefTag(it.webProjectUrl(), thanksTwitterShare().tag())
                     )
                 }
-                .compose(Transformers.takeWhen(shareOnTwitterClick))
-                .compose(bindToLifecycle())
+                .compose(Transformers.takeWhenV2(shareOnTwitterClick))
                 .subscribe { startShareOnTwitter.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(project: Project) {
@@ -103,20 +105,24 @@ interface ThanksShareHolderViewModel {
         }
 
         override fun shareClick() {
-            shareClick.onNext(null)
+            shareClick.onNext(Unit)
         }
 
         override fun shareOnFacebookClick() {
-            shareOnFacebookClick.onNext(null)
+            shareOnFacebookClick.onNext(Unit)
         }
 
         override fun shareOnTwitterClick() {
-            shareOnTwitterClick.onNext(null)
+            shareOnTwitterClick.onNext(Unit)
         }
 
         override fun startShare(): Observable<Pair<String, String>> = startShare
         override fun startShareOnFacebook(): Observable<Pair<Project, String>> = startShareOnFacebook
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
         override fun projectName(): Observable<String> = projectName
+
+        override fun onCleared() {
+            disposables.clear()
+        }
     }
 }

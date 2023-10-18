@@ -14,12 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.compose.login.SetPasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import com.kickstarter.ui.extensions.startDisclaimerActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.SetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -28,12 +29,14 @@ class SetPasswordActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: SetPasswordViewModel.Factory
     private val viewModel: SetPasswordViewModel.SetPasswordViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
+    private var environment: Environment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var darkModeEnabled = false
 
         this.getEnvironment()?.let { env ->
+            environment = env
             viewModelFactory = SetPasswordViewModel.Factory(env)
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
@@ -72,10 +75,10 @@ class SetPasswordActivity : AppCompatActivity() {
                     showProgressBar = showProgressBar,
                     headline = headline,
                     isFormSubmitting = viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value,
-                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerScreen(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerScreen(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerScreen(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) },
                     scaffoldState = scaffoldState
                 )
             }
@@ -97,5 +100,9 @@ class SetPasswordActivity : AppCompatActivity() {
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
+    }
+
+    private fun startDisclaimerScreen(disclaimerItems: DisclaimerItems) {
+        startDisclaimerChromeTab(disclaimerItems, environment)
     }
 }

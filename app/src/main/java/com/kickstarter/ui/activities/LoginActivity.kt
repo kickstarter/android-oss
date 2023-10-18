@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -31,7 +32,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
-import com.kickstarter.ui.extensions.startDisclaimerActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -54,11 +55,14 @@ class LoginActivity : ComponentActivity() {
     private var currentEmail = ""
     private var currentPassword = ""
 
+    private var environment: Environment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         disposables = CompositeDisposable()
 
         val env = this.getEnvironment()?.let { env ->
+            environment = env
             viewModelFactory = LoginViewModel.Factory(env, intent = intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
@@ -142,10 +146,10 @@ class LoginActivity : ComponentActivity() {
                         viewModel.inputs.password(password)
                         viewModel.inputs.loginClick()
                     },
-                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerScreen(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerScreen(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerScreen(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) },
                     onForgotPasswordClicked = { startResetPasswordActivity() },
                     resetPasswordDialogMessage = resetPasswordDialogMessage,
                     showDialog = showDialog,
@@ -237,6 +241,10 @@ class LoginActivity : ComponentActivity() {
     private fun onSuccess() {
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    private fun startDisclaimerScreen(disclaimerItems: DisclaimerItems) {
+        startDisclaimerChromeTab(disclaimerItems, environment)
     }
 
     private fun startTwoFactorActivity() {

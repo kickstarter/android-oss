@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.res.stringResource
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -21,7 +22,7 @@ import com.kickstarter.ui.activities.compose.login.ResetPasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startActivityWithTransition
-import com.kickstarter.ui.extensions.startDisclaimerActivity
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.ui.extensions.transition
 import com.kickstarter.viewmodels.ResetPasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,10 +36,13 @@ class ResetPasswordActivity : ComponentActivity() {
 
     private var currentEmail = ""
 
+    private var environment: Environment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var darkModeEnabled = false
         this.getEnvironment()?.let { env ->
+            environment = env
             viewModelFactory = ResetPasswordViewModel.Factory(env)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
@@ -68,10 +72,10 @@ class ResetPasswordActivity : ComponentActivity() {
                     } ?: "",
                     initialEmail = initialValue,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                    onTermsOfUseClicked = { startDisclaimerActivity(DisclaimerItems.TERMS) },
-                    onPrivacyPolicyClicked = { startDisclaimerActivity(DisclaimerItems.PRIVACY) },
-                    onCookiePolicyClicked = { startDisclaimerActivity(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startDisclaimerActivity(DisclaimerItems.HELP) },
+                    onTermsOfUseClicked = { startDisclaimerScreen(DisclaimerItems.TERMS) },
+                    onPrivacyPolicyClicked = { startDisclaimerScreen(DisclaimerItems.PRIVACY) },
+                    onCookiePolicyClicked = { startDisclaimerScreen(DisclaimerItems.COOKIES) },
+                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) },
                     onResetPasswordButtonClicked = { email ->
                         currentEmail = email
                         viewModel.setEmail(email)
@@ -117,6 +121,10 @@ class ResetPasswordActivity : ComponentActivity() {
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
+    }
+
+    private fun startDisclaimerScreen(disclaimerItems: DisclaimerItems) {
+        startDisclaimerChromeTab(disclaimerItems, environment)
     }
 
     private fun onResetSuccess() {

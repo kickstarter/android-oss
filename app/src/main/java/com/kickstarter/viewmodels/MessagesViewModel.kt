@@ -490,6 +490,7 @@ interface MessagesViewModel {
                 .subscribe { backingAndProject ->
                     if (backingAndProject.first.isNotNull() && backingAndProject.second.isNotNull()) {
                         this.backingAndProject.onNext(Pair<Backing, Project>(backingAndProject.first, backingAndProject.second))
+                        backingInfoViewIsGone.onNext(false)
                     }
 
                     if (backingAndProject.first == null) {

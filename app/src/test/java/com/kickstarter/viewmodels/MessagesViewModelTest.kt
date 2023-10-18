@@ -33,6 +33,7 @@ import com.kickstarter.viewmodels.MessagesViewModel.MessagesViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class MessagesViewModelTest : KSRobolectricTestCase() {
@@ -61,6 +62,10 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     private val disposables = CompositeDisposable()
 
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
     private fun setUpEnvironment(environment: Environment, intent: Intent) {
         vm = Factory(environment, intent).create(MessagesViewModel::class.java)
         vm.outputs.backButtonIsGone().subscribe { backButtonIsGone.onNext(it) }.addToDisposable(disposables)

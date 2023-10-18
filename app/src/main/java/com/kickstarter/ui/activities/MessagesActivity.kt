@@ -214,6 +214,7 @@ class MessagesActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         binding.messagesRecyclerView.adapter = null
+        disposables.clear()
     }
 
     private fun requestFocusAndOpenKeyboard() {

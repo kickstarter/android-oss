@@ -185,10 +185,6 @@ class MessagesActivity : AppCompatActivity() {
             sendMessageButtonClicked()
         }
 
-        binding.messageReplyLayout.sendMessageButton.setOnClickListener {
-            sendMessageButtonClicked()
-        }
-
         binding.messagesToolbar.messagesToolbarBackButton.setOnClickListener {
             finishWithAnimation()
         }

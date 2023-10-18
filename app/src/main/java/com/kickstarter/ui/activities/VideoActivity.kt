@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -37,7 +37,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 class VideoActivity : AppCompatActivity() {
     private lateinit var build: Build
-    private var player: SimpleExoPlayer? = null
+    private var player: ExoPlayer? = null
     private var playerPosition: Long? = null
     private var trackSelector: DefaultTrackSelector? = null
     private lateinit var binding: VideoPlayerLayoutBinding
@@ -147,21 +147,19 @@ class VideoActivity : AppCompatActivity() {
     private fun preparePlayer(videoUrl: String) {
         val adaptiveTrackSelectionFactory: AdaptiveTrackSelection.Factory = AdaptiveTrackSelection.Factory()
         trackSelector = DefaultTrackSelector(this, adaptiveTrackSelectionFactory)
-//        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
-        val player2 = trackSelector?.let {
-            SimpleExoPlayer.Builder(this).setTrackSelector(
-                it
-            )
+        trackSelector?.let {
+            ExoPlayer.Builder(this).setTrackSelector(it)
         }
-        val playerBuilder = SimpleExoPlayer.Builder(this)
+
+        val playerBuilder = ExoPlayer.Builder(this)
         trackSelector?.let { playerBuilder.setTrackSelector(it) }
         player = playerBuilder.build()
 
         binding.playerView.player = player
         player?.addListener(eventListener)
 
-        val playerIsResuming = (playerPosition != 0L)
-        player?.prepare(getMediaSource(videoUrl), playerIsResuming, false)
+        player?.setMediaSource(getMediaSource(videoUrl))
+        player?.prepare()
         playerPosition?.let {
             player?.seekTo(it)
         }
@@ -184,7 +182,7 @@ class VideoActivity : AppCompatActivity() {
         if (player != null) {
             playerPosition = player?.currentPosition
             player?.duration?.let {
-                // viewModel.inputs.onVideoCompleted(it, playerPosition ?: 0L)
+                viewModel.inputs.onVideoCompleted(it, playerPosition ?: 0L)
             }
             player?.removeListener(eventListener)
             player?.release()

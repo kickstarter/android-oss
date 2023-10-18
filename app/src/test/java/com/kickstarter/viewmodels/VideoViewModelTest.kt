@@ -1,33 +1,25 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.VideoFactory.hlsVideo
+import com.kickstarter.ui.IntentKey
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.VideoFactory;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
+class VideoViewModelTest : KSRobolectricTestCase() {
+    @Test
+    fun testVideoViewModel_EmitsVideoUrl_WhenHls() {
+        val vm = VideoViewModel.ViewModel(environment())
+        val project = project().toBuilder().video(hlsVideo()).build()
+        val preparePlayerWithUrl = TestSubscriber<String?>()
+        vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl)
 
-import org.junit.Test;
-
-import rx.observers.TestSubscriber;
-
-public class VideoViewModelTest extends KSRobolectricTestCase {
-
-  @Test
-  public void testVideoViewModel_EmitsVideoUrl_WhenHls() {
-    final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.project().toBuilder().video(VideoFactory.hlsVideo()).build();
-
-    final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
-    vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl);
-
-    // Configure the view model with a project intent.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    preparePlayerWithUrl.assertValue(project.video().hls());
-  }
-/*
+        // Configure the view model with a project intent.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        preparePlayerWithUrl.assertValue(project.video()!!.hls())
+    } /*
   @Test
   public void testVideoViewModel_EmitsVideoUrl_WhenNotHls() {
     final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());

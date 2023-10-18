@@ -2,24 +2,48 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.VideoFactory.hlsVideo
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.viewmodels.VideoViewModel.Factory
+import com.kickstarter.viewmodels.VideoViewModel.VideoViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class VideoViewModelTest : KSRobolectricTestCase() {
+
+    lateinit var vm: VideoViewModel
+    private val disposables = CompositeDisposable()
+    val preparePlayerWithUrl = TestSubscriber<String>()
+    val preparePlayerWithUrlAndPosition = TestSubscriber<Pair<String, Long>>()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+
+    private fun setUpEnvironment(environment: Environment, intent: Intent) {
+        vm = Factory(environment(), intent).create(VideoViewModel::class.java)
+        vm.outputs.preparePlayerWithUrl().subscribe { preparePlayerWithUrl.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.preparePlayerWithUrlAndPosition().subscribe { preparePlayerWithUrlAndPosition.onNext(it) }.addToDisposable(disposables)
+    }
     @Test
     fun testVideoViewModel_EmitsVideoUrl_WhenHls() {
-        val vm = VideoViewModel.ViewModel(environment())
-        val project = project().toBuilder().video(hlsVideo()).build()
-        val preparePlayerWithUrl = TestSubscriber<String?>()
-        vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl)
 
+        val project = project().toBuilder().video(hlsVideo()).build()
         // Configure the view model with a project intent.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        setUpEnvironment(environment(), intent)
+
         preparePlayerWithUrl.assertValue(project.video()!!.hls())
-    } /*
+        preparePlayerWithUrlAndPosition.assertNoValues()
+    }
+
+/*
   @Test
   public void testVideoViewModel_EmitsVideoUrl_WhenNotHls() {
     final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());

@@ -6,6 +6,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.addCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -19,29 +24,45 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.WebUtils.userAgent
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.viewmodels.VideoViewModel
-import com.trello.rxlifecycle.ActivityEvent
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.viewmodels.VideoViewModel.Factory
+import com.kickstarter.viewmodels.VideoViewModel.VideoViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(VideoViewModel.ViewModel::class)
-class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
+class VideoActivity : AppCompatActivity() {
     private lateinit var build: Build
     private var player: SimpleExoPlayer? = null
     private var playerPosition: Long? = null
     private var trackSelector: DefaultTrackSelector? = null
     private lateinit var binding: VideoPlayerLayoutBinding
 
+    private lateinit var viewModelFactory: Factory
+    private val viewModel: VideoViewModel by viewModels { viewModelFactory }
+
+    private var disposables = CompositeDisposable()
+
+    private val lifecycleObserver = object : DefaultLifecycleObserver {
+        override fun onResume(owner: LifecycleOwner) {
+            viewModel.inputs.resume()
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = VideoPlayerLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        build = requireNotNull(environment().build())
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = Factory(env, intent = intent)
+            env
+        }
+
+        build = requireNotNull(environment?.build())
 
         val fullscreenButton: ImageView = binding.playerView.findViewById(R.id.exo_fullscreen_icon)
         fullscreenButton.setImageResource(R.drawable.ic_fullscreen_close)
@@ -51,17 +72,25 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         }
 
         viewModel.outputs.preparePlayerWithUrl()
-            .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))
-            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { preparePlayer(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.preparePlayerWithUrlAndPosition()
-            .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))
-            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 playerPosition = it.second
                 preparePlayer(it.first)
             }
+            .addToDisposable(disposables)
+
+        lifecycle.addObserver(lifecycleObserver)
+
+        this.onBackPressedDispatcher.addCallback {
+            back()
+        }
+
+        setUpConnectivityStatusCheck(lifecycle)
     }
 
     public override fun onDestroy() {
@@ -81,7 +110,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         }
     }
 
-    override fun back() {
+    private fun back() {
         val intent = Intent()
             .putExtra(IntentKey.VIDEO_SEEK_POSITION, player?.currentPosition)
         setResult(Activity.RESULT_OK, intent)
@@ -155,7 +184,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         if (player != null) {
             playerPosition = player?.currentPosition
             player?.duration?.let {
-                viewModel.inputs.onVideoCompleted(it, playerPosition ?: 0L)
+                // viewModel.inputs.onVideoCompleted(it, playerPosition ?: 0L)
             }
             player?.removeListener(eventListener)
             player?.release()

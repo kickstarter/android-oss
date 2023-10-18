@@ -43,7 +43,6 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     private val backingInfoViewIsGone = TestSubscriber<Boolean>()
     private val closeButtonIsGone = TestSubscriber<Boolean>()
     private val creatorNameTextViewText = TestSubscriber<String>()
-    private val goBack = TestSubscriber<Unit>()
     private val messageEditTextHint = TestSubscriber<String>()
     private val messageEditTextShouldRequestFocus = TestSubscriber<Unit>()
     private val messageList = TestSubscriber<List<Message>>()
@@ -69,8 +68,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         vm.outputs.backingInfoViewIsGone().subscribe { backingInfoViewIsGone.onNext(it) }.addToDisposable(disposables)
         vm.outputs.closeButtonIsGone().subscribe { closeButtonIsGone.onNext(it) }.addToDisposable(disposables)
         vm.outputs.messageEditTextHint().subscribe { messageEditTextHint.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.messageEditTextShouldRequestFocus()
-            .subscribe { messageEditTextShouldRequestFocus.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageEditTextShouldRequestFocus().subscribe { messageEditTextShouldRequestFocus.onNext(it) }.addToDisposable(disposables)
         vm.outputs.messageList().subscribe { messageList.onNext(it) }.addToDisposable(disposables)
         vm.outputs.creatorNameTextViewText().subscribe { creatorNameTextViewText.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectNameTextViewText().subscribe { projectNameTextViewText.onNext(it) }.addToDisposable(disposables)
@@ -305,7 +303,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         )
 
         // All data except for messages should emit.
-        messageList.assertNoValues()
+        messageList.assertValue(emptyList())
         creatorNameTextViewText.assertValues(project.creator().name())
         backingAndProject.assertValues(Pair.create(backing, project))
     }
@@ -573,7 +571,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         vm.inputs.messageEditTextIsFocused(true)
 
         // Toolbar stays expanded when keyboard opens and no messages.
-        toolbarIsExpanded.assertNoValues()
+        toolbarIsExpanded.assertValue(false)
     }
 
     @Test

@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class MessageThreadEnvelope private constructor(
-    private val messages: List<Message>,
+    private val messages: List<Message> = emptyList(),
     private val messageThread: MessageThread?,
-    private val participants: List<User>,
+    private val participants: List<User> = emptyList(),
 ) : Parcelable {
     fun messages() = this.messages
     fun messageThread() = this.messageThread

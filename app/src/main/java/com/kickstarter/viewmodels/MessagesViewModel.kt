@@ -12,11 +12,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Backing
@@ -31,7 +29,6 @@ import com.kickstarter.services.apiresponses.MessageThreadEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.MessageSubject
 import com.kickstarter.ui.data.MessagesData
-import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -153,8 +150,8 @@ interface MessagesViewModel {
         private val creatorNameTextViewText = BehaviorSubject.create<String>()
         private val loadingIndicatorViewIsGone: Observable<Boolean>
         private val messageEditTextHint = BehaviorSubject.create<String>()
-        private val messageEditTextShouldRequestFocus = PublishSubject.create<Unit>()
-        private val messageList = BehaviorSubject.create<List<Message>?>()
+        private val messageEditTextShouldRequestFocus = BehaviorSubject.create<Unit>()
+        private val messageList = BehaviorSubject.create<List<Message>>()
         private val projectNameTextViewText = BehaviorSubject.create<String>()
         private val projectNameToolbarTextViewText: Observable<String>
         private val recyclerViewDefaultBottomPadding: Observable<Unit>
@@ -221,11 +218,13 @@ interface MessagesViewModel {
             private fun backingAndProjectFromData(
                 data: MessagesData,
                 client: ApiClientTypeV2
-            ): Observable<Pair<Backing, Project>> {
+            ): Observable<Pair<Backing?, Project>> {
                 val backingAndProjectObs = data.backingOrThread.either(
-                    ifLeft = { return@either Observable.just(Pair.create<Backing, Project>(it, data.project)) },
+                    ifLeft = {
+                        return@either Observable.just(Pair.create<Backing, Project>(it, data.project))
+                    },
                     ifRight = {
-                        val backingNotification: Observable<Notification<Backing>> =
+                        val backingNotification =
                             if (data.project.isBacking()) client.fetchProjectBacking(
                                 data.project,
                                 data.currentUser
@@ -235,8 +234,10 @@ interface MessagesViewModel {
                             ).materialize().share()
 
                         return@either backingNotification
-                            .compose(Transformers.valuesV2())
-                            .map { Pair.create(it, data.project) }
+                            .filter { data.project.isNotNull() }
+                            .map {
+                                Pair.create(it.value, data.project)
+                            }
                             .take(1)
                     }
                 )
@@ -267,19 +268,18 @@ interface MessagesViewModel {
                 .ofType(MessagePreviousScreenType::class.java)
 
             val configBacking = configData
-                .filter { it.right().isNotNull() }
-                .map { it.right() }
-                .map { requireNotNull(it) }
-                .map { PairUtils.second(it) }
-                .map { requireNotNull(it) }
+                .filter { it.isNotNull() && it.right().isNotNull() }
+                .map { requireNotNull(it.right()) }
+                .filter { it.second.isNotNull() }
+                .map { requireNotNull(it.second) }
 
             val configThread = configData
-                .filter { it.left().isNotNull() }
+                .filter { it.isNotNull() && it.left().isNotNull() }
                 .map { requireNotNull(it.left()) }
 
-            val backingOrThread: Observable<Either<Backing, MessageThread>> = Observable.merge(
-                configBacking.map { Left(it) },
-                configThread.map { Right(it) }
+            val backingOrThread: Observable<Either<Backing, MessageThread>> = Observable.merge<Either<Backing, MessageThread>?>(
+                configBacking.filter { it.isNotNull() }.map { Left(it) },
+                configThread.filter { it.isNotNull() }.map { Right(it) }
             )
 
             val messageIsSending = PublishSubject.create<Boolean>()
@@ -304,37 +304,34 @@ interface MessagesViewModel {
                             client.fetchMessagesForThread(messageThread)
                         }
                     )
-                        .map {
-                            it
-                        }
                         .doOnSubscribe { messagesAreLoading.onNext(true) }
                         .doAfterTerminate { messagesAreLoading.onNext(false) }
                         .compose(Transformers.neverErrorV2())
                         .share()
-                }
-                .map {
-                    it
                 }
 
             loadingIndicatorViewIsGone = messagesAreLoading
                 .map { it.negate() }
                 .distinctUntilChanged()
 
+            val thread = initialMessageThreadEnvelope
+                .filter { it.messageThread().isNotNull() }
+                .map { it.messageThread() }
+
             // If view model was not initialized with a MessageThread, participant is
             // the project creator.
             val participant =
                 Observable.combineLatest(
-                    initialMessageThreadEnvelope.map {
-                        it.messageThread()
-                    },
+                    thread,
                     project
                 ) { a: MessageThread, b: Project -> Pair.create(a, b) }
                     .map {
-                        if (it.first != null)
-                            it?.first?.participant()
+                        if (it.first != null && it.first.participant() != null)
+                            it.first?.participant()
                         else
                             it.second?.creator()
-                    }.filter { it.isNotNull() }
+                    }
+                    .filter { it.isNotNull() }
                     .map { requireNotNull(it) }
                     .take(1)
 
@@ -348,12 +345,12 @@ interface MessagesViewModel {
                 project,
                 participant,
                 currentUser.observable()
-            ) { backingOrThread, project, participant, currentUserOptional ->
+            ) { backOrThread, proj, part, currentUserOptional ->
 
                 return@combineLatest MessagesData(
-                    backingOrThread,
-                    project,
-                    participant,
+                    backOrThread,
+                    proj,
+                    part,
                     requireNotNull(currentUserOptional.getValue())
                 )
             }
@@ -419,9 +416,8 @@ interface MessagesViewModel {
                 .map { it.isNotNull() && it.isPresent() }
 
             messageThreadEnvelope
-                .map { it.messageThread() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.isNotNull() && it.messageThread().isNotNull() }
+                .map { requireNotNull(it.messageThread()) }
                 .switchMap {
                     client.markAsRead(
                         it
@@ -433,12 +429,12 @@ interface MessagesViewModel {
                 .addToDisposable(disposables)
 
             val initialMessages = initialMessageThreadEnvelope
+                .filter { it.isNotNull() && it.messages().isNotNull() }
                 .map { it.messages() }
 
             val newMessages = sentMessageThreadEnvelope
-                .map { it.messages() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.isNotNull() && it.messages().isNotNull() }
+                .map { requireNotNull(it.messages()) }
 
             // Concat distinct messages to initial message list. Return just the new messages if
             // initial list is null, i.e. a new message thread.
@@ -449,13 +445,13 @@ interface MessagesViewModel {
                     )
                 )
                 .map {
-                    val messagesList = it?.first
-                    val message = it?.second?.toList()
+                    val messagesList = it.first
+                    val message = it.second?.toList()
 
                     messagesList?.let { initialMessages ->
-                        message?.let {
+                        message?.let { m ->
                             ListUtils.concatDistinct(
-                                initialMessages, it
+                                initialMessages, m
                             )
                         }
                     } ?: it.second
@@ -473,31 +469,33 @@ interface MessagesViewModel {
                 .addToDisposable(disposables)
 
             project
+                .filter { it.creator().name().isNotNull() }
                 .map { it.creator().name() }
                 .subscribe { v: String -> creatorNameTextViewText.onNext(v) }
                 .addToDisposable(disposables)
 
             initialMessageThreadEnvelope
+                .filter { it.messages().isNotNull() }
                 .map { it.messages() }
-                .filter { it.isNull() }
-                .take(1)
-                .compose(Transformers.ignoreValuesV2())
-                .subscribe { messageEditTextShouldRequestFocus.onNext(it) }
+                .filter { it.isEmpty() }
+                .distinctUntilChanged()
+                .subscribe { messageEditTextShouldRequestFocus.onNext(Unit) }
                 .addToDisposable(disposables)
 
-            val backingAndProject = messagesData
-                .switchMap { backingAndProjectFromData(it, client) }
-
-            backingAndProject
-                .filter { it.isNotNull() }
-                .subscribe {
-                    this.backingAndProject.onNext(it)
+            messagesData
+                .switchMap {
+                    backingAndProjectFromData(it, client)
                 }
-                .addToDisposable(disposables)
+                .filter { it.isNotNull() }
+                .subscribe { backingAndProject ->
+                    if (backingAndProject.first.isNotNull() && backingAndProject.second.isNotNull()) {
+                        this.backingAndProject.onNext(Pair<Backing, Project>(backingAndProject.first, backingAndProject.second))
+                    }
 
-            backingAndProject
-                .map { it.isNull() }
-                .subscribe { backingInfoViewIsGone.onNext(it) }
+                    if (backingAndProject.first == null) {
+                        backingInfoViewIsGone.onNext(true)
+                    }
+                }
                 .addToDisposable(disposables)
 
             messageAccountTypeObservable
@@ -520,12 +518,15 @@ interface MessagesViewModel {
             setMessageEditText = messageSent.map { "" }
 
             toolbarIsExpanded = messageList
+                .map {
+                    it
+                }
                 .compose(
                     Transformers.takePairWhenV2(
                         messageEditTextIsFocused
                     )
                 )
-                .map { PairUtils.second(it) }
+                .map { it.second }
                 .map { it.negate() }
 
             messageNotification
@@ -552,13 +553,14 @@ interface MessagesViewModel {
                 }
                 .compose(
                     Transformers.combineLatestPair(
-                        backingAndProject.filter { it.isNotNull() }
+                        this.backingAndProject.filter { it.isNotNull() }
                             .map { requireNotNull(it) }
                     )
                 )
+                .filter { it.second.first.isNotNull() }
                 .map {
                     BackingWrapper(
-                        it.second.first, it.first.second, it.first.first
+                        requireNotNull(it.second.first), it.first.second, it.first.first
                     )
                 }
                 .subscribe { v: BackingWrapper -> startBackingActivity.onNext(v) }

@@ -2,35 +2,40 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.creator
 import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ThanksShareHolderViewModel.ViewModel
+    private lateinit var vm: ThanksShareHolderViewModel.ThanksShareViewHolderViewModel
 
     private val projectName = TestSubscriber<String>()
     private val startShare = TestSubscriber<Pair<String, String>>()
     private val startShareOnFacebook = TestSubscriber<Pair<Project, String>>()
     private val startShareOnTwitter = TestSubscriber<Pair<String, String>>()
+    private val disposables = CompositeDisposable()
 
-    protected fun setUpEnvironment(environment: Environment) {
-        vm = ThanksShareHolderViewModel.ViewModel(environment)
-        vm.outputs.projectName().subscribe(projectName)
-        vm.outputs.startShare().subscribe(startShare)
-        vm.outputs.startShareOnFacebook().subscribe(startShareOnFacebook)
-        vm.outputs.startShareOnTwitter().subscribe(startShareOnTwitter)
+    private fun setUpEnvironment() {
+        vm = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel()
+        vm.outputs.projectName().subscribe { projectName.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startShare().subscribe { startShare.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startShareOnFacebook().subscribe { startShareOnFacebook.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.startShareOnTwitter().subscribe { startShareOnTwitter.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
     fun testProjectName() {
         val project = project()
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         vm.configureWith(project)
 
@@ -39,7 +44,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartShare() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val project = setUpProjectWithWebUrls()
 
@@ -53,7 +58,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartShareOnFacebook() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val project = setUpProjectWithWebUrls()
         vm.configureWith(project)
@@ -66,7 +71,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartShareOnTwitter() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val project = setUpProjectWithWebUrls()
         vm.configureWith(project)
@@ -95,5 +100,11 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             .name("Best Project 2K19")
             .urls(Urls.builder().web(webUrls).build())
             .build()
+    }
+
+    @After
+    fun clear() {
+        vm.inputs.onCleared()
+        disposables.clear()
     }
 }

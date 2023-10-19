@@ -2,37 +2,43 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.stripe.android.model.CardBrand
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 import java.util.Date
 import java.util.GregorianCalendar
 
 class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: PaymentMethodsViewHolderViewModel.ViewModel
+    private lateinit var vm: PaymentMethodsViewHolderViewModel.PaymentMethodsViewHolderViewModel
 
     private val id = TestSubscriber<String>()
     private val issuer = TestSubscriber<String>()
     private val issuerImage = TestSubscriber<Int>()
     private val expirationDate = TestSubscriber<String>()
     private val lastFour = TestSubscriber<String>()
+    private val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = PaymentMethodsViewHolderViewModel.ViewModel(environment)
+    private fun setUpEnvironment() {
+        this.vm = PaymentMethodsViewHolderViewModel.PaymentMethodsViewHolderViewModel()
 
-        this.vm.outputs.id().subscribe(this.id)
-        this.vm.outputs.issuer().subscribe(this.issuer)
-        this.vm.outputs.issuerImage().subscribe(this.issuerImage)
-        this.vm.outputs.expirationDate().subscribe(this.expirationDate)
-        this.vm.outputs.lastFour().subscribe(this.lastFour)
+        this.vm.outputs.id().subscribe { this.id.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.issuer().subscribe { this.issuer.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.issuerImage().subscribe { this.issuerImage.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.expirationDate().subscribe { this.expirationDate.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.lastFour().subscribe { this.lastFour.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
     fun testExpirationDate() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val calendar = GregorianCalendar(2019, 2, 1)
         val date: Date = calendar.time
 
@@ -48,7 +54,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLastFour() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.card(creditCard)
@@ -58,7 +64,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIssuer() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.card(creditCard)
@@ -68,11 +74,16 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIssuerImage() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.card(creditCard)
 
         this.issuerImage.assertValue(R.drawable.discover_md)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

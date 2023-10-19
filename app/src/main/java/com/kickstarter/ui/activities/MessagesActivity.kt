@@ -6,44 +6,62 @@ import android.text.Html
 import android.util.Pair
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.addCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.MessagesLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BackingWrapper
-import com.kickstarter.models.Message
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.MessagesAdapter
+import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.viewmodels.MessagesViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import java.math.RoundingMode
 
-@RequiresActivityViewModel(MessagesViewModel.ViewModel::class)
-class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
+class MessagesActivity : AppCompatActivity() {
     private lateinit var ksCurrency: KSCurrency
     private lateinit var ksString: KSString
     private lateinit var adapter: MessagesAdapter
 
     private lateinit var binding: MessagesLayoutBinding
+
+    private lateinit var viewModelFactory: MessagesViewModel.Factory
+    private val viewModel: MessagesViewModel.MessagesViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MessagesLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ksCurrency = requireNotNull(environment().ksCurrency())
-        ksString = requireNotNull(environment().ksString())
+        setUpConnectivityStatusCheck(lifecycle)
+
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = MessagesViewModel.Factory(env, intent)
+            env
+        }
+
+        ksCurrency = requireNotNull(environment?.ksCurrency())
+        ksString = requireNotNull(environment?.ksString())
         adapter = MessagesAdapter()
 
         binding.messagesRecyclerView.adapter = adapter
@@ -56,115 +74,111 @@ class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
 
         setAppBarOffsetChangedListener(binding.messagesAppBarLayout)
 
-        RxView.focusChanges(binding.messageReplyLayout.messageEditText)
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { viewModel.inputs.messageEditTextIsFocused(it) }
+        binding.messageReplyLayout.messageEditText.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            viewModel.inputs.messageEditTextIsFocused(hasFocus)
+        }
 
         viewModel.outputs.backButtonIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messagesToolbar.messagesToolbarBackButton))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ViewUtils.setGone(binding.messagesToolbar.messagesToolbarBackButton, it)
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.backingAndProject()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setBackingInfoView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.backingInfoViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.setGone(binding.messagesBackingInfoView.backingInfoView, it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.closeButtonIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messagesToolbar.messagesToolbarCloseButton))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(binding.messagesToolbar.messagesToolbarCloseButton, it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.creatorNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messagesCreatorNameTextView.text = ksString.format(getString(R.string.project_creator_by_creator), "creator_name", it) }
-
-        viewModel.outputs.goBack()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { back() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.loadingIndicatorViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messagesLoadingIndicator))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(binding.messagesLoadingIndicator, it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.messageEditTextHint()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setMessageEditTextHint(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.messageEditTextShouldRequestFocus()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { requestFocusAndOpenKeyboard() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.messageList()
-            .compose(bindToLifecycle())
-            .compose<List<Message?>>(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter.messages(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messagesProjectNameTextView.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectNameToolbarTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messagesToolbar.messagesProjectNameCollapsedTextView.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.recyclerViewDefaultBottomPadding()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setDefaultRecyclerViewBottomPadding() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.recyclerViewInitialBottomPadding()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setInitialRecyclerViewBottomPadding(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.scrollRecyclerViewToBottom()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messagesRecyclerView.scrollToPosition(adapter.itemCount - 1) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setMessageEditText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messageReplyLayout.messageEditText.setText(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.sendMessageButtonIsEnabled()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messageReplyLayout.sendMessageButton.isEnabled = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showMessageErrorToast()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showToast(this, it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startBackingActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startBackingActivity(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.toolbarIsExpanded()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messagesAppBarLayout.setExpanded(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.viewPledgeButtonIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messagesBackingInfoView.messagesViewPledgeButton))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(binding.messagesBackingInfoView.messagesViewPledgeButton, it) }
+            .addToDisposable(disposables)
 
         binding.messagesBackingInfoView.messagesViewPledgeButton.setOnClickListener {
             viewPledgeButtonClicked()
@@ -174,25 +188,22 @@ class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
             sendMessageButtonClicked()
         }
 
-        binding.messageReplyLayout.sendMessageButton.setOnClickListener {
-            sendMessageButtonClicked()
-        }
-
         binding.messagesToolbar.messagesToolbarBackButton.setOnClickListener {
-            backOrCloseButtonClicked()
+            finishWithAnimation()
         }
 
         binding.messagesToolbar.messagesToolbarCloseButton.setOnClickListener {
-            backOrCloseButtonClicked()
+            finishWithAnimation()
         }
 
         binding.messageReplyLayout.messageEditText.doOnTextChanged { message, _, _, _ ->
             message?.let { onMessageEditTextChanged(it) }
         }
-    }
 
-    private fun backOrCloseButtonClicked() =
-        viewModel.inputs.backOrCloseButtonClicked()
+        this.onBackPressedDispatcher.addCallback {
+            finishWithAnimation()
+        }
+    }
 
     private fun sendMessageButtonClicked() =
         viewModel.inputs.sendMessageButtonClicked()
@@ -203,12 +214,10 @@ class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
     private fun onMessageEditTextChanged(message: CharSequence) =
         viewModel.inputs.messageEditTextChanged(message.toString())
 
-    override fun exitTransition() = if (binding.messagesToolbar.messagesToolbarBackButton.visibility == View.VISIBLE)
-        TransitionUtils.slideInFromLeft() else null
-
     override fun onDestroy() {
         super.onDestroy()
         binding.messagesRecyclerView.adapter = null
+        disposables.clear()
     }
 
     private fun requestFocusAndOpenKeyboard() {

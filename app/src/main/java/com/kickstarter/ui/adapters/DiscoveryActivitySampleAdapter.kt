@@ -32,8 +32,8 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
     }
 
     @LayoutRes
-    override fun layout(sectionRow: SectionRow): Int {
-        return if (objectFromSectionRow(sectionRow) is Activity) {
+    override fun layout(sectionRow: SectionRow?): Int {
+        return if (sectionRow != null && objectFromSectionRow(sectionRow) is Activity) {
             val activity = objectFromSectionRow(sectionRow) as Activity
             return when {
                 activity.category() == Activity.CATEGORY_BACKING -> {

@@ -23,7 +23,7 @@ class CommentInitialErrorAdapter : KSListAdapter() {
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.comment_initial_load_error_layout
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.comment_initial_load_error_layout
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return EmptyViewHolder(CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))

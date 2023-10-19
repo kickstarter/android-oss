@@ -15,7 +15,7 @@ class HeaderElementAdapter : KSListAdapter() {
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.view_element_header
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.view_element_header
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return HeaderElementViewHolder(

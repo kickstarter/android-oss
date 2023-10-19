@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -65,7 +64,7 @@ abstract class KSListAdapter(
     /**
      * Fetch the layout id associated with a sectionRow.
      */
-    protected abstract fun layout(@NonNull sectionRow: SectionRow): Int
+    protected abstract fun layout(sectionRow: SectionRow?): Int
 
     /**
      * Returns a new KSViewHolder given a layout and view.
@@ -141,11 +140,14 @@ abstract class KSListAdapter(
     /**
      * Gets the data object associated with a position.
      */
-    protected fun objectFromPosition(position: Int): Any {
-        return objectFromSectionRow(sectionRowFromPosition(position))
+    protected fun objectFromPosition(position: Int): Any? {
+        sectionRowFromPosition(position)?.let {
+            return objectFromSectionRow(it)
+        }
+        return null
     }
 
-    private fun sectionRowFromPosition(position: Int): SectionRow {
+    private fun sectionRowFromPosition(position: Int): SectionRow? {
         val sectionRow = SectionRow()
         var cursor = 0
         for (section in this.sections) {
@@ -158,8 +160,7 @@ abstract class KSListAdapter(
             }
             sectionRow.nextSection()
         }
-
-        throw RuntimeException("Position $position not found in sections")
+        return null
     }
 
     private fun inflateView(viewGroup: ViewGroup, @LayoutRes viewType: Int): View {

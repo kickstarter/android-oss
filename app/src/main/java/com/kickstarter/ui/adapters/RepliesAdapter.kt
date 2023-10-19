@@ -28,7 +28,7 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.item_comment_card
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.item_comment_card
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)

@@ -22,7 +22,7 @@ class DiscoveryEditorialAdapter(private val delegate: Delegate) : KSListAdapter(
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.item_lights_on
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.item_lights_on
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return EditorialViewHolder(

@@ -105,12 +105,15 @@ abstract class KSListAdapter(
         val data = objectFromPosition(position)
 
         try {
-            viewHolder.bindData(data)
+            data?.let {
+                viewHolder.bindData(data)
+            }
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) {
                 ExceptionUtils.rethrowAsRuntimeException(e)
             } else {
                 // TODO: alter the exception message to say we are just reporting it and it's not a real crash.
+                FirebaseCrashlytics.getInstance().setCustomKey("KSListAdapter", this::class.java.simpleName)
                 FirebaseCrashlytics.getInstance().recordException(e)
             }
         }

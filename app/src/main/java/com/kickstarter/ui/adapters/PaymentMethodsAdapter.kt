@@ -19,7 +19,7 @@ class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Deleg
 
     interface Delegate : PaymentMethodsViewHolder.Delegate
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.item_payment_method
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.item_payment_method
 
     override fun viewHolder(layout: Int, viewGroup: ViewGroup): KSViewHolder = PaymentMethodsViewHolder(ItemPaymentMethodBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
 

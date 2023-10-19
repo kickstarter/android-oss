@@ -22,7 +22,7 @@ class FrequentlyAskedQuestionsAdapter : KSListAdapter() {
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.item_frequently_asked_question_card
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.item_frequently_asked_question_card
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return FrequentlyAskedQuestionsViewHolder(

@@ -14,6 +14,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.MessageThreadViewHolder;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public final class MessageThreadsAdapter extends KSListAdapter {
   }
 
   @Override
-  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
+  protected @LayoutRes int layout(@Nullable final SectionRow sectionRow) {
     return R.layout.message_thread_view;
   }
 

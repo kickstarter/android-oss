@@ -13,8 +13,8 @@ import com.kickstarter.ui.viewholders.ProjectSocialViewHolder
 
 class ProjectSocialAdapter : KSListAdapter() {
 
-    override fun layout(sectionRow: SectionRow): Int {
-        return if (sectionRow.section() == 0) {
+    override fun layout(sectionRow: SectionRow?): Int {
+        return if (sectionRow?.section() == 0) {
             R.layout.project_context_view
         } else {
             R.layout.project_social_view

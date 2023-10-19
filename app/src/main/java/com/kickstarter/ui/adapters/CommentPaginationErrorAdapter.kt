@@ -24,7 +24,7 @@ class CommentPaginationErrorAdapter(private val delegate: Delegate) : KSListAdap
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.item_error_pagination
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.item_error_pagination
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return PaginationErrorViewHolder(

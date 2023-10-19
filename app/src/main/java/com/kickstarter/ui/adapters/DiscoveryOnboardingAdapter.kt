@@ -25,7 +25,7 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.discovery_onboarding_view
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.discovery_onboarding_view
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return DiscoveryOnboardingViewHolder(

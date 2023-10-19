@@ -22,7 +22,7 @@ class EnvironmentalCommitmentsAdapter : KSListAdapter() {
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.item_environmental_commitments_card
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.item_environmental_commitments_card
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return EnvironmentalCommitmentsViewHolder(

@@ -24,7 +24,7 @@ class DiscoveryProjectCardAdapter(private val delegate: Delegate) : KSListAdapte
         submitList(items())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = R.layout.project_card_view
+    override fun layout(sectionRow: SectionRow?): Int = R.layout.project_card_view
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return ProjectCardViewHolder(

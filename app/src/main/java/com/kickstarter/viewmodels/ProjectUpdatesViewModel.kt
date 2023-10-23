@@ -98,7 +98,11 @@ interface ProjectUpdatesViewModel {
                     .nextPage(nextPage)
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
-                    .envelopeToListOfData { it.updates }
+                    .envelopeToListOfData {
+                        it.updates?.filter { updates ->
+                            !updates.body().isNullOrEmpty()
+                        }
+                    }
                     .loadWithParams {
                         loadWithProjectUpdatesList(Observable.just(it.first), it.second)
                     }

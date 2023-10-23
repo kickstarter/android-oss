@@ -1,6 +1,8 @@
 package com.kickstarter;
 
 import android.text.TextUtils;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.FirebaseHelper;
 import com.kickstarter.libs.PushNotifications;
@@ -24,6 +26,8 @@ import androidx.annotation.CallSuper;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
+import io.reactivex.exceptions.UndeliverableException;
+import io.reactivex.plugins.RxJavaPlugins;
 import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication implements IKSApplicationComponent {
@@ -63,6 +67,7 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
       Timber.plant(new Timber.DebugTree());
     }
 
+    createErrorHandler();
     FirebaseHelper.initialize(getApplicationContext(), this.ffClient, this::initializeDependencies);
   }
 
@@ -108,5 +113,19 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
     this.cookieManager.getCookieStore().add(webUri, cookie);
     this.cookieManager.getCookieStore().add(apiUri, cookie);
     CookieHandler.setDefault(this.cookieManager);
+  }
+
+  private void createErrorHandler() {
+    RxJavaPlugins.setErrorHandler(e -> {
+      if (e instanceof UndeliverableException) {
+        Timber.w(e, "Undeliverable Exception");
+        if (e.getMessage() != null) {
+          FirebaseCrashlytics.getInstance().setCustomKey("Undeliverable Exception", e.getMessage());
+        }
+        FirebaseCrashlytics.getInstance().recordException(e);
+      } else {
+        Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+      }
+    });
   }
 }

@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.userIsCreator
@@ -132,6 +133,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.publishedAt() }
+                .filter { it.isNotNull() }
                 .compose(bindToLifecycle())
                 .subscribe(this.publishDate)
 

@@ -4,21 +4,25 @@ import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.viewmodels.MessageCreatorViewModel.Factory
+import com.kickstarter.viewmodels.MessageCreatorViewModel.MessageCreatorViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class MessageCreatorViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: MessageCreatorViewModel.ViewModel
+    private lateinit var vm: MessageCreatorViewModel
 
     private val creatorName = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -27,24 +31,26 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
     private val showSentError = TestSubscriber<Int>()
     private val showSentSuccess = TestSubscriber<Int>()
 
-    private fun setUpEnvironment(environment: Environment, project: Project? = ProjectFactory.project()) {
-        this.vm = MessageCreatorViewModel.ViewModel(environment)
+    private val disposables = CompositeDisposable()
 
-        this.vm.outputs.creatorName().subscribe(this.creatorName)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.sendButtonIsEnabled().subscribe(this.sendButtonIsEnabled)
-        this.vm.outputs.showMessageThread().subscribe(this.showMessageThread)
-        this.vm.outputs.showSentError().subscribe(this.showSentError)
-        this.vm.outputs.showSentSuccess().subscribe(this.showSentSuccess)
+    private fun setUpEnvironment(environment: Environment, project: Project? = ProjectFactory.project()) {
 
         // Configure the view model with a project intent.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        this.vm = Factory(environment, intent).create(MessageCreatorViewModel::class.java)
+
+        this.vm.outputs.creatorName().subscribe { this.creatorName.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.sendButtonIsEnabled().subscribe { this.sendButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showMessageThread().subscribe { this.showMessageThread.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showSentError().subscribe { this.showSentError.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showSentSuccess().subscribe { this.showSentSuccess.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testSendingMessageError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
                     return Observable.error(Throwable("error"))
                 }
@@ -63,7 +69,7 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendingMessageSuccess() {
         setUpEnvironment(
-            environment().toBuilder().apiClient(object : MockApiClient() {
+            environment().toBuilder().apiClientV2(object : MockApiClientV2() {
                 override fun fetchMessagesForThread(messageThreadId: Long): Observable<MessageThreadEnvelope> {
                     return Observable.error(Throwable("error"))
                 }

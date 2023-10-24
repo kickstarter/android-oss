@@ -10,6 +10,8 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import java.lang.RuntimeException
 
 class ConnectivityReceiver(
     private val connectivityReceiverListener: ConnectivityReceiverListener,
@@ -34,21 +36,33 @@ class ConnectivityReceiver(
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // TODO: once all migration to RXJava is completed and BaseActivity removed, get rid of the BroadcastReceiver receiver
+        // and simple register the lifecycle observer on the target activity
+        try {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        // - Check capabilities for WIFI or cellular connection
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .build()
+            // - Check capabilities for WIFI or cellular connection
+            val networkRequest = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build()
 
-        cm.registerNetworkCallback(networkRequest, networkCallback)
+            cm.registerNetworkCallback(networkRequest, networkCallback)
+        } catch (exception: RuntimeException) {
+            FirebaseCrashlytics.getInstance().setCustomKey(this.javaClass.name, exception.message ?: "")
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
     }
 
     private fun unregister(context: Context) {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        cm.unregisterNetworkCallback(networkCallback)
+        try {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            cm.unregisterNetworkCallback(networkCallback)
+        } catch (exception: IllegalArgumentException) {
+            FirebaseCrashlytics.getInstance().setCustomKey(this.javaClass.name, exception.message ?: "")
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
     }
 
     override fun onResume(owner: LifecycleOwner) {

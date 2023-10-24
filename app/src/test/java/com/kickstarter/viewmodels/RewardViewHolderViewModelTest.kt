@@ -21,6 +21,7 @@ import com.kickstarter.ui.SharedPreferenceKey
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
 import java.math.RoundingMode
@@ -1235,4 +1236,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         amount: Double
     ): String =
         requireNotNull(environment.ksCurrency()).format(amount, project, RoundingMode.HALF_UP)
+
+    @After
+    fun clear() {
+        disposables.clear()
+    }
 }

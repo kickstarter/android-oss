@@ -456,7 +456,7 @@ interface RewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        override fun configureWith( projectData: ProjectData,  reward: Reward) {
+        override fun configureWith( projectData: ProjectData, reward: Reward) {
             this.projectDataAndReward.onNext(Pair.create(projectData, reward))
         }
 

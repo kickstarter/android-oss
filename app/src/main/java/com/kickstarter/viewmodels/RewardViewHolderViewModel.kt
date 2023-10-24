@@ -134,7 +134,7 @@ interface RewardViewHolderViewModel {
         fun localPickUpName(): Observable<String>
     }
 
-    class ViewModel( environment: Environment) : Inputs, Outputs {
+    class ViewModel(environment: Environment) : Inputs, Outputs {
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
 
@@ -448,7 +448,7 @@ interface RewardViewHolderViewModel {
             }
         }
 
-        private fun isSelectable( project: Project,  reward: Reward): Boolean {
+        private fun isSelectable(project: Project, reward: Reward): Boolean {
             if (project.backing()?.isBacked(reward) == true) {
                 return false
             }
@@ -456,7 +456,7 @@ interface RewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        override fun configureWith( projectData: ProjectData, reward: Reward) {
+        override fun configureWith(projectData: ProjectData, reward: Reward) {
             this.projectDataAndReward.onNext(Pair.create(projectData, reward))
         }
 

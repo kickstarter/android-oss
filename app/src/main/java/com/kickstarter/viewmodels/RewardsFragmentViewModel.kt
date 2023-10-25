@@ -3,13 +3,15 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.RewardFactory
@@ -20,11 +22,11 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -59,11 +61,12 @@ class RewardsFragmentViewModel {
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
+    class RewardsFragmentViewModel(val environment: Environment): ViewModel(), Inputs, Outputs {
 
+        private val isExpanded = PublishSubject.create<Boolean>()
         private val projectDataInput = PublishSubject.create<ProjectData>()
         private val rewardClicked = PublishSubject.create<Pair<Reward, Boolean>>()
-        private val alertButtonPressed = PublishSubject.create<Void>()
+        private val alertButtonPressed = PublishSubject.create<Unit>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
         private val projectData = BehaviorSubject.create<ProjectData>()
@@ -75,8 +78,9 @@ class RewardsFragmentViewModel {
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
-        private val apolloClient = requireNotNull(environment.apolloClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
+        private val analyticEvents = requireNotNull(environment.analytics())
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
@@ -84,19 +88,29 @@ class RewardsFragmentViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private val disposables = CompositeDisposable()
+
+        /***
+         * setState method brought from BaseFragment.java
+         */
+        fun setState(state: Boolean?) {
+            state?.let {
+                this.isExpanded.onNext(it)
+            }
+        }
         init {
 
             this.isExpanded
                 .filter { it }
                 .compose(combineLatestPair(this.projectDataInput))
                 .map { it.second }
-                .compose(bindToLifecycle())
                 .subscribe { this.analyticEvents.trackRewardsCarouselViewed(it) }
+                .addToDisposable(disposables)
 
             this.projectDataInput
                 .map { filterOutNotStartedRewards(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.projectData)
+                .subscribe { this.projectData.onNext(it)}
+                .addToDisposable(disposables)
 
             val project = this.projectData
                 .map { it.project() }
@@ -104,7 +118,7 @@ class RewardsFragmentViewModel {
             this.isExpanded
                 .filter { it }
                 .switchMap {
-                    SendThirdPartyEventUseCase(sharedPreferences, ffClient)
+                    SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
                         .sendThirdPartyEvent(
                             project = project,
                             apolloClient = apolloClient,
@@ -114,20 +128,21 @@ class RewardsFragmentViewModel {
                             firebasePreviousScreen = ThirdPartyEventValues.ScreenName.PROJECT.value,
                         )
                 }
-                .compose(Transformers.neverError())
-                .compose(bindToLifecycle())
+                .compose(Transformers.neverErrorV2())
                 .subscribe {
                     onThirdPartyEventSent.onNext(
                         it.first
                     )
                 }
+                .addToDisposable(disposables)
 
             project
                 .filter { it.isBacking() }
                 .map { indexOfBackedReward(it) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.backedRewardPosition)
+                .subscribe { this.backedRewardPosition.onNext(it) }
+                .addToDisposable(disposables)
+
 
             val backedReward = project
                 .map { it.backing()?.let { backing -> getReward(backing) } }
@@ -139,14 +154,13 @@ class RewardsFragmentViewModel {
             Observable
                 .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput) { rewardPair, projectData ->
                     if (!rewardPair.second) {
-                        return@combineLatest null
+                        return@combineLatest Unit
                     } else {
                         return@combineLatest pledgeDataAndPledgeReason(projectData, rewardPair.first)
                     }
                 }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
+                .filter { it.isNotNull() && it is Pair<*, *> && it.first is PledgeData && it.second is PledgeReason }
+                .map { requireNotNull(it as Pair<PledgeData, PledgeReason>) }
                 .subscribe {
                     val pledgeAndData = it
                     val newRw = it.first.reward()
@@ -163,18 +177,18 @@ class RewardsFragmentViewModel {
                     }
                     this.rewardClicked.onNext(defaultRewardClicked)
                 }
+                .addToDisposable(disposables)
 
             Observable
                 .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput, backedReward) { rewardPair, projectData, backedReward ->
                     if (!rewardPair.second) {
-                        return@combineLatest null
+                        return@combineLatest Unit
                     } else {
                         return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first), backedReward)
                     }
                 }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
+                .filter { it.isNotNull() && it is Pair<*, *>} // todo extract to a function
+                .map { requireNotNull(it as Pair<Pair<PledgeData, PledgeReason>, Reward>) }
                 .subscribe {
                     val pledgeAndData = it.first
                     val newRw = it.first.first.reward()
@@ -202,27 +216,28 @@ class RewardsFragmentViewModel {
                     }
                     this.rewardClicked.onNext(defaultRewardClicked)
                 }
+                .addToDisposable(disposables)
 
             project
                 .map { it.rewards()?.size ?: 0 }
-                .compose(bindToLifecycle())
-                .subscribe(this.rewardsCount)
+                .subscribe { this.rewardsCount.onNext(it) }
+                .addToDisposable(disposables)
 
             this.showAlert
-                .compose<Pair<PledgeData, PledgeReason>>(takeWhen(alertButtonPressed))
-                .compose(bindToLifecycle())
+                .compose<Pair<PledgeData, PledgeReason>>(takeWhenV2(alertButtonPressed))
                 .subscribe {
                     if (it.first.reward().hasAddons())
                         this.showAddOnsFragment.onNext(it)
                     else this.pledgeData.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             this.pledgeData
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.showPledgeFragment.onNext(it)
                 }
+                .addToDisposable(disposables)
         }
 
         private fun filterOutNotStartedRewards(pData: ProjectData): ProjectData {
@@ -243,7 +258,9 @@ class RewardsFragmentViewModel {
         private fun differentShippingTypes(newRW: Reward, backedRW: Reward): Boolean {
             return if (newRW.id() == backedRW.id()) false
             else {
-                newRW.shippingType()?.toLowerCase(Locale.getDefault()) ?: "" != backedRW.shippingType()?.toLowerCase(Locale.getDefault()) ?: ""
+                (newRW.shippingType()?.lowercase(Locale.getDefault())
+                    ?: "") != (backedRW.shippingType()
+                    ?.lowercase(Locale.getDefault()) ?: "")
             }
         }
 
@@ -273,24 +290,29 @@ class RewardsFragmentViewModel {
             this.rewardClicked.onNext(Pair(reward, true))
         }
 
-        override fun alertButtonPressed() = this.alertButtonPressed.onNext(null)
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
 
-        @NonNull
+        override fun alertButtonPressed() = this.alertButtonPressed.onNext(Unit)
+
         override fun backedRewardPosition(): Observable<Int> = this.backedRewardPosition
 
-        @NonNull
         override fun projectData(): Observable<ProjectData> = this.projectData
 
-        @NonNull
         override fun rewardsCount(): Observable<Int> = this.rewardsCount
 
-        @NonNull
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
 
-        @NonNull
         override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment
 
-        @NonNull
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return RewardsFragmentViewModel(environment) as T
+        }
     }
 }

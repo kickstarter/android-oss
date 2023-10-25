@@ -20,6 +20,7 @@ import com.kickstarter.viewmodels.MessageCreatorViewModel.MessageCreatorViewMode
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class MessageCreatorViewModelTest : KSRobolectricTestCase() {
@@ -46,6 +47,11 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showMessageThread().subscribe { this.showMessageThread.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showSentError().subscribe { this.showSentError.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showSentSuccess().subscribe { this.showSentSuccess.onNext(it) }.addToDisposable(disposables)
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 
     @Test

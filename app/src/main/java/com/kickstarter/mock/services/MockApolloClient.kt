@@ -172,6 +172,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun creatorDetails(slug: String): io.reactivex.Observable<CreatorDetails> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun sendMessage(project: Project, recipient: User, body: String): io.reactivex.Observable<Long> {
+        return io.reactivex.Observable.just(1L)
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

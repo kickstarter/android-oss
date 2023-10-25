@@ -365,9 +365,6 @@ interface ProjectPageViewModel {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
-            val intent2 =
-                    intent.dropBreadcrumb()
-
             val mappedProjectNotification = Observable.merge(
                     intent.dropBreadcrumb(),
                     intent.dropBreadcrumb()
@@ -424,7 +421,8 @@ interface ProjectPageViewModel {
                 .filter { it.displayPrelaunch().isTrue() }
                 .map { it.webProjectUrl() }
                     .dropBreadcrumb()
-                    .subscribe(this.prelaunchUrl)
+                    .subscribe { this.prelaunchUrl.onNext(it) }
+                    .addToDisposable(disposables)
 
             val initialProject = mappedProjectValues
                 .filter {
@@ -1061,6 +1059,7 @@ interface ProjectPageViewModel {
             currentProject
                 .map { it.metadataForProject() }
                 .map { ProjectMetadata.BACKING == it }
+                    .distinctUntilChanged()
                     .dropBreadcrumb()
                     .subscribe{ backingViewGroupIsVisible.onNext(it) }
                     .addToDisposable(disposables)

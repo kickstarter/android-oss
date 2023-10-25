@@ -5,7 +5,6 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
@@ -13,10 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
-import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.libs.utils.ViewUtils
@@ -29,8 +24,6 @@ import com.kickstarter.ui.adapters.RewardsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
-import com.kickstarter.viewmodels.MessagesViewModel
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,7 +36,7 @@ class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
     private var binding: FragmentRewardsBinding? = null
 
     private lateinit var viewModelFactory: Factory
-    private val viewModel:  RewardsFragmentViewModel by viewModels {
+    private val viewModel: RewardsFragmentViewModel by viewModels {
         viewModelFactory
     }
 
@@ -106,10 +99,11 @@ class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
         context?.apply {
             binding?.rewardsCount?.isGone = ViewUtils.isLandscape(this)
         }
-
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-//            this.viewModel.setState(state = false)
-//        }
+    }
+    fun setState(state: Boolean?) {
+        state?.let {
+            viewModel.isExpanded(state)
+        }
     }
 
     private fun createDialog() {
@@ -150,9 +144,9 @@ class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
     }
 
     override fun onDetach() {
+        disposables.clear()
         super.onDetach()
         binding?.rewardsRecycler?.adapter = null
-        disposables.clear()
     }
 
     override fun rewardClicked(reward: Reward) {

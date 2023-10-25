@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +38,8 @@ class RewardsFragmentViewModel {
 
         /** Call when the Alert button has been pressed  */
         fun alertButtonPressed()
+
+        fun isExpanded(state: Boolean?)
     }
 
     interface Outputs {
@@ -61,10 +62,10 @@ class RewardsFragmentViewModel {
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
-    class RewardsFragmentViewModel(val environment: Environment): ViewModel(), Inputs, Outputs {
+    class RewardsFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
         private val isExpanded = PublishSubject.create<Boolean>()
-        private val projectDataInput = PublishSubject.create<ProjectData>()
+        private val projectDataInput = BehaviorSubject.create<ProjectData>()
         private val rewardClicked = PublishSubject.create<Pair<Reward, Boolean>>()
         private val alertButtonPressed = PublishSubject.create<Unit>()
 
@@ -103,16 +104,21 @@ class RewardsFragmentViewModel {
             this.isExpanded
                 .filter { it }
                 .compose(combineLatestPair(this.projectDataInput))
+                .filter { it.second.isNotNull() }
                 .map { it.second }
-                .subscribe { this.analyticEvents.trackRewardsCarouselViewed(it) }
+                .subscribe {
+                    this.analyticEvents.trackRewardsCarouselViewed(it)
+                }
                 .addToDisposable(disposables)
 
             this.projectDataInput
+                .filter { filterOutNotStartedRewards(it).isNotNull() }
                 .map { filterOutNotStartedRewards(it) }
-                .subscribe { this.projectData.onNext(it)}
+                .subscribe { this.projectData.onNext(it) }
                 .addToDisposable(disposables)
 
             val project = this.projectData
+                .filter { it.project().isNotNull() }
                 .map { it.project() }
 
             this.isExpanded
@@ -137,14 +143,14 @@ class RewardsFragmentViewModel {
                 .addToDisposable(disposables)
 
             project
-                .filter { it.isBacking() }
+                .filter { it.isBacking() && indexOfBackedReward(it).isNotNull() }
                 .map { indexOfBackedReward(it) }
                 .distinctUntilChanged()
                 .subscribe { this.backedRewardPosition.onNext(it) }
                 .addToDisposable(disposables)
 
-
             val backedReward = project
+                .filter { it.isBacking() }
                 .map { it.backing()?.let { backing -> getReward(backing) } }
                 .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
@@ -187,7 +193,7 @@ class RewardsFragmentViewModel {
                         return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first), backedReward)
                     }
                 }
-                .filter { it.isNotNull() && it is Pair<*, *>} // todo extract to a function
+                .filter { it.isNotNull() && it is Pair<*, *> && it.first is Pair<*, *> && it.second is Reward } // todo extract to a function
                 .map { requireNotNull(it as Pair<Pair<PledgeData, PledgeReason>, Reward>) }
                 .subscribe {
                     val pledgeAndData = it.first
@@ -258,9 +264,13 @@ class RewardsFragmentViewModel {
         private fun differentShippingTypes(newRW: Reward, backedRW: Reward): Boolean {
             return if (newRW.id() == backedRW.id()) false
             else {
-                (newRW.shippingType()?.lowercase(Locale.getDefault())
-                    ?: "") != (backedRW.shippingType()
-                    ?.lowercase(Locale.getDefault()) ?: "")
+                (
+                    newRW.shippingType()?.lowercase(Locale.getDefault())
+                        ?: ""
+                    ) != (
+                    backedRW.shippingType()
+                        ?.lowercase(Locale.getDefault()) ?: ""
+                    )
             }
         }
 
@@ -282,6 +292,11 @@ class RewardsFragmentViewModel {
             return 0
         }
 
+        override fun isExpanded(state: Boolean?) {
+            state?.let {
+                this.isExpanded.onNext(it)
+            }
+        }
         override fun configureWith(projectData: ProjectData) {
             this.projectDataInput.onNext(projectData)
         }

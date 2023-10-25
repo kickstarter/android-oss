@@ -2,15 +2,15 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
 import com.kickstarter.libs.utils.extensions.acceptedCardType
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.isFromPaymentSheet
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderViewModel {
     interface Inputs : BaseRewardCardViewHolderViewModel.Inputs {
@@ -38,7 +38,7 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         fun selectImageIsVisible(): Observable<Boolean>
     }
 
-    class ViewModel(environment: Environment) : BaseRewardCardViewHolderViewModel.ViewModel(environment), Inputs, Outputs {
+    class ViewModel : BaseRewardCardViewHolderViewModel.ViewModel(), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -57,33 +57,28 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
                 .map { it.second.acceptedCardType(it.first.type()) || it.first.isFromPaymentSheet() }
 
             card
-                .compose(bindToLifecycle())
                 .subscribe(this.isClickable)
 
             card
                 .map { if (it) 1.0f else .5f }
-                .compose(bindToLifecycle())
                 .subscribe(this.issuerImageAlpha)
 
             card
                 .map { if (it) R.color.text_primary else R.color.text_secondary }
-                .compose(bindToLifecycle())
                 .subscribe(this.lastFourTextColor)
 
             card
                 .map { it.negate() }
-                .compose(bindToLifecycle())
                 .subscribe(this.notAvailableCopyIsVisible)
 
             card
-                .compose(bindToLifecycle())
                 .subscribe(this.selectImageIsVisible)
 
             this.cardAndProject
                 .map { it.first }
-                .compose<Pair<StoredCard, Int>>(takePairWhen(this.cardSelected))
-                .compose(bindToLifecycle())
+                .compose<Pair<StoredCard, Int>>(takePairWhenV2(this.cardSelected))
                 .subscribe { this.notifyDelegateCardSelected.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         override fun cardSelected(position: Int) = this.cardSelected.onNext(position)

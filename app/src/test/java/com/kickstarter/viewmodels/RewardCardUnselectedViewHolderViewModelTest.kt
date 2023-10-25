@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -11,6 +11,8 @@ import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.StoredCard
 import com.stripe.android.model.CardBrand
+import io.reactivex.disposables.CompositeDisposable
+import org.junit.After
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.Date
@@ -31,26 +33,39 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
     private val notifyDelegateCardSelected = TestSubscriber.create<Pair<StoredCard, Int>>()
     private val retryCopyIsVisible = TestSubscriber.create<Boolean>()
     private val selectImageIsVisible = TestSubscriber.create<Boolean>()
+    val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = RewardCardUnselectedViewHolderViewModel.ViewModel(environment)
+    private fun setUpEnvironment() {
+        this.vm = RewardCardUnselectedViewHolderViewModel.ViewModel()
 
-        this.vm.outputs.expirationDate().subscribe(this.expirationDate)
-        this.vm.outputs.isClickable().subscribe(this.isClickable)
-        this.vm.outputs.issuer().subscribe(this.issuer)
-        this.vm.outputs.issuerImage().subscribe(this.issuerImage)
-        this.vm.outputs.issuerImageAlpha().subscribe(this.issuerImageAlpha)
-        this.vm.outputs.lastFourTextColor().subscribe(this.lastFourTextColor)
-        this.vm.outputs.lastFour().subscribe(this.lastFour)
-        this.vm.outputs.notAvailableCopyIsVisible().subscribe(this.notAvailableCopyIsVisible)
-        this.vm.outputs.notifyDelegateCardSelected().subscribe(this.notifyDelegateCardSelected)
-        this.vm.outputs.retryCopyIsVisible().subscribe(this.retryCopyIsVisible)
-        this.vm.outputs.selectImageIsVisible().subscribe(this.selectImageIsVisible)
+        this.vm.outputs.expirationDate().subscribe { this.expirationDate.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.isClickable().subscribe { this.isClickable.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.issuer().subscribe { this.issuer.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.issuerImage().subscribe { this.issuerImage.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.issuerImageAlpha().subscribe { this.issuerImageAlpha.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.lastFourTextColor().subscribe { this.lastFourTextColor.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.lastFour().subscribe { this.lastFour.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.notAvailableCopyIsVisible()
+            .subscribe { this.notAvailableCopyIsVisible.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.notifyDelegateCardSelected()
+            .subscribe { this.notifyDelegateCardSelected.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.retryCopyIsVisible().subscribe { this.retryCopyIsVisible.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.selectImageIsVisible().subscribe { this.selectImageIsVisible.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
     fun testExpirationDate() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val calendar = GregorianCalendar(2019, 2, 1)
         val date: Date = calendar.time
 
@@ -65,7 +80,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsClickable_whenCardIsAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -75,7 +90,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsClickable_whenCardIsFromPaymentSheet() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.fromPaymentSheetCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -85,7 +100,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsClickable_whenCardIsNotAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
@@ -95,7 +110,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIssuer() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -105,7 +120,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIssuerImage() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -115,7 +130,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIssuerImageAlpha_whenCardIsAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -125,7 +140,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIssuerImageAlpha_whenCardIsNotAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
@@ -135,7 +150,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLastFourDigits() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val creditCard = StoredCardFactory.discoverCard()
 
@@ -146,7 +161,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLastFourTextColor_whenCardIsAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -156,7 +171,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLastFourTextColor_whenCardIsNotAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
@@ -166,7 +181,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotAvailableCopyIsVisible_whenCardIsAccepted() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val creditCard = StoredCardFactory.discoverCard()
 
@@ -177,7 +192,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotAvailableCopyIsVisible_whenCardIsNotAccepted() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val creditCard = StoredCardFactory.discoverCard()
 
@@ -188,7 +203,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotifyDelegateCardSelected() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         val creditCard = StoredCardFactory.visa()
 
@@ -200,7 +215,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRetryCopyIsVisible_whenCardIsBackingPaymentSource_backingIsErrored() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val visa = StoredCardFactory.visa()
 
         val paymentSource = PaymentSourceFactory.visa()
@@ -224,7 +239,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRetryCopyIsVisible_whenCardIsBackingPaymentSource_backingIsNotErrored() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val visa = StoredCardFactory.visa()
 
         val paymentSource = PaymentSourceFactory.visa()
@@ -247,7 +262,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRetryCopyIsVisible_whenCardIsNotBackingPaymentSource_backingIsErrored() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val discover = StoredCardFactory.discoverCard()
 
         val backing = BackingFactory.backing()
@@ -267,7 +282,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRetryCopyIsVisible_whenCardIsNotBackingPaymentSource_backingIsNotErrored() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val discover = StoredCardFactory.discoverCard()
 
         val backing = BackingFactory.backing()
@@ -286,7 +301,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSelectImageIsVisible_whenCardIsAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
@@ -296,11 +311,16 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSelectImageIsVisible_whenCardIsNotAllowedType() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
 
         this.selectImageIsVisible.assertValue(false)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

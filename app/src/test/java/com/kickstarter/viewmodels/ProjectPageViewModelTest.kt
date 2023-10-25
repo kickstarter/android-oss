@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
+import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -778,9 +779,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
 //        assertEquals(this.projectData.values().get(0).project().name(), " ")
-        this.pledgeActionButtonContainerIsGone.assertValue(true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertNoValues()
-//        this.projectData.assertNoValues()
+        this.projectData.assertNoValues()
         this.reloadProjectContainerIsGone.assertValue(false)
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertNoValues()

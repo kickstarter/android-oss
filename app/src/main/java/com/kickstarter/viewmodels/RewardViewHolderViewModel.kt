@@ -2,17 +2,16 @@ package com.kickstarter.viewmodels
 
 import android.text.SpannableString
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
@@ -24,11 +23,11 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.RewardViewHolder
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 import java.math.RoundingMode
 
 interface RewardViewHolderViewModel {
@@ -66,7 +65,7 @@ interface RewardViewHolderViewModel {
         fun descriptionForNoReward(): Observable<Int>
 
         /** Emits the reward's description.  */
-        fun descriptionForReward(): Observable<String?>
+        fun descriptionForReward(): Observable<String>
 
         /** Emits `true` if the reward description is empty and should be hidden in the UI.  */
         fun descriptionIsGone(): Observable<Boolean>
@@ -87,7 +86,7 @@ interface RewardViewHolderViewModel {
         fun minimumAmountTitle(): Observable<SpannableString>
 
         /** Emits the remaining count of the reward.  */
-        fun remaining(): Observable<String>
+        fun remaining(): Observable<Int>
 
         /** Emits `true` if the remaining count should be hidden, `false` otherwise.  */
         fun remainingIsGone(): Observable<Boolean>
@@ -117,7 +116,7 @@ interface RewardViewHolderViewModel {
         fun titleForNoReward(): Observable<Int>
 
         /** Emits the reward's title when `isReward` is true.  */
-        fun titleForReward(): Observable<String?>
+        fun titleForReward(): Observable<String>
 
         /** Emits if the reward has add-Ons available */
         fun hasAddOnsAvailable(): Observable<Boolean>
@@ -135,13 +134,9 @@ interface RewardViewHolderViewModel {
         fun localPickUpName(): Observable<String>
     }
 
-    class ViewModel(@NonNull environment: Environment) :
-        ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
-        private val currentUser = requireNotNull(environment.currentUser())
+    class ViewModel(environment: Environment) : Inputs, Outputs {
+        private val currentUser = requireNotNull(environment.currentUserV2())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val ffClient = requireNotNull(environment.featureFlagClient())
-        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
-        private val apolloClient = requireNotNull(environment.apolloClient())
 
         private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
@@ -154,14 +149,14 @@ interface RewardViewHolderViewModel {
         private val conversion = BehaviorSubject.create<String>()
         private val conversionIsGone = BehaviorSubject.create<Boolean>()
         private val descriptionForNoReward = BehaviorSubject.create<Int>()
-        private val descriptionForReward = BehaviorSubject.create<String?>()
+        private val descriptionForReward = BehaviorSubject.create<String>()
         private val descriptionIsGone = BehaviorSubject.create<Boolean>()
         private val endDateSectionIsGone = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val estimatedDeliveryIsGone = BehaviorSubject.create<Boolean>()
         private val limitContainerIsGone = BehaviorSubject.create<Boolean>()
         private val minimumAmountTitle = PublishSubject.create<SpannableString>()
-        private val remaining = BehaviorSubject.create<String>()
+        private val remaining = BehaviorSubject.create<Int>()
         private val remainingIsGone = BehaviorSubject.create<Boolean>()
         private val reward = BehaviorSubject.create<Reward>()
         private val rewardItems = BehaviorSubject.create<List<RewardsItem>>()
@@ -170,7 +165,7 @@ interface RewardViewHolderViewModel {
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val showFragment = PublishSubject.create<Pair<Project, Reward>>()
         private val titleForNoReward = BehaviorSubject.create<Int>()
-        private val titleForReward = BehaviorSubject.create<String?>()
+        private val titleForReward = BehaviorSubject.create<String>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsAvailable = BehaviorSubject.create<Boolean>()
         private val isMinimumPledgeAmountGone = BehaviorSubject.create<Boolean>()
@@ -183,6 +178,8 @@ interface RewardViewHolderViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+
+        val disposables = CompositeDisposable()
 
         init {
 
@@ -206,32 +203,29 @@ interface RewardViewHolderViewModel {
                         this.ksCurrency
                     )
                 }
-                .compose(bindToLifecycle())
                 .subscribe(this.minimumAmountTitle)
 
             val userCreatedProject = this.currentUser.observable()
-                .compose<Pair<User?, Project>>(combineLatestPair(project))
-                .map { it.first?.id() == it.second.creator().id() }
+                .compose<Pair<KsOptional<User>?, Project>>(combineLatestPair(project))
+                .map { it.first?.getValue()?.id() == it.second.creator().id() }
 
             projectAndReward
                 .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
                 .map { buttonIsGone(it.first.first, it.first.second, it.second) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.buttonIsGone)
 
             projectAndReward
                 .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.buttonCTA.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { it.first }
                 .map { it.currency() == it.currentCurrency() }
-                .compose(bindToLifecycle())
                 .subscribe(this.conversionIsGone)
 
             projectAndReward
@@ -244,7 +238,6 @@ interface RewardViewHolderViewModel {
                         true
                     )
                 }
-                .compose(bindToLifecycle())
                 .subscribe(this.conversion)
 
             projectAndReward
@@ -256,86 +249,74 @@ interface RewardViewHolderViewModel {
                         else -> R.string.Back_it_because_you_believe_in_it
                     }
                 }
-                .compose(bindToLifecycle())
                 .subscribe(this.descriptionForNoReward)
 
             reward
                 .filter { RewardUtils.isReward(it) }
+                .filter { it.description().isNotNull() }
                 .map { it.description() }
-                .compose(bindToLifecycle())
                 .subscribe(this.descriptionForReward)
 
             projectAndReward
                 .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.descriptionIsGone)
 
             projectAndReward
                 .map { shouldContinueFlow(it.first, it.second) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.buttonIsEnabled.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { it.first.isLive && RewardUtils.isLimited(it.second) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.remainingIsGone)
 
             reward
                 .filter { RewardUtils.isLimited(it) }
-                .filter { it.remaining().isNotNull() }
-                .map { it.remaining() }
-                .map { remaining -> remaining?.let { NumberUtils.format(it) } }
-                .compose(bindToLifecycle())
+                .map { it.remaining() ?: -1 }
                 .subscribe(this.remaining)
 
             reward
                 .filter { RewardUtils.isItemized(it) }
                 .map { it.rewardsItems() }
-                .compose(bindToLifecycle())
                 .subscribe(this.rewardItems)
 
             reward
                 .map { RewardUtils.isItemized(it) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.rewardItemsAreGone)
 
             reward
-                .compose(bindToLifecycle())
                 .subscribe(this.reward)
 
             reward
                 .map { it.hasAddons() }
-                .compose(bindToLifecycle())
                 .subscribe(this.addOnsAvailable)
 
             projectAndReward
                 .map { expirationDateIsGone(it.first, it.second) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.endDateSectionIsGone)
 
             projectAndReward
                 .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
-                .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
-                .compose(bindToLifecycle())
+                .compose<Pair<Project, Reward>>(takeWhenV2(this.rewardClicked))
                 .subscribe(this.showFragment)
 
             this.projectDataAndReward
                 .filter { it.first.project().isLive && !it.first.project().isBacking() }
-                .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
+                .compose(takeWhenV2(this.rewardClicked))
                 .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
-                .compose(bindToLifecycle())
                 .subscribe {
-                    this.analyticEvents.trackSelectRewardCTA(it)
+                    environment.analytics()?.trackSelectRewardCTA(it)
                 }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .filter { RewardUtils.isNoReward(it.second) }
@@ -346,33 +327,29 @@ interface RewardViewHolderViewModel {
                         else -> R.string.Pledge_without_a_reward
                     }
                 }
-                .compose(bindToLifecycle())
                 .subscribe(this.titleForNoReward)
 
             projectAndReward
                 .map { it.first.backing()?.isBacked(it.second) ?: false }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.selectedRewardTagIsGone.onNext(!it)
                 }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) }
                 .map { it.title() }
-                .compose(bindToLifecycle())
                 .subscribe(this.titleForReward)
 
             reward
                 .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.titleIsGone)
 
             reward
                 .filter { RewardUtils.isShippable(it) }
                 .map { RewardUtils.shippingSummary(it) }
                 .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
                 .subscribe(this.shippingSummary)
 
             reward
@@ -380,24 +357,22 @@ interface RewardViewHolderViewModel {
                 .map {
                     RewardUtils.isLocalPickup(it)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.localPickUpIsGone.onNext(!it)
                 }
+                .addToDisposable(disposables)
 
             reward
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
                 .map { it.localReceiptLocation()?.displayableName() }
                 .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
                 .subscribe(this.localPickUpName)
 
             projectAndReward
                 .map { it.first.isLive && RewardUtils.isShippable(it.second) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.shippingSummaryIsGone)
 
             Observable.combineLatest(
@@ -407,36 +382,30 @@ interface RewardViewHolderViewModel {
                 this.addOnsAvailable
             ) { endDateGone, remainingGone, shippingGone, addOnsAvailable -> endDateGone && remainingGone && shippingGone && !addOnsAvailable }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.limitContainerIsGone)
 
             reward
                 .map { RewardUtils.isNoReward(it) || !RewardUtils.hasBackers(it) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.backersCountIsGone)
 
             reward
                 .filter { RewardUtils.isReward(it) && RewardUtils.hasBackers(it) }
                 .map { it.backersCount() as Int }
-                .compose(bindToLifecycle())
                 .subscribe(this.backersCount)
 
             reward
                 .map { RewardUtils.isNoReward(it) || it.estimatedDeliveryOn().isNull() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.estimatedDeliveryIsGone)
 
             reward
                 .filter { RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull() }
                 .map<DateTime> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
-                .compose(bindToLifecycle())
                 .subscribe(this.estimatedDelivery)
 
             reward.map { RewardUtils.isNoReward(it) }
-                .compose(bindToLifecycle())
                 .subscribe(this.isMinimumPledgeAmountGone)
         }
 
@@ -459,25 +428,6 @@ interface RewardViewHolderViewModel {
             }
         }
 
-        /**
-         * In case the `suggested_no_reward_amount` is active and the selected reward is no reward
-         * update the value with one of the variants. Otherwise return the reward as it is
-         *
-         * @param rewardAndVariant contains the selected reward and the variant value
-         *
-         * @return reward if modified value if needed
-         */
-        private fun updateReward(rewardAndVariant: Pair<Reward, Int?>): Reward {
-            val reward = rewardAndVariant.first
-
-            val updatedMinimum = rewardAndVariant.second?.let {
-                if (RewardUtils.isNoReward(reward)) it.toDouble()
-                else reward.minimum()
-            } ?: reward.minimum()
-
-            return reward.toBuilder().minimum(updatedMinimum).build()
-        }
-
         private fun buttonIsGone(
             project: Project,
             reward: Reward,
@@ -498,9 +448,7 @@ interface RewardViewHolderViewModel {
             }
         }
 
-        private fun hasBackedAddOns(project: Project) = !project.backing()?.addOns().isNullOrEmpty()
-
-        private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
+        private fun isSelectable(project: Project, reward: Reward): Boolean {
             if (project.backing()?.isBacked(reward) == true) {
                 return false
             }
@@ -508,7 +456,7 @@ interface RewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        override fun configureWith(@NonNull projectData: ProjectData, @NonNull reward: Reward) {
+        override fun configureWith(projectData: ProjectData, reward: Reward) {
             this.projectDataAndReward.onNext(Pair.create(projectData, reward))
         }
 
@@ -516,96 +464,71 @@ interface RewardViewHolderViewModel {
             this.rewardClicked.onNext(position)
         }
 
-        @NonNull
         override fun backersCount(): Observable<Int> = this.backersCount
 
-        @NonNull
         override fun backersCountIsGone(): Observable<Boolean> = this.backersCountIsGone
 
-        @NonNull
         override fun buttonCTA(): Observable<Int> = this.buttonCTA
 
-        @NonNull
         override fun buttonIsEnabled(): Observable<Boolean> = this.buttonIsEnabled
 
-        @NonNull
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
 
-        @NonNull
         override fun conversion(): Observable<String> = this.conversion
 
-        @NonNull
         override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone
 
-        @NonNull
         override fun descriptionForNoReward(): Observable<Int> = this.descriptionForNoReward
 
-        @NonNull
-        override fun descriptionForReward(): Observable<String?> = this.descriptionForReward
+        override fun descriptionForReward(): Observable<String> = this.descriptionForReward
 
-        @NonNull
         override fun descriptionIsGone(): Observable<Boolean> = this.descriptionIsGone
 
-        @NonNull
         override fun endDateSectionIsGone(): Observable<Boolean> = this.endDateSectionIsGone
 
-        @NonNull
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
-        @NonNull
         override fun estimatedDeliveryIsGone(): Observable<Boolean> = this.estimatedDeliveryIsGone
 
-        @NonNull
         override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
 
-        @NonNull
         override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle
 
-        @NonNull
-        override fun remaining(): Observable<String> = this.remaining
+        override fun remaining(): Observable<Int> = this.remaining
 
-        @NonNull
         override fun remainingIsGone(): Observable<Boolean> = this.remainingIsGone
 
-        @NonNull
         override fun reward(): Observable<Reward> = this.reward
 
-        @NonNull
         override fun rewardItems(): Observable<List<RewardsItem>> = this.rewardItems
 
-        @NonNull
         override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
 
-        @NonNull
         override fun shippingSummary(): Observable<Pair<Int, String?>> = this.shippingSummary
 
-        @NonNull
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
-        @NonNull
         override fun showFragment(): Observable<Pair<Project, Reward>> = this.showFragment
 
-        @NonNull
         override fun titleForNoReward(): Observable<Int> = this.titleForNoReward
 
-        @NonNull
-        override fun titleForReward(): Observable<String?> = this.titleForReward
+        override fun titleForReward(): Observable<String> = this.titleForReward
 
-        @NonNull
         override fun titleIsGone(): Observable<Boolean> = this.titleIsGone
 
-        @NonNull
         override fun hasAddOnsAvailable(): Observable<Boolean> = this.addOnsAvailable
 
-        @NonNull
         override fun isMinimumPledgeAmountGone(): Observable<Boolean> =
             this.isMinimumPledgeAmountGone
 
-        @NonNull
         override fun selectedRewardTagIsGone(): Observable<Boolean> = this.selectedRewardTagIsGone
 
         override fun localPickUpIsGone(): Observable<Boolean> = this.localPickUpIsGone
 
         override fun localPickUpName(): Observable<String> = this.localPickUpName
+
+        fun onCleared() {
+            disposables.clear()
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClientV2
@@ -101,7 +102,14 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendingMessageSuccessful() {
-        setUpEnvironment(environment())
+
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(object : MockApiClientV2() {
+                override fun fetchMessagesForThread(messageThreadId: Long): Observable<MessageThreadEnvelope> {
+                    return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope())
+                }
+            }).build()
+        )
 
         this.vm.inputs.messageBodyChanged("message")
         this.vm.inputs.sendButtonClicked()

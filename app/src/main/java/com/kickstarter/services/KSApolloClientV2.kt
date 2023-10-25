@@ -12,6 +12,7 @@ import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -55,12 +56,14 @@ interface ApolloClientTypeV2 {
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
     fun creatorDetails(slug: String): Observable<CreatorDetails>
+    fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     override fun getProject(project: Project): Observable<Project> {
         return getProject(project.slug() ?: "")
     }
+
     override fun getProject(slug: String): Observable<Project> {
         return Observable.defer {
             val ps = PublishSubject.create<Project>()
@@ -217,7 +220,11 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
-    override fun createFlagging(project: Project?, details: String, flaggingKind: String): Observable<String> {
+    override fun createFlagging(
+        project: Project?,
+        details: String,
+        flaggingKind: String
+    ): Observable<String> {
         return Observable.defer {
             project?.let {
                 val ps = PublishSubject.create<String>()
@@ -480,7 +487,8 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 }
                                 .filter { it.isNotNull() }
                                 .subscribe { shippingList ->
-                                    val shippingEnvelope = shippingRulesListTransformer(shippingList ?: emptyList())
+                                    val shippingEnvelope =
+                                        shippingRulesListTransformer(shippingList ?: emptyList())
                                     ps.onNext(shippingEnvelope)
                                 }.dispose()
                         }
@@ -503,6 +511,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             )
         }?.toList() ?: emptyList()
     }
+
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
@@ -673,7 +682,10 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
-    override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
+    override fun createPassword(
+        password: String,
+        confirmPassword: String
+    ): Observable<CreatePasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
             service.mutate(
@@ -728,6 +740,41 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             )
                             ps.onComplete()
                         }
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Long>()
+            service.mutate(
+                SendMessageMutation.builder()
+                    .projectId(encodeRelayId(project))
+                    .recipientId(encodeRelayId(recipient))
+                    .body(body)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<SendMessageMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<SendMessageMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+
+                        response.data?.let {
+                            decodeRelayId(
+                                response.data?.sendMessage()?.conversation()?.id()
+                            )?.let {
+                                ps.onNext(it)
+                            } ?: ps.onError(Exception())
+                        }
+
+                        ps.onComplete()
                     }
                 })
             return@defer ps

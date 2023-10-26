@@ -7,15 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
-import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Reward
@@ -23,14 +24,23 @@ import com.kickstarter.ui.adapters.RewardsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.RewardsFragmentViewModel
+import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
+import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresFragmentViewModel(RewardsFragmentViewModel.ViewModel::class)
-class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), RewardsAdapter.Delegate {
+class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
 
     private var rewardsAdapter = RewardsAdapter(this)
     private lateinit var dialog: AlertDialog
     private var binding: FragmentRewardsBinding? = null
+
+    private lateinit var viewModelFactory: Factory
+    private val viewModel: RewardsFragmentViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -40,49 +50,59 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = Factory(env)
+        }
+
         setupRecyclerView()
         createDialog()
 
         this.viewModel.outputs.projectData()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { rewardsAdapter.populateRewards(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backedRewardPosition()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { scrollToReward(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showPledgeFragment()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 dialog.dismiss()
                 showPledgeFragment(it.first, it.second)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showAddOnsFragment()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 dialog.dismiss()
                 showAddonsFragment(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.rewardsCount()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setRewardsCount(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showAlert()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 showAlert()
             }
+            .addToDisposable(disposables)
 
         context?.apply {
             binding?.rewardsCount?.isGone = ViewUtils.isLandscape(this)
+        }
+    }
+    fun setState(state: Boolean?) {
+        state?.let {
+            viewModel.isExpanded(state)
         }
     }
 
@@ -124,9 +144,9 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     override fun onDetach() {
+        disposables.clear()
         super.onDetach()
         binding?.rewardsRecycler?.adapter = null
-        this.viewModel = null
     }
 
     override fun rewardClicked(reward: Reward) {

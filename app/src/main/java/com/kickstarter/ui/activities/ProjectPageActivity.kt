@@ -608,8 +608,13 @@ class ProjectPageActivity :
 
     private fun setFragmentsState(expand: Boolean) {
         supportFragmentManager.fragments.map { fragment ->
-            if (fragment is BaseFragment<*>) {
-                fragment.setState(expand && fragment.isVisible)
+            when (fragment) {
+                is BaseFragment<*> -> {
+                    fragment.setState(expand && fragment.isVisible)
+                }
+                is RewardsFragment -> {
+                    fragment.setState(expand && fragment.isVisible)
+                }
             }
         }
     }

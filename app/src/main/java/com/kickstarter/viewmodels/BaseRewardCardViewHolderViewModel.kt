@@ -1,20 +1,19 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.getCardTypeDrawable
-import com.kickstarter.ui.viewholders.KSViewHolder
 import com.stripe.android.model.Card
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -44,7 +43,7 @@ interface BaseRewardCardViewHolderViewModel {
         fun retryCopyIsVisible(): Observable<Boolean>
     }
 
-    abstract class ViewModel(val environment: Environment) : ActivityViewModel<KSViewHolder>(environment), Inputs, Outputs {
+    abstract class ViewModel : Inputs, Outputs {
         protected val cardAndProject: PublishSubject<Pair<StoredCard, Project>> = PublishSubject.create()
 
         private val expirationDate = BehaviorSubject.create<String>()
@@ -56,24 +55,29 @@ interface BaseRewardCardViewHolderViewModel {
 
         private val sdf = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
+        val disposables = CompositeDisposable()
+
         init {
 
             val card = cardAndProject
                 .map { it.first }
 
             card
+                .filter { it.expiration().isNotNull() }
                 .map { it.expiration() }
-                .filter { it.isNotNull() }
                 .map { sdf.format(it).toString() }
                 .subscribe(this.expirationDate)
 
             card
+                .filter { it.expiration().isNotNull() }
                 .map { it.expiration() }
                 .subscribe {
                     this.expirationIsGone.onNext(it == null)
                 }
+                .addToDisposable(disposables)
 
             card
+                .filter { it.isNotNull() }
                 .map { it.lastFourDigits() }
                 .subscribe(this.lastFour)
 
@@ -83,9 +87,8 @@ interface BaseRewardCardViewHolderViewModel {
                 .subscribe(this.issuerImage)
 
             card
+                .filter { it.type().isNotNull() }
                 .map { it.type() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { StoredCard.issuer(it) }
                 .subscribe(this.issuer)
 
@@ -93,6 +96,7 @@ interface BaseRewardCardViewHolderViewModel {
                 .map { it.second }
 
             val backing = project
+                .filter { it.backing().isNotNull() }
                 .map { it.backing() }
 
             val isBackingPaymentSource = backing
@@ -117,5 +121,9 @@ interface BaseRewardCardViewHolderViewModel {
         override fun retryCopyIsVisible(): Observable<Boolean> = this.retryCopyIsVisible
 
         override fun expirationIsGone(): Observable<Boolean> = this.expirationIsGone
+
+        fun onCleared() {
+            disposables.clear()
+        }
     }
 }

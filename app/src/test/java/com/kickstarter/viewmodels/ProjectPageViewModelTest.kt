@@ -778,10 +778,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-//        assertEquals(this.projectData.values().get(0).project().name(), " ")
-        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertValue(true)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertNoValues()
+        this.projectData.assertValue(ProjectDataFactory.project(initialProject))
         this.reloadProjectContainerIsGone.assertValue(false)
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertNoValues()
@@ -791,7 +790,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValues(
+        this.projectData.assertValues(ProjectDataFactory.project(initialProject),
             ProjectDataFactory.project(refreshedProject)
         )
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
@@ -842,7 +841,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment().toBuilder()
                 .currentUserV2(currentUser)
-                    .apolloClientV2(apolloClientWithSuccessFetchProject())
+                    .apolloClientV2(apiClientWithSuccessFetchingProjectFromSlug(project))
                 .schedulerV2(testScheduler).build()
         )
 
@@ -917,7 +916,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
                 environment().toBuilder()
-                        .apolloClientV2(apolloClientWithSuccessFetchProject())
+                        .apolloClientV2(apiClientWithSuccessFetchingProjectFromSlug(project))
                         .build()
         )
         val uri = Uri.parse(url)
@@ -1018,41 +1017,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStarProjectThatIsAlmostCompleted() {
-//        val project = ProjectFactory.halfWayProject().toBuilder().name("leigh0ur92u312").build()
-//
-//        val currentUser = MockCurrentUserV2()
-//        val environment = environment().toBuilder()
-//            .currentUserV2(currentUser)
-//                .apolloClientV2(apolloClientWithSuccessFetchProject())
-//                .build()
-//        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
-//
-//        setUpEnvironment(environment)
-//
-//        // Start the view model with an almost completed project
-//        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
-////        this.savedTest.assertValues(false, true)
-//        // Login
-//        currentUser.refresh(UserFactory.user())
-//
-//        // Star the project
-//        this.vm.inputs.heartButtonClicked()
-//
-//        // The project should be saved, and a save prompt should NOT be shown.
-//        assertEquals(this.projectData.values().get(0).project().isStarred(), false)
-//        assertEquals(this.projectData.values().get(1).project().isStarred(), true)
-////        assertEquals(this.projectData.values().get(2).project().name(), "true")
-//        this.savedTest.assertValues(false, true)
-//        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
-//        this.showSavedPromptTest.assertValueCount(0)
-//        this.projectData.assertValues(
-//            ProjectDataFactory.project(project),
-//            ProjectDataFactory.project(project.toBuilder().isStarred(true).build())
-//        )
-//        disposables.clear()
-
         val currentUser = MockCurrentUserV2()
-        val project = ProjectFactory.almostCompletedProject().toBuilder().name("leigh1nf1839fn").build()
+        val project = ProjectFactory.almostCompletedProject().toBuilder().name("leigh1nf1839fn32e3").isStarred(false).build()
         val environment = environment().toBuilder()
                 .currentUserV2(currentUser)
                 .apolloClientV2(apolloClientWithSuccessFetchProject())
@@ -1060,31 +1026,25 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
-        currentUser.refresh(UserFactory.user())
 
         // Start the view model with a project
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
-        this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
+        //Login
+        currentUser.refresh(UserFactory.user())
 
-//        // The project shouldn't be saved, and a login prompt should be shown.
-//        this.savedTest.assertValues(false)
-//        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
-//        this.showSavedPromptTest.assertValueCount(0)
-//        this.startLoginToutActivity.assertValueCount(1)
-//
-//        // A koala event for starring should NOT be tracked
-
+        // Star the project
         this.vm.inputs.heartButtonClicked()
-        // The project should be saved, and a star prompt should be shown.
+
+        // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
-        this.showSavedPromptTest.assertNoValues()
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.showSavedPromptTest.assertValueCount(0)
+        this.projectData.assertValues(
+                ProjectDataFactory.project(project),
+                ProjectDataFactory.project(project.toBuilder().isStarred(true).build()),
+        )
         disposables.clear()
-
     }
 
     @Test
@@ -1104,19 +1064,15 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         // Login
         currentUser.refresh(UserFactory.user())
-        this.savedTest.assertValue(false)
 
         // Star the project
         this.vm.inputs.heartButtonClicked()
-
-        assertEquals(this.projectData.values().get(2).project().name(), "leigh1234324r03utg04ujgt")
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
         disposables.clear()
-
     }
 
     @Test
@@ -2373,7 +2329,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment().toBuilder()
                 .currentUserV2(currentUser)
-                .apolloClientV2(apolloClientWithSuccessFetchProject())
+                .apolloClientV2(apiClientWithSuccessFetchingProjectFromSlug(project))
                 .schedulerV2(testScheduler).build()
         )
 

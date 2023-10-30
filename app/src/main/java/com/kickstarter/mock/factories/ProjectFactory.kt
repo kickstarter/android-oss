@@ -93,8 +93,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("w0923r veor")
-                .backing(backing)
+            .name("w0923r veor")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -103,8 +103,8 @@ object ProjectFactory {
     fun britishProject(): Project {
         return project()
             .toBuilder()
-                .name("wf203fnewfrf")
-                .country("GB")
+            .name("wf203fnewfrf")
+            .country("GB")
             .currency("GBP")
             .currencySymbol("£")
             .build()
@@ -130,8 +130,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("reoiv094fnverfjv")
-                .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue()))
+            .name("reoiv094fnverfjv")
+            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue()))
             .canComment(true)
             .backing(backing)
             .isBacking(true)
@@ -167,8 +167,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("werjnfwqoeij203")
-                .backing(backing)
+            .name("werjnfwqoeij203")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -198,8 +198,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("woijfvw2-39")
-                .backing(backing)
+            .name("woijfvw2-39")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -224,8 +224,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("odfmv")
-                .backing(backing)
+            .name("odfmv")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -258,8 +258,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("eorfiv")
-                .backing(backing)
+            .name("eorfiv")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -282,8 +282,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("wefwefwefwef")
-                .backing(backing)
+            .name("wefwefwefwef")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -310,8 +310,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("eorgoejrogij23r23rfwrfvgedg")
-                .backing(backing)
+            .name("eorgoejrogij23r23rfwrfvgedg")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -335,8 +335,8 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-                .name("eorgoejrogij23r2r32r213r2")
-                .backing(backing)
+            .name("eorgoejrogij23r2r32r213r2")
+            .backing(backing)
             .isBacking(true)
             .build()
     }
@@ -522,8 +522,8 @@ object ProjectFactory {
 
         return project()
             .toBuilder()
-                .name("eorgoejrogij12")
-                .launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)))
+            .name("eorgoejrogij12")
+            .launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)))
             .displayPrelaunch(true)
             .urls(Urls.builder().web(web).build())
             .build()
@@ -532,7 +532,7 @@ object ProjectFactory {
     fun initialProject(): Project {
         return project()
             .toBuilder()
-                .name("eorgoejrogij")
+            .name("eorgoejrogij")
             .rewards(null)
             .build()
     }

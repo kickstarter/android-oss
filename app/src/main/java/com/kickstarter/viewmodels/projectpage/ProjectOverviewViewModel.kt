@@ -470,13 +470,13 @@ interface ProjectOverviewViewModel {
                 .map { it.blurb() }
 
             categoryTextViewText = project
-                    .filter { it.category().isNotNull() }
+                .filter { it.category().isNotNull() }
                 .map { it.category() }
                 .map { it?.name() ?: "" }
 
             commentsCountTextViewText = project
                 .filter() { it.commentsCount().isNotNull() }
-                    .map { requireNotNull(it.commentsCount()) }
+                .map { requireNotNull(it.commentsCount()) }
                 .map { NumberUtils.format(it) }
 
             conversionTextViewIsGone = project
@@ -508,7 +508,6 @@ interface ProjectOverviewViewModel {
             creatorDetailsNotification
                 .compose(Transformers.errorsV2())
                 .map { _: Throwable? -> true }
-                    .dropBreadcrumb()
                 .subscribe { creatorDetailsIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -520,8 +519,8 @@ interface ProjectOverviewViewModel {
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.goal(), p) }
 
             locationTextViewText = project
-                    .filter { it.location().isNotNull() }
-                    .map { it.location() }
+                .filter { it.location().isNotNull() }
+                .map { it.location() }
                 .map { it?.displayableName() ?: "" }
 
             percentageFundedProgress = project
@@ -656,7 +655,6 @@ interface ProjectOverviewViewModel {
                     return@withLatestFrom isUser
                 }
                 .filter { !it }
-                    .dropBreadcrumb()
                 .subscribe {
                     this.startLogin.onNext(Unit)
                 }
@@ -685,7 +683,6 @@ interface ProjectOverviewViewModel {
                     else ""
                 }
                 .filter { it.isNotEmpty() }
-                    .dropBreadcrumb()
                 .subscribe {
                     openExternally.onNext(it)
                 }
@@ -695,7 +692,6 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.takePairWhenV2(campaignClicked))
                 .map { it.first }
                 .filter { it.project().isLive && !it.project().isBacking() }
-                    .dropBreadcrumb()
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)
                 }

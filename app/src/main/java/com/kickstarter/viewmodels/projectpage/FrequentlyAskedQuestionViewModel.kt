@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
@@ -63,7 +62,7 @@ interface FrequentlyAskedQuestionViewModel {
 
         init {
             val projectFaqList = projectDataInput
-                .filter { it.project().projectFaqs().isNotNull()}
+                .filter { it.project().projectFaqs().isNotNull() }
                 .map { requireNotNull(it.project().projectFaqs()) }
 
             projectFaqList

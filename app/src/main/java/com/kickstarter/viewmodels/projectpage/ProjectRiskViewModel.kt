@@ -41,13 +41,13 @@ interface ProjectRiskViewModel {
 
         init {
             val project = projectDataInput
-                    .filter { it.project().isNotNull() }
-                .map { requireNotNull( it.project()) }
+                .filter { it.project().isNotNull() }
+                .map { requireNotNull(it.project()) }
 
             disposables.add(
                 project
-                        .filter { it.risks().isNotNull() }
-                        .map { requireNotNull( it.risks()) }
+                    .filter { it.risks().isNotNull() }
+                    .map { requireNotNull(it.risks()) }
                     .subscribe {
                         projectRisks.onNext(it)
                     }

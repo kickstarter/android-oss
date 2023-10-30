@@ -13,7 +13,6 @@ import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.viewmodels.projectpage.dropBreadcrumb
 import rx.Observable
 import java.util.regex.Pattern
 
@@ -38,7 +37,6 @@ object ProjectIntentMapper {
                 }
                 .startWith(intentProject)
                 .retry(3)
-                    .dropBreadcrumb()
 
         val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent) ?: "")
             .filter { it.isNotEmpty() }
@@ -46,10 +44,8 @@ object ProjectIntentMapper {
                 slug?.let { apolloClient.getProject(it) }
             }
             .retry(3)
-                .dropBreadcrumb()
         return projectFromParceledProject
             .mergeWith(projectFromParceledParam)
-                .dropBreadcrumb()
     }
 
     fun project(intent: Intent, apolloClient: ApolloClientType): Observable<Project> {

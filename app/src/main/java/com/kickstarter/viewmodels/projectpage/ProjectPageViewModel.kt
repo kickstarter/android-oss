@@ -38,18 +38,15 @@ import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
-import com.kickstarter.libs.utils.extensions.requireNonNull
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
-import com.kickstarter.models.Video
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
@@ -145,7 +142,6 @@ interface ProjectPageViewModel {
         fun onVideoPlayButtonClicked()
 
         fun activityResult(result: ActivityResult)
-
     }
 
     interface Outputs {
@@ -366,53 +362,50 @@ interface ProjectPageViewModel {
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(
-                    intent.dropBreadcrumb(),
-                    intent.dropBreadcrumb()
-                    .compose(takeWhenV2(
-                            this.reloadProjectContainerClicked.dropBreadcrumb()
-                    ))
+                intent,
+                intent
+                    .compose(
+                        takeWhenV2(
+                            this.reloadProjectContainerClicked
+                        )
+                    )
             ).switchMap {
                 ProjectIntentMapper.project(it, this.apolloClient)
-                        .doOnSubscribe {
-                                    progressBarIsGone.onNext(false)
-                                }
-                                .doAfterTerminate {
-                                    progressBarIsGone.onNext(true)
-                                }
-                                .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
-                                    return@withLatestFrom project.updateProjectWith(config, user.getValue())
-                                }
-                                .materialize()
+                    .doOnSubscribe {
+                        progressBarIsGone.onNext(false)
+                    }
+                    .doAfterTerminate {
+                        progressBarIsGone.onNext(true)
+                    }
+                    .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                        return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                    }
+                    .materialize()
             }
                 .share()
-                    .dropBreadcrumb()
 
             activityResult
                 .filter { it.isOk }
                 .filter { it.isRequestCode(ActivityRequestCodes.SHOW_REWARDS) }
-                    .dropBreadcrumb()
                 .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             intent
                 .take(1)
                 .filter { it.getBooleanExtra(IntentKey.EXPAND_PLEDGE_SHEET, false) }
-                    .dropBreadcrumb()
-                    .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
-                    .addToDisposable(disposables)
+                .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
+                .addToDisposable(disposables)
 
             val pledgeSheetExpanded = this.expandPledgeSheet
                 .map { it.first }
                 .startWith(false)
 
             progressBarIsGone
-                    .dropBreadcrumb()
-                    .subscribe { this.retryProgressBarIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.retryProgressBarIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             val mappedProjectValues = mappedProjectNotification
                 .compose(valuesV2())
-                    .dropBreadcrumb()
 
             val mappedProjectErrors = mappedProjectNotification
                 .compose(errorsV2())
@@ -420,25 +413,24 @@ interface ProjectPageViewModel {
             mappedProjectValues
                 .filter { it.displayPrelaunch().isTrue() }
                 .map { it.webProjectUrl() }
-                    .dropBreadcrumb()
-                    .subscribe { this.prelaunchUrl.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.prelaunchUrl.onNext(it) }
+                .addToDisposable(disposables)
 
             val initialProject = mappedProjectValues
                 .filter {
                     it.displayPrelaunch().isFalse()
-                }.dropBreadcrumb()
+                }
 
             // An observable of the ref tag stored in the cookie for the project. Emits an optional since this value can be null.
             val cookieRefTag = initialProject
                 .take(1)
                 .map {
-                    p -> KsOptional.of(RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences))
-                }.dropBreadcrumb()
+                        p ->
+                    KsOptional.of(RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences))
+                }
 
             val refTag = intent
                 .flatMap { ProjectIntentMapper.refTag(it) }
-                    .dropBreadcrumb()
 
             val saveProjectFromDeepLinkActivity = intent
                 .take(1)
@@ -461,13 +453,13 @@ interface ProjectPageViewModel {
                 .map { requireNotNull(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
-                    .filter { it.isPresent() }
-                    .map { it.getValue() }
+                .filter { it.isPresent() }
+                .map { it.getValue() }
                 .compose<User>(takeWhenV2(this.heartButtonClicked))
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                    .filter { !it.isPresent() }
-                    .compose(ignoreValuesV2())
+                .filter { !it.isPresent() }
+                .compose(ignoreValuesV2())
                 .compose<Unit>(takeWhenV2(this.heartButtonClicked))
 //                .filter { it.isNull() }
 
@@ -511,13 +503,11 @@ interface ProjectPageViewModel {
                     }
                 }
                 .share()
-                    .dropBreadcrumb()
 
             loggedOutUserOnHeartClick
                 .compose(ignoreValuesV2())
-                    .dropBreadcrumb()
-                    .subscribe{ this.startLoginToutActivity.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.startLoginToutActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             val savedProjectOnLoginSuccess = this.startLoginToutActivity
                 .compose<Pair<Unit, KsOptional<User>>>(combineLatestPair(this.currentUser.observable()))
@@ -547,18 +537,17 @@ interface ProjectPageViewModel {
                 }.share()
 
             val currentProject = Observable.mergeArray(
-                initialProject.dropBreadcrumb(),
-                refreshedProjectNotification.compose(valuesV2()).dropBreadcrumb(),
-                projectOnUserChangeSave.dropBreadcrumb(),
-                projectOnDeepLinkChangeSave.dropBreadcrumb(),
-                savedProjectOnLoginSuccess.dropBreadcrumb()
+                initialProject,
+                refreshedProjectNotification.compose(valuesV2()),
+                projectOnUserChangeSave,
+                projectOnDeepLinkChangeSave,
+                savedProjectOnLoginSuccess
             )
 
             var previousScreen = ""
             intent
-                    .dropBreadcrumb()
-                    .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
-                    .addToDisposable(disposables)
+                .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
+                .addToDisposable(disposables)
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEventV2(
@@ -570,38 +559,34 @@ interface ProjectPageViewModel {
                     firebasePreviousScreen = previousScreen
                 )
                 .compose(neverErrorV2())
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     onThirdPartyEventSent.onNext(it.first)
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)
 
             projectSavedStatus
-                    .dropBreadcrumb()
-                    .subscribe { this.analyticEvents.trackWatchProjectCTA(it, PROJECT) }
-                    .addToDisposable(disposables)
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it, PROJECT) }
+                .addToDisposable(disposables)
 
             projectSavedStatus
                 .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }
                 .compose(ignoreValuesV2())
-                    .dropBreadcrumb()
-                    .subscribe { this.showSavedPrompt.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.showSavedPrompt.onNext(it) }
+                .addToDisposable(disposables)
 
             val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, Project, ProjectData>(
-                    refTag.dropBreadcrumb(),
-                    cookieRefTag.dropBreadcrumb(),
-                    currentProject.dropBreadcrumb()
+                refTag,
+                cookieRefTag,
+                currentProject
             ) { refTagFromIntent, refTagFromCookie, project ->
                 projectData(refTagFromIntent, refTagFromCookie, project)
             }
 
             currentProjectData
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
@@ -611,14 +596,13 @@ interface ProjectPageViewModel {
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
                 .map { Pair(it.name(), UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())) }
-                    .dropBreadcrumb()
-                    .subscribe{ this.showShareSheet.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.showShareSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
@@ -633,8 +617,7 @@ interface ProjectPageViewModel {
                     project
                 }
                 .map { it.second }
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.startRootCommentsActivity.onNext(it)
                 }.addToDisposable(disposables)
 
@@ -649,11 +632,10 @@ interface ProjectPageViewModel {
                     Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
                 }
                 .map { Pair(it.first, it.second.second) }
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.startRootCommentsForCommentsThreadActivity.onNext(it)
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             intent
                 .take(1)
@@ -669,11 +651,10 @@ interface ProjectPageViewModel {
                 }
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
                     Pair(updateId, project)
-                }                    .dropBreadcrumb()
-                    .subscribe {
+                }.subscribe {
                     this.startProjectUpdateActivity.onNext(it)
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             intent
                 .take(1)
@@ -690,32 +671,27 @@ interface ProjectPageViewModel {
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
                     Pair(updateId, project)
                 }
-                    .dropBreadcrumb()
-                    .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             fullScreenVideoButtonClicked
-                    .dropBreadcrumb()
-                    .subscribe{ this.onOpenVideoInFullScreen.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.onOpenVideoInFullScreen.onNext(it) }
+                .addToDisposable(disposables)
 
             closeFullScreenVideo
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     updateVideoCloseSeekPosition.onNext(it)
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             this.onGlobalLayout
-                    .dropBreadcrumb()
-                    .subscribe { this.setInitialRewardPosition.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.setInitialRewardPosition.onNext(it) }
+                .addToDisposable(disposables)
 
             this.nativeProjectActionButtonClicked
                 .map { Pair(true, true) }
-                    .dropBreadcrumb()
-                    .subscribe{ this.expandPledgeSheet.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             val fragmentStackCount = this.fragmentStackCount.startWith(0)
 
@@ -723,23 +699,20 @@ interface ProjectPageViewModel {
                 .compose(takeWhenV2(this.pledgeToolbarNavigationClicked))
                 .filter { it <= 0 }
                 .map { Pair(false, true) }
-                    .dropBreadcrumb()
-                    .subscribe { this.expandPledgeSheet.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             fragmentStackCount
                 .compose(takeWhenV2(this.pledgeToolbarNavigationClicked))
                 .filter { it > 0 }
                 .compose(ignoreValuesV2())
-                    .dropBreadcrumb()
-                    .subscribe { this.goBack.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.goBack.onNext(it) }
+                .addToDisposable(disposables)
 
             Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyCreated)
                 .map { Pair(false, false) }
-                    .dropBreadcrumb()
-                    .subscribe{ this.expandPledgeSheet.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectHasRewardsAndSheetCollapsed = currentProject
                 .map { it.hasRewards() }
@@ -753,70 +726,61 @@ interface ProjectPageViewModel {
                 .map { true }
 
             Observable.merge(rewardsLoaded, this.reloadProjectContainerClicked.map { true })
-                    .dropBreadcrumb()
-                    .subscribe { this.reloadProjectContainerIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.reloadProjectContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             mappedProjectErrors
                 .map { false }
-                    .dropBreadcrumb()
-                    .subscribe{ this.reloadProjectContainerIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.reloadProjectContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectHasRewardsAndSheetCollapsed
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.retryProgressBarIsGone))
                 .map { (it.first && it.second).negate() }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, Project, ProjectData>(
-                    refTag.dropBreadcrumb(),
-                    cookieRefTag.dropBreadcrumb(),
-                    currentProject.dropBreadcrumb()
+                refTag,
+                cookieRefTag,
+                currentProject
             ) { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
             projectData
                 .filter { it.project().hasRewards() && !it.project().isBacking() }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe{ this.updateFragments.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.updateFragments.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
                 .map { managePledgeMenu(it) }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.managePledgeMenu.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.managePledgeMenu.onNext(it) }
+                .addToDisposable(disposables)
 
             projectData
                 .compose(takePairWhenV2(this.tabSelected))
                 .distinctUntilChanged()
                 .delay(150, TimeUnit.MILLISECONDS, environment.schedulerV2()) // add delay to wait
                 // until fragment subscribed to viewmodel
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.projectData.onNext(it.first)
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             tabSelected
                 .map { it != 0 }
-                    .dropBreadcrumb()
-                    .subscribe { this.hideVideoPlayer.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.hideVideoPlayer.onNext(it) }
+                .addToDisposable(disposables)
 
             val backedProject = currentProject
                 .filter { it.isBacking() }
-                    .dropBreadcrumb()
 
             val backing = backedProject
                 .filter { it.backing().isNotNull() }
                 .map { requireNotNull(it.backing()) }
-                    .dropBreadcrumb()
 
             // - Update fragments with the backing data
             projectData
@@ -829,30 +793,26 @@ interface ProjectPageViewModel {
 
                     projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), updatedProject)
                 }
-                    .dropBreadcrumb()
-                    .subscribe { this.updateFragments.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.updateFragments.onNext(it) }
+                .addToDisposable(disposables)
 
             backedProject
                 .compose<Project>(takeWhenV2(this.cancelPledgeClicked))
                 .filter { (it.backing()?.cancelable() ?: false).isTrue() }
-                    .dropBreadcrumb()
-                    .subscribe { this.showCancelPledgeFragment.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.showCancelPledgeFragment.onNext(it) }
+                .addToDisposable(disposables)
 
             backedProject
                 .compose(takeWhenV2(this.cancelPledgeClicked))
                 .filter { it.backing()?.cancelable().isFalse() }
                 .compose(ignoreValuesV2())
-                    .dropBreadcrumb()
-                    .subscribe { this.showPledgeNotCancelableDialog.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.showPledgeNotCancelableDialog.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .compose(takeWhenV2(this.contactCreatorClicked))
-                    .dropBreadcrumb()
-                    .subscribe { this.startMessagesActivity.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.startMessagesActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectDataAndBackedReward = projectData
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
@@ -867,15 +827,13 @@ interface ProjectPageViewModel {
             projectDataAndBackedReward
                 .compose(takeWhenV2(this.fixPaymentMethodButtonClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
-                    .dropBreadcrumb()
                 .subscribe { this.updatePledgeData.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             projectDataAndBackedReward
                 .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.updatePaymentClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.updatePledgeData.onNext(it)
                     this.analyticEvents.trackChangePaymentMethod(it.first)
                 }.addToDisposable(disposables)
@@ -883,29 +841,25 @@ interface ProjectPageViewModel {
             projectDataAndBackedReward
                 .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.updatePledgeClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
-                    .dropBreadcrumb()
-                    .subscribe{ this.updatePledgeData.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.updatePledgeData.onNext(it) }
+                .addToDisposable(disposables)
 
             this.viewRewardsClicked
-                    .dropBreadcrumb()
-                    .subscribe{ this.revealRewardsFragment.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.revealRewardsFragment.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .map { it.isBacking() && it.isLive || it.backing()?.isErrored() == true }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.backingDetailsIsVisible.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.backingDetailsIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .filter { it.isBacking() }
                 .map { if (it.backing()?.isErrored() == true) R.string.Payment_failure else R.string.Youre_a_backer }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe{ this.backingDetailsTitle.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.backingDetailsTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .filter { it.isBacking() }
@@ -914,9 +868,8 @@ interface ProjectPageViewModel {
                 }
                 .map { requireNotNull(backingDetailsSubtitle(it)) }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.backingDetailsSubtitle.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.backingDetailsSubtitle.onNext(it) }
+                .addToDisposable(disposables)
 
             val currentProjectAndUser = currentProject
                 .compose<Pair<Project, KsOptional<User>>>(combineLatestPair(this.currentUser.observable()))
@@ -928,90 +881,78 @@ interface ProjectPageViewModel {
                 )
             }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe{ this.pledgeActionButtonText.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.pledgeActionButtonText.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
                 .map { if (it.second <= 0) R.drawable.ic_arrow_down else R.drawable.ic_arrow_back }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.pledgeToolbarNavigationIcon.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.pledgeToolbarNavigationIcon.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProjectAndUser
                 .map { ProjectViewUtils.pledgeToolbarTitle(it.first, it.second.getValue()) }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.pledgeToolbarTitle.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.pledgeToolbarTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProjectAndUser
                 .map { ProjectViewUtils.pledgeActionButtonColor(it.first, it.second.getValue()) }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe{ this.pledgeActionButtonColor.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.pledgeActionButtonColor.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgePaymentSuccessfullyUpdated
-                    .dropBreadcrumb()
-                    .subscribe{this.showUpdatePledgeSuccess.onNext(it)}
-                    .addToDisposable(disposables)
+                .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgeSuccessfullyCancelled
-                    .dropBreadcrumb()
-                    .subscribe { this.showCancelPledgeSuccess.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.showCancelPledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgeSuccessfullyCreated
-                    .dropBreadcrumb()
-                    .subscribe { this.startThanksActivity.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.startThanksActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgeSuccessfullyUpdated
-                    .dropBreadcrumb()
-                    .subscribe{ this.showUpdatePledgeSuccess.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.fragmentStackCount
                 .compose<Pair<Int, Project>>(combineLatestPair(currentProject))
                 .map { if (it.second.isBacking()) it.first > 4 else it.first > 3 }
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.scrimIsVisible.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.scrimIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .map { p -> if (p.isStarred()) R.drawable.icon__heart else R.drawable.icon__heart_outline }
-                    .dropBreadcrumb()
-                    .distinctUntilChanged()
-                    .subscribe { this.heartDrawableId.onNext(it) }
-                    .addToDisposable(disposables)
+                .distinctUntilChanged()
+                .subscribe { this.heartDrawableId.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectPhoto = currentProject
-                    .filter {  it.photo()?.full().isNotNull() }
-                    .map { requireNotNull(it.photo()?.full()) }
+                .filter { it.photo()?.full().isNotNull() }
+                .map { requireNotNull(it.photo()?.full()) }
 
             val projectVideo = currentProject
-                .map { it.video()?.hls() ?: it.video()?.high() ?: ""}
+                .map { it.video()?.hls() ?: it.video()?.high() ?: "" }
                 .distinctUntilChanged()
                 .take(1)
 
             projectPhoto
                 .compose(combineLatestPair(projectVideo))
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.projectMedia.onNext(MediaElement(VideoModelElement(it.second), it.first))
                 }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             currentProject
                 .map { it.hasVideo() }
-                    .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe { this.playButtonIsVisible.onNext(it) }
-                    .addToDisposable(disposables)
+                .distinctUntilChanged()
+                .subscribe { this.playButtonIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             // Tracking
             val currentFullProjectData = currentProjectData
@@ -1025,8 +966,7 @@ interface ProjectPageViewModel {
 
             fullProjectDataAndPledgeFlowContext
                 .take(1)
-                    .dropBreadcrumb()
-                    .subscribe { projectDataAndPledgeFlowContext ->
+                .subscribe { projectDataAndPledgeFlowContext ->
                     val data = projectDataAndPledgeFlowContext.first
                     val pledgeFlowContext = projectDataAndPledgeFlowContext.second
                     // If a cookie hasn't been set for this ref+project then do so.
@@ -1043,38 +983,33 @@ interface ProjectPageViewModel {
                 .take(1)
                 .compose(takePairWhenV2(this.tabSelected))
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.analyticEvents.trackProjectPageTabChanged(it.first, getSelectedTabContextName(it.second))
                 }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext
                 .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhenV2(this.nativeProjectActionButtonClicked))
                 .filter { it.first.project().isLive && !it.first.project().isBacking() }
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.analyticEvents.trackPledgeInitiateCTA(it.first)
                 }.addToDisposable(disposables)
 
             currentProject
                 .map { it.metadataForProject() }
                 .map { ProjectMetadata.BACKING == it }
-                    .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe{ backingViewGroupIsVisible.onNext(it) }
-                    .addToDisposable(disposables)
+                .distinctUntilChanged()
+                .subscribe { backingViewGroupIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             this.updatePledgeData
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     this.showUpdatePledge.onNext(it)
                 }.addToDisposable(disposables)
 
             onVideoPlayButtonClicked
                 .distinctUntilChanged()
-                    .dropBreadcrumb()
-                    .subscribe {
+                .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
         }
@@ -1350,7 +1285,7 @@ interface ProjectPageViewModel {
     }
 
     class Factory(private val environment: Environment) :
-            ViewModelProvider.Factory {
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return ProjectPageViewModel(environment) as T
         }

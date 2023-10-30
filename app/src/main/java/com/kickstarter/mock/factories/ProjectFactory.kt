@@ -93,7 +93,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("w0923r veor")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -103,7 +102,6 @@ object ProjectFactory {
     fun britishProject(): Project {
         return project()
             .toBuilder()
-            .name("wf203fnewfrf")
             .country("GB")
             .currency("GBP")
             .currencySymbol("£")
@@ -130,7 +128,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("reoiv094fnverfjv")
             .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue()))
             .canComment(true)
             .backing(backing)
@@ -167,7 +164,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("werjnfwqoeij203")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -198,7 +194,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("woijfvw2-39")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -224,7 +219,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("odfmv")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -236,7 +230,7 @@ object ProjectFactory {
             RewardFactory.reward().toBuilder().hasAddons(true).build()
         val rw =
             RewardFactory.reward().toBuilder().hasAddons(false).build()
-        return project().toBuilder().name("ogfmb egfomv").rewards(listOf(rw, rwWithAddOn)).build()
+        return project().toBuilder().rewards(listOf(rw, rwWithAddOn)).build()
     }
 
     @JvmStatic
@@ -258,7 +252,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("eorfiv")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -282,7 +275,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("wefwefwefwef")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -310,7 +302,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("eorgoejrogij23r23rfwrfvgedg")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -335,7 +326,6 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .name("eorgoejrogij23r2r32r213r2")
             .backing(backing)
             .isBacking(true)
             .build()
@@ -522,7 +512,6 @@ object ProjectFactory {
 
         return project()
             .toBuilder()
-            .name("eorgoejrogij12")
             .launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)))
             .displayPrelaunch(true)
             .urls(Urls.builder().web(web).build())
@@ -532,7 +521,6 @@ object ProjectFactory {
     fun initialProject(): Project {
         return project()
             .toBuilder()
-            .name("eorgoejrogij")
             .rewards(null)
             .build()
     }

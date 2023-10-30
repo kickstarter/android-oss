@@ -741,13 +741,7 @@ interface ProjectPageViewModel {
                 .subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
-            val projectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, Project, ProjectData>(
-                refTag,
-                cookieRefTag,
-                currentProject
-            ) { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
-
-            projectData
+            currentProjectData
                 .filter { it.project().hasRewards() && !it.project().isBacking() }
                 .distinctUntilChanged()
                 .subscribe { this.updateFragments.onNext(it) }
@@ -760,7 +754,7 @@ interface ProjectPageViewModel {
                 .subscribe { this.managePledgeMenu.onNext(it) }
                 .addToDisposable(disposables)
 
-            projectData
+            currentProjectData
                 .compose(takePairWhenV2(this.tabSelected))
                 .distinctUntilChanged()
                 .delay(150, TimeUnit.MILLISECONDS, environment.schedulerV2()) // add delay to wait
@@ -783,7 +777,7 @@ interface ProjectPageViewModel {
                 .map { requireNotNull(it.backing()) }
 
             // - Update fragments with the backing data
-            projectData
+            currentProjectData
                 .filter { it.project().hasRewards() }
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                 .map {
@@ -814,7 +808,7 @@ interface ProjectPageViewModel {
                 .subscribe { this.startMessagesActivity.onNext(it) }
                 .addToDisposable(disposables)
 
-            val projectDataAndBackedReward = projectData
+            val projectDataAndBackedReward = currentProjectData
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                 .filter { it.first.project().backing().isNotNull() }
                 .filter { it.first.project().backing()?.backedReward(it.first.project()).isNotNull() }

@@ -152,17 +152,18 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
     fun testRefTag_emitsFromRefTag() {
         val refTag = RefTag.from("test")
         val intent = Intent().putExtra(IntentKey.REF_TAG, refTag)
-        val resultTest = TestSubscriber.create<KsOptional<RefTag?>>()
+        val resultTest = io.reactivex.subscribers.TestSubscriber.create<KsOptional<RefTag?>>()
         ProjectIntentMapper.refTag(intent).subscribe { resultTest.onNext(it) }.addToDisposable(disposables)
-        resultTest.assertValue(KsOptional.of(refTag))
+        assertEquals(resultTest.values().get(0).getValue(), refTag)
     }
 
     @Test
     fun testRefTag_emitsNullWithNoRefTag() {
         val intent = Intent()
-        val resultTest = TestSubscriber.create<KsOptional<RefTag?>>()
+        val resultTest = io.reactivex.subscribers.TestSubscriber.create<KsOptional<RefTag?>>()
         ProjectIntentMapper.refTag(intent).subscribe { resultTest.onNext(it) }.addToDisposable(disposables)
-        resultTest.assertNoValues()
+        resultTest.assertValueCount(1)
+        assertNull(resultTest.values().get(0).getValue())
     }
 
     @Test

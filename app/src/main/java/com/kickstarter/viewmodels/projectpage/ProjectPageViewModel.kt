@@ -38,6 +38,7 @@ import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
@@ -453,15 +454,13 @@ interface ProjectPageViewModel {
                 .map { requireNotNull(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
-                .filter { it.isPresent() }
+                .filter { it.isPresent() && it.getValue().isNotNull() }
                 .map { it.getValue() }
                 .compose<User>(takeWhenV2(this.heartButtonClicked))
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                .filter { !it.isPresent() }
-                .compose(ignoreValuesV2())
-                .compose<Unit>(takeWhenV2(this.heartButtonClicked))
-//                .filter { it.isNull() }
+                .compose<KsOptional<User>>(takeWhenV2(this.heartButtonClicked))
+                .filter { u -> u.getValue().isNull() }
 
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhenV2<Project, User>(loggedInUserOnHeartClick))

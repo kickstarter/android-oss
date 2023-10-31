@@ -997,9 +997,31 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val currentUser = MockCurrentUserV2()
         val environment = environment().toBuilder()
             .currentUserV2(currentUser)
-            .apolloClientV2(apolloClientWithSuccessGetProjectFromSlug(project))
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getProject(project: Project): Observable<Project> {
+                    return Observable.just(project)
+                }
+
+                override fun getProject(slug: String): Observable<Project> {
+                    return Observable.just(
+                        ProjectFactory.project()
+                            .toBuilder()
+                            .slug(slug)
+                            .build()
+                    )
+                }
+
+                override fun unWatchProject(project: Project): Observable<Project> {
+                    val proj = project.toBuilder().isStarred(false).build()
+                    return Observable.just(proj)
+                }
+
+                override fun watchProject(project: Project): Observable<Project> {
+                    val proj = project.toBuilder().isStarred(true).build()
+                    return Observable.just(proj)
+                }
+            })
             .build()
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -1007,7 +1029,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
         this.vm.inputs.heartButtonClicked()
 
-        // Login
+        // Login the user
         currentUser.refresh(UserFactory.user())
 
         // Star the project

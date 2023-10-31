@@ -176,6 +176,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun sendMessage(project: Project, recipient: User, body: String): io.reactivex.Observable<Long> {
         return io.reactivex.Observable.just(1L)
     }
+
+    override fun cancelBacking(backing: Backing, note: String): io.reactivex.Observable<Any> {
+        return io.reactivex.Observable.just(true)
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

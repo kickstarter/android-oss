@@ -6,6 +6,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Location
@@ -30,6 +31,7 @@ import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import type.BackingState
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
@@ -57,6 +59,7 @@ interface ApolloClientTypeV2 {
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
     fun creatorDetails(slug: String): Observable<CreatorDetails>
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
+    fun cancelBacking(backing: Backing, note: String): Observable<Any>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -774,6 +777,35 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             } ?: ps.onError(Exception())
                         }
 
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Any>()
+            service.mutate(
+                CancelBackingMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .note(note)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<CancelBackingMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CancelBackingMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onNext(Exception(response.errors?.first()?.message ?: ""))
+                        } else {
+                            val state = response.data?.cancelBacking()?.backing()?.status()
+                            val success = state == BackingState.CANCELED
+                            ps.onNext(success)
+                        }
                         ps.onComplete()
                     }
                 })

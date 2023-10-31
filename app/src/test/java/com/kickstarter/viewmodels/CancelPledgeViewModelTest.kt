@@ -3,45 +3,54 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.viewmodels.CancelPledgeViewModel.CancelPledgeViewModel
+import com.kickstarter.viewmodels.CancelPledgeViewModel.Factory
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 import java.math.RoundingMode
 
 class CancelPledgeViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: CancelPledgeViewModel.ViewModel
+    private lateinit var vm: CancelPledgeViewModel
 
     private val cancelButtonIsVisible = TestSubscriber<Boolean>()
-    private val dismiss = TestSubscriber<Void>()
+    private val dismiss = TestSubscriber<Unit>()
     private val pledgeAmount = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val projectName = TestSubscriber<String>()
     private val showCancelError = TestSubscriber<String>()
-    private val showServerError = TestSubscriber<Void>()
-    private val success = TestSubscriber<Void>()
+    private val showServerError = TestSubscriber<Unit>()
+    private val success = TestSubscriber<Unit>()
 
+    private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
     private fun setUpEnvironment(environment: Environment, project: Project? = ProjectFactory.backedProject()) {
-        this.vm = CancelPledgeViewModel.ViewModel(environment)
-
-        this.vm.outputs.cancelButtonIsVisible().subscribe(this.cancelButtonIsVisible)
-        this.vm.outputs.dismiss().subscribe(this.dismiss)
-        this.vm.outputs.pledgeAmountAndProjectName().map { it.first }.subscribe(this.pledgeAmount)
-        this.vm.outputs.pledgeAmountAndProjectName().map { it.second }.subscribe(this.projectName)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.showCancelError().subscribe(this.showCancelError)
-        this.vm.outputs.showServerError().subscribe(this.showServerError)
-        this.vm.outputs.success().subscribe(this.success)
-
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT, project)
-        this.vm.arguments(bundle)
+        this.vm = Factory(environment, bundle).create(CancelPledgeViewModel::class.java)
+
+        this.vm.outputs.cancelButtonIsVisible().subscribe { this.cancelButtonIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.dismiss().subscribe { this.dismiss.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeAmountAndProjectName().map { it.first }.subscribe { this.pledgeAmount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeAmountAndProjectName().map { it.second }.subscribe { this.projectName.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showCancelError().subscribe { this.showCancelError.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showServerError().subscribe { this.showServerError.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -75,7 +84,7 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     fun testCancelingPledge_whenErrorMessage() {
         setUpEnvironment(
             environment().toBuilder()
-                .apolloClient(object : MockApolloClient() {
+                .apolloClientV2(object : MockApolloClientV2() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
                         return Observable.just("Error")
                     }
@@ -83,9 +92,9 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         )
 
         this.vm.inputs.confirmCancellationClicked("")
-        this.progressBarIsVisible.assertValuesAndClear(true, false)
-        this.cancelButtonIsVisible.assertValuesAndClear(false, true)
-        this.showCancelError.assertValuesAndClear("Error")
+        this.progressBarIsVisible.assertValues(true, false)
+        this.cancelButtonIsVisible.assertValues(false, true)
+        this.showCancelError.assertValues("Error")
         this.showServerError.assertNoValues()
         this.success.assertNoValues()
     }
@@ -94,7 +103,7 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     fun testCancelingPledge_whenBackingNotCancelled() {
         setUpEnvironment(
             environment().toBuilder()
-                .apolloClient(object : MockApolloClient() {
+                .apolloClientV2(object : MockApolloClientV2() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
                         return Observable.just(false)
                     }
@@ -102,8 +111,8 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         )
 
         this.vm.inputs.confirmCancellationClicked("")
-        this.progressBarIsVisible.assertValuesAndClear(true, false)
-        this.cancelButtonIsVisible.assertValuesAndClear(false, true)
+        this.progressBarIsVisible.assertValues(true, false)
+        this.cancelButtonIsVisible.assertValues(false, true)
         this.showCancelError.assertNoValues()
         this.showServerError.assertValueCount(1)
         this.success.assertNoValues()
@@ -113,7 +122,7 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     fun testCancelingPledge_whenServerError() {
         setUpEnvironment(
             environment().toBuilder()
-                .apolloClient(object : MockApolloClient() {
+                .apolloClientV2(object : MockApolloClientV2() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
                         return Observable.error(Throwable("error"))
                     }
@@ -121,8 +130,8 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         )
 
         this.vm.inputs.confirmCancellationClicked("")
-        this.progressBarIsVisible.assertValuesAndClear(true, false)
-        this.cancelButtonIsVisible.assertValuesAndClear(false, true)
+        this.progressBarIsVisible.assertValues(true, false)
+        this.cancelButtonIsVisible.assertValues(false, true)
         this.showCancelError.assertNoValues()
         this.showServerError.assertValueCount(1)
         this.success.assertNoValues()
@@ -133,8 +142,8 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.confirmCancellationClicked("")
-        this.progressBarIsVisible.assertValuesAndClear(true, false)
-        this.cancelButtonIsVisible.assertValuesAndClear(false, true)
+        this.progressBarIsVisible.assertValues(true, false)
+        this.cancelButtonIsVisible.assertValues(false, true)
         this.showCancelError.assertNoValues()
         this.showServerError.assertNoValues()
         this.success.assertValueCount(1)

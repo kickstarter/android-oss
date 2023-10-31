@@ -1027,7 +1027,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a successful project
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
-        this.vm.inputs.heartButtonClicked()
 
         // Login the user
         currentUser.refresh(UserFactory.user())

@@ -15,6 +15,7 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
@@ -158,10 +159,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
+            .currentConfig2(MockCurrentConfigV2())
             .currentUserV2(currentUser)
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -180,9 +182,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
             .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -211,9 +214,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
             .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -231,10 +235,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
+            .currentConfig2(MockCurrentConfigV2())
             .currentUserV2(currentUser)
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -253,9 +258,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
             .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -271,11 +277,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
-            .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .currentUserV2(currentUser)
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -292,9 +298,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
             .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -310,10 +317,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
+            .currentConfig2(MockCurrentConfigV2())
             .currentUserV2(currentUser)
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -330,10 +338,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
+            .currentConfig2(MockCurrentConfigV2())
             .currentUserV2(currentUser)
             .build()
 
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -888,9 +897,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.halfWayProject()
         val environment = environment().toBuilder()
             .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .apolloClientV2(apolloClientSuccessfulGetProject())
             .build()
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -966,9 +976,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.almostCompletedProject().toBuilder().isStarred(false).build()
         val environment = environment().toBuilder()
             .currentUserV2(currentUser)
+            .currentConfig2(MockCurrentConfigV2())
             .apolloClientV2(apolloClientSuccessfulGetProject())
             .build()
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 
@@ -1048,8 +1059,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .currentUserV2(currentUser)
             .apolloClientV2(apolloClientSuccessfulGetProject())
+            .currentConfig2(MockCurrentConfigV2())
             .build()
-        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+        requireNotNull(environment.currentConfigV2()).config(ConfigFactory.configForUSUser())
 
         setUpEnvironment(environment)
 

@@ -125,7 +125,10 @@ interface NewsletterViewModel {
 
             val updateUserNotification = this.userInput
                 .distinctUntilChanged()
-                .concatMap<Notification<User>> { this.updateSettings(it) }
+                .switchMap {
+                    this.updateSettings(it)
+                }
+                .share()
 
             updateUserNotification
                 .compose(valuesV2())
@@ -278,7 +281,6 @@ interface NewsletterViewModel {
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
                 .materialize()
-                .share()
         }
     }
 

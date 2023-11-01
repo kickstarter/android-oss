@@ -1,25 +1,25 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.ui.activities.Newsletter
-import com.kickstarter.ui.activities.NewsletterActivity
-import rx.Notification
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface NewsletterViewModel {
 
@@ -74,20 +74,21 @@ interface NewsletterViewModel {
         fun unableToSavePreferenceError(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NewsletterActivity>(environment), Inputs, Errors, Outputs {
+    class NewsletterViewModel(val environment: Environment) : ViewModel(), Inputs, Errors, Outputs {
 
-        private val client = requireNotNull(environment.apiClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val client = requireNotNull(environment.apiClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
 
         private val newsletterInput = PublishSubject.create<Pair<Boolean, Newsletter>>()
         private val userInput = PublishSubject.create<User>()
-        private val updateSuccess = PublishSubject.create<Void>()
+        private val updateSuccess = PublishSubject.create<Unit>()
 
         private val showOptInPrompt = BehaviorSubject.create<Newsletter>()
         private val subscribeAll = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
+        private val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -97,59 +98,64 @@ interface NewsletterViewModel {
 
             this.client.fetchCurrentUser()
                 .retry(2)
-                .compose(Transformers.neverError())
-                .compose(bindToLifecycle())
-                .subscribe(this.currentUser::refresh)
+                .compose(Transformers.neverErrorV2())
+                .subscribe { this.currentUser.refresh(it) }
+                .addToDisposable(disposables)
 
             val currentUser = this.currentUser.observable()
-                .filter { it.isNotNull() }
+                .filter { it.getValue().isNotNull() }
+                .map { requireNotNull(it.getValue()) }
 
             currentUser
                 .take(1)
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput::onNext)
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             currentUser
-                .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhen<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
+                .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhenV2<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
                 .filter { us -> requiresDoubleOptIn(us.first, us.second.first) }
                 .map { us -> us.second.second }
-                .compose(bindToLifecycle())
-                .subscribe(this.showOptInPrompt)
+                .subscribe { this.showOptInPrompt.onNext(it) }
+                .addToDisposable(disposables)
 
             currentUser
                 .map { isSubscribedToAllNewsletters(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.subscribeAll::onNext)
+                .subscribe { this.subscribeAll.onNext(it) }
+                .addToDisposable(disposables)
 
             val updateUserNotification = this.userInput
+                .distinctUntilChanged()
                 .concatMap<Notification<User>> { this.updateSettings(it) }
 
             updateUserNotification
-                .compose(values())
-                .compose(bindToLifecycle())
+                .compose(valuesV2())
                 .subscribe { this.success(it) }
+                .addToDisposable(disposables)
 
             updateUserNotification
-                .compose(errors())
-                .compose(bindToLifecycle())
-                .subscribe(this.unableToSavePreferenceError)
+                .compose(errorsV2())
+                .filter { it.isNotNull() }
+                .map { requireNotNull(it) }
+                .subscribe { this.unableToSavePreferenceError.onNext(it) }
+                .addToDisposable(disposables)
 
             this.userInput
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             this.userOutput
                 .window(2, 1)
-                .flatMap<List<User>> { it.toList() }
-                .map<User> { ListUtils.first(it) }
-                .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .switchMap { it }
+                .compose(takeWhenV2(this.unableToSavePreferenceError))
+                .subscribe {
+                    this.userOutput.onNext(it)
+                }
+                .addToDisposable(disposables)
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
-            this.userInput.onNext(
-                this.userOutput.value.toBuilder()
+            this.userOutput.value?.apply {
+                val updatedUser = this.toBuilder()
                     .alumniNewsletter(checked)
                     .artsCultureNewsletter(checked)
                     .filmNewsletter(checked)
@@ -161,57 +167,84 @@ interface NewsletterViewModel {
                     .publishingNewsletter(checked)
                     .weeklyNewsletter(checked)
                     .build()
-            )
-            this.newsletterInput.onNext(Pair(checked, Newsletter.ALL))
+
+                userInput.onNext(updatedUser)
+                newsletterInput.onNext(Pair(checked, Newsletter.ALL))
+            }
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun sendAlumniNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().alumniNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().alumniNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.ALUMNI))
         }
 
         override fun sendArtsNewsNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().artsCultureNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().artsCultureNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.ARTS))
         }
 
         override fun sendFilmsNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().filmNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().filmNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.FILMS))
         }
 
         override fun sendGamesNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().gamesNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().gamesNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.GAMES))
         }
 
         override fun sendHappeningNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().happeningNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().happeningNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.HAPPENING))
         }
 
         override fun sendInventNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().inventNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().inventNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.INVENT))
         }
 
         override fun sendMusicNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().musicNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().musicNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.MUSIC))
         }
 
         override fun sendPromoNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().promoNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().promoNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.PROMO))
         }
 
         override fun sendReadsNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().publishingNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().publishingNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.READS))
         }
 
         override fun sendWeeklyNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().weeklyNewsletter(checked).build())
+            this.userOutput.value?.apply {
+                userInput.onNext(this.toBuilder().weeklyNewsletter(checked).build())
+            }
             this.newsletterInput.onNext(Pair(checked, Newsletter.WEEKLY))
         }
 
@@ -227,7 +260,7 @@ interface NewsletterViewModel {
                 .map { _ -> null }
         }
 
-        private fun isSubscribedToAllNewsletters(@NonNull user: User): Boolean {
+        private fun isSubscribedToAllNewsletters(user: User): Boolean {
             return user.alumniNewsletter().isTrue() && user.artsCultureNewsletter().isTrue() &&
                 user.filmNewsletter().isTrue() && user.gamesNewsletter().isTrue() &&
                 user.happeningNewsletter().isTrue() && user.inventNewsletter().isTrue() &&
@@ -239,13 +272,19 @@ interface NewsletterViewModel {
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
+            this.updateSuccess.onNext(Unit)
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
                 .materialize()
                 .share()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return NewsletterViewModel(environment) as T
         }
     }
 }

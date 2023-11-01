@@ -14,8 +14,8 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isLocationGermany
+import com.kickstarter.ui.activities.Newsletter
 import com.kickstarter.ui.activities.NewsletterActivity
-import com.kickstarter.ui.data.Newsletter
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject

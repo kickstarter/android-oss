@@ -11,10 +11,12 @@ import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
-import com.kickstarter.ui.data.Newsletter
 import com.kickstarter.viewmodels.NewsletterViewModel
 import rx.android.schedulers.AndroidSchedulers
 
+enum class Newsletter {
+    ALL, ALUMNI, ARTS, FILMS, GAMES, HAPPENING, INVENT, MUSIC, PROMO, READS, WEEKLY
+}
 @RequiresActivityViewModel(NewsletterViewModel.ViewModel::class)
 class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
 

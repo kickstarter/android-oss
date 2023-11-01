@@ -4,7 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
-import com.kickstarter.ui.data.Newsletter
+import com.kickstarter.ui.activities.Newsletter
 import org.junit.Test
 import rx.observers.TestSubscriber
 

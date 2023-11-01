@@ -869,6 +869,7 @@ class ProjectPageActivity :
     override fun onDestroy() {
         binding.projectPager.adapter = null
         binding.mediaHeader.inputs.releasePlayer()
+        disposables.clear()
         super.onDestroy()
     }
 

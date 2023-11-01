@@ -454,13 +454,13 @@ interface ProjectPageViewModel {
                 .map { requireNotNull(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
-                .filter { it.isPresent() && it.getValue().isNotNull() }
+                .filter { it.isPresent() }
                 .map { it.getValue() }
                 .compose<User>(takeWhenV2(this.heartButtonClicked))
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                .compose<KsOptional<User>>(takeWhenV2(this.heartButtonClicked))
-                .filter { u -> u.getValue().isNull() }
+                .compose(takeWhenV2(this.heartButtonClicked))
+                .filter { !it.isPresent() }
 
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhenV2<Project, User>(loggedInUserOnHeartClick))
@@ -485,7 +485,7 @@ interface ProjectPageViewModel {
             )
 
             val refreshedProjectNotification = initialProject
-                .compose(takeWhenV2<Project, Unit>(refreshProjectEvent))
+                .compose(takeWhenV2(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
                         this.apolloClient.getProject(slug)
@@ -1005,6 +1005,11 @@ interface ProjectPageViewModel {
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {

@@ -7,7 +7,6 @@ import android.util.Pair
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
@@ -32,7 +31,7 @@ import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
 class ThanksActivity : AppCompatActivity() {
-    private lateinit var factory : Factory
+    private lateinit var factory: Factory
     private val viewModel: ThanksViewModel.ThanksViewModel by viewModels { factory }
     private lateinit var ksString: KSString
     private lateinit var binding: ThanksLayoutBinding

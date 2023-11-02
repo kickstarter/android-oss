@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
-import android.util.Pair
 import android.content.Intent
 import android.os.Parcelable
+import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

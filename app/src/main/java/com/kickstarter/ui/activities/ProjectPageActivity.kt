@@ -381,8 +381,8 @@ class ProjectPageActivity :
         binding.backIcon.setOnClickListener {
             if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
                 onBackPressedDispatcher.onBackPressed()
-        } else {
-            handleNativeCheckoutBackPress()
+            } else {
+                handleNativeCheckoutBackPress()
             }
         }
 
@@ -399,7 +399,7 @@ class ProjectPageActivity :
         }
 
         this.onBackPressedDispatcher.addCallback {
-                finishWithAnimation()
+            finishWithAnimation()
         }
     }
 

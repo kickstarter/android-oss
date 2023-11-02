@@ -3,14 +3,12 @@ package com.kickstarter.viewmodels.usecases
 import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientType
-import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData

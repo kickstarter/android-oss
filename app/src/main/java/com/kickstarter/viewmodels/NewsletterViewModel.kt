@@ -132,7 +132,9 @@ interface NewsletterViewModel {
 
             updateUserNotification
                 .compose(valuesV2())
-                .subscribe { this.success(it) }
+                .subscribe {
+                    this.success(it)
+                }
                 .addToDisposable(disposables)
 
             updateUserNotification

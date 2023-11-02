@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.Newsletter
 import com.kickstarter.viewmodels.NewsletterViewModel.Factory
@@ -28,13 +29,17 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
     private fun setUpEnvironment(user: User) {
         val currentUser = MockCurrentUserV2(user)
+        val apiClient: MockApiClientV2 = MockApiClientV2()
         val environment = environment().toBuilder()
+            .apiClientV2(apiClient)
             .currentUserV2(currentUser)
             .build()
 
         this.vm = Factory(environment).create(NewsletterViewModel::class.java)
 
-        environment.currentUserV2()?.observable()?.subscribe { this.currentUserTest.onNext(it.getValue()) }?.addToDisposable(disposables)
+        environment.currentUserV2()?.observable()?.subscribe {
+            this.currentUserTest.onNext(it.getValue())
+        }?.addToDisposable(disposables)
         this.vm.outputs.showOptInPrompt().subscribe { showOptInPromptTest.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.subscribeAll().subscribe { this.subscribeAll.onNext(it) }.addToDisposable(disposables)
     }

@@ -391,7 +391,7 @@ open class MockApiClientV2 : ApiClientTypeV2 {
     override fun updateProjectNotifications(
         projectNotification: ProjectNotification,
         checked: Boolean
-    ): io.reactivex.Observable<ProjectNotification> {
+    ): Observable<ProjectNotification> {
         return Observable.just(
             projectNotification.toBuilder().email(checked).mobile(checked).build()
         )

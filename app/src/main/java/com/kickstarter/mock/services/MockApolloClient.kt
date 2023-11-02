@@ -177,8 +177,12 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(1L)
     }
 
+    override fun cancelBacking(backing: Backing, note: String): io.reactivex.Observable<Any> {
+        return io.reactivex.Observable.just(true)
+    }
+
     override fun fetchCategory(param: String): io.reactivex.Observable<Category?> {
-        TODO("Not yet implemented")
+        return io.reactivex.Observable.empty()
     }
 }
 
@@ -417,7 +421,7 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<android.util.Pair<Boolean, String>> {
+    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.just(
 //            TriggerThirdPartyEventMutation.Data(
 //                TriggerThirdPartyEventMutation
@@ -426,7 +430,7 @@ open class MockApolloClient : ApolloClientType {
 //                        true
 //                    )
 //            )
-            android.util.Pair(true, "")
+            Pair(true, "")
         )
     }
 }

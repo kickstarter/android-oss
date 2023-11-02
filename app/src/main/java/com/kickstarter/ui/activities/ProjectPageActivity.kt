@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.MenuRes
@@ -53,6 +54,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.selectPledgeFragment
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
@@ -108,6 +110,7 @@ class ProjectPageActivity :
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpConnectivityStatusCheck(lifecycle)
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
@@ -376,9 +379,13 @@ class ProjectPageActivity :
             }.addToDisposable(disposables)
 
         binding.backIcon.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-            finishWithAnimation()
+            if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
+                onBackPressedDispatcher.onBackPressed()
+        } else {
+            handleNativeCheckoutBackPress()
+            }
         }
+
         setClickListeners()
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -389,6 +396,10 @@ class ProjectPageActivity :
             if (verticalOffset != 0) {
                 binding.mediaHeader.inputs.pausePlayer()
             }
+        }
+
+        this.onBackPressedDispatcher.addCallback {
+                finishWithAnimation()
         }
     }
 
@@ -450,16 +461,6 @@ class ProjectPageActivity :
     public override fun onPause() {
         super.onPause()
         binding.mediaHeader.inputs.releasePlayer()
-    }
-
-    override fun onBackPressed() {
-        if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
-            super.onBackPressed()
-            exitTransition()
-        } else {
-            handleNativeCheckoutBackPress()
-            exitTransition()
-        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -631,7 +632,7 @@ class ProjectPageActivity :
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
             pledgeSheetIsExpanded -> this.viewModel.inputs.pledgeToolbarNavigationClicked()
-            else -> super.onBackPressed()
+            else -> onBackPressedDispatcher.onBackPressed()
         }
     }
 

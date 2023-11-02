@@ -58,6 +58,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -547,8 +548,8 @@ interface ProjectPageViewModel {
                 .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
                 .addToDisposable(disposables)
 
-            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendThirdPartyEventV2(
+            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+                .sendThirdPartyEvent(
                     project = currentProject,
                     apolloClient = apolloClient,
                     currentUser = currentUser,
@@ -941,7 +942,9 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             currentProject
-                .map { it.hasVideo() }
+                .map {
+                    it.hasVideo()
+                }
                 .distinctUntilChanged()
                 .subscribe { this.playButtonIsVisible.onNext(it) }
                 .addToDisposable(disposables)

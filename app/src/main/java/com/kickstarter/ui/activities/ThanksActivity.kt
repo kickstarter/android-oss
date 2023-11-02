@@ -4,38 +4,51 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ThanksAdapter
 import com.kickstarter.ui.extensions.showRatingDialogWidget
+import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.viewmodels.ThanksViewModel
-import rx.android.schedulers.AndroidSchedulers
+import com.kickstarter.viewmodels.ThanksViewModel.Factory
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
-@RequiresActivityViewModel(ThanksViewModel.ViewModel::class)
-class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
+class ThanksActivity : AppCompatActivity() {
+    private lateinit var factory : Factory
+    private val viewModel: ThanksViewModel.ThanksViewModel by viewModels { factory }
     private lateinit var ksString: KSString
     private lateinit var binding: ThanksLayoutBinding
     private val projectStarConfirmationString = R.string.project_star_confirmation
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ThanksLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ksString = requireNotNull(environment().ksString())
+        getEnvironment()?.let { env ->
+            intent?.let {
+                factory = Factory(env, it)
+            }
+            ksString = requireNotNull(env.ksString())
+        }
 
         binding.thanksRecyclerView.layoutManager = LinearLayoutManager(this).apply {
             orientation = RecyclerView.VERTICAL
@@ -45,59 +58,59 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         binding.thanksRecyclerView.adapter = adapter
 
         viewModel.outputs.adapterData()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { adapter.takeData(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showConfirmGamesNewsletterDialog()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { showConfirmGamesNewsletterDialog() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.finish()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { finish() }
+            .addToDisposable(disposables)
 
         // I'm not sure why we would attempt to show a dialog after a delay but hopefully this helps
         viewModel.outputs.showGamesNewsletterDialog()
-            .compose(bindToLifecycle())
             .take(1)
             .delay(700L, TimeUnit.MILLISECONDS)
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 if (!isFinishing) {
                     showGamesNewsletterDialog()
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showRatingDialog()
-            .compose(bindToLifecycle())
             .take(1)
             .delay(700L, TimeUnit.MILLISECONDS)
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 if (!isFinishing) {
                     showRatingDialog()
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startDiscoveryActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startDiscoveryActivity(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startProjectActivity(it) }
+            .addToDisposable(disposables)
 
         binding.thanksToolbar.closeButton.setOnClickListener { closeButtonClick() }
 
         this.viewModel.outputs.showSavedPrompt()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.showStarToast() }
+            .addToDisposable(disposables)
     }
 
     private fun showStarToast() {
@@ -105,6 +118,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
     }
 
     override fun onDestroy() {
+        disposables.clear()
         super.onDestroy()
         binding.thanksRecyclerView.adapter = null
     }

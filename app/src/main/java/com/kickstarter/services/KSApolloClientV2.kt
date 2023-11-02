@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Location
@@ -19,6 +20,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.categoryTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
@@ -60,6 +62,7 @@ interface ApolloClientTypeV2 {
     fun creatorDetails(slug: String): Observable<CreatorDetails>
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
+    fun fetchCategory(param: String): Observable<Category?>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -811,5 +814,34 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 })
             return@defer ps
         }
+    }
+
+    override fun fetchCategory(categoryParam: String): Observable<Category?> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Category>()
+            this.service.query(
+                FetchCategoryQuery.builder()
+                    .categoryParam(categoryParam)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchCategoryQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchCategoryQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val category = categoryTransformer(responseData.category()?.fragments()?.category())
+
+                        Observable.just(category)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onComplete()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 }

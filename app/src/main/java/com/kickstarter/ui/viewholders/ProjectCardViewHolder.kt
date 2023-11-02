@@ -34,7 +34,7 @@ class ProjectCardViewHolder(
     private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
-        fun projectCardViewHolderClicked(project: Project?)
+        fun projectCardViewHolderClicked(project: Project)
         fun onHeartButtonClicked(project: Project)
     }
 

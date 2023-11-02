@@ -4,6 +4,7 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksCategoryViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
 
 class ThanksCategoryViewHolder(
@@ -15,7 +16,7 @@ class ThanksCategoryViewHolder(
     private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
-        fun categoryViewHolderClicked(category: Category?)
+        fun categoryViewHolderClicked(category: Category)
     }
 
     init {
@@ -24,9 +25,10 @@ class ThanksCategoryViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { categoryName: String -> setCategoryButtonText(categoryName) }
         viewModel.outputs.notifyDelegateOfCategoryClick()
+            .filter { it.isNotNull() }
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { category: Category? -> this.delegate.categoryViewHolderClicked(category) }
+            .subscribe { category: Category -> this.delegate.categoryViewHolderClicked(category) }
     }
     @Throws(Exception::class)
     override fun bindData(data: Any?) {

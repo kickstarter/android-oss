@@ -15,10 +15,13 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.aghajari.zoomhelper.ZoomHelper
@@ -28,27 +31,30 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
+import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.selectPledgeFragment
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
@@ -60,16 +66,19 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
-@RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
-    BaseActivity<ProjectPageViewModel.ViewModel>(),
+    AppCompatActivity(),
     CancelPledgeFragment.CancelPledgeDelegate,
     PledgeFragment.PledgeDelegate,
     BackingFragment.BackingDelegate {
     private lateinit var ksString: KSString
+
+    private lateinit var viewModelFactory: ProjectPageViewModel.Factory
+    private val viewModel: ProjectPageViewModel.ProjectPageViewModel by viewModels { viewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -77,6 +86,8 @@ class ProjectPageActivity :
 
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
+
+    private var disposables = CompositeDisposable()
 
     private val pagerAdapterList = mutableListOf(
         ProjectPagerTabs.OVERVIEW,
@@ -99,7 +110,15 @@ class ProjectPageActivity :
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        this.ksString = requireNotNull(environment().ksString())
+        setUpConnectivityStatusCheck(lifecycle)
+
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = ProjectPageViewModel.Factory(env)
+            env
+        }
+        this.ksString = requireNotNull(environment?.ksString())
+
+        viewModel.configureWith(intent)
 
         // Do not configure the pager at other lifecycle events apart from OnCreate
         if (savedInstanceState == null) {
@@ -131,171 +150,164 @@ class ProjectPageActivity :
         }
 
         this.viewModel.outputs.projectData()
-            .compose(bindToLifecycle())
-            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateTabs ->
                 configureTabs(updateTabs)
                 configurePager(pagerAdapterList)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.backingDetailsSubtitle()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setBackingDetailsSubtitle(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backingDetailsTitle()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.backingDetailsTitle.setText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backingDetailsIsVisible()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { styleProjectActionButton(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.expandPledgeSheet()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { expandPledgeSheet(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.goBack()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { back() }
+            .subscribe { onBackPressedDispatcher.onBackPressed() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.heartDrawableId()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.managePledgeMenu()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateManagePledgeMenu(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonColor()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.pledgeActionButton.backgroundTintList = ContextCompat.getColorStateList(this, it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = (!it).toVisibility() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonText()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setPledgeActionButtonCTA(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeToolbarNavigationIcon()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.pledgeToolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeToolbarTitle()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.pledgeToolbar.title = getString(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.prelaunchUrl()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { openProjectAndFinish(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.visibility = (!it).toVisibility() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.reloadProgressBarIsGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar.visibility = (!it).toVisibility() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.scrimIsVisible()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { animateScrimVisibility(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.setInitialRewardsContainerY()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setInitialRewardsContainerY() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showCancelPledgeSuccess()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCancelPledgeSuccess() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showUpdatePledgeSuccess() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showCancelPledgeFragment()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCancelPledgeFragment(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showPledgeNotCancelableDialog()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeNotCancelableDialog() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.revealRewardsFragment()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { revealRewardsFragment() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showSavedPrompt()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.showStarToast() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showShareSheet()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startShareIntent(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdatePledge()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeFragment(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startRootCommentsActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startRootCommentsActivity(it)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.startRootCommentsForCommentsThreadActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startRootCommentsActivity(it.second, it.first)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.startProjectUpdateActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startUpdatesActivity(it.second.first, it.first.first, it.first.second)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.startProjectUpdateToRepliesDeepLinkActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startUpdatesActivity(
@@ -304,76 +316,76 @@ class ProjectPageActivity :
                     it.first.second.isNotEmpty(),
                     it.first.second
                 )
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.startLoginToutActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startLoginToutActivity() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startMessagesActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startMessagesActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startThanksActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCreatePledgeSuccess(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectMedia()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.mediaHeader.inputs.setProjectMedia(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.playButtonIsVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.mediaHeader.inputs.setPlayButtonVisibility(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.updateVideoCloseSeekPosition()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.mediaHeader.inputs.setPlayerSeekPosition(it) }
+            .addToDisposable(disposables)
 
         binding.mediaHeader.outputs.onFullScreenClicked()
-            .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.fullScreenVideoButtonClicked(it) }
 
         binding.mediaHeader.outputs.playButtonClicks()
-            .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.onVideoPlayButtonClicked() }
 
         this.viewModel.outputs.onOpenVideoInFullScreen()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.startVideoActivity(startForResult, it.first, it.second)
-            }
+            }.addToDisposable(disposables)
 
         viewModel.outputs.backingViewGroupIsVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.backingGroup.visibility = it.toVisibility()
-            }
+            }.addToDisposable(disposables)
 
         viewModel.outputs.hideVideoPlayer()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (it) {
                     binding.projectAppBarLayout.setExpanded(false)
                 }
-            }
+            }.addToDisposable(disposables)
 
         binding.backIcon.setOnClickListener {
-            (this as BaseActivity<*>).back()
+            if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
+                onBackPressedDispatcher.onBackPressed()
+            } else {
+                handleNativeCheckoutBackPress()
+            }
         }
+
         setClickListeners()
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -384,6 +396,10 @@ class ProjectPageActivity :
             if (verticalOffset != 0) {
                 binding.mediaHeader.inputs.pausePlayer()
             }
+        }
+
+        this.onBackPressedDispatcher.addCallback {
+            finishWithAnimation()
         }
     }
 
@@ -437,22 +453,14 @@ class ProjectPageActivity :
         super.onResume()
         binding.mediaHeader.inputs.initializePlayer()
         this.viewModel.outputs.updateFragments()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateFragments(it) }
+            .addToDisposable(disposables)
     }
 
     public override fun onPause() {
         super.onPause()
         binding.mediaHeader.inputs.releasePlayer()
-    }
-
-    override fun back() {
-        if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
-            super.back()
-        } else {
-            handleNativeCheckoutBackPress()
-        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -497,9 +505,7 @@ class ProjectPageActivity :
         this.viewModel.inputs.fixPaymentMethodButtonClicked()
     }
 
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {}
-
-    override fun exitTransition(): Pair<Int, Int>? {
+    fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
@@ -626,7 +632,7 @@ class ProjectPageActivity :
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
             pledgeSheetIsExpanded -> this.viewModel.inputs.pledgeToolbarNavigationClicked()
-            else -> super.back()
+            else -> onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -856,17 +862,23 @@ class ProjectPageActivity :
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        viewModel.activityResult(create(requestCode, resultCode, intent))
+    }
+
     override fun onDestroy() {
         binding.projectPager.adapter = null
         binding.mediaHeader.inputs.releasePlayer()
-        this.viewModel = null
+        disposables.clear()
         super.onDestroy()
     }
 
-    private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
-        menu?.let {
-            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
-        } ?: run {
+    private fun updateManagePledgeMenu(@MenuRes menu: Int) {
+        if (menu != 0) {
+            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
+            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(menu)
+        } else run {
             binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
         }
     }

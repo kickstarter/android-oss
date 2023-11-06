@@ -38,7 +38,6 @@ import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.util.Locale.filter
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {

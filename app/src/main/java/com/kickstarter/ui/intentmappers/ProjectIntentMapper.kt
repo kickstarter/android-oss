@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
@@ -38,8 +38,8 @@ object ProjectIntentMapper {
                 .startWith(intentProject)
                 .retry(3)
 
-        val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> `object`.isNotNull() }
+        val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent) ?: "")
+            .filter { it.isNotEmpty() }
             .switchMap { slug: String? ->
                 slug?.let { apolloClient.getProject(it) }
             }
@@ -58,8 +58,8 @@ object ProjectIntentMapper {
                 .startWith(intentProject)
                 .retry(3)
 
-        val projectFromParceledParam = Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> `object`.isNotNull() }
+        val projectFromParceledParam = Observable.just(paramFromIntent(intent) ?: "")
+            .filter { it.isNotEmpty() }
             .switchMap { slug: String? ->
                 slug?.let { apolloClient.getProject(it) }
             }
@@ -82,8 +82,8 @@ object ProjectIntentMapper {
                 .startWith(intentProject)
                 .retry(3)
 
-        val projectFromParceledParam = Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> `object`.isNotNull() }
+        val projectFromParceledParam = Observable.just(paramFromIntent(intent) ?: "")
+            .filter { it.isNotEmpty() }
             .flatMap { param: String? ->
                 param?.let { client.fetchProject(it) }
             }
@@ -107,7 +107,7 @@ object ProjectIntentMapper {
                 .retry(3)
 
         val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent) ?: "")
-            .filter { param: String -> param.isNotEmpty() }
+            .filter { it.isNotEmpty() }
             .flatMap { param: String ->
                 client.fetchProject(param)
             }
@@ -117,17 +117,17 @@ object ProjectIntentMapper {
     }
 
     /**
-     * Returns a [RefTag] observable. If there is no parceled RefTag, emit `null`.
+     * Returns a [RefTag] observable. If there is no parceled RefTag, emit empty optionl.
      */
-    fun refTag(intent: Intent): Observable<RefTag?> {
-        return Observable.just(intent.getParcelableExtra(IntentKey.REF_TAG))
+    fun refTag(intent: Intent): io.reactivex.Observable<KsOptional<RefTag?>> {
+        return io.reactivex.Observable.just(KsOptional.of(intent.getParcelableExtra(IntentKey.REF_TAG)))
     }
 
     /**
      * Returns a [deepLinkSaveFlag] observable. If there is no deepLink Save Flag
      */
-    fun deepLinkSaveFlag(intent: Intent): Observable<Boolean> {
-        return Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
+    fun deepLinkSaveFlag(intent: Intent): io.reactivex.Observable<Boolean> {
+        return io.reactivex.Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
     }
 
     /**

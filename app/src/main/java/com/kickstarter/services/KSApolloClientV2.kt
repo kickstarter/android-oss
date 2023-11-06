@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Location
@@ -19,6 +20,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.categoryTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
@@ -43,12 +45,26 @@ interface ApolloClientTypeV2 {
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
-    fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<String>
+    fun createFlagging(
+        project: Project? = null,
+        details: String,
+        flaggingKind: String
+    ): Observable<String>
+
     fun userPrivacy(): Observable<UserPrivacy>
     fun watchProject(project: Project): Observable<Project>
     fun unWatchProject(project: Project): Observable<Project>
-    fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
-    fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
+    fun updateUserPassword(
+        currentPassword: String = "",
+        newPassword: String,
+        confirmPassword: String
+    ): Observable<UpdateUserPasswordMutation.Data>
+
+    fun updateUserEmail(
+        email: String,
+        currentPassword: String
+    ): Observable<UpdateUserEmailMutation.Data>
+
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
@@ -56,10 +72,15 @@ interface ApolloClientTypeV2 {
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
-    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
+    fun createPassword(
+        password: String,
+        confirmPassword: String
+    ): Observable<CreatePasswordMutation.Data>
+
     fun creatorDetails(slug: String): Observable<CreatorDetails>
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
+    fun fetchCategory(param: String): Observable<Category?>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -811,5 +832,32 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 })
             return@defer ps
         }
+    }
+
+    override fun fetchCategory(categoryParam: String): Observable<Category?> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Category>()
+            this.service.query(
+                FetchCategoryQuery.builder()
+                    .categoryParam(categoryParam)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchCategoryQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchCategoryQuery.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        val category =
+                            categoryTransformer(response.data?.category()?.fragments()?.category())
+                        ps.onNext(category)
+                    }
+                    ps.onComplete()
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 }

@@ -391,13 +391,13 @@ open class MockApiClientV2 : ApiClientTypeV2 {
     override fun updateProjectNotifications(
         projectNotification: ProjectNotification,
         checked: Boolean
-    ): io.reactivex.Observable<ProjectNotification> {
+    ): Observable<ProjectNotification> {
         return Observable.just(
             projectNotification.toBuilder().email(checked).mobile(checked).build()
         )
     }
 
-    override fun updateUserSettings(user: User): io.reactivex.Observable<User> {
+    override fun updateUserSettings(user: User): Observable<User> {
         val map: Map<String, Any> = mapOf(Pair("user", user))
         observable.onNext(
             Pair("update_user_settings", map)
@@ -405,7 +405,7 @@ open class MockApiClientV2 : ApiClientTypeV2 {
         return Observable.just(user)
     }
 
-    override fun verifyEmail(token: String): io.reactivex.Observable<EmailVerificationEnvelope> {
+    override fun verifyEmail(token: String): Observable<EmailVerificationEnvelope> {
         return Observable.just(
             builder()
                 .code(200)

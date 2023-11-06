@@ -598,7 +598,7 @@ interface DiscoveryFragmentViewModel {
             activityUpdateClick.onNext(activity)
         override fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?) =
             discoveryOnboardingLoginToutClick.onNext(true)
-        override fun projectCardViewHolderClicked(project: Project?) = projectCardClicked.onNext(project)
+        override fun projectCardViewHolderClicked(project: Project) = projectCardClicked.onNext(project)
         override fun nextPage() = nextPage.onNext(null)
         override fun paramsFromActivity(params: DiscoveryParams) = paramsFromActivity.onNext(params)
         override fun fragmentLifeCycle(lifecycleEvent: FragmentEvent) =

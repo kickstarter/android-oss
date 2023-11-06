@@ -45,12 +45,26 @@ interface ApolloClientTypeV2 {
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
-    fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<String>
+    fun createFlagging(
+        project: Project? = null,
+        details: String,
+        flaggingKind: String
+    ): Observable<String>
+
     fun userPrivacy(): Observable<UserPrivacy>
     fun watchProject(project: Project): Observable<Project>
     fun unWatchProject(project: Project): Observable<Project>
-    fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
-    fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
+    fun updateUserPassword(
+        currentPassword: String = "",
+        newPassword: String,
+        confirmPassword: String
+    ): Observable<UpdateUserPasswordMutation.Data>
+
+    fun updateUserEmail(
+        email: String,
+        currentPassword: String
+    ): Observable<UpdateUserEmailMutation.Data>
+
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
@@ -58,7 +72,11 @@ interface ApolloClientTypeV2 {
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
-    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
+    fun createPassword(
+        password: String,
+        confirmPassword: String
+    ): Observable<CreatePasswordMutation.Data>
+
     fun creatorDetails(slug: String): Observable<CreatorDetails>
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
@@ -829,16 +847,14 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 }
 
                 override fun onResponse(response: Response<FetchCategoryQuery.Data>) {
-                    response.data?.let { responseData ->
-                        val category = categoryTransformer(responseData.category()?.fragments()?.category())
-
-                        Observable.just(category)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                ps.onNext(it)
-                                ps.onComplete()
-                            }
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        val category =
+                            categoryTransformer(response.data?.category()?.fragments()?.category())
+                        ps.onNext(category)
                     }
+                    ps.onComplete()
                 }
             })
             return@defer ps

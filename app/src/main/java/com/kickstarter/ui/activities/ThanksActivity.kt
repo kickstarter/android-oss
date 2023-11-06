@@ -22,6 +22,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ThanksAdapter
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showRatingDialogWidget
 import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.viewmodels.ThanksViewModel
@@ -42,6 +43,7 @@ class ThanksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ThanksLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpConnectivityStatusCheck(lifecycle)
         getEnvironment()?.let { env ->
             intent?.let {
                 factory = Factory(env, it)

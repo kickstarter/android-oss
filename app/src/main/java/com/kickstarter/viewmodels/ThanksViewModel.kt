@@ -441,6 +441,11 @@ interface ThanksViewModel {
                 }
             }
         }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 
     class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.core.net.toUri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory
@@ -151,17 +152,18 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
     fun testRefTag_emitsFromRefTag() {
         val refTag = RefTag.from("test")
         val intent = Intent().putExtra(IntentKey.REF_TAG, refTag)
-        val resultTest = TestSubscriber.create<RefTag>()
-        ProjectIntentMapper.refTag(intent).subscribe(resultTest)
-        resultTest.assertValue(refTag)
+        val resultTest = io.reactivex.subscribers.TestSubscriber.create<KsOptional<RefTag?>>()
+        ProjectIntentMapper.refTag(intent).subscribe { resultTest.onNext(it) }.addToDisposable(disposables)
+        assertEquals(resultTest.values().get(0).getValue(), refTag)
     }
 
     @Test
     fun testRefTag_emitsNullWithNoRefTag() {
         val intent = Intent()
-        val resultTest = TestSubscriber.create<RefTag?>()
-        ProjectIntentMapper.refTag(intent).subscribe(resultTest)
-        resultTest.assertValue(null)
+        val resultTest = io.reactivex.subscribers.TestSubscriber.create<KsOptional<RefTag?>>()
+        ProjectIntentMapper.refTag(intent).subscribe { resultTest.onNext(it) }.addToDisposable(disposables)
+        resultTest.assertValueCount(1)
+        assertNull(resultTest.values().get(0).getValue())
     }
 
     @Test

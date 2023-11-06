@@ -217,7 +217,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testMetadataForProject_whenNoMetadata_shouldReturnNull() {
-        assertNull(ProjectFactory.project().metadataForProject())
+        assertEquals(ProjectMetadata.NONE, ProjectFactory.project().metadataForProject())
     }
 
     @Test

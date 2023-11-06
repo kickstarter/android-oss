@@ -2,23 +2,23 @@ package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
+import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.AI
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.CAMPAIGN
@@ -26,11 +26,13 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONM
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
@@ -46,7 +48,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.ProjectPageActivity
+import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.MediaElement
 import com.kickstarter.ui.data.PledgeData
@@ -55,10 +57,11 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
@@ -66,6 +69,7 @@ data class PagerTabConfig(val tab: ProjectPagerTabs, val isActive: Boolean)
 
 interface ProjectPageViewModel {
     interface Inputs {
+        fun configureWith(intent: Intent)
 
         /** Call when the cancel pledge option is clicked.  */
         fun cancelPledgeClicked()
@@ -136,6 +140,8 @@ interface ProjectPageViewModel {
         fun closeFullScreenVideo(seekPosition: Long)
 
         fun onVideoPlayButtonClicked()
+
+        fun activityResult(result: ActivityResult)
     }
 
     interface Outputs {
@@ -152,13 +158,13 @@ interface ProjectPageViewModel {
         fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>>
 
         /** Emits when we should go back in the navigation hierarchy. */
-        fun goBack(): Observable<Void>
+        fun goBack(): Observable<Unit>
 
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
         /** Emits a menu for managing your pledge or null if there's no menu. */
-        fun managePledgeMenu(): Observable<Int?>
+        fun managePledgeMenu(): Observable<Int>
 
         /** Emits the color resource ID for the pledge action button. */
         fun pledgeActionButtonColor(): Observable<Int>
@@ -189,25 +195,25 @@ interface ProjectPageViewModel {
         fun reloadProgressBarIsGone(): Observable<Boolean>
 
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
-        fun revealRewardsFragment(): Observable<Void>
+        fun revealRewardsFragment(): Observable<Unit>
 
         /** Emits a boolean that determines if the scrim for secondary pledging actions should be visible. */
         fun scrimIsVisible(): Observable<Boolean>
 
         /** Emits when we should set the Y position of the rewards container. */
-        fun setInitialRewardsContainerY(): Observable<Void>
+        fun setInitialRewardsContainerY(): Observable<Unit>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
         fun showCancelPledgeFragment(): Observable<Project>
 
         /** Emits when the backing has successfully been canceled. */
-        fun showCancelPledgeSuccess(): Observable<Void>
+        fun showCancelPledgeSuccess(): Observable<Unit>
 
         /** Emits when we should show the not cancelable dialog. */
-        fun showPledgeNotCancelableDialog(): Observable<Void>
+        fun showPledgeNotCancelableDialog(): Observable<Unit>
 
         /** Emits when the success prompt for saving should be displayed.  */
-        fun showSavedPrompt(): Observable<Void>
+        fun showSavedPrompt(): Observable<Unit>
 
         /** Emits when we should show the share sheet with the name of the project and share URL.  */
         fun showShareSheet(): Observable<Pair<String, String>>
@@ -216,7 +222,7 @@ interface ProjectPageViewModel {
         fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>>
 
         /** Emits when the backing has successfully been updated. */
-        fun showUpdatePledgeSuccess(): Observable<Void>
+        fun showUpdatePledgeSuccess(): Observable<Unit>
 
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
         fun startRootCommentsActivity(): Observable<ProjectData>
@@ -224,7 +230,7 @@ interface ProjectPageViewModel {
         fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, ProjectData>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
-        fun startLoginToutActivity(): Observable<Void>
+        fun startLoginToutActivity(): Observable<Unit>
 
         /** Emits when we should show the [com.kickstarter.ui.activities.MessagesActivity]. */
         fun startMessagesActivity(): Observable<Project>
@@ -259,51 +265,54 @@ interface ProjectPageViewModel {
         fun updateVideoCloseSeekPosition(): Observable<Long>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        ActivityViewModel<ProjectPageActivity>(environment),
+    class ProjectPageViewModel(val environment: Environment) :
+        ViewModel(),
         Inputs,
         Outputs {
 
         private val cookieManager = requireNotNull(environment.cookieManager())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val currentUser = requireNotNull(environment.currentUserV2())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
-        private val apolloClient = requireNotNull(environment.apolloClient())
-        private val currentConfig = requireNotNull(environment.currentConfig())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val currentConfig = requireNotNull(environment.currentConfigV2())
         private val featureFlagClient = requireNotNull(environment.featureFlagClient())
+        private val analyticEvents = requireNotNull(environment.analytics())
 
+        private val intent = PublishSubject.create<Intent>()
+        private val activityResult = BehaviorSubject.create<ActivityResult>()
         private val closeFullScreenVideo = BehaviorSubject.create<Long>()
-        private val cancelPledgeClicked = PublishSubject.create<Void>()
-        private val commentsTextViewClicked = PublishSubject.create<Void>()
-        private val contactCreatorClicked = PublishSubject.create<Void>()
-        private val fixPaymentMethodButtonClicked = PublishSubject.create<Void>()
+        private val cancelPledgeClicked = PublishSubject.create<Unit>()
+        private val commentsTextViewClicked = PublishSubject.create<Unit>()
+        private val contactCreatorClicked = PublishSubject.create<Unit>()
+        private val fixPaymentMethodButtonClicked = PublishSubject.create<Unit>()
         private val fragmentStackCount = PublishSubject.create<Int>()
-        private val heartButtonClicked = PublishSubject.create<Void>()
-        private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
-        private val onGlobalLayout = PublishSubject.create<Void>()
+        private val heartButtonClicked = PublishSubject.create<Unit>()
+        private val nativeProjectActionButtonClicked = PublishSubject.create<Unit>()
+        private val onGlobalLayout = PublishSubject.create<Unit>()
         private val fullScreenVideoButtonClicked = PublishSubject.create<kotlin.Pair<String, Long>>()
-        private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Void>()
-        private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
+        private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Unit>()
+        private val pledgeSuccessfullyCancelled = PublishSubject.create<Unit>()
         private val pledgeSuccessfullyCreated = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
-        private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
-        private val pledgeToolbarNavigationClicked = PublishSubject.create<Void>()
-        private val refreshProject = PublishSubject.create<Void>()
-        private val reloadProjectContainerClicked = PublishSubject.create<Void>()
-        private val shareButtonClicked = PublishSubject.create<Void>()
-        private val updatePaymentClicked = PublishSubject.create<Void>()
-        private val updatePledgeClicked = PublishSubject.create<Void>()
-        private val updatesTextViewClicked = PublishSubject.create<Void>()
-        private val viewRewardsClicked = PublishSubject.create<Void>()
-        private val onVideoPlayButtonClicked = PublishSubject.create<Void>()
+        private val pledgeSuccessfullyUpdated = PublishSubject.create<Unit>()
+        private val pledgeToolbarNavigationClicked = PublishSubject.create<Unit>()
+        private val refreshProject = PublishSubject.create<Unit>()
+        private val reloadProjectContainerClicked = PublishSubject.create<Unit>()
+        private val shareButtonClicked = PublishSubject.create<Unit>()
+        private val updatePaymentClicked = PublishSubject.create<Unit>()
+        private val updatePledgeClicked = PublishSubject.create<Unit>()
+        private val updatesTextViewClicked = PublishSubject.create<Unit>()
+        private val viewRewardsClicked = PublishSubject.create<Unit>()
+        private val onVideoPlayButtonClicked = PublishSubject.create<Unit>()
 
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val backingDetailsSubtitle = BehaviorSubject.create<Either<String, Int>?>()
         private val backingDetailsTitle = BehaviorSubject.create<Int>()
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
-        private val goBack = PublishSubject.create<Void>()
+        private val goBack = PublishSubject.create<Unit>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val managePledgeMenu = BehaviorSubject.create<Int?>()
+        private val managePledgeMenu = BehaviorSubject.create<Int>()
         private val pledgeActionButtonColor = BehaviorSubject.create<Int>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeActionButtonText = BehaviorSubject.create<Int>()
@@ -313,20 +322,20 @@ interface ProjectPageViewModel {
         private val projectData = BehaviorSubject.create<ProjectData>()
         private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
-        private val revealRewardsFragment = PublishSubject.create<Void>()
+        private val revealRewardsFragment = PublishSubject.create<Unit>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
-        private val setInitialRewardPosition = BehaviorSubject.create<Void>()
+        private val setInitialRewardPosition = BehaviorSubject.create<Unit>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
-        private val showCancelPledgeSuccess = PublishSubject.create<Void>()
-        private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
+        private val showCancelPledgeSuccess = PublishSubject.create<Unit>()
+        private val showPledgeNotCancelableDialog = PublishSubject.create<Unit>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
-        private val showSavedPrompt = PublishSubject.create<Void>()
+        private val showSavedPrompt = PublishSubject.create<Unit>()
         private val updatePledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
+        private val showUpdatePledgeSuccess = PublishSubject.create<Unit>()
         private val startRootCommentsActivity = PublishSubject.create<ProjectData>()
         private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, ProjectData>>()
-        private val startLoginToutActivity = PublishSubject.create<Void>()
+        private val startLoginToutActivity = PublishSubject.create<Unit>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdateActivity = PublishSubject.create<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
         private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
@@ -347,86 +356,93 @@ interface ProjectPageViewModel {
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
+        val disposables = CompositeDisposable()
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(
-                intent(),
-                intent()
-                    .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
-            )
-                .switchMap {
-                    ProjectIntentMapper.project(it, this.apolloClient)
-                        .doOnSubscribe {
-                            progressBarIsGone.onNext(false)
-                        }
-                        .doAfterTerminate {
-                            progressBarIsGone.onNext(true)
-                        }
-                        .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
-                            return@withLatestFrom project.updateProjectWith(config, user)
-                        }
-                        .materialize()
-                }
+                intent,
+                intent
+                    .compose(
+                        takeWhenV2(
+                            this.reloadProjectContainerClicked
+                        )
+                    )
+            ).switchMap {
+                ProjectIntentMapper.project(it, this.apolloClient)
+                    .doOnSubscribe {
+                        progressBarIsGone.onNext(false)
+                    }
+                    .doAfterTerminate {
+                        progressBarIsGone.onNext(true)
+                    }
+                    .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                        return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                    }
+                    .materialize()
+            }
                 .share()
 
-            activityResult()
+            activityResult
                 .filter { it.isOk }
                 .filter { it.isRequestCode(ActivityRequestCodes.SHOW_REWARDS) }
-                .compose(bindToLifecycle())
                 .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
+                .addToDisposable(disposables)
 
-            intent()
+            intent
                 .take(1)
                 .filter { it.getBooleanExtra(IntentKey.EXPAND_PLEDGE_SHEET, false) }
-                .compose(bindToLifecycle())
                 .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
+                .addToDisposable(disposables)
 
             val pledgeSheetExpanded = this.expandPledgeSheet
                 .map { it.first }
                 .startWith(false)
 
             progressBarIsGone
-                .compose(bindToLifecycle())
-                .subscribe(this.retryProgressBarIsGone)
+                .subscribe { this.retryProgressBarIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             val mappedProjectValues = mappedProjectNotification
-                .compose(values())
+                .compose(valuesV2())
 
             val mappedProjectErrors = mappedProjectNotification
-                .compose(errors())
+                .compose(errorsV2())
 
             mappedProjectValues
                 .filter { it.displayPrelaunch().isTrue() }
                 .map { it.webProjectUrl() }
-                .compose(bindToLifecycle())
-                .subscribe(this.prelaunchUrl)
+                .subscribe { this.prelaunchUrl.onNext(it) }
+                .addToDisposable(disposables)
 
             val initialProject = mappedProjectValues
                 .filter {
                     it.displayPrelaunch().isFalse()
                 }
 
-            // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+            // An observable of the ref tag stored in the cookie for the project. Emits an optional since this value can be null.
             val cookieRefTag = initialProject
                 .take(1)
-                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
+                .map {
+                        p ->
+                    KsOptional.of(RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences))
+                }
 
-            val refTag = intent()
+            val refTag = intent
                 .flatMap { ProjectIntentMapper.refTag(it) }
 
-            val saveProjectFromDeepLinkActivity = intent()
+            val saveProjectFromDeepLinkActivity = intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, false)
                 }
                 .flatMap { ProjectIntentMapper.deepLinkSaveFlag(it) }
 
-            val saveProjectFromDeepUrl = intent()
+            val saveProjectFromDeepUrl = intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
                 .filter { it.data.isNotNull() }
                 .map { requireNotNull(it.data) }
                 .filter {
@@ -437,15 +453,16 @@ interface ProjectPageViewModel {
                 .map { requireNotNull(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
-                .compose<User>(takeWhen(this.heartButtonClicked))
-                .filter { u -> u != null }
+                .filter { it.isPresent() }
+                .map { it.getValue() }
+                .compose<User>(takeWhenV2(this.heartButtonClicked))
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                .compose<User>(takeWhen(this.heartButtonClicked))
-                .filter { u -> u == null }
+                .compose(takeWhenV2(this.heartButtonClicked))
+                .filter { !it.isPresent() }
 
             val projectOnUserChangeSave = initialProject
-                .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
+                .compose(takeWhenV2<Project, User>(loggedInUserOnHeartClick))
                 .withLatestFrom(projectData) { initProject, latestProjectData ->
                     if (latestProjectData.project().isStarred() != initProject.isStarred()) {
                         latestProjectData.project()
@@ -458,16 +475,16 @@ interface ProjectPageViewModel {
                 }
                 .share()
 
-            val refreshProjectEvent = Observable.merge(
+            val refreshProjectEvent = Observable.mergeArray(
                 this.pledgeSuccessfullyCancelled,
-                this.pledgeSuccessfullyCreated.compose(ignoreValues()),
+                this.pledgeSuccessfullyCreated.compose(ignoreValuesV2()),
                 this.pledgeSuccessfullyUpdated,
                 this.pledgePaymentSuccessfullyUpdated,
                 this.refreshProject
             )
 
             val refreshedProjectNotification = initialProject
-                .compose(takeWhen<Project, Void>(refreshProjectEvent))
+                .compose(takeWhenV2(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
                         this.apolloClient.getProject(slug)
@@ -478,7 +495,7 @@ interface ProjectPageViewModel {
                                 progressBarIsGone.onNext(true)
                             }
                             .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
-                                return@withLatestFrom project.updateProjectWith(config, user)
+                                return@withLatestFrom project.updateProjectWith(config, user.getValue())
                             }
                             .materialize()
                     }
@@ -486,12 +503,13 @@ interface ProjectPageViewModel {
                 .share()
 
             loggedOutUserOnHeartClick
-                .compose(ignoreValues())
-                .subscribe(this.startLoginToutActivity)
+                .compose(ignoreValuesV2())
+                .subscribe { this.startLoginToutActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             val savedProjectOnLoginSuccess = this.startLoginToutActivity
-                .compose<Pair<Void, User>>(combineLatestPair(this.currentUser.observable()))
-                .filter { su -> su.second != null }
+                .compose<Pair<Unit, KsOptional<User>>>(combineLatestPair(this.currentUser.observable()))
+                .filter { su -> su.second.isPresent() }
                 .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                 .take(1)
                 .switchMap {
@@ -501,7 +519,7 @@ interface ProjectPageViewModel {
 
             val projectOnDeepLinkChangeSave = Observable.merge(saveProjectFromDeepLinkActivity, saveProjectFromDeepUrl)
                 .compose(combineLatestPair(this.currentUser.observable()))
-                .filter { it.second != null }
+                .filter { it.second.isPresent() }
                 .withLatestFrom(initialProject) { userAndFlag, p ->
                     Pair(userAndFlag, p)
                 }
@@ -516,19 +534,20 @@ interface ProjectPageViewModel {
                     }
                 }.share()
 
-            val currentProject = Observable.merge(
+            val currentProject = Observable.mergeArray(
                 initialProject,
-                refreshedProjectNotification.compose(values()),
+                refreshedProjectNotification.compose(valuesV2()),
                 projectOnUserChangeSave,
-                savedProjectOnLoginSuccess,
-                projectOnDeepLinkChangeSave
+                projectOnDeepLinkChangeSave,
+                savedProjectOnLoginSuccess
             )
 
             var previousScreen = ""
-            intent()
+            intent
                 .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
+                .addToDisposable(disposables)
 
-            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
+            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(
                     project = currentProject,
                     apolloClient = apolloClient,
@@ -537,31 +556,34 @@ interface ProjectPageViewModel {
                     firebaseScreen = ThirdPartyEventValues.ScreenName.PROJECT.value,
                     firebasePreviousScreen = previousScreen
                 )
-                .compose(neverError())
-                .compose(bindToLifecycle())
+                .compose(neverErrorV2())
                 .subscribe {
                     onThirdPartyEventSent.onNext(it.first)
                 }
+                .addToDisposable(disposables)
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)
 
             projectSavedStatus
-                .compose(bindToLifecycle())
                 .subscribe { this.analyticEvents.trackWatchProjectCTA(it, PROJECT) }
+                .addToDisposable(disposables)
 
             projectSavedStatus
                 .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }
-                .compose(ignoreValues())
-                .compose(bindToLifecycle())
-                .subscribe(this.showSavedPrompt)
+                .compose(ignoreValuesV2())
+                .subscribe { this.showSavedPrompt.onNext(it) }
+                .addToDisposable(disposables)
 
-            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project ->
+            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, Project, ProjectData>(
+                refTag,
+                cookieRefTag,
+                currentProject
+            ) { refTagFromIntent, refTagFromCookie, project ->
                 projectData(refTagFromIntent, refTagFromCookie, project)
             }
 
             currentProjectData
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
@@ -572,18 +594,19 @@ interface ProjectPageViewModel {
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))
                 }
+                .addToDisposable(disposables)
 
             currentProject
-                .compose<Project>(takeWhen(this.shareButtonClicked))
+                .compose(takeWhenV2(this.shareButtonClicked))
                 .map { Pair(it.name(), UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())) }
-                .compose(bindToLifecycle())
-                .subscribe(this.showShareSheet)
+                .subscribe { this.showShareSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
-            intent()
+            intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
                         it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
@@ -592,14 +615,13 @@ interface ProjectPageViewModel {
                     project
                 }
                 .map { it.second }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsActivity.onNext(it)
-                }
+                }.addToDisposable(disposables)
 
-            intent()
+            intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
                         it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
@@ -608,88 +630,87 @@ interface ProjectPageViewModel {
                     Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
                 }
                 .map { Pair(it.first, it.second.second) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsForCommentsThreadActivity.onNext(it)
                 }
+                .addToDisposable(disposables)
 
-            intent()
+            intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
                         it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }.map {
                     Pair(
-                        requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
+                        it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE) ?: "",
                         it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, false)
                     )
                 }
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
                     Pair(updateId, project)
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
+                }.subscribe {
                     this.startProjectUpdateActivity.onNext(it)
                 }
+                .addToDisposable(disposables)
 
-            intent()
+            intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
                         it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
                 }.map {
                     Pair(
-                        requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
+                        it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE) ?: "",
                         it.getStringExtra(IntentKey.COMMENT) ?: ""
                     )
                 }
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
                     Pair(updateId, project)
                 }
-                .compose(bindToLifecycle())
                 .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             fullScreenVideoButtonClicked
-                .compose(bindToLifecycle())
-                .subscribe(this.onOpenVideoInFullScreen)
+                .subscribe { this.onOpenVideoInFullScreen.onNext(it) }
+                .addToDisposable(disposables)
 
             closeFullScreenVideo
-                .compose(bindToLifecycle())
                 .subscribe {
                     updateVideoCloseSeekPosition.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             this.onGlobalLayout
-                .compose(bindToLifecycle())
-                .subscribe(this.setInitialRewardPosition)
+                .subscribe { this.setInitialRewardPosition.onNext(it) }
+                .addToDisposable(disposables)
 
             this.nativeProjectActionButtonClicked
                 .map { Pair(true, true) }
-                .compose(bindToLifecycle())
-                .subscribe(this.expandPledgeSheet)
+                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             val fragmentStackCount = this.fragmentStackCount.startWith(0)
 
             fragmentStackCount
-                .compose(takeWhen(this.pledgeToolbarNavigationClicked))
+                .compose(takeWhenV2(this.pledgeToolbarNavigationClicked))
                 .filter { it <= 0 }
                 .map { Pair(false, true) }
-                .compose(bindToLifecycle())
-                .subscribe(this.expandPledgeSheet)
+                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             fragmentStackCount
-                .compose<Int>(takeWhen(this.pledgeToolbarNavigationClicked))
+                .compose(takeWhenV2(this.pledgeToolbarNavigationClicked))
                 .filter { it > 0 }
-                .compose(ignoreValues())
-                .compose(bindToLifecycle())
-                .subscribe(this.goBack)
+                .compose(ignoreValuesV2())
+                .subscribe { this.goBack.onNext(it) }
+                .addToDisposable(disposables)
 
             Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyCreated)
                 .map { Pair(false, false) }
-                .compose(bindToLifecycle())
-                .subscribe(this.expandPledgeSheet)
+                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectHasRewardsAndSheetCollapsed = currentProject
                 .map { it.hasRewards() }
@@ -703,60 +724,58 @@ interface ProjectPageViewModel {
                 .map { true }
 
             Observable.merge(rewardsLoaded, this.reloadProjectContainerClicked.map { true })
-                .compose(bindToLifecycle())
-                .subscribe(this.reloadProjectContainerIsGone)
+                .subscribe { this.reloadProjectContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             mappedProjectErrors
                 .map { false }
-                .compose(bindToLifecycle())
-                .subscribe(this.reloadProjectContainerIsGone)
+                .subscribe { this.reloadProjectContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectHasRewardsAndSheetCollapsed
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.retryProgressBarIsGone))
                 .map { (it.first && it.second).negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeActionButtonContainerIsGone)
+                .subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
-            val projectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
-
-            projectData
+            currentProjectData
                 .filter { it.project().hasRewards() && !it.project().isBacking() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.updateFragments)
+                .subscribe { this.updateFragments.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
                 .map { managePledgeMenu(it) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.managePledgeMenu)
+                .subscribe { this.managePledgeMenu.onNext(it) }
+                .addToDisposable(disposables)
 
-            projectData
-                .compose(takePairWhen(this.tabSelected))
+            currentProjectData
+                .compose(takePairWhenV2(this.tabSelected))
                 .distinctUntilChanged()
-                .delay(150, TimeUnit.MILLISECONDS, environment.scheduler()) // add delay to wait
+                .delay(150, TimeUnit.MILLISECONDS, environment.schedulerV2()) // add delay to wait
                 // until fragment subscribed to viewmodel
                 .subscribe {
                     this.projectData.onNext(it.first)
                 }
+                .addToDisposable(disposables)
 
             tabSelected
                 .map { it != 0 }
-                .compose(bindToLifecycle())
                 .subscribe { this.hideVideoPlayer.onNext(it) }
+                .addToDisposable(disposables)
 
             val backedProject = currentProject
                 .filter { it.isBacking() }
 
             val backing = backedProject
-                .map { it.backing() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.backing().isNotNull() }
+                .map { requireNotNull(it.backing()) }
 
             // - Update fragments with the backing data
-            projectData
+            currentProjectData
                 .filter { it.project().hasRewards() }
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                 .map {
@@ -764,31 +783,33 @@ interface ProjectPageViewModel {
                         it.first.project().toBuilder().backing(it.second).build()
                     } else it.first.project()
 
-                    projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
+                    projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), updatedProject)
                 }
-                .compose(bindToLifecycle())
-                .subscribe(this.updateFragments)
+                .subscribe { this.updateFragments.onNext(it) }
+                .addToDisposable(disposables)
 
             backedProject
-                .compose<Project>(takeWhen(this.cancelPledgeClicked))
+                .compose<Project>(takeWhenV2(this.cancelPledgeClicked))
                 .filter { (it.backing()?.cancelable() ?: false).isTrue() }
-                .compose(bindToLifecycle())
-                .subscribe(this.showCancelPledgeFragment)
+                .subscribe { this.showCancelPledgeFragment.onNext(it) }
+                .addToDisposable(disposables)
 
             backedProject
-                .compose<Project>(takeWhen(this.cancelPledgeClicked))
+                .compose(takeWhenV2(this.cancelPledgeClicked))
                 .filter { it.backing()?.cancelable().isFalse() }
-                .compose(ignoreValues())
-                .compose(bindToLifecycle())
-                .subscribe(this.showPledgeNotCancelableDialog)
+                .compose(ignoreValuesV2())
+                .subscribe { this.showPledgeNotCancelableDialog.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
-                .compose<Project>(takeWhen(this.contactCreatorClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.startMessagesActivity)
+                .compose(takeWhenV2(this.contactCreatorClicked))
+                .subscribe { this.startMessagesActivity.onNext(it) }
+                .addToDisposable(disposables)
 
-            val projectDataAndBackedReward = projectData
+            val projectDataAndBackedReward = currentProjectData
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                .filter { it.first.project().backing().isNotNull() }
+                .filter { it.first.project().backing()?.backedReward(it.first.project()).isNotNull() }
                 .map { pD ->
                     pD.first.project().backing()?.backedReward(pD.first.project())?.let {
                         Pair(pD.first.toBuilder().backing(pD.second).build(), it)
@@ -796,143 +817,149 @@ interface ProjectPageViewModel {
                 }
 
             projectDataAndBackedReward
-                .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
+                .compose(takeWhenV2(this.fixPaymentMethodButtonClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
-                .compose(bindToLifecycle())
-                .subscribe(this.updatePledgeData)
+                .subscribe { this.updatePledgeData.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndBackedReward
-                .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
+                .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.updatePaymentClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.updatePledgeData.onNext(it)
                     this.analyticEvents.trackChangePaymentMethod(it.first)
-                }
+                }.addToDisposable(disposables)
 
             projectDataAndBackedReward
-                .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))
+                .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.updatePledgeClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
-                .compose(bindToLifecycle())
-                .subscribe(this.updatePledgeData)
+                .subscribe { this.updatePledgeData.onNext(it) }
+                .addToDisposable(disposables)
 
             this.viewRewardsClicked
-                .compose(bindToLifecycle())
-                .subscribe(this.revealRewardsFragment)
+                .subscribe { this.revealRewardsFragment.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .map { it.isBacking() && it.isLive || it.backing()?.isErrored() == true }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.backingDetailsIsVisible)
+                .subscribe { this.backingDetailsIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .filter { it.isBacking() }
                 .map { if (it.backing()?.isErrored() == true) R.string.Payment_failure else R.string.Youre_a_backer }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.backingDetailsTitle)
+                .subscribe { this.backingDetailsTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .filter { it.isBacking() }
-                .map { backingDetailsSubtitle(it) }
+                .filter {
+                    backingDetailsSubtitle(it).isNotNull()
+                }
+                .map { requireNotNull(backingDetailsSubtitle(it)) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.backingDetailsSubtitle)
+                .subscribe { this.backingDetailsSubtitle.onNext(it) }
+                .addToDisposable(disposables)
 
             val currentProjectAndUser = currentProject
-                .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
+                .compose<Pair<Project, KsOptional<User>>>(combineLatestPair(this.currentUser.observable()))
 
             Observable.combineLatest(currentProjectData, this.currentUser.observable()) { data, user ->
                 ProjectViewUtils.pledgeActionButtonText(
                     data.project(),
-                    user,
+                    user.getValue(),
                 )
             }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeActionButtonText)
+                .subscribe { this.pledgeActionButtonText.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
                 .map { if (it.second <= 0) R.drawable.ic_arrow_down else R.drawable.ic_arrow_back }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeToolbarNavigationIcon)
+                .subscribe { this.pledgeToolbarNavigationIcon.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProjectAndUser
-                .map { ProjectViewUtils.pledgeToolbarTitle(it.first, it.second) }
+                .map { ProjectViewUtils.pledgeToolbarTitle(it.first, it.second.getValue()) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeToolbarTitle)
+                .subscribe { this.pledgeToolbarTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProjectAndUser
-                .map { ProjectViewUtils.pledgeActionButtonColor(it.first, it.second) }
+                .map { ProjectViewUtils.pledgeActionButtonColor(it.first, it.second.getValue()) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeActionButtonColor)
+                .subscribe { this.pledgeActionButtonColor.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgePaymentSuccessfullyUpdated
-                .compose(bindToLifecycle())
-                .subscribe(this.showUpdatePledgeSuccess)
+                .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgeSuccessfullyCancelled
-                .compose(bindToLifecycle())
-                .subscribe(this.showCancelPledgeSuccess)
+                .subscribe { this.showCancelPledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgeSuccessfullyCreated
-                .compose(bindToLifecycle())
-                .subscribe(this.startThanksActivity)
+                .subscribe { this.startThanksActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             this.pledgeSuccessfullyUpdated
-                .compose(bindToLifecycle())
-                .subscribe(this.showUpdatePledgeSuccess)
+                .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.fragmentStackCount
                 .compose<Pair<Int, Project>>(combineLatestPair(currentProject))
                 .map { if (it.second.isBacking()) it.first > 4 else it.first > 3 }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.scrimIsVisible)
+                .subscribe { this.scrimIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             currentProject
                 .map { p -> if (p.isStarred()) R.drawable.icon__heart else R.drawable.icon__heart_outline }
-                .subscribe(this.heartDrawableId)
+                .distinctUntilChanged()
+                .subscribe { this.heartDrawableId.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectPhoto = currentProject
-                .map { it.photo()?.full() }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.photo()?.full().isNotNull() }
+                .map { requireNotNull(it.photo()?.full()) }
 
-            val projectVideo = currentProject.map { it.video() }
-                .map { it?.hls() ?: it?.high() }
+            val projectVideo = currentProject
+                .map { it.video()?.hls() ?: it.video()?.high() ?: "" }
                 .distinctUntilChanged()
                 .take(1)
 
             projectPhoto
                 .compose(combineLatestPair(projectVideo))
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.projectMedia.onNext(MediaElement(VideoModelElement(it.second), it.first))
                 }
+                .addToDisposable(disposables)
 
             currentProject
-                .map { it.hasVideo() }
-                .subscribe(this.playButtonIsVisible)
+                .map {
+                    it.hasVideo()
+                }
+                .distinctUntilChanged()
+                .subscribe { this.playButtonIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             // Tracking
             val currentFullProjectData = currentProjectData
                 .filter { it.project().hasRewards() }
 
             val fullProjectDataAndCurrentUser = currentFullProjectData
-                .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+                .compose<Pair<ProjectData, KsOptional<User>>>(combineLatestPair(this.currentUser.observable()))
 
             val fullProjectDataAndPledgeFlowContext = fullProjectDataAndCurrentUser
-                .map { Pair(it.first, pledgeFlowContext(it.first.project(), it.second)) }
+                .map { Pair(it.first, pledgeFlowContext(it.first.project(), it.second.getValue())) }
 
             fullProjectDataAndPledgeFlowContext
                 .take(1)
-                .compose(bindToLifecycle())
                 .subscribe { projectDataAndPledgeFlowContext ->
                     val data = projectDataAndPledgeFlowContext.first
                     val pledgeFlowContext = projectDataAndPledgeFlowContext.second
@@ -943,45 +970,47 @@ interface ProjectPageViewModel {
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
                     this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
-                }
+                }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext
                 .map { it.first }
                 .take(1)
-                .compose(takePairWhen(this.tabSelected))
+                .compose(takePairWhenV2(this.tabSelected))
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackProjectPageTabChanged(it.first, getSelectedTabContextName(it.second))
-                }
+                }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext
-                .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
+                .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhenV2(this.nativeProjectActionButtonClicked))
                 .filter { it.first.project().isLive && !it.first.project().isBacking() }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackPledgeInitiateCTA(it.first)
-                }
+                }.addToDisposable(disposables)
 
             currentProject
                 .map { it.metadataForProject() }
                 .map { ProjectMetadata.BACKING == it }
-                .compose(bindToLifecycle())
-                .subscribe(backingViewGroupIsVisible)
+                .distinctUntilChanged()
+                .subscribe { backingViewGroupIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             this.updatePledgeData
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
-                }
+                }.addToDisposable(disposables)
 
             onVideoPlayButtonClicked
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
-                }
+                }.addToDisposable(disposables)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {
@@ -994,11 +1023,11 @@ interface ProjectPageViewModel {
             else -> OVERVIEW.contextName
         }
 
-        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {
+        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
             return when {
-                !project.isBacking() || count.isNonZero() -> null
+                !project.isBacking() || count.isNonZero() -> 0
                 project.isLive -> when {
                     project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
                     else -> R.menu.manage_pledge_live
@@ -1020,11 +1049,11 @@ interface ProjectPageViewModel {
             }
         }
 
-        private fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
+        private fun projectData(refTagFromIntent: KsOptional<RefTag?>, refTagFromCookie: KsOptional<RefTag?>, project: Project): ProjectData {
             return ProjectData
                 .builder()
-                .refTagFromIntent(refTagFromIntent)
-                .refTagFromCookie(refTagFromCookie)
+                .refTagFromIntent(refTagFromIntent.getValue())
+                .refTagFromCookie(refTagFromCookie.getValue())
                 .project(project)
                 .build()
         }
@@ -1040,20 +1069,24 @@ interface ProjectPageViewModel {
             this.tabSelected.onNext(position)
         }
 
+        override fun configureWith(intent: Intent) {
+            this.intent.onNext(intent)
+        }
+
         override fun cancelPledgeClicked() {
-            this.cancelPledgeClicked.onNext(null)
+            this.cancelPledgeClicked.onNext(Unit)
         }
 
         override fun commentsTextViewClicked() {
-            this.commentsTextViewClicked.onNext(null)
+            this.commentsTextViewClicked.onNext(Unit)
         }
 
         override fun contactCreatorClicked() {
-            this.contactCreatorClicked.onNext(null)
+            this.contactCreatorClicked.onNext(Unit)
         }
 
         override fun fixPaymentMethodButtonClicked() {
-            this.fixPaymentMethodButtonClicked.onNext(null)
+            this.fixPaymentMethodButtonClicked.onNext(Unit)
         }
 
         override fun fragmentStackCount(count: Int) {
@@ -1061,23 +1094,23 @@ interface ProjectPageViewModel {
         }
 
         override fun heartButtonClicked() {
-            this.heartButtonClicked.onNext(null)
+            this.heartButtonClicked.onNext(Unit)
         }
 
         override fun nativeProjectActionButtonClicked() {
-            this.nativeProjectActionButtonClicked.onNext(null)
+            this.nativeProjectActionButtonClicked.onNext(Unit)
         }
 
         override fun onGlobalLayout() {
-            this.onGlobalLayout.onNext(null)
+            this.onGlobalLayout.onNext(Unit)
         }
 
         override fun pledgePaymentSuccessfullyUpdated() {
-            this.pledgePaymentSuccessfullyUpdated.onNext(null)
+            this.pledgePaymentSuccessfullyUpdated.onNext(Unit)
         }
 
         override fun pledgeSuccessfullyCancelled() {
-            this.pledgeSuccessfullyCancelled.onNext(null)
+            this.pledgeSuccessfullyCancelled.onNext(Unit)
         }
 
         override fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>) {
@@ -1085,39 +1118,39 @@ interface ProjectPageViewModel {
         }
 
         override fun pledgeSuccessfullyUpdated() {
-            this.pledgeSuccessfullyUpdated.onNext(null)
+            this.pledgeSuccessfullyUpdated.onNext(Unit)
         }
 
         override fun pledgeToolbarNavigationClicked() {
-            this.pledgeToolbarNavigationClicked.onNext(null)
+            this.pledgeToolbarNavigationClicked.onNext(Unit)
         }
 
         override fun refreshProject() {
-            this.refreshProject.onNext(null)
+            this.refreshProject.onNext(Unit)
         }
 
         override fun reloadProjectContainerClicked() {
-            this.reloadProjectContainerClicked.onNext(null)
+            this.reloadProjectContainerClicked.onNext(Unit)
         }
 
         override fun shareButtonClicked() {
-            this.shareButtonClicked.onNext(null)
+            this.shareButtonClicked.onNext(Unit)
         }
 
         override fun updatePaymentClicked() {
-            this.updatePaymentClicked.onNext(null)
+            this.updatePaymentClicked.onNext(Unit)
         }
 
         override fun updatePledgeClicked() {
-            this.updatePledgeClicked.onNext(null)
+            this.updatePledgeClicked.onNext(Unit)
         }
 
         override fun updatesTextViewClicked() {
-            this.updatesTextViewClicked.onNext(null)
+            this.updatesTextViewClicked.onNext(Unit)
         }
 
         override fun viewRewardsClicked() {
-            this.viewRewardsClicked.onNext(null)
+            this.viewRewardsClicked.onNext(Unit)
         }
 
         override fun fullScreenVideoButtonClicked(videoInfo: kotlin.Pair<String, Long>) {
@@ -1126,131 +1159,93 @@ interface ProjectPageViewModel {
 
         override fun closeFullScreenVideo(position: Long) = closeFullScreenVideo.onNext(position)
 
-        override fun onVideoPlayButtonClicked() = onVideoPlayButtonClicked.onNext(null)
+        override fun onVideoPlayButtonClicked() = onVideoPlayButtonClicked.onNext(Unit)
 
         override fun updateVideoCloseSeekPosition(): Observable<Long> =
             updateVideoCloseSeekPosition
 
-        @NonNull
+        override fun activityResult(result: ActivityResult) = this.activityResult.onNext(result)
+
         override fun backingDetailsSubtitle(): Observable<Either<String, Int>?> = this.backingDetailsSubtitle
 
-        @NonNull
         override fun backingDetailsTitle(): Observable<Int> = this.backingDetailsTitle
 
-        @NonNull
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
-        @NonNull
         override fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>> = this.expandPledgeSheet
 
-        @NonNull
-        override fun goBack(): Observable<Void> = this.goBack
+        override fun goBack(): Observable<Unit> = this.goBack
 
-        @NonNull
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
-        @NonNull
-        override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
+        override fun managePledgeMenu(): Observable<Int> = this.managePledgeMenu
 
-        @NonNull
         override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
 
-        @NonNull
         override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> = this.pledgeActionButtonContainerIsGone
 
-        @NonNull
         override fun pledgeActionButtonText(): Observable<Int> = this.pledgeActionButtonText
 
-        @NonNull
         override fun pledgeToolbarNavigationIcon(): Observable<Int> = this.pledgeToolbarNavigationIcon
 
-        @NonNull
         override fun pledgeToolbarTitle(): Observable<Int> = this.pledgeToolbarTitle
 
-        @NonNull
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
-        @NonNull
         override fun projectData(): Observable<ProjectData> = this.projectData
 
-        @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone
 
-        @NonNull
         override fun reloadProgressBarIsGone(): Observable<Boolean> = this.retryProgressBarIsGone
 
-        @NonNull
-        override fun revealRewardsFragment(): Observable<Void> = this.revealRewardsFragment
+        override fun revealRewardsFragment(): Observable<Unit> = this.revealRewardsFragment
 
-        @NonNull
         override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible
 
-        @NonNull
-        override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
+        override fun setInitialRewardsContainerY(): Observable<Unit> = this.setInitialRewardPosition
 
-        @NonNull
         override fun showCancelPledgeFragment(): Observable<Project> = this.showCancelPledgeFragment
 
-        @NonNull
-        override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
+        override fun showCancelPledgeSuccess(): Observable<Unit> = this.showCancelPledgeSuccess
 
-        @NonNull
-        override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
+        override fun showPledgeNotCancelableDialog(): Observable<Unit> = this.showPledgeNotCancelableDialog
 
-        @NonNull
-        override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
+        override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
 
-        @NonNull
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
 
-        @NonNull
         override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> = this.showUpdatePledge
 
-        @NonNull
-        override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
+        override fun showUpdatePledgeSuccess(): Observable<Unit> = this.showUpdatePledgeSuccess
 
-        @NonNull
         override fun startRootCommentsActivity(): Observable<ProjectData> = this.startRootCommentsActivity
 
-        @NonNull
         override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, ProjectData>> =
             this.startRootCommentsForCommentsThreadActivity
 
-        @NonNull
-        override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
+        override fun startLoginToutActivity(): Observable<Unit> = this.startLoginToutActivity
 
-        @NonNull
         override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
 
-        @NonNull
         override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> = this.startThanksActivity
 
-        @NonNull
         override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
 
-        @NonNull
         override fun startProjectUpdateToRepliesDeepLinkActivity(): Observable<Pair<Pair<String, String>, Pair<Project, ProjectData>>> =
             this.startProjectUpdateToRepliesDeepLinkActivity
 
-        @NonNull
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> = this.onOpenVideoInFullScreen
 
-        @NonNull
         override fun updateTabs(): Observable<List<PagerTabConfig>> = this.updateTabs
 
-        @NonNull
         override fun hideVideoPlayer(): Observable<Boolean> = this.hideVideoPlayer
 
-        @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
 
-        @NonNull
         override fun projectMedia(): Observable<MediaElement> = this.projectMedia
 
-        @NonNull
         override fun playButtonIsVisible(): Observable<Boolean> = this.playButtonIsVisible
 
-        @NonNull
         override fun backingViewGroupIsVisible(): Observable<Boolean> = this.backingViewGroupIsVisible
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
@@ -1272,11 +1267,11 @@ interface ProjectPageViewModel {
 
         private fun saveProject(project: Project): Observable<Project> {
             return this.apolloClient.watchProject(project)
-                .compose(neverError())
+                .compose(neverErrorV2())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return this.apolloClient.unWatchProject(project).compose(neverError())
+            return this.apolloClient.unWatchProject(project).compose(neverErrorV2())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {
@@ -1285,6 +1280,13 @@ interface ProjectPageViewModel {
             } else {
                 saveProject(project)
             }
+        }
+    }
+
+    class Factory(private val environment: Environment) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ProjectPageViewModel(environment) as T
         }
     }
 }

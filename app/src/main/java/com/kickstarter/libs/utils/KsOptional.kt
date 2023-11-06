@@ -33,6 +33,7 @@ class KsOptional<T> {
         }
 
         fun <T> of(value: T): KsOptional<T> {
+            if (value == null) return empty()
             return KsOptional(value)
         }
     }

@@ -20,6 +20,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
@@ -81,6 +82,7 @@ interface ApolloClientTypeV2 {
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
     fun fetchCategory(param: String): Observable<Category?>
+    fun getBacking(backingId: String): Observable<Backing>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -857,6 +859,40 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     ps.onComplete()
                 }
             })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getBacking(backingId: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+
+            this.service.query(
+                GetBackingQuery.builder()
+                    .backingId(backingId).build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetBackingQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetBackingQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+                            response.data?.let {
+                                it.backing()?.fragments()?.let { backingFragments ->
+                                    backingTransformer(
+                                        backingFragments.backing()
+                                    )?.let { backingObject ->
+                                        ps.onNext(backingObject)
+                                    }
+                                }
+                            }
+                            ps.onComplete()
+                        }
+                    }
+                })
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

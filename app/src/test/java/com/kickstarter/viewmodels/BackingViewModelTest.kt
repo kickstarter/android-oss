@@ -35,8 +35,6 @@ class BackingViewModelTest : KSRobolectricTestCase() {
 
         vm.outputs.isRefreshing().subscribe { this.isRefreshing.onNext(it) }
             .addToDisposable(disposables)
-        vm.outputs.isRefreshing().subscribe { this.isRefreshing.onNext(it) }
-            .addToDisposable(disposables)
     }
 
     @Test
@@ -72,7 +70,6 @@ class BackingViewModelTest : KSRobolectricTestCase() {
         }
         setUpEnvironment(env, intent = intent)
 
-        // TODO change to use the testsubscriber
         vm.outputs.showBackingFragment().subscribe {
             assertNotNull(it)
             assertEquals(backing, it)

@@ -32,7 +32,7 @@ interface BackingViewModel {
         fun isRefreshing(): Observable<Boolean>
     }
 
-    class BackingViewModel(environment: Environment, private val intent: Intent) :
+    class BackingViewModel(environment: Environment, private val intent: Intent? = null) :
         ViewModel(),
         Outputs,
         Inputs {
@@ -47,7 +47,7 @@ interface BackingViewModel {
         val inputs: Inputs = this
 
         private val disposables = CompositeDisposable()
-        private fun intent() = intent?.let { Observable.just(it) } ?: io.reactivex.Observable.empty()
+        private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
         init {
             currentUser = requireNotNull(environment.currentUserV2())
             apolloClient = requireNotNull(environment.apolloClientV2())
@@ -70,7 +70,9 @@ interface BackingViewModel {
             val backing = Observable.combineLatest<Project, Backing?, Pair<Project, Backing>>(
                 project,
                 backingInfo
-            ) { a: Project?, b: Backing? -> Pair.create(a, b) }
+            ) { a: Project?, b: Backing? ->
+                Pair.create(a, b)
+            }
                 .switchMap { pb: Pair<Project, Backing> ->
                     apolloClient.getBacking(
                         pb.second.id().toString()
@@ -80,8 +82,7 @@ interface BackingViewModel {
                 .distinctUntilChanged()
                 .compose(Transformers.neverErrorV2())
 
-            backing
-                .compose(Transformers.takeWhenV2(refreshBacking))
+            backing.compose(Transformers.takeWhenV2(refreshBacking))
                 .switchMap {
                     apolloClient.getBacking(
                         it.id().toString()

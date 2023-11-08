@@ -126,10 +126,9 @@ interface EditProfileViewModel {
                 .subscribe { this.userName.onNext(it) }
                     .addToDisposable(disposables)
 
-            this.user
-                    .withLatestFrom(showPublicProfile){ user, showProfile -> user.toBuilder().showPublicProfile(showProfile).build() }
-//                    .distinctUntilChanged()
-                    .subscribe { this.updateSettings(it) }
+            this.showPublicProfile
+                    .withLatestFrom(user){ showProfile, user -> user.toBuilder().showPublicProfile(!showProfile).build() }
+                    .subscribe { this.userInput.onNext(it) }
                     .addToDisposable(disposables)
         }
 

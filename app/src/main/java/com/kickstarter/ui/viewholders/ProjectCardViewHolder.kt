@@ -315,10 +315,7 @@ class ProjectCardViewHolder(
     }
 
     private fun resizeProjectImage(avatarUrl: String?) {
-        val targetImageWidth =
-            (ViewUtils.getScreenWidthDp(context()) * ViewUtils.getScreenDensity(context()) - context().resources.getDimension(
-                R.dimen.grid_4
-            )).toInt()
+        val targetImageWidth = getProjectImageWidth()
         val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
 
         binding.projectCardPhoto.photo.maxHeight = targetImageHeight
@@ -336,6 +333,14 @@ class ProjectCardViewHolder(
                         .into(binding.projectCardPhoto.photo)
                 }
         }
+    }
+
+    private fun getProjectImageWidth(): Int {
+        val screenWidthDp = ViewUtils.getScreenWidthDp(context())
+        val screenDensityDp = ViewUtils.getScreenDensity(context())
+        val reducedSizeDp = context().resources.getDimension(R.dimen.grid_4)
+
+        return (screenWidthDp * screenDensityDp - reducedSizeDp).toInt()
     }
 
     private fun setDeadlineCountdownText(project: Project) {

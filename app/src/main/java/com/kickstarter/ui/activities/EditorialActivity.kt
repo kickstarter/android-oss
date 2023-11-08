@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
@@ -10,6 +11,8 @@ import com.kickstarter.databinding.ActivityEditorialBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.viewmodels.EditorialViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -31,6 +34,9 @@ class EditorialActivity : AppCompatActivity() {
                 factory = EditorialViewModel.Factory(env, it)
             }
         }
+
+        setUpConnectivityStatusCheck(lifecycle)
+        this.onBackPressedDispatcher.addCallback { finishWithAnimation() }
 
         setContentView(binding.root)
 

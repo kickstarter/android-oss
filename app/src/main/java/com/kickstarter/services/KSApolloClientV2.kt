@@ -925,11 +925,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 .apply {
                                     addAll(subCategories)
                                 }
-                            Observable.just(rootCategories)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe {
-                                    ps.onNext(it)
-                                }
+                            ps.onNext(rootCategories)
                         }
                         ps.onComplete()
                     }

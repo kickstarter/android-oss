@@ -31,10 +31,10 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment, editorial: Editorial) {
-        this.vm = EditorialViewModel.EditorialViewModel(
+        this.vm = EditorialViewModel.Factory(
             environment,
             Intent().putExtra(IntentKey.EDITORIAL, editorial)
-        )
+        ).create(EditorialViewModel.EditorialViewModel::class.java)
 
         this.vm.outputs.description().subscribe { this.description.onNext(it) }
             .addToDisposable(disposables)

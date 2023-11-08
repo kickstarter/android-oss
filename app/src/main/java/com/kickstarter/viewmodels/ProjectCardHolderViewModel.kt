@@ -384,12 +384,11 @@ interface ProjectCardHolderViewModel {
             fundingUnsuccessfulViewGroupIsGone = project
                 .filter { it.isNotNull() }
                 .map {
-                    (
-                            it.state() != Project.STATE_CANCELED &&
-                                    it.state() != Project.STATE_FAILED &&
-                                    it.state() != Project.STATE_SUSPENDED
-                            )
+                    it.state() != Project.STATE_CANCELED &&
+                        it.state() != Project.STATE_FAILED &&
+                        it.state() != Project.STATE_SUSPENDED
                 }
+
             fundingSuccessfulViewGroupIsGone = project
                 .filter { it.isNotNull() }
                 .map { it.state() != Project.STATE_SUCCESSFUL }

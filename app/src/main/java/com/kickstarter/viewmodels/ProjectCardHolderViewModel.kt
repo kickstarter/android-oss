@@ -2,29 +2,29 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.libs.utils.extensions.isCompleted
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.requireNonNull
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.replaceSmallImageWithMediumIfEmpty
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.Editorial
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 
 interface ProjectCardHolderViewModel {
     interface Inputs {
@@ -162,20 +162,19 @@ interface ProjectCardHolderViewModel {
         fun notifyDelegateOfHeartButtonClicked(): Observable<Project>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<ProjectCardViewHolder?>(environment), Inputs, Outputs {
+    class ViewModel : Inputs, Outputs {
         private fun shouldShowLocationTag(params: DiscoveryParams): Boolean {
             return params.tagId() != null && params.tagId() == Editorial.LIGHTS_ON.tagId
         }
 
-        private fun areParamsAllOrSameCategoryAsProject(categoryPair: Pair<Category?, Category>): Boolean {
+        private fun areParamsAllOrSameCategoryAsProject(categoryPair: Pair<Category, Category>): Boolean {
             return categoryPair.first.isNotNull() && categoryPair.first?.id() == categoryPair.second.id()
         }
 
-        private val heartButtonClicked = PublishSubject.create<Void>()
+        private val heartButtonClicked = PublishSubject.create<Unit>()
         private val discoveryParams = PublishSubject.create<DiscoveryParams?>()
-        private val project = PublishSubject.create<Project?>()
-        private val projectCardClicked = PublishSubject.create<Void?>()
+        private val project = PublishSubject.create<Project>()
+        private val projectCardClicked = PublishSubject.create<Unit>()
         private val backersCountTextViewText: Observable<String>
         private val backingViewGroupIsGone: Observable<Boolean>
         private val deadlineCountdownText: Observable<String>
@@ -218,6 +217,8 @@ interface ProjectCardHolderViewModel {
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val notifyDelegateOfHeartButtonClicked = BehaviorSubject.create<Project>()
 
+        private val disposables = CompositeDisposable()
+
         @JvmField
         val inputs: Inputs = this
 
@@ -229,11 +230,11 @@ interface ProjectCardHolderViewModel {
         }
 
         override fun heartButtonClicked() {
-            this.heartButtonClicked.onNext(null)
+            this.heartButtonClicked.onNext(Unit)
         }
 
         override fun projectCardClicked() {
-            projectCardClicked.onNext(null)
+            projectCardClicked.onNext(Unit)
         }
 
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
@@ -248,22 +249,42 @@ interface ProjectCardHolderViewModel {
         override fun friendAvatarUrl3(): Observable<String> = friendAvatarUrl3
         override fun friendBackingViewIsHidden(): Observable<Boolean> = friendBackingViewIsHidden
         override fun friendsForNamepile(): Observable<List<User>> = friendsForNamepile
-        override fun fundingSuccessfulViewGroupIsGone(): Observable<Boolean> = fundingSuccessfulViewGroupIsGone
-        override fun fundingUnsuccessfulViewGroupIsGone(): Observable<Boolean> = fundingUnsuccessfulViewGroupIsGone
+        override fun fundingSuccessfulViewGroupIsGone(): Observable<Boolean> =
+            fundingSuccessfulViewGroupIsGone
+
+        override fun fundingUnsuccessfulViewGroupIsGone(): Observable<Boolean> =
+            fundingUnsuccessfulViewGroupIsGone
+
         override fun imageIsInvisible(): Observable<Boolean> = imageIsInvisible
         override fun locationContainerIsGone(): Observable<Boolean> = locationContainerIsGone
         override fun locationName(): Observable<String> = locationName
-        override fun metadataViewGroupBackgroundDrawable(): Observable<Int> = metadataViewGroupBackground
+        override fun metadataViewGroupBackgroundDrawable(): Observable<Int> =
+            metadataViewGroupBackground
+
         override fun metadataViewGroupIsGone(): Observable<Boolean> = metadataViewGroupIsGone
         override fun nameAndBlurbText(): Observable<Pair<String, String>> = nameAndBlurbText
-        override fun notifyDelegateOfProjectClick(): Observable<Project> = notifyDelegateOfProjectClick
-        override fun percentageFundedForProgressBar(): Observable<Int> = percentageFundedForProgressBar
-        override fun percentageFundedProgressBarIsGone(): Observable<Boolean> = percentageFundedProgressBarIsGone
-        override fun percentageFundedTextViewText(): Observable<String> = percentageFundedTextViewText
+        override fun notifyDelegateOfProjectClick(): Observable<Project> =
+            notifyDelegateOfProjectClick
+
+        override fun percentageFundedForProgressBar(): Observable<Int> =
+            percentageFundedForProgressBar
+
+        override fun percentageFundedProgressBarIsGone(): Observable<Boolean> =
+            percentageFundedProgressBarIsGone
+
+        override fun percentageFundedTextViewText(): Observable<String> =
+            percentageFundedTextViewText
+
         override fun photoUrl(): Observable<String> = photoUrl
-        override fun projectCardStatsViewGroupIsGone(): Observable<Boolean> = projectCardStatsViewGroupIsGone
-        override fun projectForDeadlineCountdownDetail(): Observable<Project> = projectForDeadlineCountdownDetail
-        override fun projectStateViewGroupIsGone(): Observable<Boolean> = projectStateViewGroupIsGone
+        override fun projectCardStatsViewGroupIsGone(): Observable<Boolean> =
+            projectCardStatsViewGroupIsGone
+
+        override fun projectForDeadlineCountdownDetail(): Observable<Project> =
+            projectForDeadlineCountdownDetail
+
+        override fun projectStateViewGroupIsGone(): Observable<Boolean> =
+            projectStateViewGroupIsGone
+
         override fun projectSubcategoryIsGone(): Observable<Boolean> = projectSubcategoryIsGone
         override fun projectSubcategoryName(): Observable<String> = projectSubcategoryName
         override fun projectCanceledAt(): Observable<DateTime> = projectCanceledAt
@@ -276,25 +297,24 @@ interface ProjectCardHolderViewModel {
         override fun setDefaultTopPadding(): Observable<Boolean> = setDefaultTopPadding
         override fun savedViewGroupIsGone(): Observable<Boolean> = savedViewGroupIsGone
         override fun comingSoonViewGroupIsGone(): Observable<Boolean> = comingSoonViewGroupIsGone
-        override fun notifyDelegateOfHeartButtonClicked(): Observable<Project> = this.notifyDelegateOfHeartButtonClicked
+        override fun notifyDelegateOfHeartButtonClicked(): Observable<Project> =
+            this.notifyDelegateOfHeartButtonClicked
 
         init {
             projectForDeadlineCountdownDetail = project
             backersCountTextViewText = project
-                .map { it?.backersCount() }
+                .map { it.backersCount() }
                 .map { value ->
-                    value?.let { it ->
-                        NumberUtils.format(
-                            it,
-                        )
-                    }
+                    NumberUtils.format(
+                        value,
+                    )
                 }
 
             backingViewGroupIsGone = project
-                .map { it?.metadataForProject() !== ProjectMetadata.BACKING }
+                .map { it.metadataForProject() !== ProjectMetadata.BACKING }
 
             comingSoonViewGroupIsGone = project
-                .map { it?.metadataForProject() !== ProjectMetadata.COMING_SOON }
+                .map { it.metadataForProject() !== ProjectMetadata.COMING_SOON }
 
             deadlineCountdownText = project
                 .map { it.deadlineCountdownValue() }
@@ -307,27 +327,25 @@ interface ProjectCardHolderViewModel {
                 .subscribe(this.heartDrawableId)
 
             project
-                .compose(Transformers.takeWhen(heartButtonClicked))
+                .compose(Transformers.takeWhenV2(heartButtonClicked))
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
                 .subscribe { notifyDelegateOfHeartButtonClicked.onNext(it) }
+                .addToDisposable(disposables)
 
             featuredViewGroupIsGone = project
-                .map { it?.metadataForProject() !== ProjectMetadata.CATEGORY_FEATURED }
+                .map { it.metadataForProject() !== ProjectMetadata.CATEGORY_FEATURED }
 
             friendAvatarUrl1 = project
                 .filter(Project::isFriendBacking)
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.friends() }
+                .filter { it.isNotEmpty() }
                 .map { it[0].avatar().replaceSmallImageWithMediumIfEmpty() }
                 .filter { it.isNotEmpty() }
 
             friendAvatarUrl2 = project
                 .filter(Project::isFriendBacking)
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.friends() }
                 .filter { it.size > 1 }
                 .map { it[1].avatar().replaceSmallImageWithMediumIfEmpty() }
@@ -336,7 +354,6 @@ interface ProjectCardHolderViewModel {
             friendAvatarUrl3 = project
                 .filter(Project::isFriendBacking)
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.friends() }
                 .filter { it.size > 2 }
                 .map { it[2].avatar().replaceSmallImageWithMediumIfEmpty() }
@@ -344,16 +361,14 @@ interface ProjectCardHolderViewModel {
 
             friendAvatar2IsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.friends() }
-                .map { it != null && it.size > 1 }
+                .map { it.size > 1 }
                 .map { it.negate() }
 
             friendAvatar3IsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.friends() }
-                .map { it != null && it.size > 2 }
+                .map { it.size > 2 }
                 .map { it.negate() }
 
             friendBackingViewIsHidden = project
@@ -363,51 +378,46 @@ interface ProjectCardHolderViewModel {
             friendsForNamepile = project
                 .filter(Project::isFriendBacking)
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .filter { it.friends().isNotNull() }
                 .map { it.friends() }
 
             fundingUnsuccessfulViewGroupIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map {
                     (
-                        it.state() != Project.STATE_CANCELED &&
-                            it.state() != Project.STATE_FAILED &&
-                            it.state() != Project.STATE_SUSPENDED
-                        )
+                            it.state() != Project.STATE_CANCELED &&
+                                    it.state() != Project.STATE_FAILED &&
+                                    it.state() != Project.STATE_SUSPENDED
+                            )
                 }
             fundingSuccessfulViewGroupIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.state() != Project.STATE_SUCCESSFUL }
 
             imageIsInvisible = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                .map { it.photo() }
-                .map { it.isNull() }
+                .map { it.photo().isNull() }
 
             project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.location() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.displayableName() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe { locationName.onNext(it) }
+                .addToDisposable(disposables)
 
             discoveryParams
                 .map { shouldShowLocationTag(it) }
                 .compose(Transformers.combineLatestPair(project))
-                .map { distanceSortAndProject: Pair<Boolean, Project>? ->
-                    distanceSortAndProject?.first == true && distanceSortAndProject.second.location().isNotNull()
+                .map { distanceSortAndProject: Pair<Boolean, Project> ->
+                    distanceSortAndProject.first == true && distanceSortAndProject.second.location()
+                        .isNotNull()
                 }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe { locationContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             metadataViewGroupIsGone = project
                 .map { it.metadataForProject() == ProjectMetadata.NONE }
@@ -426,7 +436,6 @@ interface ProjectCardHolderViewModel {
 
             nameAndBlurbText = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map {
                     Pair.create(
                         it.name(),
@@ -435,11 +444,10 @@ interface ProjectCardHolderViewModel {
                 }
 
             notifyDelegateOfProjectClick = project
-                .compose(Transformers.takeWhen(projectCardClicked))
+                .compose(Transformers.takeWhenV2(projectCardClicked))
 
             percentageFundedForProgressBar = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map {
                     if (it.state() == Project.STATE_LIVE || it.state() == Project.STATE_SUCCESSFUL) {
                         it.percentageFunded()
@@ -452,7 +460,6 @@ interface ProjectCardHolderViewModel {
 
             percentageFundedProgressBarIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map {
                     it.state() == Project.STATE_CANCELED
                 }
@@ -464,7 +471,6 @@ interface ProjectCardHolderViewModel {
 
             photoUrl = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map {
                     if (it.photo() == null) {
                         null
@@ -475,38 +481,32 @@ interface ProjectCardHolderViewModel {
 
             projectCanceledAt = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_CANCELED }
-                .map { it.stateChangedAt() }
-                .compose(Transformers.coalesce(DateTime()))
+                .map { it.stateChangedAt() ?: DateTime() }
 
             projectCardStatsViewGroupIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.state() != Project.STATE_LIVE }
 
             projectFailedAt = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_FAILED }
-                .map { it.stateChangedAt() }
-                .compose(Transformers.coalesce(DateTime()))
+                .map { it.stateChangedAt() ?: DateTime() }
 
             projectStateViewGroupIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.isCompleted() }
                 .map { it.negate() }
 
             val projectCategory = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.category() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .map { it }
 
             projectSubcategoryIsGone = discoveryParams
-                .map { it.category() }
+                .filter { it.category().isNotNull() }
+                .map { requireNotNull(it.category()) }
                 .compose(Transformers.combineLatestPair(projectCategory))
                 .map {
                     areParamsAllOrSameCategoryAsProject(it)
@@ -517,27 +517,20 @@ interface ProjectCardHolderViewModel {
 
             projectSuccessfulAt = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_SUCCESSFUL }
-                .map { it.stateChangedAt() }
-                .compose(Transformers.coalesce(DateTime()))
+                .map { it.stateChangedAt() ?: DateTime() }
 
             projectSuspendedAt = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .filter { it.state() == Project.STATE_SUSPENDED }
-                .map { it.stateChangedAt() }
-                .compose(Transformers.coalesce(DateTime()))
+                .map { it.stateChangedAt() ?: DateTime() }
 
             projectWeLoveIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                .map { it.staffPick() }
-                .compose(Transformers.coalesce(false))
+                .map { it.staffPick() ?: false }
                 .compose(
                     Transformers.combineLatestPair(
-                        discoveryParams.map { it.staffPicks() }
-                            .compose(Transformers.coalesce(false)),
+                        discoveryParams.map { it.staffPicks() ?: false },
                     ),
                 )
                 .map { it.first == true && it.second == false }
@@ -554,18 +547,19 @@ interface ProjectCardHolderViewModel {
 
             rootCategoryNameForFeatured = projectCategory
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.root() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.name() }
 
             savedViewGroupIsGone = project
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.metadataForProject() !== ProjectMetadata.SAVING }
 
             setDefaultTopPadding = metadataViewGroupIsGone
+        }
+
+        fun onCleared() {
+            disposables.clear()
         }
     }
 }

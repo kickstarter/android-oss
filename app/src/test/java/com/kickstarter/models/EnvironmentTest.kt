@@ -15,7 +15,6 @@ class EnvironmentTest : KSRobolectricTestCase() {
         assertNotNull(environment.apiClient())
         assertNotNull(environment.apolloClient())
         assertNotNull(environment.build())
-        assertNotNull(environment.buildCheck())
         assertNotNull(environment.cookieManager())
         assertNotNull(environment.currentConfig())
         assertNotNull(environment.currentUser())
@@ -32,7 +31,6 @@ class EnvironmentTest : KSRobolectricTestCase() {
         assertNotNull(environment.scheduler())
         assertNotNull(environment.sharedPreferences())
         assertNotNull(environment.stripe())
-        assertNotNull(environment.webClient())
         assertNotNull(environment.webEndpoint())
     }
 

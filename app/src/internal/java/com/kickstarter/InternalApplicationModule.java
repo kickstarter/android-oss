@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.InternalTools;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.preferences.StringPreference;
@@ -46,11 +45,6 @@ public final class InternalApplicationModule {
   @ApiEndpointPreference
   @NonNull StringPreferenceType provideApiEndpointPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url());
-  }
-
-  @Provides
-  BuildCheck provideBuildCheck() {
-    return BuildCheck.DEFAULT;
   }
 
   @Provides

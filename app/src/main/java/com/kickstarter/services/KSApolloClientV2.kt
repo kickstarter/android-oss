@@ -83,6 +83,7 @@ interface ApolloClientTypeV2 {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
     fun fetchCategory(param: String): Observable<Category?>
     fun getBacking(backingId: String): Observable<Backing>
+    fun fetchCategories(): Observable<List<Category>>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -893,6 +894,43 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         }
                     }
                 })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun fetchCategories(): Observable<List<Category>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Category>>()
+            this.service.query(
+                GetRootCategoriesQuery.builder()
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<GetRootCategoriesQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<GetRootCategoriesQuery.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.let { responseData ->
+                            val subCategories = responseData.rootCategories()
+                                .flatMap { it.subcategories()?.nodes().orEmpty() }
+                                .map {
+                                    categoryTransformer(it.fragments().category())
+                                }
+                            val rootCategories = responseData.rootCategories()
+                                .map { categoryTransformer(it.fragments().category()) }
+                                .toMutableList()
+                                .apply {
+                                    addAll(subCategories)
+                                }
+                            ps.onNext(rootCategories)
+                        }
+                        ps.onComplete()
+                    }
+                }
+            })
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

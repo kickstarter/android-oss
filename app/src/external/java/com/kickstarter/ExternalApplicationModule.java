@@ -3,9 +3,7 @@ package com.kickstarter;
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.InternalToolsType;
-import com.kickstarter.libs.NoopBuildCheck;
 import com.kickstarter.libs.NoopInternalTools;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.services.MockApiClient;
@@ -37,11 +35,6 @@ public final class ExternalApplicationModule {
   @Singleton
   static ApiEndpoint provideApiEndpoint() {
     return ApiEndpoint.PRODUCTION;
-  }
-
-  @Provides
-  static BuildCheck provideBuildCheck() {
-    return new NoopBuildCheck();
   }
 
   @Provides

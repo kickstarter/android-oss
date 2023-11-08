@@ -1,19 +1,21 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNonZero
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
-import com.kickstarter.ui.activities.EditProfileActivity
-import rx.Notification
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.disposables.CompositeDisposable
 
 interface EditProfileViewModel {
 
@@ -41,19 +43,21 @@ interface EditProfileViewModel {
         fun unableToSavePreferenceError(): Observable<String>
     }
 
-    class ViewModel(val environment: Environment) : ActivityViewModel<EditProfileActivity>(environment), Inputs, Outputs, Errors {
+    class EditProfileViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs, Errors {
 
-        private val apiClient = requireNotNull(environment.apiClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val apiClient = requireNotNull(environment.apiClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
 
         private val userInput = PublishSubject.create<User>()
+        private val showPublicProfile = PublishSubject.create<Boolean>()
 
         private var hidePrivateProfileRow = BehaviorSubject.create<Boolean>()
-        private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
-        private val updateSuccess = PublishSubject.create<Void>()
+        private val unableToSavePreferenceError = PublishSubject.create<String>()
+        private val updateSuccess = PublishSubject.create<Unit>()
         private val user = BehaviorSubject.create<User>()
         private val userAvatarUrl = BehaviorSubject.create<String>()
         private val userName = BehaviorSubject.create<String>()
+        val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -64,53 +68,69 @@ interface EditProfileViewModel {
 
             this.apiClient.fetchCurrentUser()
                 .retry(2)
-                .compose(Transformers.neverError())
-                .compose(bindToLifecycle())
+                .compose(Transformers.neverErrorV2())
                 .subscribe { this.currentUser.refresh(it) }
+                    .addToDisposable(disposables)
 
             currentUser
                 .take(1)
-                .compose(bindToLifecycle())
+                    .filter { it.isPresent() }
+                    .map { requireNotNull(it.getValue()) }
                 .subscribe { this.user.onNext(it) }
+                    .addToDisposable(disposables)
 
             val updateUserNotification = this.userInput
                 .concatMap<Notification<User>> { this.updateSettings(it) }
 
             updateUserNotification
-                .compose(values())
-                .compose(bindToLifecycle())
+                .compose(valuesV2())
                 .subscribe { this.success(it) }
+                    .addToDisposable(disposables)
 
             updateUserNotification
-                .compose(errors())
-                .compose(bindToLifecycle())
-                .subscribe(this.unableToSavePreferenceError)
+                .compose(errorsV2())
+                    .subscribe { this.unableToSavePreferenceError.onNext(it?.localizedMessage ?: "") }
+                    .addToDisposable(disposables)
 
             this.userInput
-                .compose(bindToLifecycle())
-                .subscribe(this.user)
+                .subscribe { this.user.onNext(it) }
+                    .addToDisposable(disposables)
 
             this.user
                 .window(2, 1)
-                .flatMap<List<User>> { it.toList() }
+                .flatMap<List<User>> { it.toList().toObservable() }
                 .map<User> { ListUtils.first(it) }
-                .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                .compose(bindToLifecycle())
-                .subscribe(this.user)
+                .compose<User>(Transformers.takeWhenV2(this.unableToSavePreferenceError))
+                .subscribe { this.user.onNext(it) }
+                    .addToDisposable(disposables)
 
             currentUser
-                .compose(bindToLifecycle())
-                .filter { it.isNotNull() }
+                    .filter { it.isPresent() }
+                    .map { requireNotNull(it.getValue()) }
                 .map { user -> user.createdProjectsCount().isNonZero() }
-                .subscribe(this.hidePrivateProfileRow)
+                .subscribe { this.hidePrivateProfileRow.onNext(it) }
+                    .addToDisposable(disposables)
+
 
             currentUser
-                .map { u -> u.avatar().medium() }
-                .subscribe(this.userAvatarUrl)
+                    .filter { it.isPresent() }
+                    .map { requireNotNull(it.getValue()) }
+                .map { it.avatar().medium() }
+                .subscribe { this.userAvatarUrl.onNext(it)}
+                    .addToDisposable(disposables)
 
             currentUser
+                    .filter { it.isPresent() }
+                    .map { requireNotNull(it.getValue()) }
                 .map { it.name() }
-                .subscribe(this.userName)
+                .subscribe { this.userName.onNext(it) }
+                    .addToDisposable(disposables)
+
+            this.user
+                    .withLatestFrom(showPublicProfile){ user, showProfile -> user.toBuilder().showPublicProfile(showProfile).build() }
+//                    .distinctUntilChanged()
+                    .subscribe { this.updateSettings(it) }
+                    .addToDisposable(disposables)
         }
 
         override fun userAvatarUrl(): Observable<String> = this.userAvatarUrl
@@ -118,12 +138,11 @@ interface EditProfileViewModel {
         override fun hidePrivateProfileRow(): Observable<Boolean> = this.hidePrivateProfileRow
 
         override fun showPublicProfile(checked: Boolean) {
-            this.userInput.onNext(this.user.value.toBuilder().showPublicProfile(!checked).build())
+            this.showPublicProfile.onNext(checked)
         }
 
         override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
             .takeUntil(this.updateSuccess)
-            .map { _ -> null }
 
         override fun user(): Observable<User> = this.user
 
@@ -131,13 +150,19 @@ interface EditProfileViewModel {
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
+            this.updateSuccess.onNext(Unit)
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>>? {
             return this.apiClient.updateUserSettings(user)
                 .materialize()
                 .share()
+        }
+    }
+    class Factory(private val environment: Environment) :
+            ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return EditProfileViewModel(environment) as T
         }
     }
 }

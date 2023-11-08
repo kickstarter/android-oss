@@ -76,7 +76,8 @@ interface EditorialViewModel {
 
             val categoriesNotification = Observable.merge(
                 fetchCategories(),
-                this.retryContainerClicked.switchMap { fetchCategories() })
+                this.retryContainerClicked.switchMap { fetchCategories() }
+            )
 
             categoriesNotification
                 .compose(valuesV2())

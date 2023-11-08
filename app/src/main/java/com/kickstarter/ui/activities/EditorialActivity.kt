@@ -1,18 +1,24 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityEditorialBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.viewmodels.EditorialViewModel
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(EditorialViewModel.ViewModel::class)
-class EditorialActivity : BaseActivity<EditorialViewModel.ViewModel>() {
+class EditorialActivity : AppCompatActivity() {
+
+    private lateinit var factory: EditorialViewModel.Factory
+    private val viewModel: EditorialViewModel.EditorialViewModel by viewModels { factory }
+    private val disposables = CompositeDisposable()
 
     private lateinit var binding: ActivityEditorialBinding
 
@@ -20,52 +26,59 @@ class EditorialActivity : BaseActivity<EditorialViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditorialBinding.inflate(layoutInflater)
 
+        getEnvironment()?.let { env ->
+            intent?.let {
+                factory = EditorialViewModel.Factory(env, it)
+            }
+        }
+
         setContentView(binding.root)
 
         this.viewModel.outputs.description()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe { binding.editorialDescription.setText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.graphic()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe { binding.editorialGraphic.setImageResource(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.title()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe { binding.editorialTitle.setText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.discoveryParams()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe { discoveryFragment().updateParams(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.rootCategories()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe { discoveryFragment().takeCategories(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.refreshDiscoveryFragment()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe { discoveryFragment().refresh() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.retryContainerIsGone()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.editorialRetryContainer.root.isGone = it
             }
+            .addToDisposable(disposables)
 
         RxView.clicks(binding.editorialRetryContainer.root)
-            .compose(bindToLifecycle())
             .subscribe { this.viewModel.inputs.retryContainerClicked() }
     }
 
     private fun discoveryFragment(): DiscoveryFragment = supportFragmentManager.findFragmentById(R.id.fragment_discovery) as DiscoveryFragment
 
-    // No-op because we have retry behavior
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {}
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
 }

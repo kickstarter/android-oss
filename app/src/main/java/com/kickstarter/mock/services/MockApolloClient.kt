@@ -188,6 +188,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun getBacking(backingId: String): io.reactivex.Observable<Backing> {
         return io.reactivex.Observable.just(BackingFactory.backing())
     }
+
+    override fun fetchCategories(): io.reactivex.Observable<List<Category>> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

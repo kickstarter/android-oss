@@ -4,40 +4,50 @@ import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.CategoryFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.Editorial
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class EditorialViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: EditorialViewModel.ViewModel
+    private lateinit var vm: EditorialViewModel.EditorialViewModel
 
     private val description = TestSubscriber<Int>()
     private val discoveryParams = TestSubscriber<DiscoveryParams>()
     private val graphic = TestSubscriber<Int>()
-    private val refreshDiscoveryFragment = TestSubscriber<Void>()
+    private val refreshDiscoveryFragment = TestSubscriber<Unit>()
     private val retryContainerIsGone = TestSubscriber<Boolean>()
     private val rootCategories = TestSubscriber<List<Category>>()
     private val title = TestSubscriber<Int>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment, editorial: Editorial) {
-        this.vm = EditorialViewModel.ViewModel(environment)
+        this.vm = EditorialViewModel.Factory(
+            environment,
+            Intent().putExtra(IntentKey.EDITORIAL, editorial)
+        ).create(EditorialViewModel.EditorialViewModel::class.java)
 
-        this.vm.outputs.description().subscribe(this.description)
-        this.vm.outputs.discoveryParams().subscribe(this.discoveryParams)
-        this.vm.outputs.graphic().subscribe(this.graphic)
-        this.vm.outputs.refreshDiscoveryFragment().subscribe(this.refreshDiscoveryFragment)
-        this.vm.outputs.retryContainerIsGone().subscribe(this.retryContainerIsGone)
-        this.vm.outputs.rootCategories().subscribe(this.rootCategories)
-        this.vm.outputs.title().subscribe(this.title)
-
-        this.vm.intent(Intent().putExtra(IntentKey.EDITORIAL, editorial))
+        this.vm.outputs.description().subscribe { this.description.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.discoveryParams().subscribe { this.discoveryParams.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.graphic().subscribe { this.graphic.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.refreshDiscoveryFragment()
+            .subscribe { this.refreshDiscoveryFragment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.retryContainerIsGone().subscribe { this.retryContainerIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.rootCategories().subscribe { this.rootCategories.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.title().subscribe { this.title.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -90,7 +100,7 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         var error = true
         val environment = environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun fetchCategories(): Observable<List<Category>> {
                     return when {
                         error -> Observable.error(Throwable("boop"))
@@ -115,7 +125,7 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     fun testRootCategories() {
         val environment = environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun fetchCategories(): Observable<List<Category>> {
                     return Observable.just(
                         listOf(
@@ -142,5 +152,10 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
 
         this.title.assertValue(R.string.This_holiday_season_support_a_project_for_no_reward)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

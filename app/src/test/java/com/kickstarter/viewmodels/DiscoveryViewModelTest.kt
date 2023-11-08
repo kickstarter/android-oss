@@ -16,7 +16,6 @@ import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.musicCategory
-import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory.newerBuildAvailable
 import com.kickstarter.mock.factories.UserFactory.noRecommendations
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.services.MockApiClient
@@ -25,7 +24,6 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
@@ -52,7 +50,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val rotatedUpdateParams = TestSubscriber<DiscoveryParams>()
     private val rotatedUpdateToolbarWithParams = TestSubscriber<DiscoveryParams>()
     private val showActivityFeed = TestSubscriber<Void>()
-    private val showBuildCheckAlert = TestSubscriber<InternalBuildEnvelope>()
     private val showHelp = TestSubscriber<Void>()
     private val showInternalTools = TestSubscriber<Void>()
     private val showLoginTout = TestSubscriber<Void>()
@@ -69,20 +66,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryViewModel.ViewModel(environment)
-    }
-
-    @Test
-    fun testBuildCheck() {
-        setUpEnvironment(environment())
-        val buildEnvelope = newerBuildAvailable()
-        vm.outputs.showBuildCheckAlert().subscribe(showBuildCheckAlert)
-
-        // Build check should not be shown.
-        showBuildCheckAlert.assertNoValues()
-
-        // Build check should be shown when newer build is available.
-        vm.inputs.newerBuildIsAvailable(buildEnvelope)
-        showBuildCheckAlert.assertValue(buildEnvelope)
     }
 
     @Test

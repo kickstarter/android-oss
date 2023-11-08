@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentConfigType;
@@ -77,9 +76,6 @@ import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
-import com.kickstarter.services.WebClient;
-import com.kickstarter.services.WebClientType;
-import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
@@ -129,7 +125,6 @@ public class ApplicationModule {
     final @NonNull ApolloClientType apolloClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
-    final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentConfigTypeV2 currentConfig2,
@@ -149,7 +144,6 @@ public class ApplicationModule {
     final @NonNull io.reactivex.Scheduler schedulerV2,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
-    final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint,
     final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType,
     final @NonNull FeatureFlagClientType featureFlagClient) {
@@ -161,7 +155,6 @@ public class ApplicationModule {
       .apolloClient(apolloClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
-      .buildCheck(buildCheck)
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentConfig2(currentConfig2)
@@ -181,7 +174,6 @@ public class ApplicationModule {
       .schedulerV2(schedulerV2)
       .sharedPreferences(sharedPreferences)
       .stripe(stripe)
-      .webClient(webClient)
       .webEndpoint(webEndpoint)
       .firebaseAnalyticsClient(firebaseAnalyticsClientType)
       .featureFlagClient(featureFlagClient)
@@ -348,13 +340,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull
-  static WebClientType provideWebClientType(final @NonNull WebService webService) {
-    return new WebClient(webService);
-  }
-
-  @Provides
-  @Singleton
   @WebRetrofit
   @NonNull
   static Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
@@ -369,13 +354,6 @@ public class ApplicationModule {
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, manager);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static WebService provideWebService(final @WebRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(WebService.class);
   }
 
   private static @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {

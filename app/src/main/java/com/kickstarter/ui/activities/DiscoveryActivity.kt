@@ -1,12 +1,10 @@
 package com.kickstarter.ui.activities
 
 import android.Manifest
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,7 +23,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.checkPermissions
 import com.kickstarter.libs.utils.extensions.positionFromSort
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
@@ -141,11 +138,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { pagerAdapter.takeCategoriesForPosition(it.first, it.second) }
-
-        viewModel.outputs.showBuildCheckAlert()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { showBuildAlert(it) }
 
         viewModel.outputs.showActivityFeed()
             .compose(bindToLifecycle())
@@ -278,20 +270,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
         overridePendingTransition(0, 0)
-    }
-
-    private fun showBuildAlert(envelope: InternalBuildEnvelope) {
-        AlertDialog.Builder(this)
-            .setTitle(R.string.Upgrade_app)
-            .setMessage(getString(R.string.A_newer_build_is_available))
-            .setPositiveButton(android.R.string.yes) { dialog: DialogInterface?, which: Int ->
-                val intent = Intent(this, DownloadBetaActivity::class.java)
-                    .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope)
-                startActivity(intent)
-            }
-            .setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int -> }
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .show()
     }
 
     override fun onDestroy() {

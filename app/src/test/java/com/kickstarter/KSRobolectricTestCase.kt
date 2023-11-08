@@ -20,7 +20,6 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockApolloClientV2
-import com.kickstarter.mock.services.MockWebClient
 import com.kickstarter.models.User
 import com.stripe.android.Stripe
 import junit.framework.TestCase
@@ -77,7 +76,6 @@ abstract class KSRobolectricTestCase : TestCase() {
             .apolloClientV2(MockApolloClientV2())
             .currentConfig(mockCurrentConfig)
             .currentConfig2(mockCurrentConfigV2)
-            .webClient(MockWebClient())
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
             .featureFlagClient(mockFeatureFlagClient)

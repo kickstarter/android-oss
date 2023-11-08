@@ -3,24 +3,38 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.BackingFactory.backing
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory.user
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.viewmodels.BackingViewModel.BackingViewModel
+import com.kickstarter.viewmodels.BackingViewModel.Factory
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class BackingViewModelTest : KSRobolectricTestCase() {
-    private var vm: BackingViewModel.ViewModel? = null
+    private lateinit var vm: BackingViewModel
     private val isRefreshing = TestSubscriber.create<Boolean>()
+    private val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment(environment: Environment) {
-        vm = BackingViewModel.ViewModel(environment)
-        vm?.outputs?.isRefreshing()?.subscribe(this.isRefreshing)
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+
+    private fun setUpEnvironment(environment: Environment, intent: Intent) {
+        vm = Factory(environment, intent)
+            .create(BackingViewModel::class.java)
+
+        vm.outputs.isRefreshing().subscribe { this.isRefreshing.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -37,16 +51,30 @@ class BackingViewModelTest : KSRobolectricTestCase() {
 
         val backing = backing(backerUser)
 
-        setUpEnvironment(
-            envWithBacking(backing)
-                .toBuilder()
-                .currentUser(MockCurrentUser(creatorUser))
-                .build()
-        )
-        vm?.outputs?.showBackingFragment()?.subscribe {
+        val project = ProjectFactory.backedProject().toBuilder().isBacking(true).backing(backing).build()
+
+        val env = environment().toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override fun getBacking(backingId: String): Observable<Backing> {
+                        return Observable.just(backing)
+                    }
+                }
+            )
+            .currentUserV2(MockCurrentUserV2(creatorUser))
+            .build()
+
+        val intent = Intent().apply {
+            putExtra(IntentKey.BACKING, backing)
+            putExtra(IntentKey.PROJECT, project)
+        }
+        setUpEnvironment(env, intent = intent)
+
+        vm.outputs.showBackingFragment().subscribe {
             assertNotNull(it)
             assertEquals(backing, it)
         }
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -68,36 +96,21 @@ class BackingViewModelTest : KSRobolectricTestCase() {
             putExtra(IntentKey.PROJECT, ProjectFactory.backedProject())
         }
 
-        val vm = BackingViewModel.ViewModel(
-            envWithBacking(backing)
-                .toBuilder()
-                .currentUser(MockCurrentUser(creatorUser))
-                .build()
-        )
-            .also {
-                it.intent(intent)
-            }
-
-        vm.outputs.isRefreshing().subscribe(this.isRefreshing)
-
-        vm.inputs.refresh()
-
-        this.isRefreshing.assertValue(false)
-    }
-
-    /**
-     * Returns an environment with a backing and logged in user.
-     */
-    private fun envWithBacking(backing: Backing): Environment {
-        return environment().toBuilder()
-            .apolloClient(
-                object : MockApolloClient() {
+        val env = environment().toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
                     override fun getBacking(backingId: String): Observable<Backing> {
                         return Observable.just(backing)
                     }
                 }
             )
-            .currentUser(MockCurrentUser(user()))
+            .currentUserV2(MockCurrentUserV2(creatorUser))
             .build()
+
+        setUpEnvironment(env, intent)
+
+        vm.inputs.refresh()
+
+        this.isRefreshing.assertValue(false)
     }
 }

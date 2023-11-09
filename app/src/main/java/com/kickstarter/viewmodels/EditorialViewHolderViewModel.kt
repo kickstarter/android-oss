@@ -35,7 +35,7 @@ interface EditorialViewHolderViewModel {
         fun graphic(): Observable<Int>
     }
 
-    class ViewModel: Inputs, Outputs {
+    class ViewModel : Inputs, Outputs {
         private val editorialInput = PublishSubject.create<Editorial>()
         private val editorialClicked = PublishSubject.create<Unit>()
 

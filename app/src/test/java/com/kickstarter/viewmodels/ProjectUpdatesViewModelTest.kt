@@ -22,6 +22,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
@@ -33,6 +34,11 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     private val startUpdateActivity = TestSubscriber<Pair<Project, Update>>()
 
     private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
     private fun setUpEnvironment(env: Environment, project: Project, projectData: ProjectData) {
 
         // Configure the view model with a project intent.
@@ -132,8 +138,13 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         assertEquals(project, projectAndUpdates.value?.first)
         assertTrue(projectAndUpdates.value?.second?.isEmpty() ?: false)
 
-        isFetchingUpdates.assertValue(false)
-        horizontalProgressBarIsGone.assertValue(true)
+        this.vm.inputs.refresh()
+        isFetchingUpdates.assertValues(false, true, false)
+        horizontalProgressBarIsGone.assertValues(true, false, true)
+
+        this.vm.inputs.nextPage()
+        assertEquals(project, projectAndUpdates.value?.first)
+        assertTrue(projectAndUpdates.value?.second?.isEmpty() ?: false)
     }
 
     @Test

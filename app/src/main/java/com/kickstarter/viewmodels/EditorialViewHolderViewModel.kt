@@ -1,14 +1,13 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.data.Editorial
-import com.kickstarter.ui.viewholders.EditorialViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface EditorialViewHolderViewModel {
     interface Inputs {
@@ -36,9 +35,9 @@ interface EditorialViewHolderViewModel {
         fun graphic(): Observable<Int>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<EditorialViewHolder>(environment), Inputs, Outputs {
+    class ViewModel: Inputs, Outputs {
         private val editorialInput = PublishSubject.create<Editorial>()
-        private val editorialClicked = PublishSubject.create<Void>()
+        private val editorialClicked = PublishSubject.create<Unit>()
 
         private val backgroundColor = BehaviorSubject.create<Int>()
         private val ctaDescription = BehaviorSubject.create<Int>()
@@ -46,40 +45,42 @@ interface EditorialViewHolderViewModel {
         private val editorial = PublishSubject.create<Editorial>()
         private val graphic = BehaviorSubject.create<Int>()
 
+        private val disposables = CompositeDisposable()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
             this.editorialInput
                 .map { it.backgroundColor }
-                .compose(bindToLifecycle())
-                .subscribe(this.backgroundColor)
+                .subscribe { this.backgroundColor.onNext(it) }
+                .addToDisposable(disposables)
 
             this.editorialInput
                 .map { it.ctaTitle }
-                .compose(bindToLifecycle())
-                .subscribe(this.ctaTitle)
+                .subscribe { this.ctaTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             this.editorialInput
                 .map { it.ctaDescription }
-                .compose(bindToLifecycle())
-                .subscribe(this.ctaDescription)
+                .subscribe { this.ctaDescription.onNext(it) }
+                .addToDisposable(disposables)
 
             this.editorialInput
                 .map { it.graphic }
                 .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.graphic)
+                .subscribe { this.graphic.onNext(it) }
+                .addToDisposable(disposables)
 
             this.editorialInput
-                .compose<Editorial>(takeWhen(this.editorialClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.editorial)
+                .compose(takeWhenV2(this.editorialClicked))
+                .subscribe { this.editorial.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(editorial: Editorial) = this.editorialInput.onNext(editorial)
 
-        override fun editorialClicked() = this.editorialClicked.onNext(null)
+        override fun editorialClicked() = this.editorialClicked.onNext(Unit)
 
         override fun backgroundColor(): Observable<Int> = this.backgroundColor
 
@@ -90,5 +91,9 @@ interface EditorialViewHolderViewModel {
         override fun editorial(): Observable<Editorial> = this.editorial
 
         override fun graphic(): Observable<Int> = this.graphic
+
+        fun clear() {
+            disposables.clear()
+        }
     }
 }

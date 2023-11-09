@@ -1,23 +1,27 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.loadmore.ApolloPaginate
+import com.kickstarter.libs.loadmore.ApolloPaginateV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
-import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.data.ProjectData
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.net.CookieManager
 
 interface ProjectUpdatesViewModel {
@@ -46,33 +50,36 @@ interface ProjectUpdatesViewModel {
         fun startUpdateActivity(): Observable<Pair<Project, Update>>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<ProjectUpdatesActivity>(environment), Inputs, Outputs {
-        private val client: ApolloClientType?
-        private val cookieManager: CookieManager?
-        private val sharedPreferences: SharedPreferences?
-        private val nextPage = PublishSubject.create<Void>()
-        private val refresh = PublishSubject.create<Void>()
+    class ProjectUpdatesViewModel(environment: Environment, private val intent: Intent? = null) :
+        ViewModel(), Inputs, Outputs {
+        private val client: ApolloClientTypeV2 = requireNotNull(environment.apolloClientV2())
+        private val cookieManager: CookieManager = requireNotNull(environment.cookieManager())
+        private val sharedPreferences: SharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val analyticEvents = requireNotNull(environment.analytics())
+        private val nextPage = PublishSubject.create<Unit>()
+        private val refresh = PublishSubject.create<Unit>()
         private val updateClicked = PublishSubject.create<Update>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
-        private val isFetchingUpdates = BehaviorSubject.create<Boolean>()
+        private val isFetchingUpdates = PublishSubject.create<Boolean>()
         private val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
         private val startUpdateActivity = PublishSubject.create<Pair<Project, Update>>()
+
+        private val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
         init {
-            client = requireNotNull(environment.apolloClient())
-            cookieManager = requireNotNull(environment.cookieManager())
-            sharedPreferences = requireNotNull(environment.sharedPreferences())
 
             val projectData = intent()
-                .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT_DATA) }
-                .ofType(ProjectData::class.java)
+                .filter { (it.getParcelableExtra(IntentKey.PROJECT_DATA) as? ProjectData?).isNotNull() }
+                .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as? ProjectData? }
+                .filter { it.isNotNull() }
                 .take(1)
 
             val project = projectData
+                .filter { it.project().isNotNull() }
                 .map { it.project() }
 
             projectData
@@ -81,20 +88,20 @@ interface ProjectUpdatesViewModel {
                         cookieManager, sharedPreferences
                     )
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     analyticEvents.trackProjectScreenViewed(
                         it, EventContextValues.ContextSectionName.UPDATES.contextName
                     )
                 }
+                .addToDisposable(disposables)
 
             val startOverWith = Observable.merge(
                 project,
-                project.compose(Transformers.takeWhen(refresh))
+                project.compose(Transformers.takeWhenV2(refresh))
             )
 
             val paginator =
-                ApolloPaginate.builder<Update, UpdatesGraphQlEnvelope, Project?>()
+                ApolloPaginateV2.builder<Update, UpdatesGraphQlEnvelope, Project>()
                     .nextPage(nextPage)
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
@@ -114,42 +121,49 @@ interface ProjectUpdatesViewModel {
                 ?.let {
                     project
                         .compose<Pair<Project, List<Update>>>(Transformers.combineLatestPair(it))
-                        .compose(bindToLifecycle())
-                        .subscribe(projectAndUpdates)
+                        .subscribe { projectAndUpdates.onNext(it) }
+                        .addToDisposable(disposables)
                 }
 
             paginator
                 .isFetching()
-                .compose(bindToLifecycle<Boolean>())
                 .subscribe {
                     horizontalProgressBarIsGone.onNext(!it)
                 }
+                .addToDisposable(disposables)
 
             paginator
                 .isFetching()
-                .compose(bindToLifecycle())
-                .subscribe(isFetchingUpdates)
+                .subscribe {
+                    isFetchingUpdates.onNext(it)
+                }
+                .addToDisposable(disposables)
 
             project
-                .compose(Transformers.takePairWhen(updateClicked))
-                .compose(bindToLifecycle())
+                .compose(Transformers.takePairWhenV2(updateClicked))
                 .subscribe { startUpdateActivity.onNext(it) }
+                .addToDisposable(disposables)
         }
 
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
         private fun loadWithProjectUpdatesList(
             project: Observable<Project>,
             cursor: String?
         ): Observable<UpdatesGraphQlEnvelope> {
             return project.switchMap {
-                return@switchMap client ?.getProjectUpdates(it.slug() ?: "", cursor)
+                // TODO: review the limit ... how is it possible it was not requested before
+                return@switchMap client.getProjectUpdates(it.slug() ?: "", cursor, 2)
             }.onErrorResumeNext(Observable.empty())
         }
         override fun nextPage() {
-            nextPage.onNext(null)
+            nextPage.onNext(Unit)
         }
 
         override fun refresh() {
-            refresh.onNext(null)
+            refresh.onNext(Unit)
         }
 
         override fun updateClicked(update: Update) {
@@ -160,5 +174,11 @@ interface ProjectUpdatesViewModel {
         override fun isFetchingUpdates(): Observable<Boolean> = isFetchingUpdates
         override fun projectAndUpdates(): Observable<Pair<Project, List<Update>>> = projectAndUpdates
         override fun startUpdateActivity(): Observable<Pair<Project, Update>> = startUpdateActivity
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ProjectUpdatesViewModel(environment, intent) as T
+        }
     }
 }

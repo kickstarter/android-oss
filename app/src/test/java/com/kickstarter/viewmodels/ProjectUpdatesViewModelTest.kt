@@ -5,41 +5,46 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UpdateFactory.update
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.services.apiresponses.UpdatesEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.ProjectUpdatesViewModel.Factory
+import com.kickstarter.viewmodels.ProjectUpdatesViewModel.ProjectUpdatesViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.subjects.BehaviorSubject
 
 class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ProjectUpdatesViewModel.ViewModel
+    private lateinit var vm: ProjectUpdatesViewModel
 
     private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val isFetchingUpdates = TestSubscriber<Boolean>()
     private val projectAndUpdates = TestSubscriber<Pair<Project, List<Update>>>()
     private val startUpdateActivity = TestSubscriber<Pair<Project, Update>>()
 
+    private val disposables = CompositeDisposable()
     private fun setUpEnvironment(env: Environment, project: Project, projectData: ProjectData) {
-        vm = ProjectUpdatesViewModel.ViewModel(env)
-        vm.outputs.horizontalProgressBarIsGone().subscribe(horizontalProgressBarIsGone)
-        vm.outputs.isFetchingUpdates().subscribe(isFetchingUpdates)
-        vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
-        vm.outputs.startUpdateActivity().subscribe(startUpdateActivity)
 
         // Configure the view model with a project intent.
-        vm.intent(
-            Intent().putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.PROJECT_DATA, projectData)
-        )
+        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT_DATA, projectData)
+
+        vm = Factory(env, intent)
+            .create(ProjectUpdatesViewModel::class.java)
+        vm.outputs.horizontalProgressBarIsGone().subscribe { horizontalProgressBarIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.isFetchingUpdates().subscribe { isFetchingUpdates.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectAndUpdates().subscribe { projectAndUpdates.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startUpdateActivity().subscribe { startUpdateActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -53,7 +58,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testHorizontalProgressBarIsGone() {
         val project = project()
-        setUpEnvironment(environment(), project, project(project))
+        setUpEnvironment(environment().toBuilder().apolloClientV2(MockApolloClientV2()).build(), project, project(project))
 
         horizontalProgressBarIsGone.assertValues(false, true)
     }
@@ -75,7 +80,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectUpdates(
                     slug: String,
                     cursor: String?,
@@ -95,8 +100,9 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
         vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
 
-        assertEquals(project, projectAndUpdates.value.first)
-        assertEquals(updates[0], projectAndUpdates.value.second[0])
+        isFetchingUpdates.assertValues(true, false)
+        assertEquals(project, projectAndUpdates.value?.first)
+        assertEquals(updates[0], projectAndUpdates.value?.second?.get(0))
     }
 
     @Test
@@ -104,7 +110,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectUpdates(
                     slug: String,
                     cursor: String?,
@@ -124,8 +130,8 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
         vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
 
-        assertEquals(project, projectAndUpdates.value.first)
-        assertTrue(projectAndUpdates.value.second.isEmpty())
+        assertEquals(project, projectAndUpdates.value?.first)
+        assertTrue(projectAndUpdates.value?.second?.isEmpty() ?: false)
 
         isFetchingUpdates.assertValues(true, false)
         horizontalProgressBarIsGone.assertValues(false, true)
@@ -138,7 +144,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectUpdates(
                     slug: String,
                     cursor: String?,

@@ -64,7 +64,7 @@ class ProjectUpdatesActivity : AppCompatActivity(), UpdatesAdapter.Delegate {
         viewModel.outputs.isFetchingUpdates()
             .compose(Transformers.observeForUIV2())
             .subscribe {
-                // - Hides loading spinner according to isFetchingUpdates
+                // - Hides loading spinner from SwipeRefreshLayout according to isFetchingUpdates
                 binding.updatesSwipeRefreshLayout.isRefreshing = it
             }
             .addToDisposable(disposables)

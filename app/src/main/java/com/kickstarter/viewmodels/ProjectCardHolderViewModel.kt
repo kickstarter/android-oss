@@ -13,7 +13,6 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
-import com.kickstarter.libs.utils.extensions.requireNonNull
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.models.User

@@ -9,7 +9,6 @@ import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityUpdatesBinding
-import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -28,7 +27,6 @@ import io.reactivex.disposables.CompositeDisposable
 class ProjectUpdatesActivity : AppCompatActivity(), UpdatesAdapter.Delegate {
     private val adapter: UpdatesAdapter = UpdatesAdapter(this)
     private lateinit var recyclerViewPaginator: RecyclerViewPaginatorV2
-    private lateinit var swipeRefresher: SwipeRefresher
 
     private lateinit var binding: ActivityUpdatesBinding
 
@@ -59,15 +57,17 @@ class ProjectUpdatesActivity : AppCompatActivity(), UpdatesAdapter.Delegate {
             viewModel.outputs.isFetchingUpdates()
         )
 
-//        swipeRefresher = SwipeRefresher(
-//            this, binding.updatesSwipeRefreshLayout, { viewModel.inputs.refresh() }
-//        ) { viewModel.outputs.isFetchingUpdates() }
+        binding.updatesSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.inputs.refresh()
+        }
 
-        // TODO: Review this point later on
-//        binding.updatesSwipeRefreshLayout.setOnRefreshListener {
-//            //viewModel.inputs.refresh()
-//            //viewModel.outputs.isFetchingUpdates()
-//        }
+        viewModel.outputs.isFetchingUpdates()
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                // - Hides loading spinner according to isFetchingUpdates
+                binding.updatesSwipeRefreshLayout.isRefreshing = it
+            }
+            .addToDisposable(disposables)
 
         binding.updatesToolbar.commentsToolbar.setTitle(getString(R.string.project_subpages_menu_buttons_updates))
 

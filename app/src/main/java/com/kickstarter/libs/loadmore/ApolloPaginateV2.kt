@@ -7,41 +7,43 @@ import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.net.MalformedURLException
 import java.util.ArrayList
 
 class ApolloPaginateV2<Data, Envelope : ApolloEnvelope, Params>(
     val nextPage: Observable<Unit>,
-    val startOverWith: Observable<Params>,
+    val startOverWith: Observable<Params>?,
     val envelopeToListOfData: Function<Envelope, List<Data>>,
     val loadWithParams: Function<Pair<Params, String>, Observable<Envelope>>,
-    val pageTransformation: Function<List<Data>, List<Data>>,
+    val pageTransformation: Function<List<Data>, List<Data>>?,
     val clearWhenStartingOver: Boolean = true,
     val concater: BiFunction<List<Data>, List<Data>, List<Data>>,
     val distinctUntilChanged: Boolean,
     val isReversed: Boolean
 ) {
-    private val _morePath = BehaviorSubject.create<String>()
-    private val _isFetching = BehaviorSubject.create<Boolean>()
-    private var loadingPage: Observable<Int> = Observable.empty()
-    private var paginatedData: Observable<List<Data>> = Observable.empty()
+    private val _morePath = PublishSubject.create<String>()
+    val isFetching = BehaviorSubject.create<Boolean>()
+    private lateinit var loadingPage: Observable<Int>
+    private lateinit var paginatedData: Observable<List<Data>>
 
+    val dummyObserver = BehaviorSubject.create<Boolean>()
     init {
-        paginatedData =
-            startOverWith.switchMap { firstPageParams: Params ->
-                this.dataWithPagination(
-                    firstPageParams
-                )
-            }
-        loadingPage =
-            startOverWith.switchMap<Int> {
-                nextPage.scan(1, { accum: Int, _ -> accum + 1 })
-            }
+        startOverWith?.let {
+            paginatedData =
+                it.switchMap { firstPageParams: Params ->
+                    dataWithPagination(firstPageParams)
+                }
+            loadingPage =
+                it.switchMap<Int> {
+                    nextPage.scan(1, { accum: Int, _ -> accum + 1 })
+                }
+        }
     }
 
     class Builder<Data, Envelope : ApolloEnvelope, Params> {
-        private var nextPage: Observable<Unit> = Observable.empty()
-        private var startOverWith: Observable<Params> = Observable.empty()
+        private lateinit var nextPage: Observable<Unit>
+        private var startOverWith: Observable<Params>? = null
         private lateinit var envelopeToListOfData: Function<Envelope, List<Data>>
         private lateinit var loadWithParams: Function<Pair<Params, String>, Observable<Envelope>>
         private var pageTransformation: Function<List<Data>, List<Data>> = Function<List<Data>, List<Data>> {
@@ -180,11 +182,9 @@ class ApolloPaginateV2<Data, Envelope : ApolloEnvelope, Params>(
      * Returns an observable that emits the accumulated list of paginated data each time a new page is loaded.
      */
     private fun dataWithPagination(firstPageParams: Params): Observable<List<Data>>? {
-        val data = paramsAndMoreUrlWithPagination(firstPageParams).concatMap {
-            fetchData(it)
-        }?.takeUntil { obj ->
-            obj.isEmpty()
-        }
+        val data = paramsAndMoreUrlWithPagination(firstPageParams)
+            ?.concatMap { fetchData(it) }
+            ?.takeUntil { it.isEmpty() }
 
         val paginatedData =
             if (clearWhenStartingOver)
@@ -201,7 +201,7 @@ class ApolloPaginateV2<Data, Envelope : ApolloEnvelope, Params>(
     /**
      * Returns an observable that emits the params for the next page of data *or* the more URL for the next page.
      */
-    private fun paramsAndMoreUrlWithPagination(firstPageParams: Params): Observable<Pair<Params, String>> {
+    private fun paramsAndMoreUrlWithPagination(firstPageParams: Params): Observable<Pair<Params, String>>? {
         return _morePath
             .map { path: String ->
                 Pair<Params, String>(
@@ -225,13 +225,13 @@ class ApolloPaginateV2<Data, Envelope : ApolloEnvelope, Params>(
             .map(this.pageTransformation)
             .takeUntil { data: List<Data> -> data.isEmpty() }
             .doOnSubscribe {
-                _isFetching.onNext(true)
+                isFetching.onNext(true)
             }
             .doAfterTerminate {
-                _isFetching.onNext(false)
+                isFetching.onNext(false)
             }
             .doFinally {
-                _isFetching.onNext(false)
+                isFetching.onNext(false)
             }
     }
 
@@ -251,14 +251,8 @@ class ApolloPaginateV2<Data, Envelope : ApolloEnvelope, Params>(
             ignored.printStackTrace()
         }
     }
-
-    // Outputs
     fun paginatedData(): Observable<List<Data>>? {
         return paginatedData
-    }
-
-    fun isFetching(): Observable<Boolean> {
-        return _isFetching
     }
 
     fun loadingPage(): Observable<Int> {

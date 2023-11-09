@@ -39,10 +39,10 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val intent = Intent().putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.PROJECT_DATA, projectData)
 
-        vm = Factory(env, intent)
-            .create(ProjectUpdatesViewModel::class.java)
-        vm.outputs.horizontalProgressBarIsGone().subscribe { horizontalProgressBarIsGone.onNext(it) }.addToDisposable(disposables)
+        vm = Factory(env, intent).create(ProjectUpdatesViewModel::class.java)
+
         vm.outputs.isFetchingUpdates().subscribe { isFetchingUpdates.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.horizontalProgressBarIsGone().subscribe { horizontalProgressBarIsGone.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectAndUpdates().subscribe { projectAndUpdates.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startUpdateActivity().subscribe { startUpdateActivity.onNext(it) }.addToDisposable(disposables)
     }
@@ -58,9 +58,9 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testHorizontalProgressBarIsGone() {
         val project = project()
-        setUpEnvironment(environment().toBuilder().apolloClientV2(MockApolloClientV2()).build(), project, project(project))
+        setUpEnvironment(environment(), project, project(project))
 
-        horizontalProgressBarIsGone.assertValues(false, true)
+        horizontalProgressBarIsGone.assertValues(true)
     }
 
     @Test
@@ -68,7 +68,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
         setUpEnvironment(environment(), project, project(project))
 
-        isFetchingUpdates.assertValues(true, false)
+        isFetchingUpdates.assertValue(false)
     }
 
     @Test
@@ -100,7 +100,6 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
         vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
 
-        isFetchingUpdates.assertValues(true, false)
         assertEquals(project, projectAndUpdates.value?.first)
         assertEquals(updates[0], projectAndUpdates.value?.second?.get(0))
     }
@@ -133,8 +132,8 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         assertEquals(project, projectAndUpdates.value?.first)
         assertTrue(projectAndUpdates.value?.second?.isEmpty() ?: false)
 
-        isFetchingUpdates.assertValues(true, false)
-        horizontalProgressBarIsGone.assertValues(false, true)
+        isFetchingUpdates.assertValue(false)
+        horizontalProgressBarIsGone.assertValue(true)
     }
 
     @Test

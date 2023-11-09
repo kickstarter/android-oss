@@ -21,7 +21,6 @@ import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 import java.net.CookieManager
 
 interface ProjectUpdatesViewModel {
@@ -56,13 +55,13 @@ interface ProjectUpdatesViewModel {
         private val cookieManager: CookieManager = requireNotNull(environment.cookieManager())
         private val sharedPreferences: SharedPreferences = requireNotNull(environment.sharedPreferences())
         private val analyticEvents = requireNotNull(environment.analytics())
-        private val nextPage = PublishSubject.create<Unit>()
-        private val refresh = PublishSubject.create<Unit>()
-        private val updateClicked = PublishSubject.create<Update>()
+        private val nextPage = BehaviorSubject.create<Unit>()
+        private val refresh = BehaviorSubject.create<Unit>()
+        private val updateClicked = BehaviorSubject.create<Update>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
-        private val isFetchingUpdates = PublishSubject.create<Boolean>()
+        private val isFetchingUpdates = BehaviorSubject.create<Boolean>()
         private val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
-        private val startUpdateActivity = PublishSubject.create<Pair<Project, Update>>()
+        private val startUpdateActivity = BehaviorSubject.create<Pair<Project, Update>>()
 
         private val disposables = CompositeDisposable()
 
@@ -100,7 +99,7 @@ interface ProjectUpdatesViewModel {
                 project.compose(Transformers.takeWhenV2(refresh))
             )
 
-            val paginator =
+            val pagination =
                 ApolloPaginateV2.builder<Update, UpdatesGraphQlEnvelope, Project>()
                     .nextPage(nextPage)
                     .distinctUntilChanged(true)
@@ -116,27 +115,19 @@ interface ProjectUpdatesViewModel {
                     .clearWhenStartingOver(false)
                     .build()
 
-            paginator.paginatedData()
-                ?.share()
-                ?.let {
-                    project
-                        .compose<Pair<Project, List<Update>>>(Transformers.combineLatestPair(it))
-                        .subscribe { projectAndUpdates.onNext(it) }
-                        .addToDisposable(disposables)
-                }
-
-            paginator
-                .isFetching()
+            pagination.isFetching
+                .share()
                 .subscribe {
                     horizontalProgressBarIsGone.onNext(!it)
+                    isFetchingUpdates.onNext(it)
                 }
                 .addToDisposable(disposables)
 
-            paginator
-                .isFetching()
-                .subscribe {
-                    isFetchingUpdates.onNext(it)
-                }
+            val updatesList = pagination.paginatedData()?.share()?.filter { it.isNotNull() }?.map { requireNotNull(it) } ?: Observable.empty()
+
+            project
+                .compose<Pair<Project, List<Update>>>(Transformers.combineLatestPair(updatesList))
+                .subscribe { projectAndUpdates.onNext(it) }
                 .addToDisposable(disposables)
 
             project
@@ -154,8 +145,7 @@ interface ProjectUpdatesViewModel {
             cursor: String?
         ): Observable<UpdatesGraphQlEnvelope> {
             return project.switchMap {
-                // TODO: review the limit ... how is it possible it was not requested before
-                return@switchMap client.getProjectUpdates(it.slug() ?: "", cursor, 2)
+                return@switchMap client.getProjectUpdates(it.slug() ?: "", cursor, 10)
             }.onErrorResumeNext(Observable.empty())
         }
         override fun nextPage() {

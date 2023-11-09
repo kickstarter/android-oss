@@ -22,7 +22,6 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.ErrorEnvelope
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS
 import com.kickstarter.ui.activities.DiscoveryActivity
@@ -41,8 +40,6 @@ import rx.subjects.PublishSubject
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
-        /** Call when a new build is available.  */
-        fun newerBuildIsAvailable(envelope: InternalBuildEnvelope)
 
         /** Call when you want to open or close the drawer.  */
         fun openDrawer(open: Boolean)
@@ -78,9 +75,6 @@ interface DiscoveryViewModel {
 
         /** Emits a list of pages that should be cleared of all their content.  */
         fun clearPages(): Observable<List<Int>>
-
-        /** Emits when a newer build is available and an alert should be shown.  */
-        fun showBuildCheckAlert(): Observable<InternalBuildEnvelope>
 
         /** Start activity feed activity.  */
         fun showActivityFeed(): Observable<Void?>
@@ -122,11 +116,9 @@ interface DiscoveryViewModel {
 
         private val apiClient = requireNotNull(environment.apiClient())
         private val apolloClient = requireNotNull(environment.apolloClient())
-        private val buildCheck = requireNotNull(environment.buildCheck())
         private val currentUserType = requireNotNull(environment.currentUser())
         private val currentConfigType = requireNotNull(environment.currentConfig())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
-        private val webClient = requireNotNull(environment.webClient())
         private val ffClient = environment.featureFlagClient()
 
         private fun currentDrawerMenuIcon(user: User?): Int {
@@ -149,7 +141,6 @@ interface DiscoveryViewModel {
         private val loggedOutLoginToutClick = PublishSubject.create<Void?>()
         private val loggedOutSettingsClick = PublishSubject.create<Void?>()
         private val messagesClick = PublishSubject.create<Void?>()
-        private val newerBuildIsAvailable = PublishSubject.create<InternalBuildEnvelope>()
         private val openDrawer = PublishSubject.create<Boolean>()
         private val pagerSetPrimaryPage = PublishSubject.create<Int>()
         private val parentFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
@@ -167,7 +158,6 @@ interface DiscoveryViewModel {
         private val navigationDrawerData = BehaviorSubject.create<NavigationDrawerData>()
         private val rootCategoriesAndPosition = BehaviorSubject.create<Pair<List<Category>, Int>>()
         private val showActivityFeed: Observable<Void?>
-        private val showBuildCheckAlert: Observable<InternalBuildEnvelope>
         private val showHelp: Observable<Void?>
         private val showInternalTools: Observable<Void?>
         private val showLoginTout: Observable<Void?>
@@ -180,9 +170,7 @@ interface DiscoveryViewModel {
         private val messageError = PublishSubject.create<String?>()
 
         init {
-            buildCheck.bind(this, webClient)
             showActivityFeed = activityFeedClick
-            showBuildCheckAlert = newerBuildIsAvailable
             showHelp = loggedOutSettingsClick
             showInternalTools = internalToolsClick
             showLoginTout = loggedOutLoginToutClick
@@ -429,7 +417,6 @@ interface DiscoveryViewModel {
         }
 
         // - Inputs
-        override fun newerBuildIsAvailable(envelope: InternalBuildEnvelope) { newerBuildIsAvailable.onNext(envelope) }
         override fun openDrawer(open: Boolean) { openDrawer.onNext(open) }
         override fun parentFilterViewHolderRowClick(viewHolder: ParentFilterViewHolder, row: NavigationDrawerData.Section.Row) {
             parentFilterRowClick.onNext(row)
@@ -445,7 +432,6 @@ interface DiscoveryViewModel {
         override fun navigationDrawerData(): Observable<NavigationDrawerData> { return navigationDrawerData }
         override fun rootCategoriesAndPosition(): Observable<Pair<List<Category>, Int>> { return rootCategoriesAndPosition }
         override fun showActivityFeed(): Observable<Void?> { return showActivityFeed }
-        override fun showBuildCheckAlert(): Observable<InternalBuildEnvelope> { return showBuildCheckAlert }
         override fun showHelp(): Observable<Void?> { return showHelp }
         override fun showInternalTools(): Observable<Void?> { return showInternalTools }
         override fun showLoginTout(): Observable<Void?> { return showLoginTout }

@@ -10,7 +10,6 @@ import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
-import com.kickstarter.services.WebClientType
 import com.stripe.android.Stripe
 import rx.Scheduler
 import java.net.CookieManager
@@ -22,7 +21,6 @@ class Environment private constructor(
     private val apolloClient: ApolloClientType?,
     private val apolloClientV2: ApolloClientTypeV2?,
     private val build: Build?,
-    private val buildCheck: BuildCheck?,
     private val cookieManager: CookieManager?,
     private val currentConfig: CurrentConfigType?,
     private val currentConfigV2: CurrentConfigTypeV2?,
@@ -42,7 +40,6 @@ class Environment private constructor(
     private val schedulerV2: io.reactivex.Scheduler?,
     private val sharedPreferences: SharedPreferences?,
     private val stripe: Stripe?,
-    private val webClient: WebClientType?,
     private val webEndpoint: String,
     private val firebaseAnalyticsClient: FirebaseAnalyticsClientType?,
     private val featureFlagClient: FeatureFlagClientType?
@@ -53,7 +50,6 @@ class Environment private constructor(
     fun apolloClient() = this.apolloClient
     fun apolloClientV2() = this.apolloClientV2
     fun build() = this.build
-    fun buildCheck() = this.buildCheck
     fun cookieManager() = this.cookieManager
     fun currentConfig() = this.currentConfig
     fun currentConfigV2() = this.currentConfigV2
@@ -73,7 +69,6 @@ class Environment private constructor(
     fun schedulerV2() = this.schedulerV2
     fun sharedPreferences() = this.sharedPreferences
     fun stripe() = this.stripe
-    fun webClient() = this.webClient
     fun webEndpoint() = this.webEndpoint
     fun firebaseAnalyticsClient() = this.firebaseAnalyticsClient
     fun featureFlagClient() = this.featureFlagClient
@@ -85,7 +80,6 @@ class Environment private constructor(
         private var apolloClient: ApolloClientType? = null,
         private var apolloClientV2: ApolloClientTypeV2? = null,
         private var build: Build? = null,
-        private var buildCheck: BuildCheck? = null,
         private var cookieManager: CookieManager? = null,
         private var currentConfig: CurrentConfigType? = null,
         private var currentConfigV2: CurrentConfigTypeV2? = null,
@@ -105,7 +99,6 @@ class Environment private constructor(
         private var schedulerV2: io.reactivex.Scheduler? = null,
         private var sharedPreferences: SharedPreferences? = null,
         private var stripe: Stripe? = null,
-        private var webClient: WebClientType? = null,
         private var webEndpoint: String = "",
         private var firebaseAnalyticsClient: FirebaseAnalyticsClientType? = null,
         private var featureFlagClient: FeatureFlagClientType? = null
@@ -116,7 +109,6 @@ class Environment private constructor(
         fun apolloClient(apolloClient: ApolloClientType) = apply { this.apolloClient = apolloClient }
         fun apolloClientV2(apolloClientV2: ApolloClientTypeV2) = apply { this.apolloClientV2 = apolloClientV2 }
         fun build(build: Build) = apply { this.build = build }
-        fun buildCheck(buildCheck: BuildCheck) = apply { this.buildCheck = buildCheck }
         fun cookieManager(cookieManager: CookieManager) = apply { this.cookieManager = cookieManager }
         fun currentConfig(currentConfig: CurrentConfigType) = apply { this.currentConfig = currentConfig }
         fun currentConfig2(currentConfig2: CurrentConfigTypeV2) = apply { this.currentConfigV2 = currentConfig2 }
@@ -136,7 +128,6 @@ class Environment private constructor(
         fun schedulerV2(schedulerV2: io.reactivex.Scheduler) = apply { this.schedulerV2 = schedulerV2 }
         fun sharedPreferences(sharedPreferences: SharedPreferences) = apply { this.sharedPreferences = sharedPreferences }
         fun stripe(stripe: Stripe) = apply { this.stripe = stripe }
-        fun webClient(webClient: WebClientType) = apply { this.webClient = webClient }
         fun webEndpoint(webEndpoint: String) = apply { this.webEndpoint = webEndpoint }
         fun firebaseAnalyticsClient(firebaseAnalyticsClient: FirebaseAnalyticsClientType) = apply { this.firebaseAnalyticsClient = firebaseAnalyticsClient }
 
@@ -149,7 +140,6 @@ class Environment private constructor(
             apolloClient = apolloClient,
             apolloClientV2 = apolloClientV2,
             build = build,
-            buildCheck = buildCheck,
             cookieManager = cookieManager,
             currentConfig = currentConfig,
             currentConfigV2 = currentConfigV2,
@@ -169,7 +159,6 @@ class Environment private constructor(
             schedulerV2 = schedulerV2,
             sharedPreferences = sharedPreferences,
             stripe = stripe,
-            webClient = webClient,
             webEndpoint = webEndpoint,
             firebaseAnalyticsClient = firebaseAnalyticsClient,
             featureFlagClient = featureFlagClient
@@ -183,7 +172,6 @@ class Environment private constructor(
         apolloClient = apolloClient,
         apolloClientV2 = apolloClientV2,
         build = build,
-        buildCheck = buildCheck,
         cookieManager = cookieManager,
         currentConfig = currentConfig,
         currentConfigV2 = currentConfigV2,
@@ -203,7 +191,6 @@ class Environment private constructor(
         schedulerV2 = schedulerV2,
         sharedPreferences = sharedPreferences,
         stripe = stripe,
-        webClient = webClient,
         webEndpoint = webEndpoint,
         firebaseAnalyticsClient = firebaseAnalyticsClient,
         featureFlagClient = featureFlagClient

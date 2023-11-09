@@ -6,7 +6,6 @@ import com.apollographql.apollo.ApolloClient
 import com.google.gson.Gson
 import com.kickstarter.ApplicationModule
 import com.kickstarter.libs.ApiEndpoint
-import com.kickstarter.libs.BuildCheck
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.NoopInternalTools
 import com.kickstarter.mock.services.MockApiClient
@@ -25,11 +24,6 @@ class AndroidTestApplicationModule(private val application: Application) : Appli
     @Singleton
     internal fun provideApiEndpoint(): ApiEndpoint {
         return ApiEndpoint.STAGING
-    }
-
-    @Provides
-    internal fun provideBuildCheck(): BuildCheck {
-        return NoopBuildCheck()
     }
 
     @Provides

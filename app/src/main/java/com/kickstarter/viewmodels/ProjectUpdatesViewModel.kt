@@ -104,6 +104,7 @@ interface ProjectUpdatesViewModel {
                     .nextPage(nextPage)
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
+                    .isReversed(false)
                     .envelopeToListOfData {
                         it.updates?.filter { updates ->
                             !updates.body().isNullOrEmpty()
@@ -117,6 +118,7 @@ interface ProjectUpdatesViewModel {
 
             pagination.isFetching
                 .share()
+                .distinctUntilChanged()
                 .subscribe {
                     horizontalProgressBarIsGone.onNext(!it)
                     isFetchingUpdates.onNext(it)

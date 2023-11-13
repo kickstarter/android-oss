@@ -323,7 +323,8 @@ interface ProjectCardHolderViewModel {
 
             project
                 .map { p -> if (p.isStarred()) R.drawable.icon__heart else R.drawable.icon__heart_outline }
-                .subscribe(this.heartDrawableId)
+                .subscribe { this.heartDrawableId.onNext(it) }
+                .addToDisposable(disposables)
 
             project
                 .compose(Transformers.takeWhenV2(heartButtonClicked))

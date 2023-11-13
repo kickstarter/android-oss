@@ -1,13 +1,11 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
-import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 class ActivitySampleFriendFollowViewHolderViewModel {
     interface Inputs {
@@ -19,9 +17,11 @@ class ActivitySampleFriendFollowViewHolderViewModel {
         fun bindActivity(): Observable<Activity>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ActivitySampleFriendFollowViewHolder>(environment), Inputs, Outputs {
+    class ViewModel : Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
+
+        val disposables = CompositeDisposable()
 
         private val activityInput = BehaviorSubject.create<Activity>()
         private val bindActivity = BehaviorSubject.create<Activity>()
@@ -29,15 +29,18 @@ class ActivitySampleFriendFollowViewHolderViewModel {
             activityInput
                 .filter { it.isNotNull() }
                 .filter { it.user().isNotNull() }
-                .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     bindActivity.onNext(it)
                 }
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(activity: Activity) =
             this.activityInput.onNext(activity)
         override fun bindActivity(): Observable<Activity> = this.bindActivity
+
+        fun clear() {
+            disposables.clear()
+        }
     }
 }

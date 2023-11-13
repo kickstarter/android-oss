@@ -1,28 +1,32 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Activity
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ActivitySampleFriendFollowViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ActivitySampleFriendFollowViewHolderViewModel.ViewModel
 
     private val bindActivity = TestSubscriber.create<Activity>()
 
-    private fun setupEnvironment(@NonNull environment: Environment) {
-        this.vm = ActivitySampleFriendFollowViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.bindActivity().subscribe(this.bindActivity)
+    private val disposables = CompositeDisposable()
+
+    private fun setupEnvironment() {
+        this.vm = ActivitySampleFriendFollowViewHolderViewModel.ViewModel()
+        this.vm.outputs.bindActivity().subscribe { this.bindActivity.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
     fun testBindActivityWithoutProjectAndUser() {
-        setupEnvironment(environment())
+        setupEnvironment()
         this.vm.inputs.configureWith(
             Activity.builder()
                 .category(Activity.CATEGORY_FOLLOW)
@@ -35,7 +39,7 @@ class ActivitySampleFriendFollowViewHolderViewModelTest : KSRobolectricTestCase(
 
     @Test
     fun testBindActivityHasProjectAndUser() {
-        setupEnvironment(environment())
+        setupEnvironment()
 
         val activityWithProjectAndUser = Activity.builder()
             .category(Activity.CATEGORY_FOLLOW)
@@ -48,5 +52,10 @@ class ActivitySampleFriendFollowViewHolderViewModelTest : KSRobolectricTestCase(
         this.vm.inputs.configureWith(activityWithProjectAndUser)
 
         this.bindActivity.assertValue(activityWithProjectAndUser)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

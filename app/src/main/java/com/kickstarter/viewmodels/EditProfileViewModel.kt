@@ -131,8 +131,6 @@ interface EditProfileViewModel {
                 .addToDisposable(disposables)
         }
 
-        public fun userInput() = this.userInput
-
         override fun onCleared() {
             disposables.clear()
             super.onCleared()

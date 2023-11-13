@@ -5,9 +5,11 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Activity
 import com.kickstarter.viewmodels.ActivitySampleFriendFollowViewHolderViewModel
 import com.squareup.picasso.Picasso
+import io.reactivex.disposables.CompositeDisposable
 
 class ActivitySampleFriendFollowViewHolder(
     private val binding: ActivitySampleFriendFollowViewBinding,
@@ -16,7 +18,9 @@ class ActivitySampleFriendFollowViewHolder(
 
     private val ksString = requireNotNull(environment().ksString())
     private val vm: ActivitySampleFriendFollowViewHolderViewModel.ViewModel =
-        ActivitySampleFriendFollowViewHolderViewModel.ViewModel(environment())
+        ActivitySampleFriendFollowViewHolderViewModel.ViewModel()
+
+    private val disposables = CompositeDisposable()
 
     interface Delegate {
         fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder?)
@@ -24,12 +28,11 @@ class ActivitySampleFriendFollowViewHolder(
 
     init {
         this.vm.outputs.bindActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 it.user()?.let { user ->
-                    user.avatar()?.small()?.let {
-                        Picasso.get().load(it)
+                    user.avatar().small().let { url ->
+                        Picasso.get().load(url)
                             .transform(CircleTransformation())
                             .into(binding.activityImage)
                     }
@@ -46,6 +49,7 @@ class ActivitySampleFriendFollowViewHolder(
                     binding.seeActivityButton.setOnClickListener { seeActivityOnClick() }
                 }
             }
+            .addToDisposable(disposables)
     }
 
     @Throws(Exception::class)
@@ -55,5 +59,11 @@ class ActivitySampleFriendFollowViewHolder(
 
     private fun seeActivityOnClick() {
         delegate.activitySampleFriendFollowViewHolderSeeActivityClicked(this)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        vm.clear()
+        super.destroy()
     }
 }

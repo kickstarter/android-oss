@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -13,15 +12,15 @@ import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.User
 import io.reactivex.Notification
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.disposables.CompositeDisposable
 
 interface EditProfileViewModel {
 
     interface Inputs {
         /** Call when user toggles the private profile switch.  */
-        fun showPublicProfile(checked: Boolean)
+        fun privateProfileChecked(checked: Boolean)
     }
 
     interface Outputs {
@@ -61,6 +60,7 @@ interface EditProfileViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+        val errors: Errors = this
 
         init {
 
@@ -70,14 +70,14 @@ interface EditProfileViewModel {
                 .retry(2)
                 .compose(Transformers.neverErrorV2())
                 .subscribe { this.currentUser.refresh(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             currentUser
+                .filter { it.isPresent() }
+                .map { requireNotNull(it.getValue()) }
                 .take(1)
-                    .filter { it.isPresent() }
-                    .map { requireNotNull(it.getValue()) }
                 .subscribe { this.user.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             val updateUserNotification = this.userInput
                 .concatMap<Notification<User>> { this.updateSettings(it) }
@@ -85,16 +85,16 @@ interface EditProfileViewModel {
             updateUserNotification
                 .compose(valuesV2())
                 .subscribe { this.success(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             updateUserNotification
                 .compose(errorsV2())
-                    .subscribe { this.unableToSavePreferenceError.onNext(it?.localizedMessage ?: "") }
-                    .addToDisposable(disposables)
+                .subscribe { this.unableToSavePreferenceError.onNext(it?.localizedMessage ?: "") }
+                .addToDisposable(disposables)
 
             this.userInput
                 .subscribe { this.user.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             this.user
                 .window(2, 1)
@@ -102,41 +102,47 @@ interface EditProfileViewModel {
                 .map<User> { ListUtils.first(it) }
                 .compose<User>(Transformers.takeWhenV2(this.unableToSavePreferenceError))
                 .subscribe { this.user.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             currentUser
-                    .filter { it.isPresent() }
-                    .map { requireNotNull(it.getValue()) }
+                .filter { it.isPresent() }
+                .map { requireNotNull(it.getValue()) }
                 .map { user -> user.createdProjectsCount().isNonZero() }
                 .subscribe { this.hidePrivateProfileRow.onNext(it) }
-                    .addToDisposable(disposables)
-
+                .addToDisposable(disposables)
 
             currentUser
-                    .filter { it.isPresent() }
-                    .map { requireNotNull(it.getValue()) }
+                .filter { it.isPresent() }
+                .map { requireNotNull(it.getValue()) }
                 .map { it.avatar().medium() }
-                .subscribe { this.userAvatarUrl.onNext(it)}
-                    .addToDisposable(disposables)
+                .subscribe { this.userAvatarUrl.onNext(it) }
+                .addToDisposable(disposables)
 
             currentUser
-                    .filter { it.isPresent() }
-                    .map { requireNotNull(it.getValue()) }
+                .filter { it.isPresent() }
+                .map { requireNotNull(it.getValue()) }
                 .map { it.name() }
                 .subscribe { this.userName.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             this.showPublicProfile
-                    .withLatestFrom(user){ showProfile, user -> user.toBuilder().showPublicProfile(!showProfile).build() }
-                    .subscribe { this.userInput.onNext(it) }
-                    .addToDisposable(disposables)
+                .withLatestFrom(user) { showProfile, user -> user.toBuilder().showPublicProfile(!showProfile).build() }
+                .subscribe { this.userInput.onNext(it) }
+                .addToDisposable(disposables)
+        }
+
+        public fun userInput() = this.userInput
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun userAvatarUrl(): Observable<String> = this.userAvatarUrl
 
         override fun hidePrivateProfileRow(): Observable<Boolean> = this.hidePrivateProfileRow
 
-        override fun showPublicProfile(checked: Boolean) {
+        override fun privateProfileChecked(checked: Boolean) {
             this.showPublicProfile.onNext(checked)
         }
 
@@ -159,7 +165,7 @@ interface EditProfileViewModel {
         }
     }
     class Factory(private val environment: Environment) :
-            ViewModelProvider.Factory {
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return EditProfileViewModel(environment) as T
         }

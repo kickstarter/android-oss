@@ -147,7 +147,7 @@ interface ProjectUpdatesViewModel {
             cursor: String?
         ): Observable<UpdatesGraphQlEnvelope> {
             return project.switchMap {
-                return@switchMap client.getProjectUpdates(it.slug() ?: "", cursor, 10)
+                return@switchMap client.getProjectUpdates(it.slug() ?: "", cursor)
             }.onErrorResumeNext(Observable.empty())
         }
         override fun nextPage() {

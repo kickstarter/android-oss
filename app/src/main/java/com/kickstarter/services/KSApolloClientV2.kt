@@ -91,9 +91,10 @@ interface ApolloClientTypeV2 {
     fun getProjectUpdates(
         slug: String,
         cursor: String?,
-        limit: Int
+        limit: Int = PAGE_SIZE
     ): Observable<UpdatesGraphQlEnvelope>
 }
+private const val PAGE_SIZE = 25
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     override fun getProject(project: Project): Observable<Project> {

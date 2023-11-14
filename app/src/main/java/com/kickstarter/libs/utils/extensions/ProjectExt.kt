@@ -160,7 +160,7 @@ fun isProjectNamePunctuated(name: String): Boolean = name.substring(name.length 
 /**
  * Returns the metadata for the project based on some backing, starred, or featured, otherwise returns null
  */
-fun Project.metadataForProject(): ProjectMetadata? =
+fun Project.metadataForProject(): ProjectMetadata =
     when {
         this.isBacking() -> ProjectMetadata.BACKING
         this.displayPrelaunch() ?: false -> ProjectMetadata.COMING_SOON

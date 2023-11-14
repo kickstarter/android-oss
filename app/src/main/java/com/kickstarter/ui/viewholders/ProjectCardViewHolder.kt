@@ -9,29 +9,33 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectCardViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.isProjectNamePunctuated
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.ProjectCardHolderViewModel
 import com.squareup.picasso.Picasso
+import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 
 class ProjectCardViewHolder(
     private val binding: ProjectCardViewBinding,
     delegate: Delegate
 ) : KSViewHolder(binding.root) {
-    private val viewModel = ProjectCardHolderViewModel.ViewModel(environment())
+    private val viewModel = ProjectCardHolderViewModel.ViewModel()
     private val ksString = requireNotNull(environment().ksString())
+    private val disposables = CompositeDisposable()
 
     interface Delegate {
         fun projectCardViewHolderClicked(project: Project)
@@ -40,206 +44,240 @@ class ProjectCardViewHolder(
 
     init {
         viewModel.outputs.backersCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.projectCardStats.backersCount.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.backingViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMetadataView.backingGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectMetadataView.backingGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.deadlineCountdownText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.projectCardStats.deadlineCountdown.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.featuredViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMetadataView.featuredGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectMetadataView.featuredGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendAvatar2IsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { ViewUtils.setGone(binding.friendRowBackingGroup.friendBackingAvatar2, it) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.friendRowBackingGroup.friendBackingAvatar2.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendAvatar3IsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { ViewUtils.setGone(binding.friendRowBackingGroup.friendBackingAvatar3, it) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.friendRowBackingGroup.friendBackingAvatar3.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendAvatarUrl1()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar1) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                setFriendAvatarUrl(
+                    it,
+                    binding.friendRowBackingGroup.friendBackingAvatar1
+                )
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendAvatarUrl2()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar2) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                setFriendAvatarUrl(
+                    it,
+                    binding.friendRowBackingGroup.friendBackingAvatar2
+                )
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendAvatarUrl3()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar3) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                setFriendAvatarUrl(
+                    it,
+                    binding.friendRowBackingGroup.friendBackingAvatar3
+                )
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendBackingViewIsHidden()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.friendRowBackingGroup.friendBackingGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.friendRowBackingGroup.friendBackingGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.friendsForNamepile()
-            .compose(bindToLifecycle())
-            .compose<List<User?>>(Transformers.observeForUI())
-            .subscribe { binding.friendRowBackingGroup.friendBackingMessage.text = SocialUtils.projectCardFriendNamepile(context(), it, ksString) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                binding.friendRowBackingGroup.friendBackingMessage.text =
+                    SocialUtils.projectCardFriendNamepile(context(), it, ksString)
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.fundingUnsuccessfulViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectStateViewGroup.fundingUnsuccessfulViewGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectStateViewGroup.fundingUnsuccessfulViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.imageIsInvisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setInvisible(binding.projectCardPhoto.photo))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectCardPhoto.photo.isInvisible = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.locationName()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.projectCardTags.locationTextView.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.locationContainerIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCardTags.locationContainer))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectCardTags.locationContainer.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.nameAndBlurbText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setStyledNameAndBlurb(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.notifyDelegateOfProjectClick()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { delegate.projectCardViewHolderClicked(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.percentageFundedTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.projectCardStats.percent.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.percentageFundedForProgressBar()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.percentageFunded.progress = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.photoUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { resizeProjectImage(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectCanceledAt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setCanceledTextView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectCardStatsViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCardStats.projectCardStatsViewGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectCardStats.projectCardStatsViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectFailedAt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setFailedAtTextView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectForDeadlineCountdownDetail()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setDeadlineCountdownText(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectStateViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectStateViewGroup.projectStateViewGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectStateViewGroup.projectStateViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSubcategoryName()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setSubcategoryTextView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSubcategoryIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCardTags.subcategoryContainer))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectCardTags.subcategoryContainer.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSuccessfulAt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setSuccessfullyFundedDateTextView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectSuspendedAt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setSuspendedAtTextView(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectTagContainerIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCardTags.projectTags))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectCardTags.projectTags.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.projectWeLoveIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCardTags.projectWeLoveContainer))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectCardTags.projectWeLoveContainer.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.rootCategoryNameForFeatured()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding.projectMetadataView.featured.text = ksString.format(context().getString(R.string.discovery_baseball_card_metadata_featured_project), "category_name", it) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                binding.projectMetadataView.featured.text = ksString.format(
+                    context().getString(R.string.discovery_baseball_card_metadata_featured_project),
+                    "category_name",
+                    it
+                )
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.metadataViewGroupBackgroundDrawable()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding.projectMetadataView.projectMetadataViewGroup.background = ContextCompat.getDrawable(context(), it) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                binding.projectMetadataView.projectMetadataViewGroup.background =
+                    ContextCompat.getDrawable(context(), it)
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.metadataViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMetadataView.projectMetadataViewGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectMetadataView.projectMetadataViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.savedViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMetadataView.savedViewGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectMetadataView.savedViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.comingSoonViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMetadataView.comingSoonGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectMetadataView.comingSoonGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.fundingSuccessfulViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectStateViewGroup.fundingSuccessfulViewGroup))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.projectStateViewGroup.fundingSuccessfulViewGroup.isGone = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.setDefaultTopPadding()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setDefaultTopPadding(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.heartDrawableId()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding.heartButton?.setImageDrawable(ContextCompat.getDrawable(context(), it)) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                binding.heartButton?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context(),
+                        it
+                    )
+                )
+            }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.notifyDelegateOfHeartButtonClicked()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 delegate.onHeartButtonClicked(it)
             }
+            .addToDisposable(disposables)
 
         binding.heartButton?.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
@@ -257,10 +295,16 @@ class ProjectCardViewHolder(
     }
 
     private fun setStyledNameAndBlurb(nameAndBlurb: Pair<String, String>) {
-        val nameString = if (isProjectNamePunctuated(nameAndBlurb.first)) nameAndBlurb.first.toString() + " " else nameAndBlurb.first.toString() + ": "
+        val nameString =
+            if (isProjectNamePunctuated(nameAndBlurb.first)) nameAndBlurb.first.toString() + " " else nameAndBlurb.first.toString() + ": "
         val blurbString = nameAndBlurb.second
         val styledString = SpannableString(nameString + blurbString)
-        styledString.setSpan(ForegroundColorSpan(context().getColor(R.color.kds_support_700)), 0, nameString.length, 0)
+        styledString.setSpan(
+            ForegroundColorSpan(context().getColor(R.color.kds_support_700)),
+            0,
+            nameString.length,
+            0
+        )
         styledString.setSpan(
             ForegroundColorSpan(context().getColor(R.color.kds_support_400)),
             nameString.length,
@@ -271,24 +315,37 @@ class ProjectCardViewHolder(
     }
 
     private fun resizeProjectImage(avatarUrl: String?) {
-        val targetImageWidth = (ViewUtils.getScreenWidthDp(context()) * ViewUtils.getScreenDensity(context()) - context().resources.getDimension(R.dimen.grid_4)).toInt()
+        val targetImageWidth = getProjectImageWidth()
         val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
 
         binding.projectCardPhoto.photo.maxHeight = targetImageHeight
         avatarUrl?.let {
-            ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)?.let { placeholder ->
-                Picasso.get()
-                    .load(it)
-                    .resize(targetImageWidth, targetImageHeight) // required to fit properly into apis < 18
-                    .centerCrop()
-                    .placeholder(placeholder)
-                    .into(binding.projectCardPhoto.photo)
-            }
+            ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)
+                ?.let { placeholder ->
+                    Picasso.get()
+                        .load(it)
+                        .resize(
+                            targetImageWidth,
+                            targetImageHeight
+                        ) // required to fit properly into apis < 18
+                        .centerCrop()
+                        .placeholder(placeholder)
+                        .into(binding.projectCardPhoto.photo)
+                }
         }
     }
 
+    private fun getProjectImageWidth(): Int {
+        val screenWidthDp = ViewUtils.getScreenWidthDp(context())
+        val screenDensityDp = ViewUtils.getScreenDensity(context())
+        val reducedSizeDp = context().resources.getDimension(R.dimen.grid_4)
+
+        return (screenWidthDp * screenDensityDp - reducedSizeDp).toInt()
+    }
+
     private fun setDeadlineCountdownText(project: Project) {
-        binding.projectCardStats.deadlineCountdownUnit.text = project.deadlineCountdownDetail(context(), ksString)
+        binding.projectCardStats.deadlineCountdownUnit.text =
+            project.deadlineCountdownDetail(context(), ksString)
     }
 
     private fun setFriendAvatarUrl(avatarUrl: String, imageView: ImageView) {
@@ -298,11 +355,26 @@ class ProjectCardViewHolder(
     private fun setDefaultTopPadding(setDefaultPadding: Boolean) {
         binding.landCardViewGroup?.let {
             if (setDefaultPadding) {
-                adjustLandscapeTopPadding(it, context().resources.getDimension(R.dimen.grid_2).toInt(), context().resources.getDimension(R.dimen.grid_2).toInt(), context().resources.getDimension(R.dimen.grid_2).toInt(), context().resources.getDimension(R.dimen.grid_2).toInt())
+                adjustLandscapeTopPadding(
+                    it,
+                    context().resources.getDimension(R.dimen.grid_2).toInt(),
+                    context().resources.getDimension(R.dimen.grid_2).toInt(),
+                    context().resources.getDimension(R.dimen.grid_2).toInt(),
+                    context().resources.getDimension(R.dimen.grid_2).toInt()
+                )
                 adjustViewGroupTopMargin(binding.projectCardViewGroup, 0)
             } else {
-                adjustLandscapeTopPadding(it, context().resources.getDimension(R.dimen.grid_2).toInt(), context().resources.getDimension(R.dimen.grid_3).toInt(), context().resources.getDimension(R.dimen.grid_2).toInt(), context().resources.getDimension(R.dimen.grid_2).toInt())
-                adjustViewGroupTopMargin(binding.projectCardViewGroup, this.context().resources.getDimension(R.dimen.grid_1).toInt())
+                adjustLandscapeTopPadding(
+                    it,
+                    context().resources.getDimension(R.dimen.grid_2).toInt(),
+                    context().resources.getDimension(R.dimen.grid_3).toInt(),
+                    context().resources.getDimension(R.dimen.grid_2).toInt(),
+                    context().resources.getDimension(R.dimen.grid_2).toInt()
+                )
+                adjustViewGroupTopMargin(
+                    binding.projectCardViewGroup,
+                    this.context().resources.getDimension(R.dimen.grid_1).toInt()
+                )
             }
         }
     }
@@ -336,20 +408,30 @@ class ProjectCardViewHolder(
     }
 
     private fun setCanceledTextView(projectCanceledAt: DateTime) {
-        binding.projectStateViewGroup.fundingUnsuccessfulDateTextView.text = DateTimeUtils.relative(context(), ksString, projectCanceledAt)
+        binding.projectStateViewGroup.fundingUnsuccessfulDateTextView.text =
+            DateTimeUtils.relative(context(), ksString, projectCanceledAt)
         binding.projectStateViewGroup.fundingUnsuccessfulTextView.setText(R.string.discovery_baseball_card_status_banner_canceled)
     }
 
     private fun setSuccessfullyFundedDateTextView(projectSuccessfulAt: DateTime) {
-        binding.projectStateViewGroup.fundingSuccessfulDateTextView.text = DateTimeUtils.relative(context(), ksString, projectSuccessfulAt)
+        binding.projectStateViewGroup.fundingSuccessfulDateTextView.text =
+            DateTimeUtils.relative(context(), ksString, projectSuccessfulAt)
     }
 
     private fun setFailedAtTextView(projectFailedAt: DateTime) {
-        binding.projectStateViewGroup.fundingUnsuccessfulDateTextView.text = DateTimeUtils.relative(context(), ksString, projectFailedAt)
+        binding.projectStateViewGroup.fundingUnsuccessfulDateTextView.text =
+            DateTimeUtils.relative(context(), ksString, projectFailedAt)
         binding.projectStateViewGroup.fundingUnsuccessfulTextView.setText(R.string.dashboard_creator_project_funding_unsuccessful)
     }
 
     private fun setSuspendedAtTextView(projectSuspendedAt: DateTime) {
-        binding.projectStateViewGroup.fundingUnsuccessfulDateTextView.text = DateTimeUtils.relative(context(), ksString, projectSuspendedAt)
+        binding.projectStateViewGroup.fundingUnsuccessfulDateTextView.text =
+            DateTimeUtils.relative(context(), ksString, projectSuspendedAt)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        viewModel.onCleared()
+        super.destroy()
     }
 }

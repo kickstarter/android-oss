@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
@@ -17,6 +18,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -24,6 +26,7 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
+import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
@@ -93,6 +96,17 @@ interface ApolloClientTypeV2 {
         cursor: String?,
         limit: Int = PAGE_SIZE
     ): Observable<UpdatesGraphQlEnvelope>
+    fun getComment(commentableId: String): Observable<Comment>
+    fun getProjectUpdateComments(
+        updateId: String,
+        cursor: String?,
+        limit: Int = PAGE_SIZE
+    ): Observable<CommentEnvelope>
+    fun getProjectComments(
+        slug: String,
+        cursor: String?,
+        limit: Int = PAGE_SIZE
+    ): Observable<CommentEnvelope>
 }
 private const val PAGE_SIZE = 25
 
@@ -1008,5 +1022,172 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
             .startCursor(pageFr?.startCursor() ?: "")
             .build()
+    }
+
+    override fun getComment(commentableId: String): Observable<Comment> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Comment>()
+            this.service.query(
+                GetCommentQuery.builder()
+                    .commentableId(commentableId)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<GetCommentQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<GetCommentQuery.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    }
+                    else {
+                        response.data?.let { responseData ->
+                            Observable.just(mapGetCommentQueryResponseToComment(responseData))
+                                .subscribe {
+                                    ps.onNext(it)
+                                }
+                        }
+                    }
+                    ps.onComplete()
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun mapGetCommentQueryResponseToComment(responseData: GetCommentQuery.Data): Comment {
+        val commentFragment =
+            (responseData.commentable() as? GetCommentQuery.AsComment)?.fragments()?.comment()
+        return commentTransformer(commentFragment)
+    }
+
+    override fun getProjectUpdateComments(
+        updateId: String,
+        cursor: String?,
+        limit: Int
+    ): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+
+            this.service.query(
+                GetProjectUpdateCommentsQuery.builder()
+                    .cursor(cursor)
+                    .id(updateId)
+                    .limit(limit)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectUpdateCommentsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectUpdateCommentsQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+                            response.data?.let { data ->
+                                Observable.just(data.post())
+                                    .filter { it?.fragments()?.freeformPost()?.comments() != null }
+                                    .map { post ->
+
+                                        val comments =
+                                            post?.fragments()?.freeformPost()?.comments()?.edges()
+                                                ?.map { edge ->
+                                                    commentTransformer(
+                                                        edge?.node()?.fragments()?.comment()
+                                                    ).toBuilder()
+                                                        .cursor(edge?.cursor())
+                                                        .build()
+                                                }
+
+                                        CommentEnvelope.builder()
+                                            .comments(comments)
+                                            .commentableId(post?.id())
+                                            .totalCount(
+                                                post?.fragments()?.freeformPost()?.comments()
+                                                    ?.totalCount() ?: 0
+                                            )
+                                            .pageInfoEnvelope(
+                                                createPageInfoObject(
+                                                    post?.fragments()?.freeformPost()?.comments()
+                                                        ?.pageInfo()?.fragments()?.pageInfo()
+                                                )
+                                            )
+                                            .build()
+                                    }
+                                    .filter { it.isNotNull() }
+                                    .subscribe {
+                                        ps.onNext(it)
+                                    }
+                            }
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjectComments(
+        slug: String,
+        cursor: String?,
+        limit: Int
+    ): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+
+            this.service.query(
+                GetProjectCommentsQuery.builder()
+                    .cursor(cursor)
+                    .slug(slug)
+                    .limit(limit)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectCommentsQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+
+                            response.data?.let { data ->
+                                Observable.just(data.project())
+                                    .filter { it?.comments() != null }
+                                    .map { project ->
+
+                                        val comments = project?.comments()?.edges()?.map { edge ->
+                                            commentTransformer(
+                                                edge?.node()?.fragments()?.comment()
+                                            ).toBuilder()
+                                                .cursor(edge?.cursor())
+                                                .build()
+                                        }
+
+                                        CommentEnvelope.builder()
+                                            .commentableId(project?.id())
+                                            .comments(comments)
+                                            .totalCount(project?.comments()?.totalCount() ?: 0)
+                                            .pageInfoEnvelope(
+                                                createPageInfoObject(
+                                                    project?.comments()?.pageInfo()?.fragments()
+                                                        ?.pageInfo()
+                                                )
+                                            )
+                                            .build()
+                                    }
+                                    .filter { it.isNotNull() }
+                                    .subscribe {
+                                        ps.onNext(it)
+                                    }
+                            }
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 }

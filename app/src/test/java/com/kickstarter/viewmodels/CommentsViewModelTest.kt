@@ -159,7 +159,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
         ).create(CommentsViewModel::class.java)
 
@@ -167,7 +167,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe { showCommentComposer.onNext(it) }.addToDisposable(disposables)
 
         // Comment composer should be disabled and shown the disabled msg if not backing and not creator.
-        showCommentComposer.assertValues(true, true)
+        showCommentComposer.assertValues(true)
         commentComposerStatus.assertValue(CommentComposerStatus.DISABLED)
     }
     @Test
@@ -182,7 +182,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
         ).create(CommentsViewModel::class.java)
 
@@ -515,7 +515,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val intent = Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update())
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             intent
         ).create(CommentsViewModel::class.java)
 

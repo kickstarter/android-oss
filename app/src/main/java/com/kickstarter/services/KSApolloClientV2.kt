@@ -17,6 +17,8 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
+import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -29,6 +31,7 @@ import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
+import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
@@ -84,7 +87,14 @@ interface ApolloClientTypeV2 {
     fun fetchCategory(param: String): Observable<Category?>
     fun getBacking(backingId: String): Observable<Backing>
     fun fetchCategories(): Observable<List<Category>>
+
+    fun getProjectUpdates(
+        slug: String,
+        cursor: String?,
+        limit: Int = PAGE_SIZE
+    ): Observable<UpdatesGraphQlEnvelope>
 }
+private const val PAGE_SIZE = 25
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     override fun getProject(project: Project): Observable<Project> {
@@ -933,5 +943,70 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjectUpdates(
+        slug: String,
+        cursor: String?,
+        limit: Int
+    ): Observable<UpdatesGraphQlEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UpdatesGraphQlEnvelope>()
+
+            this.service.query(
+                GetProjectUpdatesQuery.builder()
+                    .cursor(cursor)
+                    .slug(slug)
+                    .limit(limit)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectUpdatesQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectUpdatesQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data.project())
+                                .filter { it?.posts() != null }
+                                .map { project ->
+
+                                    val updates = project?.posts()?.edges()?.map { edge ->
+                                        updateTransformer(
+                                            edge?.node()?.fragments()?.post()
+                                        ).toBuilder()
+                                            .build()
+                                    }
+
+                                    UpdatesGraphQlEnvelope.builder()
+                                        .updates(updates)
+                                        .totalCount(project?.posts()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(
+                                            createPageInfoObject(
+                                                project?.posts()?.pageInfo()?.fragments()
+                                                    ?.pageInfo()
+                                            )
+                                        )
+                                        .build()
+                                }
+                                .filter { it.isNotNull() }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onComplete()
+                                }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
+        return PageInfoEnvelope.builder()
+            .endCursor(pageFr?.endCursor() ?: "")
+            .hasNextPage(pageFr?.hasNextPage() ?: false)
+            .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
+            .startCursor(pageFr?.startCursor() ?: "")
+            .build()
     }
 }

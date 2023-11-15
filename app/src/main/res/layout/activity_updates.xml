@@ -43,6 +43,5 @@
             android:clipToPadding="false"
             android:paddingTop="@dimen/grid_1"
             tools:listitem="@layout/item_update_card" />
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

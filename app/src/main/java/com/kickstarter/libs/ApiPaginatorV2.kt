@@ -31,19 +31,17 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
 ) {
     private val _morePath = PublishSubject.create<String>()
     private val _isFetching = PublishSubject.create<Boolean>()
+    private lateinit var loadingPage: Observable<Int>
+    private lateinit var paginatedData: Observable<List<Data>>
 
     // Outputs
     fun paginatedData(): Observable<List<Data>> {
         return paginatedData
     }
-
-    private lateinit var paginatedData: Observable<List<Data>>
     val isFetching: Observable<Boolean> = _isFetching
     fun loadingPage(): Observable<Int> {
         return loadingPage
     }
-
-    private lateinit var loadingPage: Observable<Int>
 
     init {
         startOverWith?.let {

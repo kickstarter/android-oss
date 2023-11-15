@@ -121,7 +121,7 @@ interface CommentsViewModel {
         private val initialError = BehaviorSubject.create<Throwable>()
         private val paginationError = BehaviorSubject.create<Throwable>()
         private val pullToRefreshError = BehaviorSubject.create<Throwable>()
-        private var commentableId = BehaviorSubject.create<String?>()
+        private var commentableId = BehaviorSubject.create<String>()
 
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
         private lateinit var project: Project
@@ -146,12 +146,6 @@ interface CommentsViewModel {
             loggedInUser
                 .subscribe {
                     currentUserAvatar.onNext(it.avatar().small())
-                }
-                .addToDisposable(disposables)
-
-            loggedInUser
-                .subscribe {
-                    showCommentComposer.onNext(true)
                 }
                 .addToDisposable(disposables)
 
@@ -244,7 +238,7 @@ interface CommentsViewModel {
                 .compose(combineLatestPair(deepLinkCommentableId))
                 .compose(combineLatestPair(commentableId))
                 .compose(combineLatestPair(currentUserStream.observable()))
-                .filter { it.second.isPresent() }
+                .filter { it.first.second.isNotEmpty() && it.second.isPresent() }
                 .map {
                     CommentCardData.builder()
                         .comment(it.first.first.first)
@@ -346,7 +340,7 @@ interface CommentsViewModel {
                         Pair(
                             pair.first.any {
                                 it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
-                                        it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
+                                    it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                             },
                             pair.second
                         )
@@ -548,7 +542,7 @@ interface CommentsViewModel {
             }.doOnNext {
                 it.commentableId?.let { comId ->
                     commentableId.onNext(comId)
-                }
+                } ?: commentableId.onNext("")
 
                 // Remove Pagination errorFrom View
                 this.displayPaginationError.onNext(false)
@@ -592,7 +586,7 @@ interface CommentsViewModel {
 
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, KsOptional<User>>) =
             when {
-                projectAndUser.second == null -> CommentComposerStatus.GONE
+                projectAndUser.second.getValue() == null -> CommentComposerStatus.GONE
                 projectAndUser.first.canComment() ?: false -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }

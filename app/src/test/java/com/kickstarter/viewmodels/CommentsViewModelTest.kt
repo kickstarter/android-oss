@@ -62,7 +62,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project.
         val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.backedProject()))
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build(),
             intent
         ).create(CommentsViewModel::class.java)
 
@@ -71,7 +71,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // The comment composer should be shown to backer and enabled to write comments
         commentComposerStatus.assertValue(CommentComposerStatus.ENABLED)
-        showCommentComposer.assertValues(true, true)
+        showCommentComposer.assertValues(true)
     }
 
     @Test
@@ -96,7 +96,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project.
         val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build(),
             intent
         ).create(CommentsViewModel::class.java)
 
@@ -105,7 +105,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // The comment composer should show but in disabled state
         commentComposerStatus.assertValue(CommentComposerStatus.DISABLED)
-        showCommentComposer.assertValues(true, true)
+        showCommentComposer.assertValues(true)
     }
 
     @Test
@@ -116,7 +116,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .canComment(true)
             .build()
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(project))
         ).create(CommentsViewModel::class.java)
 
@@ -124,7 +124,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe { showCommentComposer.onNext(it) }.addToDisposable(disposables)
 
         // The comment composer enabled to write comments for creator
-        showCommentComposer.assertValues(true, true)
+        showCommentComposer.assertValues(true)
         commentComposerStatus.assertValues(CommentComposerStatus.ENABLED)
     }
 
@@ -136,7 +136,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .canComment(false)
             .build()
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
         ).create(CommentsViewModel::class.java)
 
@@ -144,7 +144,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe { showCommentComposer.onNext(it) }.addToDisposable(disposables)
 
         // The comment composer enabled to write comments for creator
-        showCommentComposer.assertValues(true, true)
+        showCommentComposer.assertValues(true)
         commentComposerStatus.assertValues(CommentComposerStatus.DISABLED)
     }
 
@@ -479,9 +479,9 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.scrollToTop().subscribe { scrollToTop.onNext(it) }.addToDisposable(disposables)
 
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
-        vm.outputs.scrollToTop().subscribe { scrollToTop.onNext(it) }.addToDisposable(disposables)
 
         // post a comment
         vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
@@ -492,8 +492,6 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         firstCall = false
         // get the next page which is end of page
         vm.inputs.nextPage()
-        vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
-
         assertEquals(1, vm.newlyPostedCommentsList.size)
         assertEquals(2, commentsList.value?.size)
 

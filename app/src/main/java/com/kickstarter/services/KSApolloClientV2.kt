@@ -1039,8 +1039,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 override fun onResponse(response: Response<GetCommentQuery.Data>) {
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
-                    }
-                    else {
+                    } else {
                         response.data?.let { responseData ->
                             Observable.just(mapGetCommentQueryResponseToComment(responseData))
                                 .subscribe {

@@ -27,6 +27,7 @@ import com.kickstarter.libs.utils.extensions.coalesceWithV2
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.LoginScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
@@ -57,6 +58,8 @@ class LoginActivity : ComponentActivity() {
 
     private var environment: Environment? = null
 
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         disposables = CompositeDisposable()
@@ -66,6 +69,9 @@ class LoginActivity : ComponentActivity() {
             viewModelFactory = LoginViewModel.Factory(env, intent = intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
             env
         }
 
@@ -133,7 +139,17 @@ class LoginActivity : ComponentActivity() {
                 }
                 .addToDisposable(disposables)
 
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 LoginScreen(
                     prefillEmail = prefillEmail,
                     scaffoldState = scaffoldState,

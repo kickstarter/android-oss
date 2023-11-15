@@ -103,6 +103,29 @@
       </LinearLayout>
 
       <LinearLayout
+          android:id="@+id/app_theme_container"
+          android:orientation="horizontal"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3"
+          android:visibility="gone"
+          tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/app_theme_text"
+            android:layout_width="0dp"
+            style="@style/SettingsSingleRow"
+            android:layout_weight="1"
+            android:text="@string/app_theme" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/app_theme_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:spinnerMode="dropdown"/>
+
+      </LinearLayout>
+
+      <LinearLayout
         style="@style/SettingsLinearRow"
         android:layout_marginBottom="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3">

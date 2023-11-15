@@ -1,23 +1,29 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatSpinner
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.databinding.SettingsLayoutBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.Logout
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
@@ -31,6 +37,11 @@ class SettingsActivity : AppCompatActivity() {
     private var logoutConfirmationDialog: AlertDialog? = null
     private lateinit var binding: SettingsLayoutBinding
     private lateinit var disposables: CompositeDisposable
+    private lateinit var spinner: AppCompatSpinner
+    private var sharedPrefs: SharedPreferences? = null
+    private var darkModeEnabled = false
+
+    private lateinit var themeItems: Array<String>
 
     private lateinit var viewModelFactory: SettingsViewModel.Factory
     private val viewModel: SettingsViewModel.SettingsViewModel by viewModels {
@@ -39,13 +50,27 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        themeItems = arrayOf(
+            getString(R.string.match_system),
+            getString(R.string.light),
+            getString(R.string.dark)
+        )
         binding = SettingsLayoutBinding.inflate(layoutInflater)
         this.getEnvironment()?.let { env ->
             viewModelFactory = SettingsViewModel.Factory(env)
+            sharedPrefs = env.sharedPreferences()
+            darkModeEnabled =
+                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
         disposables = CompositeDisposable()
 
         setContentView(binding.root)
+
+        spinner = binding.appThemeSpinner
+        if (darkModeEnabled) {
+            binding.appThemeContainer.visibility = View.VISIBLE
+            setUpThemeSpinner()
+        }
 
         setUpConnectivityStatusCheck(lifecycle)
         if (BuildConfig.DEBUG) {
@@ -142,4 +167,29 @@ class SettingsActivity : AppCompatActivity() {
         disposables.clear()
         super.onDestroy()
     }
+
+    private fun setUpThemeSpinner() {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, themeItems)
+        spinner.adapter = adapter
+
+        val currentSelection =
+            sharedPrefs?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
+        spinner.setSelection(currentSelection)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                sharedPrefs?.edit()?.putInt(SharedPreferenceKey.APP_THEME, p2)?.apply()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
+    }
+}
+
+enum class AppThemes {
+    MATCH_SYSTEM,
+    LIGHT,
+    DARK
 }

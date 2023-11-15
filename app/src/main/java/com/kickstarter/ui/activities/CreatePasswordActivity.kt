@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.CreatePasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
@@ -28,6 +29,7 @@ class CreatePasswordActivity : AppCompatActivity() {
     private val viewModel: CreatePasswordViewModel.CreatePasswordViewModel by viewModels { viewModelFactory }
     private var logout: Logout? = null
     private val disposables = CompositeDisposable()
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,11 @@ class CreatePasswordActivity : AppCompatActivity() {
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = CreatePasswordViewModel.Factory(env)
-            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            darkModeEnabled =
+                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
             env
         }
 
@@ -47,7 +53,17 @@ class CreatePasswordActivity : AppCompatActivity() {
 
             var scaffoldState = rememberScaffoldState()
 
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 CreatePasswordScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onAcceptButtonClicked = { new ->

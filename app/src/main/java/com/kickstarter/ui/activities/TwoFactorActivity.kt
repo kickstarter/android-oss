@@ -17,6 +17,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.TwoFactorScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
@@ -31,6 +32,7 @@ class TwoFactorActivity : AppCompatActivity() {
     private val disposables = CompositeDisposable()
     private var darkModeEnabled = false
     private var environment: Environment? = null
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,9 @@ class TwoFactorActivity : AppCompatActivity() {
             viewModelFactory = TwoFactorViewModel.Factory(env, intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         setContent {
@@ -75,7 +80,17 @@ class TwoFactorActivity : AppCompatActivity() {
                 }
             }
 
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 TwoFactorScreen(
                     scaffoldState = scaffoldState,
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },

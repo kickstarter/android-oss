@@ -23,6 +23,7 @@ import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.LoginToutScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
@@ -42,6 +43,8 @@ class LoginToutActivity : ComponentActivity() {
         viewModelFactory
     }
 
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
+
     private var environment: Environment? = null
 
     private val disposables = CompositeDisposable()
@@ -55,10 +58,23 @@ class LoginToutActivity : ComponentActivity() {
             this.ksString = requireNotNull(env.ksString())
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         setContent {
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 LoginToutScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onFacebookButtonClicked = { facebookLoginClick() },

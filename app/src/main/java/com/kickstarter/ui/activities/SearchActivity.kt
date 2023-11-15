@@ -29,6 +29,7 @@ import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.search.SearchScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.viewmodels.SearchViewModel
@@ -42,6 +43,7 @@ class SearchActivity : ComponentActivity() {
 
     private var darkModeEnabled: Boolean = false
     private lateinit var disposables: CompositeDisposable
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,9 @@ class SearchActivity : ComponentActivity() {
             viewModelFactory = SearchViewModel.Factory(env, intent = intent)
             darkModeEnabled =
                 env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
             env
         }
 
@@ -76,7 +81,17 @@ class SearchActivity : ComponentActivity() {
                 }
             }
 
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 SearchScreen(
                     // GET RID OF ENVIRONMENT WHEN WE CAN
                     environment = env,

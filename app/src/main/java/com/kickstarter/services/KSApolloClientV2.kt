@@ -1041,10 +1041,8 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
                         response.data?.let { responseData ->
-                            Observable.just(mapGetCommentQueryResponseToComment(responseData))
-                                .subscribe {
-                                    ps.onNext(it)
-                                }
+                            val comment = mapGetCommentQueryResponseToComment(responseData)
+                            ps.onNext(comment)
                         }
                     }
                     ps.onComplete()
@@ -1085,39 +1083,30 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             ps.onError(Exception(response.errors?.first()?.message))
                         } else {
                             response.data?.let { data ->
-                                Observable.just(data.post())
-                                    .filter { it?.fragments()?.freeformPost()?.comments() != null }
-                                    .map { post ->
-
-                                        val comments =
-                                            post?.fragments()?.freeformPost()?.comments()?.edges()
-                                                ?.map { edge ->
-                                                    commentTransformer(
-                                                        edge?.node()?.fragments()?.comment()
-                                                    ).toBuilder()
-                                                        .cursor(edge?.cursor())
-                                                        .build()
-                                                }
-
-                                        CommentEnvelope.builder()
-                                            .comments(comments)
-                                            .commentableId(post?.id())
-                                            .totalCount(
-                                                post?.fragments()?.freeformPost()?.comments()
-                                                    ?.totalCount() ?: 0
-                                            )
-                                            .pageInfoEnvelope(
-                                                createPageInfoObject(
-                                                    post?.fragments()?.freeformPost()?.comments()
-                                                        ?.pageInfo()?.fragments()?.pageInfo()
-                                                )
-                                            )
+                                data.post()?.fragments()?.freeformPost()?.comments()?.let { graphComments ->
+                                    val comments = graphComments.edges()?.map { edge ->
+                                        commentTransformer(edge?.node()?.fragments()?.comment())
+                                            .toBuilder()
+                                            .cursor(edge?.cursor())
                                             .build()
                                     }
-                                    .filter { it.isNotNull() }
-                                    .subscribe {
-                                        ps.onNext(it)
-                                    }
+
+                                    val envelope = CommentEnvelope.builder()
+                                        .comments(comments)
+                                        .commentableId(data.post()?.id() ?: "")
+                                        .totalCount(
+                                            data.post()?.fragments()?.freeformPost()?.comments()
+                                                ?.totalCount() ?: 0
+                                        )
+                                        .pageInfoEnvelope(
+                                            createPageInfoObject(
+                                                data.post()?.fragments()?.freeformPost()?.comments()
+                                                    ?.pageInfo()?.fragments()?.pageInfo()
+                                            )
+                                        )
+                                        .build()
+                                    ps.onNext(envelope)
+                                }
                             }
                         }
                         ps.onComplete()
@@ -1150,36 +1139,29 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message))
                         } else {
-
                             response.data?.let { data ->
-                                Observable.just(data.project())
-                                    .filter { it?.comments() != null }
-                                    .map { project ->
-
-                                        val comments = project?.comments()?.edges()?.map { edge ->
-                                            commentTransformer(
-                                                edge?.node()?.fragments()?.comment()
-                                            ).toBuilder()
-                                                .cursor(edge?.cursor())
-                                                .build()
-                                        }
-
-                                        CommentEnvelope.builder()
-                                            .commentableId(project?.id())
-                                            .comments(comments)
-                                            .totalCount(project?.comments()?.totalCount() ?: 0)
-                                            .pageInfoEnvelope(
-                                                createPageInfoObject(
-                                                    project?.comments()?.pageInfo()?.fragments()
-                                                        ?.pageInfo()
-                                                )
-                                            )
+                                data.project()?.comments()?.let { graphComments ->
+                                    val comments = graphComments.edges()?.map { edge ->
+                                        commentTransformer(
+                                            edge?.node()?.fragments()?.comment()
+                                        ).toBuilder()
+                                            .cursor(edge?.cursor())
                                             .build()
                                     }
-                                    .filter { it.isNotNull() }
-                                    .subscribe {
-                                        ps.onNext(it)
-                                    }
+
+                                    val envelope = CommentEnvelope.builder()
+                                        .commentableId(data.project()?.id())
+                                        .comments(comments)
+                                        .totalCount(data.project()?.comments()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(
+                                            createPageInfoObject(
+                                                data.project()?.comments()?.pageInfo()?.fragments()
+                                                    ?.pageInfo()
+                                            )
+                                        )
+                                        .build()
+                                    ps.onNext(envelope)
+                                }
                             }
                         }
                         ps.onComplete()

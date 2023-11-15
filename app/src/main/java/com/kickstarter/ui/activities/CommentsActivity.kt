@@ -219,7 +219,7 @@ class CommentsActivity :
         viewModel.outputs.isFetchingComments()
             .compose(Transformers.observeForUIV2())
             .subscribe {
-                binding.commentsLoadingIndicator.isVisible = it
+                binding.commentsSwipeRefreshLayout.isRefreshing = it
             }
             .addToDisposable(disposables)
 

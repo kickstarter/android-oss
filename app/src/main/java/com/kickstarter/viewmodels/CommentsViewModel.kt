@@ -472,6 +472,7 @@ interface CommentsViewModel {
                     .build()
 
             apolloPaginate.isFetching
+                .share()
                 .subscribe { this.isFetchingComments.onNext(it) }
                 .addToDisposable(disposables)
 

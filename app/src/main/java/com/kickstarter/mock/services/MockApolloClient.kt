@@ -192,6 +192,22 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun fetchCategories(): io.reactivex.Observable<List<Category>> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun getProjectUpdates(
+        slug: String,
+        cursor: String?,
+        limit: Int
+    ): io.reactivex.Observable<UpdatesGraphQlEnvelope> {
+        return io.reactivex.Observable.just(
+            UpdatesGraphQlEnvelope.builder()
+                .pageInfoEnvelope(
+                    PageInfoEnvelopeFactory.pageInfoEnvelope()
+                )
+                .updates(listOf(UpdateFactory.update()))
+                .totalCount(1)
+                .build()
+        )
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

@@ -139,7 +139,7 @@ interface DiscoveryViewModel {
         private val childFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
         private val internalToolsClick = PublishSubject.create<Void?>()
         private val loggedOutLoginToutClick = PublishSubject.create<Void?>()
-        private val loggedOutSettingsClick = PublishSubject.create<Void?>()
+        private val loggedOutHelpClick = PublishSubject.create<Void?>()
         private val messagesClick = PublishSubject.create<Void?>()
         private val openDrawer = PublishSubject.create<Boolean>()
         private val pagerSetPrimaryPage = PublishSubject.create<Int>()
@@ -171,7 +171,7 @@ interface DiscoveryViewModel {
 
         init {
             showActivityFeed = activityFeedClick
-            showHelp = loggedOutSettingsClick
+            showHelp = loggedOutHelpClick
             showInternalTools = internalToolsClick
             showLoginTout = loggedOutLoginToutClick
             showMessages = messagesClick
@@ -375,7 +375,7 @@ interface DiscoveryViewModel {
                 topFilterRowClick.map { false },
                 internalToolsClick.map { false },
                 loggedOutLoginToutClick.map { false },
-                loggedOutSettingsClick.map { false },
+                loggedOutHelpClick.map { false },
                 activityFeedClick.map { false },
                 messagesClick.map { false },
                 profileClick.map { false },
@@ -411,7 +411,8 @@ interface DiscoveryViewModel {
         override fun loggedOutViewHolderActivityClick(viewHolder: LoggedOutViewHolder) { activityFeedClick.onNext(null) }
         override fun loggedOutViewHolderInternalToolsClick(viewHolder: LoggedOutViewHolder) { internalToolsClick.onNext(null) }
         override fun loggedOutViewHolderLoginToutClick(viewHolder: LoggedOutViewHolder) { loggedOutLoginToutClick.onNext(null) }
-        override fun loggedOutViewHolderHelpClick(viewHolder: LoggedOutViewHolder) { loggedOutSettingsClick.onNext(null) }
+        override fun loggedOutViewHolderHelpClick(viewHolder: LoggedOutViewHolder) { loggedOutHelpClick.onNext(null) }
+        override fun loggedOutViewHolderSettingsClick(viewHolder: LoggedOutViewHolder) { settingsClick.onNext(null) }
         override fun topFilterViewHolderRowClick(viewHolder: TopFilterViewHolder, row: NavigationDrawerData.Section.Row) {
             topFilterRowClick.onNext(row)
         }

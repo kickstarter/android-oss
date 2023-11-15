@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.core.view.isGone
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.databinding.SettingsLayoutBinding
@@ -73,9 +74,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         setUpConnectivityStatusCheck(lifecycle)
-        if (BuildConfig.DEBUG) {
-            binding.editProfileRow.visibility = View.VISIBLE
-        }
 
         this.build = requireNotNull(getEnvironment()?.build())
         this.ksString = requireNotNull(getEnvironment()?.ksString())
@@ -114,6 +112,13 @@ class SettingsActivity : AppCompatActivity() {
             .compose(Transformers.observeForUIV2())
             .subscribe { binding.nameTextView.text = it }
             .addToDisposable(disposables)
+
+        this.viewModel.isUserPresent.subscribe { isPresent ->
+            binding.editProfileRow.isGone = !BuildConfig.DEBUG || !isPresent
+            binding.accountRow.isGone = !isPresent
+            binding.notificationAndNewsletterContainer.isGone = !isPresent
+            binding.logOutRow.isGone = !isPresent
+        }.addToDisposable(disposables)
 
         binding.accountRow.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))

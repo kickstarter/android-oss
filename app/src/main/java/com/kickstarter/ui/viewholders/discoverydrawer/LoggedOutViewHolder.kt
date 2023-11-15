@@ -9,6 +9,7 @@ class LoggedOutViewHolder(private val binding: DiscoveryDrawerLoggedOutViewBindi
         fun loggedOutViewHolderInternalToolsClick(viewHolder: LoggedOutViewHolder)
         fun loggedOutViewHolderLoginToutClick(viewHolder: LoggedOutViewHolder)
         fun loggedOutViewHolderHelpClick(viewHolder: LoggedOutViewHolder)
+        fun loggedOutViewHolderSettingsClick(viewHolder: LoggedOutViewHolder)
     }
 
     @Throws(Exception::class)
@@ -28,6 +29,9 @@ class LoggedOutViewHolder(private val binding: DiscoveryDrawerLoggedOutViewBindi
         binding.loggedOutTextView.setOnClickListener {
             loginToutClick()
         }
+        binding.drawerSettings.setOnClickListener {
+            settingsClick()
+        }
     }
 
     private fun activityClick() {
@@ -44,5 +48,9 @@ class LoggedOutViewHolder(private val binding: DiscoveryDrawerLoggedOutViewBindi
 
     private fun loginToutClick() {
         delegate.loggedOutViewHolderLoginToutClick(this)
+    }
+
+    private fun settingsClick() {
+        delegate.loggedOutViewHolderSettingsClick(this)
     }
 }

@@ -93,18 +93,18 @@ interface ApolloClientTypeV2 {
 
     fun getProjectUpdates(
         slug: String,
-        cursor: String?,
+        cursor: String,
         limit: Int = PAGE_SIZE
     ): Observable<UpdatesGraphQlEnvelope>
     fun getComment(commentableId: String): Observable<Comment>
     fun getProjectUpdateComments(
         updateId: String,
-        cursor: String?,
+        cursor: String,
         limit: Int = PAGE_SIZE
     ): Observable<CommentEnvelope>
     fun getProjectComments(
         slug: String,
-        cursor: String?,
+        cursor: String,
         limit: Int = PAGE_SIZE
     ): Observable<CommentEnvelope>
 }
@@ -961,7 +961,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
     override fun getProjectUpdates(
         slug: String,
-        cursor: String?,
+        cursor: String,
         limit: Int
     ): Observable<UpdatesGraphQlEnvelope> {
         return Observable.defer {
@@ -1062,7 +1062,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
     override fun getProjectUpdateComments(
         updateId: String,
-        cursor: String?,
+        cursor: String,
         limit: Int
     ): Observable<CommentEnvelope> {
         return Observable.defer {
@@ -1070,7 +1070,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
             this.service.query(
                 GetProjectUpdateCommentsQuery.builder()
-                    .cursor(cursor)
+                    .cursor(cursor.ifEmpty { null })
                     .id(updateId)
                     .limit(limit)
                     .build()
@@ -1129,15 +1129,14 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
     override fun getProjectComments(
         slug: String,
-        cursor: String?,
+        cursor: String,
         limit: Int
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
-
             this.service.query(
                 GetProjectCommentsQuery.builder()
-                    .cursor(cursor)
+                    .cursor(cursor.ifEmpty { null })
                     .slug(slug)
                     .limit(limit)
                     .build()

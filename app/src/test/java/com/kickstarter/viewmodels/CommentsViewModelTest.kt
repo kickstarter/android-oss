@@ -198,12 +198,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun getProjectUpdateComments(
                 updateId: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.empty()
             }
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.empty()
             }
         }).build()
@@ -220,12 +220,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun getProjectUpdateComments(
                 updateId: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.empty()
             }
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.empty()
             }
         }).build()
@@ -242,13 +242,13 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun getProjectUpdateComments(
                 updateId: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.error(Exception())
             }
 
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.error(Exception())
             }
         }).build()
@@ -266,13 +266,13 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun getProjectUpdateComments(
                 updateId: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.error(Exception())
             }
 
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.error(Exception())
             }
         }).build()
@@ -310,7 +310,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
             override fun getProjectComments(
                 slug: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
@@ -318,7 +318,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
             override fun getProjectUpdateComments(
                 updateId: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
@@ -338,7 +338,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
             override fun getProjectComments(
                 slug: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
@@ -346,7 +346,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
             override fun getProjectUpdateComments(
                 updateId: String,
-                cursor: String?,
+                cursor: String,
                 limit: Int
             ): Observable<CommentEnvelope> {
                 return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
@@ -366,7 +366,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_CommentsAvailableState() {
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(CommentEnvelopeFactory.commentsEnvelope())
             }
         }).build()
@@ -394,7 +394,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_ProjectRefresh_AndInitialLoad_withError() {
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
         }).build()
@@ -426,7 +426,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     fun testCommentsViewModel_ProjectLoadingMore() {
         var firstCall = true
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return if (firstCall)
                     Observable.just(CommentEnvelopeFactory.commentsEnvelope())
                 else
@@ -466,7 +466,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder()
             .currentUserV2(MockCurrentUserV2(currentUser))
             .apolloClientV2(object : MockApolloClientV2() {
-                override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                     return if (firstCall)
                         Observable.just(CommentEnvelopeFactory.commentsEnvelope())
                     else
@@ -591,7 +591,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })
@@ -625,7 +625,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })
@@ -660,7 +660,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })
@@ -758,7 +758,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })
@@ -865,7 +865,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })
@@ -963,7 +963,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })
@@ -1021,7 +1021,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             override fun getComment(commentableId: String): Observable<Comment> {
                 return Observable.just(comment1)
             }
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(
                     CommentEnvelopeFactory.commentsEnvelope().toBuilder().commentableId(commentableId).comments(
                         listOf(comment1)
@@ -1082,7 +1082,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val testScheduler = TestScheduler()
         val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String, limit: Int): Observable<CommentEnvelope> {
                 return Observable.just(commentEnvelope)
             }
         })

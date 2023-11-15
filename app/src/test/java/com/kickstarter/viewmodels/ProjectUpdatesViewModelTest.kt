@@ -89,7 +89,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectUpdates(
                     slug: String,
-                    cursor: String?,
+                    cursor: String,
                     limit: Int
                 ): Observable<UpdatesGraphQlEnvelope> {
                     return Observable.just(
@@ -118,7 +118,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectUpdates(
                     slug: String,
-                    cursor: String?,
+                    cursor: String,
                     limit: Int
                 ): Observable<UpdatesGraphQlEnvelope> {
                     return Observable.just(
@@ -157,7 +157,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectUpdates(
                     slug: String,
-                    cursor: String?,
+                    cursor: String,
                     limit: Int
                 ): Observable<UpdatesGraphQlEnvelope> {
                     return Observable.just(

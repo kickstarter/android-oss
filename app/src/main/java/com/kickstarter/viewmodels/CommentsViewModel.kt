@@ -531,7 +531,7 @@ interface CommentsViewModel {
 
         private fun loadWithProjectOrUpdateComments(
             projectOrUpdate: Observable<Pair<Project, Update?>>,
-            cursor: String?
+            cursor: String
         ): Observable<CommentEnvelope> {
             return projectOrUpdate.switchMap {
                 return@switchMap if (it.second?.id() != null) {

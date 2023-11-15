@@ -195,7 +195,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun getProjectUpdates(
         slug: String,
-        cursor: String?,
+        cursor: String,
         limit: Int
     ): io.reactivex.Observable<UpdatesGraphQlEnvelope> {
         return io.reactivex.Observable.just(
@@ -214,7 +214,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun getProjectUpdateComments(
         updateId: String,
-        cursor: String?,
+        cursor: String,
         limit: Int
     ): io.reactivex.Observable<CommentEnvelope> {
         return io.reactivex.Observable.just(
@@ -229,7 +229,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         )
     }
 
-    override fun getProjectComments(slug: String, cursor: String?, limit: Int): io.reactivex.Observable<CommentEnvelope> {
+    override fun getProjectComments(slug: String, cursor: String, limit: Int): io.reactivex.Observable<CommentEnvelope> {
         return io.reactivex.Observable.just(
             CommentEnvelope.builder()
                 .pageInfoEnvelope(

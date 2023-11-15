@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -24,7 +25,9 @@ import com.kickstarter.ui.adapters.CommentInitialErrorAdapter
 import com.kickstarter.ui.adapters.CommentPaginationErrorAdapter
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel.CommentsViewModel
 import com.kickstarter.viewmodels.CommentsViewModel.Factory
@@ -55,6 +58,8 @@ class CommentsActivity :
         val view: View = binding.root
         setContentView(view)
 
+        setUpConnectivityStatusCheck(lifecycle)
+
         val env = this.getEnvironment()?.let { env ->
             viewModelFactory = Factory(env, intent = intent)
             env
@@ -65,7 +70,7 @@ class CommentsActivity :
             ConcatAdapter(commentInitialErrorAdapter, commentsAdapter, commentPaginationErrorAdapter)
 
         binding.backButton.setOnClickListener {
-            handleBackAction()
+            this.viewModel.backPressed()
         }
 
         setupPagination()
@@ -128,7 +133,7 @@ class CommentsActivity :
         viewModel.outputs.closeCommentsPage()
             .compose(Transformers.observeForUIV2())
             .subscribe {
-                closeCommentsActivity()
+                onBackPressedDispatcher.onBackPressed()
             }
             .addToDisposable(disposables)
 
@@ -163,6 +168,10 @@ class CommentsActivity :
                 }
             }
             .addToDisposable(disposables)
+
+        this.onBackPressedDispatcher.addCallback {
+            handleBackAction()
+        }
     }
 
     private fun handleBackAction(isBackAction: Boolean) {
@@ -183,16 +192,12 @@ class CommentsActivity :
         )
     }
 
-    fun executeActions(isBackAction: Boolean) {
+    private fun executeActions(isBackAction: Boolean) {
         if (!isBackAction) {
             viewModel.inputs.refresh()
         } else {
-            viewModel.inputs.backPressed()
+            finishWithAnimation()
         }
-    }
-
-    fun back() {
-        handleBackAction()
     }
 
     private fun handleBackAction() {
@@ -202,18 +207,13 @@ class CommentsActivity :
             handleBackAction(true)
         }
     }
-
-    private fun closeCommentsActivity() {
-        back()
-        this.finishActivity(taskId)
-    }
-
     private fun setupPagination() {
 
         recyclerViewPaginator = RecyclerViewPaginatorV2(binding.commentsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingComments())
 
         binding.commentsSwipeRefreshLayout.setOnRefreshListener {
             viewModel.inputs.checkIfThereAnyPendingComments(false)
+            viewModel.inputs.refresh()
         }
 
         viewModel.outputs.isFetchingComments()

@@ -1,15 +1,18 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.loadmore.ApolloPaginate
+import com.kickstarter.libs.loadmore.ApolloPaginateV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
+import com.kickstarter.libs.utils.KsOptional
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -20,15 +23,15 @@ import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.models.extensions.updateCommentFailedToPost
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentComposerStatus
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 
 interface CommentsViewModel {
 
@@ -49,7 +52,7 @@ interface CommentsViewModel {
     }
 
     interface Outputs {
-        fun closeCommentsPage(): Observable<Void>
+        fun closeCommentsPage(): Observable<Unit>
         fun currentUserAvatar(): Observable<String?>
         fun commentComposerStatus(): Observable<CommentComposerStatus>
         fun enableReplyButton(): Observable<Boolean>
@@ -57,7 +60,7 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<CommentCardData>>
         fun scrollToTop(): Observable<Boolean>
         fun setEmptyState(): Observable<Boolean>
-        fun showCommentGuideLinesLink(): Observable<Void>
+        fun showCommentGuideLinesLink(): Observable<Unit>
         fun initialLoadCommentsError(): Observable<Throwable>
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
@@ -74,29 +77,32 @@ interface CommentsViewModel {
         fun shouldShowInitialLoadErrorUI(): Observable<Boolean>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
+    class CommentsViewModel(val environment: Environment, private val intent: Intent? = null) : ViewModel(), Inputs, Outputs {
 
-        private val apolloClient = requireNotNull(environment.apolloClient())
-        private val currentUserStream = requireNotNull(environment.currentUser())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val currentUserStream = requireNotNull(environment.currentUserV2())
+        private val analyticEvents = requireNotNull(environment.analytics())
+
         val inputs: Inputs = this
         val outputs: Outputs = this
-        private val backPressed = PublishSubject.create<Void>()
-        private val refresh = PublishSubject.create<Void>()
-        private val nextPage = PublishSubject.create<Void>()
-        private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
+
+        private val backPressed = PublishSubject.create<Unit>()
+        private val refresh = PublishSubject.create<Unit>()
+        private val nextPage = PublishSubject.create<Unit>()
+        private val onShowGuideLinesLinkClicked = PublishSubject.create<Unit>()
         private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
         private val failedCommentCardToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val showCanceledPledgeComment = PublishSubject.create<Comment>()
-        private val onResumeActivity = PublishSubject.create<Void>()
+        private val onResumeActivity = PublishSubject.create<Unit>()
 
-        private val closeCommentsPage = BehaviorSubject.create<Void>()
+        private val closeCommentsPage = BehaviorSubject.create<Unit>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
         private val commentsList = BehaviorSubject.create<List<CommentCardData>>()
         private val outputCommentList = BehaviorSubject.create<List<CommentCardData>>()
-        private val showGuideLinesLink = BehaviorSubject.create<Void>()
+        private val showGuideLinesLink = BehaviorSubject.create<Unit>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
         private val scrollToTop = BehaviorSubject.create<Boolean>()
 
@@ -115,38 +121,33 @@ interface CommentsViewModel {
         private val initialError = BehaviorSubject.create<Throwable>()
         private val paginationError = BehaviorSubject.create<Throwable>()
         private val pullToRefreshError = BehaviorSubject.create<Throwable>()
-        private var commentableId = BehaviorSubject.create<String?>()
+        private var commentableId = BehaviorSubject.create<String>()
 
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
         private lateinit var project: Project
-
-        private var currentUser: User? = null
 
         private var openedThreadActivityFromDeepLink = false
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val newlyPostedCommentsList = mutableListOf<CommentCardData>()
+
+        private val disposables = CompositeDisposable()
+
+        private var currentUser: User? = null
+        private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
         init {
 
-            this.currentUserStream.observable()
-                .compose(bindToLifecycle())
-                .subscribe { this.currentUser = it }
-
             val loggedInUser = this.currentUserStream.loggedInUser()
-                .filter { u -> u != null }
-                .map { requireNotNull(it) }
+                .map {
+                    currentUser = it
+                    it
+                }
 
             loggedInUser
-                .compose(bindToLifecycle())
                 .subscribe {
                     currentUserAvatar.onNext(it.avatar().small())
                 }
-
-            loggedInUser
-                .compose(bindToLifecycle())
-                .subscribe {
-                    showCommentComposer.onNext(true)
-                }
+                .addToDisposable(disposables)
 
             val projectOrUpdate = intent()
                 .map<Any?> {
@@ -165,7 +166,10 @@ interface CommentsViewModel {
             }.flatMap {
                 it?.either<Observable<Project?>>(
                     { value: Project? -> Observable.just(value) },
-                    { u: Update? -> apolloClient.getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
+                    { u: Update? ->
+                        apolloClient.getProject(u?.projectId().toString())
+                            .compose(Transformers.neverErrorV2())
+                    }
                 )
             }.map {
                 requireNotNull(it)
@@ -176,12 +180,12 @@ interface CommentsViewModel {
 
             initialProject
                 .compose(combineLatestPair(currentUserStream.observable()))
-                .compose(bindToLifecycle())
                 .subscribe {
                     val composerStatus = getCommentComposerStatus(Pair(it.first, it.second))
                     showCommentComposer.onNext(composerStatus != CommentComposerStatus.GONE)
                     commentComposerStatus.onNext(composerStatus)
                 }
+                .addToDisposable(disposables)
 
             val projectOrUpdateComment = projectOrUpdate.map {
                 it as? Either<Project?, Update?>
@@ -192,10 +196,9 @@ interface CommentsViewModel {
 
             loadCommentListFromProjectOrUpdate(projectOrUpdateComment)
 
-            val deepLinkCommentableId =
-                intent().filter {
-                    it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty()
-                }.map { requireNotNull(it.getStringExtra(IntentKey.COMMENT)) }
+            val deepLinkCommentableId = intent()
+                .filter { it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false }
+                .map { requireNotNull(it.getStringExtra(IntentKey.COMMENT)) }
 
             projectOrUpdateComment
                 .distinctUntilChanged()
@@ -211,14 +214,13 @@ interface CommentsViewModel {
                     !it.second
                 }
                 .map { it.first }
-                .compose(bindToLifecycle())
                 .subscribe {
                     trackRootCommentPageViewEvent(it)
                 }
+                .addToDisposable(disposables)
 
             projectOrUpdateComment
-                .compose(Transformers.takeWhen(onResumeActivity))
-                .compose(bindToLifecycle())
+                .compose(Transformers.takeWhenV2(onResumeActivity))
                 .subscribe {
                     // send event after back action after deep link to thread activity
                     if (openedThreadActivityFromDeepLink) {
@@ -226,30 +228,32 @@ interface CommentsViewModel {
                         openedThreadActivityFromDeepLink = false
                     }
                 }
+                .addToDisposable(disposables)
 
             deepLinkCommentableId
-                .compose(takePairWhen(projectOrUpdateComment))
+                .compose(takePairWhenV2(projectOrUpdateComment))
                 .switchMap {
                     return@switchMap apolloClient.getComment(it.first)
-                }.compose(Transformers.neverError())
+                }.compose(Transformers.neverErrorV2())
                 .compose(combineLatestPair(deepLinkCommentableId))
                 .compose(combineLatestPair(commentableId))
                 .compose(combineLatestPair(currentUserStream.observable()))
+                .filter { it.first.second.isNotEmpty() && it.second.isPresent() }
                 .map {
                     CommentCardData.builder()
                         .comment(it.first.first.first)
                         .project(this.project)
-                        .commentCardState(it.first.first.first.cardStatus(it.second))
+                        .commentCardState(it.first.first.first.cardStatus(it.second.getValue()))
                         .commentableId(it.first.second)
                         .build()
                 }.withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
                     Pair(commentData, projectOrUpdate)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.startThreadActivityFromDeepLink.onNext(Pair(it.first, it.second.second?.id()?.toString()))
                     openedThreadActivityFromDeepLink = true
                 }
+                .addToDisposable(disposables)
 
             this.insertNewCommentToList
                 .withLatestFrom(this.currentUserStream.loggedInUser()) {
@@ -286,10 +290,11 @@ interface CommentsViewModel {
                     list.toMutableList().apply {
                         add(0, it.second)
                     }.toList()
-                }.compose(bindToLifecycle())
+                }
                 .subscribe {
                     commentsList.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             this.commentToRefresh
                 .map { it.first }
@@ -300,36 +305,36 @@ interface CommentsViewModel {
                 }.subscribe {
                     this.analyticEvents.trackCommentCTA(it.second.first, it.first.id().toString(), it.first.body(), it.second.second?.id()?.toString())
                 }
+                .addToDisposable(disposables)
 
             this.onShowGuideLinesLinkClicked
-                .compose(bindToLifecycle())
                 .subscribe {
-                    showGuideLinesLink.onNext(null)
+                    showGuideLinesLink.onNext(Unit)
                 }
+                .addToDisposable(disposables)
 
             this.commentsList
                 .map { it.size }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.setEmptyState.onNext(it == 0)
                 }
+                .addToDisposable(disposables)
 
             this.initialError
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.displayInitialError.onNext(true)
                 }
+                .addToDisposable(disposables)
 
             this.paginationError
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.displayPaginationError.onNext(true)
                 }
+                .addToDisposable(disposables)
 
             this.commentsList
-                .compose(takePairWhen(checkIfThereAnyPendingComments))
-                .compose(bindToLifecycle())
+                .compose(takePairWhenV2(checkIfThereAnyPendingComments))
                 .subscribe { pair ->
                     this.hasPendingComments.onNext(
                         Pair(
@@ -341,17 +346,17 @@ interface CommentsViewModel {
                         )
                     )
                 }
+                .addToDisposable(disposables)
 
             this.backPressed
-                .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
+                .addToDisposable(disposables)
 
-            val subscribe = commentsList
+            commentsList
                 .withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
                     Pair(commentData, projectOrUpdate)
                 }
-                .compose(takePairWhen(onReplyClicked))
-                .compose(bindToLifecycle())
+                .compose(takePairWhenV2(onReplyClicked))
                 .subscribe { pair ->
 
                     val cardData =
@@ -367,10 +372,11 @@ interface CommentsViewModel {
                         )
                     )
                 }
+                .addToDisposable(disposables)
 
             // - Update internal mutable list with the latest state after successful response
             this.commentsList
-                .compose(takePairWhen(this.commentToRefresh))
+                .compose(takePairWhenV2(this.commentToRefresh))
                 .map {
                     val mappedList = it.second.first.updateCommentAfterSuccessfulPost(it.first, it.second.second)
                     updateNewlyPostedCommentWithNewStatus(mappedList[it.second.second])
@@ -380,42 +386,43 @@ interface CommentsViewModel {
                 .doOnNext {
                     this.scrollToTop.onNext(false)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.commentsList.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             // - Reunite in only one place where the output list gets new updates
             this.commentsList
                 .filter { it.isNotEmpty() }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.outputCommentList.onNext(it)
                 }
+                .addToDisposable(disposables)
+
             // - Update internal mutable list with the latest state after failed response
             this.commentsList
-                .compose(takePairWhen(this.failedCommentCardToRefresh))
+                .compose(takePairWhenV2(this.failedCommentCardToRefresh))
                 .map {
                     val mappedList = it.second.first.updateCommentFailedToPost(it.first, it.second.second)
                     updateNewlyPostedCommentWithNewStatus(mappedList[it.second.second])
                     mappedList
                 }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.commentsList.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             this.commentsList
-                .compose(takePairWhen(this.showCanceledPledgeComment))
+                .compose(takePairWhenV2(this.showCanceledPledgeComment))
                 .map {
                     it.second.updateCanceledPledgeComment(it.first)
                 }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.commentsList.onNext(it)
                 }
+                .addToDisposable(disposables)
         }
 
         private fun updateNewlyPostedCommentWithNewStatus(
@@ -444,14 +451,14 @@ interface CommentsViewModel {
                 Observable.merge(
                     projectOrUpdate,
                     projectOrUpdate.compose(
-                        Transformers.takeWhen(
+                        Transformers.takeWhenV2(
                             refresh
                         )
                     )
                 )
 
             val apolloPaginate =
-                ApolloPaginate.builder<CommentCardData, CommentEnvelope, Pair<Project, Update?>>()
+                ApolloPaginateV2.builder<CommentCardData, CommentEnvelope, Pair<Project, Update?>>()
                     .nextPage(nextPage)
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
@@ -464,9 +471,10 @@ interface CommentsViewModel {
                     .clearWhenStartingOver(false)
                     .build()
 
-            apolloPaginate.isFetching()
-                .compose(bindToLifecycle<Boolean>())
-                .subscribe(this.isFetchingComments)
+            apolloPaginate.isFetching
+                .share()
+                .subscribe { this.isFetchingComments.onNext(it) }
+                .addToDisposable(disposables)
 
             apolloPaginate.paginatedData()
                 ?.share()
@@ -480,33 +488,35 @@ interface CommentsViewModel {
                 ?.subscribe {
                     this.commentsList.onNext(it)
                 }
+                ?.addToDisposable(disposables)
 
             this.internalError
                 .map { Pair(it, commentsList.value) }
                 .filter {
                     it.second.isNullOrEmpty()
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.initialError.onNext(it.first)
                 }
+                .addToDisposable(disposables)
 
-            commentsList.compose(takePairWhen(this.internalError))
+            commentsList.compose(takePairWhenV2(this.internalError))
                 .filter {
                     it.first.isNotEmpty()
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.paginationError.onNext(it.second)
                 }
+                .addToDisposable(disposables)
 
             this.refresh
                 .doOnNext {
                     this.isRefreshing.onNext(true)
-                }.compose(bindToLifecycle())
+                }
                 .subscribe {
                     this.newlyPostedCommentsList.clear()
                 }
+                .addToDisposable(disposables)
 
             this.internalError
                 .compose(combineLatestPair(isRefreshing))
@@ -514,15 +524,15 @@ interface CommentsViewModel {
                 .filter {
                     it.second.isNullOrEmpty()
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.isRefreshing.onNext(false)
                 }
+                .addToDisposable(disposables)
         }
 
         private fun loadWithProjectOrUpdateComments(
             projectOrUpdate: Observable<Pair<Project, Update?>>,
-            cursor: String?
+            cursor: String
         ): Observable<CommentEnvelope> {
             return projectOrUpdate.switchMap {
                 return@switchMap if (it.second?.id() != null) {
@@ -531,7 +541,10 @@ interface CommentsViewModel {
                     apolloClient.getProjectComments(it.first?.slug() ?: "", cursor)
                 }
             }.doOnNext {
-                commentableId.onNext(it.commentableId)
+                it.commentableId?.let { comId ->
+                    commentableId.onNext(comId)
+                } ?: commentableId.onNext("")
+
                 // Remove Pagination errorFrom View
                 this.displayPaginationError.onNext(false)
                 this.displayInitialError.onNext(false)
@@ -572,19 +585,24 @@ interface CommentsViewModel {
                 .build()
         }
 
-        private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
+        private fun getCommentComposerStatus(projectAndUser: Pair<Project, KsOptional<User>>) =
             when {
-                projectAndUser.second == null -> CommentComposerStatus.GONE
+                projectAndUser.second.getValue() == null -> CommentComposerStatus.GONE
                 projectAndUser.first.canComment() ?: false -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+
         // - Inputs
-        override fun backPressed() = backPressed.onNext(null)
-        override fun refresh() = refresh.onNext(null)
-        override fun nextPage() = nextPage.onNext(null)
+        override fun backPressed() = backPressed.onNext(Unit)
+        override fun refresh() = refresh.onNext(Unit)
+        override fun nextPage() = nextPage.onNext(Unit)
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
-        override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
+        override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(Unit)
         override fun refreshComment(comment: Comment, position: Int) = this.commentToRefresh.onNext(Pair(comment, position))
         override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplyClicked.onNext(Pair(comment, openKeyboard))
         override fun checkIfThereAnyPendingComments(isBackAction: Boolean) = checkIfThereAnyPendingComments.onNext(isBackAction)
@@ -594,15 +612,15 @@ interface CommentsViewModel {
             this.showCanceledPledgeComment.onNext(comment)
 
         override fun onResumeActivity() =
-            this.onResumeActivity.onNext(null)
+            this.onResumeActivity.onNext(Unit)
         // - Outputs
-        override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
+        override fun closeCommentsPage(): Observable<Unit> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
         override fun commentsList(): Observable<List<CommentCardData>> = this.outputCommentList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
-        override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
+        override fun showCommentGuideLinesLink(): Observable<Unit> = showGuideLinesLink
         override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
         override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
         override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
@@ -618,5 +636,11 @@ interface CommentsViewModel {
         override fun isFetchingComments(): Observable<Boolean> = this.isFetchingComments
 
         override fun hasPendingComments(): Observable<Pair<Boolean, Boolean>> = this.hasPendingComments
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return CommentsViewModel(environment, intent) as T
+        }
     }
 }

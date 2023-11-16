@@ -144,7 +144,7 @@ interface ProjectUpdatesViewModel {
         }
         private fun loadWithProjectUpdatesList(
             project: Observable<Project>,
-            cursor: String?
+            cursor: String
         ): Observable<UpdatesGraphQlEnvelope> {
             return project.switchMap {
                 return@switchMap client.getProjectUpdates(it.slug() ?: "", cursor)

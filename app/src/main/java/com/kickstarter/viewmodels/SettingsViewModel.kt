@@ -47,6 +47,8 @@ interface SettingsViewModel {
         private val showConfirmLogoutPrompt = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
 
+        val isUserPresent = BehaviorSubject.create<Boolean>()
+
         private val avatarImageViewUrl: Observable<String>
         private val userNameTextViewText: Observable<String>
 
@@ -68,6 +70,9 @@ interface SettingsViewModel {
             this.currentUser.observable()
                 .take(1)
                 .subscribe { it.getValue()?.let { user -> this.userOutput.onNext(user) } }
+                .addToDisposable(disposables)
+
+            this.currentUser.observable().subscribe { isUserPresent.onNext(it.isPresent()) }
                 .addToDisposable(disposables)
 
             this.confirmLogoutClicked

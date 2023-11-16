@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.ChangePasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
@@ -26,7 +27,7 @@ class ChangePasswordActivity : ComponentActivity() {
 
     private var logout: Logout? = null
     private lateinit var disposables: CompositeDisposable
-
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
     private lateinit var viewModelFactory: ChangePasswordViewModel.Factory
     private val viewModel: ChangePasswordViewModel.ChangePasswordViewModel by viewModels {
         viewModelFactory
@@ -41,6 +42,9 @@ class ChangePasswordActivity : ComponentActivity() {
             viewModelFactory = ChangePasswordViewModel.Factory(env)
 
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
         setContent {
             var showProgressBar =
@@ -50,7 +54,17 @@ class ChangePasswordActivity : ComponentActivity() {
 
             var scaffoldState = rememberScaffoldState()
 
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 ChangePasswordScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onAcceptButtonClicked = { current, new ->

@@ -41,4 +41,12 @@
     android:text="@string/Help"
     app:drawableStartCompat="@drawable/ic_help" />
 
+  <TextView
+      android:id="@+id/drawer_settings"
+      style="@style/DrawerTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/profile_buttons_settings"
+      app:drawableStartCompat="@drawable/ic_settings" />
+
 </LinearLayout>

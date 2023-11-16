@@ -14,6 +14,8 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.compose.projectpage.AiDisclosureScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ProjectData
@@ -26,7 +28,7 @@ class ProjectAIFragment :
 
     private val viewModelFactory = ProjectAIViewModel.Factory()
     private val viewModel: ProjectAIViewModel by viewModels { viewModelFactory }
-
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
     private var darkModeEnabled = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -34,6 +36,9 @@ class ProjectAIFragment :
 
         this.context?.getEnvironment()?.let { env ->
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         return ComposeView(requireContext()).apply {
@@ -42,7 +47,17 @@ class ProjectAIFragment :
 
             // Compose world
             setContent {
-                KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+                KickstarterApp(
+                    useDarkTheme =
+                    if (darkModeEnabled) {
+                        when (theme) {
+                            AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                            AppThemes.DARK.ordinal -> true
+                            AppThemes.LIGHT.ordinal -> false
+                            else -> false
+                        }
+                    } else false
+                ) {
                     AiDisclosureScreen(
                         state = viewModel.state,
                         clickCallback = {

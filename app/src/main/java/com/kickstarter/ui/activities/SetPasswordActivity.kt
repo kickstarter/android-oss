@@ -18,6 +18,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.SetPasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
@@ -30,6 +31,7 @@ class SetPasswordActivity : AppCompatActivity() {
     private val viewModel: SetPasswordViewModel.SetPasswordViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
     private var environment: Environment? = null
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,9 @@ class SetPasswordActivity : AppCompatActivity() {
             environment = env
             viewModelFactory = SetPasswordViewModel.Factory(env)
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         setContent {
@@ -65,7 +70,17 @@ class SetPasswordActivity : AppCompatActivity() {
                 }
             }
 
-            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else false
+            ) {
                 SetPasswordScreen(
                     onSaveButtonClicked = { newPassword ->
                         viewModel.inputs.newPassword(newPassword)

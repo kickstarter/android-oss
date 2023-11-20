@@ -48,9 +48,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun expirationDate_whenExpirationNull_shouldNotEmitValue() {
         setupEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(null)
-                .build()
+            .toBuilder()
+            .expiration(null)
+            .build()
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertNoValues()
@@ -62,9 +62,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         val date: Date = calendar.time
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(date)
-                .build()
+            .toBuilder()
+            .expiration(date)
+            .build()
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertValue("11/2023")
@@ -74,9 +74,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun expirationIsGone_whenExpirationNull_emitsTrue() {
         setupEnvironment()
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(null)
-                .build()
+            .toBuilder()
+            .expiration(null)
+            .build()
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationIsGone.assertValue(true)
@@ -89,9 +89,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         val date: Date = calendar.time
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(date)
-                .build()
+            .toBuilder()
+            .expiration(date)
+            .build()
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
         this.expirationIsGone.assertValue(false)
     }
@@ -102,9 +102,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         val lastFourDigits = "1203"
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .lastFourDigits(lastFourDigits)
-                .build()
+            .toBuilder()
+            .lastFourDigits(lastFourDigits)
+            .build()
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
         this.lastFour.assertValue(lastFourDigits)
     }
@@ -114,9 +114,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment()
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .lastFourDigits(null)
-                .build()
+            .toBuilder()
+            .lastFourDigits(null)
+            .build()
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
         this.lastFour.assertNoValues()
     }
@@ -126,8 +126,8 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment()
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .build()
+            .toBuilder()
+            .build()
 
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
         this.issuerImage.assertValue(R.drawable.discover_md)
@@ -148,9 +148,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment()
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .type(null)
-                .build()
+            .toBuilder()
+            .type(null)
+            .build()
 
         this.vm.configureWith(Pair(creditCard, ProjectFactory.project()))
         this.issuerImage.assertValue(R.drawable.generic_bank_md)
@@ -170,8 +170,8 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment()
 
         val backing = BackingFactory.backing().toBuilder()
-                .paymentSource(null)
-                .build()
+            .paymentSource(null)
+            .build()
 
         this.vm.configureWith(Pair(StoredCardFactory.discoverCard(), ProjectFactory.project().toBuilder().backing(backing).build()))
         this.retryCopyIsVisible.assertValue(false)
@@ -182,8 +182,8 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment()
 
         val backing = BackingFactory.backing().toBuilder()
-                .paymentSource(PaymentSourceFactory.visa().toBuilder().id("1234532").build())
-                .build()
+            .paymentSource(PaymentSourceFactory.visa().toBuilder().id("1234532").build())
+            .build()
 
         this.vm.configureWith(Pair(StoredCardFactory.discoverCard().toBuilder().id("193408").build(), ProjectFactory.project().toBuilder().backing(backing).build()))
         this.retryCopyIsVisible.assertValue(false)
@@ -196,9 +196,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         val id = "89274"
 
         val backing = BackingFactory.backing().toBuilder()
-                .paymentSource(PaymentSourceFactory.visa().toBuilder().id(id).build())
-                .status(Backing.STATUS_PLEDGED)
-                .build()
+            .paymentSource(PaymentSourceFactory.visa().toBuilder().id(id).build())
+            .status(Backing.STATUS_PLEDGED)
+            .build()
 
         this.vm.configureWith(Pair(StoredCardFactory.visa().toBuilder().id(id).build(), ProjectFactory.project().toBuilder().backing(backing).build()))
         this.retryCopyIsVisible.assertValue(false)
@@ -211,9 +211,9 @@ class BaseRewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         val id = "89274"
 
         val backing = BackingFactory.backing().toBuilder()
-                .paymentSource(PaymentSourceFactory.visa().toBuilder().id(id).build())
-                .status(Backing.STATUS_ERRORED)
-                .build()
+            .paymentSource(PaymentSourceFactory.visa().toBuilder().id(id).build())
+            .status(Backing.STATUS_ERRORED)
+            .build()
 
         this.vm.configureWith(Pair(StoredCardFactory.visa().toBuilder().id(id).build(), ProjectFactory.project().toBuilder().backing(backing).build()))
         this.retryCopyIsVisible.assertValue(true)

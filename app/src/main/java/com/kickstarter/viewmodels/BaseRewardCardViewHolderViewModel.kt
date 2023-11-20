@@ -69,7 +69,7 @@ interface BaseRewardCardViewHolderViewModel {
                 .map { it.expiration() }
                 .map { sdf.format(it).toString() }
                 .subscribe { this.expirationDate.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             card
                 .map { it.expiration().isNull() }
@@ -80,23 +80,23 @@ interface BaseRewardCardViewHolderViewModel {
                 .filter { it.lastFourDigits().isNotNull() }
                 .map { requireNotNull(it.lastFourDigits()) }
                 .subscribe { this.lastFour.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             card
                 .filter { it.isNotNull() }
                 .map { it.getCardTypeDrawable() }
                 .subscribe { this.issuerImage.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             card
                 .filter { it.type().isNotNull() }
                 .map { it.type() }
                 .map { StoredCard.issuer(it) }
                 .subscribe { this.issuer.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             val project = this.cardAndProject
-                    .filter { it.second.isNotNull() }
+                .filter { it.second.isNotNull() }
                 .map { it.second }
 
             val backing = project
@@ -113,7 +113,7 @@ interface BaseRewardCardViewHolderViewModel {
                     it.first && it.second?.isErrored() ?: false
                 }
                 .subscribe { this.retryCopyIsVisible.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
         }
         override fun configureWith(cardAndProject: Pair<StoredCard, Project>) = this.cardAndProject.onNext(cardAndProject)
 

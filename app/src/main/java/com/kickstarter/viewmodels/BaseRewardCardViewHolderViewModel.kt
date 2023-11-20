@@ -5,6 +5,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
@@ -43,7 +44,7 @@ interface BaseRewardCardViewHolderViewModel {
         fun retryCopyIsVisible(): Observable<Boolean>
     }
 
-    abstract class ViewModel : Inputs, Outputs {
+    open class ViewModel : Inputs, Outputs {
         protected val cardAndProject: PublishSubject<Pair<StoredCard, Project>> = PublishSubject.create()
 
         private val expirationDate = BehaviorSubject.create<String>()
@@ -60,39 +61,42 @@ interface BaseRewardCardViewHolderViewModel {
         init {
 
             val card = cardAndProject
+                .filter { it.first.isNotNull() }
                 .map { it.first }
 
             card
                 .filter { it.expiration().isNotNull() }
                 .map { it.expiration() }
                 .map { sdf.format(it).toString() }
-                .subscribe(this.expirationDate)
+                .subscribe { this.expirationDate.onNext(it) }
+                .addToDisposable(disposables)
 
             card
-                .filter { it.expiration().isNotNull() }
-                .map { it.expiration() }
-                .subscribe {
-                    this.expirationIsGone.onNext(it == null)
-                }
+                .map { it.expiration().isNull() }
+                .subscribe { this.expirationIsGone.onNext(it) }
+                .addToDisposable(disposables)
+
+            card
+                .filter { it.lastFourDigits().isNotNull() }
+                .map { requireNotNull(it.lastFourDigits()) }
+                .subscribe { this.lastFour.onNext(it) }
                 .addToDisposable(disposables)
 
             card
                 .filter { it.isNotNull() }
-                .map { it.lastFourDigits() }
-                .subscribe(this.lastFour)
-
-            card
-                .filter { it.isNotNull() }
                 .map { it.getCardTypeDrawable() }
-                .subscribe(this.issuerImage)
+                .subscribe { this.issuerImage.onNext(it) }
+                .addToDisposable(disposables)
 
             card
                 .filter { it.type().isNotNull() }
                 .map { it.type() }
                 .map { StoredCard.issuer(it) }
-                .subscribe(this.issuer)
+                .subscribe { this.issuer.onNext(it) }
+                .addToDisposable(disposables)
 
             val project = this.cardAndProject
+                .filter { it.second.isNotNull() }
                 .map { it.second }
 
             val backing = project
@@ -105,8 +109,11 @@ interface BaseRewardCardViewHolderViewModel {
 
             isBackingPaymentSource
                 .compose<Pair<Boolean, Backing?>>(combineLatestPair(backing))
-                .map { it.first && it.second?.isErrored() ?: false }
-                .subscribe(this.retryCopyIsVisible)
+                .map {
+                    it.first && it.second?.isErrored() ?: false
+                }
+                .subscribe { this.retryCopyIsVisible.onNext(it) }
+                .addToDisposable(disposables)
         }
         override fun configureWith(cardAndProject: Pair<StoredCard, Project>) = this.cardAndProject.onNext(cardAndProject)
 

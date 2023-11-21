@@ -1,11 +1,10 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.libs.utils.extensions.negate
@@ -13,10 +12,11 @@ import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.UpdateCardViewHolder
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 
 interface UpdateCardViewHolderViewModel {
     interface Inputs {
@@ -59,10 +59,10 @@ interface UpdateCardViewHolderViewModel {
         fun title(): Observable<String>
     }
 
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<UpdateCardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) : Inputs, Outputs {
 
         private val projectAndUpdate = PublishSubject.create<Pair<Project, Update>>()
-        private val updateClicked = PublishSubject.create<Void>()
+        private val updateClicked = PublishSubject.create<Unit>()
 
         private val backersOnlyContainerIsVisible = BehaviorSubject.create<Boolean>()
         private val blurb = BehaviorSubject.create<String>()
@@ -74,10 +74,12 @@ interface UpdateCardViewHolderViewModel {
         private val sequence = BehaviorSubject.create<Int>()
         private val showUpdateDetails = PublishSubject.create<Update>()
         private val title = BehaviorSubject.create<String>()
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val currentUser = requireNotNull(environment.currentUserV2())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+
+        private val disposables = CompositeDisposable()
 
         init {
 
@@ -89,7 +91,8 @@ interface UpdateCardViewHolderViewModel {
 
             val isCreator = Observable.combineLatest(this.currentUser.observable(), project) { user, project ->
                 Pair(user, project)
-            }.map { it.second.userIsCreator(it.first) }
+            }
+                .map { it.first.getValue()?.let { user -> it.second.userIsCreator(user) } ?: false  }
 
             this.projectAndUpdate
                 .compose<Pair<Pair<Project, Update>, Boolean>>(Transformers.combineLatestPair(isCreator))
@@ -99,58 +102,56 @@ interface UpdateCardViewHolderViewModel {
                         else -> (it.first.second.isPublic() ?: false).negate()
                     }
                 }
-                .compose(bindToLifecycle())
-                .subscribe(this.backersOnlyContainerIsVisible)
+                .subscribe { this.backersOnlyContainerIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             update
                 .map { it.truncatedBody() }
-                .compose(bindToLifecycle())
-                .subscribe(this.blurb)
+                .subscribe { this.blurb.onNext(it) }
+                .addToDisposable(disposables)
 
             update
-                .map { it.commentsCount() }
-                .filter { it != null }
-                .compose(bindToLifecycle())
-                .subscribe(this.commentsCount)
+                .filter { it.commentsCount().isNotNull() }
+                .map { requireNotNull(it.commentsCount()) }
+                .subscribe { this.commentsCount.onNext(it) }
+                .addToDisposable(disposables)
 
             update
-                .map { it.commentsCount() }
-                .map { it.isNullOrZero() }
-                .compose(bindToLifecycle())
-                .subscribe(this.commentsCountIsGone)
+                .map { it.commentsCount().isNullOrZero() }
+                .subscribe { this.commentsCountIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             update
-                .map { it.likesCount() }
-                .filter { it != null }
-                .compose(bindToLifecycle())
-                .subscribe(this.likesCount)
+                .filter { it.likesCount().isNotNull() }
+                .map { requireNotNull(it.likesCount()) }
+                .subscribe { this.likesCount.onNext(it) }
+                .addToDisposable(disposables)
 
             update
-                .map { it.likesCount() }
-                .map { it.isNullOrZero() }
-                .compose(bindToLifecycle())
-                .subscribe(this.likesCountIsGone)
+                .map { it.likesCount().isNullOrZero() }
+                .subscribe { this.likesCountIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             update
-                .map { it.publishedAt() }
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.publishDate)
+                .filter { it.publishedAt().isNotNull() }
+                .map { requireNotNull(it.publishedAt()) }
+                .subscribe { this.publishDate.onNext(it) }
+                .addToDisposable(disposables)
 
             update
                 .map { it.sequence() }
-                .compose(bindToLifecycle())
-                .subscribe(this.sequence)
+                .subscribe { this.sequence.onNext(it) }
+                .addToDisposable(disposables)
 
             update
                 .map { it.title() }
-                .compose(bindToLifecycle())
-                .subscribe(this.title)
+                .subscribe { this.title.onNext(it) }
+                .addToDisposable(disposables)
 
             update
-                .compose<Update>(takeWhen(this.updateClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.showUpdateDetails)
+                .compose(takeWhenV2(this.updateClicked))
+                .subscribe { this.showUpdateDetails.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(project: Project, update: Update) {
@@ -158,7 +159,7 @@ interface UpdateCardViewHolderViewModel {
         }
 
         override fun updateClicked() {
-            this.updateClicked.onNext(null)
+            this.updateClicked.onNext(Unit)
         }
 
         override fun backersOnlyContainerIsVisible(): Observable<Boolean> = this.backersOnlyContainerIsVisible
@@ -180,5 +181,9 @@ interface UpdateCardViewHolderViewModel {
         override fun showUpdateDetails(): Observable<Update> = this.showUpdateDetails
 
         override fun title(): Observable<String> = this.title
+
+        fun clear() {
+            disposables.clear()
+        }
     }
 }

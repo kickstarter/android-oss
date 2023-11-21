@@ -1,16 +1,19 @@
 package com.kickstarter.ui.viewholders
 
 import android.util.Pair
+import androidx.core.view.isGone
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemUpdateCardBinding
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.viewmodels.UpdateCardViewHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 
 class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val delegate: Delegate?) : KSViewHolder(binding.root) {
 
@@ -22,58 +25,59 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
     private var viewModel = UpdateCardViewHolderViewModel.ViewModel(environment())
 
     private val updateSequenceTemplate = context().getString(R.string.activity_project_update_update_count)
+    private val disposables = CompositeDisposable()
 
     init {
 
         this.viewModel.outputs.backersOnlyContainerIsVisible()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { setBackersOnlyVisibility(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.blurb()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { this.binding.updateBlurb.text = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.commentsCount()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { setCommentsCount(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.commentsCountIsGone()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.updateCommentsContainer, it) }
+            .compose(observeForUIV2())
+            .subscribe { this.binding.updateCommentsContainer.isGone =  it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.likesCount()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { setLikesCount(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.likesCountIsGone()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.updateLikesContainer, it) }
+            .compose(observeForUIV2())
+            .subscribe { this.binding.updateLikesContainer.isGone =  it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.publishDate()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { this.binding.updateDate.text = DateTimeUtils.longDate(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.sequence()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { this.binding.updateSequence.text = this.ksString.format(updateSequenceTemplate, "update_count", it.toString()) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdateDetails()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { delegate?.updateCardClicked(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.title()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { this.binding.updateTitle.text = it }
+            .addToDisposable(disposables)
 
         RxView.clicks(this.binding.updateContainer)
             .compose(bindToLifecycle())
@@ -113,5 +117,11 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
         val update = requireNotNull(projectAndUpdate.second) { Update::class.java.toString() + " required to be non-null." }
 
         this.viewModel.inputs.configureWith(project, update)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        viewModel.clear()
+        super.destroy()
     }
 }

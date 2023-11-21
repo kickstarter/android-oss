@@ -1,18 +1,20 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.util.Pair
+import androidx.activity.addCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.RecyclerViewPaginator
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
@@ -21,13 +23,13 @@ import com.kickstarter.ui.adapters.RootCommentAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
-import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
-@RequiresActivityViewModel(ThreadViewModel.ViewModel::class)
 class ThreadActivity :
-    BaseActivity<ThreadViewModel.ViewModel>(),
+    AppCompatActivity(),
     RepliesStatusAdapter.Delegate,
     RepliesAdapter.Delegate {
 
@@ -36,39 +38,51 @@ class ThreadActivity :
 
     /** Replies list adapter **/
     private val repliesAdapter = RepliesAdapter(this)
+
     /**  Replies cell status viewMore or Error  **/
     private val repliesStatusAdapter = RepliesStatusAdapter(this)
+
     /** Replies Root comment cell adapter **/
     private val rootCommentAdapter = RootCommentAdapter()
+
     /** reverse Layout to bind the replies from bottom **/
     private val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
 
-    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
-    var isPaginated = false
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginatorV2
+
+    private lateinit var viewModelFactory: ThreadViewModel.Factory
+    private val viewModel: ThreadViewModel.ThreadViewModel by viewModels { viewModelFactory }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityThreadLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ksString = requireNotNull(environment().ksString())
-        recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
+        ksString = requireNotNull(getEnvironment()?.ksString())
+        recyclerViewPaginator = RecyclerViewPaginatorV2(
+            binding.commentRepliesRecyclerView,
+            { viewModel.inputs.nextPage() },
+            viewModel.outputs.isFetchingReplies(),
+            false
+        )
 
         /** use ConcatAdapter to bind adapters to recycler view and replace the section issue **/
-        binding.commentRepliesRecyclerView.adapter = ConcatAdapter(repliesAdapter, repliesStatusAdapter, rootCommentAdapter)
+        binding.commentRepliesRecyclerView.adapter =
+            ConcatAdapter(repliesAdapter, repliesStatusAdapter, rootCommentAdapter)
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
         this.viewModel.outputs.getRootComment()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
                 /** bind root comment by updating the adapter list**/
                 rootCommentAdapter.updateRootCommentCell(comment)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs
             .onCommentReplies()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
                 linearLayoutManager.stackFromEnd = false
@@ -80,108 +94,117 @@ class ThreadActivity :
                     this.repliesAdapter.takeData(it.first)
                 }
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.shouldShowPaginationErrorUI()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it }
             .subscribe {
                 /** bind Error Pagination cell **/
                 repliesStatusAdapter.addErrorPaginationCell(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.initialLoadCommentsError()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it }
             .subscribe {
                 /** bind Error initial loading cell **/
                 repliesStatusAdapter.addInitiallyLoadingErrorCell(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.isFetchingReplies()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.repliesLoadingIndicator.isVisible = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.shouldFocusOnCompose()
             .delay(30, TimeUnit.MILLISECONDS)
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { shouldOpenKeyboard ->
                 binding.replyComposer.requestCommentComposerKeyBoard(shouldOpenKeyboard)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.currentUserAvatar()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.replyComposer.setAvatarUrl(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.replyComposerStatus()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.replyComposer.setCommentComposerStatus(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.scrollToBottom()
-            .compose(bindToLifecycle())
             .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.commentRepliesRecyclerView.smoothScrollToPosition(0) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showReplyComposer()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.replyComposer.isVisible = it
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.loadMoreReplies()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 recyclerViewPaginator.reload()
             }
+            .addToDisposable(disposables)
 
         binding.replyComposer.setCommentComposerActionClickListener(object :
-                OnCommentComposerViewClickedListener {
-                override fun onClickActionListener(string: String) {
-                    postReply(string)
-                    hideKeyboard()
-                }
-            })
+            OnCommentComposerViewClickedListener {
+            override fun onClickActionListener(string: String) {
+                postReply(string)
+                hideKeyboard()
+            }
+        })
 
         viewModel.outputs.showCommentGuideLinesLink()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 ApplicationUtils.openUrlExternally(
                     this,
                     UrlUtils.appendPath(
-                        environment().webEndpoint(),
+                        getEnvironment()?.webEndpoint() ?: "",
                         CommentsActivity.COMMENT_KICKSTARTER_GUIDELINES
                     )
                 )
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.hasPendingComments()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (it) handleBackAction() else viewModel.inputs.backPressed()
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.closeThreadActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 closeCommentsActivity()
             }
+            .addToDisposable(disposables)
+
+        onBackPressedDispatcher.addCallback {
+            if (binding.replyComposer.isCommentComposerEmpty() == true) {
+                viewModel.inputs.checkIfThereAnyPendingComments()
+            } else {
+                handleBackAction()
+            }
+        }
     }
 
     private fun handleBackAction() {
@@ -199,16 +222,8 @@ class ThreadActivity :
         )
     }
 
-    override fun back() {
-        if (binding.replyComposer.isCommentComposerEmpty() == true) {
-            viewModel.inputs.checkIfThereAnyPendingComments()
-        } else {
-            handleBackAction()
-        }
-    }
-
     private fun closeCommentsActivity() {
-        super.back()
+        onBackPressedDispatcher.onBackPressed()
         this.finishActivity(taskId)
     }
 
@@ -222,10 +237,6 @@ class ThreadActivity :
         hideKeyboard()
     }
 
-    override fun exitTransition(): Pair<Int, Int>? {
-        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
-    }
-
     override fun onRetryViewClicked(comment: Comment) {
     }
 
@@ -233,7 +244,6 @@ class ThreadActivity :
     }
 
     override fun onFlagButtonClicked(comment: Comment) {
-        TODO("Not yet implemented")
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
@@ -264,9 +274,9 @@ class ThreadActivity :
     }
 
     override fun onDestroy() {
+        disposables.clear()
         super.onDestroy()
         recyclerViewPaginator.stop()
         binding.commentRepliesRecyclerView.adapter = null
-        this.viewModel = null
     }
 }

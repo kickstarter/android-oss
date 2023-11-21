@@ -46,7 +46,7 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
 
         this.viewModel.outputs.commentsCountIsGone()
             .compose(observeForUIV2())
-            .subscribe { this.binding.updateCommentsContainer.isGone =  it }
+            .subscribe { this.binding.updateCommentsContainer.isGone = it }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.likesCount()
@@ -56,7 +56,7 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
 
         this.viewModel.outputs.likesCountIsGone()
             .compose(observeForUIV2())
-            .subscribe { this.binding.updateLikesContainer.isGone =  it }
+            .subscribe { this.binding.updateLikesContainer.isGone = it }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.publishDate()

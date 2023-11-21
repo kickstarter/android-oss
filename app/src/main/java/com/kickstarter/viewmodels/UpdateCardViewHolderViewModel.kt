@@ -92,7 +92,7 @@ interface UpdateCardViewHolderViewModel {
             val isCreator = Observable.combineLatest(this.currentUser.observable(), project) { user, project ->
                 Pair(user, project)
             }
-                .map { it.first.getValue()?.let { user -> it.second.userIsCreator(user) } ?: false  }
+                .map { it.first.getValue()?.let { user -> it.second.userIsCreator(user) } ?: false }
 
             this.projectAndUpdate
                 .compose<Pair<Pair<Project, Update>, Boolean>>(Transformers.combineLatestPair(isCreator))

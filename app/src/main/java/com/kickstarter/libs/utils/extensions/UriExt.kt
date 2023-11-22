@@ -100,14 +100,14 @@ fun Uri.isNewGuestCheckoutUri(webEndpoint: String): Boolean {
 
 /**
  * For URI on Main Page Open button ksr://www.kickstarter.com/?app_banner=1&ref=nav
- *  matches schema, domain, empty path and first query param
+ *  matches domain, and query params
  */
 fun Uri.isMainPage(): Boolean {
     return host().contains(KSDOMAIN) && MAIN_PAGE_OPEN_BUTTON_QUERYPARAMS.matcher(query()).matches()
 }
 
 /**
- * Given URI host must containg `kickstarter.com` as domain, and math the
+ * Given URI, host must contain `kickstarter.com` as domain, and math the
  * Project URL regex.
  *
  * Ignores the current API endpoint used on the app.
@@ -137,6 +137,10 @@ fun Uri.isCheckoutThanksUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(path())
         .matches()
 }
+
+/**
+ * Takes an URI and matches over the list of Domains provided by marketing
+ */
 fun Uri.isEmailDomain(): Boolean {
     return isKSScheme() && EMAIL_DOMAINS.matcher(this.host)
         .matches()
@@ -190,9 +194,7 @@ fun Uri.isDiscoverSortParam(): Boolean {
 
 private const val VERIFICATION = "/profile/verify_email"
 private const val KSDOMAIN = "kickstarter.com"
-private const val QUERY_PARAM_MAIN_PAGE = "app_banner"
 
-// TODO 2 missing to cover on the regex
 private val EMAIL_DOMAINS = Pattern.compile("\\A(?:me|ea|clicks|click|emails|email|e2|e3)\\.kickstarter\\.com\\z")
 
 // /projects/:creator_param/:project_param/checkouts/1/thanks

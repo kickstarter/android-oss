@@ -58,9 +58,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { uri: Uri ->
-                startProjectActivity(uri)
-            }
+            .subscribe { uri: Uri -> startProjectActivity(uri) }
 
         viewModel.outputs.startProjectActivityToSave()
             .compose(bindToLifecycle())

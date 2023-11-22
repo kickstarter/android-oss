@@ -102,6 +102,10 @@ interface DeepLinkViewModel {
 
         val outputs: Outputs = this
 
+        /**
+         * Custom Networking Client as plain as possible. Given an URI, will execute the network call on Schedulers.io pool,
+         * and return the response as Observable.
+         */
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         var externalCall = object : CustomNetworkClient {
             override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
@@ -111,7 +115,6 @@ interface DeepLinkViewModel {
                     httpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
                 }
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
             }
         }
 

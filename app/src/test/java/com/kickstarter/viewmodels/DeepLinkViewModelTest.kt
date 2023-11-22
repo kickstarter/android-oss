@@ -120,6 +120,40 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testEmailDomain_isNotProject() {
+        setUpEnvironment()
+
+        val discoveryUriAfterRedirection = "https://www.kickstarter.com/discover/advanced?category_id=34&amp;sort=newest"
+
+        val httpUrl = mock(HttpUrl::class.java)
+        val mockedResponse = mock(Response::class.java)
+        val mockedRequest = mock(Request::class.java)
+
+        `when`(httpUrl.toString()).thenReturn(discoveryUriAfterRedirection)
+        `when`(mockedResponse.priorResponse).thenReturn(mockedResponse)
+        `when`(mockedResponse.request).thenReturn(mockedRequest)
+        `when`(mockedResponse.code).thenReturn(302)
+        `when`(mockedRequest.url).thenReturn(httpUrl)
+
+        this.vm.externalCall = object : CustomNetworkClient {
+            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
+                return Observable.just(mockedResponse)
+            }
+        }
+
+        val url =
+            "https://clicks.kickstarter.com/f/a/FCICZcz5yLRUa3P_yQez0Q~~/AAQRxQA~/RgRnQPFeP0TZaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL2Rpc2NvdmVyL2FkdmFuY2VkP2NhdGVnb3J5X2lkPTM0JnNvcnQ9bmV3ZXN0JnNlZWQ9MjgzNDQ0OSZuZXh0X3BhZ2VfY3Vyc29yPSZwYWdlPTElM0ZyZWYlM0RkaXNjb3Zlcnlfb3ZlcmxheSZyZWY9a3NyX2VtYWlsX21rdGdfanVzdGxhdW5jaGVkX0hvcml6b25Gb3JiaWRkZW5XZXN0XzIwMjMtMTEtMjImbGlkPWsyNXFjcDhxNHNwd1cDc3BjQgplVV5sXmVQsuv8UhV0aGViYXNzZHVkZUBnbWFpbC5jb21YBAAAAFQ~"
+        vm.intent(intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertValue(null)
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+    }
+
+    @Test
     fun testProjectPreviewLink_startsBrowser() {
         setUpEnvironment()
         val url =

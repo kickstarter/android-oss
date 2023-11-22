@@ -107,6 +107,15 @@ fun Uri.isMainPage(): Boolean {
 }
 
 /**
+ * Given URI, host must contain `kickstarter.com` as domain
+ *
+ * Ignores the current API endpoint used on the app.
+ */
+fun Uri.isKSDomain(): Boolean {
+    return host().contains(KSDOMAIN)
+}
+
+/**
  * Given URI, host must contain `kickstarter.com` as domain, and math the
  * Project URL regex.
  *

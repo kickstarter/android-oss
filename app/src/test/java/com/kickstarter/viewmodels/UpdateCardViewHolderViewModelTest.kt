@@ -2,14 +2,17 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Update
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -26,19 +29,30 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val showUpdateDetails = TestSubscriber.create<Update>()
     private val title = TestSubscriber.create<String>()
 
+    private val disposables = CompositeDisposable()
+
     private fun setUpEnvironment(environment: Environment) {
         this.vm = UpdateCardViewHolderViewModel.ViewModel(environment)
 
-        this.vm.outputs.backersOnlyContainerIsVisible().subscribe(this.backersOnlyContainerIsVisible)
-        this.vm.outputs.blurb().subscribe(this.blurb)
-        this.vm.outputs.commentsCount().subscribe(this.commentsCount)
-        this.vm.outputs.commentsCountIsGone().subscribe(this.commentsCountIsGone)
-        this.vm.outputs.likesCount().subscribe(this.likesCount)
-        this.vm.outputs.likesCountIsGone().subscribe(this.likesCountIsGone)
-        this.vm.outputs.publishDate().subscribe(this.publishDate)
-        this.vm.outputs.sequence().subscribe(this.sequence)
-        this.vm.outputs.showUpdateDetails().subscribe(this.showUpdateDetails)
-        this.vm.outputs.title().subscribe(this.title)
+        this.vm.outputs.backersOnlyContainerIsVisible()
+            .subscribe { this.backersOnlyContainerIsVisible.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.blurb().subscribe { this.blurb.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.commentsCount().subscribe { this.commentsCount.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.commentsCountIsGone().subscribe { this.commentsCountIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.likesCount().subscribe { this.likesCount.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.likesCountIsGone().subscribe { this.likesCountIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.publishDate().subscribe { this.publishDate.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.sequence().subscribe { this.sequence.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.showUpdateDetails().subscribe { this.showUpdateDetails.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.title().subscribe { this.title.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -63,7 +77,10 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublicAndProjectIsBacked() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectFactory.backedProject(), UpdateFactory.backersOnlyUpdate())
+        this.vm.inputs.configureWith(
+            ProjectFactory.backedProject(),
+            UpdateFactory.backersOnlyUpdate()
+        )
 
         this.backersOnlyContainerIsVisible.assertValue(false)
     }
@@ -79,7 +96,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .currentUser(MockCurrentUser(creator))
+            .currentUserV2(MockCurrentUserV2(creator))
             .build()
 
         setUpEnvironment(environment)
@@ -100,7 +117,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
 
         setUpEnvironment(environment)
@@ -276,5 +293,10 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.title.assertValue("Wow, big news!")
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

@@ -168,13 +168,14 @@ class ThreadActivity :
             }
             .addToDisposable(disposables)
 
-        binding.replyComposer.setCommentComposerActionClickListener(object :
-            OnCommentComposerViewClickedListener {
-            override fun onClickActionListener(string: String) {
-                postReply(string)
-                hideKeyboard()
+        binding.replyComposer.setCommentComposerActionClickListener(
+            object : OnCommentComposerViewClickedListener {
+                override fun onClickActionListener(string: String) {
+                    postReply(string)
+                    hideKeyboard()
+                }
             }
-        })
+        )
 
         viewModel.outputs.showCommentGuideLinesLink()
             .observeOn(AndroidSchedulers.mainThread())

@@ -337,7 +337,7 @@ interface ThreadViewModel {
                     this.hasPendingComments.onNext(
                         pair.first.any {
                             it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
-                                    it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
+                                it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                         }
                     )
                 }

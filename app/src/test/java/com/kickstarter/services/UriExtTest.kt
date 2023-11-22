@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
 import com.kickstarter.libs.utils.extensions.isEmailDomain
 import com.kickstarter.libs.utils.extensions.isKSFavIcon
 import com.kickstarter.libs.utils.extensions.isKickstarterUri
+import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isModalUri
 import com.kickstarter.libs.utils.extensions.isNewGuestCheckoutUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
@@ -241,5 +242,17 @@ class UriExtTest : KSRobolectricTestCase() {
 
         val e3Dom = Uri.parse("https://e3.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
         assertTrue(e3Dom.isEmailDomain())
+    }
+
+    @Test
+    fun testUri_ProjectPageIgnoringCurrentEndpoint() {
+        val projectUri = Uri.parse("https://www.kickstarter.com/projects/steamforged/horizon-forbidden-west-seeds-of-rebellion")
+        assertTrue(projectUri.isProjectUri())
+    }
+
+    @Test
+    fun testUri_FromMainPage_OpenButton() {
+        val uri = Uri.parse("ksr://www.kickstarter.com/?app_banner=1&ref=nav")
+        assertTrue(uri.isMainPage())
     }
 }

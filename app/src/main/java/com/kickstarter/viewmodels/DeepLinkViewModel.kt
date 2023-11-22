@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isEmailDomain
+import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
@@ -41,7 +42,7 @@ import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-interface ExternalCall {
+interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
 }
 interface DeepLinkViewModel {
@@ -102,7 +103,7 @@ interface DeepLinkViewModel {
         val outputs: Outputs = this
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        var externalCall = object : ExternalCall {
+        var externalCall = object : CustomNetworkClient {
             override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
                 val httpClient: OkHttpClient = OkHttpClient.Builder().build()
 
@@ -120,6 +121,7 @@ interface DeepLinkViewModel {
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
 
+            // - Takes URI from Marketing email domain, executes network call that will redirect to a project URI
             val uriFromEmailDomain = uriFromIntent
                 .filter { it.isEmailDomain() }
                 .switchMap {
@@ -130,6 +132,16 @@ interface DeepLinkViewModel {
                 }
                 .map {
                     Uri.parse(it.request.url.toString())
+                }
+
+            // - Take URI from main page Open button with URL - ksr://www.kickstarter.com/?app_banner=1&ref=nav
+            val mainPageUri = uriFromIntent
+                .filter { it.isMainPage() }
+
+            mainPageUri
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startDiscoveryActivity.onNext(null)
                 }
 
             uriFromEmailDomain

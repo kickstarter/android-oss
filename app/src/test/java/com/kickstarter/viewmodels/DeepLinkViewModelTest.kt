@@ -56,6 +56,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comment"
         vm.intent(intentWithData(url))
+
         startBrowser.assertValue(url)
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
@@ -63,6 +64,25 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+    }
+
+    @Test
+    fun testMainPageDeeplink_OpensDiscovery() {
+        setUpEnvironment()
+        val url =
+            "ksr://www.kickstarter.com/?app_banner=1&ref=nav"
+        vm.intent(intentWithData(url))
+
+        startBrowser.assertValue(url)
+        startDiscoveryActivity.assertValue(null)
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
     }
 
     @Test
@@ -81,7 +101,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         `when`(mockedResponse.code).thenReturn(302)
         `when`(mockedRequest.url).thenReturn(httpUrl)
 
-        this.vm.externalCall = object : ExternalCall {
+        this.vm.externalCall = object : CustomNetworkClient {
             override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
                 return Observable.just(mockedResponse)
             }

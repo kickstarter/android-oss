@@ -98,7 +98,14 @@ fun Uri.isNewGuestCheckoutUri(webEndpoint: String): Boolean {
         .matches()
 }
 
+fun Uri.isProjectUri(): Boolean {
+    return host().contains(KSDOMAIN) && PROJECT_PATTERN.matcher(path()).matches()
+}
 fun Uri.isProjectUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) && PROJECT_PATTERN.matcher(path()).matches()
+}
+
+fun Uri.isMarketingEmail(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_PATTERN.matcher(path()).matches()
 }
 
@@ -118,6 +125,11 @@ fun Uri.isStagingUri(webEndpoint: String): Boolean {
 
 fun Uri.isCheckoutThanksUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(path())
+        .matches()
+}
+
+fun Uri.isEmailDomain(): Boolean {
+    return isKSScheme() && EMAIL_DOMAINS.matcher(this.host)
         .matches()
 }
 
@@ -168,6 +180,10 @@ fun Uri.isDiscoverSortParam(): Boolean {
 }
 
 private const val VERIFICATION = "/profile/verify_email"
+private const val KSDOMAIN = "kickstarter.com"
+
+// TODO 2 missing to cover on the regex
+private val EMAIL_DOMAINS = Pattern.compile("\\A(?:me|ea|clicks|click|emails|email|e2|e3)\\.kickstarter\\.com\\z")
 
 // /projects/:creator_param/:project_param/checkouts/1/thanks
 private val CHECKOUT_THANKS_PATTERN = Pattern.compile(

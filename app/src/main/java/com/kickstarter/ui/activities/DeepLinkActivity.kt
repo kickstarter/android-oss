@@ -1,8 +1,13 @@
 package com.kickstarter.ui.activities
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AnticipateInterpolator
+import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -23,6 +28,19 @@ import rx.android.schedulers.AndroidSchedulers
 class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setSplashScreenTheme(R.style.SplashTheme)
+            splashScreen.setOnExitAnimationListener { splashScreenView ->
+                val slideUp = ObjectAnimator.ofFloat(
+                    splashScreenView,
+                    View.TRANSLATION_Y,
+                    0f,
+                    -splashScreenView.height.toFloat()
+                )
+                slideUp.interpolator = AnticipateInterpolator()
+                slideUp.duration = 100L
+            }
+        }
 
         // - initialized on super will never be null within OnCreate context
         val viewModel = requireNotNull(this.viewModel)
@@ -40,7 +58,9 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { uri: Uri -> startProjectActivity(uri) }
+            .subscribe { uri: Uri ->
+                startProjectActivity(uri)
+            }
 
         viewModel.outputs.startProjectActivityToSave()
             .compose(bindToLifecycle())

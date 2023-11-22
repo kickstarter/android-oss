@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -14,6 +15,7 @@ import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
+import com.kickstarter.libs.utils.extensions.isEmailDomain
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
@@ -29,11 +31,19 @@ import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.DeepLinkActivity
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import rx.Notification
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
+interface ExternalCall {
+    fun obtainUriFromRedirection(uri: Uri): Observable<Response>
+}
 interface DeepLinkViewModel {
     interface Outputs {
         /** Emits when we should start an external browser because we don't want to deep link.  */
@@ -91,11 +101,42 @@ interface DeepLinkViewModel {
 
         val outputs: Outputs = this
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        var externalCall = object : ExternalCall {
+            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
+                val httpClient: OkHttpClient = OkHttpClient.Builder().build()
+
+                return Observable.fromCallable {
+                    httpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
+                }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+            }
+        }
+
         init {
 
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
+
+            val uriFromEmailDomain = uriFromIntent
+                .filter { it.isEmailDomain() }
+                .switchMap {
+                    externalCall.obtainUriFromRedirection(it)
+                }
+                .filter {
+                    Uri.parse(it.request.url.toString()).isProjectUri() && it.priorResponse?.code == 302
+                }
+                .map {
+                    Uri.parse(it.request.url.toString())
+                }
+
+            uriFromEmailDomain
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startProjectActivity.onNext(it)
+                }
 
             uriFromIntent
                 .filter { lastPathSegmentIsProjects(it) }
@@ -148,7 +189,6 @@ interface DeepLinkViewModel {
                 .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-
                     onDeepLinkToProjectPage(it, startProjectActivity)
                 }
 
@@ -266,6 +306,7 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectUpdateCommentsUri(webEndpoint) }
                 .filter { !it.isProjectUri(webEndpoint) }
                 .filter { !it.isRewardFulfilledDl() }
+                .filter { !it.isEmailDomain() }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }

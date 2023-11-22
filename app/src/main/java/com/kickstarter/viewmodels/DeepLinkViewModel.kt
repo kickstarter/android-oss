@@ -37,7 +37,6 @@ import okhttp3.Request
 import okhttp3.Response
 import rx.Notification
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject

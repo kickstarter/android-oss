@@ -60,7 +60,12 @@ class ThreadActivity :
 
         binding = ActivityThreadLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ksString = requireNotNull(getEnvironment()?.ksString())
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = ThreadViewModel.Factory(env)
+            ksString = requireNotNull(env.ksString())
+            env
+        }
+
         recyclerViewPaginator = RecyclerViewPaginatorV2(
             binding.commentRepliesRecyclerView,
             { viewModel.inputs.nextPage() },
@@ -177,7 +182,7 @@ class ThreadActivity :
                 ApplicationUtils.openUrlExternally(
                     this,
                     UrlUtils.appendPath(
-                        getEnvironment()?.webEndpoint() ?: "",
+                        environment?.webEndpoint() ?: "",
                         CommentsActivity.COMMENT_KICKSTARTER_GUIDELINES
                     )
                 )

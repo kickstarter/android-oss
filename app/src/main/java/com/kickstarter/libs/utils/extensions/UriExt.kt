@@ -98,6 +98,32 @@ fun Uri.isNewGuestCheckoutUri(webEndpoint: String): Boolean {
         .matches()
 }
 
+/**
+ * For URI on Main Page Open button ksr://www.kickstarter.com/?app_banner=1&ref=nav
+ *  matches domain, and query params
+ */
+fun Uri.isMainPage(): Boolean {
+    return host().contains(KSDOMAIN) && MAIN_PAGE_OPEN_BUTTON_QUERYPARAMS.matcher(query()).matches()
+}
+
+/**
+ * Given URI, host must contain `kickstarter.com` as domain
+ *
+ * Ignores the current API endpoint used on the app.
+ */
+fun Uri.isKSDomain(): Boolean {
+    return host().contains(KSDOMAIN)
+}
+
+/**
+ * Given URI, host must contain `kickstarter.com` as domain, and math the
+ * Project URL regex.
+ *
+ * Ignores the current API endpoint used on the app.
+ */
+fun Uri.isProjectUri(): Boolean {
+    return host().contains(KSDOMAIN) && PROJECT_PATTERN.matcher(path()).matches()
+}
 fun Uri.isProjectUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_PATTERN.matcher(path()).matches()
 }
@@ -118,6 +144,14 @@ fun Uri.isStagingUri(webEndpoint: String): Boolean {
 
 fun Uri.isCheckoutThanksUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(path())
+        .matches()
+}
+
+/**
+ * Takes an URI and matches over the list of Domains provided by marketing
+ */
+fun Uri.isEmailDomain(): Boolean {
+    return isKSScheme() && EMAIL_DOMAINS.matcher(this.host)
         .matches()
 }
 
@@ -168,6 +202,9 @@ fun Uri.isDiscoverSortParam(): Boolean {
 }
 
 private const val VERIFICATION = "/profile/verify_email"
+private const val KSDOMAIN = "kickstarter.com"
+
+private val EMAIL_DOMAINS = Pattern.compile("\\A(?:me|ea|clicks|click|emails|email|e2|e3)\\.kickstarter\\.com\\z")
 
 // /projects/:creator_param/:project_param/checkouts/1/thanks
 private val CHECKOUT_THANKS_PATTERN = Pattern.compile(
@@ -240,4 +277,8 @@ private val PROJECT_UPDATES_PATTERN = Pattern.compile(
 // /users/:user_param/surveys/:survey_response_id": userSurvey
 private val USER_SURVEY = Pattern.compile(
     "\\A\\/users(\\/[a-zA-Z0-9_-]+)?\\/surveys\\/[a-zA-Z0-9-_]+\\z"
+)
+
+private val MAIN_PAGE_OPEN_BUTTON_QUERYPARAMS = Pattern.compile(
+    "\\Aapp_banner=1&ref=nav\\z"
 )

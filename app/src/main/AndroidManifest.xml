@@ -101,9 +101,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.DownloadBetaActivity"
-            android:parentActivityName=".ui.activities.DiscoveryActivity" />
-        <activity
             android:name=".ui.activities.EditorialActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity" />
         <activity
@@ -239,8 +236,25 @@
         <activity android:name=".ui.activities.ReportProjectActivity" />
 
         <activity android:name=".ui.activities.DeepLinkActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:exported="true">
+            <!-- Marketing Emails Domains  -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:scheme="https" />
+            </intent-filter>
+            <!-- Website Main page deeplink  -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:scheme="ksr" />
+            </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

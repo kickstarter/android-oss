@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -14,6 +15,9 @@ import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
+import com.kickstarter.libs.utils.extensions.isEmailDomain
+import com.kickstarter.libs.utils.extensions.isKSDomain
+import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
@@ -29,11 +33,18 @@ import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.DeepLinkActivity
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import rx.Notification
 import rx.Observable
+import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
+interface CustomNetworkClient {
+    fun obtainUriFromRedirection(uri: Uri): Observable<Response>
+}
 interface DeepLinkViewModel {
     interface Outputs {
         /** Emits when we should start an external browser because we don't want to deep link.  */
@@ -91,11 +102,71 @@ interface DeepLinkViewModel {
 
         val outputs: Outputs = this
 
+        /**
+         * Custom Networking Client as plain as possible. Given an URI, will execute the network call on Schedulers.io pool,
+         * and return the response as Observable.
+         */
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        var externalCall = object : CustomNetworkClient {
+            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
+                val httpClient: OkHttpClient = OkHttpClient.Builder().build()
+
+                return Observable.fromCallable {
+                    httpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
+                }
+                    .subscribeOn(Schedulers.io())
+            }
+        }
+
         init {
 
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
+
+            // - Takes URI from Marketing email domain, executes network call that and redirection took place
+            val uriFromEmailDomain = uriFromIntent
+                .filter { it.isEmailDomain() }
+                .switchMap {
+                    externalCall.obtainUriFromRedirection(it)
+                }
+                .filter { it.priorResponse?.code == 302 }
+
+            // TODO: on following tickets recognize discovery with category_id links, for now if not project URL, open discovery
+            val isKSDomainUriFromEmail = uriFromEmailDomain
+                .map { Uri.parse(it.request.url.toString()) }
+                .filter { !it.isProjectUri() && it.isKSDomain() }
+
+            // - The redirected URI is a project URI
+            val projectFromEmail = uriFromEmailDomain
+                .filter {
+                    Uri.parse(it.request.url.toString()).isProjectUri()
+                }
+                .map {
+                    Uri.parse(it.request.url.toString())
+                }
+
+            // - Take URI from main page Open button with URL - ksr://www.kickstarter.com/?app_banner=1&ref=nav
+            val mainPageUri = uriFromIntent
+                .filter { it.isMainPage() }
+
+            mainPageUri
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startDiscoveryActivity.onNext(null)
+                }
+
+            projectFromEmail
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startProjectActivity.onNext(it)
+                }
+
+            isKSDomainUriFromEmail
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startDiscoveryActivity.onNext(null)
+                }
 
             uriFromIntent
                 .filter { lastPathSegmentIsProjects(it) }
@@ -148,7 +219,6 @@ interface DeepLinkViewModel {
                 .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-
                     onDeepLinkToProjectPage(it, startProjectActivity)
                 }
 
@@ -266,6 +336,7 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectUpdateCommentsUri(webEndpoint) }
                 .filter { !it.isProjectUri(webEndpoint) }
                 .filter { !it.isRewardFulfilledDl() }
+                .filter { !it.isEmailDomain() }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }

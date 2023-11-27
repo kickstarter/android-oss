@@ -7,8 +7,10 @@ import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
 import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
+import com.kickstarter.libs.utils.extensions.isEmailDomain
 import com.kickstarter.libs.utils.extensions.isKSFavIcon
 import com.kickstarter.libs.utils.extensions.isKickstarterUri
+import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isModalUri
 import com.kickstarter.libs.utils.extensions.isNewGuestCheckoutUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
@@ -213,5 +215,44 @@ class UriExtTest : KSRobolectricTestCase() {
     @Test
     fun testUri_isDiscoverySortUri() {
         assertTrue(discoverSortUri.isDiscoverSortParam())
+    }
+
+    @Test
+    fun testUri_isEmailDomain() {
+        val clicksDom = Uri.parse("https://clicks.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(clicksDom.isEmailDomain())
+
+        val clickDom = Uri.parse("https://click.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(clickDom.isEmailDomain())
+
+        val emailDom = Uri.parse("https://email.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(emailDom.isEmailDomain())
+
+        val emailsDom = Uri.parse("https://emails.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(emailsDom.isEmailDomain())
+
+        val meDom = Uri.parse("https://me.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(meDom.isEmailDomain())
+
+        val eaDom = Uri.parse("https://ea.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(eaDom.isEmailDomain())
+
+        val e2Dom = Uri.parse("https://e2.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(e2Dom.isEmailDomain())
+
+        val e3Dom = Uri.parse("https://e3.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3B")
+        assertTrue(e3Dom.isEmailDomain())
+    }
+
+    @Test
+    fun testUri_ProjectPageIgnoringCurrentEndpoint() {
+        val projectUri = Uri.parse("https://www.kickstarter.com/projects/steamforged/horizon-forbidden-west-seeds-of-rebellion")
+        assertTrue(projectUri.isProjectUri())
+    }
+
+    @Test
+    fun testUri_FromMainPage_OpenButton() {
+        val uri = Uri.parse("ksr://www.kickstarter.com/?app_banner=1&ref=nav")
+        assertTrue(uri.isMainPage())
     }
 }

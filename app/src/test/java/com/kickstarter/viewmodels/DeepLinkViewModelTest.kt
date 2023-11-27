@@ -13,8 +13,13 @@ import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
+import okhttp3.HttpUrl
+import okhttp3.Request
+import okhttp3.Response
 import org.joda.time.DateTime
 import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import rx.Observable
 import rx.observers.TestSubscriber
 
@@ -51,8 +56,96 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comment"
         vm.intent(intentWithData(url))
+
         startBrowser.assertValue(url)
         startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+    }
+
+    @Test
+    fun testMainPageDeeplink_OpensDiscovery() {
+        setUpEnvironment()
+        val url =
+            "ksr://www.kickstarter.com/?app_banner=1&ref=nav"
+        vm.intent(intentWithData(url))
+
+        startBrowser.assertValue(url)
+        startDiscoveryActivity.assertValue(null)
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
+    }
+
+    @Test
+    fun testEmailDomain_startsProjectPage() {
+        setUpEnvironment()
+
+        val projectUriAfterRedirection = "https://www.kickstarter.com/projects/lunar1622/the-nasa-approved-tech-watch-with-moon-dust"
+
+        val httpUrl = mock(HttpUrl::class.java)
+        val mockedResponse = mock(Response::class.java)
+        val mockedRequest = mock(Request::class.java)
+
+        `when`(httpUrl.toString()).thenReturn(projectUriAfterRedirection)
+        `when`(mockedResponse.priorResponse).thenReturn(mockedResponse)
+        `when`(mockedResponse.request).thenReturn(mockedRequest)
+        `when`(mockedResponse.code).thenReturn(302)
+        `when`(mockedRequest.url).thenReturn(httpUrl)
+
+        this.vm.externalCall = object : CustomNetworkClient {
+            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
+                return Observable.just(mockedResponse)
+            }
+        }
+
+        val url =
+            "https://clicks.kickstarter.com/f/a/tkHp7b-QTkKgs07EBNX69w~~/AAQRxQA~/RgRnG6LxP0SNaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3Byb2plY3RzL2x1bmFyMTYyMi90aGUtbmFzYS1hcHByb3ZlZC10ZWNoLXdhdGNoLXdpdGgtbW9vbi1kdXN0P2xpZD13cW13NHc5anpwdjUmcmVmPWtzcl9lbWFpbF9ta3RnX3B3bF8yMDIzLTEwLTI1VwNzcGNCCmU48R05Zac7H7RSGWIuc2FuZ3dpbkBraWNrc3RhcnRlci5jb21YBAAAAFQ~"
+        vm.intent(intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertValue(Uri.parse(projectUriAfterRedirection))
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+    }
+
+    @Test
+    fun testEmailDomain_isNotProject() {
+        setUpEnvironment()
+
+        val discoveryUriAfterRedirection = "https://www.kickstarter.com/discover/advanced?category_id=34&amp;sort=newest"
+
+        val httpUrl = mock(HttpUrl::class.java)
+        val mockedResponse = mock(Response::class.java)
+        val mockedRequest = mock(Request::class.java)
+
+        `when`(httpUrl.toString()).thenReturn(discoveryUriAfterRedirection)
+        `when`(mockedResponse.priorResponse).thenReturn(mockedResponse)
+        `when`(mockedResponse.request).thenReturn(mockedRequest)
+        `when`(mockedResponse.code).thenReturn(302)
+        `when`(mockedRequest.url).thenReturn(httpUrl)
+
+        this.vm.externalCall = object : CustomNetworkClient {
+            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
+                return Observable.just(mockedResponse)
+            }
+        }
+
+        val url =
+            "https://clicks.kickstarter.com/f/a/FCICZcz5yLRUa3P_yQez0Q~~/AAQRxQA~/RgRnQPFeP0TZaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL2Rpc2NvdmVyL2FkdmFuY2VkP2NhdGVnb3J5X2lkPTM0JnNvcnQ9bmV3ZXN0JnNlZWQ9MjgzNDQ0OSZuZXh0X3BhZ2VfY3Vyc29yPSZwYWdlPTElM0ZyZWYlM0RkaXNjb3Zlcnlfb3ZlcmxheSZyZWY9a3NyX2VtYWlsX21rdGdfanVzdGxhdW5jaGVkX0hvcml6b25Gb3JiaWRkZW5XZXN0XzIwMjMtMTEtMjImbGlkPWsyNXFjcDhxNHNwd1cDc3BjQgplVV5sXmVQsuv8UhV0aGViYXNzZHVkZUBnbWFpbC5jb21YBAAAAFQ~"
+        vm.intent(intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertValue(null)
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
@@ -410,7 +503,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val cliks =
             "https://clicks.kickstarter.com/f/a/Hs4EAU85CJvgLr-uBBByog~~/AAQRxQA~/RgRiXE13P0TUaHR0cHM6Ly93d3cua2lja3N0YXJ0ZXIuY29tL3Byb2plY3RzL21zdDNrL21ha2Vtb3JlbXN0M2s_cmVmPU5ld3NBcHIxNjIxLWVuLWdsb2JhbC1hbGwmdXRtX21lZGl1bT1lbWFpbC1tZ2ImdXRtX3NvdXJjZT1wd2xuZXdzbGV0dGVyJnV0bV9jYW1wYWlnbj1wcm9qZWN0c3dlbG92ZS0wNDE2MjAyMSZ1dG1fY29udGVudD1pbWFnZSZiYW5uZXI9ZmlsbS1uZXdzbGV0dGVyMDFXA3NwY0IKYHh3yHlgkYIOrFIYbGl6YmxhaXJAa2lja3N0YXJ0ZXIuY29tWAQAAABU"
         vm.intent(intentWithData(emails))
-        startBrowser.assertValueCount(1)
+        startBrowser.assertValueCount(0)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
     }

@@ -66,6 +66,8 @@ class ThreadActivity :
             env
         }
 
+        viewModel.intent(intent)
+
         recyclerViewPaginator = RecyclerViewPaginatorV2(
             binding.commentRepliesRecyclerView,
             { viewModel.inputs.nextPage() },
@@ -229,8 +231,8 @@ class ThreadActivity :
     }
 
     private fun closeCommentsActivity() {
-        onBackPressedDispatcher.onBackPressed()
-        this.finishActivity(taskId)
+        setResult(taskId)
+        finish()
     }
 
     fun postReply(comment: String) {

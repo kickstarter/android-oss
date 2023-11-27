@@ -135,7 +135,8 @@ interface ThreadViewModel {
             intent
                 .map { it.getBooleanExtra(IntentKey.REPLY_EXPAND, false) }
                 .distinctUntilChanged()
-                .subscribe(this.focusOnCompose)
+                .subscribe { this.focusOnCompose.onNext(it) }
+                .addToDisposable(disposables)
 
             val comment =
                 getCommentCardDataFromIntent().map { it.comment }.map { it }
@@ -399,7 +400,9 @@ interface ThreadViewModel {
 
             apolloPaginate
                 .isFetching
-                .subscribe(this.isFetchingReplies)
+                .share()
+                .subscribe { this.isFetchingReplies.onNext(it) }
+                .addToDisposable(disposables)
 
             /** reversed replies **/
             apolloPaginate
@@ -447,11 +450,13 @@ interface ThreadViewModel {
             cursor: String?
         ): Observable<CommentEnvelope> {
             return comment.switchMap {
-                return@switchMap this.apolloClient.getRepliesForComment(it, cursor)
+                return@switchMap this.apolloClient.getRepliesForComment(
+                    it,
+                    if (cursor.isNullOrEmpty()) null else cursor
+                )
             }.doOnError {
                 this.internalError.onNext(it)
-            }
-                .onErrorResumeNext(Observable.empty())
+            }.onErrorResumeNext(Observable.empty())
         }
 
         private fun buildReplyBody(it: Pair<Pair<CommentCardData, User>, Pair<String, DateTime>>): Comment {

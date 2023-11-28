@@ -10,17 +10,17 @@ import io.reactivex.disposables.CompositeDisposable
 
 class ExpandableHeaderViewHolder(private val binding: ExpandableHeaderItemBinding) : KSViewHolder(binding.root) {
     private var viewModel = ExpandableHeaderViewHolderViewModel.ViewModel(environment())
-    private var disposables : CompositeDisposable = CompositeDisposable()
+    private var disposables: CompositeDisposable = CompositeDisposable()
 
     init {
         this.viewModel.outputs.titleForSummary()
-                .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.binding.pledgeHeaderItemTitle.text = it
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.amountForSummary()
-                .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.binding.pledgeHeaderItemAmount.text = it
             }.addToDisposable(disposables)

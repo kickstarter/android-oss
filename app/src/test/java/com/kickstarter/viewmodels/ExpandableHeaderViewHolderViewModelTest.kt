@@ -19,44 +19,44 @@ class ExpandableHeaderViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm = ExpandableHeaderViewHolderViewModel.ViewModel(environment())
 
         this.vm.outputs.amountForSummary().subscribe { this.amountForSummary.onNext(it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
         this.vm.outputs.titleForSummary().subscribe { this.titleForSummary.onNext(it) }.addToDisposable(disposables)
     }
-        @Test
-        fun testTitleForSummary_whenIsAddonButQuantityNull_noEmission(){
-            setUpEnvironment()
+    @Test
+    fun testTitleForSummary_whenIsAddonButQuantityNull_noEmission() {
+        setUpEnvironment()
 
-            val project = ProjectFactory.project()
-            val reward = RewardFactory.addOn().toBuilder().quantity(null).build()
-            vm.inputs.configureWith(Pair(project, reward))
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.addOn().toBuilder().quantity(null).build()
+        vm.inputs.configureWith(Pair(project, reward))
 
-            this.titleForSummary.assertNoValues()
-        }
-
-        @Test
-        fun testTitleForSummary_whenAddonAndQuantity0_noEmission(){
-            setUpEnvironment()
-
-            val project = ProjectFactory.project()
-            val reward = RewardFactory.addOn().toBuilder().quantity(0).build()
-            vm.inputs.configureWith(Pair(project, reward))
-
-            this.titleForSummary.assertNoValues()
-        }
-
-        @Test
-        fun testTitleForSummary_whenAddonAndQuantityMoreThan0_emitString() {
-            setUpEnvironment()
-
-            val project = ProjectFactory.project()
-            val reward = RewardFactory.addOn().toBuilder().title("pins").quantity(5).build()
-            vm.inputs.configureWith(Pair(project, reward))
-
-            this.titleForSummary.assertValue("5 X pins")
-        }
+        this.titleForSummary.assertNoValues()
+    }
 
     @Test
-    fun testTitleForSummary_whenNotAddonAndTitleEmpty_emitEmptyString(){
+    fun testTitleForSummary_whenAddonAndQuantity0_noEmission() {
+        setUpEnvironment()
+
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.addOn().toBuilder().quantity(0).build()
+        vm.inputs.configureWith(Pair(project, reward))
+
+        this.titleForSummary.assertNoValues()
+    }
+
+    @Test
+    fun testTitleForSummary_whenAddonAndQuantityMoreThan0_emitString() {
+        setUpEnvironment()
+
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.addOn().toBuilder().title("pins").quantity(5).build()
+        vm.inputs.configureWith(Pair(project, reward))
+
+        this.titleForSummary.assertValue("5 X pins")
+    }
+
+    @Test
+    fun testTitleForSummary_whenNotAddonAndTitleEmpty_emitEmptyString() {
         setUpEnvironment()
 
         val project = ProjectFactory.project()

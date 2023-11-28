@@ -30,7 +30,7 @@ interface ExpandableHeaderViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val titleForSummary = PublishSubject.create<String>()
         private val amountForSummary = PublishSubject.create<String>()
-        private val disposables : CompositeDisposable = CompositeDisposable()
+        private val disposables: CompositeDisposable = CompositeDisposable()
 
         private val ksCurrency = requireNotNull(environment.ksCurrency())
 
@@ -48,18 +48,18 @@ interface ExpandableHeaderViewHolderViewModel {
                 .filter { it.isAddOn() && it.quantity().isNotNull() && it.quantity()?.let { q -> q > 0 } ?: false }
                 .map { it.quantity().toString() + " X " + it.title() }
                 .subscribe { this.titleForSummary.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             reward
                 .filter { !it.isAddOn() }
                 .map { it.title() ?: "" }
                 .subscribe { this.titleForSummary.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { this.ksCurrency.format(it.second.minimum(), it.first) }
                 .subscribe { this.amountForSummary.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(values: Pair<Project, Reward>) = this.projectAndReward.onNext(values)

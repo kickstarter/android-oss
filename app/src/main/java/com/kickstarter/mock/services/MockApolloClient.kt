@@ -240,6 +240,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
                 .build()
         )
     }
+
+    override fun getRepliesForComment(
+        comment: Comment,
+        cursor: String?,
+        pageSize: Int
+    ): io.reactivex.Observable<CommentEnvelope> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

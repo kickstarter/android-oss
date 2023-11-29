@@ -22,6 +22,7 @@ import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
@@ -115,6 +116,8 @@ interface ApolloClientTypeV2 {
         cursor: String? = null,
         pageSize: Int = REPLIES_PAGE_SIZE
     ): Observable<CommentEnvelope>
+
+    fun createComment(comment: PostCommentData): Observable<Comment>
 }
 
 private const val PAGE_SIZE = 25
@@ -1234,5 +1237,43 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             .pageInfoEnvelope(pageInfo)
             .totalCount(totalCount)
             .build()
+    }
+
+    override fun createComment(comment: PostCommentData): Observable<Comment> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Comment>()
+            this.service.mutate(
+                CreateCommentMutation.builder()
+                    .parentId(comment.parent?.let { encodeRelayId(it) })
+                    .commentableId(comment.commentableId)
+                    .clientMutationId(comment.clientMutationId)
+                    .body(comment.body)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<CreateCommentMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateCommentMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        } else {
+                            /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
+                            ps.onNext(
+                                commentTransformer(
+                                    response.data?.createComment()?.comment()?.fragments()
+                                        ?.comment()
+                                )
+                            )
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
     }
 }

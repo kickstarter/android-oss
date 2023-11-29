@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
@@ -17,7 +16,6 @@ import com.kickstarter.models.extensions.isCurrentUserAuthor
 import com.kickstarter.models.extensions.isReply
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
-import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
 import io.reactivex.Observable
@@ -106,8 +104,7 @@ interface CommentsViewHolderViewModel {
         fun authorBadge(): Observable<CommentCardBadge>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) : Inputs, Outputs {
         private val commentInput = PublishSubject.create<CommentCardData>()
         private val onCommentGuideLinesClicked = PublishSubject.create<Unit>()
         private val onRetryViewClicked = PublishSubject.create<Unit>()
@@ -243,40 +240,40 @@ interface CommentsViewHolderViewModel {
             comment
                 .filter { it.author()?.name().isNotNull() }
                 .map { it.author()?.name() ?: "" }
-                .subscribe{ this.commentAuthorName.onNext(it) }
+                .subscribe { this.commentAuthorName.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
                 .filter { it.author()?.avatar()?.medium().isNotNull() }
                 .map { it.author()?.avatar()?.medium() ?: "" }
-                .subscribe{ this.commentAuthorAvatarUrl.onNext(it) }
+                .subscribe { this.commentAuthorAvatarUrl.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
                 .map { it.body() }
                 .filter { it.isNotNull() }
-                .subscribe{ this.commentMessageBody.onNext(it) }
+                .subscribe { this.commentMessageBody.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
                 .map { it.createdAt() }
                 .filter { it.isNotNull() }
-                .subscribe{ it?.let { date -> this.commentPostTime.onNext(date) } }
+                .subscribe { it?.let { date -> this.commentPostTime.onNext(date) } }
                 .addToDisposable(disposables)
 
             comment
                 .compose(takeWhenV2(this.onViewCommentRepliesButtonClicked))
-                .subscribe{ this.viewCommentReplies.onNext(it) }
+                .subscribe { this.viewCommentReplies.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
                 .compose(takeWhenV2(this.onCommentGuideLinesClicked))
-                .subscribe{ this.openCommentGuideLines.onNext(it) }
+                .subscribe { this.openCommentGuideLines.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
                 .compose(takeWhenV2(this.onReplyButtonClicked))
-                .subscribe{ this.replyToComment.onNext(it) }
+                .subscribe { this.replyToComment.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
@@ -291,12 +288,12 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .compose(takeWhenV2(this.onFlagButtonClicked))
-                .subscribe{ this.flagComment.onNext(it) }
+                .subscribe { this.flagComment.onNext(it) }
                 .addToDisposable(disposables)
 
             comment
                 .compose(takeWhenV2(this.onShowCommentClicked))
-                .subscribe{ this.showCanceledComment.onNext(it) }
+                .subscribe { this.showCanceledComment.onNext(it) }
                 .addToDisposable(disposables)
         }
 

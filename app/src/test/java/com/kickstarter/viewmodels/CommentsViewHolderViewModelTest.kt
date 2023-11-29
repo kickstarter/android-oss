@@ -3,22 +3,26 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Comment
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.TestScheduler
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.schedulers.TestScheduler
-import rx.subjects.BehaviorSubject
 import type.CommentBadge
 import java.util.concurrent.TimeUnit
 
@@ -39,7 +43,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val repliesCount = TestSubscriber<Int>()
     private val commentSuccessfullyPosted = TestSubscriber<Comment>()
     private val testScheduler = TestScheduler()
-    private val isCommentReply = TestSubscriber<Void>()
+    private val isCommentReply = TestSubscriber<Unit>()
     private val authorBadge = TestSubscriber<CommentCardBadge?>()
 
     private val createdAt = DateTime.now()
@@ -47,23 +51,30 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         AvatarFactory.avatar()
     ).name("joe").build()
 
+    private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+
     private fun setUpEnvironment(environment: Environment) {
         this.vm = CommentsViewHolderViewModel.ViewModel(environment)
 
-        this.vm.outputs.commentCardStatus().subscribe(this.commentCardStatus)
-        this.vm.outputs.commentAuthorName().subscribe(this.commentAuthorName)
-        this.vm.outputs.commentAuthorAvatarUrl().subscribe(this.commentAuthorAvatarUrl)
-        this.vm.outputs.commentMessageBody().subscribe(this.commentMessageBody)
-        this.vm.outputs.commentPostTime().subscribe(this.commentPostTime)
-        this.vm.outputs.isReplyButtonVisible().subscribe(this.isReplyButtonVisible)
-        this.vm.outputs.openCommentGuideLines().subscribe(this.openCommentGuideLines)
-        this.vm.outputs.retrySendComment().subscribe(this.retrySendComment)
-        this.vm.outputs.replyToComment().subscribe(this.replyToComment)
-        this.vm.outputs.flagComment().subscribe(this.flagComment)
-        this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
-        this.vm.outputs.isSuccessfullyPosted().subscribe(this.commentSuccessfullyPosted)
-        this.vm.isCommentReply().subscribe(this.isCommentReply)
-        this.vm.outputs.authorBadge().subscribe(this.authorBadge)
+        this.vm.outputs.commentCardStatus().subscribe { this.commentCardStatus.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.commentAuthorName().subscribe { this.commentAuthorName.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.commentAuthorAvatarUrl().subscribe { this.commentAuthorAvatarUrl.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.commentMessageBody().subscribe { this.commentMessageBody.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.commentPostTime().subscribe { this.commentPostTime.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isReplyButtonVisible().subscribe { this.isReplyButtonVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.openCommentGuideLines().subscribe { this.openCommentGuideLines.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.retrySendComment().subscribe { this.retrySendComment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.replyToComment().subscribe { this.replyToComment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.flagComment().subscribe { this.flagComment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.commentRepliesCount().subscribe { this.repliesCount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isSuccessfullyPosted().subscribe { this.commentSuccessfullyPosted.onNext(it) }.addToDisposable(disposables)
+        this.vm.isCommentReply().subscribe { this.isCommentReply.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.authorBadge().subscribe { this.authorBadge.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -213,7 +224,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val user = UserFactory.creator().toBuilder().id(2).build()
 
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(user))
+            .currentUserV2(MockCurrentUserV2(user))
             .build()
         setUpEnvironment(environment)
 
@@ -253,13 +264,13 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testRetrySendCommentErrorClicked() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+        val env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun createComment(comment: PostCommentData): Observable<Comment> {
                 return Observable.error(Throwable())
             }
         })
-            .scheduler(testScheduler)
-            .currentUser(MockCurrentUser(currentUser))
+            .schedulerV2(testScheduler)
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setUpEnvironment(env)
@@ -320,13 +331,13 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
         var isFirstRun = true
 
-        var env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+        var env = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
             override fun createComment(comment: PostCommentData): Observable<Comment> {
                 return if (isFirstRun) Observable.error(Throwable()) else Observable.just(reply)
             }
         })
-            .scheduler(testScheduler)
-            .currentUser(MockCurrentUser(currentUser))
+            .schedulerV2(testScheduler)
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setUpEnvironment(env)
@@ -364,7 +375,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
         )
 
-        this.isCommentReply.assertValues(null, null)
+        this.isCommentReply.assertValues(Unit, Unit)
         this.commentSuccessfullyPosted.assertValues(reply)
         this.isReplyButtonVisible.assertValues(false, false)
     }
@@ -374,7 +385,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val responseComment = CommentFactory.liveComment(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
                     return Observable.just(responseComment)
                 }
@@ -404,12 +415,12 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val commentResponse = CommentFactory.liveComment(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
                     return Observable.just(commentResponse)
                 }
             })
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setUpEnvironment(env)
 
@@ -435,12 +446,12 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testSendCommentClicked_withOtherUser() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
                     return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
                 }
             })
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setUpEnvironment(env)
 
@@ -465,12 +476,13 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testSendCommentFailedAndPressRetry() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
                     return Observable.error(Throwable())
                 }
-            }).scheduler(testScheduler)
-            .currentUser(MockCurrentUser(currentUser))
+            })
+            .schedulerV2(testScheduler)
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setUpEnvironment(env)
 
@@ -518,7 +530,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.TRYING_TO_POST
         )
 
-        this.isCommentReply.assertValue(null)
+        this.isCommentReply.assertValue(Unit)
     }
 
     @Test
@@ -536,7 +548,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_whenCommentFlaggedAndUserIsAuthor_shouldNotSetStatusToFlagged() {
         val user = UserFactory.user()
-        val env = environment().toBuilder().currentUser(MockCurrentUser(user)).build()
+        val env = environment().toBuilder().currentUserV2(MockCurrentUserV2(user)).build()
         setUpEnvironment(env)
 
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = user, hasFlaggings = true)
@@ -577,12 +589,12 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
 
         val env = environment().toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
                     return Observable.just(reply)
                 }
             })
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setUpEnvironment(env)
 

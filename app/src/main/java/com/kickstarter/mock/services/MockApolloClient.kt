@@ -248,6 +248,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     ): io.reactivex.Observable<CommentEnvelope> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun createComment(comment: PostCommentData): io.reactivex.Observable<Comment> {
+        return io.reactivex.Observable.just(CommentFactory.comment())
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

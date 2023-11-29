@@ -4,7 +4,8 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Comment
@@ -19,10 +20,11 @@ import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 interface CommentsViewHolderViewModel {
@@ -90,7 +92,7 @@ interface CommentsViewHolderViewModel {
         fun isCommentEnableThreads(): Observable<Boolean>
 
         /** Emits if the comment is a reply to root comment */
-        fun isCommentReply(): Observable<Void>
+        fun isCommentReply(): Observable<Unit>
 
         /** Emits when the execution of the post mutation is successful, it will be used to update the main list state for this comment**/
         fun isSuccessfullyPosted(): Observable<Comment>
@@ -107,12 +109,12 @@ interface CommentsViewHolderViewModel {
     class ViewModel(environment: Environment) :
         ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
         private val commentInput = PublishSubject.create<CommentCardData>()
-        private val onCommentGuideLinesClicked = PublishSubject.create<Void>()
-        private val onRetryViewClicked = PublishSubject.create<Void>()
-        private val onReplyButtonClicked = PublishSubject.create<Void>()
-        private val onFlagButtonClicked = PublishSubject.create<Void>()
-        private val onViewCommentRepliesButtonClicked = PublishSubject.create<Void>()
-        private val onShowCommentClicked = PublishSubject.create<Void>()
+        private val onCommentGuideLinesClicked = PublishSubject.create<Unit>()
+        private val onRetryViewClicked = PublishSubject.create<Unit>()
+        private val onReplyButtonClicked = PublishSubject.create<Unit>()
+        private val onFlagButtonClicked = PublishSubject.create<Unit>()
+        private val onViewCommentRepliesButtonClicked = PublishSubject.create<Unit>()
+        private val onShowCommentClicked = PublishSubject.create<Unit>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
         private val authorBadge = BehaviorSubject.create<CommentCardBadge>()
@@ -133,13 +135,15 @@ interface CommentsViewHolderViewModel {
         private val failedToPosted = BehaviorSubject.create<Comment>()
         private val showCanceledComment = PublishSubject.create<Comment>()
 
-        private val isCommentReply = BehaviorSubject.create<Void>()
+        private val isCommentReply = BehaviorSubject.create<Unit>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = requireNotNull(environment.apolloClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
+
+        private val disposables = CompositeDisposable()
 
         init {
 
@@ -154,7 +158,7 @@ interface CommentsViewHolderViewModel {
                 .distinctUntilChanged()
                 .filter { it.isNotNull() }
                 .map {
-                    val commentCardState = cardStatus(it.first, it.second)
+                    val commentCardState = cardStatus(it.first, it.second.getValue())
                     it.first.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0)
                         .build()
                 }
@@ -174,18 +178,18 @@ interface CommentsViewHolderViewModel {
             this.internalError
                 .compose(combineLatestPair(commentData))
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .delay(1, TimeUnit.SECONDS, environment.scheduler())
+                .delay(1, TimeUnit.SECONDS, environment.schedulerV2())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
-                    this.failedToPosted.onNext(it.second.first.comment)
+                    it.second.first.comment?.let { it1 -> this.failedToPosted.onNext(it1) }
                 }
+                .addToDisposable(disposables)
 
             comment
                 .withLatestFrom(currentUser.observable()) { comment, user -> Pair(comment, user) }
-                .map { it.first.assignAuthorBadge(it.second) }
-                .compose(bindToLifecycle())
+                .map { it.first.assignAuthorBadge(it.second.getValue()) }
                 .subscribe { this.authorBadge.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         /**
@@ -195,22 +199,24 @@ interface CommentsViewHolderViewModel {
         private fun handleStatus(commentCardStatus: Observable<CommentCardData>, environment: Environment) {
             commentCardStatus
                 .compose(combineLatestPair(currentUser.observable()))
-                .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentCardStatus.onNext(cardStatus(it.first, it.second))
+                    cardStatus(it.first, it.second.getValue())?.let { status ->
+                        this.commentCardStatus.onNext(status)
+                    }
                 }
+                .addToDisposable(disposables)
 
             commentCardStatus
                 .compose(combineLatestPair(currentUser.observable()))
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.isReplyButtonVisible.onNext(
                         shouldReplyButtonBeVisible(
                             it.first,
-                            it.second
+                            it.second.getValue()
                         )
                     )
                 }
+                .addToDisposable(disposables)
         }
 
         /**
@@ -221,77 +227,77 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .filter { it.parentId() > 0 }
-                .compose(bindToLifecycle())
                 .subscribe {
-                    this.isCommentReply.onNext(null)
+                    this.isCommentReply.onNext(Unit)
                 }
+                .addToDisposable(disposables)
 
             comment
                 .map { it.repliesCount() }
                 .compose(combineLatestPair(this.isCommentEnableThreads))
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.commentRepliesCount.onNext(it.first)
                 }
+                .addToDisposable(disposables)
 
             comment
-                .map { it.author()?.name() }
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.commentAuthorName)
+                .filter { it.author()?.name().isNotNull() }
+                .map { it.author()?.name() ?: "" }
+                .subscribe{ this.commentAuthorName.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
-                .map { it.author()?.avatar()?.medium() }
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.commentAuthorAvatarUrl)
+                .filter { it.author()?.avatar()?.medium().isNotNull() }
+                .map { it.author()?.avatar()?.medium() ?: "" }
+                .subscribe{ this.commentAuthorAvatarUrl.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
                 .map { it.body() }
                 .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.commentMessageBody)
+                .subscribe{ this.commentMessageBody.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
                 .map { it.createdAt() }
                 .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.commentPostTime)
+                .subscribe{ it?.let { date -> this.commentPostTime.onNext(date) } }
+                .addToDisposable(disposables)
 
             comment
-                .compose(takeWhen(this.onViewCommentRepliesButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.viewCommentReplies)
+                .compose(takeWhenV2(this.onViewCommentRepliesButtonClicked))
+                .subscribe{ this.viewCommentReplies.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
-                .compose(takeWhen(this.onCommentGuideLinesClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.openCommentGuideLines)
+                .compose(takeWhenV2(this.onCommentGuideLinesClicked))
+                .subscribe{ this.openCommentGuideLines.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
-                .compose(takeWhen(this.onReplyButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.replyToComment)
+                .compose(takeWhenV2(this.onReplyButtonClicked))
+                .subscribe{ this.replyToComment.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
-                .compose(takeWhen(this.onRetryViewClicked))
+                .compose(takeWhenV2(this.onRetryViewClicked))
                 .doOnNext {
                     this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.retrySendComment.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             comment
-                .compose(takeWhen(this.onFlagButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.flagComment)
+                .compose(takeWhenV2(this.onFlagButtonClicked))
+                .subscribe{ this.flagComment.onNext(it) }
+                .addToDisposable(disposables)
 
             comment
-                .compose(takeWhen(this.onShowCommentClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.showCanceledComment)
+                .compose(takeWhenV2(this.onShowCommentClicked))
+                .subscribe{ this.showCanceledComment.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         /**
@@ -325,12 +331,12 @@ interface CommentsViewHolderViewModel {
                 .switchMap {
                     it
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                     this.postedSuccessfully.onNext(it)
                     if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
+                .addToDisposable(disposables)
 
             Observable
                 .combineLatest(onRetryViewClicked, postCommentData) { _, newData ->
@@ -340,13 +346,13 @@ interface CommentsViewHolderViewModel {
                 }.doOnNext {
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
                 }
-                .delay(3000, TimeUnit.MILLISECONDS, environment.scheduler())
-                .compose(bindToLifecycle())
+                .delay(3000, TimeUnit.MILLISECONDS, environment.schedulerV2())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                     this.postedSuccessfully.onNext(it)
                     if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
+                .addToDisposable(disposables)
         }
 
         /**
@@ -436,18 +442,18 @@ interface CommentsViewHolderViewModel {
         override fun configureWith(commentCardData: CommentCardData) =
             this.commentInput.onNext(commentCardData)
 
-        override fun onCommentGuideLinesClicked() = this.onCommentGuideLinesClicked.onNext(null)
+        override fun onCommentGuideLinesClicked() = this.onCommentGuideLinesClicked.onNext(Unit)
 
-        override fun onRetryViewClicked() = this.onRetryViewClicked.onNext(null)
+        override fun onRetryViewClicked() = this.onRetryViewClicked.onNext(Unit)
 
-        override fun onReplyButtonClicked() = this.onReplyButtonClicked.onNext(null)
+        override fun onReplyButtonClicked() = this.onReplyButtonClicked.onNext(Unit)
 
         override fun onViewRepliesButtonClicked() =
-            this.onViewCommentRepliesButtonClicked.onNext(null)
+            this.onViewCommentRepliesButtonClicked.onNext(Unit)
 
-        override fun onFlagButtonClicked() = this.onFlagButtonClicked.onNext(null)
+        override fun onFlagButtonClicked() = this.onFlagButtonClicked.onNext(Unit)
 
-        override fun onShowCommentClicked() = this.onShowCommentClicked.onNext(null)
+        override fun onShowCommentClicked() = this.onShowCommentClicked.onNext(Unit)
 
         override fun commentCardStatus(): Observable<CommentCardStatus> = this.commentCardStatus
 
@@ -475,7 +481,7 @@ interface CommentsViewHolderViewModel {
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
 
-        override fun isCommentReply(): Observable<Void> = this.isCommentReply
+        override fun isCommentReply(): Observable<Unit> = this.isCommentReply
 
         override fun isSuccessfullyPosted(): Observable<Comment> = this.postedSuccessfully
 
@@ -484,5 +490,9 @@ interface CommentsViewHolderViewModel {
         override fun showCanceledComment(): Observable<Comment> = this.showCanceledComment
 
         override fun authorBadge(): Observable<CommentCardBadge> = this.authorBadge
+
+        fun onCleared() {
+            disposables.clear()
+        }
     }
 }

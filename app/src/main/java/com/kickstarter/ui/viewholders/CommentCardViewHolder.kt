@@ -6,10 +6,12 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 
 class CommentCardViewHolder(
     val binding: ItemCommentCardBinding,
@@ -30,98 +32,99 @@ class CommentCardViewHolder(
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
     private val ksString = requireNotNull(environment().ksString())
+    private val disposables = CompositeDisposable()
 
     init {
 
         this.vm.outputs.isCommentReply()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setSeparatorVisibility(false) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.commentAuthorName()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentUserName(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.commentRepliesCount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentReplies(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.commentAuthorAvatarUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setAvatarUrl(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.commentMessageBody()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentBody(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.commentCardStatus()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentCardStatus(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.isReplyButtonVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setReplyButtonVisibility(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.commentPostTime()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(context(), ksString, it)) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.isCommentEnableThreads()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentEnabledThreads(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.openCommentGuideLines()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onCommentGuideLinesClicked(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.replyToComment()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onReplyButtonClicked(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.retrySendComment()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onRetryViewClicked(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.viewCommentReplies()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onCommentRepliesClicked(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.flagComment()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onFlagButtonClicked(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.showCanceledComment()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onShowCommentClicked(it) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.isSuccessfullyPosted()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onCommentPostedSuccessFully(it, absoluteAdapterPosition) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.isFailedToPost()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this.delegate.onCommentPostedFailed(it, absoluteAdapterPosition) }
+            .addToDisposable(disposables)
 
         this.vm.outputs.authorBadge()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.commentsCardView.setCommentBadge(it) }
+            .addToDisposable(disposables)
 
         binding.commentsCardView.setCommentCardClickedListener(object : OnCommentCardClickedListener {
             override fun onRetryViewClicked(view: View) {
@@ -174,5 +177,11 @@ class CommentCardViewHolder(
 
     override fun bindData(data: Any?) {
         this.vm.inputs.configureWith(data as CommentCardData)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        vm.onCleared()
+        super.destroy()
     }
 }

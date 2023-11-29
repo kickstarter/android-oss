@@ -398,9 +398,8 @@ interface ProjectCardHolderViewModel {
                 .map { it.photo().isNull() }
 
             project
-                .filter { it.isNotNull() }
-                .map { it.location() }
-                .filter { it.isNotNull() }
+                .filter { it.isNotNull() && it.location().isNotNull() }
+                .map { requireNotNull(it.location()) }
                 .map { it.displayableName() }
                 .distinctUntilChanged()
                 .subscribe { locationName.onNext(it) }
@@ -472,7 +471,7 @@ interface ProjectCardHolderViewModel {
                 .filter { it.isNotNull() }
                 .map {
                     if (it.photo() == null) {
-                        null
+                        ""
                     } else {
                         it.photo()?.full()
                     }
@@ -498,10 +497,8 @@ interface ProjectCardHolderViewModel {
                 .map { it.negate() }
 
             val projectCategory = project
-                .filter { it.isNotNull() }
-                .map { it.category() }
-                .filter { it.isNotNull() }
-                .map { it }
+                .filter { it.isNotNull() && it.category() != null }
+                .map { requireNotNull(it.category()) }
 
             projectSubcategoryIsGone = discoveryParams
                 .filter { it.category().isNotNull() }
@@ -545,9 +542,8 @@ interface ProjectCardHolderViewModel {
                     .distinctUntilChanged()
 
             rootCategoryNameForFeatured = projectCategory
-                .filter { it.isNotNull() }
-                .map { it.root() }
-                .filter { it.isNotNull() }
+                .filter { it.isNotNull() && it.root().isNotNull() }
+                .map { requireNotNull(it.root()) }
                 .map { it.name() }
 
             savedViewGroupIsGone = project

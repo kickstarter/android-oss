@@ -26,6 +26,12 @@ class ExpandableHeaderViewHolder(private val binding: ExpandableHeaderItemBindin
             }.addToDisposable(disposables)
     }
 
+    override fun destroy() {
+        viewModel.inputs.onCleared()
+        disposables.clear()
+        super.destroy()
+    }
+
     override fun bindData(data: Any?) {
         (data as? Pair<Project, Reward>)?.let {
             this.viewModel.configureWith(it)

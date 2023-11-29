@@ -15,6 +15,9 @@ interface ExpandableHeaderViewHolderViewModel {
          * Initial configuration data with Project and Reward
          */
         fun configureWith(values: Pair<Project, Reward>)
+
+        /** Clear subscriptions, called from ViewHolder when view is destroyed. */
+        fun onCleared()
     }
 
     interface Outputs {
@@ -64,6 +67,10 @@ interface ExpandableHeaderViewHolderViewModel {
 
         override fun configureWith(values: Pair<Project, Reward>) = this.projectAndReward.onNext(values)
 
+        override fun onCleared() {
+            disposables.clear()
+        }
+        
         override fun amountForSummary(): Observable<String> = this.amountForSummary
         override fun titleForSummary(): Observable<String> = this.titleForSummary
     }

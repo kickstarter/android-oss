@@ -70,7 +70,7 @@ interface ExpandableHeaderViewHolderViewModel {
         override fun onCleared() {
             disposables.clear()
         }
-        
+
         override fun amountForSummary(): Observable<String> = this.amountForSummary
         override fun titleForSummary(): Observable<String> = this.titleForSummary
     }

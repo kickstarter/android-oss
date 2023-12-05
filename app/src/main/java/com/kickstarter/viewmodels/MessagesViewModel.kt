@@ -315,8 +315,7 @@ interface MessagesViewModel {
                 .distinctUntilChanged()
 
             val thread = initialMessageThreadEnvelope
-                .filter { it.messageThread().isNotNull() }
-                .map { it.messageThread() }
+                .map { it.messageThread() ?: MessageThread.builder().build() }
 
             // If view model was not initialized with a MessageThread, participant is
             // the project creator.

@@ -85,7 +85,7 @@ class SettingsActivity : AppCompatActivity() {
         )
 
         this.viewModel.outputs.avatarImageViewUrl()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url ->
                 Picasso.get().load(url).transform(CircleTransformation())
                     .into(binding.profilePictureImageView)
@@ -109,7 +109,7 @@ class SettingsActivity : AppCompatActivity() {
             .addToDisposable(disposables)
 
         this.viewModel.outputs.userNameTextViewText()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.nameTextView.text = it }
             .addToDisposable(disposables)
 

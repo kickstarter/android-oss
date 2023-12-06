@@ -59,17 +59,17 @@ class ThanksActivity : AppCompatActivity() {
         binding.thanksRecyclerView.adapter = adapter
 
         viewModel.outputs.adapterData()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter.takeData(it) }
             .addToDisposable(disposables)
 
         viewModel.outputs.showConfirmGamesNewsletterDialog()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showConfirmGamesNewsletterDialog() }
             .addToDisposable(disposables)
 
         viewModel.outputs.finish()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { finish() }
             .addToDisposable(disposables)
 
@@ -77,7 +77,7 @@ class ThanksActivity : AppCompatActivity() {
         viewModel.outputs.showGamesNewsletterDialog()
             .take(1)
             .delay(700L, TimeUnit.MILLISECONDS)
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (!isFinishing) {
                     showGamesNewsletterDialog()
@@ -88,7 +88,7 @@ class ThanksActivity : AppCompatActivity() {
         viewModel.outputs.showRatingDialog()
             .take(1)
             .delay(700L, TimeUnit.MILLISECONDS)
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (!isFinishing) {
                     showRatingDialog()
@@ -127,25 +127,33 @@ class ThanksActivity : AppCompatActivity() {
     private fun closeButtonClick() = viewModel.inputs.closeButtonClicked()
 
     private fun showConfirmGamesNewsletterDialog() {
-        val optInDialogMessageString = ksString.format(
-            getString(R.string.profile_settings_newsletter_opt_in_message),
-            "newsletter",
-            getString(R.string.profile_settings_newsletter_games)
-        )
+        this.runOnUiThread(
+            Runnable {
+                val optInDialogMessageString = ksString.format(
+                    getString(R.string.profile_settings_newsletter_opt_in_message),
+                    "newsletter",
+                    getString(R.string.profile_settings_newsletter_games)
+                )
 
-        val builder = AlertDialog.Builder(this)
-            .setMessage(optInDialogMessageString)
-            .setTitle(R.string.profile_settings_newsletter_opt_in_title)
-            .setPositiveButton(R.string.general_alert_buttons_ok) { _: DialogInterface?, _: Int -> }
-        builder.show()
+                val builder = AlertDialog.Builder(this)
+                    .setMessage(optInDialogMessageString)
+                    .setTitle(R.string.profile_settings_newsletter_opt_in_title)
+                    .setPositiveButton(R.string.general_alert_buttons_ok) { _: DialogInterface?, _: Int -> }
+                builder.show()
+            }
+        )
     }
 
     private fun showGamesNewsletterDialog() {
-        val builder = AlertDialog.Builder(this)
-            .setMessage(R.string.project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox)
-            .setPositiveButton(R.string.project_checkout_games_alert_yes_please) { _: DialogInterface?, _: Int -> viewModel.inputs.signupToGamesNewsletterClick() }
-            .setNegativeButton(R.string.project_checkout_games_alert_no_thanks) { _: DialogInterface?, _: Int -> }
-        builder.show()
+        this.runOnUiThread(
+            Runnable {
+                val builder = AlertDialog.Builder(this)
+                    .setMessage(R.string.project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox)
+                    .setPositiveButton(R.string.project_checkout_games_alert_yes_please) { _: DialogInterface?, _: Int -> viewModel.inputs.signupToGamesNewsletterClick() }
+                    .setNegativeButton(R.string.project_checkout_games_alert_no_thanks) { _: DialogInterface?, _: Int -> }
+                builder.show()
+            }
+        )
     }
 
     private fun showRatingDialog() = showRatingDialogWidget()

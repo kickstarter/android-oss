@@ -18,7 +18,6 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -85,7 +84,7 @@ class SettingsActivity : AppCompatActivity() {
         )
 
         this.viewModel.outputs.avatarImageViewUrl()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url ->
                 Picasso.get().load(url).transform(CircleTransformation())
                     .into(binding.profilePictureImageView)
@@ -109,16 +108,19 @@ class SettingsActivity : AppCompatActivity() {
             .addToDisposable(disposables)
 
         this.viewModel.outputs.userNameTextViewText()
-            .compose(Transformers.observeForUIV2())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.nameTextView.text = it }
             .addToDisposable(disposables)
 
-        this.viewModel.isUserPresent.subscribe { isPresent ->
-            binding.editProfileRow.isGone = !BuildConfig.DEBUG || !isPresent
-            binding.accountRow.isGone = !isPresent
-            binding.notificationAndNewsletterContainer.isGone = !isPresent
-            binding.logOutRow.isGone = !isPresent
-        }.addToDisposable(disposables)
+        this.viewModel.isUserPresent
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { isPresent ->
+                binding.editProfileRow.isGone = !BuildConfig.DEBUG || !isPresent
+                binding.accountRow.isGone = !isPresent
+                binding.notificationAndNewsletterContainer.isGone = !isPresent
+                binding.logOutRow.isGone = !isPresent
+            }
+            .addToDisposable(disposables)
 
         binding.accountRow.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))

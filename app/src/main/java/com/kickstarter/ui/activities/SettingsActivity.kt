@@ -113,12 +113,15 @@ class SettingsActivity : AppCompatActivity() {
             .subscribe { binding.nameTextView.text = it }
             .addToDisposable(disposables)
 
-        this.viewModel.isUserPresent.subscribe { isPresent ->
-            binding.editProfileRow.isGone = !BuildConfig.DEBUG || !isPresent
-            binding.accountRow.isGone = !isPresent
-            binding.notificationAndNewsletterContainer.isGone = !isPresent
-            binding.logOutRow.isGone = !isPresent
-        }.addToDisposable(disposables)
+        this.viewModel.isUserPresent
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { isPresent ->
+                binding.editProfileRow.isGone = !BuildConfig.DEBUG || !isPresent
+                binding.accountRow.isGone = !isPresent
+                binding.notificationAndNewsletterContainer.isGone = !isPresent
+                binding.logOutRow.isGone = !isPresent
+            }
+            .addToDisposable(disposables)
 
         binding.accountRow.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))

@@ -18,7 +18,6 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils

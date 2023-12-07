@@ -1,51 +1,55 @@
 package com.kickstarter.ui.viewholders
 
+import androidx.core.view.isGone
 import com.kickstarter.databinding.MessageViewBinding
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Message
 import com.kickstarter.viewmodels.MessageHolderViewModel
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class MessageViewHolder(private val binding: MessageViewBinding) : KSViewHolder(binding.root) {
     private val viewModel = MessageHolderViewModel.ViewModel(environment())
+    private val disposables = CompositeDisposable()
 
     init {
         viewModel.outputs.deliveryStatusTextViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messageDeliveryStatusTextView))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding.messageDeliveryStatusTextView.isGone = it }
+                .addToDisposable(disposables)
 
         viewModel.outputs.messageBodyRecipientCardViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messageBodyRecipientCardView))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding.messageBodyRecipientCardView.isGone = it }
+                .addToDisposable(disposables)
 
         viewModel.outputs.messageBodyRecipientTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding.messageBodyRecipientTextView.text = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding.messageBodyRecipientTextView.text = it }
+                .addToDisposable(disposables)
 
         viewModel.outputs.messageBodySenderCardViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messageBodySenderCardView))
+                .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.messageBodySenderCardView.isGone = it }
+                .addToDisposable(disposables)
 
         viewModel.outputs.messageBodySenderTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messageBodySenderTextView.text = it }
+                .addToDisposable(disposables)
 
         viewModel.outputs.participantAvatarImageHidden()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messageSenderAvatarImageView))
+                .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.messageSenderAvatarImageView.isGone = it }
+                .addToDisposable(disposables)
 
         viewModel.outputs.participantAvatarImageUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setParticipantAvatarImageView(it) }
+                .addToDisposable(disposables)
     }
 
     @Throws(Exception::class)

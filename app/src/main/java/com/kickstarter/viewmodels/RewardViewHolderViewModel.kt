@@ -203,7 +203,8 @@ interface RewardViewHolderViewModel {
                         this.ksCurrency
                     )
                 }
-                .subscribe(this.minimumAmountTitle)
+                .subscribe { this.minimumAmountTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             val userCreatedProject = this.currentUser.observable()
                 .compose<Pair<KsOptional<User>?, Project>>(combineLatestPair(project))
@@ -213,7 +214,8 @@ interface RewardViewHolderViewModel {
                 .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
                 .map { buttonIsGone(it.first.first, it.first.second, it.second) }
                 .distinctUntilChanged()
-                .subscribe(this.buttonIsGone)
+                .subscribe { this.buttonIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
@@ -226,7 +228,8 @@ interface RewardViewHolderViewModel {
             projectAndReward
                 .map { it.first }
                 .map { it.currency() == it.currentCurrency() }
-                .subscribe(this.conversionIsGone)
+                .subscribe { this.conversionIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map {
@@ -238,7 +241,8 @@ interface RewardViewHolderViewModel {
                         true
                     )
                 }
-                .subscribe(this.conversion)
+                .subscribe { this.conversion.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .filter { RewardUtils.isNoReward(it.second) }
@@ -249,18 +253,21 @@ interface RewardViewHolderViewModel {
                         else -> R.string.Back_it_because_you_believe_in_it
                     }
                 }
-                .subscribe(this.descriptionForNoReward)
+                .subscribe { this.descriptionForNoReward.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) }
                 .filter { it.description().isNotNull() }
-                .map { it.description() }
-                .subscribe(this.descriptionForReward)
+                .map { requireNotNull(it.description()) }
+                .subscribe { this.descriptionForReward.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
                 .distinctUntilChanged()
-                .subscribe(this.descriptionIsGone)
+                .subscribe { this.descriptionIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { shouldContinueFlow(it.first, it.second) }
@@ -274,44 +281,56 @@ interface RewardViewHolderViewModel {
                 .map { it.first.isLive && RewardUtils.isLimited(it.second) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .subscribe(this.remainingIsGone)
+                .subscribe { this.remainingIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isLimited(it) }
                 .map { it.remaining() ?: -1 }
-                .subscribe(this.remaining)
+                .subscribe { this.remaining.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isItemized(it) }
-                .map { it.rewardsItems() }
-                .subscribe(this.rewardItems)
+                .filter { it.rewardsItems().isNotNull() }
+                .map { requireNotNull(it.rewardsItems()) }
+                .subscribe { this.rewardItems.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { RewardUtils.isItemized(it) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .subscribe(this.rewardItemsAreGone)
+                .subscribe { this.rewardItemsAreGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
-                .subscribe(this.reward)
+                .subscribe { this.reward.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { it.hasAddons() }
-                .subscribe(this.addOnsAvailable)
+                .subscribe { this.addOnsAvailable.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { expirationDateIsGone(it.first, it.second) }
                 .distinctUntilChanged()
-                .subscribe(this.endDateSectionIsGone)
+                .subscribe { this.endDateSectionIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
                 .compose<Pair<Project, Reward>>(takeWhenV2(this.rewardClicked))
-                .subscribe(this.showFragment)
+                .subscribe { this.showFragment.onNext(it) }
+                .addToDisposable(disposables)
 
             this.projectDataAndReward
                 .filter { it.first.project().isLive && !it.first.project().isBacking() }
                 .compose(takeWhenV2(this.rewardClicked))
+                .filter {
+                    PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second).isNotNull()
+                }
                 .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
                 .subscribe {
                     environment.analytics()?.trackSelectRewardCTA(it)
@@ -327,7 +346,8 @@ interface RewardViewHolderViewModel {
                         else -> R.string.Pledge_without_a_reward
                     }
                 }
-                .subscribe(this.titleForNoReward)
+                .subscribe { this.titleForNoReward.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { it.first.backing()?.isBacked(it.second) ?: false }
@@ -338,19 +358,23 @@ interface RewardViewHolderViewModel {
 
             reward
                 .filter { RewardUtils.isReward(it) }
-                .map { it.title() }
-                .subscribe(this.titleForReward)
+                .filter { it.title().isNotNull() }
+                .map { requireNotNull(it.title()) }
+                .subscribe { this.titleForReward.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
                 .distinctUntilChanged()
-                .subscribe(this.titleIsGone)
+                .subscribe { this.titleIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isShippable(it) }
-                .map { RewardUtils.shippingSummary(it) }
-                .filter { it.isNotNull() }
-                .subscribe(this.shippingSummary)
+                .filter { RewardUtils.shippingSummary(it).isNotNull() }
+                .map { requireNotNull(RewardUtils.shippingSummary(it)) }
+                .subscribe { this.shippingSummary.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { !RewardUtils.isShippable(it) }
@@ -365,15 +389,17 @@ interface RewardViewHolderViewModel {
             reward
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
-                .map { it.localReceiptLocation()?.displayableName() }
-                .filter { it.isNotNull() }
-                .subscribe(this.localPickUpName)
+                .filter { it.localReceiptLocation()?.displayableName().isNotNull() }
+                .map { requireNotNull(it.localReceiptLocation()?.displayableName()) }
+                .subscribe { this.localPickUpName.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { it.first.isLive && RewardUtils.isShippable(it.second) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .subscribe(this.shippingSummaryIsGone)
+                .subscribe { this.shippingSummaryIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             Observable.combineLatest(
                 this.endDateSectionIsGone,
@@ -382,31 +408,38 @@ interface RewardViewHolderViewModel {
                 this.addOnsAvailable
             ) { endDateGone, remainingGone, shippingGone, addOnsAvailable -> endDateGone && remainingGone && shippingGone && !addOnsAvailable }
                 .distinctUntilChanged()
-                .subscribe(this.limitContainerIsGone)
+                .subscribe { this.limitContainerIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { RewardUtils.isNoReward(it) || !RewardUtils.hasBackers(it) }
                 .distinctUntilChanged()
-                .subscribe(this.backersCountIsGone)
+                .subscribe { this.backersCountIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) && RewardUtils.hasBackers(it) }
-                .map { it.backersCount() as Int }
-                .subscribe(this.backersCount)
+                .filter { it.backersCount().isNotNull() }
+                .map { requireNotNull(it.backersCount()) }
+                .subscribe { this.backersCount.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { RewardUtils.isNoReward(it) || it.estimatedDeliveryOn().isNull() }
                 .distinctUntilChanged()
-                .subscribe(this.estimatedDeliveryIsGone)
+                .subscribe { this.estimatedDeliveryIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull() }
                 .map<DateTime> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
-                .subscribe(this.estimatedDelivery)
+                .subscribe { this.estimatedDelivery.onNext(it) }
+                .addToDisposable(disposables)
 
             reward.map { RewardUtils.isNoReward(it) }
-                .subscribe(this.isMinimumPledgeAmountGone)
+                .subscribe { this.isMinimumPledgeAmountGone.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         /**

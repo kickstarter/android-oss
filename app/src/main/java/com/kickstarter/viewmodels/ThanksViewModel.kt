@@ -140,7 +140,7 @@ interface ThanksViewModel {
                 .map { "games" == it.slug() }
 
             val hasSeenGamesNewsletterDialog = Observable.just(
-                hasSeenGamesNewsletterPreference?.get()
+                hasSeenGamesNewsletterPreference?.get() ?: false
             ).filter { it.isNotNull() }
                 .map { it }
 

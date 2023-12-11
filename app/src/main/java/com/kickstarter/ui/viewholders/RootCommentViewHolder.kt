@@ -32,37 +32,37 @@ class RootCommentViewHolder(
             .subscribe { commentCardData ->
                 CommentCardStatus.values()
                     .firstOrNull { commentCardData.commentCardState == it.commentCardStatus }?.let {
-                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE || it == CommentCardStatus.FLAGGED_COMMENT) {
-                        binding.commentsCardView.setCommentCardStatus(it)
+                        if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE || it == CommentCardStatus.FLAGGED_COMMENT) {
+                            binding.commentsCardView.setCommentCardStatus(it)
 
-                        context().getString(R.string.This_person_canceled_their_pledge)
-                            .also { message ->
-                                binding.commentsCardView.setCancelPledgeMessage(message)
-                            }
+                            context().getString(R.string.This_person_canceled_their_pledge)
+                                .also { message ->
+                                    binding.commentsCardView.setCancelPledgeMessage(message)
+                                }
 
-                        binding.commentsCardView.setCommentCardClickedListener(object :
-                            OnCommentCardClickedListener {
-                            override fun onRetryViewClicked(view: View) {
-                            }
+                            binding.commentsCardView.setCommentCardClickedListener(object :
+                                    OnCommentCardClickedListener {
+                                    override fun onRetryViewClicked(view: View) {
+                                    }
 
-                            override fun onReplyButtonClicked(view: View) {
-                            }
+                                    override fun onReplyButtonClicked(view: View) {
+                                    }
 
-                            override fun onFlagButtonClicked(view: View) {
-                            }
+                                    override fun onFlagButtonClicked(view: View) {
+                                    }
 
-                            override fun onViewRepliesButtonClicked(view: View) {
-                            }
+                                    override fun onViewRepliesButtonClicked(view: View) {
+                                    }
 
-                            override fun onCommentGuideLinesClicked(view: View) {
-                            }
+                                    override fun onCommentGuideLinesClicked(view: View) {
+                                    }
 
-                            override fun onShowCommentClicked(view: View) {
-                                vm.inputs.onShowCanceledPledgeRootCommentClicked()
-                            }
-                        })
+                                    override fun onShowCommentClicked(view: View) {
+                                        vm.inputs.onShowCanceledPledgeRootCommentClicked()
+                                    }
+                                })
+                        }
                     }
-                }
 
                 commentCardData?.comment?.let { comment ->
                     binding.commentsCardView.setCommentUserName(comment.author().name())

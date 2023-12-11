@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.PairUtils

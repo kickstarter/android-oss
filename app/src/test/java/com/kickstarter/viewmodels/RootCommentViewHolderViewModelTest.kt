@@ -3,13 +3,16 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 import type.CommentBadge
 
 class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
@@ -18,12 +21,17 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     private val bindRootComment = TestSubscriber<CommentCardData>()
     private val showCanceledPledgeRootCommentClicked = TestSubscriber<CommentCardStatus>()
     private val authorBadge = TestSubscriber<CommentCardBadge>()
+    private val disposables = CompositeDisposable()
 
     private fun setupEnvironment(environment: Environment) {
         this.vm = RootCommentViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.bindRootComment().subscribe(bindRootComment)
-        this.vm.outputs.authorBadge().subscribe(authorBadge)
-        this.vm.outputs.showCanceledPledgeRootComment().subscribe(showCanceledPledgeRootCommentClicked)
+        this.vm.outputs.bindRootComment().subscribe { bindRootComment.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.authorBadge().subscribe { authorBadge.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.showCanceledPledgeRootComment()
+            .subscribe { showCanceledPledgeRootCommentClicked.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -41,7 +49,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
             assertTrue(it.comment?.body() == commentCardData.comment?.body())
             assertTrue(it.comment?.authorCanceledPledge() == commentCardData.comment?.authorCanceledPledge())
             assertTrue(it.commentCardState == commentCardData.commentCardState)
-        }
+        }.addToDisposable(disposables)
     }
 
     @Test
@@ -52,7 +60,8 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
             .id(1)
             .build()
 
-        val comment = CommentFactory.commentWithCanceledPledgeAuthor(currentUser).toBuilder().id(1).body("comment1").build()
+        val comment = CommentFactory.commentWithCanceledPledgeAuthor(currentUser).toBuilder().id(1)
+            .body("comment1").build()
         val commentCardData1 = CommentCardData.builder()
             .comment(comment)
             .commentCardState(CommentCardStatus.CANCELED_PLEDGE_MESSAGE.commentCardStatus)
@@ -63,7 +72,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
         vm.outputs.bindRootComment().take(0).subscribe {
             assertTrue(it.comment?.body() == commentCardData1.comment?.body())
             assertTrue(it.commentCardState == commentCardData1.commentCardState)
-        }
+        }.addToDisposable(disposables)
 
         this.vm.inputs.onShowCanceledPledgeRootCommentClicked()
 
@@ -120,7 +129,10 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setupEnvironment(environment)
-        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.COLLABORATOR.rawValue())
+        val authorBadges = listOf<String>(
+            CommentBadge.SUPERBACKER.rawValue(),
+            CommentBadge.COLLABORATOR.rawValue()
+        )
         val author = UserFactory.user().toBuilder().id(2).build()
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
         val commentCardData = CommentCardData.builder()
@@ -157,7 +169,8 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator() {
         setupEnvironment(environment())
-        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())
+        val authorBadges =
+            listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())
         val author = UserFactory.user().toBuilder().id(2).build()
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
         val commentCardData = CommentCardData.builder()
@@ -168,5 +181,10 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData)
 
         this.authorBadge.assertValue(CommentCardBadge.CREATOR)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

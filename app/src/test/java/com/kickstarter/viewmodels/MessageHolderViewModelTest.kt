@@ -2,11 +2,14 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.MessageFactory.message
 import com.kickstarter.mock.factories.UserFactory.user
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class MessageHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: MessageHolderViewModel.ViewModel
@@ -17,19 +20,23 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
     private val participantAvatarImageHidden = TestSubscriber<Boolean>()
     private val participantAvatarImageUrl = TestSubscriber<String>()
     private val deliveryStatusTextViewIsGone = TestSubscriber<Boolean>()
+    private val disposables = CompositeDisposable()
+
+    @After
+    fun clear() {
+        disposables.clear()
+    }
 
     private fun setUpEnvironment(environment: Environment) {
         vm = MessageHolderViewModel.ViewModel(environment)
 
-        vm.outputs.messageBodyRecipientCardViewIsGone().subscribe(
-            messageBodyRecipientCardViewIsGone
-        )
-        vm.outputs.messageBodyRecipientTextViewText().subscribe(messageBodyRecipientTextViewText)
-        vm.outputs.messageBodySenderCardViewIsGone().subscribe(messageBodySenderCardViewIsGone)
-        vm.outputs.messageBodySenderTextViewText().subscribe(messageBodySenderTextViewText)
-        vm.outputs.participantAvatarImageHidden().subscribe(participantAvatarImageHidden)
-        vm.outputs.participantAvatarImageUrl().subscribe(participantAvatarImageUrl)
-        vm.outputs.deliveryStatusTextViewIsGone().subscribe(deliveryStatusTextViewIsGone)
+        vm.outputs.messageBodyRecipientCardViewIsGone().subscribe { messageBodyRecipientCardViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageBodyRecipientTextViewText().subscribe { messageBodyRecipientTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageBodySenderCardViewIsGone().subscribe { messageBodySenderCardViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageBodySenderTextViewText().subscribe { messageBodySenderTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.participantAvatarImageHidden().subscribe { participantAvatarImageHidden.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.participantAvatarImageUrl().subscribe { participantAvatarImageUrl.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.deliveryStatusTextViewIsGone().subscribe { deliveryStatusTextViewIsGone.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -41,9 +48,9 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
             .sender(sender)
             .build()
 
-        val currentUser = MockCurrentUser(recipient)
+        val currentUser = MockCurrentUserV2(recipient)
 
-        setUpEnvironment(environment().toBuilder().currentUser(currentUser).build())
+        setUpEnvironment(environment().toBuilder().currentUserV2(currentUser).build())
 
         vm.inputs.configureWith(message)
 
@@ -69,9 +76,9 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
             .sender(sender)
             .build()
 
-        val currentUser = MockCurrentUser(sender)
+        val currentUser = MockCurrentUserV2(sender)
 
-        setUpEnvironment(environment().toBuilder().currentUser(currentUser).build())
+        setUpEnvironment(environment().toBuilder().currentUserV2(currentUser).build())
 
         vm.inputs.configureWith(message)
 
@@ -96,8 +103,8 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
             .recipient(recipient)
             .sender(sender)
             .build()
-        val currentUser = MockCurrentUser(recipient)
-        setUpEnvironment(environment().toBuilder().currentUser(currentUser).build())
+        val currentUser = MockCurrentUserV2(recipient)
+        setUpEnvironment(environment().toBuilder().currentUserV2(currentUser).build())
         vm.inputs.configureWith(message)
 
         // Avatar shown for sender who is the creator.
@@ -113,8 +120,8 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
             .recipient(recipient)
             .sender(sender)
             .build()
-        val currentUser = MockCurrentUser(sender)
-        setUpEnvironment(environment().toBuilder().currentUser(currentUser).build())
+        val currentUser = MockCurrentUserV2(sender)
+        setUpEnvironment(environment().toBuilder().currentUserV2(currentUser).build())
         vm.inputs.configureWith(message)
 
         // Avatar hidden for sender who is the backer.

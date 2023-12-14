@@ -2,15 +2,15 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Message
 import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.MessageViewHolder
-import rx.Observable
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 interface MessageHolderViewModel {
     interface Inputs {
@@ -48,7 +48,7 @@ interface MessageHolderViewModel {
         ActivityViewModel<MessageViewHolder?>(environment),
         Inputs,
         Outputs {
-        private val currentUser: CurrentUserType?
+        private val currentUser: CurrentUserTypeV2?
         private val isLastPosition = PublishSubject.create<Boolean>()
         private val message = PublishSubject.create<Message>()
         private val deliveryStatusTextViewIsGone: Observable<Boolean>
@@ -63,7 +63,7 @@ interface MessageHolderViewModel {
         val outputs: Outputs = this
 
         init {
-            currentUser = requireNotNull(environment.currentUser())
+            currentUser = requireNotNull(environment.currentUserV2())
 
             val messageAndCurrentUserIsSender =
                 Observable.combineLatest<Message, User, Pair<Message, User>>(

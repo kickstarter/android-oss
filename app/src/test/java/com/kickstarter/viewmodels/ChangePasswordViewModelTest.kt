@@ -7,68 +7,75 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class ChangePasswordViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ChangePasswordViewModel.ChangePasswordViewModel
+    private lateinit var vm: ChangePasswordViewModel
 
-    private val error = TestSubscriber<String>()
-    private val progressBarIsVisible = TestSubscriber<Boolean>()
-    private val success = TestSubscriber<String>()
     private val currentUser = TestSubscriber<User?>()
 
-    private val disposables = CompositeDisposable()
-
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = ChangePasswordViewModel.ChangePasswordViewModel(environment)
-
-        this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
+        this.vm =
+            ChangePasswordViewModelFactory(environment).create(ChangePasswordViewModel::class.java)
     }
 
     @Test
-    fun testError() {
+    fun testError() = runTest {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                override fun updateUserPassword(
+                    currentPassword: String,
+                    newPassword: String,
+                    confirmPassword: String
+                ): Observable<UpdateUserPasswordMutation.Data> {
                     return Observable.error(Exception("Oops"))
                 }
             }).build()
         )
 
-        this.vm.inputs.currentPassword("password")
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
-        this.error.assertValue("Oops")
+        val errorStates = mutableListOf<String>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
+            vm.error.toList(errorStates)
+        }
+
+        // - First empty emission due the initialization in ChangePasswordViewModel:23
+        assertEquals(listOf("", "Oops"), errorStates)
     }
 
     @Test
-    fun testProgressBarIsVisible() {
+    fun progressBarIsVisible() = runTest {
         setUpEnvironment(environment())
 
-        this.vm.inputs.currentPassword("password")
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
-        this.progressBarIsVisible.assertValues(true, false)
+        val loadingStates = mutableListOf<Boolean>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
+            vm.isLoading.toList(loadingStates)
+        }
+
+        assertEquals(listOf(false, true, false), loadingStates)
     }
 
     @Test
-    fun testSuccess() {
+    fun testSuccess() = runTest {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                override fun updateUserPassword(
+                    currentPassword: String,
+                    newPassword: String,
+                    confirmPassword: String
+                ): Observable<UpdateUserPasswordMutation.Data> {
                     return Observable.just(
                         UpdateUserPasswordMutation.Data(
                             UpdateUserPasswordMutation.UpdateUserAccount(
@@ -81,15 +88,17 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
             }).build()
         )
 
-        this.vm.inputs.currentPassword("password")
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
-        this.success.assertValue("test@email.com")
+        val successStates = mutableListOf<String>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
+            vm.success.toList(successStates)
+        }
+
+        assertEquals(listOf("", "test@email.com"), successStates)
     }
 
     @Test
-    fun userLoggedIn_whenChangePasswordError_userNotReset() {
+    fun userLoggedIn_whenChangePasswordError_userNotReset() = runTest{
         // - create MockTracking client with user logged in
         val user = UserFactory.user()
         val trackingClient = getMockClientWithUser(user)
@@ -109,17 +118,19 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.inputs.currentPassword("password")
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
-        this.error.assertValue("Oops")
+        val errorStates = mutableListOf<String>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
+            vm.error.toList(errorStates)
+        }
 
+        // - First empty emission due the initialization in ChangePasswordViewModel:23
+        assertEquals(listOf("", "Oops"), errorStates)
         currentUser.assertValue(user)
     }
 
     @Test
-    fun serLoggedIn_whenChangePasswordSuccess_userReset() {
+   fun serLoggedIn_whenChangePasswordSuccess_userReset() = runTest {
         // - create MockTracking client with user logged in
         val user = UserFactory.user()
         val trackingClient = getMockClientWithUser(user)
@@ -131,7 +142,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
                     UpdateUserPasswordMutation.Data(
                         UpdateUserPasswordMutation.UpdateUserAccount(
                             "",
-                            UpdateUserPasswordMutation.User("", "test@email.com", false, false)
+                            UpdateUserPasswordMutation.User("", "new22test@email.com", false, false)
                         )
                     )
                 )
@@ -146,12 +157,13 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.inputs.currentPassword("password")
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.changePasswordClicked()
-        this.success.assertValue("test@email.com")
+        val successStates = mutableListOf<String>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
+            vm.success.toList(successStates)
+        }
 
+        assertEquals(listOf("", "new22test@email.com"), successStates)
         currentUser.assertValues(user, null)
     }
 

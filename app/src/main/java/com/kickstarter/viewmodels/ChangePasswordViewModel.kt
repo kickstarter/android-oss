@@ -1,165 +1,62 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserPasswordMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
-import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
-import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
-import com.kickstarter.libs.utils.extensions.validPassword
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 
-interface ChangePasswordViewModel {
+class ChangePasswordViewModel(val environment: Environment) : ViewModel() {
 
-    interface Inputs {
-        /** Call when the user clicks the change password button. */
-        fun changePasswordClicked()
+    private val mutableError = MutableStateFlow("")
+    val error: StateFlow<String> get() = mutableError.asStateFlow()
 
-        /** Call when the current password field changes.  */
-        fun confirmPassword(confirmPassword: String)
+    private val mutableSuccess = MutableStateFlow("")
+    val success: StateFlow<String> get() = mutableSuccess.asStateFlow()
 
-        /** Call when the current password field changes.  */
-        fun currentPassword(currentPassword: String)
+    private val mutableIsLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = mutableIsLoading.asStateFlow()
 
-        /** Call when the new password field changes.  */
-        fun newPassword(newPassword: String)
-    }
+    private val apolloClient = requireNotNull(this.environment.apolloClientV2())
+    private val analytics = this.environment.analytics()
 
-    interface Outputs {
-        /** Emits when the password update was unsuccessful. */
-        fun error(): Observable<String>
-
-        /** Emits when the progress bar should be visible. */
-        fun progressBarIsVisible(): Observable<Boolean>
-
-        /** Emits when the password update was successful. */
-        fun success(): Observable<String>
-    }
-
-    class ChangePasswordViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
-
-        private val changePasswordClicked = PublishSubject.create<Unit>()
-        private val confirmPassword = PublishSubject.create<String>()
-        private val currentPassword = PublishSubject.create<String>()
-        private val newPassword = PublishSubject.create<String>()
-
-        private val error = BehaviorSubject.create<String>()
-        private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
-        private val success = BehaviorSubject.create<String>()
-
-        val inputs: Inputs = this
-        val outputs: Outputs = this
-
-        private val apolloClient = requireNotNull(this.environment.apolloClientV2())
-        private val analytics = this.environment.analytics()
-
-        private val disposables = CompositeDisposable()
-
-        init {
-
-            val changePassword = Observable.combineLatest(
-                this.currentPassword.startWith(""),
-                this.newPassword.startWith(""),
-                this.confirmPassword.startWith("")
-            ) { current, new, confirm -> ChangePassword(current, new, confirm) }
-
-            val changePasswordNotification = changePassword
-                .compose(takeWhenV2(this.changePasswordClicked))
-                .switchMap { cp -> submit(cp).materialize() }
-                .share()
-
-            changePasswordNotification
-                .compose(errorsV2())
-                .subscribe { error ->
-                    error?.localizedMessage?.let { message ->
-                        this.error.onNext(message)
-                    }
+    fun updatePassword(oldPassword: String, newPassword: String) {
+        viewModelScope.launch {
+            apolloClient.updateUserPassword(oldPassword, newPassword, newPassword)
+                .asFlow()
+                .onStart {
+                    mutableIsLoading.emit(true)
                 }
-                .addToDisposable(disposables)
-
-            changePasswordNotification
-                .compose(valuesV2())
-                .map { it.updateUserAccount()?.user()?.email() }
-                .subscribe { email ->
-                    this.analytics?.reset()
-                    email?.let {
-                        this.success.onNext(it)
-                    }
+                .onCompletion {
+                    mutableIsLoading.emit(false)
                 }
-                .addToDisposable(disposables)
-        }
-
-        private fun submit(changePassword: ChangePassword): Observable<UpdateUserPasswordMutation.Data> {
-            return this.apolloClient.updateUserPassword(changePassword.currentPassword, changePassword.newPassword, changePassword.confirmPassword)
-                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-        }
-
-        fun updatePasswordData(oldPassword: String, newPassword: String) {
-            this.currentPassword.onNext(oldPassword)
-            this.newPassword.onNext(newPassword)
-            this.confirmPassword.onNext(newPassword)
-        }
-
-        fun resetError() {
-            this.error.onNext("")
-        }
-
-        override fun changePasswordClicked() {
-            this.changePasswordClicked.onNext(Unit)
-        }
-
-        override fun confirmPassword(confirmPassword: String) {
-            this.confirmPassword.onNext(confirmPassword)
-        }
-
-        override fun currentPassword(currentPassword: String) {
-            this.currentPassword.onNext(currentPassword)
-        }
-
-        override fun newPassword(newPassword: String) {
-            this.newPassword.onNext(newPassword)
-        }
-
-        override fun error(): Observable<String> {
-            return this.error
-        }
-
-        override fun progressBarIsVisible(): Observable<Boolean> {
-            return this.progressBarIsVisible
-        }
-
-        override fun success(): Observable<String> {
-            return this.success
-        }
-
-        data class ChangePassword(val currentPassword: String, val newPassword: String, val confirmPassword: String) {
-            fun isValid(): Boolean {
-                return this.currentPassword.validPassword() &&
-                    this.newPassword.validPassword() &&
-                    this.confirmPassword.validPassword() &&
-                    this.confirmPassword == this.newPassword
-            }
-
-            fun warning(): Int =
-                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
-        }
-
-        override fun onCleared() {
-            disposables.clear()
-            super.onCleared()
+                .catch {
+                    mutableError.emit(it.message ?: "")
+                }
+                .collect {
+                    analytics?.reset()
+                    mutableSuccess.emit(it.updateUserAccount()?.user()?.email() ?: "")
+                }
         }
     }
 
-    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ChangePasswordViewModel(environment) as T
+    fun resetError() {
+        viewModelScope.launch {
+            mutableError.emit("")
         }
+    }
+}
+
+class ChangePasswordViewModelFactory(private val environment: Environment) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return ChangePasswordViewModel(environment) as T
     }
 }

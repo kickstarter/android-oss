@@ -150,7 +150,7 @@ android {
             useLegacyPackaging = true
         }
         resources {
-            excludes += ['META-INF/LICENSE.txt', 'LICENSE.txt', 'META-INF/AL2.0', 'META-INF/LGPL2.1']
+            excludes += ['META-INF/LICENSE.txt', 'LICENSE.txt', 'META-INF/AL2.0', 'META-INF/LGPL2.1', 'DebugProbesKt.bin']
         }
     }
 
@@ -287,6 +287,12 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.7.2'
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.0.1'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.30.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.8.0-RC"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC"
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'

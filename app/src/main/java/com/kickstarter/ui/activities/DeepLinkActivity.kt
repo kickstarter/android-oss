@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnticipateInterpolator
+import androidx.activity.ComponentActivity
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
@@ -24,8 +25,7 @@ import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(DeepLinkViewModel.ViewModel::class)
-class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
+class DeepLinkActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

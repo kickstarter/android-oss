@@ -24,7 +24,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 
 class DeepLinkViewModelTest : KSRobolectricTestCase() {
-    lateinit var vm: DeepLinkViewModel.ViewModel
+    lateinit var vm: DeepLinkViewModel.DeepLinkViewModel
     private val startBrowser = TestSubscriber<String>()
     private val startDiscoveryActivity = TestSubscriber<Void>()
     private val startProjectActivity = TestSubscriber<Uri>()

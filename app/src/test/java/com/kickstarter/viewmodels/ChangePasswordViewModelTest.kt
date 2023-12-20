@@ -98,7 +98,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun userLoggedIn_whenChangePasswordError_userNotReset() = runTest{
+    fun userLoggedIn_whenChangePasswordError_userNotReset() = runTest {
         // - create MockTracking client with user logged in
         val user = UserFactory.user()
         val trackingClient = getMockClientWithUser(user)
@@ -130,7 +130,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-   fun serLoggedIn_whenChangePasswordSuccess_userReset() = runTest {
+    fun serLoggedIn_whenChangePasswordSuccess_userReset() = runTest {
         // - create MockTracking client with user logged in
         val user = UserFactory.user()
         val trackingClient = getMockClientWithUser(user)

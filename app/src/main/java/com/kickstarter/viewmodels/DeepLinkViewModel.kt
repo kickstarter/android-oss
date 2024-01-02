@@ -7,8 +7,6 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
@@ -35,9 +33,7 @@ import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApiClientTypeV2
-import com.kickstarter.ui.activities.DeepLinkActivity
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -45,9 +41,11 @@ import okhttp3.Response
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.lang.Exception
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -85,7 +83,7 @@ interface DeepLinkViewModel {
         fun startPreLaunchProjectActivity(): Observable<Project>
     }
 
-    class DeepLinkViewModel(environment: Environment, intent : Intent? = null) :
+    class DeepLinkViewModel(environment: Environment, private val intent : Intent?) :
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
@@ -108,6 +106,7 @@ interface DeepLinkViewModel {
         private val ffClient = requireNotNull(environment.featureFlagClient())
 
         private val disposables = CompositeDisposable()
+        private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
         val outputs: Outputs = this
 
@@ -128,7 +127,6 @@ interface DeepLinkViewModel {
         }
 
         init {
-            fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
@@ -161,11 +159,17 @@ interface DeepLinkViewModel {
                 .filter { it.isMainPage() }
 
             mainPageUri
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             projectFromEmail
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startProjectActivity.onNext(it)
                 }.addToDisposable(disposables)
@@ -178,14 +182,16 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { lastPathSegmentIsProjects(it) }
                 .compose(Transformers.ignoreValuesV2())
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
 
             projectObservable = uriFromIntent
+                .filter { ProjectIntentMapper.paramFromUri(it).isNotNull() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .switchMap {
                     getProject(it)
                         .doOnError {
@@ -223,6 +229,9 @@ interface DeepLinkViewModel {
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(Transformers.combineLatestPair(projectObservable))
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivity)
                 }.addToDisposable(disposables)
@@ -234,6 +243,9 @@ interface DeepLinkViewModel {
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(Transformers.combineLatestPair(projectObservable))
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivityToSave)
                 }.addToDisposable(disposables)
@@ -244,6 +256,9 @@ interface DeepLinkViewModel {
                     it.isProjectCommentUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startProjectActivityForComment.onNext(it)
                 }.addToDisposable(disposables)
@@ -257,6 +272,9 @@ interface DeepLinkViewModel {
                     !it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startProjectActivityForUpdate.onNext(it)
                 }.addToDisposable(disposables)
@@ -267,6 +285,9 @@ interface DeepLinkViewModel {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startProjectActivityForCommentToUpdate.onNext(it)
                 }.addToDisposable(disposables)
@@ -274,6 +295,9 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { it.isNotNull() }
                 .filter { it.isSettingsUrl() }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)
@@ -289,12 +313,18 @@ interface DeepLinkViewModel {
                 .distinctUntilChanged()
                 .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     refreshUserAndFinishActivity(it, currentUser)
                 }.addToDisposable(disposables)
 
             projectObservable
                 .filter { it.backing() == null || !it.canUpdateFulfillment() }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -308,6 +338,9 @@ interface DeepLinkViewModel {
                         }
                         .distinctUntilChanged()
                 }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -316,6 +349,9 @@ interface DeepLinkViewModel {
                 .filter { it.isNotNull() }
                 .filter { it.isCheckoutUri(webEndpoint) }
                 .map { appendRefTagIfNone(it) }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startProjectActivityWithCheckout.onNext(it)
                 }.addToDisposable(disposables)
@@ -339,6 +375,9 @@ interface DeepLinkViewModel {
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
                 .filter { !TextUtils.isEmpty(it) }
+                    .onErrorResumeNext { error: Throwable ->
+                        throw CompositeException(error, Exception())
+                    }
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
@@ -390,6 +429,11 @@ interface DeepLinkViewModel {
             return apiClientType.updateUserSettings(updatedUser)
                 .materialize()
                 .share()
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun startBrowser(): Observable<String> = startBrowser

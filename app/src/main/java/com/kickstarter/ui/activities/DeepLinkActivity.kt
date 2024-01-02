@@ -8,24 +8,32 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils.commentId
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.UrlUtils.saveFlag
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 
-class DeepLinkActivity : ComponentActivity() {
+class DeepLinkActivity : AppCompatActivity() {
+
+    private lateinit var viewModelFactory: DeepLinkViewModel.Factory
+    private val viewModel: DeepLinkViewModel.DeepLinkViewModel by viewModels { viewModelFactory }
+
+    private var disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -42,64 +50,63 @@ class DeepLinkActivity : ComponentActivity() {
             }
         }
 
-        // - initialized on super will never be null within OnCreate context
-        val viewModel = requireNotNull(this.viewModel)
+        this.getEnvironment()?.let {
+            viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
+        }
 
         viewModel.outputs.startBrowser()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { url: String -> startBrowser(url) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { url: String -> startBrowser(url) }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startDiscoveryActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startDiscoveryActivity() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startDiscoveryActivity() }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { uri: Uri -> startProjectActivity(uri) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { uri: Uri -> startProjectActivity(uri) }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityToSave()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivityForSave(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startProjectActivityForSave(it) }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForComment()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivityForComment(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startProjectActivityForComment(it) }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForUpdate()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivityForUpdate(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startProjectActivityForUpdate(it) }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForCommentToUpdate()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivityForCommentToUpdate(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startProjectActivityForCommentToUpdate(it) }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForCheckout()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { uri: Uri ->
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { uri: Uri ->
                 startProjectActivityForCheckout(
                     uri
                 )
-            }
+            }.addToDisposable(disposables)
 
         viewModel.outputs.finishDeeplinkActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { finish() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { finish() }
+                .addToDisposable(disposables)
 
         viewModel.outputs.startPreLaunchProjectActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startPreLaunchProjectActivity(it, "DEEPLINK")
-            }
+            }.addToDisposable(disposables)
     }
 
     private fun projectIntent(uri: Uri): Intent {
@@ -182,5 +189,10 @@ class DeepLinkActivity : ComponentActivity() {
     private fun startBrowser(url: String) {
         ApplicationUtils.openUrlExternally(this, url)
         finish()
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 }

@@ -540,17 +540,15 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             }
 
         val environment = environment().toBuilder()
-            .apolloClientV2(mockApolloClientForBacking(project))
             .featureFlagClient(mockFeatureFlagClient)
             .build()
-
 
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
         val expectedUrl =
             "$url&ref=android_deep_link"
 
-        setUpEnvironment(environment, intentWithData(url))
+        setUpEnvironment(environment, intentWithData(url), mockApolloClientForBacking(project))
         startProjectActivityToSave.assertNoValues()
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()

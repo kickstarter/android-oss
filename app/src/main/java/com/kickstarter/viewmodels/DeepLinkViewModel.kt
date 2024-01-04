@@ -202,7 +202,6 @@ interface DeepLinkViewModel {
                 .map { it.value }
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter {
                     !it.isProjectSaveUri(webEndpoint)
                 }
@@ -237,7 +236,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectSaveUri(webEndpoint)
                 }
@@ -251,7 +249,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectCommentUri(webEndpoint)
                 }
@@ -264,7 +261,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateUri(webEndpoint)
                 }
@@ -280,7 +276,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
@@ -293,7 +288,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter { it.isSettingsUrl() }
                     .onErrorResumeNext { error: Throwable ->
                         throw CompositeException(error, Exception())
@@ -311,11 +305,6 @@ interface DeepLinkViewModel {
                 }
                 .compose(Transformers.valuesV2())
                 .distinctUntilChanged()
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     refreshUserAndFinishActivity(it, currentUser)
                 }.addToDisposable(disposables)
@@ -346,7 +335,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter { it.isCheckoutUri(webEndpoint) }
                 .map { appendRefTagIfNone(it) }
                     .onErrorResumeNext { error: Throwable ->
@@ -357,7 +345,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             val projectPreview = uriFromIntent
-                .filter { it.isNotNull() }
                 .filter { it.isProjectPreviewUri(webEndpoint) }
 
             val unsupportedDeepLink = uriFromIntent

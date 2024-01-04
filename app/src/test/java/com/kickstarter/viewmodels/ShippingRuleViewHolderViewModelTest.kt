@@ -2,23 +2,34 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: ShippingRuleViewHolderViewModel.ViewModel
 
     private val shippingRuleText = TestSubscriber.create<String>()
+    private val disposables = CompositeDisposable()
 
     private fun setupEnvironment(environment: Environment) {
         this.vm = ShippingRuleViewHolderViewModel.ViewModel(environment)
 
-        this.vm.outputs.shippingRuleText().subscribe(this.shippingRuleText)
+        this.vm.outputs.shippingRuleText()
+            .subscribe { this.shippingRuleText.onNext(it) }
+            .addToDisposable(disposables)
+    }
+
+    @After
+    fun clean() {
+        disposables.clear()
     }
 
     @Test

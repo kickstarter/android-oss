@@ -51,7 +51,7 @@ abstract class KSArrayViewHolder(private val view: View) : ActivityLifecycleType
      * Called when the ViewHolder is being detached. Subclasses should override if they need to do any work
      * when the ViewHolder is being de-allocated.
      */
-    protected fun destroy() {}
+    protected open fun destroy() {}
 
     protected fun view(): View {
         return this.view

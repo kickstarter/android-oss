@@ -1,10 +1,10 @@
 package com.kickstarter.ui.toolbars.compose
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -15,20 +15,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.ui.compose.designsystem.kds_black
-import com.kickstarter.ui.compose.designsystem.kds_celebrate_700
-import com.kickstarter.ui.compose.designsystem.kds_support_700
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun ToolBarPreview() {
-    MaterialTheme {
+    KSTheme {
         TopToolBar(
             right = { ToolbarIconButton(icon = ImageVector.vectorResource(id = R.drawable.icon__heart)) },
             middle = { ToolbarIconToggleButton(icon = ImageVector.vectorResource(id = R.drawable.icon__heart)) }
@@ -59,7 +58,7 @@ fun TopToolBar(
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = titleColor ?: kds_support_700
+                    color = titleColor ?: colors.kds_support_700
                 )
             }
         },
@@ -72,7 +71,7 @@ fun TopToolBar(
                     Icon(
                         imageVector = leftIcon,
                         contentDescription = stringResource(id = R.string.back),
-                        tint = leftIconColor ?: kds_black
+                        tint = leftIconColor ?: colors.kds_black
                     )
                 }
             } else {
@@ -82,7 +81,7 @@ fun TopToolBar(
             middle()
             right()
         },
-        backgroundColor = backgroundColor ?: colorResource(id = R.color.kds_white)
+        backgroundColor = backgroundColor ?: colors.kds_white
     )
 }
 
@@ -101,8 +100,8 @@ fun ToolbarIconToggleButton(
     checkedImageVector: ImageVector? = null,
     clickAction: () -> Unit = {},
     initialState: Boolean = false,
-    initialStateTintColor: Color = kds_black,
-    onCheckClicked: Color = kds_celebrate_700
+    initialStateTintColor: Color = colors.kds_black,
+    onCheckClicked: Color = colors.kds_celebrate_700
 ) {
     val state = remember { mutableStateOf(initialState) }
     state.value = initialState

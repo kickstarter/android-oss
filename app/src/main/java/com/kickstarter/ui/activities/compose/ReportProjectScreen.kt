@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,39 +39,46 @@ import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
 import com.kickstarter.libs.utils.extensions.parseHtmlTag
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import type.FlaggingKind
 
-@Preview(widthDp = 300, heightDp = 300)
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreviewTextLinks() {
-    MaterialTheme {
+    KSTheme {
         TextWithClickableLink(html = stringResource(id = R.string.Projects_may_not_offer))
     }
 }
 
-@Preview(widthDp = 300, heightDp = 300)
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun ReportProjectScreenPreview() {
-    MaterialTheme {
+    KSTheme {
         ReportProjectCategoryScreen(PaddingValues())
     }
 }
 
-@Preview(widthDp = 300, heightDp = 300)
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun CategoryRowPreview() {
-    MaterialTheme {
+    KSTheme {
         val list = rulesMap().values.first()
         val list2 = rulesMap().keys.first()
         CategoryRow(category = list2, rulesList = list)
     }
 }
 
-@Preview(widthDp = 300, heightDp = 300)
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun RulesListPreview() {
-    MaterialTheme {
+    KSTheme {
         val list = rulesMap().values.first()
         RulesList(rulesList = list)
     }
@@ -134,13 +143,15 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
         ) {
             Text(
                 text = rule.first.parseHtmlTag(),
-                style = MaterialTheme.typography.subtitle2.copy(
-                    fontWeight = FontWeight.Bold
+                style = typography.subheadline.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colors.kds_support_700
                 )
             )
             Text(
                 text = rule.second.parseHtmlTag(),
-                style = MaterialTheme.typography.body2
+                style = typography.body2,
+                color = colors.kds_support_700
             )
         }
         IconButton(
@@ -150,7 +161,8 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = null
+                contentDescription = null,
+                tint = colors.kds_support_700
             )
         }
     }
@@ -197,15 +209,17 @@ fun CategoryRow(
             ) {
                 Text(
                     text = category.first,
-                    style = MaterialTheme.typography.h6.copy(
-                        fontWeight = FontWeight.Bold
+                    style = typography.headline.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = colors.kds_support_700
                     )
                 )
                 if (!category.third) { // Subtitles without links
                     val text = category.second.parseHtmlTag()
                     Text(
                         text = text,
-                        style = MaterialTheme.typography.body1
+                        style = typography.body,
+                        color = colors.kds_support_700
                     )
                 } else {
                     TextWithClickableLink(
@@ -225,9 +239,10 @@ fun CategoryRow(
                     painter = painterResource(
                         id =
                         if (expanded.value) R.drawable.ic_arrow_up
-                        else R.drawable.ic_arrow_down
+                        else R.drawable.ic_arrow_down,
                     ),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = colors.kds_support_700
                 )
             }
         }
@@ -243,7 +258,7 @@ fun CategoryRow(
                     vertical = dimensionResource(id = R.dimen.grid_2)
                 )
                 .background(
-                    color = colorResource(id = R.color.kds_support_300)
+                    color = colors.kds_support_300
                 )
                 .height(1.dp)
         )
@@ -257,7 +272,7 @@ fun ReportProjectCategoryScreen(
     inputs: ReportProjectViewModel.Inputs? = null
 ) {
     Surface(
-        modifier = Modifier.animateContentSize()
+        modifier = Modifier.animateContentSize().fillMaxSize()
     ) {
 
         val categories = rulesMap().keys.toList()
@@ -265,7 +280,7 @@ fun ReportProjectCategoryScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorResource(id = R.color.kds_white))
+                .background(colors.kds_white)
         ) {
             items(items = categories) { key ->
                 rulesMap()[key]?.let { value ->
@@ -293,7 +308,7 @@ fun TextWithClickableLink(
             )
             withStyle(
                 style = SpanStyle(
-                    color = colorResource(id = R.color.kds_create_700),
+                    color = colors.kds_create_700,
                     textDecoration = TextDecoration.Underline
                 )
             ) {
@@ -306,7 +321,7 @@ fun TextWithClickableLink(
 
         ClickableText(
             text = annotatedText,
-            style = MaterialTheme.typography.body1,
+            style = typography.body.copy(color = colors.kds_support_700),
             onClick = {
                 annotatedText.getStringAnnotations(
                     tag = annotation, start = it,

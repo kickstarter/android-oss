@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,11 +17,14 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.CircleImageFromURl
 import com.kickstarter.ui.compose.TextBody2Style
 import com.kickstarter.ui.compose.TextCaptionStyle
+import com.kickstarter.ui.compose.designsystem.KSTheme
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KsCreatorLayoutPreview() {
-    MaterialTheme {
+    KSTheme {
         Column {
             KsCreatorLayout("Creator Studio", "http://goo.gl/gEgYUd")
         }

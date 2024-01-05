@@ -1,5 +1,6 @@
 package com.kickstarter.ui.compose.designsystem
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -31,11 +32,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
-@Preview(showBackground = true)
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KsButtonPreview() {
-    MaterialTheme {
+    KSTheme {
         Column(Modifier.background(Color.White).height(IntrinsicSize.Min)) {
             Spacer(modifier = Modifier.height(1.dp))
             KsButton(
@@ -48,7 +52,6 @@ fun KsButtonPreview() {
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun KsButton(
     defaultText: String,
@@ -56,12 +59,12 @@ fun KsButton(
     modifier: Modifier,
     defaultImageVector: ImageVector? = null,
     pressedImageVector: ImageVector? = null,
-    defaultButtonColor: Color = kds_support_700,
-    pressedButtonColor: Color = kds_support_700,
-    defaultButtonBorderColors: Color = kds_support_700,
-    pressedButtonBorderColors: Color = kds_support_700,
-    defaultTextColor: Color = kds_white,
-    pressedTextColor: Color = kds_white,
+    defaultButtonColor: Color = colors.kds_support_700,
+    pressedButtonColor: Color = colors.kds_support_700,
+    defaultButtonBorderColors: Color = colors.kds_support_700,
+    pressedButtonBorderColors: Color = colors.kds_support_700,
+    defaultTextColor: Color = colors.kds_white,
+    pressedTextColor: Color = colors.kds_white,
     isChecked: Boolean = true,
     onClickAction: () -> Unit = {}
 ) {
@@ -98,12 +101,12 @@ fun KsButton(
                 contentDescription = "null",
                 modifier = Modifier
                     .padding(end = dimensionResource(id = R.dimen.grid_1)),
-                tint = Color.Unspecified
+                tint = textColor
             )
         }
         Text(
             text = buttonText,
-            style = MaterialTheme.typography.body1.copy(
+            style = typography.body.copy(
                 fontSize = dimensionResource(id = R.dimen.callout).value.sp,
                 fontFamily = FontFamily(
                     Font(DeviceFontFamilyName("sans-serif-medium"))

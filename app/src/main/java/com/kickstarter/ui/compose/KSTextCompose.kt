@@ -1,5 +1,6 @@
 package com.kickstarter.ui.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -27,15 +28,19 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.kds_create_700
 import com.kickstarter.ui.compose.designsystem.kds_support_400
 import com.kickstarter.ui.compose.designsystem.kds_support_700
 import com.kickstarter.ui.compose.designsystem.kds_white
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun TitleTextPreview() {
-    MaterialTheme {
+    KSTheme {
         Column {
             TextH6ExtraBoldTitle(
                 stringResource(R.string.Risks_and_challenges),
@@ -76,11 +81,11 @@ fun TitleTextPreview() {
 fun TextH6ExtraBoldTitle(
     text: String,
     modifier: Modifier,
-    textColor: Color = kds_support_700
+    textColor: Color = colors.kds_support_700
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.h6,
+        style = typography.subheadline,
         color = textColor,
         modifier = modifier
     )
@@ -90,13 +95,13 @@ fun TextH6ExtraBoldTitle(
 fun TextBody1Title(
     text: String,
     modifier: Modifier,
-    textColor: Color = kds_support_700,
+    textColor: Color = colors.kds_support_700,
     fontSizeUnit: TextUnit = dimensionResource(id = R.dimen.callout).value.sp,
     letterSpacing: TextUnit = 0.0.sp
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.body1.copy(
+        style = typography.body.copy(
             fontSize = fontSizeUnit
         ),
         color = textColor,
@@ -109,11 +114,11 @@ fun TextBody1Title(
 fun TextBody2Style(
     text: String,
     modifier: Modifier,
-    textColor: Color = kds_support_700
+    textColor: Color = colors.kds_support_700
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.body2,
+        style = typography.body2,
         color = textColor,
         modifier = modifier
     )
@@ -123,7 +128,7 @@ fun TextBody2Style(
 fun TextWithKdsSupport700Bg(text: String, modifier: Modifier) {
     Text(
         text = text,
-        style = MaterialTheme.typography.caption,
+        style = typography.caption1,
         color = kds_white,
         modifier = modifier
             .background(kds_create_700)
@@ -139,11 +144,11 @@ fun TextWithKdsSupport700Bg(text: String, modifier: Modifier) {
 fun TextCaptionStyle(
     text: String,
     modifier: Modifier,
-    textColor: Color = kds_support_700
+    textColor: Color = colors.kds_support_700
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.body1.copy(
+        style = typography.body.copy(
             fontSize = dimensionResource(id = R.dimen.caption_1).value.sp,
             fontFamily = FontFamily(
                 Font(DeviceFontFamilyName("sans-serif-medium"))
@@ -162,7 +167,7 @@ fun TextCaptionStyleWithStartIcon(
     text: String,
     imageVector: ImageVector,
     modifier: Modifier,
-    tintColor: Color = kds_support_400
+    tintColor: Color = colors.kds_support_400
 ) {
     ConstraintLayout(modifier = modifier) {
         val (
@@ -193,7 +198,7 @@ fun TextCaptionStyleWithStartIcon(
     text: String,
     painter: Painter,
     modifier: Modifier,
-    tintColor: Color = kds_support_400
+    tintColor: Color = colors.kds_support_400
 ) {
     ConstraintLayout(modifier = modifier) {
         val (

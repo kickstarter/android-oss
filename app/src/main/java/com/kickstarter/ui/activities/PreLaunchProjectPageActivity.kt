@@ -9,7 +9,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -25,7 +24,6 @@ import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

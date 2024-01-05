@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +17,6 @@ import com.kickstarter.ui.compose.CircleImageFromURl
 import com.kickstarter.ui.compose.TextBody2Style
 import com.kickstarter.ui.compose.TextCaptionStyle
 import com.kickstarter.ui.compose.designsystem.KSTheme
-
 
 @Composable
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)

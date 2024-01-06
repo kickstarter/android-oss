@@ -5,51 +5,58 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
+data class UpdatePasswordUIState(
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val email: String? = null
+)
 class ChangePasswordViewModel(val environment: Environment) : ViewModel() {
 
-    private val mutableError = MutableStateFlow("")
-    val error: StateFlow<String> get() = mutableError.asStateFlow()
-
-    private val mutableSuccess = MutableStateFlow("")
-    val success: StateFlow<String> get() = mutableSuccess.asStateFlow()
-
-    private val mutableIsLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> get() = mutableIsLoading.asStateFlow()
-
     private val apolloClient = requireNotNull(this.environment.apolloClientV2())
-    private val analytics = this.environment.analytics()
+    private val analytics = requireNotNull(this.environment.analytics())
+
+    private val mutableUIState = MutableStateFlow(UpdatePasswordUIState())
+    val uiState: StateFlow<UpdatePasswordUIState> get() =
+        mutableUIState.asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = WhileSubscribed(),
+                initialValue = UpdatePasswordUIState(isLoading = true)
+            )
 
     fun updatePassword(oldPassword: String, newPassword: String) {
         viewModelScope.launch {
+            // TODO: Avoid using GraphQL generated types such as UpdateUserPasswordMutation.Data, return data model defined within the app.
             apolloClient.updateUserPassword(oldPassword, newPassword, newPassword)
                 .asFlow()
                 .onStart {
-                    mutableIsLoading.emit(true)
+                    mutableUIState.emit(UpdatePasswordUIState(isLoading = true))
                 }
-                .onCompletion {
-                    mutableIsLoading.emit(false)
+                .map {
+                    analytics.reset()
+                    mutableUIState.emit(UpdatePasswordUIState(isLoading = false, email = it.updateUserAccount()?.user()?.email() ?: ""))
                 }
                 .catch {
-                    mutableError.emit(it.message ?: "")
+                    mutableUIState.emit(UpdatePasswordUIState(errorMessage = it.message ?: "", isLoading = false))
                 }
-                .collect {
-                    analytics?.reset()
-                    mutableSuccess.emit(it.updateUserAccount()?.user()?.email() ?: "")
-                }
+                .collect()
         }
     }
 
     fun resetError() {
         viewModelScope.launch {
-            mutableError.emit("")
+            mutableUIState.emit(UpdatePasswordUIState(errorMessage = null))
         }
     }
 }

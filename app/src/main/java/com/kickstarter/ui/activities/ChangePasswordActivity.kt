@@ -8,8 +8,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -22,7 +22,6 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.ChangePasswordViewModel
 import com.kickstarter.viewmodels.ChangePasswordViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.launch
 
 class ChangePasswordActivity : ComponentActivity() {
 
@@ -49,11 +48,13 @@ class ChangePasswordActivity : ComponentActivity() {
         }
 
         setContent {
-            var showProgressBar = viewModel.isLoading.collectAsStateWithLifecycle(initialValue = false)
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            var error = viewModel.error.collectAsStateWithLifecycle(initialValue = "")
+            val showProgressBar = uiState.isLoading
+            val error = uiState.errorMessage
+            val email = uiState.email
 
-            var scaffoldState = rememberScaffoldState()
+            val scaffoldState = rememberScaffoldState()
 
             KickstarterApp(
                 useDarkTheme =
@@ -71,26 +72,22 @@ class ChangePasswordActivity : ComponentActivity() {
                     onAcceptButtonClicked = { current, new ->
                         viewModel.updatePassword(current, new)
                     },
-                    showProgressBar = showProgressBar.value,
+                    showProgressBar = showProgressBar,
                     scaffoldState = scaffoldState
                 )
             }
 
-            when {
-                error.value.isNotEmpty() -> {
-                    LaunchedEffect(scaffoldState) {
-                        scaffoldState.snackbarHostState.showSnackbar(error.value)
-                        viewModel.resetError()
-                    }
+            error?.let {
+                LaunchedEffect(scaffoldState) {
+                    scaffoldState.snackbarHostState.showSnackbar(it)
+                    viewModel.resetError()
                 }
             }
-        }
 
-        this.logout = getEnvironment()?.logout()
+            this.logout = getEnvironment()?.logout()
 
-        lifecycleScope.launch {
-            viewModel.success.collect { email ->
-                if (email.isNotEmpty()) logout(email)
+            email?.let {
+                if (it.isNotEmpty()) logout(it)
             }
         }
     }

@@ -44,27 +44,41 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
             }).build()
         )
 
-        val errorStates = mutableListOf<String>()
+        val errorStates = mutableListOf<UpdatePasswordUIState>()
+
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
-            vm.error.toList(errorStates)
+            vm.uiState.toList(errorStates)
         }
 
-        // - First empty emission due the initialization in ChangePasswordViewModel:23
-        assertEquals(listOf("", "Oops"), errorStates)
+        // - First empty emission due the initialization
+        // - Second emission error catching
+        assertEquals(
+            listOf(
+                UpdatePasswordUIState(isLoading = true, errorMessage = null, email = null),
+                UpdatePasswordUIState(isLoading = false, errorMessage = "Oops", email = null)
+            ),
+            errorStates
+        )
     }
 
     @Test
     fun progressBarIsVisible() = runTest {
         setUpEnvironment(environment())
 
-        val loadingStates = mutableListOf<Boolean>()
+        val loadingStates = mutableListOf<UpdatePasswordUIState>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
-            vm.isLoading.toList(loadingStates)
+            vm.uiState.toList(loadingStates)
         }
 
-        assertEquals(listOf(false, true, false), loadingStates)
+        assertEquals(
+            listOf(
+                UpdatePasswordUIState(isLoading = true, errorMessage = null, email = null),
+                UpdatePasswordUIState(isLoading = false, errorMessage = null, email = "some@email.com")
+            ),
+            loadingStates
+        )
     }
 
     @Test
@@ -88,13 +102,19 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
             }).build()
         )
 
-        val successStates = mutableListOf<String>()
+        val successStates = mutableListOf<UpdatePasswordUIState>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
-            vm.success.toList(successStates)
+            vm.uiState.toList(successStates)
         }
 
-        assertEquals(listOf("", "test@email.com"), successStates)
+        assertEquals(
+            listOf(
+                UpdatePasswordUIState(isLoading = true, errorMessage = null, email = null),
+                UpdatePasswordUIState(isLoading = false, errorMessage = null, email = "test@email.com")
+            ),
+            successStates
+        )
     }
 
     @Test
@@ -118,14 +138,20 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        val errorStates = mutableListOf<String>()
+        val errorStates = mutableListOf<UpdatePasswordUIState>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
-            vm.error.toList(errorStates)
+            vm.uiState.toList(errorStates)
         }
 
         // - First empty emission due the initialization in ChangePasswordViewModel:23
-        assertEquals(listOf("", "Oops"), errorStates)
+        assertEquals(
+            listOf(
+                UpdatePasswordUIState(isLoading = true, errorMessage = null, email = null),
+                UpdatePasswordUIState(isLoading = false, errorMessage = "Oops", email = null)
+            ),
+            errorStates
+        )
         currentUser.assertValue(user)
     }
 
@@ -157,13 +183,19 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        val successStates = mutableListOf<String>()
+        val successStates = mutableListOf<UpdatePasswordUIState>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.updatePassword(oldPassword = "password", newPassword = "newpassword")
-            vm.success.toList(successStates)
+            vm.uiState.toList(successStates)
         }
 
-        assertEquals(listOf("", "new22test@email.com"), successStates)
+        assertEquals(
+            listOf(
+                UpdatePasswordUIState(isLoading = true, errorMessage = null, email = null),
+                UpdatePasswordUIState(isLoading = false, errorMessage = null, email = "new22test@email.com")
+            ),
+            successStates
+        )
         currentUser.assertValues(user, null)
     }
 

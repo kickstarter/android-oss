@@ -106,7 +106,7 @@ fun Context.getPaymentSheetAppearance(): PaymentSheet.Appearance {
             error = getColor(R.color.kds_alert),
         ),
 
-        //TODO: Get correct colors for this
+        // TODO: Get correct colors for this
         colorsDark = PaymentSheet.Colors(
             primary = getColor(R.color.kds_create_300),
             surface = getColor(R.color.kds_black),

@@ -41,11 +41,8 @@ import okhttp3.Response
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
-import java.lang.Exception
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -83,7 +80,7 @@ interface DeepLinkViewModel {
         fun startPreLaunchProjectActivity(): Observable<Project>
     }
 
-    class DeepLinkViewModel(environment: Environment, private val intent : Intent?) :
+    class DeepLinkViewModel(environment: Environment, private val intent : Intent?, externalCall : CustomNetworkClient) :
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
@@ -101,7 +98,7 @@ interface DeepLinkViewModel {
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val projectObservable: Observable<Project>
-        private val startPreLaunchProjectActivity = PublishSubject.create<Project>()
+        private val startPreLaunchProjectActivity = BehaviorSubject.create<Project>()
 
         private val ffClient = requireNotNull(environment.featureFlagClient())
 
@@ -109,22 +106,6 @@ interface DeepLinkViewModel {
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
         val outputs: Outputs = this
-
-        /**
-         * Custom Networking Client as plain as possible. Given an URI, will execute the network call on Schedulers.io pool,
-         * and return the response as Observable.
-         */
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        var externalCall = object : CustomNetworkClient {
-            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
-                val httpClient: OkHttpClient = OkHttpClient.Builder().build()
-
-                return Observable.fromCallable {
-                    httpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
-                }
-                    .subscribeOn(Schedulers.io())
-            }
-        }
 
         init {
 
@@ -159,17 +140,11 @@ interface DeepLinkViewModel {
                 .filter { it.isMainPage() }
 
             mainPageUri
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             projectFromEmail
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startProjectActivity.onNext(it)
                 }.addToDisposable(disposables)
@@ -182,9 +157,6 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { lastPathSegmentIsProjects(it) }
                 .compose(Transformers.ignoreValuesV2())
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
@@ -228,9 +200,6 @@ interface DeepLinkViewModel {
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(Transformers.combineLatestPair(projectObservable))
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivity)
                 }.addToDisposable(disposables)
@@ -241,9 +210,6 @@ interface DeepLinkViewModel {
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(Transformers.combineLatestPair(projectObservable))
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivityToSave)
                 }.addToDisposable(disposables)
@@ -253,9 +219,6 @@ interface DeepLinkViewModel {
                     it.isProjectCommentUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startProjectActivityForComment.onNext(it)
                 }.addToDisposable(disposables)
@@ -268,9 +231,6 @@ interface DeepLinkViewModel {
                     !it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startProjectActivityForUpdate.onNext(it)
                 }.addToDisposable(disposables)
@@ -280,18 +240,12 @@ interface DeepLinkViewModel {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startProjectActivityForCommentToUpdate.onNext(it)
                 }.addToDisposable(disposables)
 
             uriFromIntent
                 .filter { it.isSettingsUrl() }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)
@@ -311,9 +265,6 @@ interface DeepLinkViewModel {
 
             projectObservable
                 .filter { it.backing() == null || !it.canUpdateFulfillment() }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -327,9 +278,6 @@ interface DeepLinkViewModel {
                         }
                         .distinctUntilChanged()
                 }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -337,9 +285,6 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { it.isCheckoutUri(webEndpoint) }
                 .map { appendRefTagIfNone(it) }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startProjectActivityWithCheckout.onNext(it)
                 }.addToDisposable(disposables)
@@ -362,9 +307,6 @@ interface DeepLinkViewModel {
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
                 .filter { !TextUtils.isEmpty(it) }
-                    .onErrorResumeNext { error: Throwable ->
-                        throw CompositeException(error, Exception())
-                    }
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
@@ -445,9 +387,23 @@ interface DeepLinkViewModel {
     }
 
 
-    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent? = null, private val customNetworkClient : CustomNetworkClient? = null) : ViewModelProvider.Factory {
+        /**
+         * Custom Networking Client as plain as possible. Given an URI, will execute the network call on Schedulers.io pool,
+         * and return the response as Observable.
+         */
+        private var externalCall = object : CustomNetworkClient {
+            override fun obtainUriFromRedirection(uri: Uri): Observable<Response> {
+                val httpClient: OkHttpClient = OkHttpClient.Builder().build()
+
+                return Observable.fromCallable {
+                    httpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
+                }
+                        .subscribeOn(Schedulers.io())
+            }
+        }
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DeepLinkViewModel(environment, intent) as T
+            return DeepLinkViewModel(environment, intent, externalCall = customNetworkClient ?: externalCall) as T
         }
     }
 }

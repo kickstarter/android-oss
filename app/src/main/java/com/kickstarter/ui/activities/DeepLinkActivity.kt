@@ -23,8 +23,8 @@ import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class DeepLinkActivity : AppCompatActivity() {
 
@@ -54,52 +54,52 @@ class DeepLinkActivity : AppCompatActivity() {
         }
 
         viewModel.outputs.startBrowser()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { url: String -> startBrowser(url) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { url: String -> startBrowser(url) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startDiscoveryActivity()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startDiscoveryActivity() }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startDiscoveryActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivity()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { uri: Uri -> startProjectActivity(uri) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { uri: Uri -> startProjectActivity(uri) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityToSave()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startProjectActivityForSave(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectActivityForSave(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForComment()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startProjectActivityForComment(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectActivityForComment(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForUpdate()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startProjectActivityForUpdate(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectActivityForUpdate(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForCommentToUpdate()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startProjectActivityForCommentToUpdate(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectActivityForCommentToUpdate(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivityForCheckout()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { uri: Uri ->
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { uri: Uri ->
                 startProjectActivityForCheckout(
                     uri
                 )
             }.addToDisposable(disposables)
 
         viewModel.outputs.finishDeeplinkActivity()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { finish() }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { finish() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startPreLaunchProjectActivity()
             .observeOn(AndroidSchedulers.mainThread())

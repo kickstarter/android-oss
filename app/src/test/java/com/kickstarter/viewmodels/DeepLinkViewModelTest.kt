@@ -14,17 +14,17 @@ import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import io.reactivex.Observable
-import io.reactivex.subscribers.TestSubscriber
-import org.junit.After
 
 class DeepLinkViewModelTest : KSRobolectricTestCase() {
     lateinit var vm: DeepLinkViewModel.DeepLinkViewModel
@@ -40,13 +40,15 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val finishDeeplinkActivity = TestSubscriber<Unit>()
     private val disposables = CompositeDisposable()
 
-    fun setUpEnvironment(environment: Environment? = null,
-                         intent : Intent,
-                         externalCall: CustomNetworkClient? = null) {
+    fun setUpEnvironment(
+        environment: Environment? = null,
+        intent: Intent,
+        externalCall: CustomNetworkClient? = null
+    ) {
         this.vm = DeepLinkViewModel.Factory(
-                environment ?: environment(),
-                intent,
-                externalCall
+            environment ?: environment(),
+            intent,
+            externalCall
         ).create(DeepLinkViewModel.DeepLinkViewModel::class.java)
 
         vm.outputs.startBrowser().subscribe { startBrowser.onNext(it) }.addToDisposable(disposables)
@@ -334,7 +336,6 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .apolloClientV2(mockApolloClientForBacking(project))
             .build()
-
 
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap"

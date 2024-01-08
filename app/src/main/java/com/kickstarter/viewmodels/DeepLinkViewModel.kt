@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentUserTypeV2
@@ -35,14 +34,14 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -80,7 +79,7 @@ interface DeepLinkViewModel {
         fun startPreLaunchProjectActivity(): Observable<Project>
     }
 
-    class DeepLinkViewModel(environment: Environment, private val intent : Intent?, externalCall : CustomNetworkClient) :
+    class DeepLinkViewModel(environment: Environment, private val intent: Intent?, externalCall: CustomNetworkClient) :
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
@@ -253,7 +252,7 @@ interface DeepLinkViewModel {
             currentUser.observable()
                 .filter { it.isPresent() }
                 .map { it.getValue() }
-                    .compose<Pair<User, Boolean>>(combineLatestPair(updateUserPreferences))
+                .compose<Pair<User, Boolean>>(combineLatestPair(updateUserPreferences))
                 .switchMap { it: Pair<User, Boolean> ->
                     updateSettings(it.first, apiClientType)
                 }
@@ -386,8 +385,7 @@ interface DeepLinkViewModel {
         override fun startPreLaunchProjectActivity(): Observable<Project> = startPreLaunchProjectActivity
     }
 
-
-    class Factory(private val environment: Environment, private val intent: Intent? = null, private val customNetworkClient : CustomNetworkClient? = null) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent? = null, private val customNetworkClient: CustomNetworkClient? = null) : ViewModelProvider.Factory {
         /**
          * Custom Networking Client as plain as possible. Given an URI, will execute the network call on Schedulers.io pool,
          * and return the response as Observable.
@@ -399,7 +397,7 @@ interface DeepLinkViewModel {
                 return Observable.fromCallable {
                     httpClient.newCall(Request.Builder().url(uri.toString()).build()).execute()
                 }
-                        .subscribeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
             }
         }
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

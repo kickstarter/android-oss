@@ -291,9 +291,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
 
     // Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0-RC"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.8.0-RC"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC"
+    def coroutines = '1.7.3'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'

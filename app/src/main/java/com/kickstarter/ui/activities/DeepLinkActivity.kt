@@ -21,6 +21,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,6 +36,8 @@ class DeepLinkActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setUpConnectivityStatusCheck(lifecycle)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             splashScreen.setSplashScreenTheme(R.style.SplashTheme)
             splashScreen.setOnExitAnimationListener { splashScreenView ->

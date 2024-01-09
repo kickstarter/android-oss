@@ -527,7 +527,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectSaveLink_startsPreLaunchProjectPageActivity() {
-        val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
+        val project = ProjectFactory.project().toBuilder().displayPrelaunch(true)
             .deadline(DateTime.now().plusDays(2)).build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -573,7 +573,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private fun mockApolloClientForBacking(project: Project): MockApolloClientV2 {
         return object : MockApolloClientV2() {
             override fun getProject(slug: String): Observable<Project> {
-                return Observable.just(project.toBuilder().name("leigh283u98").state("successful").build())
+                return Observable.just(project.toBuilder().state("successful").build())
             }
         }
     }

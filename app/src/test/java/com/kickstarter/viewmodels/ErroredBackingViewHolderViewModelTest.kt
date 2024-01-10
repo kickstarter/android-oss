@@ -1,11 +1,13 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ErroredBackingFactory
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ErroredBackingViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -14,18 +16,23 @@ class ErroredBackingViewHolderViewModelTest : KSRobolectricTestCase() {
     private val projectFinalCollectionDate = TestSubscriber.create<DateTime>()
     private val projectName = TestSubscriber.create<String>()
     private val notifyDelegateToStartFixPaymentMethod = TestSubscriber.create<String>()
+    private val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = ErroredBackingViewHolderViewModel.ViewModel(environment)
+    private fun setUpEnvironment() {
+        this.vm = ErroredBackingViewHolderViewModel.ViewModel()
 
-        this.vm.outputs.projectFinalCollectionDate().subscribe(this.projectFinalCollectionDate)
-        this.vm.outputs.projectName().subscribe(this.projectName)
-        this.vm.outputs.notifyDelegateToStartFixPaymentMethod().subscribe(this.notifyDelegateToStartFixPaymentMethod)
+        this.vm.outputs.projectFinalCollectionDate()
+            .subscribe { this.projectFinalCollectionDate.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.projectName().subscribe { this.projectName.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.notifyDelegateToStartFixPaymentMethod()
+            .subscribe { this.notifyDelegateToStartFixPaymentMethod.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
     fun testProjectFinalCollectionDate() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         this.vm.inputs.configureWith(ErroredBackingFactory.erroredBacking())
 
@@ -34,7 +41,7 @@ class ErroredBackingViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectName() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         this.vm.inputs.configureWith(ErroredBackingFactory.erroredBacking())
 
@@ -43,11 +50,16 @@ class ErroredBackingViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotifyDelegateToStartFixPaymentMethod() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
 
         this.vm.inputs.configureWith(ErroredBackingFactory.erroredBacking())
 
         this.vm.inputs.manageButtonClicked()
         this.notifyDelegateToStartFixPaymentMethod.assertValue("slug")
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

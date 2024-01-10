@@ -1,13 +1,14 @@
 package com.kickstarter.ui.viewholders
 
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemErroredBackingBinding
 import com.kickstarter.libs.RelativeDateTimeOptions
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.viewmodels.ErroredBackingViewHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 
 class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, val delegate: Delegate?) : KSViewHolder(binding.root) {
@@ -17,28 +18,28 @@ class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, v
     }
 
     private val ksString = requireNotNull(environment().ksString())
-    private var viewModel = ErroredBackingViewHolderViewModel.ViewModel(environment())
+    private var viewModel = ErroredBackingViewHolderViewModel.ViewModel()
+    private val disposables = CompositeDisposable()
 
     init {
-
         this.viewModel.outputs.notifyDelegateToStartFixPaymentMethod()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { delegate?.managePledgeClicked(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectFinalCollectionDate()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { setProjectFinaCollectionDateText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectName()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { binding.erroredBackingProjectTitle.text = it }
+            .addToDisposable(disposables)
 
-        RxView.clicks(binding.erroredBackingManageButton)
-            .compose(bindToLifecycle())
-            .subscribe { this.viewModel.inputs.manageButtonClicked() }
+        binding.erroredBackingManageButton.setOnClickListener {
+            this.viewModel.inputs.manageButtonClicked()
+        }
     }
 
     private fun setProjectFinaCollectionDateText(finalCollectionDate: DateTime) {
@@ -60,5 +61,11 @@ class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, v
         val erroredBacking = requireNotNull(data as ErroredBacking)
 
         this.viewModel.inputs.configureWith(erroredBacking)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        viewModel.clear()
+        super.destroy()
     }
 }

@@ -454,7 +454,6 @@ interface DiscoveryViewModel {
         override fun showNotifPermissionsRequest(): Observable<Void?> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Void?> { return showConsentManagementDialog }
 
-
         fun setDarkTheme(isDarkTheme: Boolean) {
             this.isDarkTheme = isDarkTheme
             this.isDarkThemeInitialized = true

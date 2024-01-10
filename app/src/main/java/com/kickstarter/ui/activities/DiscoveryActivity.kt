@@ -59,7 +59,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         // TODO: Replace with compose implementation
         val nightModeFlags = this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         viewModel.setDarkTheme(
-            when(nightModeFlags) {
+            when (nightModeFlags) {
                 Configuration.UI_MODE_NIGHT_YES -> { true }
                 else -> false
             }

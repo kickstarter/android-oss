@@ -123,15 +123,21 @@ interface DiscoveryViewModel {
 
         private fun currentDrawerMenuIcon(user: User?): Int {
             if (user.isNull()) {
-                return R.drawable.ic_menu
+                return if (isDarkTheme) R.drawable.ic_menu_dark else R.drawable.ic_menu
             }
             val erroredBackingsCount = user?.erroredBackingsCount().intValueOrZero()
             val unreadMessagesCount = user?.unreadMessagesCount().intValueOrZero()
             val unseenActivityCount = user?.unseenActivityCount().intValueOrZero()
             return when {
-                erroredBackingsCount.isNonZero() -> R.drawable.ic_menu_error_indicator
-                (unreadMessagesCount + unseenActivityCount + erroredBackingsCount).isNonZero() -> R.drawable.ic_menu_indicator
-                else -> R.drawable.ic_menu
+                erroredBackingsCount.isNonZero() -> {
+                    if (isDarkTheme) R.drawable.ic_menu_error_indicator_dark else R.drawable.ic_menu_error_indicator
+                }
+
+                (unreadMessagesCount + unseenActivityCount + erroredBackingsCount).isNonZero() -> {
+                    if (isDarkTheme) R.drawable.ic_menu_indicator_dark else R.drawable.ic_menu_indicator
+                }
+
+                else -> if (isDarkTheme) R.drawable.ic_menu_dark else R.drawable.ic_menu
             }
         }
 
@@ -168,6 +174,8 @@ interface DiscoveryViewModel {
         private val updateToolbarWithParams = BehaviorSubject.create<DiscoveryParams>()
         private val successMessage = PublishSubject.create<String>()
         private val messageError = PublishSubject.create<String?>()
+        private var isDarkTheme = false
+        private var isDarkThemeInitialized = false
 
         init {
             showActivityFeed = activityFeedClick
@@ -394,7 +402,7 @@ interface DiscoveryViewModel {
                 .map { currentDrawerMenuIcon(it) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
-                .subscribe { drawerMenuIcon.onNext(it) }
+                .subscribe { if (isDarkThemeInitialized) drawerMenuIcon.onNext(it) }
         }
 
         override fun childFilterViewHolderRowClick(viewHolder: ChildFilterViewHolder, row: NavigationDrawerData.Section.Row) {
@@ -445,5 +453,11 @@ interface DiscoveryViewModel {
         override fun showErrorMessage(): Observable<String?> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Void?> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Void?> { return showConsentManagementDialog }
+
+
+        fun setDarkTheme(isDarkTheme: Boolean) {
+            this.isDarkTheme = isDarkTheme
+            this.isDarkThemeInitialized = true
+        }
     }
 }

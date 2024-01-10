@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,6 +55,15 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         environment()
+
+        // TODO: Replace with compose implementation
+        val nightModeFlags = this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        viewModel.setDarkTheme(
+            when(nightModeFlags) {
+                Configuration.UI_MODE_NIGHT_YES -> { true }
+                else -> false
+            }
+        )
 
         if (savedInstanceState == null) {
             activateFeatureFlags(environment())

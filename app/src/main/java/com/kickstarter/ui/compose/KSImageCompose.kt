@@ -1,5 +1,6 @@
 package com.kickstarter.ui.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -8,24 +9,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.kickstarter.R
-import com.kickstarter.ui.compose.designsystem.kds_support_300
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSImagePreview() {
-    MaterialTheme {
+    KSTheme {
         Column {
             CircleImageFromURl(
                 imageUrl = ("http://goo.gl/gEgYUd"),
@@ -55,9 +56,8 @@ fun ProjectImageFromURl(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-
-                        Color(0xFFd9d9de),
-                        Color(0xFFf1f3f4)
+                        colors.kds_support_100,
+                        colors.kds_white
                     ),
                     start = Offset(0f, Float.POSITIVE_INFINITY),
                     end = Offset(0f, 0f)
@@ -80,7 +80,7 @@ fun CircleImageFromURl(
         modifier = modifier
             .clip(CircleShape)
             .background(
-                kds_support_300,
+                colors.kds_support_300,
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.grid_1))
             )
     )

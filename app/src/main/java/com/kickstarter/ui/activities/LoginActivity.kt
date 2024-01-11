@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import androidx.activity.ComponentActivity
@@ -148,6 +149,8 @@ class LoginActivity : ComponentActivity() {
                         AppThemes.LIGHT.ordinal -> false
                         else -> false
                     }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    isSystemInDarkTheme() // Force dark mode uses system theme
                 } else false
             ) {
                 LoginScreen(

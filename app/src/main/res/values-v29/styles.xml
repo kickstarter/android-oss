@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="KSThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+        <item name="alertDialogTheme">@style/Dialog</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="colorSurface">@color/kds_white</item>
+        <item name="android:textColorLink">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="materialButtonStyle">@style/Button</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:forceDarkAllowed">true</item>
+        <item name="isLightTheme">true</item>
+    </style>
+</resources>

@@ -56,7 +56,7 @@ class ProjectAIFragment :
                             AppThemes.LIGHT.ordinal -> false
                             else -> false
                         }
-                    } else false
+                    } else isSystemInDarkTheme() // Force dark mode uses system theme
                 ) {
                     AiDisclosureScreen(
                         state = viewModel.state,

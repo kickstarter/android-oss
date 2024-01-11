@@ -1,13 +1,14 @@
 package com.kickstarter.ui.activities.compose
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -46,18 +47,19 @@ import com.kickstarter.ui.compose.TextCaptionStyle
 import com.kickstarter.ui.compose.TextCaptionStyleWithStartIcon
 import com.kickstarter.ui.compose.TextH6ExtraBoldTitle
 import com.kickstarter.ui.compose.TextWithKdsSupport700Bg
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KsButton
-import com.kickstarter.ui.compose.designsystem.kds_support_500
-import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import com.kickstarter.ui.views.compose.KsCreatorLayout
 
-@Preview(widthDp = 300, heightDp = 800)
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreLaunchProjectPageScreenPreview() {
-    MaterialTheme {
+    KSTheme {
         val project = ProjectFactory.backedProject()
         val projectState = remember { mutableStateOf(null) }
         PreLaunchProjectPageScreen(projectState)
@@ -111,7 +113,7 @@ fun PreLaunchProjectPageScreen(
     ) {
         val screenPadding = dimensionResource(id = R.dimen.activity_horizontal_margin)
         ConstraintLayout(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(colors.kds_support_100)
         ) {
             val (
                 projectImage, comingSoonBadge, projectName, creatorLayout,
@@ -229,7 +231,8 @@ fun PreLaunchProjectPageScreen(
                     topStart = dimensionResource(id = R.dimen.grid_5),
                     topEnd = dimensionResource(id = R.dimen.grid_5)
                 ),
-                elevation = dimensionResource(id = R.dimen.grid_2)
+                elevation = dimensionResource(id = R.dimen.grid_2),
+                backgroundColor = colors.kds_white
             ) {
                 ConstraintLayout(
                     modifier = Modifier
@@ -244,8 +247,8 @@ fun PreLaunchProjectPageScreen(
                         pressedText = stringResource(id = R.string.Saved),
                         defaultImageVector = ImageVector.vectorResource(id = R.drawable.ic_discovery_heart),
                         pressedImageVector = ImageVector.vectorResource(id = R.drawable.icon__heart),
-                        pressedButtonColor = kds_white,
-                        pressedTextColor = kds_support_500,
+                        pressedButtonColor = colors.kds_white,
+                        pressedTextColor = colors.kds_support_500,
                         onClickAction = { onButtonClicked.invoke() },
                         isChecked = project?.isStarred() ?: false,
                         modifier = Modifier

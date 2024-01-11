@@ -73,6 +73,8 @@ class LoginToutActivity : ComponentActivity() {
                         AppThemes.LIGHT.ordinal -> false
                         else -> false
                     }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    isSystemInDarkTheme() // Force dark mode uses system theme
                 } else false
             ) {
                 LoginToutScreen(

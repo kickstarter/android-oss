@@ -2,25 +2,28 @@ package com.kickstarter.ui.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -37,6 +40,9 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
     private val projectShareCopyString = R.string.project_share_twitter_message
     private val projectStarConfirmationString = R.string.We_will_email_you
 
+    private var darkModeEnabled = false
+    private var theme = AppThemes.MATCH_SYSTEM.ordinal
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,12 +50,28 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = PrelaunchProjectViewModel.Factory(env)
+            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+            theme = env.sharedPreferences()
+                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         viewModel.inputs.configureWith(intent)
 
         setContent {
-            MaterialTheme {
+            KickstarterApp(
+                useDarkTheme =
+                if (darkModeEnabled) {
+                    when (theme) {
+                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                        AppThemes.DARK.ordinal -> true
+                        AppThemes.LIGHT.ordinal -> false
+                        else -> false
+                    }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    isSystemInDarkTheme() // Force dark mode uses system theme
+                } else false
+            ) {
                 val projectState = viewModel.project().subscribeAsState(initial = null)
 
                 PreLaunchProjectPageScreen(

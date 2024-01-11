@@ -79,7 +79,12 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testActivitiesEmit() {
-        setUpEnvironment(environment())
+
+        val environment = environment()
+            .toBuilder()
+            .apiClientV2(MockApiClientV2())
+            .build()
+        setUpEnvironment(environment)
 
         // Swipe refresh.
         vm.inputs.refresh()
@@ -314,6 +319,7 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
         val currentUserV2 = MockCurrentUserV2()
 
         val environment = environment().toBuilder()
+            .apiClientV2(MockApiClientV2())
             .currentUserV2(currentUserV2)
             .build()
 
@@ -350,7 +356,8 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         loginUserCase.login(initialUser, "deadbeef")
 
-        environment.currentUser()?.loggedInUser()?.subscribe { user.onNext(it) }
+        environment.currentUserV2()?.loggedInUser()?.subscribe { user.onNext(it) }
+            ?.addToDisposable(disposables)
 
         setUpEnvironment(environment)
 

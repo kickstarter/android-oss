@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -62,6 +63,8 @@ class CreatePasswordActivity : AppCompatActivity() {
                         AppThemes.LIGHT.ordinal -> false
                         else -> false
                     }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    isSystemInDarkTheme() // Force dark mode uses system theme
                 } else false
             ) {
                 CreatePasswordScreen(

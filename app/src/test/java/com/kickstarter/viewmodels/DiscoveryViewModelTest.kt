@@ -550,6 +550,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testDrawerMenuIcon_afterLogInRefreshAndLogOut() {
         val currentUser = MockCurrentUser()
         setUpEnvironment(environment().toBuilder().currentUser(currentUser).build())
+        vm.setDarkTheme(isDarkTheme = false)
         vm.outputs.drawerMenuIcon().subscribe(drawerMenuIcon)
         drawerMenuIcon.assertValue(R.drawable.ic_menu)
         currentUser.refresh(user().toBuilder().unreadMessagesCount(4).build())

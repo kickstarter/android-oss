@@ -8,13 +8,13 @@
 
   <LinearLayout
     android:id="@+id/subcategory_container"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
     android:gravity="center_vertical"
     tools:visibility="visible"
     app:layout_constraintBottom_toTopOf="@id/location_container"
-    app:layout_constraintEnd_toStartOf="@id/project_we_love_container"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
@@ -35,13 +35,14 @@
 
   <LinearLayout
     android:id="@+id/project_we_love_container"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
     android:layout_marginStart="@dimen/grid_5"
     android:gravity="center_vertical"
     app:layout_constraintBottom_toBottomOf="@id/subcategory_container"
     app:layout_constraintStart_toEndOf="@id/subcategory_container"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
@@ -59,18 +60,11 @@
       style="@style/ProjectCardFootnote"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
       android:layout_marginStart="@dimen/grid_1"
       android:text="@string/Projects_We_Love" />
   </LinearLayout>
-
-  <ImageView
-    android:id="@+id/overflow_gradient"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:contentDescription="@null"
-    android:src="@drawable/gradient_tag"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
 
   <LinearLayout
     android:id="@+id/location_container"

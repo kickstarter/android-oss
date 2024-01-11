@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments.projectpage.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,14 +13,12 @@ import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -29,6 +28,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 /**
  * Screen representing the UI loading on [com.kickstarter.ui.fragments.projectpage.ProjectRiskFragment]
@@ -53,8 +55,9 @@ fun RisksScreen(
     ) {
         Text(
             text = stringResource(id = R.string.Risks_and_challenges),
-            style = MaterialTheme.typography.h5.copy(
-                fontWeight = FontWeight.ExtraBold
+            style = typography.title1Bold.copy(
+                fontWeight = FontWeight.ExtraBold,
+                color = colors.kds_support_700
             ),
             modifier = Modifier
                 .paddingFromBaseline(
@@ -65,7 +68,8 @@ fun RisksScreen(
         )
         Text(
             text = riskDescState.value,
-            style = MaterialTheme.typography.body2,
+            style = typography.body2,
+            color = colors.kds_support_700,
             modifier = Modifier
                 .paddingFromBaseline(
                     top = dimensionResource(id = R.dimen.grid_3)
@@ -80,7 +84,7 @@ fun RisksScreen(
                     vertical = dimensionResource(id = R.dimen.grid_3)
                 )
                 .background(
-                    color = colorResource(id = R.color.kds_support_300)
+                    color = colors.kds_support_300
                 )
                 .height(1.dp)
         )
@@ -88,7 +92,7 @@ fun RisksScreen(
             text = AnnotatedString(
                 text = stringResource(id = R.string.Learn_about_accountability_on_Kickstarter),
                 spanStyle = SpanStyle(
-                    color = colorResource(id = R.color.kds_create_700),
+                    color = colors.kds_create_700,
                     textDecoration = TextDecoration.Underline,
                 )
             ),
@@ -105,10 +109,11 @@ fun RisksScreen(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun ProjectRisksPreview() {
-    MaterialTheme {
+    KSTheme {
         // - Mock state for the preview
         val desc = stringResource(id = R.string.risk_description)
         val riskDesc = remember { mutableStateOf(desc) }

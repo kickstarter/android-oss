@@ -159,7 +159,7 @@ interface DiscoveryViewModel {
         private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
         private val clearPages = BehaviorSubject.create<List<Int>>()
         private val drawerIsOpen = BehaviorSubject.create<Boolean>()
-        private val drawerMenuIcon = BehaviorSubject.create<Int>()
+        private val drawerMenuIcon = BehaviorSubject.create<Int>(R.drawable.ic_menu)
         private val expandSortTabLayout = BehaviorSubject.create<Boolean>()
         private val navigationDrawerData = BehaviorSubject.create<NavigationDrawerData>()
         private val rootCategoriesAndPosition = BehaviorSubject.create<Pair<List<Category>, Int>>()

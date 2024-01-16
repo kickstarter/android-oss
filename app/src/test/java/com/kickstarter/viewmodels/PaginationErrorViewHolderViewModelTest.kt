@@ -1,17 +1,22 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class PaginationErrorViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: PaginationErrorViewHolderViewModel.ViewModel
 
     private val isErrorCellVisible = TestSubscriber<Boolean>()
+    private val disposables = CompositeDisposable()
 
     private fun setupEnvironment() {
-        this.vm = PaginationErrorViewHolderViewModel.ViewModel(environment())
-        this.vm.outputs.isErrorPaginationVisible().subscribe(isErrorCellVisible)
+        this.vm = PaginationErrorViewHolderViewModel.ViewModel()
+        this.vm.outputs.isErrorPaginationVisible().subscribe { isErrorCellVisible.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -28,5 +33,10 @@ class PaginationErrorViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(false)
         this.isErrorCellVisible.assertValue(false)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

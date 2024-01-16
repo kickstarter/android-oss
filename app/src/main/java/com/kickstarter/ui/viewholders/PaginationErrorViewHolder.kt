@@ -4,29 +4,30 @@ import androidx.constraintlayout.widget.Constraints
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemErrorPaginationBinding
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.viewmodels.PaginationErrorViewHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 
-@Suppress("UNCHECKED_CAST")
 class PaginationErrorViewHolder(
     val binding: ItemErrorPaginationBinding,
     private val viewListener: ViewListener,
-    val isReply: Boolean = false
+    private val isReply: Boolean = false
 ) : KSViewHolder(binding.root) {
 
     interface ViewListener {
         fun retryCallback()
     }
 
-    private val vm: PaginationErrorViewHolderViewModel.ViewModel = PaginationErrorViewHolderViewModel.ViewModel(environment())
+    private val vm: PaginationErrorViewHolderViewModel.ViewModel = PaginationErrorViewHolderViewModel.ViewModel()
+    private val disposables = CompositeDisposable()
 
     init {
         this.vm.outputs.isErrorPaginationVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 binding.errorPaginationRetryButtonGroup.visibility = it.toVisibility()
-            }
+            }.addToDisposable(disposables)
 
         binding.retryButton.setOnClickListener {
             viewListener.retryCallback()
@@ -43,6 +44,12 @@ class PaginationErrorViewHolder(
             params.setMargins(context().resources.getDimension(R.dimen.grid_5).toInt(), 0, 0, 0)
             binding.paginationErrorCell.layoutParams = params
         }
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        vm.clear()
+        super.destroy()
     }
 
     override fun bindData(data: Any?) {

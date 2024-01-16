@@ -1,10 +1,9 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
-import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 interface PaginationErrorViewHolderViewModel {
     interface Inputs {
@@ -20,19 +19,19 @@ interface PaginationErrorViewHolderViewModel {
         fun isErrorPaginationVisible(): Observable<Boolean>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<PaginationErrorViewHolder>(environment), Inputs, Outputs {
+    class ViewModel : Inputs, Outputs {
         private val isErrorPaginationVisible = BehaviorSubject.create<Boolean>()
         private val initCellConfig = BehaviorSubject.create<Boolean>()
 
         val inputs = this
         val outputs = this
+        private val disposables = CompositeDisposable()
 
         init {
             this.initCellConfig
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.isErrorPaginationVisible.onNext(it)
-                }
+                }.addToDisposable(disposables)
         }
 
         // - Inputs
@@ -40,5 +39,9 @@ interface PaginationErrorViewHolderViewModel {
 
         // - Outputs
         override fun isErrorPaginationVisible(): Observable<Boolean> = this.isErrorPaginationVisible
+
+        fun clear() {
+            disposables.clear()
+        }
     }
 }

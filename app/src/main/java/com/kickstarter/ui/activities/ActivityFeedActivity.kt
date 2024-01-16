@@ -2,37 +2,47 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.addCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFeedLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.SwipeRefresher
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ActivityFeedAdapter
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.viewmodels.ActivityFeedViewModel
+import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.viewmodels.ActivityFeedViewModel.ActivityFeedViewModel
+import com.kickstarter.viewmodels.ActivityFeedViewModel.Factory
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(ActivityFeedViewModel.ViewModel::class)
-class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
+class ActivityFeedActivity : AppCompatActivity() {
     private var adapter: ActivityFeedAdapter? = null
-    private var currentUser: CurrentUserType? = null
-    private var recyclerViewPaginator: RecyclerViewPaginator? = null
-    private var swipeRefresher: SwipeRefresher? = null
+    private var currentUser: CurrentUserTypeV2? = null
+    private var recyclerViewPaginator: RecyclerViewPaginatorV2? = null
     private lateinit var binding: ActivityFeedLayoutBinding
+
+    private lateinit var viewModelFactory: Factory
+    private val viewModel: ActivityFeedViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +50,14 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
         setContentView(binding.root)
 
-        currentUser = environment().currentUser()
+        setUpConnectivityStatusCheck(lifecycle)
+
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = Factory(env)
+            env
+        }
+
+        currentUser = environment?.currentUserV2()
 
         adapter = ActivityFeedAdapter(viewModel.inputs)
 
@@ -48,73 +65,78 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
 
-        recyclerViewPaginator = RecyclerViewPaginator(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities())
+        recyclerViewPaginator = RecyclerViewPaginatorV2(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities())
 
-        swipeRefresher = SwipeRefresher(
-            this, binding.activityFeedSwipeRefreshLayout, { viewModel.inputs.refresh() }
-        ) { viewModel.outputs.isFetchingActivities() }
+        binding.activityFeedSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.outputs.isFetchingActivities()
+            viewModel.inputs.refresh()
+        }
 
         viewModel.outputs.isFetchingActivities()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.activityFeedSwipeRefreshLayout.isRefreshing = it }
+            .addToDisposable(disposables)
 
         // Only allow refreshing if there's a current user
         currentUser?.observable()
-            ?.map { `object`: User? -> `object`.isNotNull() }
-            ?.compose(bindToLifecycle())
-            ?.compose(Transformers.observeForUI())
+            ?.map { it.isPresent() }
+            ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe { binding.activityFeedSwipeRefreshLayout.isEnabled = it }
+            ?.addToDisposable(disposables)
 
         viewModel.outputs.activityList()
-            .compose(bindToLifecycle())
-            .compose<List<Activity?>>(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showActivities(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.erroredBackings()
-            .compose(bindToLifecycle())
-            .compose<List<ErroredBacking?>>(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showErroredBackings(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.goToDiscovery()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { resumeDiscoveryActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.goToLogin()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startActivityFeedLogin() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.goToProject()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startFixPledge()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startFixPledge(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startUpdateActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startUpdateActivity(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.loggedOutEmptyStateIsVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter?.showLoggedOutEmptyState(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.loggedInEmptyStateIsVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter?.showLoggedInEmptyState(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.surveys()
-            .compose(bindToLifecycle())
-            .compose<List<SurveyResponse?>>(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSurveys(it) }
+            .addToDisposable(disposables)
+
+        this.onBackPressedDispatcher.addCallback {
+            finishWithAnimation()
+        }
     }
 
     override fun onResume() {
@@ -123,6 +145,7 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
     }
 
     override fun onDestroy() {
+        disposables.clear()
         super.onDestroy()
         recyclerViewPaginator?.stop()
         binding.recyclerView.adapter = null

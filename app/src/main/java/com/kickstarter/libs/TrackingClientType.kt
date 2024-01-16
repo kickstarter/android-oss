@@ -33,6 +33,7 @@ abstract class TrackingClientType {
     protected abstract fun userCountry(user: User): String
     protected abstract fun versionName(): String
     protected abstract fun wifiConnection(): Boolean
+    protected abstract fun sessionForceDarkMode(): Boolean
 
     abstract fun track(eventName: String, additionalProperties: Map<String, Any>)
     abstract fun identify(u: User)
@@ -91,6 +92,7 @@ abstract class TrackingClientType {
             this["user_agent"] = userAgent() ?: ""
             this["user_is_logged_in"] = userIsLoggedIn
             this["wifi_connection"] = wifiConnection()
+            this["force_dark_mode"] = sessionForceDarkMode()
         }
 
         return MapUtils.prefixKeys(properties, "session_")

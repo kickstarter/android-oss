@@ -1658,6 +1658,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
         assertEquals("android_example_experiment[control]", (expectedProperties["session_variants_internal"] as Array<*>).first())
+        assertEquals(false, expectedProperties["session_force_dark_mode"])
     }
 
     private fun assertUserProperties(isAdmin: Boolean) {

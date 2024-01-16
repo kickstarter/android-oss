@@ -124,4 +124,17 @@ abstract class TrackingClient(
             cm.getNetworkCapabilities(it)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
         } ?: false
     }
+
+    override fun sessionForceDarkMode(): Boolean {
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    true
+                }
+                else -> false
+            }
+        } else {
+            false
+        }
+    }
 }

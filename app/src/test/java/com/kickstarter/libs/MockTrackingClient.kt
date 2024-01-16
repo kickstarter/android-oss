@@ -131,6 +131,10 @@ class MockTrackingClient(
         return false
     }
 
+    override fun sessionForceDarkMode(): Boolean {
+        return false
+    }
+
     companion object {
         private val DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").millis / 1000
     }

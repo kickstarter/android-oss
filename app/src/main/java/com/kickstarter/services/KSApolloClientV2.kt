@@ -11,6 +11,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
+import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -118,6 +119,9 @@ interface ApolloClientTypeV2 {
     ): Observable<CommentEnvelope>
 
     fun createComment(comment: PostCommentData): Observable<Comment>
+    fun erroredBackings(): Observable<List<ErroredBacking>>
+
+    fun clearUnseenActivity(): Observable<Int>
 }
 
 private const val PAGE_SIZE = 25
@@ -1270,6 +1274,74 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 )
                             )
                         }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun erroredBackings(): Observable<List<ErroredBacking>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<ErroredBacking>>()
+            this.service.query(ErroredBackingsQuery.builder().build())
+                .enqueue(object : ApolloCall.Callback<ErroredBackingsQuery.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<ErroredBackingsQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+                            Observable.just(response.data)
+                                .map { cards -> cards?.me()?.backings()?.nodes() }
+                                .map { list ->
+                                    val erroredBackings = list?.asSequence()?.map {
+                                        val project = ErroredBacking.Project.builder()
+                                            .finalCollectionDate(
+                                                it.project()?.finalCollectionDate()
+                                            )
+                                            .name(it.project()?.name())
+                                            .slug(it.project()?.slug())
+                                            .build()
+                                        ErroredBacking.builder()
+                                            .project(project)
+                                            .build()
+                                    }
+                                    erroredBackings?.toList() ?: listOf()
+                                }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onComplete()
+                                }.dispose()
+                        }
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun clearUnseenActivity(): Observable<Int> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Int>()
+            service.mutate(
+                ClearUserUnseenActivityMutation.builder()
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<ClearUserUnseenActivityMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<ClearUserUnseenActivityMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.clearUserUnseenActivity()?.activityIndicatorCount()?.let {
+                            ps.onNext(it)
+                        } ?: ps.onError(Exception())
+
                         ps.onComplete()
                     }
                 })

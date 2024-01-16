@@ -252,6 +252,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun createComment(comment: PostCommentData): io.reactivex.Observable<Comment> {
         return io.reactivex.Observable.just(CommentFactory.comment())
     }
+
+    override fun erroredBackings(): io.reactivex.Observable<List<ErroredBacking>> {
+        return io.reactivex.Observable.just(Collections.singletonList(ErroredBackingFactory.erroredBacking()))
+    }
+
+    override fun clearUnseenActivity(): io.reactivex.Observable<Int> {
+        return io.reactivex.Observable.just(0)
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

@@ -2,10 +2,11 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.databinding.ItemShowMoreRepliesBinding
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.viewmodels.RepliesStatusCellViewHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 
-@Suppress("UNCHECKED_CAST")
 class RepliesStatusCellViewHolder(
     val binding: ItemShowMoreRepliesBinding,
     private val viewListener: ViewListener
@@ -16,26 +17,25 @@ class RepliesStatusCellViewHolder(
         fun retryCallback()
     }
 
-    private val vm: RepliesStatusCellViewHolderViewModel.ViewModel = RepliesStatusCellViewHolderViewModel.ViewModel(environment())
+    private val vm: RepliesStatusCellViewHolderViewModel.ViewModel = RepliesStatusCellViewHolderViewModel.ViewModel()
+    private val disposables = CompositeDisposable()
 
     init {
         this.vm.outputs.isViewMoreRepliesPaginationVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 binding.viewMorePaginationButton.visibility = it.toVisibility()
-            }
+            }.addToDisposable(disposables)
 
         binding.viewMorePaginationButton.setOnClickListener {
             viewListener.loadMoreCallback()
         }
 
         this.vm.outputs.isErrorPaginationVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 binding.errorPaginationRetryButtonGroup.visibility = it.toVisibility()
-            }
+            }.addToDisposable(disposables)
 
         binding.retryButton.setOnClickListener {
             viewListener.retryCallback()
@@ -49,6 +49,12 @@ class RepliesStatusCellViewHolder(
         if (data is RepliesStatusCellType) {
             this.vm.inputs.configureWith(data)
         }
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        vm.clear()
+        super.destroy()
     }
 }
 

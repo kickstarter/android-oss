@@ -1,12 +1,16 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.ApiPaginator
-import com.kickstarter.libs.CurrentUserType
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.ApiPaginatorV2
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.KsOptional
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.Activity
@@ -14,19 +18,19 @@ import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.ActivityEnvelope
-import com.kickstarter.ui.activities.ActivityFeedActivity
 import com.kickstarter.ui.adapters.ActivityFeedAdapter
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ActivityFeedViewModel {
     interface Inputs : ActivityFeedAdapter.Delegate {
@@ -48,10 +52,10 @@ interface ActivityFeedViewModel {
         fun erroredBackings(): Observable<List<ErroredBacking>>
 
         /** Emits when view should be returned to Discovery projects.  */
-        fun goToDiscovery(): Observable<Void>
+        fun goToDiscovery(): Observable<Unit>
 
         /** Emits when login tout should be shown.  */
-        fun goToLogin(): Observable<Void>
+        fun goToLogin(): Observable<Unit>
 
         /** Emits a project when it should be shown.  */
         fun goToProject(): Observable<Project>
@@ -78,29 +82,29 @@ interface ActivityFeedViewModel {
         fun surveys(): Observable<List<SurveyResponse>>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<ActivityFeedActivity>(environment), Inputs, Outputs {
+    class ActivityFeedViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
 
-        private val apiClient: ApiClientType
-        private val apolloClient: ApolloClientType
-        private val currentUser: CurrentUserType
+        private val apiClient: ApiClientTypeV2
+        private val apolloClient: ApolloClientTypeV2
+        private val currentUser: CurrentUserTypeV2
+        private val analyticEvents: AnalyticEvents
 
-        private val discoverProjectsClick = PublishSubject.create<Void>()
+        private val discoverProjectsClick = PublishSubject.create<Unit>()
         private val friendBackingClick = PublishSubject.create<Activity>()
-        private val loginClick = PublishSubject.create<Void>()
+        private val loginClick = PublishSubject.create<Unit>()
         private val managePledgeClicked = PublishSubject.create<String>()
-        private val nextPage = PublishSubject.create<Void>()
+        private val nextPage = PublishSubject.create<Unit>()
         private val projectStateChangedClick = PublishSubject.create<Activity>()
         private val projectStateChangedPositiveClick = PublishSubject.create<Activity>()
         private val projectUpdateClick = PublishSubject.create<Activity>()
         private val projectUpdateProjectClick = PublishSubject.create<Activity>()
-        private val refresh = PublishSubject.create<Void>()
-        private val resume = PublishSubject.create<Void>()
+        private val refresh = PublishSubject.create<Unit>()
+        private val resume = PublishSubject.create<Unit>()
         private val surveyClick = PublishSubject.create<SurveyResponse>()
         private val activityList = BehaviorSubject.create<List<Activity>>()
         private val erroredBackings = BehaviorSubject.create<List<ErroredBacking>>()
-        private val goToDiscovery: Observable<Void>
-        private val goToLogin: Observable<Void>
+        private val goToDiscovery: Observable<Unit>
+        private val goToLogin: Observable<Unit>
         private val goToProject: Observable<Project>
         private val goToSurvey: Observable<SurveyResponse>
         private val isFetchingActivities = BehaviorSubject.create<Boolean>()
@@ -110,13 +114,16 @@ interface ActivityFeedViewModel {
         private val startUpdateActivity: Observable<Activity>
         private val surveys = BehaviorSubject.create<List<SurveyResponse>>()
 
+        private val disposables = CompositeDisposable()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
-            apiClient = requireNotNull(environment.apiClient())
-            apolloClient = requireNotNull(environment.apolloClient())
-            currentUser = requireNotNull(environment.currentUser())
+            apiClient = requireNotNull(environment.apiClientV2())
+            apolloClient = requireNotNull(environment.apolloClientV2())
+            currentUser = requireNotNull(environment.currentUserV2())
+            analyticEvents = requireNotNull(environment.analytics())
 
             goToDiscovery = discoverProjectsClick
             goToLogin = loginClick
@@ -130,13 +137,13 @@ interface ActivityFeedViewModel {
             ).map { obj: Activity -> obj.project() }
 
             goToProject
-                .compose(bindToLifecycle())
                 .subscribe { p: Project ->
                     analyticEvents.trackProjectCardClicked(
                         p,
                         EventContextValues.ContextPageName.ACTIVITY_FEED.contextName
                     )
                 }
+                .addToDisposable(disposables)
 
             startUpdateActivity = projectUpdateClick
 
@@ -145,23 +152,23 @@ interface ActivityFeedViewModel {
             val loggedInUser = currentUser.loggedInUser()
 
             loggedInUser
-                .compose(Transformers.takeWhen(refreshOrResume))
+                .compose(Transformers.takeWhenV2(refreshOrResume))
                 .switchMap {
-                    apiClient.fetchUnansweredSurveys().compose(Transformers.neverError()).share()
+                    apiClient.fetchUnansweredSurveys().compose(Transformers.neverErrorV2()).share()
                 }
-                .compose(bindToLifecycle())
-                .subscribe(surveys)
+                .subscribe { surveys.onNext(it) }
+                .addToDisposable(disposables)
 
             loggedInUser
-                .compose(Transformers.takeWhen(refreshOrResume))
+                .compose(Transformers.takeWhenV2(refreshOrResume))
                 .switchMap {
-                    apolloClient.erroredBackings().compose(Transformers.neverError()).share()
+                    apolloClient.erroredBackings().compose(Transformers.neverErrorV2()).share()
                 }
-                .compose(bindToLifecycle())
                 .subscribe { v: List<ErroredBacking> -> erroredBackings.onNext(v) }
+                .addToDisposable(disposables)
 
             loggedInUser
-                .compose(Transformers.takeWhen(refreshOrResume))
+                .compose(Transformers.takeWhenV2(refreshOrResume))
                 .map { user: User ->
                     user.unseenActivityCount().intValueOrZero() + user.erroredBackingsCount()
                         .intValueOrZero()
@@ -169,23 +176,23 @@ interface ActivityFeedViewModel {
                 .filter { it.isNonZero() }
                 .distinctUntilChanged()
                 .switchMap {
-                    apolloClient.clearUnseenActivity().compose(Transformers.neverError())
+                    apolloClient.clearUnseenActivity().compose(Transformers.neverErrorV2())
                 }
                 .switchMap {
-                    apiClient.fetchCurrentUser().compose(Transformers.neverError())
+                    apiClient.fetchCurrentUser().compose(Transformers.neverErrorV2())
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     currentUser.refresh(it)
                 }
+                .addToDisposable(disposables)
 
-            val paginator = ApiPaginator.builder<Activity, ActivityEnvelope, Void>()
+            val paginator = ApiPaginatorV2.builder<Activity, ActivityEnvelope, Unit>()
                 .nextPage(nextPage)
                 .startOverWith(refresh)
                 .envelopeToListOfData { obj: ActivityEnvelope -> obj.activities() }
                 .envelopeToMoreUrl { env: ActivityEnvelope -> env.urls().api().moreActivities() }
                 .loadWithParams {
-                    apiClient.fetchActivities().compose(Transformers.neverError())
+                    apiClient.fetchActivities().compose(Transformers.neverErrorV2())
                 }
                 .loadWithPaginationPath { paginationPath: String ->
                     apiClient.fetchActivitiesWithPaginationPath(
@@ -195,54 +202,59 @@ interface ActivityFeedViewModel {
                 .build()
 
             paginator.paginatedData()
-                .compose(bindToLifecycle())
-                .subscribe(activityList)
+                .subscribe { activityList.onNext(it) }
+                .addToDisposable(disposables)
 
             paginator.isFetching
-                .compose(bindToLifecycle())
-                .subscribe(isFetchingActivities)
+                .subscribe { isFetchingActivities.onNext(it) }
+                .addToDisposable(disposables)
 
             currentUser.loggedInUser()
                 .take(1)
-                .compose(bindToLifecycle())
                 .subscribe { refresh() }
+                .addToDisposable(disposables)
 
             currentUser.isLoggedIn
                 .map { loggedIn: Boolean -> !loggedIn }
-                .compose(bindToLifecycle())
-                .subscribe(loggedOutEmptyStateIsVisible)
+                .subscribe { loggedOutEmptyStateIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             managePledgeClicked
-                .compose(bindToLifecycle())
                 .subscribe { v: String -> startFixPledge.onNext(v) }
+                .addToDisposable(disposables)
 
             currentUser.observable()
-                .compose(Transformers.takePairWhen(activityList))
-                .map { ua: Pair<User, List<Activity>> -> ua.first != null && ua.second.isEmpty() }
-                .compose(bindToLifecycle())
-                .subscribe(loggedInEmptyStateIsVisible)
+                .compose(Transformers.takePairWhenV2(activityList))
+                .map { ua: Pair<KsOptional<User>, List<Activity>> -> ua.first != null && ua.second.isEmpty() }
+                .subscribe { loggedInEmptyStateIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             // Track viewing and paginating activity.
             val feedViewed = nextPage
-                .compose(Transformers.incrementalCount())
+                .compose(Transformers.incrementalCountV2())
                 .startWith(0)
 
             feedViewed
                 .take(1)
-                .compose(bindToLifecycle())
                 .subscribe { analyticEvents.trackActivityFeedPageViewed() }
+                .addToDisposable(disposables)
 
             discoverProjectsClick
-                .compose(bindToLifecycle())
                 .subscribe { analyticEvents.trackDiscoverProjectCTAClicked() }
+                .addToDisposable(disposables)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun emptyActivityFeedDiscoverProjectsClicked(viewHolder: EmptyActivityFeedViewHolder?) {
-            discoverProjectsClick.onNext(null)
+            discoverProjectsClick.onNext(Unit)
         }
 
         override fun emptyActivityFeedLoginClicked(viewHolder: EmptyActivityFeedViewHolder?) {
-            loginClick.onNext(null)
+            loginClick.onNext(Unit)
         }
 
         override fun managePledgeClicked(projectSlug: String) {
@@ -253,53 +265,63 @@ interface ActivityFeedViewModel {
             viewHolder: FriendBackingViewHolder?,
             activity: Activity?
         ) {
-            friendBackingClick.onNext(activity)
+            if (activity != null) {
+                friendBackingClick.onNext(activity)
+            }
         }
 
         override fun nextPage() {
-            nextPage.onNext(null)
+            nextPage.onNext(Unit)
         }
 
         override fun projectStateChangedClicked(
             viewHolder: ProjectStateChangedViewHolder?,
             activity: Activity?
         ) {
-            projectStateChangedClick.onNext(activity)
+            if (activity != null) {
+                projectStateChangedClick.onNext(activity)
+            }
         }
 
         override fun projectStateChangedPositiveClicked(
             viewHolder: ProjectStateChangedPositiveViewHolder?,
             activity: Activity?
         ) {
-            projectStateChangedPositiveClick.onNext(activity)
+            if (activity != null) {
+                projectStateChangedPositiveClick.onNext(activity)
+            }
         }
 
         override fun projectUpdateClicked(
             viewHolder: ProjectUpdateViewHolder?,
             activity: Activity?
         ) {
-            projectUpdateClick.onNext(activity)
+            if (activity != null) {
+                projectUpdateClick.onNext(activity)
+            }
         }
 
         override fun projectUpdateProjectClicked(
             viewHolder: ProjectUpdateViewHolder?,
             activity: Activity?
         ) {
-            projectUpdateProjectClick.onNext(activity)
+            if (activity != null) {
+                projectUpdateProjectClick.onNext(activity)
+            }
         }
 
         override fun refresh() {
-            refresh.onNext(null)
+            refresh.onNext(Unit)
         }
 
         override fun resume() {
-            resume.onNext(null)
+            resume.onNext(Unit)
         }
 
         override fun activityList(): Observable<List<Activity>> = activityList
         override fun erroredBackings(): Observable<List<ErroredBacking>> = erroredBackings
-        override fun goToDiscovery(): Observable<Void> = goToDiscovery
-        override fun goToLogin(): Observable<Void> = goToLogin
+        override fun goToDiscovery(): Observable<Unit> = goToDiscovery
+        override fun goToLogin(): Observable<Unit> = goToLogin
         override fun goToProject(): Observable<Project> = goToProject
         override fun goToSurvey(): Observable<SurveyResponse> = goToSurvey
         override fun isFetchingActivities(): Observable<Boolean> = isFetchingActivities
@@ -308,5 +330,11 @@ interface ActivityFeedViewModel {
         override fun startFixPledge(): Observable<String> = startFixPledge
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
         override fun surveys(): Observable<List<SurveyResponse>> = surveys
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ActivityFeedViewModel(environment) as T
+        }
     }
 }

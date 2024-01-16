@@ -198,6 +198,14 @@ public final class Transformers {
   }
 
   /**
+   * Emits the number of times the source has emitted for every emission of the source. The
+   * first emitted value will be `1`.
+   */
+  public static @NonNull <T> IncrementalCountTransformerV2<T> incrementalCountV2() {
+    return new IncrementalCountTransformerV2<>();
+  }
+
+  /**
    * Emits an observable of values from a materialized stream.
    */
   public static @NonNull <T> ValuesTransformer<T> values() {

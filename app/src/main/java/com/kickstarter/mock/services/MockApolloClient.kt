@@ -260,6 +260,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun clearUnseenActivity(): io.reactivex.Observable<Int> {
         return io.reactivex.Observable.just(0)
     }
+
+    override fun getProjectBacking(slug: String): io.reactivex.Observable<Backing> {
+        return io.reactivex.Observable.just(BackingFactory.backing())
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

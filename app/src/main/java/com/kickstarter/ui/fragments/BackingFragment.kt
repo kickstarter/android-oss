@@ -12,17 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingBinding
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
-import com.kickstarter.libs.SwipeRefresher
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.BackingActivity
@@ -32,15 +31,21 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers.io
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 
-@RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
-class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
+class BackingFragment : Fragment() {
 
     private var rewardsAndAddOnsAdapter = RewardAndAddOnsAdapter()
 
     private var binding: FragmentBackingBinding? = null
+
+    private lateinit var viewModelFactory: BackingFragmentViewModel.Factory
+    private val viewModel: BackingFragmentViewModel.BackingFragmentViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private val disposables = CompositeDisposable()
 
     interface BackingDelegate {
         fun refreshProject()
@@ -57,173 +62,166 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = BackingFragmentViewModel.Factory(env)
+        }
+
         this.viewModel.outputs.backerAvatar()
-            .compose(bindToLifecycle())
             .subscribeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setBackerImageView(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.backerName()
-            .observeOn(io())
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe { binding?.backerName?.text = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.backerNumber()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setBackerNumberText(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setBackerNumberText(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.cardLogo()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.cardExpiration()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setCardExpirationText(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setCardExpirationText(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.cardIssuer()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setCardIssuerContentDescription(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setCardIssuerContentDescription(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.cardLastFour()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setCardLastFourText(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setCardLastFourText(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding?.fixPaymentMethodButton?.isGone = it
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fixPaymentMethodButton?.isGone = it }
+                .addToDisposable(disposables)
+
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding?.fixPaymentMethodMessage?.isGone = it
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fixPaymentMethodMessage?.isGone = it }
+                .addToDisposable(disposables)
+
 
         this.viewModel.outputs.notifyDelegateToRefreshProject()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { (activity as BackingDelegate?)?.refreshProject() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { (activity as BackingDelegate?)?.refreshProject() }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.notifyDelegateToShowFixPledge()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.paymentMethodIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding?.paymentMethod?.isGone = it
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.paymentMethod?.isGone = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeAmount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeDate()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setPledgeDateText(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setPledgeDateText(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeStatusData()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setPledgeStatusText(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setPledgeStatusText(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeSummaryIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.isGone = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.isGone = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.projectDataAndReward()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                bindDataToRewardViewHolder(it)
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { bindDataToRewardViewHolder(it) }
+                .addToDisposable(disposables)
+
 
         this.viewModel.outputs.receivedCheckboxChecked()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.isChecked = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.isChecked = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.receivedSectionIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.receivedSectionCreatorIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding?.estimatedDeliveryLabel2?.isGone = it
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.estimatedDeliveryLabel2?.isGone = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingAmount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingLocation()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingSummaryIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.totalAmount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.projectDataAndAddOns()
             .filter { it.isNotNull() }
             .distinctUntilChanged()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { populateAddOns(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { populateAddOns(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.bonusSupport()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { binding?.sectionBonusSupport?.bonusSummaryAmount?.text = it }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { binding?.sectionBonusSupport?.bonusSummaryAmount?.text = it }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.estimatedDelivery()
             .distinctUntilChanged()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                stylizedTextViews(it)
-            }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { stylizedTextViews(it) }
+                .addToDisposable(disposables)
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
                 binding?.pledgeDetailsLabel?.text = getString(R.string.Pledge_details)
                 binding?.deliveryDisclaimerSection?.root?.isGone = it
                 binding?.estimatedDeliveryLabel2?.isGone = true
             }
+                .addToDisposable(disposables)
 
         binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply {
             val sb = StringBuilder(text.toString())
@@ -234,23 +232,22 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             setBoldSpanOnTextView(boldPortionLength, this, resources.getColor(R.color.kds_support_400, null))
         }
 
-        binding?.backingSwipeRefreshLayout?.let {
-            SwipeRefresher(
-                this, it, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
-            )
+        binding?.backingSwipeRefreshLayout?.setOnRefreshListener {
+             this.viewModel.inputs.refreshProject()
         }
 
-        binding?.fixPaymentMethodButton?.let {
-            RxView.clicks(it)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.fixPaymentMethodButtonClicked() }
+        binding?.fixPaymentMethodButton?.setOnClickListener {
+            this.viewModel.inputs.fixPaymentMethodButtonClicked()
         }
 
-        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.apply {
-            RxView.clicks(this)
-                .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.receivedCheckboxToggled(this.isChecked) }
+//        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.apply {
+//            viewModel.inputs.receivedCheckboxToggled(this.isChecked)
+//        }
+
+        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.inputs.receivedCheckboxToggled(isChecked)
         }
+
     }
 
     override fun onStart() {
@@ -399,19 +396,28 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         }
     }
 
+    fun setState(state: Boolean?) {
+        state?.let {
+            viewModel.isExpanded(state)
+        }
+    }
+
     private fun setupRecyclerView() {
         binding?.rewardAddOnRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding?.rewardAddOnRecycler?.adapter = rewardsAndAddOnsAdapter
     }
 
     override fun onDetach() {
+        disposables.clear()
         super.onDetach()
         binding?.rewardAddOnRecycler?.adapter = null
-        this.viewModel = null
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         binding = null
+        disposables.clear()
+        super.onDestroyView()
     }
+
+
 }

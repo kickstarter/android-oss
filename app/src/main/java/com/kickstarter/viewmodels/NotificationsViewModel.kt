@@ -1,21 +1,21 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
-import com.kickstarter.ui.activities.NotificationsActivity
-import rx.Notification
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface NotificationsViewModel {
     interface Inputs {
@@ -91,13 +91,13 @@ interface NotificationsViewModel {
         fun unableToSavePreferenceError(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
+    class NotificationsViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
         private val creatorDigestFrequencyIsGone: Observable<Boolean>
         private val creatorNotificationsAreGone: Observable<Boolean>
         private val userOutput = BehaviorSubject.create<User>()
-        private val updateSuccess = PublishSubject.create<Void>()
+        private val updateSuccess = PublishSubject.create<Unit>()
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
 
@@ -105,135 +105,176 @@ interface NotificationsViewModel {
         val outputs: Outputs = this
         val errors: Errors = this
 
-        private val client = requireNotNull(environment.apiClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val client = requireNotNull(environment.apiClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
+
+        private val disposables = CompositeDisposable()
 
         init {
 
             this.client.fetchCurrentUser()
                 .retry(2)
-                .compose(neverError())
-                .compose(bindToLifecycle())
+                .compose(neverErrorV2())
                 .subscribe { this.currentUser.refresh(it) }
+                .addToDisposable(disposables)
 
             val currentUser = this.currentUser.observable()
-                .filter { it.isNotNull() }
+                .filter { it.getValue().isNotNull() }
+                .map { it.getValue()!! }
 
             currentUser
                 .take(1)
-                .compose(bindToLifecycle())
                 .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             this.creatorDigestFrequencyIsGone = Observable.merge(currentUser, this.userInput)
-                .compose(bindToLifecycle())
-                .map { it.notifyOfBackings() != true }
+                .map { !it.notifyOfBackings() }
                 .distinctUntilChanged()
 
             this.creatorNotificationsAreGone = currentUser
-                .compose(bindToLifecycle())
-                .map { (it.createdProjectsCount() ?: 0).isZero() }
+                .map { (it.createdProjectsCount()).isZero() }
                 .distinctUntilChanged()
 
             val updateSettingsNotification = this.userInput
                 .concatMap { this.updateSettings(it) }
 
             updateSettingsNotification
-                .compose(values())
-                .compose(bindToLifecycle())
+                .compose(valuesV2())
                 .subscribe { this.success(it) }
+                .addToDisposable(disposables)
 
             updateSettingsNotification
-                .compose(errors())
-                .compose(bindToLifecycle())
-                .subscribe(this.unableToSavePreferenceError)
+                .compose(errorsV2())
+                .subscribe {
+                    this.unableToSavePreferenceError.onNext(
+                        it ?: Throwable("update notifications settings error")
+                    )
+                }
+                .addToDisposable(disposables)
 
             this.userInput
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             this.userOutput
                 .window(2, 1)
-                .flatMap<List<User>> { it.toList() }
-                .map<User> { ListUtils.first(it) }
-                .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .flatMap<List<User>> { it.toList().toObservable() }
+                .map { it.first() }
+                .compose(takeWhenV2(this.unableToSavePreferenceError))
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         override fun notifyMobileOfBackings(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfBackings(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfBackings(checked).build())
+            }
         }
 
         override fun notifyMobileOfComments(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfComments(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfComments(checked).build())
+            }
         }
 
         override fun notifyMobileOfCreatorEdu(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfCreatorEdu(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfCreatorEdu(checked).build())
+            }
         }
 
         override fun notifyMobileOfFollower(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfFollower(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfFollower(checked).build())
+            }
         }
 
         override fun notifyMobileOfFriendActivity(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfFriendActivity(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfFriendActivity(checked).build())
+            }
         }
 
         override fun notifyMobileOfMessages(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfMessages(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfMessages(checked).build())
+            }
         }
 
         override fun notifyMobileOfPostLikes(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfPostLikes(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfPostLikes(checked).build())
+            }
         }
 
         override fun notifyMobileOfUpdates(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfUpdates(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfUpdates(checked).build())
+            }
         }
 
         override fun notifyOfBackings(checked: Boolean) {
-            val userBuilder = this.userOutput.value.toBuilder().notifyOfBackings(checked)
-            if (!checked) {
-                userBuilder.notifyOfCreatorDigest(false)
+            this.userOutput.value?.let {
+                val userBuilder = it.toBuilder().notifyOfBackings(checked)
+                if (!checked) {
+                    userBuilder.notifyOfCreatorDigest(false)
+                }
+                this.userInput.onNext(userBuilder.build())
             }
-            this.userInput.onNext(userBuilder.build())
         }
 
         override fun notifyMobileOfMarketingUpdate(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfMarketingUpdate(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyMobileOfMarketingUpdate(checked).build())
+            }
         }
 
         override fun notifyOfComments(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfComments(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfComments(checked).build())
+            }
         }
 
         override fun notifyOfCommentReplies(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCommentReplies(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfCommentReplies(checked).build())
+            }
         }
 
         override fun notifyOfCreatorDigest(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCreatorDigest(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfCreatorDigest(checked).build())
+            }
         }
 
         override fun notifyOfCreatorEdu(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCreatorEdu(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfCreatorEdu(checked).build())
+            }
         }
 
         override fun notifyOfFollower(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfFollower(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfFollower(checked).build())
+            }
         }
 
         override fun notifyOfFriendActivity(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfFriendActivity(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfFriendActivity(checked).build())
+            }
         }
 
         override fun notifyOfMessages(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfMessages(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfMessages(checked).build())
+            }
         }
 
         override fun notifyOfUpdates(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
+            this.userOutput.value?.let {
+                this.userInput.onNext(it.toBuilder().notifyOfUpdates(checked).build())
+            }
         }
 
         override fun creatorDigestFrequencyIsGone() = this.creatorDigestFrequencyIsGone
@@ -242,19 +283,31 @@ interface NotificationsViewModel {
 
         override fun user(): Observable<User> = this.userOutput
 
-        override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
-            .takeUntil(this.updateSuccess)
-            .map { _ -> null }
+        override fun unableToSavePreferenceError(): Observable<String> =
+            this.unableToSavePreferenceError
+                .takeUntil(this.updateSuccess)
+                .map { it.message ?: "Unable to save preference" }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
+            this.updateSuccess.onNext(Unit)
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
                 .materialize()
                 .share()
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return NotificationsViewModel(environment) as T
         }
     }
 }

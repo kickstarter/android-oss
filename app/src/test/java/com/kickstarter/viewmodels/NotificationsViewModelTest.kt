@@ -2,36 +2,42 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.User
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class NotificationsViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: NotificationsViewModel.ViewModel
+    private lateinit var vm: NotificationsViewModel.NotificationsViewModel
 
     private val creatorDigestFrequencyIsGone = TestSubscriber<Boolean>()
     private val creatorNotificationsAreGone = TestSubscriber<Boolean>()
     private val currentUserTest = TestSubscriber<User>()
     private val unableToSavePreferenceError = TestSubscriber<String>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(user: User, environment: Environment = environment()) {
-        val currentUser = MockCurrentUser(user)
+        val currentUser = MockCurrentUserV2(user)
 
-        currentUser.observable().subscribe(this.currentUserTest)
-
-        this.vm = NotificationsViewModel.ViewModel(
+        this.vm = NotificationsViewModel.NotificationsViewModel(
             environment.toBuilder()
-                .currentUser(currentUser)
+                .currentUserV2(currentUser)
                 .build()
         )
 
-        this.vm.outputs.creatorDigestFrequencyIsGone().subscribe(this.creatorDigestFrequencyIsGone)
-        this.vm.outputs.creatorNotificationsAreGone().subscribe(this.creatorNotificationsAreGone)
-        this.vm.errors.unableToSavePreferenceError().subscribe(this.unableToSavePreferenceError)
+        this.vm.outputs.creatorDigestFrequencyIsGone()
+            .subscribe { this.creatorDigestFrequencyIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.creatorNotificationsAreGone()
+            .subscribe { this.creatorNotificationsAreGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.errors.unableToSavePreferenceError()
+            .subscribe { this.unableToSavePreferenceError.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.user().subscribe { this.currentUserTest.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -86,7 +92,11 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfBackings(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfBackings(true).build())
+
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfBackings(true).build()
+        )
     }
 
     @Test
@@ -96,7 +106,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfMarketingUpdate(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfMarketingUpdate(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfMarketingUpdate(true).build()
+        )
     }
 
     @Test
@@ -106,7 +119,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfMarketingUpdate(false)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfMarketingUpdate(false).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfMarketingUpdate(false).build()
+        )
     }
 
     @Test
@@ -116,7 +132,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfComments(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfComments(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfComments(true).build()
+        )
     }
 
     @Test
@@ -126,7 +145,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfCreatorEdu(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfCreatorEdu(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfCreatorEdu(true).build()
+        )
     }
 
     @Test
@@ -136,7 +158,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfFollower(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfFollower(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfFollower(true).build()
+        )
     }
 
     @Test
@@ -146,7 +171,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfFriendActivity(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfFriendActivity(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfFriendActivity(true).build()
+        )
     }
 
     @Test
@@ -156,7 +184,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfMessages(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfMessages(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfMessages(true).build()
+        )
     }
 
     @Test
@@ -166,7 +197,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfPostLikes(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfPostLikes(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfPostLikes(true).build()
+        )
     }
 
     @Test
@@ -176,7 +210,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyMobileOfUpdates(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfUpdates(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyMobileOfUpdates(true).build()
+        )
     }
 
     @Test
@@ -220,7 +257,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyOfCommentReplies(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfCommentReplies(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyOfCommentReplies(true).build()
+        )
     }
 
     @Test
@@ -230,7 +270,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyOfCreatorDigest(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfCreatorDigest(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyOfCreatorDigest(true).build()
+        )
     }
 
     @Test
@@ -260,7 +303,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.vm.inputs.notifyOfFriendActivity(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfFriendActivity(true).build())
+        this.currentUserTest.assertValues(
+            user,
+            user.toBuilder().notifyOfFriendActivity(true).build()
+        )
     }
 
     @Test
@@ -289,7 +335,7 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             user,
-            environment().toBuilder().apiClient(object : MockApiClient() {
+            environment().toBuilder().apiClientV2(object : MockApiClientV2() {
                 override fun updateUserSettings(user: User): Observable<User> {
                     return Observable.error(Throwable("Error"))
                 }
@@ -298,5 +344,10 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.notifyMobileOfBackings(true)
         this.unableToSavePreferenceError.assertValueCount(1)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

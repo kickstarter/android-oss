@@ -6,22 +6,24 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityNotificationsBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.NotificationsViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(NotificationsViewModel.ViewModel::class)
-class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
+class NotificationsActivity : ComponentActivity() {
 
     private val green = R.color.kds_create_700
     private val grey = R.color.kds_support_400
@@ -56,35 +58,43 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
     private lateinit var binding: ActivityNotificationsBinding
 
+    private lateinit var viewModelFactory: NotificationsViewModel.Factory
+    private val viewModel: NotificationsViewModel.NotificationsViewModel by viewModels { viewModelFactory }
+
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNotificationsBinding.inflate(layoutInflater)
 
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = NotificationsViewModel.Factory(env)
+            env
+        }
+
         setContentView(binding.root)
 
         this.viewModel.outputs.creatorDigestFrequencyIsGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.emailFrequencyRow.isGone = it
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.creatorNotificationsAreGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.creatorNotificationsSection.isGone = it
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.user()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.displayPreferences(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.errors.unableToSavePreferenceError()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
+            .addToDisposable(disposables)
 
         val emailFrequencyStrings = User.EmailFrequency.getStrings(this.resources)
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, emailFrequencyStrings)
@@ -345,5 +355,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         imageButton.setBackgroundResource(background)
 
         setContentDescription(imageButton, enabled, typeMobile)
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 }

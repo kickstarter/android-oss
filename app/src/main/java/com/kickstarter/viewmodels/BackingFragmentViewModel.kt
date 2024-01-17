@@ -215,12 +215,14 @@ interface BackingFragmentViewModel {
         init {
 
             this.pledgeSuccessfullyCancelled
-                .subscribe(this.showUpdatePledgeSuccess)
+                .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
+                    .addToDisposable(disposables)
 
             this.projectDataInput
                 .filter { it.project().isBacking() || it.project().userIsCreator(it.user()) }
                 .map { projectData -> joinProjectDataAndReward(projectData) }
-                .subscribe(this.projectDataAndReward)
+                .subscribe { this.projectDataAndReward.onNext(it) }
+                    .addToDisposable(disposables)
 
             val backedProject = this.projectDataInput
                 .map { it.project() }
@@ -278,7 +280,8 @@ interface BackingFragmentViewModel {
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
-                .subscribe(this.pledgeAmount)
+                .subscribe { this.pledgeAmount.onNext(it) }
+                    .addToDisposable(disposables)
 
             backing
                 .map {
@@ -451,14 +454,16 @@ interface BackingFragmentViewModel {
 
             Observable.merge(refreshTimeout, backedProject.skip(1))
                 .map { false }
-                .subscribe(this.swipeRefresherProgressIsVisible)
+                .subscribe { this.swipeRefresherProgressIsVisible.onNext(it) }
+                    .addToDisposable(disposables)
 
             val addOns = backing
                 .map { it.addOns()?.toList() ?: emptyList() }
 
             projectDataInput
                 .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addOns))
-                .subscribe(this.addOnsList)
+                .subscribe { this.addOnsList.onNext(it) }
+                    .addToDisposable(disposables)
 
             backing
                 .filter { it.bonusAmount().isNotNull() }

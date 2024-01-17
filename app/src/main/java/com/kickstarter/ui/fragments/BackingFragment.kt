@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingBinding
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -223,6 +224,13 @@ class BackingFragment : Fragment() {
             }
                 .addToDisposable(disposables)
 
+        this.viewModel.outputs.swipeRefresherProgressIsVisible()
+                .compose(Transformers.observeForUIV2())
+                .subscribe {
+                    binding?.backingSwipeRefreshLayout?.isRefreshing = it
+                }
+                .addToDisposable(disposables)
+
         binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply {
             val sb = StringBuilder(text.toString())
             sb.append(" " + resources.getString(R.string.Delays_or_changes_are_possible))
@@ -232,6 +240,8 @@ class BackingFragment : Fragment() {
             setBoldSpanOnTextView(boldPortionLength, this, resources.getColor(R.color.kds_support_400, null))
         }
 
+        binding?.backingSwipeRefreshLayout?.setColorSchemeResources(R.color.kds_create_700, R.color.kds_create_500, R.color.kds_create_300)
+
         binding?.backingSwipeRefreshLayout?.setOnRefreshListener {
              this.viewModel.inputs.refreshProject()
         }
@@ -240,9 +250,9 @@ class BackingFragment : Fragment() {
             this.viewModel.inputs.fixPaymentMethodButtonClicked()
         }
 
-//        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.apply {
-//            viewModel.inputs.receivedCheckboxToggled(this.isChecked)
-//        }
+        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.apply {
+            viewModel.inputs.receivedCheckboxToggled(this.isChecked)
+        }
 
         binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.inputs.receivedCheckboxToggled(isChecked)

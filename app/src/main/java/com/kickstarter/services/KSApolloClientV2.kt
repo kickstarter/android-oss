@@ -40,6 +40,7 @@ import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.BackingState
@@ -1371,16 +1372,14 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 ps.onError(Exception(response.errors?.first()?.message))
                             } else {
                                 response.data?.let { data ->
-                                    Observable.just(data.project()?.backing())
-                                            .map { backingObj ->
-                                                backingTransformer(
-                                                        backingObj.fragments().backing()
-                                                )
-                                            }
-                                            .subscribe {
-                                                ps.onNext(it)
-                                                ps.onComplete()
-                                            }
+                                    data.project()?.backing()?.fragments()?.backing()?.let { backingObj ->
+                                        val backing = backingTransformer(
+                                                backingObj
+                                        )
+
+                                        ps.onNext(backing)
+                                        ps.onComplete()
+                                    }
                                 }
                             }
                         }

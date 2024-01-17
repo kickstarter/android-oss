@@ -33,6 +33,7 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
+import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
@@ -588,7 +589,7 @@ interface ProjectPageViewModel {
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
 
-                    val showAiTab = it.project().aiDisclosure() != null
+                    val showAiTab = it.project().aiDisclosure()?.let { disclosure -> !disclosure.isUIEmptyValues() } ?: false
                     val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))

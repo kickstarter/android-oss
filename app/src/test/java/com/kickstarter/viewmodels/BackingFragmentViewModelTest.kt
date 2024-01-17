@@ -24,11 +24,12 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.CardBrand
-import org.joda.time.DateTime
-import org.junit.Test
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.joda.time.DateTime
+import org.junit.After
+import org.junit.Test
 import java.math.RoundingMode
 
 class BackingFragmentViewModelTest : KSRobolectricTestCase() {
@@ -85,7 +86,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeSummaryIsGone().subscribe { this.pledgeSummaryIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.projectDataAndReward().subscribe { this.projectDataAndReward.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.receivedCheckboxChecked().subscribe { this.receivedCheckboxChecked.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.receivedSectionIsGone().subscribe{ this.receivedSectionIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.receivedSectionIsGone().subscribe { this.receivedSectionIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.receivedSectionCreatorIsGone().subscribe { this.receivedSectionCreatorIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe { this.shippingAmount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.shippingLocation().subscribe { this.shippingLocation.onNext(it) }.addToDisposable(disposables)
@@ -96,6 +97,11 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectDataAndAddOns().subscribe { this.listAddOns.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.bonusSupport().map { it.toString() }.subscribe { this.bonusAmount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.deliveryDisclaimerSectionIsGone().subscribe { this.disclaimerSectionIsGone.onNext(it) }.addToDisposable(disposables)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 
     @Test

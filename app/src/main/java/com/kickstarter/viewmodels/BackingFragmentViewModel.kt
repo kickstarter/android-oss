@@ -1,18 +1,14 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
@@ -38,11 +34,11 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
 import com.stripe.android.model.CardBrand
-import org.joda.time.DateTime
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import org.joda.time.DateTime
 import type.CreditCardPaymentType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
@@ -216,13 +212,13 @@ interface BackingFragmentViewModel {
 
             this.pledgeSuccessfullyCancelled
                 .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             this.projectDataInput
                 .filter { it.project().isBacking() || it.project().userIsCreator(it.user()) }
                 .map { projectData -> joinProjectDataAndReward(projectData) }
                 .subscribe { this.projectDataAndReward.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             val backedProject = this.projectDataInput
                 .map { it.project() }
@@ -231,7 +227,7 @@ interface BackingFragmentViewModel {
                 .switchMap { getBackingInfo(it) }
                 .compose(neverErrorV2())
                 .filter { it.isNotNull() }
-                    .share()
+                .share()
 
             val rewardA = backing
                 .filter { it.reward().isNotNull() }
@@ -259,20 +255,20 @@ interface BackingFragmentViewModel {
                 .filter { it.backerUrl().isNotNull() }
                 .map { requireNotNull(it.backerUrl()) }
                 .subscribe { this.backerAvatar.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .map { NumberUtils.format(it.sequence().toFloat()) }
                 .distinctUntilChanged()
-                .subscribe{ this.backerNumber.onNext(it) }
-                    .addToDisposable(disposables)
+                .subscribe { this.backerNumber.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .filter { it.pledgedAt().isNotNull() }
                 .map { DateTimeUtils.longDate(requireNotNull(it.pledgedAt())) }
                 .distinctUntilChanged()
                 .subscribe { this.pledgeDate.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
@@ -281,7 +277,7 @@ interface BackingFragmentViewModel {
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
                 .subscribe { this.pledgeAmount.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .map {
@@ -303,23 +299,23 @@ interface BackingFragmentViewModel {
                 .map { pledgeStatusData(it.first, it.second, it.third) }
                 .distinctUntilChanged()
                 .subscribe { this.pledgeStatusData.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
-                    .filter { it.shippingAmount().isNotNull() }
-                .map { requireNotNull( it.shippingAmount() ) }
+                .filter { it.shippingAmount().isNotNull() }
+                .map { requireNotNull(it.shippingAmount()) }
                 .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
                 .distinctUntilChanged()
                 .subscribe { this.shippingAmount.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .filter { it.locationName().isNotNull() }
                 .map { requireNotNull(it.locationName()) }
                 .distinctUntilChanged()
                 .subscribe { this.shippingLocation.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .filter { it.amount().isNotNull() }
@@ -328,22 +324,20 @@ interface BackingFragmentViewModel {
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
                 .subscribe { this.totalAmount.onNext(it) }
-                    .addToDisposable(disposables)
-
+                .addToDisposable(disposables)
 
             backing
-                    .map { CreditCardPaymentType.safeValueOf(it.paymentSource()?.paymentType()) }
-                    .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
-                    .map { it.negate() }
-                    .distinctUntilChanged()
-                    .subscribe { this.paymentMethodIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .map { CreditCardPaymentType.safeValueOf(it.paymentSource()?.paymentType()) }
+                .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
+                .map { it.negate() }
+                .distinctUntilChanged()
+                .subscribe { this.paymentMethodIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             val paymentSource = backing
-                    .filter { it.paymentSource().isNotNull() }
-                    .map { requireNotNull( it.paymentSource()) }
-                    .ofType(PaymentSource::class.java)
-
+                .filter { it.paymentSource().isNotNull() }
+                .map { requireNotNull(it.paymentSource()) }
+                .ofType(PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
@@ -353,25 +347,25 @@ interface BackingFragmentViewModel {
                 }
                 .distinctUntilChanged()
                 .subscribe { this.cardExpiration.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             paymentSource
                 .map { cardIssuer(it) }
                 .distinctUntilChanged()
                 .subscribe { this.cardIssuer.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             paymentSource
                 .map { it.lastFour() ?: "" }
                 .distinctUntilChanged()
                 .subscribe { this.cardLastFour.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             paymentSource
                 .map { cardLogo(it) }
                 .distinctUntilChanged()
                 .subscribe { this.cardLogo.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             val backingIsNotErrored = backing
                 .map { it.isErrored() }
@@ -380,21 +374,21 @@ interface BackingFragmentViewModel {
 
             backingIsNotErrored
                 .subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backingIsNotErrored
                 .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             this.fixPaymentMethodButtonClicked
                 .subscribe { this.notifyDelegateToShowFixPledge.onNext(Unit) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .map { it.completedByBacker() }
                 .distinctUntilChanged()
                 .subscribe { this.receivedCheckboxChecked.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
@@ -455,7 +449,7 @@ interface BackingFragmentViewModel {
             Observable.merge(refreshTimeout, backedProject.skip(1))
                 .map { false }
                 .subscribe { this.swipeRefresherProgressIsVisible.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             val addOns = backing
                 .map { it.addOns()?.toList() ?: emptyList() }
@@ -463,7 +457,7 @@ interface BackingFragmentViewModel {
             projectDataInput
                 .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addOns))
                 .subscribe { this.addOnsList.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             backing
                 .filter { it.bonusAmount().isNotNull() }
@@ -472,18 +466,18 @@ interface BackingFragmentViewModel {
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
                 .subscribe { this.bonusSupport.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull() }
                 .map<DateTime> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
                 .subscribe { this.estimatedDelivery.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             isCreator
                 .subscribe { this.deliveryDisclaimerSectionIsGone.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
         }
 
         private fun shouldHideShipping(it: Backing) =
@@ -654,6 +648,11 @@ interface BackingFragmentViewModel {
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
         override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

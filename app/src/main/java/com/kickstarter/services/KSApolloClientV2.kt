@@ -40,7 +40,6 @@ import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
-import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.BackingState
@@ -125,7 +124,6 @@ interface ApolloClientTypeV2 {
     fun clearUnseenActivity(): Observable<Int>
 
     fun getProjectBacking(slug: String): Observable<Backing>
-
 }
 
 private const val PAGE_SIZE = 25
@@ -1358,32 +1356,32 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             val ps = PublishSubject.create<Backing>()
 
             this.service.query(
-                    GetProjectBackingQuery.builder()
-                            .slug(slug)
-                            .build()
+                GetProjectBackingQuery.builder()
+                    .slug(slug)
+                    .build()
             )
-                    .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
-                        override fun onFailure(e: ApolloException) {
-                            ps.onError(e)
-                        }
+                .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
 
-                        override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
-                            if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors?.first()?.message))
-                            } else {
-                                response.data?.let { data ->
-                                    data.project()?.backing()?.fragments()?.backing()?.let { backingObj ->
-                                        val backing = backingTransformer(
-                                                backingObj
-                                        )
+                    override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+                            response.data?.let { data ->
+                                data.project()?.backing()?.fragments()?.backing()?.let { backingObj ->
+                                    val backing = backingTransformer(
+                                        backingObj
+                                    )
 
-                                        ps.onNext(backing)
-                                        ps.onComplete()
-                                    }
+                                    ps.onNext(backing)
+                                    ps.onComplete()
                                 }
                             }
                         }
-                    })
+                    }
+                })
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

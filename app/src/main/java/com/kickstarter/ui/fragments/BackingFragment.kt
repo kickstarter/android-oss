@@ -32,8 +32,8 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class BackingFragment : Fragment() {
 
@@ -71,165 +71,162 @@ class BackingFragment : Fragment() {
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setBackerImageView(it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backerName()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe { binding?.backerName?.text = it }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backerNumber()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setBackerNumberText(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setBackerNumberText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.cardLogo()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.cardExpiration()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setCardExpirationText(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setCardExpirationText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.cardIssuer()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setCardIssuerContentDescription(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setCardIssuerContentDescription(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.cardLastFour()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setCardLastFourText(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setCardLastFourText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fixPaymentMethodButton?.isGone = it }
-                .addToDisposable(disposables)
-
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fixPaymentMethodButton?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fixPaymentMethodMessage?.isGone = it }
-                .addToDisposable(disposables)
-
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fixPaymentMethodMessage?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.notifyDelegateToRefreshProject()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { (activity as BackingDelegate?)?.refreshProject() }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { (activity as BackingDelegate?)?.refreshProject() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.notifyDelegateToShowFixPledge()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.paymentMethodIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.paymentMethod?.isGone = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.paymentMethod?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeAmount()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeDate()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setPledgeDateText(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setPledgeDateText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeStatusData()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setPledgeStatusText(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setPledgeStatusText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeSummaryIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.isGone = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectDataAndReward()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { bindDataToRewardViewHolder(it) }
-                .addToDisposable(disposables)
-
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { bindDataToRewardViewHolder(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.receivedCheckboxChecked()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.isChecked = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.isChecked = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.receivedSectionIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.receivedSectionCreatorIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.estimatedDeliveryLabel2?.isGone = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.estimatedDeliveryLabel2?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingAmount()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingLocation()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingSummaryIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.totalAmount()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectDataAndAddOns()
             .filter { it.isNotNull() }
             .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { populateAddOns(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { populateAddOns(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.bonusSupport()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.sectionBonusSupport?.bonusSummaryAmount?.text = it }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.sectionBonusSupport?.bonusSummaryAmount?.text = it }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.estimatedDelivery()
             .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { stylizedTextViews(it) }
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { stylizedTextViews(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
                 binding?.pledgeDetailsLabel?.text = getString(R.string.Pledge_details)
                 binding?.deliveryDisclaimerSection?.root?.isGone = it
                 binding?.estimatedDeliveryLabel2?.isGone = true
             }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.swipeRefresherProgressIsVisible()
-                .compose(Transformers.observeForUIV2())
-                .subscribe {
-                    binding?.backingSwipeRefreshLayout?.isRefreshing = it
-                }
-                .addToDisposable(disposables)
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                binding?.backingSwipeRefreshLayout?.isRefreshing = it
+            }
+            .addToDisposable(disposables)
 
         binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply {
             val sb = StringBuilder(text.toString())
@@ -243,7 +240,7 @@ class BackingFragment : Fragment() {
         binding?.backingSwipeRefreshLayout?.setColorSchemeResources(R.color.kds_create_700, R.color.kds_create_500, R.color.kds_create_300)
 
         binding?.backingSwipeRefreshLayout?.setOnRefreshListener {
-             this.viewModel.inputs.refreshProject()
+            this.viewModel.inputs.refreshProject()
         }
 
         binding?.fixPaymentMethodButton?.setOnClickListener {
@@ -257,7 +254,6 @@ class BackingFragment : Fragment() {
         binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.inputs.receivedCheckboxToggled(isChecked)
         }
-
     }
 
     override fun onStart() {
@@ -428,6 +424,4 @@ class BackingFragment : Fragment() {
         disposables.clear()
         super.onDestroyView()
     }
-
-
 }

@@ -589,7 +589,7 @@ interface ProjectPageViewModel {
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
 
-                    val showAiTab = it.project().aiDisclosure() != null && featureFlagClient.getBoolean(FlagKey.ANDROID_AI_TAB)
+                    val showAiTab = it.project().aiDisclosure() != null
                     val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))

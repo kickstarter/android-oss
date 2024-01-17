@@ -536,7 +536,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUIOutputs_whenFetchProjectWithAIDisclosureAndFFOFF_WithoutEnVCommitment() {
+    fun testUIOutputs_whenFetchProjectWithAIDisclosure_WithoutEnVCommitment() {
         val initialProject = ProjectFactory
             .initialProject()
             .toBuilder()
@@ -548,17 +548,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             )
             .build()
 
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return false
-                }
-            }
-
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
-            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(environment)
@@ -566,7 +558,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
-            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, true),
             PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)
         )
 
@@ -612,7 +604,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUIOutputs_whenFetchProjectWithAIDisclosureAndFFOFF_WithEnVCommitment() {
+    fun testUIOutputs_whenFetchProjectWithAIDisclosure_WithEnVCommitment() {
         val initialProject = ProjectFactory
             .initialProject()
             .toBuilder()
@@ -624,17 +616,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             )
             .build()
 
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return false
-                }
-            }
-
         val environment = environment()
             .toBuilder()
             .apolloClientV2(apolloClientSuccessfulGetProject())
-            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(environment)
@@ -642,7 +626,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         val list = listOf(
-            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, true),
             PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
         )
 

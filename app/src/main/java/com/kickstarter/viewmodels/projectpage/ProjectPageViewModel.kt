@@ -33,12 +33,12 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
-import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.updateProjectWith

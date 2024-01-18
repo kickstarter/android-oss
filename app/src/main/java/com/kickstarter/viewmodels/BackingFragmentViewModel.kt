@@ -1,19 +1,20 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
+import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -33,10 +34,11 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
 import com.stripe.android.model.CardBrand
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
@@ -59,6 +61,8 @@ interface BackingFragmentViewModel {
 
         /** Call when the swipe refresh layout is triggered. */
         fun refreshProject()
+
+        fun isExpanded(state: Boolean?)
     }
 
     interface Outputs {
@@ -90,10 +94,10 @@ interface BackingFragmentViewModel {
         fun fixPaymentMethodMessageIsGone(): Observable<Boolean>
 
         /** Emits when we should notify the [BackingFragment.BackingDelegate] to refresh the project. */
-        fun notifyDelegateToRefreshProject(): Observable<Void>
+        fun notifyDelegateToRefreshProject(): Observable<Unit>
 
         /** Call when the [BackingFragment.BackingDelegate] should be notified to show the fix pledge flow. */
-        fun notifyDelegateToShowFixPledge(): Observable<Void>
+        fun notifyDelegateToShowFixPledge(): Observable<Unit>
 
         /** Emits a boolean determining if the payment method section should be visible. */
         fun paymentMethodIsGone(): Observable<Boolean>
@@ -135,7 +139,7 @@ interface BackingFragmentViewModel {
         fun shippingSummaryIsGone(): Observable<Boolean>
 
         /** Emits when the backing has successfully been updated. */
-        fun showUpdatePledgeSuccess(): Observable<Void>
+        fun showUpdatePledgeSuccess(): Observable<Unit>
 
         /** Emits a boolean determining if the swipe refresher is visible. */
         fun swipeRefresherProgressIsVisible(): Observable<Boolean>
@@ -153,13 +157,14 @@ interface BackingFragmentViewModel {
         fun deliveryDisclaimerSectionIsGone(): Observable<Boolean>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
+    class BackingFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
-        private val fixPaymentMethodButtonClicked = PublishSubject.create<Void>()
-        private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
+        private val fixPaymentMethodButtonClicked = PublishSubject.create<Unit>()
+        private val pledgeSuccessfullyCancelled = PublishSubject.create<Unit>()
         private val projectDataInput = PublishSubject.create<ProjectData>()
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
-        private val refreshProject = PublishSubject.create<Void>()
+        private val refreshProject = PublishSubject.create<Unit>()
+        private val isExpanded = PublishSubject.create<Boolean>()
 
         private val backerAvatar = BehaviorSubject.create<String>()
         private val backerName = BehaviorSubject.create<String>()
@@ -170,8 +175,8 @@ interface BackingFragmentViewModel {
         private val cardLogo = BehaviorSubject.create<Int>()
         private val fixPaymentMethodButtonIsGone = BehaviorSubject.create<Boolean>()
         private val fixPaymentMethodMessageIsGone = BehaviorSubject.create<Boolean>()
-        private val notifyDelegateToRefreshProject = PublishSubject.create<Void>()
-        private val notifyDelegateToShowFixPledge = PublishSubject.create<Void>()
+        private val notifyDelegateToRefreshProject = PublishSubject.create<Unit>()
+        private val notifyDelegateToShowFixPledge = PublishSubject.create<Unit>()
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeDate = BehaviorSubject.create<String>()
@@ -184,7 +189,7 @@ interface BackingFragmentViewModel {
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingLocation = BehaviorSubject.create<String>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
-        private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
+        private val showUpdatePledgeSuccess = PublishSubject.create<Unit>()
         private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val addOnsList = BehaviorSubject.create<Pair<ProjectData, List<Reward>>>()
@@ -192,11 +197,13 @@ interface BackingFragmentViewModel {
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
 
-        private val apiClient = requireNotNull(this.environment.apiClient())
-        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val apiClient = requireNotNull(this.environment.apiClientV2())
+        private val apolloClient = requireNotNull(this.environment.apolloClientV2())
         private val ksCurrency = requireNotNull(this.environment.ksCurrency())
+        private val analyticEvents = requireNotNull(this.environment.analytics())
         val ksString: KSString? = this.environment.ksString()
-        private val currentUser = requireNotNull(this.environment.currentUser())
+        private val currentUser = requireNotNull(this.environment.currentUserV2())
+        private val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -204,21 +211,21 @@ interface BackingFragmentViewModel {
         init {
 
             this.pledgeSuccessfullyCancelled
-                .compose(bindToLifecycle())
-                .subscribe(this.showUpdatePledgeSuccess)
+                .subscribe { this.showUpdatePledgeSuccess.onNext(it) }
+                .addToDisposable(disposables)
 
             this.projectDataInput
                 .filter { it.project().isBacking() || it.project().userIsCreator(it.user()) }
                 .map { projectData -> joinProjectDataAndReward(projectData) }
-                .compose(bindToLifecycle())
-                .subscribe(this.projectDataAndReward)
+                .subscribe { this.projectDataAndReward.onNext(it) }
+                .addToDisposable(disposables)
 
             val backedProject = this.projectDataInput
                 .map { it.project() }
 
             val backing = this.projectDataInput
                 .switchMap { getBackingInfo(it) }
-                .compose(neverError())
+                .compose(neverErrorV2())
                 .filter { it.isNotNull() }
                 .share()
 
@@ -236,32 +243,32 @@ interface BackingFragmentViewModel {
             val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
                 Pair(user, project)
             }
-                .map { it.second.userIsCreator(it.first) }
+                .map { it.second.userIsCreator(it.first.getValue()) }
 
             backing
-                .map { it.backerName() }
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.backerName)
+                .filter { it.backerName().isNotNull() }
+                .map { requireNotNull(it.backerName()) }
+                .subscribe { this.backerName.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
-                .map { it.backerUrl() }
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.backerAvatar)
+                .filter { it.backerUrl().isNotNull() }
+                .map { requireNotNull(it.backerUrl()) }
+                .subscribe { this.backerAvatar.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .map { NumberUtils.format(it.sequence().toFloat()) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.backerNumber)
+                .subscribe { this.backerNumber.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .filter { it.pledgedAt().isNotNull() }
                 .map { DateTimeUtils.longDate(requireNotNull(it.pledgedAt())) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeDate)
+                .subscribe { this.pledgeDate.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
@@ -269,70 +276,67 @@ interface BackingFragmentViewModel {
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeAmount)
+                .subscribe { this.pledgeAmount.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .map {
                     shouldHideShipping(it)
                 }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.shippingSummaryIsGone.onNext(it)
-                }
+                }.addToDisposable(disposables)
 
             backing
                 .map { it.reward().isNull() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.pledgeSummaryIsGone.onNext(it)
-                }
+                }.addToDisposable(disposables)
 
             Observable.combineLatest(backedProject, backing, this.currentUser.loggedInUser()) { p, b, user -> Triple(p, b, user) }
                 .map { pledgeStatusData(it.first, it.second, it.third) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeStatusData)
+                .subscribe { this.pledgeStatusData.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
-                .map { it.shippingAmount() }
-                .filter { it.isNotNull() }
+                .filter { it.shippingAmount().isNotNull() }
+                .map { requireNotNull(it.shippingAmount()) }
                 .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.shippingAmount)
+                .subscribe { this.shippingAmount.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
-                .map { it.locationName()?.let { name -> name } }
-                .filter { it.isNotNull() }
+                .filter { it.locationName().isNotNull() }
+                .map { requireNotNull(it.locationName()) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.shippingLocation)
+                .subscribe { this.shippingLocation.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
+                .filter { it.amount().isNotNull() }
                 .map { it.amount() }
-                .filter { it.isNotNull() }
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.totalAmount)
+                .subscribe { this.totalAmount.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
-                .map { it.paymentSource() }
-                .map { CreditCardPaymentType.safeValueOf(it?.paymentType()) }
+                .map { CreditCardPaymentType.safeValueOf(it.paymentSource()?.paymentType()) }
                 .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.paymentMethodIsGone)
+                .subscribe { this.paymentMethodIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             val paymentSource = backing
-                .map { it.paymentSource() }
-                .filter { it.isNotNull() }
+                .filter { it.paymentSource().isNotNull() }
+                .map { requireNotNull(it.paymentSource()) }
                 .ofType(PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
@@ -341,30 +345,27 @@ interface BackingFragmentViewModel {
                 .map { source ->
                     source.expirationDate()?.let { simpleDateFormat.format(it) } ?: ""
                 }
-                .filter { it.isNotNull() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.cardExpiration)
+                .subscribe { this.cardExpiration.onNext(it) }
+                .addToDisposable(disposables)
 
             paymentSource
                 .map { cardIssuer(it) }
-                .filter { it.isNotNull() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.cardIssuer)
+                .subscribe { this.cardIssuer.onNext(it) }
+                .addToDisposable(disposables)
 
             paymentSource
                 .map { it.lastFour() ?: "" }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.cardLastFour)
+                .subscribe { this.cardLastFour.onNext(it) }
+                .addToDisposable(disposables)
 
             paymentSource
                 .map { cardLogo(it) }
-                .filter { it.isNotNull() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.cardLogo)
+                .subscribe { this.cardLogo.onNext(it) }
+                .addToDisposable(disposables)
 
             val backingIsNotErrored = backing
                 .map { it.isErrored() }
@@ -372,28 +373,27 @@ interface BackingFragmentViewModel {
                 .map { it.negate() }
 
             backingIsNotErrored
-                .compose(bindToLifecycle())
                 .subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             backingIsNotErrored
-                .compose(bindToLifecycle())
                 .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             this.fixPaymentMethodButtonClicked
-                .compose(bindToLifecycle())
-                .subscribe { this.notifyDelegateToShowFixPledge.onNext(null) }
+                .subscribe { this.notifyDelegateToShowFixPledge.onNext(Unit) }
+                .addToDisposable(disposables)
 
             backing
                 .map { it.completedByBacker() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle<Boolean>())
-                .subscribe(this.receivedCheckboxChecked)
+                .subscribe { this.receivedCheckboxChecked.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
-                .compose(takePairWhen<Pair<Backing, Project>, Boolean>(this.receivedCheckboxToggled))
-                .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverError()) }
-                .compose(bindToLifecycle())
+                .compose(takePairWhenV2(this.receivedCheckboxToggled))
+                .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverErrorV2()) }
                 .share()
                 .subscribe()
 
@@ -402,10 +402,9 @@ interface BackingFragmentViewModel {
                 .compose(combineLatestPair(backing))
                 .map { it.second }
                 .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackManagePledgePageViewed(it.first, it.second)
-                }
+                }.addToDisposable(disposables)
 
             val rewardIsReceivable = reward
                 .map {
@@ -425,7 +424,6 @@ interface BackingFragmentViewModel {
 
             sectionShouldBeGone
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(isCreator))
-                .compose(bindToLifecycle())
                 .subscribe {
                     val isUserCreator = it.second
                     val shouldBeGone = it.first
@@ -437,51 +435,49 @@ interface BackingFragmentViewModel {
                         this.receivedSectionIsGone.onNext(shouldBeGone)
                         this.receivedSectionCreatorIsGone.onNext(true)
                     }
-                }
+                }.addToDisposable(disposables)
 
             this.refreshProject
-                .compose(bindToLifecycle())
                 .subscribe {
-                    this.notifyDelegateToRefreshProject.onNext(null)
+                    this.notifyDelegateToRefreshProject.onNext(Unit)
                     this.swipeRefresherProgressIsVisible.onNext(true)
-                }
+                }.addToDisposable(disposables)
 
             val refreshTimeout = this.notifyDelegateToRefreshProject
                 .delay(10, TimeUnit.SECONDS)
 
             Observable.merge(refreshTimeout, backedProject.skip(1))
                 .map { false }
-                .compose(bindToLifecycle())
-                .subscribe(this.swipeRefresherProgressIsVisible)
+                .subscribe { this.swipeRefresherProgressIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             val addOns = backing
                 .map { it.addOns()?.toList() ?: emptyList() }
-                .compose(bindToLifecycle())
 
             projectDataInput
                 .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addOns))
-                .compose(bindToLifecycle())
-                .subscribe(this.addOnsList)
+                .subscribe { this.addOnsList.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
-                .map { it.bonusAmount() }
-                .filter { it.isNotNull() }
+                .filter { it.bonusAmount().isNotNull() }
+                .map { requireNotNull(it.bonusAmount()) }
                 .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                 .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.bonusSupport)
+                .subscribe { this.bonusSupport.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) && it.estimatedDeliveryOn().isNotNull() }
                 .map<DateTime> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.estimatedDelivery)
+                .subscribe { this.estimatedDelivery.onNext(it) }
+                .addToDisposable(disposables)
 
             isCreator
-                .compose(bindToLifecycle())
-                .subscribe(this.deliveryDisclaimerSectionIsGone)
+                .subscribe { this.deliveryDisclaimerSectionIsGone.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         private fun shouldHideShipping(it: Backing) =
@@ -572,11 +568,11 @@ interface BackingFragmentViewModel {
         }
 
         override fun fixPaymentMethodButtonClicked() {
-            this.fixPaymentMethodButtonClicked.onNext(null)
+            this.fixPaymentMethodButtonClicked.onNext(Unit)
         }
 
         override fun pledgeSuccessfullyUpdated() {
-            this.showUpdatePledgeSuccess.onNext(null)
+            this.showUpdatePledgeSuccess.onNext(Unit)
         }
 
         override fun receivedCheckboxToggled(checked: Boolean) {
@@ -584,7 +580,13 @@ interface BackingFragmentViewModel {
         }
 
         override fun refreshProject() {
-            this.refreshProject.onNext(null)
+            this.refreshProject.onNext(Unit)
+        }
+
+        override fun isExpanded(state: Boolean?) {
+            state?.let {
+                this.isExpanded.onNext(it)
+            }
         }
 
         override fun backerAvatar(): Observable<String> = this.backerAvatar
@@ -605,9 +607,9 @@ interface BackingFragmentViewModel {
 
         override fun fixPaymentMethodMessageIsGone(): Observable<Boolean> = this.fixPaymentMethodMessageIsGone
 
-        override fun notifyDelegateToRefreshProject(): Observable<Void> = this.notifyDelegateToRefreshProject
+        override fun notifyDelegateToRefreshProject(): Observable<Unit> = this.notifyDelegateToRefreshProject
 
-        override fun notifyDelegateToShowFixPledge(): Observable<Void> = this.notifyDelegateToShowFixPledge
+        override fun notifyDelegateToShowFixPledge(): Observable<Unit> = this.notifyDelegateToShowFixPledge
 
         override fun paymentMethodIsGone(): Observable<Boolean> = this.paymentMethodIsGone
 
@@ -635,7 +637,7 @@ interface BackingFragmentViewModel {
 
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
-        override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
+        override fun showUpdatePledgeSuccess(): Observable<Unit> = this.showUpdatePledgeSuccess
 
         override fun swipeRefresherProgressIsVisible(): Observable<Boolean> = this.swipeRefresherProgressIsVisible
 
@@ -646,5 +648,16 @@ interface BackingFragmentViewModel {
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
         override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return BackingFragmentViewModel(environment) as T
+        }
     }
 }

@@ -621,6 +621,9 @@ class ProjectPageActivity :
                 is RewardsFragment -> {
                     fragment.setState(expand && fragment.isVisible)
                 }
+                is BackingFragment -> {
+                    fragment.setState(expand && fragment.isVisible)
+                }
             }
         }
     }

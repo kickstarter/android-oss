@@ -122,6 +122,8 @@ interface ApolloClientTypeV2 {
     fun erroredBackings(): Observable<List<ErroredBacking>>
 
     fun clearUnseenActivity(): Observable<Int>
+
+    fun getProjectBacking(slug: String): Observable<Backing>
 }
 
 private const val PAGE_SIZE = 25
@@ -1347,5 +1349,40 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 })
             return@defer ps
         }
+    }
+
+    override fun getProjectBacking(slug: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+
+            this.service.query(
+                GetProjectBackingQuery.builder()
+                    .slug(slug)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+                            response.data?.let { data ->
+                                data.project()?.backing()?.fragments()?.backing()?.let { backingObj ->
+                                    val backing = backingTransformer(
+                                        backingObj
+                                    )
+
+                                    ps.onNext(backing)
+                                    ps.onComplete()
+                                }
+                            }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 }

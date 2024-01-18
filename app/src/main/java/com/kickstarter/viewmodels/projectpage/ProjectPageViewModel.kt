@@ -11,7 +11,6 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
@@ -39,6 +38,7 @@ import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.updateProjectWith
@@ -589,7 +589,7 @@ interface ProjectPageViewModel {
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
 
-                    val showAiTab = it.project().aiDisclosure() != null && featureFlagClient.getBoolean(FlagKey.ANDROID_AI_TAB)
+                    val showAiTab = it.project().aiDisclosure()?.let { disclosure -> !disclosure.isUIEmptyValues() } ?: false
                     val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))

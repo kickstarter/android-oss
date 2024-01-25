@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory

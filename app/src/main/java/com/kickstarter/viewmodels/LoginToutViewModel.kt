@@ -76,10 +76,10 @@ interface LoginToutViewModel {
         fun startFacebookConfirmationActivity(): Observable<Pair<ErrorEnvelope.FacebookUser, String>>
 
         /** Emits when the login activity should be started.  */
-        fun startLoginActivity(): Observable<Unit>
+        fun startLoginActivity(): Observable<Boolean>
 
         /** Emits when the signup activity should be started.  */
-        fun startSignupActivity(): Observable<Unit>
+        fun startSignupActivity(): Observable<Boolean>
 
         /** Emits when a user has successfully logged in using Facebook, but has require two-factor authentication enabled.  */
         fun startTwoFactorChallenge(): Observable<Unit>
@@ -139,14 +139,14 @@ interface LoginToutViewModel {
         @VisibleForTesting
         val facebookAccessToken = PublishSubject.create<String>()
         private val facebookLoginClick = PublishSubject.create<List<String>>()
-        private val loginClick = PublishSubject.create<Unit>()
+        private val loginClick = PublishSubject.create<Boolean>()
         private val onResetPasswordFacebookErrorDialogClicked = PublishSubject.create<Unit>()
         private val onLoginFacebookErrorDialogClicked = PublishSubject.create<Unit>()
 
         @VisibleForTesting
         val loginError = PublishSubject.create<ErrorEnvelope?>()
         private val loginReason = PublishSubject.create<LoginReason>()
-        private val signupClick = PublishSubject.create<Unit>()
+        private val signupClick = PublishSubject.create<Boolean>()
         private val disclaimerItemClicked = PublishSubject.create<DisclaimerItems>()
 
         @VisibleForTesting
@@ -155,8 +155,8 @@ interface LoginToutViewModel {
         private val showFacebookErrorDialog = BehaviorSubject.create<Unit>()
         private val startResetPasswordActivity = BehaviorSubject.create<Unit>()
         private val startFacebookConfirmationActivity: Observable<Pair<ErrorEnvelope.FacebookUser, String>>
-        private val startLoginActivity: Observable<Unit>
-        private val startSignupActivity: Observable<Unit>
+        private val startLoginActivity: Observable<Boolean>
+        private val startSignupActivity: Observable<Boolean>
         private val showDisclaimerActivity: Observable<DisclaimerItems>
 
         val inputs: Inputs = this
@@ -185,11 +185,11 @@ interface LoginToutViewModel {
         }
 
         override fun loginClick() {
-            loginClick.onNext(Unit)
+            loginClick.onNext(environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false)
         }
 
         override fun signupClick() {
-            signupClick.onNext(Unit)
+            signupClick.onNext(environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false)
         }
 
         override fun disclaimerItemClicked(disclaimerItem: DisclaimerItems) {
@@ -231,11 +231,11 @@ interface LoginToutViewModel {
             return startFacebookConfirmationActivity
         }
 
-        override fun startLoginActivity(): Observable<Unit> {
+        override fun startLoginActivity(): Observable<Boolean> {
             return startLoginActivity
         }
 
-        override fun startSignupActivity(): Observable<Unit> {
+        override fun startSignupActivity(): Observable<Boolean> {
             return startSignupActivity
         }
 
@@ -335,7 +335,9 @@ interface LoginToutViewModel {
                 .addToDisposable(disposables)
 
             onLoginFacebookErrorDialogClicked
-                .subscribe { startLoginActivity.onNext(Unit) }
+                .subscribe {
+                    startLoginActivity.onNext((environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false))
+                }
                 .addToDisposable(disposables)
         }
 

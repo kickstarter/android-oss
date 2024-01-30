@@ -67,8 +67,8 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         binding.followingSwitch.setOnClickListener { this.viewModel.inputs.optIntoFollowing(binding.followingSwitch.isChecked) }
         binding.privateProfileSwitch.setOnClickListener { this.viewModel.inputs.showPublicProfile(binding.privateProfileSwitch.isChecked) }
         binding.recommendationsSwitch.setOnClickListener { this.viewModel.inputs.optedOutOfRecommendations(binding.recommendationsSwitch.isChecked) }
-        binding.settingsRequestData.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.REQUEST_DATA) }
-        binding.settingsDeleteAccount.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.DELETE_ACCOUNT) }
+        binding.settingsRequestData.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.TRANSCEND_PRIVACY_REQUEST_FLOW) }
+        binding.settingsDeleteAccount.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.TRANSCEND_PRIVACY_REQUEST_FLOW) }
     }
 
     private fun displayPreferences(user: User) {

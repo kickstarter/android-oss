@@ -133,4 +133,28 @@ class IntentExtTest : KSRobolectricTestCase() {
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.SetPasswordActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
     }
+
+    @Test
+    fun testStartLoginIntent() {
+
+        // - Simulates feature flag off
+        val intentOldFlow = Intent().getStartLoginIntent(isOAuthEnabled = false, context())
+        assertEquals(intentOldFlow.component?.className, "com.kickstarter.ui.activities.LoginActivity")
+
+        // - Simulates feature flag on
+        val intentNewFlow = Intent().getStartLoginIntent(isOAuthEnabled = true, context())
+        assertEquals(intentNewFlow.component?.className, "com.kickstarter.ui.activities.OAuthActivity")
+    }
+
+    @Test
+    fun testStartSignupIntent() {
+
+        // - Simulates feature flag off
+        val intentOldFlow = Intent().getSignupIntent(isOAuthEnabled = false, context())
+        assertEquals(intentOldFlow.component?.className, "com.kickstarter.ui.activities.SignupActivity")
+
+        // - Simulates feature flag on
+        val intentNewFlow = Intent().getSignupIntent(isOAuthEnabled = true, context())
+        assertEquals(intentNewFlow.component?.className, "com.kickstarter.ui.activities.OAuthActivity")
+    }
 }

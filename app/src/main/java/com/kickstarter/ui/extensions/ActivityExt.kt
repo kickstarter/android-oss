@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
@@ -23,6 +24,8 @@ import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
+import com.kickstarter.libs.utils.extensions.getSignupIntent
+import com.kickstarter.libs.utils.extensions.getStartLoginIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
@@ -228,6 +231,18 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+}
+
+fun Activity.startLogin(isOauthPathEnabled: Boolean) {
+    val intent = Intent().getStartLoginIntent(isOauthPathEnabled, this)
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+    TransitionUtils.transition(this, TransitionUtils.fadeIn())
+}
+
+fun Activity.startSignup(isOauthPathEnabled: Boolean) {
+    val intent = Intent().getSignupIntent(isOauthPathEnabled, this)
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+    TransitionUtils.transition(this, TransitionUtils.fadeIn())
 }
 
 fun Activity.startDisclaimerChromeTab(disclaimerItem: DisclaimerItems, environment: Environment?) {

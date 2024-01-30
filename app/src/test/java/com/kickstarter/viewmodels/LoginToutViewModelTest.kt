@@ -26,8 +26,8 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoginToutViewModel.LoginToutViewmodel
     private val finishWithSuccessfulResult = TestSubscriber<Unit>()
     private val loginError = TestSubscriber<ErrorEnvelope>()
-    private val startLoginActivity = TestSubscriber<Unit>()
-    private val startSignupActivity = TestSubscriber<Unit>()
+    private val startLoginActivity = TestSubscriber<Boolean>()
+    private val startSignupActivity = TestSubscriber<Boolean>()
     private val currentUser = TestSubscriber<User?>()
     private val showDisclaimerActivity = TestSubscriber<DisclaimerItems>()
     private val startResetPasswordActivity = TestSubscriber<Unit>()
@@ -55,7 +55,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLoginButtonClicked() {
+    fun testLoginButtonClicked_when_FFOff() {
         setUpEnvironment(environment(), LoginReason.DEFAULT)
 
         startLoginActivity.assertNoValues()
@@ -63,17 +63,62 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         vm.inputs.loginClick()
 
         startLoginActivity.assertValueCount(1)
+        startLoginActivity.assertValue(false)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
-    fun testSignupButtonClicked() {
+    fun testLoginButtonClicked_when_FFOn() {
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment, LoginReason.DEFAULT)
+
+        startLoginActivity.assertNoValues()
+
+        vm.inputs.loginClick()
+
+        startLoginActivity.assertValueCount(1)
+        startLoginActivity.assertValue(true)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testSignupButtonClicked_when_FFOff() {
         setUpEnvironment(environment(), LoginReason.DEFAULT)
         startSignupActivity.assertNoValues()
 
         vm.inputs.signupClick()
 
         startSignupActivity.assertValueCount(1)
+        startSignupActivity.assertValue(false)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testSignupButtonClicked_when_FFOn() {
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment, LoginReason.DEFAULT)
+        startSignupActivity.assertNoValues()
+
+        vm.inputs.signupClick()
+
+        startSignupActivity.assertValueCount(1)
+        startSignupActivity.assertValue(true)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 

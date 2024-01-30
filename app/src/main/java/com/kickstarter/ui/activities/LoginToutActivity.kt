@@ -29,6 +29,8 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
+import com.kickstarter.ui.extensions.startLogin
+import com.kickstarter.ui.extensions.startSignup
 import com.kickstarter.viewmodels.LoginToutViewModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -113,12 +115,16 @@ class LoginToutActivity : ComponentActivity() {
 
         viewModel.outputs.startLoginActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startLogin() }
+            .subscribe {
+                this.startLogin(it)
+            }
             .addToDisposable(disposables)
 
         viewModel.outputs.startSignupActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startSignup() }
+            .subscribe {
+                this.startSignup(it)
+            }
             .addToDisposable(disposables)
 
         viewModel.outputs.startFacebookConfirmationActivity()
@@ -231,18 +237,6 @@ class LoginToutActivity : ComponentActivity() {
         val intent = Intent(this, FacebookConfirmationActivity::class.java)
             .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
             .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(this, TransitionUtils.fadeIn())
-    }
-
-    private fun startLogin() {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(this, TransitionUtils.fadeIn())
-    }
-
-    private fun startSignup() {
-        val intent = Intent(this, SignupActivity::class.java)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }

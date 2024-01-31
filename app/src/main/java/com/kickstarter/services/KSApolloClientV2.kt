@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
@@ -23,6 +24,7 @@ import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -124,6 +126,8 @@ interface ApolloClientTypeV2 {
     fun clearUnseenActivity(): Observable<Int>
 
     fun getProjectBacking(slug: String): Observable<Backing>
+
+    fun createCheckout(createCheckoutData: CreateCheckoutData): Observable<CheckoutPayment>
 }
 
 private const val PAGE_SIZE = 25
@@ -1382,6 +1386,46 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         }
                     }
                 })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun createCheckout(createCheckoutData: CreateCheckoutData): Observable<CheckoutPayment> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CheckoutPayment>()
+
+            this.service.mutate(
+                CreateCheckoutMutation.builder()
+                    .projectId(encodeRelayId(createCheckoutData.project))
+                    .amount(createCheckoutData.amount)
+                    .rewardIds(createCheckoutData.rewardsIds?.let { list ->
+                        list.map { encodeRelayId(it) }
+                    })
+                    .locationId(createCheckoutData.locationId)
+                    .refParam(createCheckoutData.refTag?.tag())
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<CreateCheckoutMutation.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<CreateCheckoutMutation.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.let { data ->
+                            data.createCheckout()?.checkout()?.let { checkoutObj ->
+                                val checkout = CheckoutPayment(
+                                    decodeRelayId(checkoutObj.id()),
+                                    checkoutObj.paymentUrl()
+                                )
+                                ps.onNext(checkout)
+                                ps.onComplete()
+                            }
+                        }
+                    }
+                }
+            })
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

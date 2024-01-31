@@ -25,6 +25,7 @@ import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
@@ -42,6 +43,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -263,6 +265,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun getProjectBacking(slug: String): io.reactivex.Observable<Backing> {
         return io.reactivex.Observable.just(BackingFactory.backing())
+    }
+
+    override fun createCheckout(createCheckoutData: CreateCheckoutData): io.reactivex.Observable<CheckoutPayment> {
+        return io.reactivex.Observable.empty()
     }
 }
 

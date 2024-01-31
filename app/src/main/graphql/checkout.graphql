@@ -39,3 +39,12 @@ mutation CreateSetupIntent($projectId: ID) {
     clientSecret
   }
 }
+
+mutation CreateCheckout($projectId: ID!, $amount: String!, $rewardIds: [ID!], $locationId: String, $refParam: String) {
+  createCheckout(input: { projectId: $projectId, amount: $amount, rewardIds: $rewardIds, locationId: $locationId, refParam: $refParam } ) {
+    checkout{
+      id
+      paymentUrl
+    }
+  }
+}

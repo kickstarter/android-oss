@@ -236,13 +236,13 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
 fun Activity.startLogin(isOauthPathEnabled: Boolean) {
     val intent = Intent().getStartLoginIntent(isOauthPathEnabled, this)
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-    TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 
 fun Activity.startSignup(isOauthPathEnabled: Boolean) {
     val intent = Intent().getSignupIntent(isOauthPathEnabled, this)
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-    TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 
 fun Activity.startDisclaimerChromeTab(disclaimerItem: DisclaimerItems, environment: Environment?) {

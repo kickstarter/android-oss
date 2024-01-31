@@ -1398,9 +1398,11 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 CreateCheckoutMutation.builder()
                     .projectId(encodeRelayId(createCheckoutData.project))
                     .amount(createCheckoutData.amount)
-                    .rewardIds(createCheckoutData.rewardsIds?.let { list ->
-                        list.map { encodeRelayId(it) }
-                    })
+                    .rewardIds(
+                        createCheckoutData.rewardsIds?.let { list ->
+                            list.map { encodeRelayId(it) }
+                        }
+                    )
                     .locationId(createCheckoutData.locationId)
                     .refParam(createCheckoutData.refTag?.tag())
                     .build()

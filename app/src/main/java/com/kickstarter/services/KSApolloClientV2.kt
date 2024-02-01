@@ -1417,12 +1417,14 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     } else {
                         response.data?.let { data ->
                             data.createCheckout()?.checkout()?.let { checkoutObj ->
-                                val checkout = CheckoutPayment(
-                                    decodeRelayId(checkoutObj.id()),
-                                    checkoutObj.paymentUrl()
-                                )
-                                ps.onNext(checkout)
-                                ps.onComplete()
+                                decodeRelayId(checkoutObj.id())?.let { id ->
+                                    val checkout = CheckoutPayment(
+                                        id,
+                                        checkoutObj.paymentUrl()
+                                    )
+                                    ps.onNext(checkout)
+                                    ps.onComplete()
+                                } ?: ps.onError(Exception("CreateCheckout could not decode ID"))
                             }
                         }
                     }

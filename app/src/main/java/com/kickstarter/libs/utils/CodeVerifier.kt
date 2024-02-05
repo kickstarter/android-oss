@@ -11,21 +11,21 @@ import java.util.regex.Pattern
 /**
  * Generates code verifiers and challenges for PKCE exchange.
  *
- * @see "Proof Key for Code Exchange by OAuth Public Clients
+ * @see [Proof Key for Code Exchange by OAuth Public Clients](https://datatracker.ietf.org/doc/html/rfc7636)
  */
 class CodeVerifier {
     companion object {
         /**
          * The minimum permitted length for a code verifier.
          *
-         * @see "Proof Key for Code Exchange by OAuth Public Clients
+         * @see "Proof Key for Code Exchange by OAuth Public Clients"
          */
         const val MIN_CODE_VERIFIER_LENGTH = 43
 
         /**
          * The maximum permitted length for a code verifier.
          *
-         * @see "Proof Key for Code Exchange by OAuth Public Clients
+         * @see "Proof Key for Code Exchange by OAuth Public Clients"
          */
         const val MAX_CODE_VERIFIER_LENGTH = 128
 
@@ -55,7 +55,7 @@ class CodeVerifier {
         /**
          * Regex for legal code verifier strings, as defined in the spec.
          *
-         * @see "Proof Key for Code Exchange by OAuth Public Clients
+         * @see "Proof Key for Code Exchange by OAuth Public Clients"
          */
         private val REGEX_CODE_VERIFIER: Pattern =
             Pattern.compile("^[0-9a-zA-Z\\-._~]{43,128}$")
@@ -63,7 +63,7 @@ class CodeVerifier {
         /**
          * SHA-256 based code verifier challenge method.
          *
-         * @see "Proof Key for Code Exchange by OAuth Public Clients
+         * @see "Proof Key for Code Exchange by OAuth Public Clients"
          */
         const val CODE_CHALLENGE_METHOD_S256 = "S256"
 
@@ -71,25 +71,31 @@ class CodeVerifier {
          * Plain-text code verifier challenge method. This is only used by AppAuth for Android if
          * SHA-256 is not supported on this platform.
          *
-         * @see "Proof Key for Code Exchange by OAuth Public Clients
+         * @see "Proof Key for Code Exchange by OAuth Public Clients"
          */
         const val CODE_CHALLENGE_METHOD_PLAIN = "plain"
+
+        const val ERROR_TOO_SHORT = "codeVerifier length is shorter than allowed by the PKCE specification"
+
+        const val ERROR_TOO_LONG = "codeVerifier length is longer than allowed by the PKCE specification"
+
+        const val ERROR_DO_NOT_MATCH = "codeVerifier string does not match legal code verifier strings REGEX"
 
         /**
          * Throws an IllegalArgumentException if the provided code verifier is invalid.
          *
-         * @see "Proof Key for Code Exchange by OAuth Public Clients
+         * @see [4.1.  Client Creates a Code Verifier](https://datatracker.ietf.org/doc/html/rfc7636#section-4.1)
          */
         fun checkCodeVerifier(codeVerifier: String) {
             require(
                 MIN_CODE_VERIFIER_LENGTH <= codeVerifier.length
-            ) { "codeVerifier length is shorter than allowed by the PKCE specification" }
+            ) { ERROR_TOO_SHORT }
             require(
                 codeVerifier.length <= MAX_CODE_VERIFIER_LENGTH
-            ) { "codeVerifier length is longer than allowed by the PKCE specification" }
+            ) { ERROR_TOO_LONG }
             require(
                 REGEX_CODE_VERIFIER.matcher(codeVerifier).matches()
-            ) { "codeVerifier string contains illegal characters" }
+            ) { ERROR_DO_NOT_MATCH }
         }
 
         /**
@@ -100,6 +106,8 @@ class CodeVerifier {
          * Generates a random code verifier string using [SecureRandom] as the source of
          * entropy, with the default entropy quantity as defined by
          * [.DEFAULT_CODE_VERIFIER_ENTROPY].
+         *
+         * @see [Client Creates a Code Verifier](https://datatracker.ietf.org/doc/html/rfc7636#section-4.1)
          */
         fun generateRandomCodeVerifier(
             entropySource: SecureRandom = SecureRandom(),
@@ -122,8 +130,10 @@ class CodeVerifier {
          * system supports it (all Android devices _should_ support SHA-256), and falls back
          * to the [&quot;plain&quot; challenge type][CODE_CHALLENGE_METHOD_PLAIN] if
          * unavailable.
+         *
+         * See [Example for the S256 code_challenge_method](https://datatracker.ietf.org/doc/html/rfc7636#appendix-B)
          */
-        fun deriveCodeVerifierChallenge(codeVerifier: String): String {
+        fun generateCodeChallenge(codeVerifier: String): String {
             return try {
                 val sha256Digester = MessageDigest.getInstance("SHA-256")
                 sha256Digester.update(codeVerifier.toByteArray(charset("ISO_8859_1")))
@@ -138,7 +148,7 @@ class CodeVerifier {
             }
         }
 
-        val codeVerifierChallengeMethod: String
+        private val codeVerifierChallengeMethod: String
             /**
              * Returns the challenge method utilized on this system: typically
              * [SHA-256][CODE_CHALLENGE_METHOD_S256] if supported by

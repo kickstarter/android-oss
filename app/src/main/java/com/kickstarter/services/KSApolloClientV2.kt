@@ -1447,7 +1447,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     .projectId(encodeRelayId(createPaymentIntentInput.project))
                     .amountDollars(createPaymentIntentInput.amountDollars)
                     .build()
-            ).enqueue(object: ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
+            ).enqueue(object : ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
                     ps.onError(e)
                 }

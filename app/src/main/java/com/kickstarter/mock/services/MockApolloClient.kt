@@ -27,6 +27,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Comment
+import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
@@ -268,6 +269,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun createCheckout(createCheckoutData: CreateCheckoutData): io.reactivex.Observable<CheckoutPayment> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): io.reactivex.Observable<String> {
         return io.reactivex.Observable.empty()
     }
 }

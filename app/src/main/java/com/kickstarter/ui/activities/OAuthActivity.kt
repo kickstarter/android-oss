@@ -31,9 +31,8 @@ class OAuthActivity : AppCompatActivity() {
             "response_type" to "code",
             "code_challenge" to CodeVerifier.generateCodeChallenge(codeVerifier), // Set the code challenge
             "code_challenge_method" to "S256"
-        ).map {(k,v) -> "${(k)}=${v}"}.joinToString("&")
-        val uri = Uri.parse("https://www.kickstarter.com/oauth/authorizations?${authParams}")
-
+        ).map { (k, v) -> "${(k)}=$v" }.joinToString("&")
+        val uri = Uri.parse("https://www.kickstarter.com/oauth/authorizations?$authParams")
 
         // BindCustomTabsService, obtain CustomTabsClient and Client, listens to navigation events
         helper = ChromeTabsHelperActivity.CustomTabSessionAndClientHelper(this, uri) {

@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.lifecycleScope
+import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
@@ -17,13 +18,22 @@ class OAuthActivity : AppCompatActivity() {
 
     private lateinit var helper: ChromeTabsHelperActivity.CustomTabSessionAndClientHelper
 
+    val redirectUri = "ksrauth2://authorize"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setUpConnectivityStatusCheck(lifecycle)
 
-        // TODO MBL-1168 the url will be retrieved from the VM,on MBL-1168 alongside PKCE paramenters
-        val uri = Uri.parse("https://www.kickstarter.com/oauth/authorizations")
+        // TODO: Will be moved to VM all the URI parameters building on MBL-1169
+        val codeVerifier = CodeVerifier.generateRandomCodeVerifier(entropyBytes = CodeVerifier.MAX_CODE_VERIFIER_ENTROPY)
+        val authParams = mapOf(
+            "redirect_uri" to redirectUri,
+            "response_type" to "code",
+            "code_challenge" to CodeVerifier.generateCodeChallenge(codeVerifier), // Set the code challenge
+            "code_challenge_method" to "S256"
+        ).map {(k,v) -> "${(k)}=${v}"}.joinToString("&")
+        val uri = Uri.parse("https://www.kickstarter.com/oauth/authorizations?${authParams}")
+
 
         // BindCustomTabsService, obtain CustomTabsClient and Client, listens to navigation events
         helper = ChromeTabsHelperActivity.CustomTabSessionAndClientHelper(this, uri) {

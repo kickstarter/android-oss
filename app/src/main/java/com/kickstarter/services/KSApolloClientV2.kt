@@ -1300,28 +1300,19 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message))
                         } else {
-                            Observable.just(response.data)
-                                .map { cards -> cards?.me()?.backings()?.nodes() }
-                                .map { list ->
-                                    val erroredBackings = list?.asSequence()?.map {
-                                        val project = ErroredBacking.Project.builder()
-                                            .finalCollectionDate(
-                                                it.project()?.finalCollectionDate()
-                                            )
-                                            .name(it.project()?.name())
-                                            .slug(it.project()?.slug())
-                                            .build()
-                                        ErroredBacking.builder()
-                                            .project(project)
-                                            .build()
-                                    }
-                                    erroredBackings?.toList() ?: listOf()
-                                }
-                                .subscribe {
-                                    ps.onNext(it)
-                                    ps.onComplete()
-                                }.dispose()
+                            val erroredBackings = response.data?.me()?.backings()?.nodes()?.map {
+                                val project = ErroredBacking.Project.builder()
+                                    .finalCollectionDate(it.project()?.finalCollectionDate())
+                                    .name(it.project()?.name())
+                                    .slug(it.project()?.slug())
+                                    .build()
+                                return@map ErroredBacking.builder()
+                                    .project(project)
+                                    .build()
+                            } ?: listOf()
+                            ps.onNext(erroredBackings)
                         }
+                        ps.onComplete()
                     }
                 })
             return@defer ps

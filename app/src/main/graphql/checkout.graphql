@@ -48,3 +48,9 @@ mutation CreateCheckout($projectId: ID!, $amount: String!, $rewardIds: [ID!], $l
     }
   }
 }
+
+mutation CreatePaymentIntent($projectId: ID!, $amountDollars: String!) {
+  createPaymentIntent(input: { projectId: $projectId, amountDollars: $amountDollars } ) {
+    clientSecret
+  }
+}

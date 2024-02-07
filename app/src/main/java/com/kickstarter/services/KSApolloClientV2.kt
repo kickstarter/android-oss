@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import CreatePaymentIntentMutation
 import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
@@ -11,6 +12,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Comment
+import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
@@ -128,6 +130,8 @@ interface ApolloClientTypeV2 {
     fun getProjectBacking(slug: String): Observable<Backing>
 
     fun createCheckout(createCheckoutData: CreateCheckoutData): Observable<CheckoutPayment>
+
+    fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): Observable<String>
 }
 
 private const val PAGE_SIZE = 25
@@ -1423,5 +1427,32 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): Observable<String> {
+        return Observable.defer {
+            val ps = PublishSubject.create<String>()
+
+            this.service.mutate(
+                CreatePaymentIntentMutation.builder()
+                    .projectId(encodeRelayId(createPaymentIntentInput.project))
+                    .amountDollars(createPaymentIntentInput.amountDollars)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<CreatePaymentIntentMutation.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        ps.onNext(response.data?.createPaymentIntent()?.clientSecret() ?: "")
+                    }
+                    ps.onComplete()
+                }
+            })
+            return@defer ps
+        }
     }
 }

@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksLayoutBinding
+import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -27,6 +29,9 @@ import com.kickstarter.ui.extensions.showRatingDialogWidget
 import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.viewmodels.ThanksViewModel
 import com.kickstarter.viewmodels.ThanksViewModel.Factory
+import com.stripe.android.paymentsheet.addresselement.AddressDetails
+import com.stripe.android.paymentsheet.addresselement.AddressLauncher
+import com.stripe.android.paymentsheet.addresselement.AddressLauncherResult
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
@@ -38,6 +43,8 @@ class ThanksActivity : AppCompatActivity() {
     private lateinit var binding: ThanksLayoutBinding
     private val projectStarConfirmationString = R.string.project_star_confirmation
     private val disposables = CompositeDisposable()
+    private lateinit var addressLauncher: AddressLauncher
+    private var shippingDetails: AddressDetails? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +61,16 @@ class ThanksActivity : AppCompatActivity() {
         binding.thanksRecyclerView.layoutManager = LinearLayoutManager(this).apply {
             orientation = RecyclerView.VERTICAL
         }
+
+        val addressConfiguration = AddressLauncher.Configuration(
+                additionalFields = AddressLauncher.AdditionalFieldsConfiguration(
+                phone = AddressLauncher.AdditionalFieldsConfiguration.FieldConfiguration.REQUIRED
+        ),
+        allowedCountries = setOf("US", "CA", "GB"),
+        title =  "Shipping Address",
+        )
+
+        addressLauncher = AddressLauncher(this) { onAddressLauncherResult(it, AddressDetails(name = "leigh")) }
 
         val adapter = ThanksAdapter(viewModel.inputs)
         binding.thanksRecyclerView.adapter = adapter
@@ -113,6 +130,11 @@ class ThanksActivity : AppCompatActivity() {
             .subscribe { this.showStarToast() }
             .addToDisposable(disposables)
 
+        addressLauncher.present(
+                publishableKey = if (getEnvironment()?.apiEndpoint() == ApiEndpoint.PRODUCTION) Secrets.StripePublishableKey.PRODUCTION else Secrets.StripePublishableKey.STAGING,
+                configuration = addressConfiguration
+        )
+
         this.viewModel.outputs.showAddressCollectionSheet()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.showStarToast() }
@@ -160,6 +182,19 @@ class ThanksActivity : AppCompatActivity() {
                 builder.show()
             }
         )
+    }
+
+    private fun onAddressLauncherResult(result: AddressLauncherResult, address : AddressDetails) {
+        when (result) {
+            AddressLauncherResult.Succeeded(address) -> {
+                //
+            }
+            AddressLauncherResult.Canceled -> {
+            }
+            else -> {
+
+            }
+        }
     }
 
     private fun showRatingDialog() = showRatingDialogWidget()

@@ -27,6 +27,8 @@ interface ThanksShareHolderViewModel {
         /** Call when the share on Twitter button is clicked.  */
         fun shareOnTwitterClick()
 
+        fun addressCollectionClick()
+
         fun onCleared()
     }
 
@@ -42,6 +44,8 @@ interface ThanksShareHolderViewModel {
 
         /** Emits the project name and url to share using Twitter.  */
         fun startShareOnTwitter(): Observable<Pair<String, String>>
+
+        fun presentAddressCollectionSheet() : Observable<Unit>
     }
 
     class ThanksShareViewHolderViewModel : Inputs, Outputs {
@@ -54,6 +58,8 @@ interface ThanksShareHolderViewModel {
         private val startShare = PublishSubject.create<Pair<String, String>>()
         private val startShareOnFacebook = PublishSubject.create<Pair<Project, String>>()
         private val startShareOnTwitter = PublishSubject.create<Pair<String, String>>()
+        private val presentAddressCollectionSheet = PublishSubject.create<Unit>()
+        private val addressCollectionClick = PublishSubject.create<Unit>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -98,6 +104,11 @@ interface ThanksShareHolderViewModel {
                 .compose(Transformers.takeWhenV2(shareOnTwitterClick))
                 .subscribe { startShareOnTwitter.onNext(it) }
                 .addToDisposable(disposables)
+
+            addressCollectionClick
+                    .subscribe {
+                        presentAddressCollectionSheet()
+                    }.addToDisposable(disposables)
         }
 
         override fun configureWith(project: Project) {
@@ -116,9 +127,14 @@ interface ThanksShareHolderViewModel {
             shareOnTwitterClick.onNext(Unit)
         }
 
+        override fun addressCollectionClick() {
+            addressCollectionClick.onNext(Unit)
+        }
+
         override fun startShare(): Observable<Pair<String, String>> = startShare
         override fun startShareOnFacebook(): Observable<Pair<Project, String>> = startShareOnFacebook
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
+        override fun presentAddressCollectionSheet(): Observable<Unit> = presentAddressCollectionSheet
         override fun projectName(): Observable<String> = projectName
 
         override fun onCleared() {

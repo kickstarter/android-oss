@@ -112,6 +112,12 @@ class ThanksActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.showStarToast() }
             .addToDisposable(disposables)
+
+        this.viewModel.outputs.showAddressCollectionSheet()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.showStarToast() }
+                .addToDisposable(disposables)
+
     }
 
     private fun showStarToast() {

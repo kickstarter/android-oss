@@ -11,17 +11,23 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ThanksShareViewBinding
 import com.kickstarter.libs.TweetComposer
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
+class ThanksShareViewHolder(private val binding: ThanksShareViewBinding, delegate : Delegate) : KSViewHolder(binding.root) {
     private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel()
     private val ksString = requireNotNull(environment().ksString())
     private val shareDialog: ShareDialog = ShareDialog(context() as Activity)
     private var disposables = CompositeDisposable()
+    private val delegate: ThanksShareViewHolder.Delegate = delegate
 
+
+    interface Delegate {
+        fun presentAddressCollectionSheet()
+    }
     init {
         viewModel.outputs.projectName()
             .observeOn(AndroidSchedulers.mainThread())
@@ -43,6 +49,13 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
             .subscribe { startShareOnTwitter(it) }
             .addToDisposable(disposables)
 
+        viewModel.outputs.presentAddressCollectionSheet()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { presentAddressCollectionSheet() }
+                .addToDisposable(disposables)
+
+
+
         binding.shareButton.setOnClickListener {
             shareButtonClicked()
         }
@@ -51,6 +64,10 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         }
         binding.thanksTwitterShareButton.setOnClickListener {
             shareOnTwitterButtonClicked()
+        }
+
+        binding.addressButton.setOnClickListener {
+            addressCollectionButtonClicked()
         }
     }
 
@@ -64,6 +81,9 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
 
     private fun shareOnTwitterButtonClicked() {
         viewModel.inputs.shareOnTwitterClick()
+    }
+    private fun addressCollectionButtonClicked() {
+        viewModel.inputs.addressCollectionClick()
     }
 
     @Throws(Exception::class)
@@ -110,6 +130,10 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
             .text(shareString(projectName))
             .uri(Uri.parse(shareUrl))
             .show()
+    }
+
+    private fun presentAddressCollectionSheet() {
+        this.delegate.presentAddressCollectionSheet()
     }
 
     override fun destroy() {

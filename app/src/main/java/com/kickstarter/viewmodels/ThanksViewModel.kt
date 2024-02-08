@@ -34,6 +34,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder
+import com.kickstarter.ui.viewholders.ThanksShareViewHolder
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -45,6 +46,7 @@ interface ThanksViewModel {
     interface Inputs :
         ProjectCardViewHolder.Delegate,
         ThanksCategoryViewHolder.Delegate,
+        ThanksShareViewHolder.Delegate,
         ThanksAdapter.Delegate {
         /** Call when the user clicks the close button.  */
         fun closeButtonClicked()
@@ -77,6 +79,8 @@ interface ThanksViewModel {
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Unit>
+
+        fun showAddressCollectionSheet(): Observable<Unit>
     }
 
     class ThanksViewModel(environment: Environment, private val intent: Intent) :
@@ -92,6 +96,7 @@ interface ThanksViewModel {
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val ffClient = requireNotNull(environment.featureFlagClient())
 
+        private val presentAddressCollectionSheet = PublishSubject.create<Unit>()
         private val categoryCardViewHolderClicked = PublishSubject.create<Category>()
         private val closeButtonClicked = PublishSubject.create<Unit>()
         private val projectCardViewHolderClicked = PublishSubject.create<Project>()
@@ -106,6 +111,7 @@ interface ThanksViewModel {
         private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val onHeartButtonClicked = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Unit>()
+        private val showAddressCollectionSheet = PublishSubject.create<Unit>()
         private val analyticEvents = environment.analytics()
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -386,6 +392,7 @@ interface ThanksViewModel {
                 .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
                 .compose(Transformers.neverErrorV2())
         }
+        override fun presentAddressCollectionSheet() = presentAddressCollectionSheet.onNext(Unit)
         override fun categoryViewHolderClicked(category: Category) = categoryCardViewHolderClicked.onNext(category)
         override fun closeButtonClicked() = closeButtonClicked.onNext(Unit)
         override fun signupToGamesNewsletterClick() = signupToGamesNewsletterClick.onNext(Unit)
@@ -400,6 +407,7 @@ interface ThanksViewModel {
         override fun startDiscoveryActivity(): Observable<DiscoveryParams> = this.startDiscoveryActivity
         override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = this.startProjectActivity
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
+        override fun showAddressCollectionSheet(): Observable<Unit> = this.showAddressCollectionSheet
 
         private fun saveProject(project: Project): Observable<Project> {
             return this.apolloClient.watchProject(project)

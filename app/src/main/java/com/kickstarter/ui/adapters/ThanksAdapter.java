@@ -27,7 +27,7 @@ public final class ThanksAdapter extends KSAdapter {
 
   public final Delegate delegate;
 
-  public interface Delegate extends ProjectCardViewHolder.Delegate, ThanksCategoryViewHolder.Delegate {}
+  public interface Delegate extends ProjectCardViewHolder.Delegate, ThanksCategoryViewHolder.Delegate, ThanksShareViewHolder.Delegate {}
 
   public ThanksAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -49,7 +49,7 @@ public final class ThanksAdapter extends KSAdapter {
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     switch(layout) {
       case R.layout.thanks_share_view:
-        return new ThanksShareViewHolder(ThanksShareViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
+        return new ThanksShareViewHolder(ThanksShareViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.project_card_view:
         return new ProjectCardViewHolder(ProjectCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.thanks_category_view:

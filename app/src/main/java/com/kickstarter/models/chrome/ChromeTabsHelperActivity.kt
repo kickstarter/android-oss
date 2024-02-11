@@ -18,7 +18,6 @@ package com.kickstarter.models.chrome
 
 import android.app.Activity
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -95,7 +94,7 @@ class ChromeTabsHelperActivity {
      * navigation event has been detected
      */
     class CustomTabSessionAndClientHelper(
-        context: Context,
+        context: Activity,
         uri: Uri,
         tabHiddenCallback: () -> Unit
     ) {
@@ -107,7 +106,7 @@ class ChromeTabsHelperActivity {
 
         private val callback = object : CustomTabsCallback() {
             override fun onNavigationEvent(navigationEvent: Int, extras: Bundle?) {
-                Timber.d("onNavigationEvent: Code = $navigationEvent")
+                Timber.d("OAuth onNavigationEvent: Code = $navigationEvent")
                 // - means the X button has been clicked, therefore ChromeTab has been dismissed
                 if (navigationEvent == TAB_HIDDEN) {
                     tabHiddenCallback()
@@ -132,6 +131,7 @@ class ChromeTabsHelperActivity {
                 sessionReady.tryEmit(session.isNotNull())
                 Timber.d("onCustomTabsServiceConnected")
             }
+
             override fun onServiceDisconnected(name: ComponentName) {
                 Timber.d("onServiceDisconnected")
                 customClient = null

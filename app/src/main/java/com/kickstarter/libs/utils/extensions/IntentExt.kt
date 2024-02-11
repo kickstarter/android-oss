@@ -35,17 +35,15 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
 }
 
 fun Intent.getStartLoginIntent(isOAuthEnabled: Boolean, context: Context): Intent {
-    return if (isOAuthEnabled)
+    return if (isOAuthEnabled) {
         this.setClass(context, OAuthActivity::class.java)
-        this.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     } else
         this.setClass(context, LoginActivity::class.java)
 }
 
 fun Intent.getSignupIntent(isOAuthEnabled: Boolean, context: Context): Intent {
-    return if (isOAuthEnabled)
+    return if (isOAuthEnabled) {
         this.setClass(context, OAuthActivity::class.java)
-        this.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     } else
         this.setClass(context, SignupActivity::class.java)
 }

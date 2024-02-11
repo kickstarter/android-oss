@@ -12,7 +12,6 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory
@@ -48,14 +47,16 @@ class OAuthActivity : AppCompatActivity() {
                 }
 
                 if (state.isTokenRetrieveStep && state.code.isNotEmpty()) {
-                    // TODO WIP PHASE 3, call the endpoint with code & code_challenge, retrieve the token, for now it kills the current activity
-                    Timber.d("OAuthActivity Redirect took place: $this")
-                    finishWithAnimation()
+                    // TODO WIP PHASE 3, VM call the endpoint with code & code_challenge, retrieve the token.
                 }
             }
         }
     }
 
+    override fun onDestroy() {
+        Timber.d("OAuthActivity: onDestroy")
+        super.onDestroy()
+    }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         Timber.d("OAuthActivity: onNewIntent Intent: $intent, data: ${intent?.data}")
@@ -86,6 +87,8 @@ class OAuthActivity : AppCompatActivity() {
             // - Once the session is ready and client warmed-up load the url
             helper.isSessionReady().collect { ready ->
                 val tabIntent = CustomTabsIntent.Builder(helper.getSession()).build()
+                tabIntent.intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                // tabIntent.intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
                 ChromeTabsHelperActivity.openCustomTab(
                     this@OAuthActivity,
                     tabIntent,

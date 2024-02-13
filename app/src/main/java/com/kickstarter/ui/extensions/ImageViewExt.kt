@@ -15,9 +15,18 @@ import com.squareup.picasso.Picasso
 
 fun ImageView.loadCircleImage(url: String?) {
     url?.let {
-        Picasso.get().load(it)
-            .transform(CircleTransformation())
-            .into(this)
+        if (it.isBlank()) {
+            Picasso.get()
+                .load(R.drawable.circle_grey_500)
+                .transform(CircleTransformation())
+                .into(this)
+        } else {
+            Picasso.get()
+                .load(it)
+                .placeholder(R.drawable.circle_grey_500)
+                .transform(CircleTransformation())
+                .into(this)
+        }
     }
 }
 

@@ -243,9 +243,14 @@ interface CommentsViewHolderViewModel {
                 .subscribe { this.commentAuthorName.onNext(it) }
                 .addToDisposable(disposables)
 
-            comment
-                .filter { it.author()?.avatar()?.medium().isNotNull() }
-                .map { it.author()?.avatar()?.medium() ?: "" }
+            comment // TODO: extract all logic around selecting image to an Avatar extension function, and refactor entire app
+                .filter { it.author().avatar().medium().isNotNull() }
+                .map { aComment ->
+                    return@map aComment.author().avatar().medium().ifBlank {
+                        return@ifBlank if (aComment.author().avatar().small().isNullOrBlank()) ""
+                        else aComment.author().avatar().small()
+                    }
+                }
                 .subscribe { this.commentAuthorAvatarUrl.onNext(it) }
                 .addToDisposable(disposables)
 

@@ -135,6 +135,39 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testUserAvatarUrl_whenMediumIsEmpty_TrySmall() {
+        setUpEnvironment(environment())
+        val userAvatar = AvatarFactory.avatar().toBuilder()
+            .medium("")
+            .build()
+        val currentUser = UserFactory.user().toBuilder().id(111).avatar(
+            userAvatar
+        ).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentAuthorAvatarUrl.assertValue(userAvatar.small())
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+    }
+
+    @Test
+    fun testUserAvatarUrl_whenMediumAndSmallEmpty_Empty() {
+        setUpEnvironment(environment())
+        val userAvatar = AvatarFactory.avatar().toBuilder()
+            .medium("")
+            .small("")
+            .build()
+        val currentUser = UserFactory.user().toBuilder().id(111).avatar(
+            userAvatar
+        ).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentAuthorAvatarUrl.assertValue("")
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+    }
+
+    @Test
     fun testCommentAuthorName() {
         setUpEnvironment(environment())
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)

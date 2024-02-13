@@ -173,10 +173,6 @@ interface ThanksViewModel {
                 isGames && !hasSeen && !isSignedUp
             }
 
-//            presentAddressCollectionSheet
-//                    .subscribe { showAddressCollectionSheet.onNext(Unit) }
-//                    .addToDisposable(disposables)
-
             categoryCardViewHolderClicked
                 .map { DiscoveryParams.builder().category(it).build() }
                 .subscribe { startDiscoveryActivity.onNext(it) }

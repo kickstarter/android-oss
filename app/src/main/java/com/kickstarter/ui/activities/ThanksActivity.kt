@@ -3,7 +3,10 @@ package com.kickstarter.ui.activities
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Pair
+import android.view.Gravity
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -66,11 +69,11 @@ class ThanksActivity : AppCompatActivity() {
                 additionalFields = AddressLauncher.AdditionalFieldsConfiguration(
                 phone = AddressLauncher.AdditionalFieldsConfiguration.FieldConfiguration.REQUIRED
         ),
-        allowedCountries = setOf("US", "CA", "GB"),
-        title =  "Shipping Address",
+                allowedCountries = setOf("US", "CA", "GB"),
+                title =  "Shipping Address",
         )
 
-        addressLauncher = AddressLauncher(this) { onAddressLauncherResult(it, AddressDetails(name = "leigh")) }
+        addressLauncher = AddressLauncher(this) { onAddressLauncherResult(it) }
 
         val adapter = ThanksAdapter(viewModel.inputs)
         binding.thanksRecyclerView.adapter = adapter
@@ -130,14 +133,9 @@ class ThanksActivity : AppCompatActivity() {
             .subscribe { this.showStarToast() }
             .addToDisposable(disposables)
 
-        addressLauncher.present(
-                publishableKey = if (getEnvironment()?.apiEndpoint() == ApiEndpoint.PRODUCTION) Secrets.StripePublishableKey.PRODUCTION else Secrets.StripePublishableKey.STAGING,
-                configuration = addressConfiguration
-        )
-
         this.viewModel.outputs.showAddressCollectionSheet()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.showStarToast() }
+                .subscribe { this.showAddressCollectionSheet(addressConfiguration) }
                 .addToDisposable(disposables)
 
     }
@@ -184,20 +182,31 @@ class ThanksActivity : AppCompatActivity() {
         )
     }
 
-    private fun onAddressLauncherResult(result: AddressLauncherResult, address : AddressDetails) {
+    private fun onAddressLauncherResult(result: AddressLauncherResult) {
         when (result) {
-            AddressLauncherResult.Succeeded(address) -> {
-                //
+            is AddressLauncherResult.Succeeded -> {
+                viewModel.inputs.createAddress(result.address)
+                with(Toast(this)) {
+                    setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL or Gravity.FILL_HORIZONTAL, 0, yOffset)
+                    setText("Thank you for submitting your address")
+                    duration = Toast.LENGTH_LONG
+                    show()
+                }
             }
             AddressLauncherResult.Canceled -> {
             }
-            else -> {
 
-            }
         }
     }
 
     private fun showRatingDialog() = showRatingDialogWidget()
+
+    private fun showAddressCollectionSheet(addressConfiguration: AddressLauncher.Configuration) {
+        addressLauncher.present(
+                publishableKey = if (getEnvironment()?.build()?.isRelease == true) Secrets.StripePublishableKey.PRODUCTION else Secrets.StripePublishableKey.STAGING,
+                configuration = addressConfiguration
+        )
+    }
 
     private fun startDiscoveryActivity(params: DiscoveryParams) {
         val intent = Intent(this, DiscoveryActivity::class.java)

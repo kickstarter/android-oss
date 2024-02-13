@@ -1,7 +1,10 @@
 package com.kickstarter.viewmodels
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Parcelable
+import android.provider.Telephony.Mms.Addr
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
@@ -26,6 +29,7 @@ import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.mutations.CreateAddressData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ThanksAdapter
 import com.kickstarter.ui.adapters.data.ThanksData
@@ -36,11 +40,15 @@ import com.kickstarter.ui.viewholders.ProjectCardViewHolder
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder
 import com.kickstarter.ui.viewholders.ThanksShareViewHolder
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import com.stripe.android.paymentsheet.addresselement.AddressDetails
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
+import type.CountryCode
+import java.lang.String
 
 interface ThanksViewModel {
     interface Inputs :
@@ -53,6 +61,8 @@ interface ThanksViewModel {
 
         /** Call when the user accepts the prompt to signup to the Games newsletter.  */
         fun signupToGamesNewsletterClick()
+
+        fun createAddress(addressDetails : AddressDetails)
     }
 
     interface Outputs {
@@ -83,6 +93,7 @@ interface ThanksViewModel {
         fun showAddressCollectionSheet(): Observable<Unit>
     }
 
+    @SuppressLint("BinaryOperationInTimber")
     class ThanksViewModel(environment: Environment, private val intent: Intent) :
         ViewModel(),
         Inputs,
@@ -101,6 +112,7 @@ interface ThanksViewModel {
         private val closeButtonClicked = PublishSubject.create<Unit>()
         private val projectCardViewHolderClicked = PublishSubject.create<Project>()
         private val signupToGamesNewsletterClick = PublishSubject.create<Unit>()
+        private val createAddress = PublishSubject.create<AddressDetails>()
         private val adapterData = BehaviorSubject.create<ThanksData>()
         private val finish = PublishSubject.create<Unit>()
         private val showConfirmGamesNewsletterDialog = PublishSubject.create<Unit>()
@@ -111,7 +123,7 @@ interface ThanksViewModel {
         private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val onHeartButtonClicked = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Unit>()
-        private val showAddressCollectionSheet = PublishSubject.create<Unit>()
+//        private val showAddressCollectionSheet = PublishSubject.create<Unit>()
         private val analyticEvents = environment.analytics()
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -160,6 +172,10 @@ interface ThanksViewModel {
             ) { isGames, hasSeen, isSignedUp ->
                 isGames && !hasSeen && !isSignedUp
             }
+
+//            presentAddressCollectionSheet
+//                    .subscribe { showAddressCollectionSheet.onNext(Unit) }
+//                    .addToDisposable(disposables)
 
             categoryCardViewHolderClicked
                 .map { DiscoveryParams.builder().category(it).build() }
@@ -331,6 +347,26 @@ interface ThanksViewModel {
                         dataCheckoutProjectPair.first.second
                     )
                 }.addToDisposable(disposables)
+
+            val createAddressNotification = createAddress
+                    .map { createAddressData(it) }
+                    .switchMap {
+                        this. apolloClient.createAddress(it).materialize()
+                    }
+                    .share()
+
+            createAddressNotification
+                    .compose(Transformers.valuesV2())
+                    .subscribe {
+                        Timber.tag("Address Collection success").d("validation status: $it")
+                    }.addToDisposable(disposables)
+
+            createAddressNotification
+                    .compose(Transformers.errorsV2())
+                    .subscribe {
+                        Timber.tag("Address Collection Error").d("error message: " + (it?.message ?: "uh ohhhh"))
+                    }
+                    .addToDisposable(disposables)
         }
 
         /**
@@ -392,12 +428,14 @@ interface ThanksViewModel {
                 .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
                 .compose(Transformers.neverErrorV2())
         }
-        override fun presentAddressCollectionSheet() = presentAddressCollectionSheet.onNext(Unit)
+        override fun addressCollectionSheetButtonClicked() = presentAddressCollectionSheet.onNext(Unit)
         override fun categoryViewHolderClicked(category: Category) = categoryCardViewHolderClicked.onNext(category)
         override fun closeButtonClicked() = closeButtonClicked.onNext(Unit)
         override fun signupToGamesNewsletterClick() = signupToGamesNewsletterClick.onNext(Unit)
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
         override fun projectCardViewHolderClicked(project: Project) = projectCardViewHolderClicked.onNext(project)
+
+        override fun createAddress(addressDetails: AddressDetails) = createAddress.onNext(addressDetails)
 
         override fun adapterData(): Observable<ThanksData> = this.adapterData
         override fun finish(): Observable<Unit> = this.finish
@@ -407,7 +445,7 @@ interface ThanksViewModel {
         override fun startDiscoveryActivity(): Observable<DiscoveryParams> = this.startDiscoveryActivity
         override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = this.startProjectActivity
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
-        override fun showAddressCollectionSheet(): Observable<Unit> = this.showAddressCollectionSheet
+        override fun showAddressCollectionSheet(): Observable<Unit> = this.presentAddressCollectionSheet
 
         private fun saveProject(project: Project): Observable<Project> {
             return this.apolloClient.watchProject(project)
@@ -424,6 +462,20 @@ interface ThanksViewModel {
             } else {
                 saveProject(project)
             }
+        }
+
+        private fun createAddressData(addressDetails: AddressDetails) : CreateAddressData {
+            return CreateAddressData(
+                    name = addressDetails.name ?: "",
+                    referenceName = addressDetails.name ?: "",
+                    addressLine1 = addressDetails.address?.line1 ?: "",
+                    addressLine2 = addressDetails.address?.line2,
+                    city = addressDetails.address?.city ?: "",
+                    region = addressDetails.address?.state ?: "",
+                    countryCode = CountryCode.safeValueOf(addressDetails.address?.country),
+                    postalCode = addressDetails.address?.postalCode ?: "",
+                    phoneNumber = addressDetails.phoneNumber ?: ""
+            )
         }
 
         companion object {

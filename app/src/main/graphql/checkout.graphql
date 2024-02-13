@@ -54,3 +54,13 @@ mutation CreatePaymentIntent($projectId: ID!, $amountDollars: String!) {
     clientSecret
   }
 }
+
+mutation CreateAddress($recipientName: String!, $referenceName: String!, $addressLine1: String!, $addressLine2: String, $city: String!, $region: String, $postalCode: String!, $countryCode: CountryCode!, $phoneNumber: String!, $clientMutationId: String) {
+    createAddress(input: { recipientName: $recipientName, referenceName: $referenceName, addressLine1: $addressLine1, addressLine2: $addressLine2, city: $city, region: $region, postalCode: $postalCode, countryCode: $countryCode, phoneNumber: $phoneNumber, clientMutationId: $clientMutationId } ) {
+        address {
+            addressLine1
+            city
+        }
+        validationStatus
+    }
+}

@@ -43,12 +43,14 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
+import com.kickstarter.services.mutations.CreateAddressData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import com.stripe.android.paymentsheet.addresselement.AddressDetails
 import rx.Observable
 import type.CurrencyCode
 import java.util.Collections
@@ -273,6 +275,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): io.reactivex.Observable<String> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun createAddress(createAddressData: CreateAddressData): io.reactivex.Observable<String> {
         return io.reactivex.Observable.empty()
     }
 }

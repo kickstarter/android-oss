@@ -11,7 +11,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ThanksShareViewBinding
 import com.kickstarter.libs.TweetComposer
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,11 +21,11 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding, delegat
     private val ksString = requireNotNull(environment().ksString())
     private val shareDialog: ShareDialog = ShareDialog(context() as Activity)
     private var disposables = CompositeDisposable()
-    private val delegate: ThanksShareViewHolder.Delegate = delegate
+    private val delegate: Delegate = delegate
 
 
     interface Delegate {
-        fun presentAddressCollectionSheet()
+        fun addressCollectionSheetButtonClicked()
     }
     init {
         viewModel.outputs.projectName()
@@ -51,10 +50,8 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding, delegat
 
         viewModel.outputs.presentAddressCollectionSheet()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { presentAddressCollectionSheet() }
+                .subscribe { addressCollectionButtonClicked() }
                 .addToDisposable(disposables)
-
-
 
         binding.shareButton.setOnClickListener {
             shareButtonClicked()
@@ -81,9 +78,6 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding, delegat
 
     private fun shareOnTwitterButtonClicked() {
         viewModel.inputs.shareOnTwitterClick()
-    }
-    private fun addressCollectionButtonClicked() {
-        viewModel.inputs.addressCollectionClick()
     }
 
     @Throws(Exception::class)
@@ -132,8 +126,8 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding, delegat
             .show()
     }
 
-    private fun presentAddressCollectionSheet() {
-        this.delegate.presentAddressCollectionSheet()
+    private fun addressCollectionButtonClicked() {
+        this.delegate.addressCollectionSheetButtonClicked()
     }
 
     override fun destroy() {

@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils
 
 import android.util.Base64
+import com.kickstarter.libs.utils.CodeVerifier.Companion.DEFAULT_CODE_VERIFIER_ENTROPY
 import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.security.MessageDigest
@@ -13,7 +14,20 @@ import java.util.regex.Pattern
  *
  * @see [Proof Key for Code Exchange by OAuth Public Clients](https://datatracker.ietf.org/doc/html/rfc7636)
  */
-class CodeVerifier {
+interface PKCE {
+    fun generateRandomCodeVerifier(entropy: Int = DEFAULT_CODE_VERIFIER_ENTROPY): String
+    fun generateCodeChallenge(codeVerifier: String): String
+}
+open class CodeVerifier : PKCE {
+
+    override fun generateRandomCodeVerifier(entropy: Int): String {
+        return Companion.generateRandomCodeVerifier(entropyBytes = entropy)
+    }
+
+    override fun generateCodeChallenge(codeVerifier: String): String {
+        return Companion.generateCodeChallenge(codeVerifier)
+    }
+
     companion object {
         /**
          * The minimum permitted length for a code verifier.

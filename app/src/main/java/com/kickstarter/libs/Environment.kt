@@ -75,7 +75,6 @@ class Environment private constructor(
 
     data class Builder(
         private var activitySamplePreference: IntPreferenceType? = null,
-        private var apiEndpoint: ApiEndpoint? = null,
         private var apiClient: ApiClientType? = null,
         private var apiClientV2: ApiClientTypeV2? = null,
         private var apolloClient: ApolloClientType? = null,
@@ -105,7 +104,6 @@ class Environment private constructor(
         private var featureFlagClient: FeatureFlagClientType? = null
     ) {
         fun activitySamplePreference(activitySamplePreference: IntPreferenceType) = apply { this.activitySamplePreference = activitySamplePreference }
-        fun apiEndpoint(apiEndpoint: ApiEndpoint) = apply { this.apiEndpoint = apiEndpoint }
         fun apiClient(apiClient: ApiClientType) = apply { this.apiClient = apiClient }
         fun apiClientV2(apiClientV2: ApiClientTypeV2) = apply { this.apiClientV2 = apiClientV2 }
         fun apolloClient(apolloClient: ApolloClientType) = apply { this.apolloClient = apolloClient }

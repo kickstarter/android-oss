@@ -53,6 +53,9 @@ interface MessagesViewModel {
 
         /** Call when the view pledge button is clicked.  */
         fun viewPledgeButtonClicked()
+
+        /** Call when the project container view is clicked.  */
+        fun projectContainerViewClicked()
     }
 
     interface Outputs {
@@ -110,6 +113,9 @@ interface MessagesViewModel {
         /** Emits when we should start the [BackingActivity].  */
         fun startBackingActivity(): Observable<BackingWrapper>
 
+        /** Emits when we should start the [ProjectPageActivity].  */
+        fun startProjectPageActivity(): Observable<Project>
+
         /** Emits when the thread has been marked as read.  */
         fun successfullyMarkedAsRead(): Observable<Unit>
 
@@ -142,6 +148,7 @@ interface MessagesViewModel {
         private val messageEditTextChanged = PublishSubject.create<String>()
         private val messageEditTextIsFocused = PublishSubject.create<Boolean>()
         private val sendMessageButtonClicked = PublishSubject.create<Unit>()
+        private val projectContainerViewClicked = PublishSubject.create<Unit>()
         private val viewPledgeButtonClicked = PublishSubject.create<Unit>()
         private val backButtonIsGone: Observable<Boolean>
         private val backingAndProject = BehaviorSubject.create<Pair<Backing, Project>>()
@@ -161,6 +168,7 @@ interface MessagesViewModel {
         private val sendMessageButtonIsEnabled: Observable<Boolean>
         private val setMessageEditText: Observable<String>
         private val startBackingActivity = PublishSubject.create<BackingWrapper>()
+        private val startProjectPageActivity = PublishSubject.create<Project>()
         private val successfullyMarkedAsRead = BehaviorSubject.create<Unit>()
         private val toolbarIsExpanded: Observable<Boolean>
         private val viewPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -192,6 +200,10 @@ interface MessagesViewModel {
             viewPledgeButtonClicked.onNext(Unit)
         }
 
+        override fun projectContainerViewClicked() {
+            projectContainerViewClicked.onNext(Unit)
+        }
+
         override fun backButtonIsGone(): Observable<Boolean> = backButtonIsGone
         override fun backingAndProject(): Observable<Pair<Backing, Project>> = backingAndProject
         override fun backingInfoViewIsGone(): Observable<Boolean> = backingInfoViewIsGone
@@ -210,6 +222,7 @@ interface MessagesViewModel {
         override fun sendMessageButtonIsEnabled(): Observable<Boolean> = sendMessageButtonIsEnabled
         override fun setMessageEditText(): Observable<String> = setMessageEditText
         override fun startBackingActivity(): Observable<BackingWrapper> = startBackingActivity
+        override fun startProjectPageActivity(): Observable<Project> = startProjectPageActivity
         override fun successfullyMarkedAsRead(): Observable<Unit> = successfullyMarkedAsRead
         override fun toolbarIsExpanded(): Observable<Boolean> = toolbarIsExpanded
         override fun viewPledgeButtonIsGone(): Observable<Boolean> = viewPledgeButtonIsGone
@@ -541,6 +554,11 @@ interface MessagesViewModel {
             project
                 .map { it.name() }
                 .subscribe { projectNameTextViewText.onNext(it) }
+                .addToDisposable(disposables)
+
+            project
+                .compose(Transformers.takeWhenV2(projectContainerViewClicked))
+                .subscribe { startProjectPageActivity.onNext(it) }
                 .addToDisposable(disposables)
 
             messageThreadEnvelope

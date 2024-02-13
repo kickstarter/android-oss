@@ -21,6 +21,7 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BackingWrapper
 import com.kickstarter.models.Project
@@ -170,6 +171,11 @@ class MessagesActivity : AppCompatActivity() {
             .subscribe { startBackingActivity(it) }
             .addToDisposable(disposables)
 
+        viewModel.outputs.startProjectPageActivity()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectPageActivity(it) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.toolbarIsExpanded()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messagesAppBarLayout.setExpanded(it) }
@@ -182,6 +188,10 @@ class MessagesActivity : AppCompatActivity() {
 
         binding.messagesBackingInfoView.messagesViewPledgeButton.setOnClickListener {
             viewPledgeButtonClicked()
+        }
+
+        binding.messagesProjectContainerView.setOnClickListener {
+            projectContainerViewClicked()
         }
 
         binding.messageReplyLayout.sendMessageButton.setOnClickListener {
@@ -210,6 +220,9 @@ class MessagesActivity : AppCompatActivity() {
 
     private fun viewPledgeButtonClicked() =
         viewModel.inputs.viewPledgeButtonClicked()
+
+    private fun projectContainerViewClicked() =
+        viewModel.inputs.projectContainerViewClicked()
 
     private fun onMessageEditTextChanged(message: CharSequence) =
         viewModel.inputs.messageEditTextChanged(message.toString())
@@ -272,6 +285,12 @@ class MessagesActivity : AppCompatActivity() {
             .putExtra(IntentKey.PROJECT, projectAndBacker.project)
             .putExtra(IntentKey.BACKER, projectAndBacker.user)
             .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startProjectPageActivity(project: Project) {
+        val intent = Intent().getProjectIntent(this)
+            .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

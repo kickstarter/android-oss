@@ -56,6 +56,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     private val setMessageEditText = TestSubscriber<String>()
     private val showMessageErrorToast = TestSubscriber<String>()
     private val startBackingActivity = TestSubscriber<BackingWrapper>()
+    private val startProjectPageActivity = TestSubscriber<Project>()
     private val successfullyMarkedAsRead = TestSubscriber<Unit>()
     private val toolbarIsExpanded = TestSubscriber<Boolean>()
     private val viewPledgeButtonIsGone = TestSubscriber<Boolean>()
@@ -85,6 +86,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         vm.outputs.setMessageEditText().subscribe { setMessageEditText.onNext(it) }.addToDisposable(disposables)
         vm.outputs.showMessageErrorToast().subscribe { showMessageErrorToast.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startBackingActivity().subscribe { startBackingActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startProjectPageActivity().subscribe { startProjectPageActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.successfullyMarkedAsRead().subscribe { successfullyMarkedAsRead.onNext(it) }.addToDisposable(disposables)
         vm.outputs.toolbarIsExpanded().subscribe { toolbarIsExpanded.onNext(it) }.addToDisposable(disposables)
         vm.outputs.viewPledgeButtonIsGone().subscribe { viewPledgeButtonIsGone.onNext(it) }.addToDisposable(disposables)
@@ -534,6 +536,32 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
                 project
             )
         )
+    }
+
+    @Test
+    fun testStartProjectPageActivity() {
+        val project = project().toBuilder().isBacking(true).build()
+        val messageThread = messageThread()
+            .toBuilder()
+            .project(project)
+            .build()
+        val messageThreadEnvelope = messageThreadEnvelope()
+            .toBuilder()
+            .messageThread(messageThread)
+            .build()
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
+                return Observable.just(messageThreadEnvelope)
+            }
+        }
+        setUpEnvironment(
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).apiClientV2(apiClient)
+                .build(),
+            messagesContextIntent(messageThread)
+        )
+
+        vm.inputs.projectContainerViewClicked()
+        startProjectPageActivity.assertValues(project)
     }
 
     @Test

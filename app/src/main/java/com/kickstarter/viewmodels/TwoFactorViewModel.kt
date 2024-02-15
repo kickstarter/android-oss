@@ -16,6 +16,7 @@ import com.kickstarter.viewmodels.usecases.LoginUseCase
 import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
@@ -50,7 +51,7 @@ interface TwoFactorViewModel {
 
     class TwoFactorViewModel(
         environment: Environment,
-        intent: Intent? = null
+        intent: Intent
     ) : ViewModel(), Inputs, Outputs {
         private val client: ApiClientTypeV2 = requireNotNull(environment.apiClientV2())
         private val analytics = requireNotNull(environment.analytics())
@@ -155,15 +156,14 @@ interface TwoFactorViewModel {
         )
         companion object {
             private fun isCodeValid(code: String?): Boolean {
-                return code != null && code.isNotEmpty()
+                return !code.isNullOrEmpty()
             }
         }
 
         init {
 
             val email = internalIntent
-                .map { it.getStringExtra(IntentKey.EMAIL) }
-                .filter { it.isNotNull() }
+                .map { it.getStringExtra(IntentKey.EMAIL) ?: "" }
 
             val fbAccessToken = internalIntent
                 .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) ?: "" }
@@ -172,8 +172,7 @@ interface TwoFactorViewModel {
                 .map { it.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false) }
 
             val password = internalIntent
-                .map { it.getStringExtra(IntentKey.PASSWORD) }
-                .filter { it.isNotNull() }
+                    .map { it.getStringExtra(IntentKey.PASSWORD) ?: "" }
 
             val tfaData = Observable.combineLatest(
                 email,
@@ -198,7 +197,7 @@ interface TwoFactorViewModel {
             }
 
             this.code
-                .map { code: String? -> isCodeValid(code) }
+                .map { isCodeValid(it) }
                 .subscribe { formIsValid.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -264,7 +263,7 @@ interface TwoFactorViewModel {
         }
     }
 
-    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return TwoFactorViewModel(environment, intent) as T
         }

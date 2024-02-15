@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -16,7 +15,6 @@ import com.kickstarter.viewmodels.usecases.LoginUseCase
 import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.exceptions.CompositeException
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
@@ -172,7 +170,7 @@ interface TwoFactorViewModel {
                 .map { it.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false) }
 
             val password = internalIntent
-                    .map { it.getStringExtra(IntentKey.PASSWORD) ?: "" }
+                .map { it.getStringExtra(IntentKey.PASSWORD) ?: "" }
 
             val tfaData = Observable.combineLatest(
                 email,

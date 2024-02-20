@@ -71,6 +71,7 @@ class OAuthViewModel(
                 apiClient.loginWithCodes(codeVerifier, code, clientID)
                     .asFlow()
                     .catch {
+                        Timber.e("error while getting the token: $it")
                         mutableUIState.emit(
                             OAuthUiState(
                                 error = it.message ?: "",
@@ -82,7 +83,7 @@ class OAuthViewModel(
                         mutableUIState.emit(
                             OAuthUiState(
                                 code = code,
-                                token = it,
+                                token = it.accessToken(),
                                 isTokenRetrieveStep = false,
                                 isAuthorizationStep = false
                             )

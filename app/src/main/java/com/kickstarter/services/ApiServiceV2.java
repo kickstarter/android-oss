@@ -33,6 +33,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.OAuthTokenEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
@@ -78,7 +79,7 @@ public interface ApiServiceV2 {
   Observable<Response<Location>> location(@Path("param") String param);
 
   @POST("/v1/oauth/authorizations/exchange")
-  Observable<Response<String>> login(@Body OAuthBody body);
+  Observable<Response<OAuthTokenEnvelope>> login(@Body OAuthBody body);
 
   @POST("/xauth/access_token")
   Observable<Response<AccessTokenEnvelope>> login(@Body XauthBody body);

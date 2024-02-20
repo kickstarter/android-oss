@@ -40,6 +40,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.OAuthTokenEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
@@ -320,7 +321,7 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
   }
 
   @Override
-  public @NonNull Observable<String> loginWithCodes(final @NonNull String codeVerifier, final @NonNull String code, final @NonNull String clientId) {
+  public @NonNull Observable<OAuthTokenEnvelope> loginWithCodes(final @NonNull String codeVerifier, final @NonNull String code, final @NonNull String clientId) {
     return this.service
             .login(OAuthBody.builder()
                     .code(code)

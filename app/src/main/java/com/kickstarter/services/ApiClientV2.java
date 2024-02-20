@@ -25,7 +25,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.BackingBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
-import com.kickstarter.services.apirequests.OAuthBody;
+import com.kickstarter.services.apirequests.PKCEBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
@@ -132,6 +132,14 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
       .currentUser()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<User> fetchCurrentUser(final @NonNull String token) {
+    return this.service
+            .currentUser(token)
+            .lift(apiErrorOperator())
+            .subscribeOn(Schedulers.io());
   }
 
   @Override
@@ -323,7 +331,7 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
   @Override
   public @NonNull Observable<OAuthTokenEnvelope> loginWithCodes(final @NonNull String codeVerifier, final @NonNull String code, final @NonNull String clientId) {
     return this.service
-            .login(OAuthBody.builder()
+            .login(PKCEBody.builder()
                     .code(code)
                     .codeVerifier(codeVerifier)
                     .clientId(clientId)

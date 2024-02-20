@@ -1,7 +1,6 @@
 package com.kickstarter.services.apiresponses
 
 import android.os.Parcelable
-import com.kickstarter.models.User
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

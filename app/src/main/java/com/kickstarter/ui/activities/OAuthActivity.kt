@@ -10,6 +10,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
@@ -46,9 +47,8 @@ class OAuthActivity : AppCompatActivity() {
                     openChromeTabWithUrl(state.authorizationUrl)
                 }
 
-                if (state.token.isNotEmpty()) {
+                if (state.user.isNotNull()) {
                     this@OAuthActivity.finish()
-                    // TODO: ideally the backend should return user object alongside token
                 }
             }
         }

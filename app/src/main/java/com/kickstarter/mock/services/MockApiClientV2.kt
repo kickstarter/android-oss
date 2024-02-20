@@ -288,6 +288,10 @@ open class MockApiClientV2 : ApiClientTypeV2 {
         return Observable.empty()
     }
 
+    override fun fetchCurrentUser(token: String): Observable<User> {
+        return Observable.empty()
+    }
+
     override fun fetchLocation(param: String): Observable<Location> {
         return Observable.just(sydney())
     }

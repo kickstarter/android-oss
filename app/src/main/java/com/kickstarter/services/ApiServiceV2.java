@@ -18,6 +18,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.BackingBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
+import com.kickstarter.services.apirequests.OAuthBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
@@ -75,6 +76,9 @@ public interface ApiServiceV2 {
 
   @GET("/v1/locations/{param}")
   Observable<Response<Location>> location(@Path("param") String param);
+
+  @POST("/v1/oauth/authorizations/exchange")
+  Observable<Response<String>> login(@Body OAuthBody body);
 
   @POST("/xauth/access_token")
   Observable<Response<AccessTokenEnvelope>> login(@Body XauthBody body);

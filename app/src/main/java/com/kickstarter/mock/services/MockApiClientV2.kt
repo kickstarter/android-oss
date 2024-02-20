@@ -291,6 +291,23 @@ open class MockApiClientV2 : ApiClientTypeV2 {
         return Observable.just(sydney())
     }
 
+    override fun loginWithCodes(
+        codeVerifier: String,
+        code: String,
+        clientId: String
+    ): Observable<String> {
+        return Observable.just(
+            "token"
+//            AccessTokenEnvelope.builder()
+//                .user(
+//                    user()
+//                        .toBuilder()
+//                        .build()
+//                )
+//                .accessToken("deadbeef")
+//                .build()
+        )
+    }
     override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {
         return Observable.just(
             AccessTokenEnvelope.builder()

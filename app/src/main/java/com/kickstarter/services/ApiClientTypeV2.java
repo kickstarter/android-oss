@@ -94,6 +94,7 @@ public interface ApiClientTypeV2 {
 
   @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code);
 
+  @NonNull Observable<String> loginWithCodes(final @NonNull String codeVerifier, final @NonNull String code, final @NonNull String clientId);
   @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password);
 
   @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password, final @NonNull String code);

@@ -51,12 +51,12 @@ class ApiRequestInterceptor(
     private fun url(initialHttpUrl: HttpUrl): HttpUrl {
         val builder: Builder = initialHttpUrl.newBuilder()
             .setQueryParameter("client_id", clientId)
-        currentUser.observable()
-            .subscribe {
-                if (currentUser.accessToken != null) {
-                    builder.setQueryParameter("oauth_token", currentUser.accessToken)
-                }
-            }
+//        currentUser.observable()
+//            .subscribe {
+//                if (currentUser.accessToken != null) {
+//                    builder.setQueryParameter("oauth_token", currentUser.accessToken)
+//                }
+//            }
         return builder.build()
     }
 

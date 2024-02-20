@@ -10,12 +10,17 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.PKCE
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import timber.log.Timber
 
 /**
@@ -26,8 +31,11 @@ import timber.log.Timber
 data class OAuthUiState(
     val authorizationUrl: String = "",
     val code: String = "",
+    val user: User? = null,
+    val token: String = "",
     val isAuthorizationStep: Boolean = false,
-    val isTokenRetrieveStep: Boolean = false
+    val isTokenRetrieveStep: Boolean = false,
+    val error: String = ""
 )
 class OAuthViewModel(
     private val environment: Environment,
@@ -35,10 +43,13 @@ class OAuthViewModel(
 ) : ViewModel() {
 
     private val hostEndpoint = environment.webEndpoint()
+    private val currentUser = requireNotNull(environment.currentUser())
+    private val apiClient = requireNotNull(environment.apiClientV2())
     private val clientID = if (hostEndpoint == ApiEndpoint.PRODUCTION.name) Secrets.Api.Client.PRODUCTION else Secrets.Api.Client.STAGING
-    private val codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MAX_CODE_VERIFIER_ENTROPY)
+    private val codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
+
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -46,6 +57,7 @@ class OAuthViewModel(
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = OAuthUiState()
             )
+
     fun produceState(intent: Intent) {
         viewModelScope.launch {
             val uri = Uri.parse(intent.data.toString())
@@ -55,14 +67,27 @@ class OAuthViewModel(
 
             if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && code != null) {
                 Timber.d("isTokenRetrieveStep after redirectionDeeplink: $code")
-                mutableUIState.emit(
-                    OAuthUiState(
-                        code = code,
-                        isTokenRetrieveStep = true,
-                        isAuthorizationStep = false
-                    )
-                )
-                // TODO: will call with code and code_challenge once the backend is ready to call the tokenEndpoint
+                // TODO: ideally `loginWithCodes` should return both user and token
+                apiClient.loginWithCodes(codeVerifier, code, clientID)
+                    .asFlow()
+                    .catch {
+                        mutableUIState.emit(
+                            OAuthUiState(
+                                error = it.message ?: "",
+                            )
+                        )
+                    }
+                    .collect {
+                        Timber.d("isTokenRetrieveStep after POST: $it")
+                        mutableUIState.emit(
+                            OAuthUiState(
+                                code = code,
+                                token = it,
+                                isTokenRetrieveStep = false,
+                                isAuthorizationStep = false
+                            )
+                        )
+                    }
             }
 
             if (intent.data == null) {

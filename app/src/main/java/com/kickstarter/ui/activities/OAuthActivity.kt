@@ -46,8 +46,9 @@ class OAuthActivity : AppCompatActivity() {
                     openChromeTabWithUrl(state.authorizationUrl)
                 }
 
-                if (state.isTokenRetrieveStep && state.code.isNotEmpty()) {
-                    // TODO WIP PHASE 3, VM call the endpoint with code & code_challenge, retrieve the token.
+                if (state.token.isNotEmpty()) {
+                    this@OAuthActivity.finish()
+                    // TODO: ideally the backend should return user object alongside token
                 }
             }
         }
@@ -69,7 +70,7 @@ class OAuthActivity : AppCompatActivity() {
 
         // BindCustomTabsService, obtain CustomTabsClient and Client, listens to navigation events
         helper = ChromeTabsHelperActivity.CustomTabSessionAndClientHelper(this, authorizationUri) {
-            finish()
+            // finish()
         }
 
         // - Fallback in case Chrome is not installed, open WebViewActivity

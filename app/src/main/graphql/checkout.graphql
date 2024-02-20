@@ -49,8 +49,25 @@ mutation CreateCheckout($projectId: ID!, $amount: String!, $rewardIds: [ID!], $l
   }
 }
 
-mutation CreatePaymentIntent($projectId: ID!, $amountDollars: String!) {
-  createPaymentIntent(input: { projectId: $projectId, amount: $amountDollars } ) {
+mutation CreatePaymentIntent($projectId: ID!, $amount: String!) {
+  createPaymentIntent(input: { projectId: $projectId, amount: $amount } ) {
     clientSecret
+  }
+}
+
+query ValidateCheckout($checkoutId:ID!, $paymentSourceId:String!, $paymentIntentClientSecret:String!) {
+  checkout(id: $checkoutId) {
+    isValidForOnSessionCheckout(stripePaymentMethodId: $paymentSourceId, paymentIntentClientSecret: $paymentIntentClientSecret) {
+      valid
+      messages
+    }
+  }
+}
+
+mutation CompleteOnSessionCheckout($checkoutId: ID!, $paymentIntentClientSecret: String!, $paymentSourceId: String) {
+  completeOnSessionCheckout(input:{ checkoutId: $checkoutId, paymentIntentClientSecret: $paymentIntentClientSecret, paymentSourceId: $paymentSourceId } ) {
+    checkout {
+      id
+    }
   }
 }

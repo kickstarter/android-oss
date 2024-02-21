@@ -48,6 +48,7 @@ class OAuthActivity : AppCompatActivity() {
                 }
 
                 if (state.user.isNotNull()) {
+                    setResult(RESULT_OK)
                     this@OAuthActivity.finish()
                 }
             }

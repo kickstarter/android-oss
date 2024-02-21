@@ -102,6 +102,7 @@ interface LoginToutViewModel {
         private var callbackManager: CallbackManager? = null
         private val client: ApiClientTypeV2 = requireNotNull(environment.apiClientV2())
         private val analyticEvents = environment.analytics()
+        private val currentUser = requireNotNull(environment.currentUserV2())
 
         private fun clearFacebookSession(e: FacebookException) {
             LoginManager.getInstance().logOut()
@@ -339,6 +340,16 @@ interface LoginToutViewModel {
                     startLoginActivity.onNext((environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false))
                 }
                 .addToDisposable(disposables)
+
+            currentUser.observable()
+                .filter { it.isPresent() }
+                .subscribe {
+                    if (currentUser.accessToken != null) {
+                        finishWithSuccessfulResult.onNext(Unit)
+                    }
+                }
+                .addToDisposable(disposables)
+
         }
 
         fun provideLoginReason(loginReason: LoginReason) {

@@ -1,6 +1,8 @@
 package com.kickstarter.services
 
+import CompleteOnSessionCheckoutMutation
 import CreatePaymentIntentMutation
+import ValidateCheckoutQuery
 import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
@@ -16,6 +18,7 @@ import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
+import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -132,6 +135,18 @@ interface ApolloClientTypeV2 {
     fun createCheckout(createCheckoutData: CreateCheckoutData): Observable<CheckoutPayment>
 
     fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): Observable<String>
+
+    fun validateCheckout(
+        checkoutId: String,
+        paymentIntentClientSecret: String,
+        paymentSourceId: String
+    ): Observable<PaymentValidationResponse>
+
+    fun completeOnSessionCheckout(
+        checkoutId: String,
+        paymentIntentClientSecret: String,
+        paymentSourceId: String
+    ): Observable<String>
 }
 
 private const val PAGE_SIZE = 25
@@ -1418,11 +1433,11 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                         checkoutObj.paymentUrl()
                                     )
                                     ps.onNext(checkout)
-                                    ps.onComplete()
                                 } ?: ps.onError(Exception("CreateCheckout could not decode ID"))
                             }
                         }
                     }
+                    ps.onComplete()
                 }
             })
             return@defer ps
@@ -1436,7 +1451,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
             this.service.mutate(
                 CreatePaymentIntentMutation.builder()
                     .projectId(encodeRelayId(createPaymentIntentInput.project))
-                    .amountDollars(createPaymentIntentInput.amountDollars)
+                    .amount(createPaymentIntentInput.amount)
                     .build()
             ).enqueue(object : ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -1447,7 +1462,81 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
-                        ps.onNext(response.data?.createPaymentIntent()?.clientSecret() ?: "")
+                        response.data?.createPaymentIntent()?.clientSecret()?.let {
+                            ps.onNext(it)
+                        } ?: ps.onError(Exception("Client Secret was Null"))
+                    }
+                    ps.onComplete()
+                }
+            })
+            return@defer ps
+        }
+    }
+
+    override fun validateCheckout(
+        checkoutId: String,
+        paymentIntentClientSecret: String,
+        paymentSourceId: String
+    ): Observable<PaymentValidationResponse> {
+        return Observable.defer {
+            val ps = PublishSubject.create<PaymentValidationResponse>()
+
+            this.service.query(
+                ValidateCheckoutQuery.builder()
+                    .checkoutId(checkoutId)
+                    .paymentIntentClientSecret(paymentIntentClientSecret)
+                    .paymentSourceId(paymentSourceId)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<ValidateCheckoutQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<ValidateCheckoutQuery.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.let { data ->
+                            val validation = PaymentValidationResponse(
+                                data.checkout()?.isValidForOnSessionCheckout?.valid() ?: false,
+                                data.checkout()?.isValidForOnSessionCheckout?.messages() ?: listOf()
+                            )
+                            ps.onNext(validation)
+                        }
+                        ps.onComplete()
+                    }
+                }
+            })
+            return@defer ps
+        }
+    }
+
+    override fun completeOnSessionCheckout(
+        checkoutId: String,
+        paymentIntentClientSecret: String,
+        paymentSourceId: String
+    ): Observable<String> {
+        return Observable.defer {
+            val ps = PublishSubject.create<String>()
+
+            this.service.mutate(
+                CompleteOnSessionCheckoutMutation.builder()
+                    .checkoutId(checkoutId)
+                    .paymentIntentClientSecret(paymentIntentClientSecret)
+                    .paymentSourceId(paymentSourceId)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<CompleteOnSessionCheckoutMutation.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<CompleteOnSessionCheckoutMutation.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.completeOnSessionCheckout()?.checkout()?.id()?.let {
+                            ps.onNext(it)
+                        } ?: ps.onError(Exception("Checkout ID was null"))
                     }
                     ps.onComplete()
                 }

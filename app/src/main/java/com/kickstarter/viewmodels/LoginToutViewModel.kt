@@ -349,7 +349,6 @@ interface LoginToutViewModel {
                     }
                 }
                 .addToDisposable(disposables)
-
         }
 
         fun provideLoginReason(loginReason: LoginReason) {

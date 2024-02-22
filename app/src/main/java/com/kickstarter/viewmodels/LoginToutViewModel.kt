@@ -60,6 +60,9 @@ interface LoginToutViewModel {
         /** Emits when a user has successfully logged in; the login flow should finish with a result indicating success.  */
         fun finishWithSuccessfulResult(): Observable<Unit>
 
+        /** Emits the current user exists alongside oauth token when this activity exists  */
+        fun finishOauthWithSuccessfulResult(): Observable<Unit>
+
         /** Emits when a user has failed to authenticate using Facebook.  */
         fun showFacebookAuthorizationErrorDialog(): Observable<String>
 
@@ -102,6 +105,7 @@ interface LoginToutViewModel {
         private var callbackManager: CallbackManager? = null
         private val client: ApiClientTypeV2 = requireNotNull(environment.apiClientV2())
         private val analyticEvents = environment.analytics()
+        private val currentUser = requireNotNull(environment.currentUserV2())
 
         private fun clearFacebookSession(e: FacebookException) {
             LoginManager.getInstance().logOut()
@@ -159,6 +163,8 @@ interface LoginToutViewModel {
         private val startSignupActivity: Observable<Boolean>
         private val showDisclaimerActivity: Observable<DisclaimerItems>
 
+        private val finishOauthWithSuccessfulResult = BehaviorSubject.create<Unit>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
         private val loginUserCase = LoginUseCase(environment)
@@ -200,6 +206,9 @@ interface LoginToutViewModel {
             return finishWithSuccessfulResult
         }
 
+        override fun finishOauthWithSuccessfulResult(): Observable<Unit> {
+            return finishOauthWithSuccessfulResult
+        }
         override fun showFacebookAuthorizationErrorDialog(): Observable<String> {
             return facebookAuthorizationError
                 .filter {
@@ -337,6 +346,15 @@ interface LoginToutViewModel {
             onLoginFacebookErrorDialogClicked
                 .subscribe {
                     startLoginActivity.onNext((environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false))
+                }
+                .addToDisposable(disposables)
+
+            currentUser.observable()
+                .filter { it.isPresent() }
+                .subscribe {
+                    if (currentUser.accessToken != null) {
+                        finishOauthWithSuccessfulResult.onNext(Unit)
+                    }
                 }
                 .addToDisposable(disposables)
         }

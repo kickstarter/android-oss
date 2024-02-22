@@ -196,6 +196,11 @@ class LoginToutActivity : ComponentActivity() {
                 startResetActivity()
             }
             .addToDisposable(disposables)
+
+        viewModel.outputs.finishOauthWithSuccessfulResult()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { finishWithSuccessfulResult() }
+            .addToDisposable(disposables)
     }
 
     private fun facebookLoginClick() =

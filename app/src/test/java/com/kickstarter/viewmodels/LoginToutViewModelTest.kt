@@ -25,6 +25,7 @@ import org.junit.Test
 class LoginToutViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoginToutViewModel.LoginToutViewmodel
     private val finishWithSuccessfulResult = TestSubscriber<Unit>()
+    private val finishOathWithSuccessfulResult = TestSubscriber<Unit>()
     private val loginError = TestSubscriber<ErrorEnvelope>()
     private val startLoginActivity = TestSubscriber<Boolean>()
     private val startSignupActivity = TestSubscriber<Boolean>()
@@ -51,6 +52,11 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showDisclaimerActivity().subscribe { showDisclaimerActivity.onNext(it) }
             .addToDisposable(disposables)
         environment.currentUser()?.observable()?.subscribe { currentUser.onNext(it) }
+        vm.outputs.finishOauthWithSuccessfulResult().subscribe {
+            finishOathWithSuccessfulResult.onNext(it)
+        }
+            .addToDisposable(disposables)
+
         vm.provideLoginReason(loginReason)
     }
 

@@ -80,7 +80,7 @@ interface SearchViewModel {
             projects: List<Project>,
             selectedProject: Project
         ): Pair<Project, RefTag> {
-            val isFirstResult = selectedProject === projects[0]
+            val isFirstResult = if (projects.isEmpty()) false else selectedProject === projects[0]
             return if (searchTerm.isEmpty()) {
                 if (isFirstResult) Pair.create(
                     selectedProject,

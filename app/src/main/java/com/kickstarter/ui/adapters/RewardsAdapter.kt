@@ -33,7 +33,7 @@ class RewardsAdapter(private val delegate: Delegate) : KSAdapter() {
 
         val rewards = projectData.project().rewards()
 
-        if (!rewards.isNullOrEmpty() ) {
+        if (!rewards.isNullOrEmpty()) {
             addSection(
                 Observable.from(rewards)
                     .map { reward -> Pair.create(projectData, reward) }

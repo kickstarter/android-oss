@@ -246,11 +246,10 @@ class RewardsFragmentViewModel {
                 .addToDisposable(disposables)
         }
 
-
         private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
             val startedRewards = pData.project().rewards()?.filter { RewardUtils.hasStarted(it) }
-            val sortedRewards =  pData.project().rewards()?.filter { RewardUtils.isAvailable(pData.project(), it) }?.toMutableList() ?: mutableListOf()
-            val unavailableRewards = startedRewards?.filter { !RewardUtils.isAvailable(pData.project(), it)}?.toMutableList()
+            val sortedRewards = startedRewards?.filter { RewardUtils.isAvailable(pData.project(), it) }?.toMutableList() ?: mutableListOf()
+            val unavailableRewards = startedRewards?.filter { !RewardUtils.isAvailable(pData.project(), it) }?.toMutableList()
 
             unavailableRewards?.let { sortedRewards.addAll(it) }
 

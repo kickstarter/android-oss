@@ -147,7 +147,7 @@
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.OAuthActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstancePerTask"
             android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>

@@ -25,6 +25,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.BackingBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
+import com.kickstarter.services.apirequests.PKCEBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
@@ -39,6 +40,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.OAuthTokenEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
@@ -130,6 +132,14 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
       .currentUser()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<User> fetchCurrentUser(final @NonNull String token) {
+    return this.service
+            .currentUser(token)
+            .lift(apiErrorOperator())
+            .subscribeOn(Schedulers.io());
   }
 
   @Override
@@ -316,6 +326,18 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
       .login(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<OAuthTokenEnvelope> loginWithCodes(final @NonNull String codeVerifier, final @NonNull String code, final @NonNull String clientId) {
+    return this.service
+            .login(PKCEBody.builder()
+                    .code(code)
+                    .codeVerifier(codeVerifier)
+                    .clientId(clientId)
+                    .build())
+            .lift(apiErrorOperator())
+            .subscribeOn(Schedulers.io());
   }
 
   @Override

@@ -16,17 +16,29 @@ class LoginUseCase(environment: Environment) {
         currentUserV2.login(newUser, accessToken)
     }
 
+    fun logout() {
+        currentUser.logout()
+        currentUserV2.logout()
+    }
+
+    fun refresh(updatedUser: User) {
+        currentUser.refresh(updatedUser)
+        currentUserV2.refresh(updatedUser)
+    }
+
     fun loginAndUpdateUserPrivacy(newUser: User, accessToken: String): Observable<User> {
         login(newUser, accessToken)
         return GetUserPrivacyUseCase(apolloClient).getUserPrivacy()
             .compose(Transformers.neverError())
             .map {
-                newUser.toBuilder()
+                val user = newUser.toBuilder()
                     .email(it.me()?.email())
                     .isCreator(it.me()?.isCreator)
                     .isDeliverable(it.me()?.isDeliverable)
                     .isEmailVerified(it.me()?.isEmailVerified)
                     .hasPassword(it.me()?.hasPassword()).build()
+                refresh(user)
+                return@map user
             }
     }
 

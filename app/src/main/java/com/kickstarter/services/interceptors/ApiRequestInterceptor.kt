@@ -2,7 +2,7 @@ package com.kickstarter.services.interceptors
 
 import android.net.Uri
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isApiUri
@@ -16,7 +16,7 @@ import java.io.IOException
 
 class ApiRequestInterceptor(
     private val clientId: String,
-    private val currentUser: CurrentUserType,
+    private val currentUser: CurrentUserTypeV2,
     private val endpoint: String,
     private val build: Build
 ) : Interceptor {
@@ -47,11 +47,12 @@ class ApiRequestInterceptor(
         val builder: Builder = initialHttpUrl.newBuilder()
             .setQueryParameter("client_id", clientId)
         currentUser.observable()
+            .filter { it.isPresent() }
             .subscribe {
                 if (currentUser.accessToken != null) {
                     builder.setQueryParameter("oauth_token", currentUser.accessToken)
                 }
-            }
+            }.dispose()
         return builder.build()
     }
 

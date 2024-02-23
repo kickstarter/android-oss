@@ -48,7 +48,8 @@ fun StoredCard.getBackingData(
             paymentSourceId = this.id(),
             locationId = locationId,
             rewardsIds = rewards,
-            refTag = if (cookieRefTag?.tag()?.isNotEmpty() == true) cookieRefTag else null
+            refTag = if (cookieRefTag?.tag()?.isNotEmpty() == true) cookieRefTag else null,
+            stripeCardId = this.stripeCardId()
         )
     }
 }

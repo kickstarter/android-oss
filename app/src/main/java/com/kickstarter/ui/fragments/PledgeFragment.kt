@@ -802,6 +802,7 @@ class PledgeFragment :
                 }
             }
         )
+        //stripe.confirmPaymentIntent(ConfirmPaymentIntentParams(paymentMethodId = //return from graph stored card, clientSecret =//return from graph create payment intent))
     }
 
     override fun onDestroyView() {

@@ -274,6 +274,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                         .id(cardData.id())
                                         .lastFourDigits(cardData.lastFour())
                                         .type(it.type())
+                                        .stripeCardId(it.stripeCardId())
                                         .build()
                                     cardsList.add(card)
                                 }
@@ -694,6 +695,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     }
 
     override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+        return Observable.error(Throwable("INTENDED, IGNORE"))
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
                 .projectId(encodeRelayId(createBackingData.project))

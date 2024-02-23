@@ -68,7 +68,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
 
         this.viewModel.outputs.buttonIsEnabled()
             .compose(observeForUIV2())
-            .subscribe { this.binding.rewardPledgeButton.isEnabled = it }
+            .subscribe { this.binding.rewardPledgeButton.isEnabled = true }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.remainingIsGone()
@@ -152,7 +152,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
 
         this.viewModel.outputs.buttonIsGone()
             .compose(observeForUIV2())
-            .subscribe { setPledgeButtonVisibility(it) }
+            .subscribe { setPledgeButtonVisibility(gone = false) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.backersCount()

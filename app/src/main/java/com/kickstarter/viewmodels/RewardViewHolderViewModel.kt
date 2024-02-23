@@ -320,7 +320,7 @@ interface RewardViewHolderViewModel {
                 .addToDisposable(disposables)
 
             projectAndReward
-                .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
+                //.filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
                 .compose<Pair<Project, Reward>>(takeWhenV2(this.rewardClicked))
                 .subscribe { this.showFragment.onNext(it) }
                 .addToDisposable(disposables)

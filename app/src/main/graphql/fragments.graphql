@@ -385,6 +385,7 @@ fragment payment on CreditCard {
     expirationDate
     type
     state
+    stripeCardId
 }
 
 fragment freeformPost on FreeformPost {

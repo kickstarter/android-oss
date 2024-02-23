@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.R
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
@@ -34,6 +35,7 @@ import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -41,6 +43,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.isFromPaymentSheet
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
@@ -51,14 +54,21 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import com.stripe.android.Stripe
 import com.stripe.android.StripeIntentResult
+import com.stripe.android.confirmPaymentIntent
+import com.stripe.android.model.ConfirmPaymentIntentParams
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import type.CreditCardPaymentType
+import java.lang.Thread.sleep
 import java.math.RoundingMode
 import java.text.NumberFormat
 import kotlin.math.max
@@ -472,6 +482,8 @@ interface PledgeFragmentViewModel {
         private val loadingState = BehaviorSubject.create<State>()
 
         private val disposables = CompositeDisposable()
+
+        private val stripe = requireNotNull(environment.stripe())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -1329,6 +1341,34 @@ interface PledgeFragmentViewModel {
             }
                 .compose<CreateBackingData>(takeWhenV2(pledgeButtonClicked))
                 .switchMap {
+                    Timber.d("CreateCheckout: ProjectId: ${it.project.id()}, Amount: ${it.amount}, Rewards: ${it.rewardsIds}, RefTag: ${it.refTag}")
+                    this.apolloClient.createCheckout(CreateCheckoutData(it.project, it.amount, it.locationId, it.rewardsIds ?: listOf(), it.refTag)).subscribe { checkout ->
+                        Timber.d("CreateCheckout Result: CheckoutID: ${checkout.id}, PaymentUrl: ${checkout.paymentUrl}")
+                        Timber.d("CreatePaymentIntent: ProjectID: ${it.project.id()}, Amount: ${it.amount}")
+                        apolloClient.createPaymentIntent(CreatePaymentIntentInput(it.project, it.amount)).subscribe { clientSecret ->
+                            Timber.d("CreatePaymentIntent Result: $clientSecret")
+                            Timber.d("ValidateCheckout: CheckoutID: ${checkout.id}, ClientSecret: $clientSecret, StripeCardId: ${it.stripeCardId}")
+                            apolloClient.validateCheckout(checkout.id.toString(), clientSecret, it.stripeCardId ?: "").subscribe { validation ->
+                                Timber.d("ValidateCheckout Result: IsValid: ${validation.isValid}, Messages: ${validation.messages}")
+                                if (validation.isValid) {
+                                    viewModelScope.launch {
+                                        val intentParams = ConfirmPaymentIntentParams.createWithPaymentMethodId(clientSecret = clientSecret, paymentMethodId = it.stripeCardId ?: "")
+                                        val withSDK = intentParams.withShouldUseStripeSdk(shouldUseStripeSdk = true)
+                                        val paymentIntent = stripe.confirmPaymentIntent(
+                                            withSDK
+                                        )
+                                        Timber.d("CompleteOnSessionCheckout: CheckoutId: ${checkout.id}, ClientSecret: $clientSecret, PaymentSourceId: ${it.paymentSourceId}, PaymentIntent: $paymentIntent")
+                                        apolloClient.completeOnSessionCheckout(checkout.id.toString(), clientSecret ?: "", it.paymentSourceId ?: "").subscribe { complete->
+                                            Timber.d("CompleteOnSessionCheckoutResult: CheckoutId: $complete")
+                                        }.addToDisposable(disposables)
+                                    }
+                                }
+                                else Timber.d("Checkout could not be validated")
+                            }.addToDisposable(disposables)
+                        }.addToDisposable(disposables)
+                    }.addToDisposable(disposables)
+
+                    sleep(5000)
                     this.apolloClient.createBacking(it)
                         .doOnSubscribe {
                             this.pledgeProgressIsGone.onNext(false)

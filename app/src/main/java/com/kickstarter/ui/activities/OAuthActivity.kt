@@ -10,6 +10,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
@@ -46,8 +47,9 @@ class OAuthActivity : AppCompatActivity() {
                     openChromeTabWithUrl(state.authorizationUrl)
                 }
 
-                if (state.isTokenRetrieveStep && state.code.isNotEmpty()) {
-                    // TODO WIP PHASE 3, VM call the endpoint with code & code_challenge, retrieve the token.
+                if (state.user.isNotNull()) {
+                    setResult(RESULT_OK)
+                    this@OAuthActivity.finish()
                 }
             }
         }
@@ -69,7 +71,7 @@ class OAuthActivity : AppCompatActivity() {
 
         // BindCustomTabsService, obtain CustomTabsClient and Client, listens to navigation events
         helper = ChromeTabsHelperActivity.CustomTabSessionAndClientHelper(this, authorizationUri) {
-            finish()
+            // finish()
         }
 
         // - Fallback in case Chrome is not installed, open WebViewActivity

@@ -22,6 +22,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.OAuthTokenEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
@@ -51,6 +52,8 @@ public interface ApiClientTypeV2 {
   @NonNull Observable<Category> fetchCategory(final @NonNull Category category);
 
   @NonNull Observable<User> fetchCurrentUser();
+
+  @NonNull Observable<User> fetchCurrentUser(final @NonNull String token);
 
   @NonNull Observable<Location> fetchLocation(final @NonNull String param);
 
@@ -94,6 +97,7 @@ public interface ApiClientTypeV2 {
 
   @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code);
 
+  @NonNull Observable<OAuthTokenEnvelope> loginWithCodes(final @NonNull String codeVerifier, final @NonNull String code, final @NonNull String clientId);
   @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password);
 
   @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password, final @NonNull String code);

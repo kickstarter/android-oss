@@ -39,7 +39,6 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: RewardsFragmentViewModel
     private val backedRewardPosition = TestSubscriber.create<Int>()
     private val projectData = TestSubscriber.create<ProjectData>()
-    private val rewards = TestSubscriber.create<String>()
     private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showAddOnsFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
@@ -49,7 +48,6 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = Factory(environment).create(RewardsFragmentViewModel::class.java)
         this.vm.outputs.backedRewardPosition().subscribe { this.backedRewardPosition.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.projectData().map { it.project().rewards()?.get(4)?.description() }.subscribe { this.rewards.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.projectData().subscribe { this.projectData.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.rewardsCount().subscribe { this.rewardsCount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showPledgeFragment().subscribe { this.showPledgeFragment.onNext(it) }.addToDisposable(disposables)

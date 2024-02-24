@@ -20,6 +20,7 @@ import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
 import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
+import com.kickstarter.models.Relay
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
@@ -53,6 +54,7 @@ import type.BackingState
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
+import java.util.Base64
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -1523,7 +1525,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
             this.service.mutate(
                 CompleteOnSessionCheckoutMutation.builder()
-                    .checkoutId(checkoutId)
+                    .checkoutId(String(Base64.getEncoder().encode(("Checkout-$checkoutId").toByteArray())))
                     .paymentIntentClientSecret(paymentIntentClientSecret)
                     .paymentSourceId(paymentSourceId)
                     .build()

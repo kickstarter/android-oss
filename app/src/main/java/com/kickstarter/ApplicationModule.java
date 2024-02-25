@@ -272,7 +272,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(
-          final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
+          final @NonNull String clientId, final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull ApiEndpoint endpoint, final @NonNull Build build) {
     return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), build);
   }

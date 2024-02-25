@@ -112,8 +112,8 @@ class RewardsFragmentViewModel {
                 .addToDisposable(disposables)
 
             this.projectDataInput
-                .filter { filterOutNotStartedRewards(it).isNotNull() }
-                .map { filterOutNotStartedRewards(it) }
+                .filter { sortAndFilterRewards(it).isNotNull() }
+                .map { sortAndFilterRewards(it) }
                 .subscribe { this.projectData.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -246,9 +246,14 @@ class RewardsFragmentViewModel {
                 .addToDisposable(disposables)
         }
 
-        private fun filterOutNotStartedRewards(pData: ProjectData): ProjectData {
-            val rewards = pData.project().rewards()?.filter { RewardUtils.hasStarted(it) }
-            val modifiedProject = pData.project().toBuilder().rewards(rewards).build()
+        private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
+            val startedRewards = pData.project().rewards()?.filter { RewardUtils.hasStarted(it) }
+            val sortedRewards = startedRewards?.filter { RewardUtils.isAvailable(pData.project(), it) }?.toMutableList() ?: mutableListOf()
+            val unavailableRewards = startedRewards?.filter { !RewardUtils.isAvailable(pData.project(), it) }?.toMutableList()
+
+            unavailableRewards?.let { sortedRewards.addAll(it) }
+
+            val modifiedProject = pData.project().toBuilder().rewards(sortedRewards).build()
             return pData.toBuilder()
                 .project(modifiedProject)
                 .build()

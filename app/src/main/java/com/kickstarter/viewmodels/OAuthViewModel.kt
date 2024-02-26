@@ -73,11 +73,12 @@ class OAuthViewModel(
                 apiClient.loginWithCodes(codeVerifier, code, clientID)
                     .asFlow()
                     .flatMapLatest { token ->
-                        Timber.d("retrieve user with token: $token")
-                        apiClient.fetchCurrentUser(token.accessToken())
+                        Timber.d("About to persist token to currentUser: $token")
+                        loginUseCase.setToken(token.accessToken())
+                        apiClient.fetchCurrentUser()
                             .asFlow()
                             .map {
-                                Pair(token, it)
+                                it
                             }
                     }
                     .catch {
@@ -90,12 +91,12 @@ class OAuthViewModel(
                         )
                         loginUseCase.logout()
                     }
-                    .collect {
-                        Timber.d("About to persist user and token to currentUser: $it")
-                        loginUseCase.login(it.second, it.first.accessToken())
+                    .collect { user ->
+                        Timber.d("About to persist user to currentUser: $user")
+                        loginUseCase.setUser(user)
                         mutableUIState.emit(
                             OAuthUiState(
-                                user = it.second,
+                                user = user,
                             )
                         )
                     }

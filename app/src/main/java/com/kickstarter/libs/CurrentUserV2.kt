@@ -5,16 +5,23 @@ import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
+import com.kickstarter.services.apiresponses.OAuthTokenEnvelope
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 
 abstract class CurrentUserTypeV2 {
+
+    /***
+     * Persist a new token, retrieved form #exchange endpoint {/v1/oauth/authorizations/exchange}
+     */
+    abstract fun setToken(accessToken: String)
+
     /**
      * Call when a user has logged in. The implementation of `CurrentUserType` is responsible
-     * for persisting the user and access token.
+     * for persisting the user.
      */
-    abstract fun login(newUser: User, accessToken: String)
+    abstract fun login(newUser: User)
 
     /**
      * Call when a user should be logged out.
@@ -106,10 +113,18 @@ class CurrentUserV2(
     override val accessToken: String?
         get() = accessTokenPreference.get()
 
-    override fun login(newUser: User, accessToken: String) {
+    override fun login(newUser: User) {
         Timber.d("Login user %s", newUser.name())
-        accessTokenPreference.set(accessToken)
         user.onNext(KsOptional.of(newUser))
+    }
+
+    override fun setToken(accessToken: String) {
+        // - Clean previous token in case there is any
+        accessTokenPreference.delete()
+        deviceRegistrar.unregisterDevice()
+
+        // - Register new token
+        accessTokenPreference.set(accessToken)
         deviceRegistrar.registerDevice()
     }
 

@@ -11,23 +11,23 @@ class LoginUseCase(environment: Environment) {
     private val apolloClient = requireNotNull(environment.apolloClient())
     private val apolloClientV2 = requireNotNull(environment.apolloClientV2())
 
-    fun login(newUser: User, accessToken: String) {
-        currentUser.login(newUser, accessToken)
-        currentUserV2.login(newUser, accessToken)
-    }
-
     fun logout() {
         currentUser.logout()
         currentUserV2.logout()
     }
 
-    fun refresh(updatedUser: User) {
-        currentUser.refresh(updatedUser)
-        currentUserV2.refresh(updatedUser)
+    fun setToken(accessToken: String) {
+        currentUser.setToken(accessToken)
+        currentUserV2.setToken(accessToken)
+    }
+
+    fun setUser(user: User){
+        currentUser.login(user)
+        currentUserV2.login(user)
     }
 
     fun loginAndUpdateUserPrivacy(newUser: User, accessToken: String): Observable<User> {
-        login(newUser, accessToken)
+        currentUser.setToken(accessToken)
         return GetUserPrivacyUseCase(apolloClient).getUserPrivacy()
             .compose(Transformers.neverError())
             .map {
@@ -37,13 +37,13 @@ class LoginUseCase(environment: Environment) {
                     .isDeliverable(it.me()?.isDeliverable)
                     .isEmailVerified(it.me()?.isEmailVerified)
                     .hasPassword(it.me()?.hasPassword()).build()
-                refresh(user)
+                currentUser.login(user)
                 return@map user
             }
     }
 
     fun loginAndUpdateUserPrivacyV2(newUser: User, accessToken: String): io.reactivex.Observable<User> {
-        login(newUser, accessToken)
+        currentUserV2.setToken(accessToken)
         return GetUserPrivacyUseCaseV2(apolloClientV2).getUserPrivacy()
             .compose(Transformers.neverErrorV2())
             .map {
@@ -53,6 +53,8 @@ class LoginUseCase(environment: Environment) {
                     .isDeliverable(it.isDeliverable)
                     .isEmailVerified(it.isEmailVerified)
                     .hasPassword(it.hasPassword).build()
+                currentUserV2.login(newUser)
+                return@map newUser
             }
     }
 }

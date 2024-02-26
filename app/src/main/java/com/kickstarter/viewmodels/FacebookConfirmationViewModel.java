@@ -104,7 +104,8 @@ public interface FacebookConfirmationViewModel {
     }
 
     private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {
-      this.loginUserCase.login(envelope.user(), envelope.accessToken());
+      this.loginUserCase.setToken(envelope.accessToken());
+      this.loginUserCase.setUser(envelope.user());
       this.signupSuccess.onNext(null);
     }
 

@@ -98,7 +98,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(OAuthTokenEnvelope.builder().accessToken("token").build())
             }
 
-            override fun fetchCurrentUser(token: String): Observable<User> {
+            override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }
@@ -146,7 +146,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(OAuthTokenEnvelope.builder().accessToken("tokensito").build())
             }
 
-            override fun fetchCurrentUser(token: String): Observable<User> {
+            override fun fetchCurrentUser(): Observable<User> {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
         }
@@ -195,7 +195,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
 
-            override fun fetchCurrentUser(token: String): Observable<User> {
+            override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }

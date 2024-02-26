@@ -96,7 +96,8 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
 
         val loginUserCase = LoginUseCase(environment)
 
-        loginUserCase.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+        loginUserCase.setToken("beefbod5")
+        loginUserCase.setUser(user().toBuilder().unreadMessagesCount(0).build())
 
         val intent = Intent().putExtra(IntentKey.PROJECT, project)
         vm.intent(intent)
@@ -142,7 +143,8 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
 
         val loginUserCase = LoginUseCase(environment)
 
-        loginUserCase.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+        loginUserCase.setToken("beefbod5")
+        loginUserCase.setUser(user().toBuilder().unreadMessagesCount(0).build())
 
         val intent = Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE)
         vm.intent(intent)
@@ -197,7 +199,8 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
 
         val loginUserCase = LoginUseCase(environment)
 
-        loginUserCase.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+        loginUserCase.setToken("beefbod5")
+        loginUserCase.setUser(user().toBuilder().unreadMessagesCount(0).build())
 
         val intent = Intent().putExtra(IntentKey.PROJECT, project)
         vm.intent(intent)

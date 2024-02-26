@@ -4,7 +4,6 @@ import android.net.Uri
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isHivequeenUri
@@ -25,8 +24,7 @@ class WebRequestInterceptor(
     private val currentUser: CurrentUserType,
     private val endpoint: String,
     private val internalTools: InternalToolsType,
-    private val build: Build,
-    private val pxManager: PerimeterXClientType
+    private val build: Build
 ) : Interceptor {
 
     private var loggedInUser: User? = null
@@ -69,7 +67,6 @@ class WebRequestInterceptor(
             )
         }
 
-        pxManager.addHeaderTo(requestBuilder)
         return requestBuilder.build()
     }
 

@@ -252,9 +252,6 @@ dependencies {
     implementation 'com.segment.analytics.android:analytics:4.11.3'
     implementation 'com.appboy:appboy-segment-integration:15.0.1'
 
-    // Security
-    implementation 'com.perimeterx.sdk:msdk:1.16.7'
-
     // Dependencies for HTML Parser
     implementation 'org.jsoup:jsoup:1.16.1'
 

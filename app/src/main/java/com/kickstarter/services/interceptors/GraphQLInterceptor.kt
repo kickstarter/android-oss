@@ -3,7 +3,6 @@ package com.kickstarter.services.interceptors
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.FirebaseHelper
-import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
@@ -16,8 +15,7 @@ import okhttp3.Response
 class GraphQLInterceptor(
     private val clientId: String,
     private val currentUser: CurrentUserType,
-    private val build: Build,
-    private val pxManager: PerimeterXClientType
+    private val build: Build
 ) : Interceptor {
     override fun intercept(chain: Chain): Response {
         val original = chain.request()
@@ -32,11 +30,6 @@ class GraphQLInterceptor(
             .addHeader("X-KICKSTARTER-CLIENT", this.clientId)
             .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
 
-        pxManager.addHeaderTo(builder)
-
-        val response = chain.proceed(builder.build())
-        pxManager.intercept(response)
-
-        return response
+        return chain.proceed(builder.build())
     }
 }

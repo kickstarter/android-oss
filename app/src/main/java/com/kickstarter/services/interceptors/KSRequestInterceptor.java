@@ -1,7 +1,6 @@
 package com.kickstarter.services.interceptors;
 
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.utils.I18nUtils;
 
 import java.io.IOException;
@@ -16,11 +15,9 @@ import okhttp3.Response;
  */
 public final class KSRequestInterceptor implements Interceptor {
   private final Build build;
-  private final PerimeterXClientType pxManager;
 
-  public KSRequestInterceptor(final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+  public KSRequestInterceptor(final @NonNull Build build) {
     this.build = build;
-    this.pxManager = manager;
   }
 
   @Override
@@ -34,7 +31,6 @@ public final class KSRequestInterceptor implements Interceptor {
             .header("Kickstarter-App-Id", this.build.applicationId())
             .header("Accept-Language", I18nUtils.language());
 
-    this.pxManager.addHeaderTo(builder);
     return builder.build();
   }
 }

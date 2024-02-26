@@ -29,7 +29,6 @@ allprojects {
             url 'http://appboy.github.io/appboy-segment-android/sdk'
             allowInsecureProtocol = true
         }
-        maven { url 'https://perimeterx.jfrog.io/artifactory/px-Android-SDK/' }
     }
 }
 

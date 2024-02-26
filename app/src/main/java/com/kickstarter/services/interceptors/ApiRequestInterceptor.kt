@@ -4,7 +4,6 @@ import android.net.Uri
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.FirebaseHelper
-import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isApiUri
 import okhttp3.HttpUrl
@@ -19,7 +18,6 @@ class ApiRequestInterceptor(
     private val clientId: String,
     private val currentUser: CurrentUserTypeV2,
     private val endpoint: String,
-    private val pxManager: PerimeterXClientType,
     private val build: Build
 ) : Interceptor {
 
@@ -27,7 +25,6 @@ class ApiRequestInterceptor(
 
     override fun intercept(chain: Chain): Response {
         val response: Response = chain.proceed(request(chain.request()))
-        pxManager.intercept(response)
         return response
     }
 
@@ -40,8 +37,6 @@ class ApiRequestInterceptor(
             .addHeader("Accept", "application/json")
             .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
             .addHeader("User-Agent", userAgent(build))
-
-        pxManager.addHeaderTo(builder)
 
         return builder
             .url(url(initialRequest.url))

@@ -21,7 +21,7 @@ class LoginUseCase(environment: Environment) {
         currentUserV2.setToken(accessToken)
     }
 
-    fun setUser(user: User){
+    fun setUser(user: User) {
         currentUser.login(user)
         currentUserV2.login(user)
     }

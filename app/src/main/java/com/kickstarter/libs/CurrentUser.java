@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.models.User;
-import com.kickstarter.services.apiresponses.OAuthTokenEnvelope;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,7 +55,7 @@ public class CurrentUser extends CurrentUserType {
   }
 
   @Override
-  public void setToken(@NonNull String accessToken) {
+  public void setToken(final @NonNull String accessToken) {
     // - Clean previous token in case there is any
     this.accessTokenPreference.delete();
     this.deviceRegistrar.unregisterDevice();

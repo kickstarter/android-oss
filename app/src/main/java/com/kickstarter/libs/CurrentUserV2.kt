@@ -5,7 +5,6 @@ import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
-import com.kickstarter.services.apiresponses.OAuthTokenEnvelope
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber

@@ -2,7 +2,6 @@ package com.kickstarter.libs;
 
 import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.models.User;
-import com.kickstarter.services.apiresponses.OAuthTokenEnvelope;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

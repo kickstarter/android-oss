@@ -4,21 +4,23 @@ import com.facebook.FacebookAuthorizationException
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.data.LoginReason
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
 
@@ -130,17 +132,30 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun facebookLogin_success() {
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
+        val userFb = UserFactory.user()
+        val apiClient = object : MockApiClientV2() {
+            override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
+                return Observable.just(AccessTokenEnvelope.builder().user(userFb).accessToken("token").build())
+            }
+        }
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacy> {
+                return Observable.just(
+                    UserPrivacy(userFb.name(), "some@email.com", true, true, true, true, "USD")
+                )
+            }
+        }
+
         val environment = environment()
             .toBuilder()
-            .apiClientV2(MockApiClientV2())
-            .apolloClientV2(MockApolloClientV2())
-            .currentUser(currentUser)
+            .apiClientV2(apiClient)
+            .apolloClientV2(apolloClient)
+            .currentUserV2(currentUser)
             .build()
-        val user = BehaviorSubject.create<User>()
 
         setUpEnvironment(environment, LoginReason.DEFAULT)
-        environment.currentUser()?.loggedInUser()?.subscribe { user.onNext(it) }
 
         this.currentUser.values().clear()
 
@@ -154,7 +169,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         this.currentUser.assertValueCount(2)
         finishWithSuccessfulResult.assertValueCount(1)
 
-        assertEquals("some@email.com", user.value?.email())
+        assertEquals("some@email.com", this.currentUser.values().last()?.email())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 

@@ -37,7 +37,7 @@ class ApiRequestInterceptor(
             .addHeader("Accept", "application/json")
             .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
             .addHeader("User-Agent", userAgent(build))
-        
+
         this.currentUser.observable()
             .subscribe {
                 builder.addHeader("X-Auth", "token " + this.currentUser.accessToken)

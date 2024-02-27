@@ -38,10 +38,9 @@ class ApiRequestInterceptor(
             .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
             .addHeader("User-Agent", userAgent(build))
 
-        this.currentUser.observable()
-            .subscribe {
-                builder.addHeader("X-Auth", "token " + this.currentUser.accessToken)
-            }.dispose()
+        this.currentUser.accessToken?.let { token ->
+            if (token.isNotEmpty()) builder.addHeader("X-Auth", "token $token")
+        }
 
         return builder
             .url(url(initialRequest.url))
@@ -51,13 +50,6 @@ class ApiRequestInterceptor(
     private fun url(initialHttpUrl: HttpUrl): HttpUrl {
         val builder: Builder = initialHttpUrl.newBuilder()
             .setQueryParameter("client_id", clientId)
-        currentUser.observable()
-            .filter { it.isPresent() }
-            .subscribe {
-                if (currentUser.accessToken != null) {
-                    builder.setQueryParameter("oauth_token", currentUser.accessToken)
-                }
-            }.dispose()
         return builder.build()
     }
 

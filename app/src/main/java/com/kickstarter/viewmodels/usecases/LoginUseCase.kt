@@ -25,7 +25,7 @@ class LoginUseCase(environment: Environment) {
         currentUserV2.login(user)
     }
 
-    fun loginAndUpdateUserPrivacyV2(newUser: User, accessToken: String): io.reactivex.Observable<User> {
+    fun loginAndUpdateUserPrivacy(newUser: User, accessToken: String): io.reactivex.Observable<User> {
         currentUserV2.setToken(accessToken)
         currentUser.setToken(accessToken)
         return GetUserPrivacyUseCaseV2(apolloClientV2).getUserPrivacy()

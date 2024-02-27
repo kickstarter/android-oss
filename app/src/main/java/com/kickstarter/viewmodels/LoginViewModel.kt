@@ -193,7 +193,7 @@ interface LoginViewModel {
                 .distinctUntilChanged()
                 .switchMap {
                     this.loginUserCase
-                        .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
                 }
                 .subscribe { user ->
                     this.success(user)

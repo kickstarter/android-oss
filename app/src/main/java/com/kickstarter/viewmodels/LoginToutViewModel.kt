@@ -286,7 +286,7 @@ interface LoginToutViewModel {
                 .filter { it.isNotNull() }
                 .switchMap {
                     this.loginUserCase
-                        .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
                 }
                 .subscribe {
                     refreshUserUseCase.refresh(it)

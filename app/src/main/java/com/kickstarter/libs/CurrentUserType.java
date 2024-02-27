@@ -10,7 +10,10 @@ import rx.Observable;
 public abstract class CurrentUserType {
 
   /***
-   * Persist a new token, retrieved form #exchange endpoint {/v1/oauth/authorizations/exchange}
+   * Persist a new token,
+   * - retrieved form #exchange endpoint {/v1/oauth/authorizations/exchange}
+   * - retrieved from Facebook login
+   * - retrieved from endpoint {/xauth/access_token} soon to be deprecated
    */
   public abstract void setToken(final @NonNull String accessToken);
 

@@ -25,19 +25,6 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
      * @param project             The project to use to look up currency information.
      * @param excludeCurrencyCode If true, hide the US currency code for US users only.
      */
-    /**
-     * Returns a currency string appropriate to the user's locale and location relative to a project.
-     *
-     * @param initialValue        Value to display, local to the project's currency.
-     * @param project             The project to use to look up currency information.
-     */
-    /**
-     * Returns a currency string appropriate to the user's locale and location relative to a project.
-     *
-     * @param initialValue        Value to display, local to the project's currency.
-     * @param project             The project to use to look up currency information.
-     * @param excludeCurrencyCode If true, hide the US currency code for US users only.
-     */
     @JvmOverloads
     fun format(
         initialValue: Double,

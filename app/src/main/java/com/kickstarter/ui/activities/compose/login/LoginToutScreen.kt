@@ -54,7 +54,7 @@ fun LoginToutScreenPreview() {
             {},
             {},
             {},
-            true,
+            false,
             {}
         )
     }

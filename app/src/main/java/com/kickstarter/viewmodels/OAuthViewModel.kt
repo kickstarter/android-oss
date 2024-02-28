@@ -52,10 +52,9 @@ class OAuthViewModel(
         WebEndpoint.STAGING -> Secrets.Api.Client.STAGING
         else -> ""
     }
-    private val codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
-
+    lateinit var codeVerifier:String
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -118,6 +117,7 @@ class OAuthViewModel(
             }
 
             if (intent.data == null) {
+                codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
                 val url = generateAuthorizationUrlWithParams()
                 Timber.d("isAuthorizationStep $url")
                 mutableUIState.emit(

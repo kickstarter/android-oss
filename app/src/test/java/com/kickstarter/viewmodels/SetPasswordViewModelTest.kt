@@ -121,7 +121,8 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         val loginUserCase = LoginUseCase(environment)
 
-        loginUserCase.login(user, "token")
+        loginUserCase.setToken("token")
+        loginUserCase.setUser(user)
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")

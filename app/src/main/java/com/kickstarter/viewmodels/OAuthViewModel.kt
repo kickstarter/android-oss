@@ -5,11 +5,11 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.PKCE
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.libs.utils.Secrets.WebEndpoint
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiException
 import com.kickstarter.viewmodels.usecases.LoginUseCase
@@ -47,7 +47,11 @@ class OAuthViewModel(
     private val hostEndpoint = environment.webEndpoint()
     private val loginUseCase = LoginUseCase(environment)
     private val apiClient = requireNotNull(environment.apiClientV2())
-    private val clientID = if (hostEndpoint == ApiEndpoint.PRODUCTION.name) Secrets.Api.Client.PRODUCTION else Secrets.Api.Client.STAGING
+    private val clientID = when (hostEndpoint) {
+        WebEndpoint.PRODUCTION -> Secrets.Api.Client.PRODUCTION
+        WebEndpoint.STAGING -> Secrets.Api.Client.STAGING
+        else -> ""
+    }
     private val codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
@@ -73,11 +77,12 @@ class OAuthViewModel(
                 apiClient.loginWithCodes(codeVerifier, code, clientID)
                     .asFlow()
                     .flatMapLatest { token ->
-                        Timber.d("retrieve user with token: $token")
-                        apiClient.fetchCurrentUser(token.accessToken())
+                        Timber.d("About to persist token to currentUser: $token")
+                        loginUseCase.setToken(token.accessToken())
+                        apiClient.fetchCurrentUser()
                             .asFlow()
                             .map {
-                                Pair(token, it)
+                                it
                             }
                     }
                     .catch {
@@ -90,12 +95,12 @@ class OAuthViewModel(
                         )
                         loginUseCase.logout()
                     }
-                    .collect {
-                        Timber.d("About to persist user and token to currentUser: $it")
-                        loginUseCase.login(it.second, it.first.accessToken())
+                    .collect { user ->
+                        Timber.d("About to persist user to currentUser: $user")
+                        loginUseCase.setUser(user)
                         mutableUIState.emit(
                             OAuthUiState(
-                                user = it.second,
+                                user = user,
                             )
                         )
                     }

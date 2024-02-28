@@ -53,8 +53,6 @@ public interface ApiClientTypeV2 {
 
   @NonNull Observable<User> fetchCurrentUser();
 
-  @NonNull Observable<User> fetchCurrentUser(final @NonNull String token);
-
   @NonNull Observable<Location> fetchLocation(final @NonNull String param);
 
   @NonNull Observable<List<ProjectNotification>> fetchProjectNotifications();

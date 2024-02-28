@@ -17,9 +17,11 @@ class MockCurrentUserV2 : CurrentUserTypeV2 {
         user.onNext(KsOptional.of(initialUser))
     }
 
-    override fun login(newUser: User, accessToken: String) {
-        user.onNext(KsOptional.of(newUser))
+    override fun setToken(accessToken: String) {
         this.accessTokenPref = accessToken
+    }
+    override fun login(newUser: User) {
+        user.onNext(KsOptional.of(newUser))
     }
 
     override fun logout() {

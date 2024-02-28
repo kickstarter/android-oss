@@ -212,7 +212,7 @@ interface TwoFactorViewModel {
                 }
                 .switchMap {
                     this.loginUserCase
-                        .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
                 }
                 .subscribe { success(it) }
                 .addToDisposable(disposables)
@@ -229,7 +229,7 @@ interface TwoFactorViewModel {
                 }
                 .switchMap {
                     this.loginUserCase
-                        .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
                 }
                 .subscribe { success(it) }
                 .addToDisposable(disposables)

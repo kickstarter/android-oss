@@ -9,11 +9,19 @@ import rx.Observable;
 
 public abstract class CurrentUserType {
 
+  /***
+   * Persist a new token,
+   * - retrieved form #exchange endpoint {/v1/oauth/authorizations/exchange}
+   * - retrieved from Facebook login
+   * - retrieved from endpoint {/xauth/access_token} soon to be deprecated
+   */
+  public abstract void setToken(final @NonNull String accessToken);
+
   /**
    * Call when a user has logged in. The implementation of `CurrentUserType` is responsible
-   * for persisting the user and access token.
+   * for persisting the user.
    */
-  public abstract void login(final @NonNull User newUser, final @NonNull String accessToken);
+  public abstract void login(final @NonNull User newUser);
 
   /**
    * Call when a user should be logged out.

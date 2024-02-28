@@ -49,11 +49,19 @@ public class CurrentUser extends CurrentUserType {
   }
 
   @Override
-  public void login(final @NonNull User newUser, final @NonNull String accessToken) {
+  public void login(final @NonNull User newUser) {
     Timber.d("Login user %s", newUser.name());
-
-    this.accessTokenPreference.set(accessToken);
     this.user.onNext(newUser);
+  }
+
+  @Override
+  public void setToken(final @NonNull String accessToken) {
+    // - Clean previous token in case there is any
+    this.accessTokenPreference.delete();
+    this.deviceRegistrar.unregisterDevice();
+
+    // - Register new token
+    this.accessTokenPreference.set(accessToken);
     this.deviceRegistrar.registerDevice();
   }
 

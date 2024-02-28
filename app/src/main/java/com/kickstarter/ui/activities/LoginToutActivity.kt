@@ -30,6 +30,7 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.ui.extensions.startLogin
+import com.kickstarter.ui.extensions.startOauthActivity
 import com.kickstarter.ui.extensions.startSignup
 import com.kickstarter.viewmodels.LoginToutViewModel
 import io.reactivex.Observable
@@ -54,6 +55,7 @@ class LoginToutActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var darkModeEnabled = false
+        var oauthFlagEnabled = false
         this.getEnvironment()?.let { env ->
             environment = env
             viewModelFactory = LoginToutViewModel.Factory(env)
@@ -63,6 +65,7 @@ class LoginToutActivity : ComponentActivity() {
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                 ?: AppThemes.MATCH_SYSTEM.ordinal
+            oauthFlagEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false
         }
 
         setContent {
@@ -93,6 +96,10 @@ class LoginToutActivity : ComponentActivity() {
                     onCookiePolicyClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES) },
                     onHelpClicked = {
                         viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
+                    },
+                    featureFlagState = oauthFlagEnabled,
+                    onSignUpOrLogInClicked = {
+                        this@LoginToutActivity.startOauthActivity()
                     }
                 )
             }
@@ -116,14 +123,14 @@ class LoginToutActivity : ComponentActivity() {
         viewModel.outputs.startLoginActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startLogin(it)
+                this.startLogin()
             }
             .addToDisposable(disposables)
 
         viewModel.outputs.startSignupActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startSignup(it)
+                this.startSignup()
             }
             .addToDisposable(disposables)
 

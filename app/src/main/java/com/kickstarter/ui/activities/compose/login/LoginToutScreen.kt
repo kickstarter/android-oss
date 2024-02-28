@@ -54,6 +54,8 @@ fun LoginToutScreenPreview() {
             {},
             {},
             {},
+            true,
+            {}
         )
     }
 }
@@ -68,7 +70,8 @@ enum class LoginToutTestTag {
     FACEBOOK_DISCLAIMER,
     EMAIL_LOG_IN_BUTTON,
     EMAIL_SIGN_UP_BUTTON,
-    TOU_PP_COOKIE_DISCLAIMER
+    TOU_PP_COOKIE_DISCLAIMER,
+    LOG_IN_OR_SIGN_UP
 }
 
 @Composable
@@ -80,7 +83,9 @@ fun LoginToutScreen(
     onTermsOfUseClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit,
     onCookiePolicyClicked: () -> Unit,
-    onHelpClicked: () -> Unit
+    onHelpClicked: () -> Unit,
+    featureFlagState: Boolean = false,
+    onSignUpOrLogInClicked: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     Scaffold(
@@ -172,22 +177,30 @@ fun LoginToutScreen(
 
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-            KSPrimaryGreenButton(
-                modifier = Modifier.testTag(LoginToutTestTag.EMAIL_LOG_IN_BUTTON.name),
-                onClickAction = onEmailLoginClicked,
-                text = stringResource(id = R.string.login_buttons_log_in_email),
-                isEnabled = true
-            )
+            if (featureFlagState) {
+                KSPrimaryGreenButton(
+                    modifier = Modifier.testTag(LoginToutTestTag.LOG_IN_OR_SIGN_UP.name),
+                    onClickAction = onSignUpOrLogInClicked,
+                    text = stringResource(id = R.string.discovery_onboarding_buttons_signup_or_login),
+                    isEnabled = true
+                )
+            } else {
+                KSPrimaryGreenButton(
+                    modifier = Modifier.testTag(LoginToutTestTag.EMAIL_LOG_IN_BUTTON.name),
+                    onClickAction = onEmailLoginClicked,
+                    text = stringResource(id = R.string.login_buttons_log_in_email),
+                    isEnabled = true
+                )
 
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-            KSSecondaryGreyButton(
-                modifier = Modifier.testTag(LoginToutTestTag.EMAIL_SIGN_UP_BUTTON.name),
-                onClickAction = onEmailSignupClicked,
-                text = stringResource(id = R.string.signup_button_email),
-                isEnabled = true
-            )
-
+                KSSecondaryGreyButton(
+                    modifier = Modifier.testTag(LoginToutTestTag.EMAIL_SIGN_UP_BUTTON.name),
+                    onClickAction = onEmailSignupClicked,
+                    text = stringResource(id = R.string.signup_button_email),
+                    isEnabled = true
+                )
+            }
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
             LogInSignUpClickableDisclaimerText(

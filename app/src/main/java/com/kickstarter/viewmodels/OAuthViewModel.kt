@@ -44,6 +44,7 @@ class OAuthViewModel(
     private val verifier: PKCE
 ) : ViewModel() {
 
+    private val logcat = "Oauth :"
     private val hostEndpoint = environment.webEndpoint()
     private val loginUseCase = LoginUseCase(environment)
     private val apiClient = requireNotNull(environment.apiClientV2())
@@ -72,11 +73,11 @@ class OAuthViewModel(
             val code = uri.getQueryParameter("code")
 
             if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank()) {
-                Timber.d("retrieve token after redirectionDeeplink: $code")
+                Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
                 apiClient.loginWithCodes(codeVerifier, code, clientID)
                     .asFlow()
                     .flatMapLatest { token ->
-                        Timber.d("About to persist token to currentUser: $token")
+                        Timber.d("$logcat About to persist token to currentUser: $token")
                         loginUseCase.setToken(token.accessToken())
                         apiClient.fetchCurrentUser()
                             .asFlow()
@@ -85,7 +86,7 @@ class OAuthViewModel(
                             }
                     }
                     .catch {
-                        Timber.e("error while getting the token or user: $it")
+                        Timber.e("$logcat error while getting the token or user: $it")
                         mutableUIState.emit(
                             OAuthUiState(
                                 error = processThrowable(it),
@@ -95,7 +96,7 @@ class OAuthViewModel(
                         loginUseCase.logout()
                     }
                     .collect { user ->
-                        Timber.d("About to persist user to currentUser: $user")
+                        Timber.d("$logcat About to persist user to currentUser: $user")
                         loginUseCase.setUser(user)
                         mutableUIState.emit(
                             OAuthUiState(

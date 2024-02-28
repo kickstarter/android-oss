@@ -20,7 +20,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class OAuthActivityViewModelTest : KSRobolectricTestCase() {
+class OAuthViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: OAuthViewModel
 
     private fun setUpEnvironment(environment: Environment, mockCodeVerifier: PKCE) {

@@ -37,7 +37,6 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.ui.extensions.startLogin
-import com.kickstarter.ui.extensions.startOauthActivity
 import com.kickstarter.ui.extensions.startSignup
 import com.kickstarter.viewmodels.LoginToutViewModel
 import com.kickstarter.viewmodels.OAuthViewModel
@@ -61,8 +60,7 @@ class LoginToutActivity : ComponentActivity() {
     private var environment: Environment? = null
 
     private val disposables = CompositeDisposable()
-
-    private lateinit var helper: ChromeTabsHelperActivity.CustomTabSessionAndClientHelper
+    
     private lateinit var oAuthViewModelFactory: OAuthViewModelFactory
     private val oAuthViewModel: OAuthViewModel by viewModels {
         oAuthViewModelFactory
@@ -231,9 +229,7 @@ class LoginToutActivity : ComponentActivity() {
     }
 
     private fun setUpOAuthVm() {
-
         lifecycleScope.launch {
-
             oAuthViewModel.uiState.collect { state ->
                 // - Intent generated with onCreate
                 if (state.isAuthorizationStep && state.authorizationUrl.isNotEmpty()) {
@@ -258,35 +254,6 @@ class LoginToutActivity : ComponentActivity() {
         val packageName = ChromeTabsHelper.getPackageNameToUse(this)
         tabIntent.intent.setPackage(packageName)
         tabIntent.launchUrl(this, authorizationUri)
-
-//        // BindCustomTabsService, obtain CustomTabsClient and Client, listens to navigation events
-//        helper = ChromeTabsHelperActivity.CustomTabSessionAndClientHelper(this, authorizationUri) {}
-//
-//        - Fallback in case Chrome is not installed, open WebViewActivity
-//        val fallback = object : ChromeTabsHelperActivity.CustomTabFallback {
-//            override fun openUri(activity: Activity, uri: Uri) {
-//                val intent: Intent = Intent(activity, WebViewActivity::class.java)
-//                    .putExtra(IntentKey.URL, uri.toString())
-//
-//                activity.startActivity(intent)
-//                TransitionUtils.slideInFromRight()
-//            }
-//        }
-//
-//        lifecycleScope.launch {
-//            // - Once the session is ready and client warmed-up load the url
-//            helper.isSessionReady().collect { ready ->
-//                val tabIntent = CustomTabsIntent.Builder(helper.getSession()).build()
-//                tabIntent.intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-//                // tabIntent.intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
-//                ChromeTabsHelperActivity.openCustomTab(
-//                    this@LoginToutActivity,
-//                    tabIntent,
-//                    authorizationUri,
-//                    fallback
-//                )
-//            }
-//        }
     }
 
     private fun facebookLoginClick() =

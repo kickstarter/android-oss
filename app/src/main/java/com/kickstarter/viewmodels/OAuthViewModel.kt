@@ -55,7 +55,7 @@ class OAuthViewModel(
     }
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
-    lateinit var codeVerifier:String
+    lateinit var codeVerifier: String
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -86,7 +86,7 @@ class OAuthViewModel(
                             }
                     }
                     .catch {
-                        Timber.e("$logcat error while getting the token or user: $it")
+                        Timber.e("$logcat error while getting the token or user: ${processThrowable(it)}")
                         mutableUIState.emit(
                             OAuthUiState(
                                 error = processThrowable(it),
@@ -107,7 +107,7 @@ class OAuthViewModel(
             }
 
             if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && code.isNullOrBlank()) {
-                val error = "No code after redirection"
+                val error = "$logcat No code after redirection"
                 Timber.e(error)
                 mutableUIState.emit(
                     OAuthUiState(
@@ -120,7 +120,7 @@ class OAuthViewModel(
             if (intent.data == null) {
                 codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
                 val url = generateAuthorizationUrlWithParams()
-                Timber.d("isAuthorizationStep $url")
+                Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
                 mutableUIState.emit(
                     OAuthUiState(
                         authorizationUrl = url,
@@ -135,7 +135,9 @@ class OAuthViewModel(
         if (!throwable.message.isNullOrBlank()) return throwable.message ?: ""
 
         if (throwable is ApiException) {
-            return throwable.errorEnvelope().errorMessages().toString()
+            val apiError = throwable.errorEnvelope()?.errorMessages()?.toString() ?: ""
+            val genericError = throwable.response().message()
+            return "$genericError / $apiError"
         }
 
         return "error while getting the token or user"

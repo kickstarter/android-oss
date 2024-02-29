@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -27,7 +26,6 @@ import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.models.chrome.ChromeTabsHelper
-import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
@@ -45,6 +43,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class LoginToutActivity : ComponentActivity() {
 
@@ -60,16 +59,20 @@ class LoginToutActivity : ComponentActivity() {
     private var environment: Environment? = null
 
     private val disposables = CompositeDisposable()
-    
+
     private lateinit var oAuthViewModelFactory: OAuthViewModelFactory
     private val oAuthViewModel: OAuthViewModel by viewModels {
         oAuthViewModelFactory
     }
 
+    private val oAuthLogcat = "OAuth: "
+
+    var oauthFlagEnabled: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var darkModeEnabled = false
-        var oauthFlagEnabled = false
+
         this.getEnvironment()?.let { env ->
             environment = env
             viewModelFactory = LoginToutViewModel.Factory(env)
@@ -114,13 +117,26 @@ class LoginToutActivity : ComponentActivity() {
                     },
                     featureFlagState = oauthFlagEnabled,
                     onSignUpOrLogInClicked = {
-                        //this@LoginToutActivity.startOauthActivity()
                         oAuthViewModel.produceState(intent = intent)
                     }
                 )
             }
         }
 
+        logInAndSignUpAndLoginWithFacebookVM()
+
+        if (oauthFlagEnabled) {
+            setUpOAuthViewModel()
+        }
+    }
+
+    /***
+     * Handles the the viewModel RXJava subscriptions for the user cases:
+     * - LogIn non OAuth
+     * - SignUp non OAuth
+     * - LogIn with Facebook
+     */
+    private fun logInAndSignUpAndLoginWithFacebookVM() {
         val loginReason = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra(IntentKey.LOGIN_REASON, LoginReason::class.java)
         } else {
@@ -224,11 +240,22 @@ class LoginToutActivity : ComponentActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { finishWithSuccessfulResult() }
             .addToDisposable(disposables)
-
-        setUpOAuthVm()
     }
 
-    private fun setUpOAuthVm() {
+    override fun onDestroy() {
+        Timber.d("$oAuthLogcat onDestroy")
+        super.onDestroy()
+    }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (oauthFlagEnabled) {
+            Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
+            // - Intent generated when the deepLink redirection takes place
+            intent?.let { oAuthViewModel.produceState(intent = it) }
+        }
+    }
+
+    private fun setUpOAuthViewModel() {
         lifecycleScope.launch {
             oAuthViewModel.uiState.collect { state ->
                 // - Intent generated with onCreate
@@ -249,7 +276,6 @@ class LoginToutActivity : ComponentActivity() {
 
         val tabIntent = CustomTabsIntent.Builder().build()
         tabIntent.intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        // tabIntent.intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
 
         val packageName = ChromeTabsHelper.getPackageNameToUse(this)
         tabIntent.intent.setPackage(packageName)

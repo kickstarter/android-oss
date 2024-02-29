@@ -295,6 +295,10 @@ fun AddOnsScreen(
                     }
                 )
             }
+
+            item {
+                Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
+            }
         }
     }
 }

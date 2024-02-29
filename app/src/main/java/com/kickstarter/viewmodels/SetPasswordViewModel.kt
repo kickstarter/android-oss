@@ -123,9 +123,9 @@ interface SetPasswordViewModel {
                 .distinctUntilChanged()
                 .subscribe {
                     currentUserV2.accessToken?.let { accessToken ->
-                        loginUserCase.login(
-                            it.first.toBuilder().needsPassword(false).build(),
-                            accessToken
+                        loginUserCase.setToken(accessToken)
+                        loginUserCase.setUser(
+                            it.first.toBuilder().needsPassword(false).build()
                         )
                     }
                     this.success.onNext(it.second.updateUserAccount()?.user()?.email() ?: "")

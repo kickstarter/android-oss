@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.PKCE
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClientV2
@@ -27,9 +28,9 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProduceState_isAuthorizationStep() = runTest {
+    fun testProduceState_isAuthorizationStep_Staging() = runTest {
 
-        val testEndpoint = "testEndpoint"
+        val testEndpoint = Secrets.WebEndpoint.STAGING
         val testCodeVerifier = "testCodeVerifier"
         val testCodeChallenge = "testCodeChallenge"
         val environment = environment().toBuilder().webEndpoint(testEndpoint).build()
@@ -52,7 +53,45 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
             vm.uiState.toList(state)
         }
 
-        val testAuthorizationUrl = "$testEndpoint/oauth/authorizations/new?redirect_uri=ksrauth2&scope=1&client_id=2QEKDK20F5LO2CEOIDZZOW8QGOM6P68AB4A5OQ44XK3N0CUW5T&response_type=1&code_challenge=$testCodeChallenge&code_challenge_method=S256"
+        val clientID = Secrets.Api.Client.STAGING
+        val testAuthorizationUrl = "$testEndpoint/oauth/authorizations/new?redirect_uri=ksrauth2&scope=1&client_id=$clientID&response_type=1&code_challenge=$testCodeChallenge&code_challenge_method=S256"
+        // - First empty emission due the initialization
+        assertEquals(
+            listOf(
+                OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = null),
+                OAuthUiState(authorizationUrl = testAuthorizationUrl, isAuthorizationStep = true, user = null)
+            ),
+            state
+        )
+    }
+
+    fun testProduceState_isAuthorizationStep_Production() = runTest {
+
+        val testEndpoint = Secrets.WebEndpoint.PRODUCTION
+        val testCodeVerifier = "testCodeVerifier"
+        val testCodeChallenge = "testCodeChallenge"
+        val environment = environment().toBuilder().webEndpoint(testEndpoint).build()
+
+        val mockCodeVerifier = object : PKCE {
+            override fun generateCodeChallenge(codeVerifier: String): String {
+                return testCodeChallenge
+            }
+
+            override fun generateRandomCodeVerifier(entropy: Int): String {
+                return testCodeVerifier
+            }
+        }
+
+        setUpEnvironment(environment, mockCodeVerifier)
+
+        val state = mutableListOf<OAuthUiState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.produceState(Intent())
+            vm.uiState.toList(state)
+        }
+
+        val clientID = Secrets.Api.Client.PRODUCTION
+        val testAuthorizationUrl = "$testEndpoint/oauth/authorizations/new?redirect_uri=ksrauth2&scope=1&client_id=$clientID&response_type=1&code_challenge=$testCodeChallenge&code_challenge_method=S256"
         // - First empty emission due the initialization
         assertEquals(
             listOf(
@@ -98,7 +137,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(OAuthTokenEnvelope.builder().accessToken("token").build())
             }
 
-            override fun fetchCurrentUser(token: String): Observable<User> {
+            override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }
@@ -146,7 +185,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(OAuthTokenEnvelope.builder().accessToken("tokensito").build())
             }
 
-            override fun fetchCurrentUser(token: String): Observable<User> {
+            override fun fetchCurrentUser(): Observable<User> {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
         }
@@ -195,7 +234,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
                 return Observable.error(ApiExceptionFactory.badRequestException())
             }
 
-            override fun fetchCurrentUser(token: String): Observable<User> {
+            override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }

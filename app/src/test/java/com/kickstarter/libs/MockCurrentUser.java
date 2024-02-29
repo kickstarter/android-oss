@@ -20,9 +20,13 @@ public class MockCurrentUser extends CurrentUserType {
   }
 
   @Override
-  public void login(final @NonNull User newUser, final @NonNull String accessToken) {
-    this.user.onNext(newUser);
+  public void setToken(final @NonNull String accessToken) {
     this.accessToken = accessToken;
+  }
+
+  @Override
+  public void login(final @NonNull User newUser) {
+    this.user.onNext(newUser);
   }
 
   @Override

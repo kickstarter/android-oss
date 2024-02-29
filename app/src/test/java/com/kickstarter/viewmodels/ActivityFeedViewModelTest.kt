@@ -201,7 +201,8 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         val loginUserCase = LoginUseCase(environment)
 
-        loginUserCase.login(initialUser, "deadbeef")
+        loginUserCase.setToken("deadbeef")
+        loginUserCase.setUser(initialUser)
 
         setUpEnvironment(environment)
         erroredBackings.assertValueCount(1)
@@ -327,7 +328,8 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        loginUserCase.login(user(), "deadbeef")
+        loginUserCase.setToken("deadbeef")
+        loginUserCase.setUser(user())
 
         surveys.assertValueCount(1)
 
@@ -354,7 +356,8 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         val loginUserCase = LoginUseCase(environment)
 
-        loginUserCase.login(initialUser, "deadbeef")
+        loginUserCase.setToken("deadbeef")
+        loginUserCase.setUser(initialUser)
 
         environment.currentUserV2()?.loggedInUser()?.subscribe { user.onNext(it) }
             ?.addToDisposable(disposables)
@@ -391,7 +394,9 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val loginUseCase = LoginUseCase(environment)
-        loginUseCase.login(initialUser, "token")
+
+        loginUseCase.setToken("token")
+        loginUseCase.setUser(initialUser)
 
         environment.currentUserV2()?.loggedInUser()?.subscribe { user.onNext(it) }
             ?.addToDisposable(disposables)

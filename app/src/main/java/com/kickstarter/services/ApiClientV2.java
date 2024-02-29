@@ -135,14 +135,6 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
   }
 
   @Override
-  public @NonNull Observable<User> fetchCurrentUser(final @NonNull String token) {
-    return this.service
-            .currentUser(token)
-            .lift(apiErrorOperator())
-            .subscribeOn(Schedulers.io());
-  }
-
-  @Override
   public @NonNull Observable<Location> fetchLocation(final @NonNull String param) {
     return this.service.location(param)
       .subscribeOn(Schedulers.io())

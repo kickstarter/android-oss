@@ -20,12 +20,11 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
+import com.kickstarter.libs.utils.extensions.getLoginActivityIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
-import com.kickstarter.libs.utils.extensions.getSignupIntent
-import com.kickstarter.libs.utils.extensions.getStartLoginIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
@@ -37,6 +36,8 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.activities.OAuthActivity
+import com.kickstarter.ui.activities.SignupActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -233,14 +234,20 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 
-fun Activity.startLogin(isOauthPathEnabled: Boolean) {
-    val intent = Intent().getStartLoginIntent(isOauthPathEnabled, this)
+fun Activity.startOauthActivity() {
+    val intent = Intent().setClass(this, OAuthActivity::class.java)
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 
-fun Activity.startSignup(isOauthPathEnabled: Boolean) {
-    val intent = Intent().getSignupIntent(isOauthPathEnabled, this)
+fun Activity.startLogin() {
+    val intent = Intent().getLoginActivityIntent(this)
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+}
+
+fun Activity.startSignup() {
+    val intent = Intent().setClass(this, SignupActivity::class.java)
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }

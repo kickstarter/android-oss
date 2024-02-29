@@ -7,7 +7,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.activities.CreatorBioActivity
 import com.kickstarter.ui.activities.LoginActivity
-import com.kickstarter.ui.activities.OAuthActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
@@ -15,7 +14,6 @@ import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ReportProjectActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
 import com.kickstarter.ui.activities.SetPasswordActivity
-import com.kickstarter.ui.activities.SignupActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.LoginReason
@@ -32,20 +30,6 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
         intent.putExtra(IntentKey.PROJECT, project)
     }
     return intent
-}
-
-fun Intent.getStartLoginIntent(isOAuthEnabled: Boolean, context: Context): Intent {
-    return if (isOAuthEnabled) {
-        this.setClass(context, OAuthActivity::class.java)
-    } else
-        this.setClass(context, LoginActivity::class.java)
-}
-
-fun Intent.getSignupIntent(isOAuthEnabled: Boolean, context: Context): Intent {
-    return if (isOAuthEnabled) {
-        this.setClass(context, OAuthActivity::class.java)
-    } else
-        this.setClass(context, SignupActivity::class.java)
 }
 
 /**

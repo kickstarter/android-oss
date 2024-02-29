@@ -50,7 +50,6 @@ private fun AddOnsContainerPreview() {
             buttonEnabled = true,
             buttonText = "Add",
             onItemAddedOrRemoved = { count ->
-
             }
         )
     }

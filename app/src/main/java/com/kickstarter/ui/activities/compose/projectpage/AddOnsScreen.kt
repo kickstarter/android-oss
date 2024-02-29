@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
 import android.content.res.Configuration
-import android.widget.AutoCompleteTextView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
@@ -41,11 +39,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.isNonZero
-import com.kickstarter.models.Item
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -53,7 +48,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.shapes
-import java.math.RoundingMode
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -162,10 +156,8 @@ fun AddOnsScreen(
                             isEnabled = true
                         )
                     }
-
                 }
             }
-
         },
         backgroundColor = colors.backgroundAccentGraySubtle
     ) { padding ->
@@ -204,7 +196,8 @@ fun AddOnsScreen(
                         .clickable(
                             interactionSource = interactionSource,
                             indication = null,
-                            onClick = { countryListExpanded = false }),
+                            onClick = { countryListExpanded = false }
+                        ),
                 ) {
                     TextField(
                         modifier = Modifier
@@ -251,7 +244,8 @@ fun AddOnsScreen(
                                                     country.location()?.displayableName() ?: ""
                                                 countryListExpanded = false
                                                 onShippingRuleSelected(country)
-                                            })
+                                            }
+                                        )
                                     }
                                 } else {
                                     items(countryList) {
@@ -263,7 +257,8 @@ fun AddOnsScreen(
                                                     country.location()?.displayableName() ?: ""
                                                 countryListExpanded = false
                                                 onShippingRuleSelected(country)
-                                            })
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -284,7 +279,7 @@ fun AddOnsScreen(
                         project,
                         true,
                     ) ?: "",
-                    shippingAmount = "", //todo in implementation
+                    shippingAmount = "", // todo in implementation
                     description = reward.description() ?: "",
                     buttonEnabled = reward.isAvailable(),
                     buttonText = stringResource(id = R.string.Add),

@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -34,17 +36,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.Item
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.shapes
+import java.math.RoundingMode
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -58,23 +67,24 @@ private fun AddOnsScreenPreview() {
                 modifier = Modifier.padding(padding),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
-                countryList = listOf("United States", "Mexico", "Canada"),
-                rewardItems =
-                (1..10).toList().map {
-                    RewardsItem.Builder(
-                        id = 1,
-                        item = Item.Builder(
-                            amount = 100f,
-                            description = "This is just a test, don't worry!",
-                            id = it.toLong(),
-                            name = "Item $it"
-                        ).build(),
-                        itemId = 1,
-                        quantity = 10,
-                        rewardId = null,
-                        hasBackers = null
-                    ).build()
+                countryList = listOf(),
+                onShippingRuleSelected = {},
+                rewardItems = (0..10).map {
+                    Reward.builder()
+                        .title("Item Number $it")
+                        .description("This is a description for item $it")
+                        .id(it.toLong())
+                        .convertedMinimum((100 * (it + 1)).toDouble())
+                        .isAvailable(it != 0)
+                        .limit(if (it == 0) 1 else 10)
+                        .build()
                 },
+                project =
+                Project.builder()
+                    .currency("USD")
+                    .currentCurrency("USD")
+                    .build(),
+                onItemAddedOrRemoved = {},
                 onContinueClicked = {}
             )
         }
@@ -87,8 +97,11 @@ fun AddOnsScreen(
     environment: Environment,
     lazyColumnListState: LazyListState,
     initialCountryInput: String? = null,
-    countryList: List<String>,
-    rewardItems: List<RewardsItem>,
+    countryList: List<ShippingRule>,
+    onShippingRuleSelected: (ShippingRule) -> Unit,
+    rewardItems: List<Reward>,
+    project: Project,
+    onItemAddedOrRemoved: (Map<Reward, Int>) -> Unit,
     onContinueClicked: () -> Unit
 ) {
 
@@ -104,6 +117,7 @@ fun AddOnsScreen(
     var addOnCount by remember {
         mutableStateOf(0)
     }
+    val rewardSelections: MutableMap<Reward, Int> = mutableMapOf()
 
     Scaffold(
         modifier = modifier,
@@ -142,7 +156,7 @@ fun AddOnsScreen(
                                         addOnCount.toString()
                                     ) ?: ""
 
-                                    else -> ""
+                                    else -> stringResource(id = R.string.Skip_add_ons)
                                 }
                             },
                             isEnabled = true
@@ -201,6 +215,10 @@ fun AddOnsScreen(
                             countryInput = it
                             countryListExpanded = true
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
                         shape = shapes.medium,
                         colors = TextFieldDefaults.textFieldColors(
                             backgroundColor = colors.kds_white,
@@ -212,7 +230,7 @@ fun AddOnsScreen(
                     )
 
                     AnimatedVisibility(visible = countryListExpanded) {
-                        Card {
+                        Card(shape = shapes.medium) {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -221,20 +239,31 @@ fun AddOnsScreen(
                                 if (countryInput.isNotEmpty()) {
                                     items(
                                         items = countryList.filter {
-                                            it.lowercase().contains(countryInput.lowercase())
-                                        }.sorted()
+                                            it.location()?.displayableName()?.lowercase()
+                                                ?.contains(countryInput.lowercase()) ?: false
+                                        }
                                     ) {
-                                        CountryListItems(title = it, onSelect = { country ->
-                                            countryInput = country
-                                            countryListExpanded = false
-                                        })
+                                        CountryListItems(
+                                            item = it,
+                                            title = it.location()?.displayableName() ?: "",
+                                            onSelect = { country ->
+                                                countryInput =
+                                                    country.location()?.displayableName() ?: ""
+                                                countryListExpanded = false
+                                                onShippingRuleSelected(country)
+                                            })
                                     }
                                 } else {
-                                    items(countryList.sorted()) {
-                                        CountryListItems(title = it, onSelect = { country ->
-                                            countryInput = country
-                                            countryListExpanded = false
-                                        })
+                                    items(countryList) {
+                                        CountryListItems(
+                                            item = it,
+                                            title = it.location()?.displayableName() ?: "",
+                                            onSelect = { country ->
+                                                countryInput =
+                                                    country.location()?.displayableName() ?: ""
+                                                countryListExpanded = false
+                                                onShippingRuleSelected(country)
+                                            })
                                     }
                                 }
                             }
@@ -249,30 +278,42 @@ fun AddOnsScreen(
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                 AddOnsContainer(
-                    title = reward.item().name(),
-                    amount = reward.item().amount().toString(),
-                    description = reward.item().description(),
-                    buttonEnabled = true,
+                    title = reward.title() ?: "",
+                    amount = environment.ksCurrency()?.format(
+                        reward.convertedMinimum(),
+                        project,
+                        true,
+                    ) ?: "",
+                    shippingAmount = "", //todo in implementation
+                    description = reward.description() ?: "",
+                    buttonEnabled = reward.isAvailable(),
                     buttonText = stringResource(id = R.string.Add),
-                    limit = reward.quantity(),
-                    onItemAddedOrRemoved = {}
+                    limit = reward.limit() ?: -1,
+                    onItemAddedOrRemoved = { count ->
+                        rewardSelections[reward] = count
+                        var totalRewardsCount = 0
+                        rewardSelections.forEach {
+                            totalRewardsCount += it.value
+                        }
+                        addOnCount = totalRewardsCount
+                        onItemAddedOrRemoved(rewardSelections)
+                    }
                 )
             }
         }
     }
-
-
 }
 
 @Composable
 fun CountryListItems(
+    item: ShippingRule,
     title: String,
-    onSelect: (String) -> Unit
+    onSelect: (ShippingRule) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onSelect(title) }
+            .clickable { onSelect(item) }
             .padding(dimensions.paddingXSmall)
     ) {
         Text(text = title)

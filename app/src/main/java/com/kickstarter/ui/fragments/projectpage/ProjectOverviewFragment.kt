@@ -271,6 +271,11 @@ class ProjectOverviewFragment : Fragment(), Configure {
             .subscribe { setSuccessfulProjectStateView(it) }
             .addToDisposable(disposables)
 
+        viewModel.setSuccessfulProjectStillCollectingView()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setSuccessfulProjectStillCollectingView(it) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.setSuspendedProjectStateView()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setSuspendedProjectStateView() }
@@ -493,6 +498,18 @@ class ProjectOverviewFragment : Fragment(), Configure {
             binding.projectStateSubheadTextView.text =
                 ksString.format(
                     currentContext.getString(R.string.project_status_project_was_successfully_funded_on_deadline),
+                    "deadline",
+                    DateTimeUtils.mediumDate(stateChangedAt)
+                )
+        }
+    }
+
+    private fun setSuccessfulProjectStillCollectingView(stateChangedAt: DateTime) {
+        context?.let { currentContext ->
+            binding.projectStateHeaderTextView.setText(R.string.project_status_funded)
+            binding.projectStateSubheadTextView.text =
+                ksString.format(
+                    currentContext.getString(R.string.project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards),
                     "deadline",
                     DateTimeUtils.mediumDate(stateChangedAt)
                 )

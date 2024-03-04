@@ -324,6 +324,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val userCanComment = projectFragment?.canComment() ?: false
     val isFlagged = projectFragment?.flagging()?.kind()?.let { true } ?: false
     val watchesCount = projectFragment?.watchesCount() ?: 0
+    val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
+    val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled() ?: false
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -380,6 +382,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .story(story)
         .isFlagged(isFlagged)
         .watchesCount(watchesCount)
+        .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
+        .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
         .build()
 }
 

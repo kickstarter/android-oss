@@ -234,6 +234,7 @@ interface ProjectOverviewViewModel {
         private val setCanceledProjectStateView: Observable<Unit>
         private val setProjectSocialClickListener: Observable<Unit>
         private val setSuccessfulProjectStateView: Observable<DateTime>
+        private val setSuccessfulProjectStillCollectingView: Observable<DateTime>
         private val setSuspendedProjectStateView: Observable<Unit>
         private val setUnsuccessfulProjectStateView: Observable<DateTime>
         private val startProjectSocialActivity: Observable<Project>
@@ -403,6 +404,10 @@ interface ProjectOverviewViewModel {
 
         override fun setSuccessfulProjectStateView(): Observable<DateTime> {
             return setSuccessfulProjectStateView
+        }
+
+        fun setSuccessfulProjectStillCollectingView(): Observable<DateTime> {
+            return setSuccessfulProjectStillCollectingView
         }
 
         override fun setSuspendedProjectStateView(): Observable<Unit> {
@@ -608,6 +613,12 @@ interface ProjectOverviewViewModel {
 
             setSuccessfulProjectStateView = project
                 .filter { it.isSuccessful }
+                .filter { !(it.postCampaignPledgingEnabled() ?: false) && !(it.isInPostCampaignPledgingPhase() ?: false) }
+                .map { it.stateChangedAt() ?: DateTime() }
+
+            setSuccessfulProjectStillCollectingView = project
+                .filter { it.isSuccessful }
+                .filter { it.postCampaignPledgingEnabled() ?: false && it.isInPostCampaignPledgingPhase() ?: false }
                 .map { it.stateChangedAt() ?: DateTime() }
 
             setSuspendedProjectStateView = project

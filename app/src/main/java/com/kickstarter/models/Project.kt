@@ -65,7 +65,9 @@ class Project private constructor(
     private val risks: String?,
     private val story: String?,
     private val isFlagged: Boolean?,
-    private val watchesCount: Int
+    private val watchesCount: Int,
+    private val isInPostCampaignPledgingPhase: Boolean? = null,
+    private val postCampaignPledgingEnabled: Boolean? = null
 ) : Parcelable, Relay {
     fun availableCardTypes() = this.availableCardTypes
     fun backersCount() = this.backersCount
@@ -121,6 +123,8 @@ class Project private constructor(
     fun story() = this.story
     fun isFlagged() = this.isFlagged
     fun watchesCount() = this.watchesCount
+    fun isInPostCampaignPledgingPhase() = this.isInPostCampaignPledgingPhase
+    fun postCampaignPledgingEnabled() = this.postCampaignPledgingEnabled
 
     @Parcelize
     data class Builder(
@@ -178,7 +182,9 @@ class Project private constructor(
         private var risks: String? = "",
         private var story: String? = "",
         private var isFlagged: Boolean? = null,
-        private var watchesCount: Int = 0
+        private var watchesCount: Int = 0,
+        private var isInPostCampaignPledgingPhase: Boolean? = null,
+        private var postCampaignPledgingEnabled: Boolean? = null
     ) : Parcelable {
         fun availableCardTypes(availableCardTypes: List<String>?) = apply { this.availableCardTypes = availableCardTypes }
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
@@ -288,7 +294,9 @@ class Project private constructor(
             risks = risks,
             story = story,
             isFlagged = isFlagged,
-            watchesCount = watchesCount
+            watchesCount = watchesCount,
+            isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase,
+            postCampaignPledgingEnabled = postCampaignPledgingEnabled
         )
     }
 
@@ -346,7 +354,9 @@ class Project private constructor(
         risks = risks,
         story = story,
         isFlagged = isFlagged,
-        watchesCount = watchesCount
+        watchesCount = watchesCount,
+        isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase,
+        postCampaignPledgingEnabled = postCampaignPledgingEnabled
     )
 
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

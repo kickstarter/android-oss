@@ -45,6 +45,8 @@ fragment projectCard on Project {
     state
     stateChangedAt
     url
+    isInPostCampaignPledgingPhase
+    postCampaignPledgingEnabled
 }
 
 # Fragment used to load all the Project information on Project Page
@@ -146,6 +148,8 @@ fragment fullProject on Project {
         ... environmentalCommitment
     }
     watchesCount
+    isInPostCampaignPledgingPhase
+    postCampaignPledgingEnabled
 }
 
 fragment backing on Backing {

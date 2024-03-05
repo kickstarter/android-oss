@@ -613,7 +613,7 @@ interface ProjectOverviewViewModel {
 
             setSuccessfulProjectStateView = project
                 .filter { it.isSuccessful }
-                .filter { !(it.postCampaignPledgingEnabled() ?: false) && !(it.isInPostCampaignPledgingPhase() ?: false) }
+                .filter { !(it.postCampaignPledgingEnabled() ?: false) || !(it.isInPostCampaignPledgingPhase() ?: false) }
                 .map { it.stateChangedAt() ?: DateTime() }
 
             setSuccessfulProjectStillCollectingView = project

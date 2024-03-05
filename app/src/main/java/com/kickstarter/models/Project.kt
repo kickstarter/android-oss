@@ -240,6 +240,8 @@ class Project private constructor(
         fun risks(risks: String?) = apply { this.risks = risks ?: "" }
         fun story(story: String?) = apply { this.story = story ?: "" }
         fun isFlagged(isFlagged: Boolean?) = apply { this.isFlagged = isFlagged }
+        fun isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase: Boolean?) = apply { this.isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase }
+        fun postCampaignPledgingEnabled(postCampaignPledgingEnabled: Boolean?) = apply { this.postCampaignPledgingEnabled = postCampaignPledgingEnabled }
         fun build() = Project(
             availableCardTypes = availableCardTypes,
             backersCount = backersCount,

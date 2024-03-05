@@ -86,6 +86,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val shouldShowReportProject = TestSubscriber<Boolean>()
     private val shouldShowProjectFlagged = TestSubscriber<Boolean>()
     private val urlToOpen = TestSubscriber<String>()
+    private val setSuccessfulProjectStillCollectingView = TestSubscriber<DateTime>()
 
     private val disposables = CompositeDisposable()
 
@@ -142,6 +143,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startReportProjectView().subscribe { startReportProjectView.onNext(it) }.addToDisposable(disposables)
         vm.outputs.shouldShowProjectFlagged().subscribe { shouldShowProjectFlagged.onNext(it) }.addToDisposable(disposables)
         vm.outputs.openExternallyWithUrl().subscribe { urlToOpen.onNext(it) }.addToDisposable(disposables)
+        vm.setSuccessfulProjectStillCollectingView().subscribe { setSuccessfulProjectStillCollectingView.onNext(it) }.addToDisposable(disposables)
         vm.inputs.configureWith(projectData)
     }
 
@@ -442,6 +444,58 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), project(project))
         projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50)
         projectStateViewGroupIsGone.assertValues(false)
+        setSuccessfulProjectStateView.assertValues(stateChangedAt)
+        setSuccessfulProjectStillCollectingView.assertNoValues()
+    }
+
+    @Test
+    fun testProjectState_Successful_Post_Campaign_Enabled_andCollecting() {
+        val stateChangedAt = DateTime.now()
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .stateChangedAt(stateChangedAt)
+            .build()
+        setUpEnvironment(environment(), project(project))
+        projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50)
+        projectStateViewGroupIsGone.assertValues(false)
+        setSuccessfulProjectStillCollectingView.assertValues(stateChangedAt)
+        setSuccessfulProjectStateView.assertNoValues()
+    }
+
+    @Test
+    fun testProjectState_Successful_Post_Campaign_Disabled_andCollecting() {
+        val stateChangedAt = DateTime.now()
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(false)
+            .stateChangedAt(stateChangedAt)
+            .build()
+        setUpEnvironment(environment(), project(project))
+        projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50)
+        projectStateViewGroupIsGone.assertValues(false)
+        setSuccessfulProjectStillCollectingView.assertNoValues()
+        setSuccessfulProjectStateView.assertValues(stateChangedAt)
+    }
+
+    @Test
+    fun testProjectState_Successful_Post_Campaign_Enabled_and_Not_Collecting() {
+        val stateChangedAt = DateTime.now()
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(true)
+            .stateChangedAt(stateChangedAt)
+            .build()
+        setUpEnvironment(environment(), project(project))
+        projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50)
+        projectStateViewGroupIsGone.assertValues(false)
+        setSuccessfulProjectStillCollectingView.assertNoValues()
         setSuccessfulProjectStateView.assertValues(stateChangedAt)
     }
 

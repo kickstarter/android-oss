@@ -146,7 +146,9 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
-            android:name=".ui.activities.OAuthActivity"
+            android:name=".ui.activities.LoginToutActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/Login"
             android:launchMode="singleInstancePerTask"
             android:exported="true">
             <intent-filter android:autoVerify="true">
@@ -158,10 +160,6 @@
                 <data android:host="authenticate" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activities.LoginToutActivity"
-            android:parentActivityName=".ui.activities.DiscoveryActivity"
-            android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.MessagesActivity"
             android:parentActivityName=".ui.activities.MessageThreadsActivity"

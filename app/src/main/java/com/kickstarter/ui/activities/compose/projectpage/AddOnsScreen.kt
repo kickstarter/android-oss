@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
 import android.content.res.Configuration
+import android.util.MutableBoolean
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -98,13 +100,6 @@ fun AddOnsScreen(
     onItemAddedOrRemoved: (Map<Reward, Int>) -> Unit,
     onContinueClicked: () -> Unit
 ) {
-
-    var countryInput by remember {
-        mutableStateOf(initialCountryInput ?: "United States")
-    }
-    var countryListExpanded by remember {
-        mutableStateOf(false)
-    }
     val interactionSource = remember {
         MutableInteractionSource()
     }
@@ -190,81 +185,12 @@ fun AddOnsScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                            onClick = { countryListExpanded = false }
-                        ),
-                ) {
-                    TextField(
-                        modifier = Modifier
-                            .height(dimensions.minButtonHeight)
-                            .width(dimensions.countryInputWidth),
-                        value = countryInput,
-                        onValueChange = {
-                            countryInput = it
-                            countryListExpanded = true
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        shape = shapes.medium,
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = colors.kds_white,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        textStyle = typography.subheadlineMedium.copy(color = colors.textAccentGreenBold),
-                    )
-
-                    AnimatedVisibility(visible = countryListExpanded) {
-                        Card(shape = shapes.medium) {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(color = colors.kds_white)
-                            ) {
-                                if (countryInput.isNotEmpty()) {
-                                    items(
-                                        items = countryList.filter {
-                                            it.location()?.displayableName()?.lowercase()
-                                                ?.contains(countryInput.lowercase()) ?: false
-                                        }
-                                    ) {
-                                        CountryListItems(
-                                            item = it,
-                                            title = it.location()?.displayableName() ?: "",
-                                            onSelect = { country ->
-                                                countryInput =
-                                                    country.location()?.displayableName() ?: ""
-                                                countryListExpanded = false
-                                                onShippingRuleSelected(country)
-                                            }
-                                        )
-                                    }
-                                } else {
-                                    items(countryList) {
-                                        CountryListItems(
-                                            item = it,
-                                            title = it.location()?.displayableName() ?: "",
-                                            onSelect = { country ->
-                                                countryInput =
-                                                    country.location()?.displayableName() ?: ""
-                                                countryListExpanded = false
-                                                onShippingRuleSelected(country)
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                CountryInputWithDropdown(
+                    interactionSource = interactionSource,
+                    initialCountryInput = initialCountryInput,
+                    countryList = countryList,
+                    onShippingRuleSelected = onShippingRuleSelected
+                )
             }
 
             items(
@@ -316,5 +242,96 @@ fun CountryListItems(
             .padding(dimensions.paddingXSmall)
     ) {
         Text(text = title)
+    }
+}
+
+@Composable
+fun CountryInputWithDropdown(
+    interactionSource: MutableInteractionSource,
+    initialCountryInput: String? = null,
+    countryList: List<ShippingRule>,
+    onShippingRuleSelected: (ShippingRule) -> Unit
+) {
+    var countryListExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var countryInput by remember {
+        mutableStateOf(initialCountryInput ?: "United States")
+    }
+
+    Column(
+        modifier = Modifier
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { countryListExpanded = false }
+            ),
+    ) {
+        TextField(
+            modifier = Modifier
+                .height(dimensions.minButtonHeight)
+                .width(dimensions.countryInputWidth),
+            value = countryInput,
+            onValueChange = {
+                countryInput = it
+                countryListExpanded = true
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            shape = shapes.medium,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = colors.kds_white,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            textStyle = typography.subheadlineMedium.copy(color = colors.textAccentGreenBold),
+        )
+
+        AnimatedVisibility(visible = countryListExpanded) {
+            Card(shape = shapes.medium) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = colors.kds_white)
+                ) {
+                    if (countryInput.isNotEmpty()) {
+                        items(
+                            items = countryList.filter {
+                                it.location()?.displayableName()?.lowercase()
+                                    ?.contains(countryInput.lowercase()) ?: false
+                            }
+                        ) {
+                            CountryListItems(
+                                item = it,
+                                title = it.location()?.displayableName() ?: "",
+                                onSelect = { country ->
+                                    countryInput =
+                                        country.location()?.displayableName() ?: ""
+                                    countryListExpanded = false
+                                    onShippingRuleSelected(country)
+                                }
+                            )
+                        }
+                    } else {
+                        items(countryList) {
+                            CountryListItems(
+                                item = it,
+                                title = it.location()?.displayableName() ?: "",
+                                onSelect = { country ->
+                                    countryInput =
+                                        country.location()?.displayableName() ?: ""
+                                    countryListExpanded = false
+                                    onShippingRuleSelected(country)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -137,7 +137,7 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsAndBonusSupport() {
             },
             shippingAmount = "$5",
             initialShippingLocation = "United States",
-            totalAmount = "$55",
+            totalAmount = "$115",
             totalAmountCurrencyConverted = "About $",
             initialBonusSupport = "$0",
             totalBonusSupport = "$10",
@@ -212,7 +212,6 @@ fun ConfirmPledgeDetailsScreen(
                                 isEnabled = true
                             )
                         }
-
                     }
                 }
             }

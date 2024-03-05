@@ -36,7 +36,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.OAuthActivity
 import com.kickstarter.ui.activities.SignupActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -231,12 +230,6 @@ fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: Str
     )
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
-    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
-}
-
-fun Activity.startOauthActivity() {
-    val intent = Intent().setClass(this, OAuthActivity::class.java)
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 

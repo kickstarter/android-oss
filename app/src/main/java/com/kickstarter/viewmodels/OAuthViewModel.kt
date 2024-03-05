@@ -44,6 +44,7 @@ class OAuthViewModel(
     private val verifier: PKCE
 ) : ViewModel() {
 
+    private val logcat = "Oauth :"
     private val hostEndpoint = environment.webEndpoint()
     private val loginUseCase = LoginUseCase(environment)
     private val apiClient = requireNotNull(environment.apiClientV2())
@@ -52,10 +53,9 @@ class OAuthViewModel(
         WebEndpoint.STAGING -> Secrets.Api.Client.STAGING
         else -> ""
     }
-    private val codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
-
+    lateinit var codeVerifier: String
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -73,11 +73,11 @@ class OAuthViewModel(
             val code = uri.getQueryParameter("code")
 
             if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank()) {
-                Timber.d("retrieve token after redirectionDeeplink: $code")
+                Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
                 apiClient.loginWithCodes(codeVerifier, code, clientID)
                     .asFlow()
                     .flatMapLatest { token ->
-                        Timber.d("About to persist token to currentUser: $token")
+                        Timber.d("$logcat About to persist token to currentUser: $token")
                         loginUseCase.setToken(token.accessToken())
                         apiClient.fetchCurrentUser()
                             .asFlow()
@@ -86,7 +86,7 @@ class OAuthViewModel(
                             }
                     }
                     .catch {
-                        Timber.e("error while getting the token or user: $it")
+                        Timber.e("$logcat error while getting the token or user: ${processThrowable(it)}")
                         mutableUIState.emit(
                             OAuthUiState(
                                 error = processThrowable(it),
@@ -96,7 +96,7 @@ class OAuthViewModel(
                         loginUseCase.logout()
                     }
                     .collect { user ->
-                        Timber.d("About to persist user to currentUser: $user")
+                        Timber.d("$logcat About to persist user to currentUser: $user")
                         loginUseCase.setUser(user)
                         mutableUIState.emit(
                             OAuthUiState(
@@ -107,7 +107,7 @@ class OAuthViewModel(
             }
 
             if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && code.isNullOrBlank()) {
-                val error = "No code after redirection"
+                val error = "$logcat No code after redirection"
                 Timber.e(error)
                 mutableUIState.emit(
                     OAuthUiState(
@@ -118,8 +118,9 @@ class OAuthViewModel(
             }
 
             if (intent.data == null) {
+                codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
                 val url = generateAuthorizationUrlWithParams()
-                Timber.d("isAuthorizationStep $url")
+                Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
                 mutableUIState.emit(
                     OAuthUiState(
                         authorizationUrl = url,
@@ -134,7 +135,9 @@ class OAuthViewModel(
         if (!throwable.message.isNullOrBlank()) return throwable.message ?: ""
 
         if (throwable is ApiException) {
-            return throwable.errorEnvelope().errorMessages().toString()
+            val apiError = throwable.errorEnvelope()?.errorMessages()?.toString() ?: ""
+            val genericError = throwable.response().message()
+            return "$genericError / $apiError"
         }
 
         return "error while getting the token or user"

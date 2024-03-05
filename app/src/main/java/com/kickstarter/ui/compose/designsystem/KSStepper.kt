@@ -84,8 +84,8 @@ fun KSStepper(
                 bottomEnd = dimensions.none
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.kds_white,
-                disabledBackgroundColor = colors.kds_support_300
+                backgroundColor = colors.backgroundAccentGraySubtle,
+                disabledBackgroundColor = colors.backgroundActionDisabled
             ),
             onClick = onMinusClicked,
             enabled = isMinusEnabled,
@@ -113,8 +113,8 @@ fun KSStepper(
                 bottomEnd = dimensions.radiusMediumSmall
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.kds_white,
-                disabledBackgroundColor = colors.kds_support_300
+                backgroundColor = colors.backgroundAccentGraySubtle,
+                disabledBackgroundColor = colors.backgroundActionDisabled
             ),
             onClick = onPlusClicked,
             enabled = isPlusEnabled,

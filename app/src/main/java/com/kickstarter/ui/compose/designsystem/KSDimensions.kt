@@ -42,6 +42,7 @@ data class KSDimensions(
     val dialogWidth: Dp = Dp.Unspecified,
     val dialogButtonSpacing: Dp = Dp.Unspecified,
     val elevationMedium: Dp = Dp.Unspecified,
+    val elevationLarge: Dp = Dp.Unspecified,
     val assistiveTextTopSpacing: Dp = Dp.Unspecified,
     val verticalDividerWidth: Dp = Dp.Unspecified,
     val iconSizeMedium: Dp = Dp.Unspecified,
@@ -51,7 +52,9 @@ data class KSDimensions(
     val searchAppBarHeight: Dp = Dp.Unspecified,
     val appBarEndPadding: Dp = Dp.Unspecified,
     val appBarSearchPadding: Dp = Dp.Unspecified,
-    val clickableButtonHeight: Dp = Dp.Unspecified
+    val clickableButtonHeight: Dp = Dp.Unspecified,
+    val dottedListDotSize: Dp = Dp.Unspecified,
+    val countryInputWidth: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -93,6 +96,7 @@ val KSStandardDimensions = KSDimensions(
     dialogWidth = 280.dp,
     dialogButtonSpacing = 2.dp,
     elevationMedium = 8.dp,
+    elevationLarge = 16.dp,
     assistiveTextTopSpacing = 6.dp,
     verticalDividerWidth = 4.dp,
     iconSizeMedium = 18.dp,
@@ -102,5 +106,7 @@ val KSStandardDimensions = KSDimensions(
     searchAppBarHeight = 68.dp,
     appBarEndPadding = 12.dp,
     appBarSearchPadding = 6.dp,
-    clickableButtonHeight = 48.dp
+    clickableButtonHeight = 48.dp,
+    dottedListDotSize = 2.dp,
+    countryInputWidth = 164.dp
 )

@@ -3,28 +3,29 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.graphics.Typeface
 import android.util.Pair
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.ApiPaginator
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.ApiPaginatorV2
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.MessageThreadsActivity
 import com.kickstarter.ui.data.Mailbox
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface MessageThreadsViewModel {
     interface Inputs {
@@ -72,10 +73,11 @@ interface MessageThreadsViewModel {
         fun unreadMessagesCountIsGone(): Observable<Boolean>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<MessageThreadsActivity>(environment), Inputs, Outputs {
-        private val client: ApiClientType?
-        private val currentUser: CurrentUserType?
+    class MessageThreadsViewModel(environment: Environment, private val intent: Intent? = null) : ViewModel(), Inputs, Outputs {
+        private val client: ApiClientTypeV2
+        private val currentUser: CurrentUserTypeV2
+
+        private val disposables = CompositeDisposable()
         private fun getStringResForMailbox(mailbox: Mailbox): Int {
             return if (mailbox === Mailbox.INBOX) {
                 R.string.messages_navigation_inbox
@@ -85,9 +87,9 @@ interface MessageThreadsViewModel {
         }
 
         private val mailbox = PublishSubject.create<Mailbox>()
-        private val nextPage = PublishSubject.create<Void?>()
-        private val onResume = PublishSubject.create<Void?>()
-        private val swipeRefresh = PublishSubject.create<Void?>()
+        private val nextPage = PublishSubject.create<Unit>()
+        private val onResume = PublishSubject.create<Unit>()
+        private val swipeRefresh = PublishSubject.create<Unit>()
         private val hasNoMessages = BehaviorSubject.create<Boolean>()
         private val hasNoUnreadMessages = BehaviorSubject.create<Boolean>()
         private val isFetchingMessageThreads = BehaviorSubject.create<Boolean>()
@@ -102,71 +104,74 @@ interface MessageThreadsViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
         init {
-            client = requireNotNull(environment.apiClient())
-            currentUser = requireNotNull(environment.currentUser())
+            client = requireNotNull(environment.apiClientV2())
+            currentUser = requireNotNull(environment.currentUserV2())
 
             // NB: project from intent can be null.
             val initialProject = intent()
+                .distinctUntilChanged()
+                .filter { it.getParcelableExtra<Project>(IntentKey.PROJECT) != null }
                 .map { i: Intent -> i.getParcelableExtra<Project>(IntentKey.PROJECT) }
 
             val refreshUserOrProject = Observable.merge(onResume, swipeRefresh)
-            val freshUser = intent()
-                .compose(Transformers.takeWhen(refreshUserOrProject))
-                .switchMap { client.fetchCurrentUser() }
-                .retry(2)
-                .compose(Transformers.neverError())
 
-            freshUser.subscribe {
-                currentUser.refresh(
-                    it
-                )
-            }
+            intent()
+                .compose(Transformers.takeWhenV2(refreshUserOrProject))
+                .switchMap {
+                    client.fetchCurrentUser()
+                }
+                .retry(2)
+                .compose(Transformers.neverErrorV2())
+                .distinctUntilChanged()
+                .subscribe {
+                    currentUser.refresh(it)
+                }
+                .addToDisposable(disposables)
+
+            val refreshedProject = initialProject.compose(Transformers.takeWhenV2(refreshUserOrProject))
+                .filter { it.param().isNotNull() }
+                .map { it.param() }
+                .switchMap { param ->
+                    client.fetchProject(param)
+                }
+                .distinctUntilChanged()
+                .compose(Transformers.neverErrorV2())
+                .share()
 
             val project = Observable.merge(
                 initialProject,
-                initialProject
-                    .compose(Transformers.takeWhen(refreshUserOrProject))
-                    .map { it?.param() }
-                    .switchMap {
-                        it?.let {
-                            client.fetchProject(
-                                it
-                            )
-                        }
-                    }
-                    .compose(Transformers.neverError())
-                    .share()
+                refreshedProject
             )
 
+            // vm configured with creator
+            val unreadFromUser = currentUser.loggedInUser()
+                .map { it.unreadMessagesCount() }
+
             // Use project unread messages count if configured with a project,
-            // in the case of a creator viewing their project's messages.
+            // in the case of a creator viewing their project's messages
+            val unreadFromProject = project
+                .map { it.unreadMessagesCount() }
+
             val unreadMessagesCount =
-                Observable.combineLatest<Project?, User, Pair<Project?, User>>(
-                    project,
-                    currentUser.loggedInUser()
-                ) { a: Project?, b: User? -> Pair.create(a, b) }
-                    .map {
-                        if (it.first != null)
-                            it.first?.unreadMessagesCount()
-                        else
-                            it.second.unreadMessagesCount()
-                    }
+                Observable.merge(unreadFromUser, unreadFromProject)
                     .distinctUntilChanged()
 
             // todo: MessageSubject switch will also trigger refresh
             val refreshMessageThreads = Observable.merge(
-                unreadMessagesCount.compose(Transformers.ignoreValues()),
+                unreadMessagesCount.compose(Transformers.ignoreValuesV2()),
                 swipeRefresh
             )
+
             val mailbox = mailbox
                 .startWith(Mailbox.INBOX)
                 .distinctUntilChanged()
 
             mailbox
                 .map { getStringResForMailbox(it) }
-                .compose(bindToLifecycle())
-                .subscribe(mailboxTitle)
+                .subscribe { mailboxTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             val projectAndMailbox =
                 Observable.combineLatest<Project?, Mailbox, Pair<Project, Mailbox>>(
@@ -177,11 +182,11 @@ interface MessageThreadsViewModel {
                 Observable.combineLatest(
                     projectAndMailbox,
                     refreshMessageThreads
-                ) { a: Pair<Project, Mailbox>?, b: Void? -> Pair.create(a, b) }
+                ) { a: Pair<Project, Mailbox>?, b: Unit -> Pair.create(a, b) }
                     .map { PairUtils.first(it) }
 
             val paginator =
-                ApiPaginator.builder<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>>()
+                ApiPaginatorV2.builder<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>?>()
                     .nextPage(nextPage)
                     .startOverWith(startOverWith)
                     .envelopeToListOfData { it.messageThreads() }
@@ -203,35 +208,39 @@ interface MessageThreadsViewModel {
                     .build()
 
             paginator.isFetching
-                .compose(bindToLifecycle())
-                .subscribe(isFetchingMessageThreads)
+                .subscribe { isFetchingMessageThreads.onNext(it) }
+                .addToDisposable(disposables)
 
             paginator.paginatedData()
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     messageThreadList.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             unreadMessagesCount
                 .map { it.isZero() }
-                .subscribe(hasNoMessages)
+                .subscribe { hasNoMessages.onNext(it) }
+                .addToDisposable(disposables)
 
             unreadMessagesCount
                 .map { it.isZero() }
-                .subscribe(hasNoUnreadMessages)
+                .subscribe { hasNoUnreadMessages.onNext(it) }
+                .addToDisposable(disposables)
 
             unreadMessagesCount
                 .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { if (it.intValueOrZero() > 0) R.color.accent else R.color.kds_support_400 }
-                .subscribe(unreadCountTextViewColorInt)
+                .subscribe { unreadCountTextViewColorInt.onNext(it) }
+                .addToDisposable(disposables)
 
             unreadMessagesCount
                 .filter { it.isNotNull() }
                 .map { requireNotNull(it) }
                 .map { if (it.intValueOrZero() > 0) Typeface.BOLD else Typeface.NORMAL }
-                .subscribe(unreadCountTextViewTypefaceInt)
+                .subscribe { unreadCountTextViewTypefaceInt.onNext(it) }
+                .addToDisposable(disposables)
 
             unreadCountToolbarTextViewIsGone =
                 Observable.zip<Boolean, Boolean, Pair<Boolean, Boolean>>(
@@ -254,15 +263,20 @@ interface MessageThreadsViewModel {
         }
 
         override fun nextPage() {
-            nextPage.onNext(null)
+            nextPage.onNext(Unit)
         }
 
         override fun onResume() {
-            onResume.onNext(null)
+            onResume.onNext(Unit)
         }
 
         override fun swipeRefresh() {
-            swipeRefresh.onNext(null)
+            swipeRefresh.onNext(Unit)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun hasNoMessages(): Observable<Boolean> = hasNoMessages
@@ -275,5 +289,11 @@ interface MessageThreadsViewModel {
         override fun unreadCountToolbarTextViewIsGone(): Observable<Boolean> = unreadCountToolbarTextViewIsGone
         override fun unreadMessagesCount(): Observable<Int> = unreadMessagesCount
         override fun unreadMessagesCountIsGone(): Observable<Boolean> = unreadMessagesCountIsGone
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return MessageThreadsViewModel(environment, intent) as T
+        }
     }
 }

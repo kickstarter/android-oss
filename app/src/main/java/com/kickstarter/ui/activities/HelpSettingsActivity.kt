@@ -50,7 +50,7 @@ class HelpSettingsActivity : AppCompatActivity() {
                 .filter { it.isPresent() }
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{
+                .subscribe {
                     this.composeContactEmail(it.getValue())
                 }.addToDisposable(disposables)
         }

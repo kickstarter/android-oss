@@ -43,7 +43,7 @@ fun KSGreenBadge(
     Text(
         modifier = Modifier
             .background(
-                color = colors.kds_create_700.copy(alpha = 0.06f),
+                color = colors.backgroundAccentGreenSubtle,
                 shape = shapes.small
             )
             .padding(
@@ -53,7 +53,7 @@ fun KSGreenBadge(
                 end = dimensions.paddingMediumSmall
             ),
         text = text,
-        color = colors.kds_create_700,
+        color = colors.textAccentGreen,
         style = typography.footnoteMedium
     )
 }
@@ -65,7 +65,7 @@ fun KSCoralBadge(
     Text(
         modifier = Modifier
             .background(
-                color = colors.kds_celebrate_100,
+                color = colors.backgroundDangerSubtle,
                 shape = shapes.small
             )
             .padding(
@@ -75,7 +75,7 @@ fun KSCoralBadge(
                 end = dimensions.paddingMediumSmall
             ),
         text = text,
-        color = colors.kds_support_400,
+        color = colors.textSecondary,
         style = typography.footnoteMedium
     )
 }

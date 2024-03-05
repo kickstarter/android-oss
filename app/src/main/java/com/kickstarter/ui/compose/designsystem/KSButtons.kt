@@ -172,9 +172,9 @@ fun KSPrimaryGreenButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_create_700,
+            backgroundColor = colors.backgroundAccentGreenBold,
             text = text,
-            textColor = colors.kds_white
+            textColor = colors.textInversePrimary
         )
     }
 }
@@ -191,9 +191,9 @@ fun KSPrimaryBlueButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_trust_500,
+            backgroundColor = colors.backgroundAccentBlueBold,
             text = text,
-            textColor = colors.kds_white
+            textColor = colors.textInversePrimary
         )
     }
 }
@@ -210,9 +210,9 @@ fun KSPrimaryBlackButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_support_700,
+            backgroundColor = colors.backgroundAction,
             text = text,
-            textColor = colors.kds_white
+            textColor = colors.textInversePrimary
         )
     }
 }
@@ -229,9 +229,9 @@ fun KSSecondaryGreyButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_support_300,
+            backgroundColor = colors.backgroundAccentGraySubtle,
             text = text,
-            textColor = colors.kds_black
+            textColor = colors.textPrimary
         )
     }
 }
@@ -248,9 +248,9 @@ fun KSSecondaryRedButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_alert,
+            backgroundColor = colors.backgroundDangerBold,
             text = text,
-            textColor = colors.kds_white
+            textColor = colors.textInversePrimary
         )
     }
 }
@@ -267,9 +267,9 @@ fun KSSecondaryWhiteButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_white,
+            backgroundColor = colors.backgroundSurfacePrimary,
             text = text,
-            textColor = colors.kds_create_700
+            textColor = colors.textAccentGreenBold
         )
     }
 }
@@ -328,7 +328,7 @@ fun KSIconButton(
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.kds_support_300
+            disabledBackgroundColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
@@ -350,7 +350,7 @@ fun KSIconButton(
 
                 Text(
                     text = copy,
-                    color = if (isEnabled) color else colors.kds_support_400,
+                    color = if (isEnabled) color else colors.textAccentGrey,
                     style = typography.body
                 )
             }
@@ -371,9 +371,9 @@ fun KSSmallBlueButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_trust_500,
+            backgroundColor = colors.backgroundAccentBlueBold,
             text = text,
-            textColor = colors.kds_white,
+            textColor = colors.textInversePrimary,
             radius = radius
         )
     }
@@ -392,9 +392,9 @@ fun KSSmallRedButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_alert,
+            backgroundColor = colors.backgroundDangerBold,
             text = text,
-            textColor = colors.kds_white,
+            textColor = colors.textInversePrimary,
             radius = radius
         )
     }
@@ -413,9 +413,9 @@ fun KSSmallWhiteButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_white,
+            backgroundColor = colors.backgroundInverse,
             text = text,
-            textColor = colors.kds_create_700,
+            textColor = colors.textAccentGreenBold,
             radius = radius
         )
     }
@@ -435,7 +435,7 @@ fun KSSmallButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.kds_support_300
+            disabledBackgroundColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
@@ -444,7 +444,7 @@ fun KSSmallButton(
     ) {
         Text(
             text = text,
-            color = if (isEnabled) textColor else colors.kds_support_400,
+            color = if (isEnabled) textColor else colors.textAccentGrey,
             style = typography.buttonText
         )
     }
@@ -465,7 +465,7 @@ fun KSButton(
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.kds_support_300
+            disabledBackgroundColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
@@ -474,7 +474,7 @@ fun KSButton(
     ) {
         Text(
             text = text,
-            color = if (isEnabled) textColor else colors.kds_support_400,
+            color = if (isEnabled) textColor else colors.textAccentGrey,
             style = typography.body
         )
     }

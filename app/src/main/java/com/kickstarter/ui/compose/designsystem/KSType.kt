@@ -21,6 +21,8 @@ fun KSTextPreview() {
         Column(modifier = Modifier.background(KSTheme.colors.kds_white)) {
             Text(text = "Title1", style = KSTheme.typography.title1)
             Text(text = "Title1Bold", style = KSTheme.typography.title1Bold)
+            Text(text = "TitleRewardMedium", style = KSTheme.typography.title2)
+            Text(text = "TitleRewardBold", style = KSTheme.typography.title2)
             Text(text = "Title2", style = KSTheme.typography.title2)
             Text(text = "Title2Bold", style = KSTheme.typography.title2Bold)
             Text(text = "Title3", style = KSTheme.typography.title3)
@@ -49,6 +51,8 @@ data class KSTypography(
     val title1: TextStyle = TextStyle.Default,
     val title1Bold: TextStyle = TextStyle.Default,
     val title2: TextStyle = TextStyle.Default,
+    val titleRewardMedium: TextStyle = TextStyle.Default,
+    val titleRewardBold: TextStyle = TextStyle.Default,
     val title2Bold: TextStyle = TextStyle.Default,
     val title3: TextStyle = TextStyle.Default,
     val title3Bold: TextStyle = TextStyle.Default,
@@ -85,6 +89,20 @@ val KSCustomTypography = KSTypography(
         fontWeight = FontWeight(700),
         fontSize = 28.sp,
         lineHeight = 34.sp,
+        color = kds_support_700
+    ),
+
+    titleRewardMedium = TextStyle(
+        fontWeight = FontWeight(500),
+        fontSize = 24.sp,
+        lineHeight = 26.sp,
+        color = kds_support_700
+    ),
+
+        titleRewardBold = TextStyle(
+        fontWeight = FontWeight(700),
+        fontSize = 24.sp,
+        lineHeight = 26.sp,
         color = kds_support_700
     ),
 

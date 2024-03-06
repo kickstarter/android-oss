@@ -49,7 +49,6 @@ import type.TriggerThirdPartyEventInput
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
-
 /**
  * Set of package level functions that will be used to transform the GraphQL data structures into
  * Kickstarter Data Models.

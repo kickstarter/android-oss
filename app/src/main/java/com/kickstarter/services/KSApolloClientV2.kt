@@ -1,13 +1,50 @@
 package com.kickstarter.services
 
+import CancelBackingMutation
+import ClearUserUnseenActivityMutation
 import CompleteOnSessionCheckoutMutation
+import CreateAttributionEventMutation
+import CreateBackingMutation
+import CreateCheckoutMutation
+import CreateCommentMutation
+import CreateFlaggingMutation
+import CreatePasswordMutation
 import CreatePaymentIntentMutation
+import CreateSetupIntentMutation
+import DeletePaymentSourceMutation
+import ErroredBackingsQuery
+import FetchCategoryQuery
+import FetchProjectQuery
+import GetBackingQuery
+import GetCommentQuery
+import GetProjectAddOnsQuery
+import GetProjectBackingQuery
+import GetProjectCommentsQuery
+import GetProjectUpdateCommentsQuery
+import GetProjectUpdatesQuery
+import GetRepliesForCommentQuery
+import GetRootCategoriesQuery
+import GetShippingRulesForRewardIdQuery
+import ProjectCreatorDetailsQuery
+import SavePaymentMethodMutation
+import SendEmailVerificationMutation
+import SendMessageMutation
+import TriggerThirdPartyEventMutation
+import UnwatchProjectMutation
+import UpdateBackingMutation
+import UpdateUserCurrencyMutation
+import UpdateUserEmailMutation
+import UpdateUserPasswordMutation
+import UserPaymentsQuery
+import UserPrivacyQuery
 import ValidateCheckoutQuery
+import WatchProjectMutation
 import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.google.gson.Gson
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -28,6 +65,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
+import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.PostCommentData
@@ -39,6 +77,7 @@ import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
@@ -147,12 +186,14 @@ interface ApolloClientTypeV2 {
         paymentIntentClientSecret: String,
         paymentSourceId: String
     ): Observable<String>
+
+    fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
 }
 
 private const val PAGE_SIZE = 25
 private const val REPLIES_PAGE_SIZE = 7
 
-class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
+class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClientTypeV2 {
     override fun getProject(project: Project): Observable<Project> {
         return getProject(project.slug() ?: "")
     }
@@ -1541,6 +1582,34 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     ps.onComplete()
                 }
             })
+            return@defer ps
+        }
+    }
+
+    override fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+
+            val mutation = getCreateAttributionEventMutation(eventInput, gson)
+
+            service.mutate(mutation)
+                .enqueue(object : ApolloCall.Callback<CreateAttributionEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateAttributionEventMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                        }
+
+                        response.data?.let {
+                            val isSuccess = it.createAttributionEvent()?.successful() ?: false
+                            ps.onNext(isSuccess)
+                        }
+                        ps.onComplete()
+                    }
+                })
             return@defer ps
         }
     }

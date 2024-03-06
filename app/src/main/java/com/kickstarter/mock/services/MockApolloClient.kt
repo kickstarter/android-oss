@@ -44,6 +44,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
+import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.PostCommentData
@@ -273,7 +274,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
-    override fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): io.reactivex.Observable<String> {
+    override fun createAttributionEvent(eventInput: CreateAttributionEventData): io.reactivex.Observable<Boolean> {
         return io.reactivex.Observable.empty()
     }
 
@@ -290,6 +291,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         paymentIntentClientSecret: String,
         paymentSourceId: String
     ): io.reactivex.Observable<String> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): io.reactivex.Observable<String> {
         return io.reactivex.Observable.empty()
     }
 }

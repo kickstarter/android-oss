@@ -6,7 +6,7 @@ package com.kickstarter.services.mutations
  */
 data class CreateAttributionEventData(
     val eventName: String,
-    val eventProperties: Map<String, String>? = null,
+    val eventProperties: Map<String, Any?>,
     val projectId: String? = null,
     val clientMutationId: String? = null
 )

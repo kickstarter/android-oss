@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
@@ -279,6 +280,7 @@ interface ProjectPageViewModel {
         private val currentConfig = requireNotNull(environment.currentConfigV2())
         private val featureFlagClient = requireNotNull(environment.featureFlagClient())
         private val analyticEvents = requireNotNull(environment.analytics())
+        private val attributionEvents = requireNotNull(environment.attributionEvents())
 
         private val intent = PublishSubject.create<Intent>()
         private val activityResult = BehaviorSubject.create<ActivityResult>()
@@ -432,6 +434,9 @@ interface ProjectPageViewModel {
             val refTag = intent
                 .flatMap { ProjectIntentMapper.refTag(it) }
 
+            val fullDeeplink = intent
+                .flatMap { Observable.just(KsOptional.of(it.data)) }
+
             val saveProjectFromDeepLinkActivity = intent
                 .take(1)
                 .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
@@ -574,12 +579,13 @@ interface ProjectPageViewModel {
                 .subscribe { this.showSavedPrompt.onNext(it) }
                 .addToDisposable(disposables)
 
-            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, Project, ProjectData>(
+            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, KsOptional<Uri?>, Project, ProjectData>(
                 refTag,
                 cookieRefTag,
+                fullDeeplink,
                 currentProject
-            ) { refTagFromIntent, refTagFromCookie, project ->
-                projectData(refTagFromIntent, refTagFromCookie, project)
+            ) { refTagFromIntent, refTagFromCookie, fullDeeplink, project ->
+                projectData(refTagFromIntent, refTagFromCookie, fullDeeplink, project)
             }
 
             currentProjectData
@@ -783,7 +789,7 @@ interface ProjectPageViewModel {
                         it.first.project().toBuilder().backing(it.second).build()
                     } else it.first.project()
 
-                    projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), updatedProject)
+                    projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), KsOptional.of(it.first.fullDeeplink()), updatedProject)
                 }
                 .subscribe { this.updateFragments.onNext(it) }
                 .addToDisposable(disposables)
@@ -969,7 +975,11 @@ interface ProjectPageViewModel {
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
+                    // Send event to segment
                     this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+                    // Send event to backend event attribution
+                    this.attributionEvents.trackProjectPageViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+
                 }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext
@@ -1049,11 +1059,12 @@ interface ProjectPageViewModel {
             }
         }
 
-        private fun projectData(refTagFromIntent: KsOptional<RefTag?>, refTagFromCookie: KsOptional<RefTag?>, project: Project): ProjectData {
+        private fun projectData(refTagFromIntent: KsOptional<RefTag?>, refTagFromCookie: KsOptional<RefTag?>, fullDeeplink: KsOptional<Uri?>, project: Project): ProjectData {
             return ProjectData
                 .builder()
                 .refTagFromIntent(refTagFromIntent.getValue())
                 .refTagFromCookie(refTagFromCookie.getValue())
+                .fullDeeplink(fullDeeplink.getValue())
                 .project(project)
                 .build()
         }

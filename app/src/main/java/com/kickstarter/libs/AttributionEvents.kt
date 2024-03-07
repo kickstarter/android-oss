@@ -27,7 +27,7 @@ class AttributionEvents(
      */
     fun trackProjectPageViewed(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(ContextPropertyKeyName.CONTEXT_PAGE.contextName to EventContextValues.ContextPageName.PROJECT.contextName)
-        props["context_page_url"] = projectData.fullDeeplink().toString()
+        props["context_page_url"] = projectData.fullDeeplink()?.toString() ?: ""
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         track(EventName.PROJECT_PAGE_VIEWED.eventName, props, projectData.project())
     }

@@ -190,6 +190,7 @@ class Environment private constructor(
         ksCurrency = ksCurrency,
         ksString = ksString,
         analytics = analytics,
+        attributionEvents = attributionEvents,
         logout = logout,
         playServicesCapability = playServicesCapability,
         scheduler = scheduler,

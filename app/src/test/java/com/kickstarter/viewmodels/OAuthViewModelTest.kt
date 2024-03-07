@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.CodeVerifier
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.PKCE
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.factories.ApiExceptionFactory
@@ -125,7 +126,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProduceState_getTokeAndUser() = runTest {
+    fun testProduceState_getTokenAndUser() = runTest {
 
         val user = UserFactory.user()
         val apiClient = object : MockApiClientV2() {
@@ -183,6 +184,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
         )
 
         assertEquals(currentUserV2.accessToken, "token")
+        this@OAuthViewModelTest.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -245,6 +247,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
         )
 
         assertEquals(currentUserV2.accessToken, null)
+        this@OAuthViewModelTest.segmentTrack.assertNoValues()
     }
 
     fun testProduceState_getTokeAndUser_ErrorWhileToken() = runTest {

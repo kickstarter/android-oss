@@ -47,6 +47,7 @@ class OAuthViewModel(
     private val logcat = "Oauth :"
     private val hostEndpoint = environment.webEndpoint()
     private val loginUseCase = LoginUseCase(environment)
+    private val analyticEvents = requireNotNull(environment.analytics())
     private val apiClient = requireNotNull(environment.apiClientV2())
     private val clientID = when (hostEndpoint) {
         WebEndpoint.PRODUCTION -> Secrets.Api.Client.PRODUCTION
@@ -103,6 +104,7 @@ class OAuthViewModel(
                                 user = user,
                             )
                         )
+                        analyticEvents.trackLogInButtonCtaClicked()
                     }
             }
 

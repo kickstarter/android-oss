@@ -253,7 +253,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="*.kickstarter.com"
+                    android:host="www.kickstarter.com"
                     android:scheme="https" />
             </intent-filter>
             <!-- Website Main page deeplink  -->

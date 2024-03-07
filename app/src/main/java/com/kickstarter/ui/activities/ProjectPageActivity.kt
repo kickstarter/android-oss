@@ -22,7 +22,19 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import com.aghajari.zoomhelper.ZoomHelper
 import com.google.android.material.tabs.TabLayout
@@ -44,7 +56,9 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
@@ -69,6 +83,7 @@ import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
 class ProjectPageActivity :
     AppCompatActivity(),
@@ -106,11 +121,52 @@ class ProjectPageActivity :
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
+
+        val composeView = binding.pledgeContainerCompose
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KickstarterApp {
+                    var expanded by remember {
+                        mutableStateOf(false)
+                    }
+                    val pagerState = rememberPagerState(initialPage = 1)
+
+                    val coroutineScope = rememberCoroutineScope()
+                    ProjectPledgeButtonAndFragmentContainer(
+                        expanded = expanded,
+                        onContinueClicked = { expanded = !expanded },
+                        onBackClicked = {
+                            if (pagerState.currentPage > 1) {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        page = pagerState.currentPage - 1,
+                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                    )
+                                }
+                            } else {
+                                expanded = !expanded
+                            }
+                        },
+                        pagerState = pagerState,
+                        onAddOnsContinueClicked = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(
+                                    page = 2,
+                                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
@@ -401,6 +457,8 @@ class ProjectPageActivity :
         this.onBackPressedDispatcher.addCallback {
             finishWithAnimation()
         }
+
+        binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
     }
 
     /**

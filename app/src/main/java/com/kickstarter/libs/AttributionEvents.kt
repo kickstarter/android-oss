@@ -36,7 +36,7 @@ class AttributionEvents(
     private fun track(eventName: String, eventProperties: Map<String, Any?>, project: Project) {
         val attributionEventData = CreateAttributionEventData(
             eventName = eventName,
-            eventProperties =  eventProperties,
+            eventProperties = eventProperties,
             projectId = encodeRelayId(project)
         )
         createAttributionEvent(attributionEventData)

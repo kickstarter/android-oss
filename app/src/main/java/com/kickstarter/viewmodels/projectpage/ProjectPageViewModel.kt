@@ -979,7 +979,6 @@ interface ProjectPageViewModel {
                     this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
                     // Send event to backend event attribution
                     this.attributionEvents.trackProjectPageViewed(dataWithStoredCookieRefTag)
-
                 }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext

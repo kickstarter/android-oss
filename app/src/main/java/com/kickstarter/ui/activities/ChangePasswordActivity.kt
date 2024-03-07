@@ -11,6 +11,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.datatransport.runtime.scheduling.jobscheduling.SchedulerConfig.Flag
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -33,6 +34,7 @@ class ChangePasswordActivity : ComponentActivity() {
     private val viewModel: ChangePasswordViewModel by viewModels {
         viewModelFactory
     }
+    private var oAuthIsEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,8 @@ class ChangePasswordActivity : ComponentActivity() {
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                 ?: AppThemes.MATCH_SYSTEM.ordinal
+
+            oAuthIsEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false
         }
 
         setContent {
@@ -98,10 +102,15 @@ class ChangePasswordActivity : ComponentActivity() {
     private fun logout(email: String) {
         this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
-        startActivity(
+        val intent = if (oAuthIsEnabled) {
+            Intent(this, LoginToutActivity::class.java)
+        } else {
             Intent(this, LoginActivity::class.java)
                 .putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD)
                 .putExtra(IntentKey.EMAIL, email)
+        }
+        startActivity(
+            intent
         )
     }
 

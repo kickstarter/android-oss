@@ -33,6 +33,7 @@ class ChangePasswordActivity : ComponentActivity() {
     private val viewModel: ChangePasswordViewModel by viewModels {
         viewModelFactory
     }
+    private var oAuthIsEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,8 @@ class ChangePasswordActivity : ComponentActivity() {
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                 ?: AppThemes.MATCH_SYSTEM.ordinal
+
+            oAuthIsEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false
         }
 
         setContent {
@@ -98,10 +101,15 @@ class ChangePasswordActivity : ComponentActivity() {
     private fun logout(email: String) {
         this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
-        startActivity(
+        val intent = if (oAuthIsEnabled) {
+            Intent(this, LoginToutActivity::class.java)
+        } else {
             Intent(this, LoginActivity::class.java)
                 .putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD)
                 .putExtra(IntentKey.EMAIL, email)
+        }
+        startActivity(
+            intent
         )
     }
 

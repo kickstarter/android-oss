@@ -35,7 +35,6 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.AnalyticEvents;
 import com.kickstarter.libs.CurrentUserV2;
-import com.kickstarter.libs.KsEventAttributionClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;

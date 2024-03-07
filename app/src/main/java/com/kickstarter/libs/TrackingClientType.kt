@@ -7,8 +7,7 @@ import java.util.Locale
 
 abstract class TrackingClientType {
     enum class Type(val tag: String) {
-        SEGMENT("\uD83C\uDF81 Segment Analytics"),
-        KS_EVENT_ATTRIBUTION("KS Event Attribution");
+        SEGMENT("\uD83C\uDF81 Segment Analytics")
     }
 
     protected abstract var config: Config?

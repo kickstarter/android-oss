@@ -14,7 +14,7 @@ import timber.log.Timber
 
 /**
  * Similar to the [AnalyticEvents] class but specifically for sending attribution events to KSR
- * event attribution backend. The trackingClient is [KsEventAttributionClient].
+ * event attribution backend.
  *
  */
 class AttributionEvents(

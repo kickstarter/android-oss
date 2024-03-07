@@ -64,7 +64,6 @@ class Environment private constructor(
     fun ksCurrency() = this.ksCurrency
     fun ksString() = this.ksString
     fun analytics() = this.analytics
-
     fun attributionEvents() = this.attributionEvents
     fun logout() = this.logout
     fun playServicesCapability() = this.playServicesCapability

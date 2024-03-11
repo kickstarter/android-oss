@@ -19,14 +19,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kickstarter.R
+import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -40,17 +42,17 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 fun KSRewardCardPreview() {
     KSTheme {
         KSRewardCard(
-                "$20",
-                "about $400",
-                "Deck of cards",
+                amount = "$20",
+                conversion = "about $400",
+                title = "Deck of cards",
                 backerCountBadgeText = "23 backers",
                 description = "this is a description",
-                isEnabled = true,
+                isCTAButtonEnabled = true,
                 estimatedDelivery = "June 10th, 2026",
                 includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
                 yourSelectionIsVisible = true,
-                scaffoldState = rememberScaffoldState(),
-
+                ctaButtonText = "Select",
+                addonsPillVisible = true
         )
     }
 }
@@ -58,21 +60,26 @@ fun KSRewardCardPreview() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun KSRewardCard(
-        amount: String,
+        amount: String? = null,
         conversion: String? = null,
         title: String? = null,
         backerCountBadgeText: String? = null,
         description: String? = null,
-        includes: List<String>? = null,
+        includes: List<String> = emptyList(),
         estimatedDelivery: String? = null,
-        isEnabled : Boolean,
         yourSelectionIsVisible: Boolean = false,
+        isCTAButtonEnabled : Boolean,
+        isCTAButtonVisible: Boolean = true,
+        ctaButtonText: String,
+        expirationDateText: String? = null,
         localPickup: String? = null,
-        scaffoldState: ScaffoldState) {
+        shippingSummaryText : String? = null,
+        addonsPillVisible: Boolean = false,
+        remainingText : String? = null) {
 
     Card(
             modifier = Modifier
-                    .fillMaxWidth(),
+                    .width(294.dp),
             shape = RoundedCornerShape(dimensions.radiusMediumSmall),
     ) {
         Column(
@@ -94,7 +101,7 @@ fun KSRewardCard(
                                 ),
                 ) {
                     Text(
-                            text = "Your Selection",
+                            text = stringResource(id = R.string.Your_selection),
                             style = KSTheme.typography.subheadline,
                             color = KSTheme.colors.kds_white,
                     )
@@ -106,7 +113,10 @@ fun KSRewardCard(
                     .verticalScroll(rememberScrollState())
                     .padding(dimensions.paddingMediumLarge)) {
 
-                Text(text = amount, style = KSTheme.typography.titleRewardMedium, color = KSTheme.colors.textAccentGreenBold)
+
+                if(!amount.isNullOrEmpty()) {
+                        Text(text = amount, style = KSTheme.typography.titleRewardMedium, color = KSTheme.colors.textAccentGreenBold)
+                }
 
                 if (!conversion.isNullOrEmpty()) {
                     Text(text = conversion, style = KSTheme.typography.footnote, color = KSTheme.colors.textAccentGreenBold)
@@ -132,7 +142,7 @@ fun KSRewardCard(
 
                 if (!description.isNullOrEmpty()) {
                     Text(
-                            text = "Description",
+                            text = stringResource(id = R.string.Description),
                             color = KSTheme.colors.kds_support_400,
                             style = KSTheme.typography.calloutMedium
                     )
@@ -148,9 +158,9 @@ fun KSRewardCard(
 
                 }
 
-                if (!includes.isNullOrEmpty()) {
+                if (includes.isNotEmpty()) {
                     Text(
-                            text = "Includes",
+                            text = stringResource(id = R.string.rewards_info_includes),
                             color = colors.kds_support_400,
                             style = typography.calloutMedium)
 
@@ -180,7 +190,7 @@ fun KSRewardCard(
 
                 if (!estimatedDelivery.isNullOrEmpty()) {
                     Text(
-                            text = "Estimated Delivery",
+                            text =  stringResource(id = R.string.Estimated_delivery),
                             color = colors.kds_support_400,
                             style = typography.calloutMedium)
 
@@ -197,13 +207,13 @@ fun KSRewardCard(
 
                 if (!localPickup.isNullOrEmpty()) {
                     Text(
-                            text = "Reward Location",
+                            text = stringResource(id = R.string.Reward_location),
                             color = colors.kds_support_400,
                             style = typography.calloutMedium)
 
                     Text(
                             modifier = Modifier.padding(top = dimensions.radiusSmall),
-                            text = "Oakland, CA Plus a super long description here because we need to know how it is gonna behave",
+                            text = localPickup,
                             color = KSTheme.colors.kds_support_700,
                             style = KSTheme.typography.body2
                     )
@@ -216,34 +226,45 @@ fun KSRewardCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
 
-                    KSGreenBadge(
-                            text = "3 days left"
-                    )
+                    if(!expirationDateText.isNullOrEmpty()) {
+                        KSGreenBadge(
+                                text = expirationDateText
+                        )
+                    }
 
-                    KSGreenBadge(
-                            text = "30 left"
-                    )
+                    if (!remainingText.isNullOrEmpty()) {
+                        KSGreenBadge(
+                                text = remainingText
+                        )
+                    }
 
-                    KSGreenBadge(
-                            text = "Anywhere in the world"
-                    )
+                    if(!shippingSummaryText.isNullOrEmpty()) {
+                        KSGreenBadge(
+                                text = shippingSummaryText
+                        )
+                    }
 
-                    KSGreenBadge(
-                            text = "Add-ons"
-                    )
+                    if (addonsPillVisible) {
+                        KSGreenBadge(
+                                text = stringResource(id = R.string.Add_ons)
+                        )
 
-                    Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-
+                        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                    }
                 }
 
             }
 
-            KSPrimaryGreenButton(
-                    modifier = Modifier.padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge),
-                    onClickAction = { },
-                    isEnabled = isEnabled,
-                    text = if (isEnabled) "Select" else "Unavailable",
-            )
+            if (isCTAButtonVisible) {
+                KSPrimaryGreenButton(
+                        modifier = Modifier
+                                .padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge)
+                                .fillMaxWidth(),
+                        onClickAction = { },
+                        isEnabled = isCTAButtonEnabled,
+                        text = ctaButtonText
+                )
+            }
         }
     }
 }

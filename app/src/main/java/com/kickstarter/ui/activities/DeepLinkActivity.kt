@@ -107,7 +107,7 @@ class DeepLinkActivity : AppCompatActivity() {
         viewModel.outputs.startPreLaunchProjectActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startPreLaunchProjectActivity(it, "DEEPLINK")
+                startPreLaunchProjectActivity(it.first, it.second, "DEEPLINK")
             }.addToDisposable(disposables)
     }
 

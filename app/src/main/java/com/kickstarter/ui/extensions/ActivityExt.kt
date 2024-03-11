@@ -1,5 +1,6 @@
 package com.kickstarter.ui.extensions
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -222,12 +223,16 @@ fun Activity.transition(transition: Pair<Int, Int>) {
     overridePendingTransition(transition.first, transition.second)
 }
 
-fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: String? = null) {
+@SuppressLint("IntentWithNullActionLaunch") // Lint bug: https://issuetracker.google.com/issues/294200850
+fun Activity.startPreLaunchProjectActivity(uri: Uri, project: Project, previousScreen: String? = null) {
     val intent = Intent().getPreLaunchProjectActivity(
         this,
         project.slug(),
         project.reduceToPreLaunchProject()
     )
+    // Pass full deeplink for attribution tracking purposes when launching from deeplink
+    intent.setData(uri)
+
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())

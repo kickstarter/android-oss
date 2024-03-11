@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.TakeWhenTransformerV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.KsOptional
+import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -67,12 +69,14 @@ interface PrelaunchProjectViewModel {
         val outputs: Outputs = this
         private val disposables = CompositeDisposable()
 
+        private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val apolloClientLegacy = requireNotNull(environment.apolloClientV2())
         private val currentConfig = requireNotNull(environment.currentConfigV2())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
+        private val attributionEvents = requireNotNull(environment.attributionEvents())
 
         private val intent = BehaviorSubject.create<Intent>()
         private val creatorInfoClicked = PublishSubject.create<Unit>()
@@ -118,6 +122,21 @@ interface PrelaunchProjectViewModel {
 
             val initialProject = Observable.merge(reducedProject, loadedProject)
 
+
+            // An observable of the ref tag stored in the cookie for the project. Emits an optional since this value can be null.
+            val cookieRefTag = initialProject
+                .take(1)
+                .map {
+                        p ->
+                    KsOptional.of(RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences))
+                }
+
+            val refTag = intent
+                .flatMap { ProjectIntentMapper.refTag(it) }
+
+            val fullDeeplink = intent
+                .flatMap { Observable.just(KsOptional.of(it.data)) }
+
             val loggedInUserOnHeartClick = this.currentUser.observable()
                 .compose(Transformers.takeWhenV2(this.bookmarkButtonClicked))
                 .filter {
@@ -144,8 +163,6 @@ interface PrelaunchProjectViewModel {
                     this.saveProject(it)
                 }
 
-            // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
-
             val projectOnUserChangeSave = initialProject
                 .compose(Transformers.takePairWhenV2(loggedInUserOnHeartClick))
                 .withLatestFrom(projectData) { initProject, latestProjectData ->
@@ -158,14 +175,19 @@ interface PrelaunchProjectViewModel {
                 .filter { it.isNotNull() }
                 .map { it }
 
-            var currentProject = io.reactivex.Observable.merge(
+            val currentProject = Observable.mergeArray(
                 initialProject,
                 savedProjectOnLoginSuccess,
                 projectOnUserChangeSave,
             )
 
-            val currentProjectData = currentProject.map {
-                projectData(null, null, it)
+            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, KsOptional<Uri?>, Project, ProjectData>(
+                refTag,
+                cookieRefTag,
+                fullDeeplink,
+                currentProject
+            ) { refTagFromIntent, refTagFromCookie, fullDeeplink, project ->
+                projectData(refTagFromIntent, refTagFromCookie, fullDeeplink, project)
             }
 
             initialProject
@@ -246,6 +268,20 @@ interface PrelaunchProjectViewModel {
                 .subscribe {
                     onThirdPartyEventSent.onNext(it.first)
                 }.addToDisposable(disposables)
+
+            // Tracking
+            currentProjectData
+                .take(1)
+                .subscribe { data ->
+                    // If a cookie hasn't been set for this ref+project then do so.
+                    if (data.refTagFromCookie() == null) {
+                        data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
+                    }
+                    val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
+
+                    // Send event to backend event attribution
+                    this.attributionEvents.trackProjectPageViewed(dataWithStoredCookieRefTag)
+                }.addToDisposable(disposables)
         }
 
         private fun mapProject(
@@ -277,15 +313,23 @@ interface PrelaunchProjectViewModel {
         }
 
         private fun projectData(
-            refTagFromIntent: RefTag?,
-            refTagFromCookie: RefTag?,
+            refTagFromIntent: KsOptional<RefTag?>,
+            refTagFromCookie: KsOptional<RefTag?>,
+            fullDeeplink: KsOptional<Uri?>,
             project: Project,
         ): ProjectData {
             return ProjectData
                 .builder()
-                .refTagFromIntent(refTagFromIntent)
-                .refTagFromCookie(refTagFromCookie)
+                .refTagFromIntent(refTagFromIntent.getValue())
+                .refTagFromCookie(refTagFromCookie.getValue())
+                .fullDeeplink(fullDeeplink.getValue())
                 .project(project)
+                .build()
+        }
+        private fun storeCurrentCookieRefTag(data: ProjectData): ProjectData {
+            return data
+                .toBuilder()
+                .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
                 .build()
         }
 

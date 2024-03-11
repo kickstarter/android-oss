@@ -17,6 +17,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
@@ -232,7 +233,8 @@ fun Activity.startPreLaunchProjectActivity(uri: Uri, project: Project, previousS
     )
     // Pass full deeplink for attribution tracking purposes when launching from deeplink
     intent.setData(uri)
-
+    val ref = UrlUtils.refTag(uri.toString())
+    ref?.let { intent.putExtra(IntentKey.REF_TAG, RefTag.from(ref)) }
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())

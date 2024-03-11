@@ -104,7 +104,11 @@ fun RewardCarouselScreen(
                             bottom = KSTheme.dimensions.paddingMediumSmall,
                             top = KSTheme.dimensions.paddingMediumSmall
                         ),
-                    text = "5 rewards",
+                    text = environment.ksString()?.let {
+                        it.format(
+                            "Rewards_count_rewards", project.rewards()?.size ?: 0,
+                            "rewards_count", NumberUtils.format(project.rewards()?.size ?: 0)
+                        ) } ?: "",
                     color = KSTheme.colors.kds_support_400,
                     textAlign = TextAlign.Center
                 )

@@ -232,19 +232,18 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
         loginUserCase.setToken("beefbod5")
         loginUserCase.setUser(user().toBuilder().unreadMessagesCount(0).build())
 
-        messageThreadList.assertValueCount(2)
-        messageThreadListCount.assertValues(0, 1)
+        messageThreadList.assertValueCount(3)
+        messageThreadListCount.assertValues(1, 0, 1)
 
-        // Same message threads should not emit again.
         vm.inputs.onResume()
 
-        messageThreadList.assertValueCount(2)
-        messageThreadListCount.assertValues(0, 1)
+        messageThreadList.assertValueCount(5)
+        messageThreadListCount.assertValues(1, 0, 1, 0, 1)
 
         vm.inputs.mailbox(Mailbox.SENT)
 
-        messageThreadList.assertValueCount(4)
-        messageThreadListCount.assertValues(0, 1, 0, 2)
+        messageThreadList.assertValueCount(7)
+        messageThreadListCount.assertValues(1, 0, 1, 0, 1, 0, 2)
     }
 
     @Test

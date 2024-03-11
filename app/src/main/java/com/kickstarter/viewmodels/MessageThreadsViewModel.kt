@@ -10,7 +10,6 @@ import com.kickstarter.libs.ApiPaginatorV2
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
@@ -173,20 +172,20 @@ interface MessageThreadsViewModel {
                 .subscribe { mailboxTitle.onNext(it) }
                 .addToDisposable(disposables)
 
-            val projectAndMailbox =
-                Observable.combineLatest<Project?, Mailbox, Pair<Project, Mailbox>>(
-                    project.distinctUntilChanged(), mailbox.distinctUntilChanged()
-                ) { a: Project?, b: Mailbox? -> Pair.create(a, b) }
+            val projectAndMailbox = mailbox
+                // start wil empty project instead of null
+                .withLatestFrom(project.startWith(Project.Builder().build())) { box, proj ->
+                    Pair(box, proj)
+                }
 
             val startOverWith =
                 Observable.combineLatest(
                     projectAndMailbox,
                     refreshMessageThreads
-                ) { a: Pair<Project, Mailbox>?, b: Unit -> Pair.create(a, b) }
-                    .map { PairUtils.first(it) }
+                ) { a, b: Unit -> a }
 
             val paginator =
-                ApiPaginatorV2.builder<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>?>()
+                ApiPaginatorV2.builder<MessageThread, MessageThreadsEnvelope, Pair<Mailbox, Project>>()
                     .nextPage(nextPage)
                     .startOverWith(startOverWith)
                     .envelopeToListOfData { it.messageThreads() }
@@ -194,9 +193,11 @@ interface MessageThreadsViewModel {
                         it.urls().api().moreMessageThreads()
                     }
                     .loadWithParams {
+                        // - if empty project send null to the API
+                        val proj = if (it.second.id() > 0) it.second else null
                         client.fetchMessageThreads(
-                            it.first,
-                            it.second
+                            proj,
+                            it.first
                         )
                     }
                     .loadWithPaginationPath {

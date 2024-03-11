@@ -99,7 +99,7 @@ val KSCustomTypography = KSTypography(
         color = kds_support_700
     ),
 
-        titleRewardBold = TextStyle(
+    titleRewardBold = TextStyle(
         fontWeight = FontWeight(700),
         fontSize = 24.sp,
         lineHeight = 26.sp,

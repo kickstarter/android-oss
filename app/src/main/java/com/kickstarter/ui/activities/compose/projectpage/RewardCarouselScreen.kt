@@ -108,7 +108,8 @@ fun RewardCarouselScreen(
                         it.format(
                             "Rewards_count_rewards", project.rewards()?.size ?: 0,
                             "rewards_count", NumberUtils.format(project.rewards()?.size ?: 0)
-                        ) } ?: "",
+                        )
+                    } ?: "",
                     color = KSTheme.colors.kds_support_400,
                     textAlign = TextAlign.Center
                 )
@@ -151,11 +152,13 @@ fun RewardCarouselScreen(
                         isCTAButtonEnabled = ctaButtonEnabled,
                         ctaButtonText = stringResource(id = ctaButtonText),
                         title = if (isBacked) stringResource(id = R.string.You_pledged_without_a_reward) else stringResource(id = R.string.Pledge_without_a_reward),
-                        description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(id = R.string.Back_it_because_you_believe_in_it)
+                        description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(id = R.string.Back_it_because_you_believe_in_it),
+                        onRewardSelectClicked = onRewardSelected
                     )
                 } else {
 
                     KSRewardCard(
+                        onRewardSelectClicked = onRewardSelected,
                         amount = environment.ksCurrency()?.let {
                             RewardViewUtils.styleCurrency(
                                 reward.minimum(),

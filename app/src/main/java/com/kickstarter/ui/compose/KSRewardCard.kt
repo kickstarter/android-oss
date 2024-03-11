@@ -53,7 +53,8 @@ fun KSRewardCardPreview() {
             expirationDateText = "4 Days",
             shippingSummaryText = "Anywhere",
             addonsPillVisible = true,
-            remainingText = "5 left"
+            remainingText = "5 left",
+            onRewardSelectClicked = { }
         )
     }
 }
@@ -76,7 +77,8 @@ fun KSRewardCard(
     localPickup: String? = null,
     shippingSummaryText: String? = null,
     addonsPillVisible: Boolean = false,
-    remainingText: String? = null
+    remainingText: String? = null,
+    onRewardSelectClicked: () -> Unit
 ) {
 
     Card(
@@ -264,7 +266,7 @@ fun KSRewardCard(
                     modifier = Modifier
                         .padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge)
                         .fillMaxWidth(),
-                    onClickAction = { },
+                    onClickAction = onRewardSelectClicked,
                     isEnabled = isCTAButtonEnabled,
                     text = ctaButtonText
                 )

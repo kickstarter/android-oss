@@ -14,6 +14,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
+import com.kickstarter.libs.AttributionEvents;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentConfigV2;
@@ -136,6 +137,7 @@ public class ApplicationModule {
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
     final @NonNull AnalyticEvents analytics,
+    final @NonNull AttributionEvents attributionEvents,
     final @NonNull Logout logout,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
@@ -166,6 +168,7 @@ public class ApplicationModule {
       .ksCurrency(ksCurrency)
       .ksString(ksString)
       .analytics(analytics)
+      .attributionEvents(attributionEvents)
       .logout(logout)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
@@ -441,6 +444,13 @@ public class ApplicationModule {
           final @NonNull SegmentTrackingClient segmentClient) {
     final List<TrackingClientType> clients = Arrays.asList(segmentClient);
     return new AnalyticEvents(clients);
+  }
+
+  @Provides
+  @Singleton
+  static AttributionEvents provideAttributionEvents(
+    final @NonNull ApolloClientTypeV2 apolloClient) {
+    return new AttributionEvents(apolloClient);
   }
 
   @Provides

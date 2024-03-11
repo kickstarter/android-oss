@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.AttributionEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
@@ -54,9 +55,10 @@ abstract class KSRobolectricTestCase : TestCase() {
     public override fun setUp() {
         super.setUp()
 
+        val mockApolloClientV2 = MockApolloClientV2()
         val mockCurrentConfig = MockCurrentConfig()
         val mockCurrentConfigV2 = MockCurrentConfigV2()
-        val mockFeatureFlagClient: MockFeatureFlagClient = MockFeatureFlagClient()
+        val mockFeatureFlagClient = MockFeatureFlagClient()
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, mockFeatureFlagClient)
 
         val component = DaggerApplicationComponent.builder()
@@ -73,11 +75,12 @@ abstract class KSRobolectricTestCase : TestCase() {
             .ksCurrency(KSCurrency(mockCurrentConfig))
             .apiClient(MockApiClient())
             .apolloClient(MockApolloClient())
-            .apolloClientV2(MockApolloClientV2())
+            .apolloClientV2(mockApolloClientV2)
             .currentConfig(mockCurrentConfig)
             .currentConfig2(mockCurrentConfigV2)
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
+            .attributionEvents(AttributionEvents(mockApolloClientV2))
             .featureFlagClient(mockFeatureFlagClient)
             .build()
     }

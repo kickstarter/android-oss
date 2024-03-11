@@ -68,7 +68,7 @@ public final class ExternalApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApolloClientTypeV2 provideApolloClientTypeV2(final @NonNull ApolloClient apolloClient) {
-    return Secrets.IS_OSS ? new MockApolloClientV2() : new KSApolloClientV2(apolloClient);
+  static ApolloClientTypeV2 provideApolloClientTypeV2(final @NonNull ApolloClient apolloClient, final @NonNull Gson gson) {
+    return Secrets.IS_OSS ? new MockApolloClientV2() : new KSApolloClientV2(apolloClient, gson);
   }
 }

@@ -12,6 +12,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,7 +68,8 @@ fun KSStepper(
     onPlusClicked: () -> Unit,
     isPlusEnabled: Boolean,
     onMinusClicked: () -> Unit,
-    isMinusEnabled: Boolean
+    isMinusEnabled: Boolean,
+    enabledButtonBackgroundColor: Color = colors.backgroundAccentGraySubtle
 ) {
 
     Row(
@@ -84,8 +86,8 @@ fun KSStepper(
                 bottomEnd = dimensions.none
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.kds_white,
-                disabledBackgroundColor = colors.kds_support_300
+                backgroundColor = enabledButtonBackgroundColor,
+                disabledBackgroundColor = colors.backgroundActionDisabled
             ),
             onClick = onMinusClicked,
             enabled = isMinusEnabled,
@@ -113,8 +115,8 @@ fun KSStepper(
                 bottomEnd = dimensions.radiusMediumSmall
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.kds_white,
-                disabledBackgroundColor = colors.kds_support_300
+                backgroundColor = enabledButtonBackgroundColor,
+                disabledBackgroundColor = colors.backgroundActionDisabled
             ),
             onClick = onPlusClicked,
             enabled = isPlusEnabled,

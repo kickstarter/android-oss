@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.CodeVerifier
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.PKCE
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.factories.ApiExceptionFactory
@@ -20,7 +21,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class OAuthActivityViewModelTest : KSRobolectricTestCase() {
+class OAuthViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: OAuthViewModel
 
     private fun setUpEnvironment(environment: Environment, mockCodeVerifier: PKCE) {
@@ -125,7 +126,7 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProduceState_getTokeAndUser() = runTest {
+    fun testProduceState_getTokenAndUser() = runTest {
 
         val user = UserFactory.user()
         val apiClient = object : MockApiClientV2() {
@@ -149,33 +150,46 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(currentUserV2)
             .build()
 
-        setUpEnvironment(environment, CodeVerifier())
+        val mockCodeVerifier = object : PKCE {
+            override fun generateCodeChallenge(codeVerifier: String): String {
+                return "codeChallenge"
+            }
+
+            override fun generateRandomCodeVerifier(entropy: Int): String {
+                return "codeVerifier"
+            }
+        }
+
+        setUpEnvironment(environment, mockCodeVerifier)
 
         val testCode = "1235462834129834"
         val state = mutableListOf<OAuthUiState>()
         val redirectionUrl = "ksrauth2://authenticate?code=$testCode&redirect_uri=ksrauth2&response_type=1&scope=1"
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.produceState(Intent())
             vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
             vm.uiState.toList(state)
         }
 
+        val authorizationUrlTest = "https://www.kickstarter.com/oauth/authorizations/new?redirect_uri=ksrauth2&scope=1&client_id=6B5W0CGU6NQPQ67588QEU1DOQL19BPF521VGPNY3XQXXUEGTND&response_type=1&code_challenge=codeChallenge&code_challenge_method=S256"
         // - First empty emission due the initialization
         assertEquals(
             listOf(
                 OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = null, error = ""),
+                OAuthUiState(authorizationUrl = authorizationUrlTest, isAuthorizationStep = true, user = null, error = ""),
                 OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = user, error = ""),
             ),
             state
         )
 
         assertEquals(currentUserV2.accessToken, "token")
+        this@OAuthViewModelTest.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
     fun testProduceState_getTokeAndUser_ErrorWhileFetchUser() = runTest {
 
-        val user = UserFactory.user()
         val apiClient = object : MockApiClientV2() {
             override fun loginWithCodes(
                 codeVerifier: String,
@@ -197,29 +211,43 @@ class OAuthActivityViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(currentUserV2)
             .build()
 
-        setUpEnvironment(environment, CodeVerifier())
+        val mockCodeVerifier = object : PKCE {
+            override fun generateCodeChallenge(codeVerifier: String): String {
+                return "testChallenge"
+            }
+
+            override fun generateRandomCodeVerifier(entropy: Int): String {
+                return "testVerifier"
+            }
+        }
+
+        setUpEnvironment(environment, mockCodeVerifier)
 
         val testCode = "1235462834129834"
         val state = mutableListOf<OAuthUiState>()
         val redirectionUrl = "ksrauth2://authenticate?code=$testCode&redirect_uri=ksrauth2&response_type=1&scope=1"
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.produceState(Intent())
             vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
             vm.uiState.toList(state)
         }
 
-        val testErrorMessage = ApiExceptionFactory.badRequestException().errorEnvelope().errorMessages().toString()
+        val authorizationUrl = "https://www.kickstarter.com/oauth/authorizations/new?redirect_uri=ksrauth2&scope=1&client_id=6B5W0CGU6NQPQ67588QEU1DOQL19BPF521VGPNY3XQXXUEGTND&response_type=1&code_challenge=testChallenge&code_challenge_method=S256"
+        val testErrorMessage = "Response.error() / ${ApiExceptionFactory.badRequestException().errorEnvelope().errorMessages()}"
 
         // - First empty emission due the initialization
         assertEquals(
             listOf(
                 OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = null, error = ""),
+                OAuthUiState(authorizationUrl = authorizationUrl, isAuthorizationStep = true, user = null, error = ""),
                 OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = null, error = testErrorMessage),
             ),
             state
         )
 
         assertEquals(currentUserV2.accessToken, null)
+        this@OAuthViewModelTest.segmentTrack.assertNoValues()
     }
 
     fun testProduceState_getTokeAndUser_ErrorWhileToken() = runTest {

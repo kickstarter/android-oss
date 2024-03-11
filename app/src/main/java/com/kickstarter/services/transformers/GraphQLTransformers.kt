@@ -1,7 +1,10 @@
 package com.kickstarter.services.transformers
 
+import CreateAttributionEventMutation
 import TriggerThirdPartyEventMutation
+import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
+import com.google.gson.Gson
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
@@ -28,6 +31,7 @@ import com.kickstarter.models.UserPrivacy
 import com.kickstarter.models.Video
 import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
 import fragment.ProjectCard
@@ -35,6 +39,7 @@ import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
 import type.AppDataInput
 import type.CollaboratorPermission
+import type.CreateAttributionEventInput
 import type.CreditCardPaymentType
 import type.CurrencyCode
 import type.RewardType
@@ -324,6 +329,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val userCanComment = projectFragment?.canComment() ?: false
     val isFlagged = projectFragment?.flagging()?.kind()?.let { true } ?: false
     val watchesCount = projectFragment?.watchesCount() ?: 0
+    val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
+    val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled() ?: false
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -380,6 +387,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .story(story)
         .isFlagged(isFlagged)
         .watchesCount(watchesCount)
+        .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
+        .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
         .build()
 }
 
@@ -848,5 +857,26 @@ fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThir
             .build()
 
     return TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput)
+        .build()
+}
+
+/**
+ * From KS dataModel CreateAttributionEventData, transform it into
+ * GraphQL defined mutation CreateAttributionEventMutation
+ */
+fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gson: Gson): CreateAttributionEventMutation {
+
+    // Use gson to convert map -> JSON type to match mutation
+    val eventPropertiesJson = gson.toJson(eventInput.eventProperties)
+
+    val graphInput =
+        CreateAttributionEventInput.builder()
+            .eventName(eventInput.eventName)
+            .eventProperties(eventPropertiesJson)
+            .projectId(eventInput.projectId)
+            .clientMutationId(eventInput.clientMutationId)
+            .build()
+
+    return CreateAttributionEventMutation.builder().input(graphInput)
         .build()
 }

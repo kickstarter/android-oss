@@ -122,7 +122,6 @@ interface PrelaunchProjectViewModel {
 
             val initialProject = Observable.merge(reducedProject, loadedProject)
 
-
             // An observable of the ref tag stored in the cookie for the project. Emits an optional since this value can be null.
             val cookieRefTag = initialProject
                 .take(1)

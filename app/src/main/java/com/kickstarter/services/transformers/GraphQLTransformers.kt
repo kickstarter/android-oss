@@ -874,7 +874,6 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
             .eventName(eventInput.eventName)
             .eventProperties(eventPropertiesJson)
             .projectId(eventInput.projectId)
-            .clientMutationId(eventInput.clientMutationId)
             .build()
 
     return CreateAttributionEventMutation.builder().input(graphInput)

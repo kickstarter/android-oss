@@ -34,6 +34,7 @@ class Environment private constructor(
     private val ksCurrency: KSCurrency?,
     private val ksString: KSString?,
     private val analytics: AnalyticEvents?,
+    private val attributionEvents: AttributionEvents?,
     private val logout: Logout?,
     private val playServicesCapability: PlayServicesCapability?,
     private val scheduler: Scheduler?,
@@ -63,6 +64,7 @@ class Environment private constructor(
     fun ksCurrency() = this.ksCurrency
     fun ksString() = this.ksString
     fun analytics() = this.analytics
+    fun attributionEvents() = this.attributionEvents
     fun logout() = this.logout
     fun playServicesCapability() = this.playServicesCapability
     fun scheduler() = this.scheduler
@@ -93,6 +95,7 @@ class Environment private constructor(
         private var ksCurrency: KSCurrency? = null,
         private var ksString: KSString? = null,
         private var analytics: AnalyticEvents? = null,
+        private var attributionEvents: AttributionEvents? = null,
         private var logout: Logout? = null,
         private var playServicesCapability: PlayServicesCapability? = null,
         private var scheduler: Scheduler? = null,
@@ -122,6 +125,7 @@ class Environment private constructor(
         fun ksCurrency(ksCurrency: KSCurrency) = apply { this.ksCurrency = ksCurrency }
         fun ksString(ksString: KSString) = apply { this.ksString = ksString }
         fun analytics(analytics: AnalyticEvents) = apply { this.analytics = analytics }
+        fun attributionEvents(attributionEvents: AttributionEvents) = apply { this.attributionEvents = attributionEvents }
         fun logout(logout: Logout) = apply { this.logout = logout }
         fun playServicesCapability(playServicesCapability: PlayServicesCapability) = apply { this.playServicesCapability = playServicesCapability }
         fun scheduler(scheduler: Scheduler) = apply { this.scheduler = scheduler }
@@ -153,6 +157,7 @@ class Environment private constructor(
             ksCurrency = ksCurrency,
             ksString = ksString,
             analytics = analytics,
+            attributionEvents = attributionEvents,
             logout = logout,
             playServicesCapability = playServicesCapability,
             scheduler = scheduler,
@@ -185,6 +190,7 @@ class Environment private constructor(
         ksCurrency = ksCurrency,
         ksString = ksString,
         analytics = analytics,
+        attributionEvents = attributionEvents,
         logout = logout,
         playServicesCapability = playServicesCapability,
         scheduler = scheduler,

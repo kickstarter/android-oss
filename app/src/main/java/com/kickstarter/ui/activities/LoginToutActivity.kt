@@ -275,7 +275,6 @@ class LoginToutActivity : ComponentActivity() {
         val authorizationUri = Uri.parse(url)
 
         val tabIntent = CustomTabsIntent.Builder().build()
-        tabIntent.intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
 
         val packageName = ChromeTabsHelper.getPackageNameToUse(this)
         tabIntent.intent.setPackage(packageName)

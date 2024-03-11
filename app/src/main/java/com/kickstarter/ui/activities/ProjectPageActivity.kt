@@ -23,14 +23,16 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
@@ -45,6 +47,7 @@ import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
@@ -55,6 +58,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
@@ -136,22 +140,70 @@ class ProjectPageActivity :
                     var expanded by remember {
                         mutableStateOf(false)
                     }
-                    val pagerState = rememberPagerState(initialPage = 1)
+                    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     val coroutineScope = rememberCoroutineScope()
+
+                    val shippingRules = viewModel.shippingRules.subscribeAsState(initial = listOf()).value
+
+                    val projectData = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build()).value
+
+                    var selectedReward: Reward? = null
+
+                    val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
+
+                    val addOns = viewModel.addOns.subscribeAsState(initial = listOf()).value
+
+                    var totalAmount by remember {
+                        mutableDoubleStateOf(0.0)
+                    }
+
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
                         onContinueClicked = { expanded = !expanded },
                         onBackClicked = {
-                            if (pagerState.currentPage > 1) {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(
-                                        page = pagerState.currentPage - 1,
-                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                    )
+                            when(pagerState.currentPage) {
+                                3 -> {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(
+                                            page = pagerState.currentPage - 1,
+                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                        )
+                                    }
                                 }
-                            } else {
-                                expanded = !expanded
+                                2 -> {
+                                    if (selectedReward?.hasAddons() == true) {
+                                        addOnsMap.clear()
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(
+                                                page = pagerState.currentPage - 1,
+                                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                            )
+                                        }
+                                    } else {
+                                        selectedReward = null
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(
+                                                page = 0,
+                                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                            )
+                                        }
+                                    }
+                                }
+                                1 -> {
+                                    selectedReward = null
+                                    addOnsMap.clear()
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(
+                                            page = pagerState.currentPage - 1,
+                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                        )
+                                    }
+                                }
+                                0 -> {
+                                    selectedReward = null
+                                    expanded = !expanded
+                                }
                             }
                         },
                         pagerState = pagerState,
@@ -162,7 +214,38 @@ class ProjectPageActivity :
                                     animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
                                 )
                             }
-                        }
+                        },
+                        shippingRules = shippingRules,
+                        environment = getEnvironment(),
+                        rewardsList = projectData.project().rewards()?.filter { !it.isAddOn() } ?: listOf(),
+                        addOns = addOns,
+                        project = projectData.project(),
+                        onRewardSelected = { reward ->
+                            selectedReward = reward
+                            totalAmount = getTotalAmount(selectedReward, addOnsMap)
+                            if (reward.hasAddons()) {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        page = 1,
+                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                    )
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        page = 2,
+                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                    )
+                                }
+                            }
+                        },
+                        onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
+                            addOnsMap[updateAddOnRewardCount.keys.first()] =
+                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
+
+                            totalAmount = getTotalAmount(selectedReward, addOnsMap)
+                        },
+                        totalAmount = totalAmount
                     )
                 }
             }
@@ -459,6 +542,17 @@ class ProjectPageActivity :
         }
 
         binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
+    }
+
+    private fun getTotalAmount(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
+        var total = 0.0
+        selectedReward?.let {
+            total += it.convertedMinimum()
+        }
+        addOnsMap.forEach { rewardCountMap ->
+            total += rewardCountMap.key.convertedMinimum() * rewardCountMap.value
+        }
+        return total
     }
 
     /**

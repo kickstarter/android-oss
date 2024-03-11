@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -33,7 +32,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -50,7 +52,7 @@ private fun ProjectPledgeButtonAndContainerPreview() {
         var expanded by remember {
             mutableStateOf(false)
         }
-        val pagerState = rememberPagerState(initialPage = 1)
+        val pagerState = rememberPagerState(initialPage = 1, pageCount = { 4 })
 
         val coroutineScope = rememberCoroutineScope()
         ProjectPledgeButtonAndFragmentContainer(
@@ -76,7 +78,14 @@ private fun ProjectPledgeButtonAndContainerPreview() {
                         animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                     )
                 }
-            }
+            },
+            environment = Environment.builder().build(),
+            rewardsList = listOf(),
+            addOns = listOf(),
+            project = Project.builder().build(),
+            onRewardSelected = {},
+            onAddOnAddedOrRemoved = {},
+            totalAmount = 0.0
         )
     }
 }
@@ -88,7 +97,15 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onContinueClicked: () -> Unit,
     onBackClicked: () -> Unit,
     pagerState: PagerState,
-    onAddOnsContinueClicked: () -> Unit
+    onAddOnsContinueClicked: () -> Unit,
+    shippingRules: List<ShippingRule> = listOf(),
+    environment: Environment?,
+    rewardsList: List<Reward>,
+    addOns: List<Reward>,
+    project: Project,
+    onRewardSelected: (reward: Reward) -> Unit,
+    onAddOnAddedOrRemoved: (Map<Reward, Int>) -> Unit,
+    totalAmount: Double
 ) {
     Column {
         Surface(
@@ -167,25 +184,31 @@ fun ProjectPledgeButtonAndFragmentContainer(
                             .fillMaxSize()
                     ) {
                         HorizontalPager(
-                            pageCount = 4,
                             userScrollEnabled = false,
                             state = pagerState
                         ) { page ->
                             when (page) {
                                 0 -> {
-                                    // rewards selection
+                                    RewardCarouselScreen(
+                                        modifier = Modifier,
+                                        lazyRowState = rememberLazyListState(),
+                                        environment = environment ?: Environment.builder().build(),
+                                        rewards = rewardsList,
+                                        project = project,
+                                        onRewardSelected = onRewardSelected
+                                    )
                                 }
 
                                 1 -> {
                                     AddOnsScreen(
                                         modifier = Modifier,
-                                        environment = Environment.builder().build(),
+                                        environment = environment ?: Environment.builder().build(),
                                         lazyColumnListState = rememberLazyListState(),
-                                        countryList = listOf(),
+                                        countryList = shippingRules,
                                         onShippingRuleSelected = {},
-                                        rewardItems = listOf(),
-                                        project = Project.builder().build(),
-                                        onItemAddedOrRemoved = {},
+                                        rewardItems = addOns,
+                                        project = project,
+                                        onItemAddedOrRemoved = onAddOnAddedOrRemoved,
                                         onContinueClicked = onAddOnsContinueClicked
                                     )
                                 }
@@ -193,9 +216,16 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                 2 -> {
                                     ConfirmPledgeDetailsScreen(
                                         modifier = Modifier,
+                                        ksString = environment?.ksString() ?: Environment.builder().build().ksString(),
                                         onContinueClicked = { },
                                         onShippingRuleSelected = {},
-                                        totalAmount = "$100",
+                                        totalAmount = environment?.ksCurrency()?.let {
+                                            RewardViewUtils.styleCurrency(
+                                                totalAmount,
+                                                project,
+                                                it
+                                            ).toString()
+                                        } ?: "",
                                         initialBonusSupport = "$0",
                                         totalBonusSupport = "$0"
                                     )

@@ -1,17 +1,17 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,26 +19,32 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.PopupProperties
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -47,7 +53,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import com.kickstarter.ui.compose.designsystem.shapes
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -61,8 +66,22 @@ private fun AddOnsScreenPreview() {
                 modifier = Modifier.padding(padding),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
-                countryList = listOf(),
+                countryList = listOf(
+                    ShippingRule.builder()
+                        .location(Location.builder().displayableName("United States").build())
+                        .build(),
+                    ShippingRule.builder()
+                        .location(Location.builder().displayableName("Japan").build())
+                        .build(),
+                    ShippingRule.builder()
+                        .location(Location.builder().displayableName("Korea").build())
+                        .build(),
+                    ShippingRule.builder()
+                        .location(Location.builder().displayableName("United States").build())
+                        .build()
+                ),
                 onShippingRuleSelected = {},
+                initialCountryInput = "United States Minor Outlying Islands",
                 rewardItems = (0..10).map {
                     Reward.builder()
                         .title("Item Number $it")
@@ -227,22 +246,7 @@ fun AddOnsScreen(
     }
 }
 
-@Composable
-fun CountryListItems(
-    item: ShippingRule,
-    title: String,
-    onSelect: (ShippingRule) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onSelect(item) }
-            .padding(dimensions.paddingXSmall)
-    ) {
-        Text(text = title)
-    }
-}
-
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CountryInputWithDropdown(
     interactionSource: MutableInteractionSource,
@@ -258,6 +262,8 @@ fun CountryInputWithDropdown(
         mutableStateOf(initialCountryInput ?: "United States")
     }
 
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .clickable(
@@ -266,65 +272,98 @@ fun CountryInputWithDropdown(
                 onClick = { countryListExpanded = false }
             ),
     ) {
-        TextField(
-            modifier = Modifier
-                .height(dimensions.minButtonHeight)
-                .width(dimensions.countryInputWidth),
-            value = countryInput,
-            onValueChange = {
-                countryInput = it
-                countryListExpanded = true
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            shape = shapes.medium,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_white,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
-            textStyle = typography.subheadlineMedium.copy(color = colors.textAccentGreenBold),
-        )
+        Box(contentAlignment = Alignment.TopStart) {
+            BasicTextField(
+                modifier = Modifier
+                    .background(color = colors.backgroundSurfacePrimary)
+                    .fillMaxWidth(0.6f),
+                value = countryInput,
+                onValueChange = {
+                    countryInput = it
+                    countryListExpanded = true
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                textStyle = typography.subheadlineMedium.copy(color = colors.textAccentGreenBold),
+                singleLine = false
+            ) { innerTextField ->
+                TextFieldDefaults.TextFieldDecorationBox(
+                    value = countryInput,
+                    innerTextField = innerTextField,
+                    enabled = true,
+                    singleLine = false,
+                    visualTransformation = VisualTransformation.None,
+                    interactionSource = interactionSource,
+                    contentPadding = PaddingValues(
+                        start = dimensions.paddingMedium,
+                        top = dimensions.paddingSmall,
+                        bottom = dimensions.paddingSmall,
+                        end = dimensions.paddingMedium
+                    ),
+                )
+            }
 
-        AnimatedVisibility(visible = countryListExpanded) {
-            Card(shape = shapes.medium) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = colors.kds_white)
-                ) {
-                    if (countryInput.isNotEmpty()) {
-                        items(
-                            items = countryList.filter {
-                                it.location()?.displayableName()?.lowercase()
-                                    ?.contains(countryInput.lowercase()) ?: false
+            val shouldShowDropdown: Boolean = when {
+                countryListExpanded && countryInput.isNotEmpty() -> {
+                    countryList.filter {
+                        it.location()?.displayableName()?.lowercase()
+                            ?.contains(countryInput.lowercase()) ?: false
+                    }.isNotEmpty()
+                }
+
+                else -> countryListExpanded
+            }
+
+            DropdownMenu(
+                expanded = shouldShowDropdown,
+                onDismissRequest = { },
+                modifier = Modifier
+                    .width(
+                        dimensions.countryInputWidth
+                    )
+                    .heightIn(dimensions.none, dimensions.dropDownStandardWidth),
+                properties = PopupProperties(focusable = false)
+            ) {
+                if (countryInput.isNotEmpty()) {
+                    countryList.filter {
+                        it.location()?.displayableName()?.lowercase()
+                            ?.contains(countryInput.lowercase()) ?: false
+                    }.take(3).forEach { rule ->
+                        DropdownMenuItem(
+                            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+                            onClick = {
+                                countryInput =
+                                    rule.location()?.displayableName() ?: ""
+                                countryListExpanded = false
+                                focusManager.clearFocus()
+                                onShippingRuleSelected(rule)
                             }
                         ) {
-                            CountryListItems(
-                                item = it,
-                                title = it.location()?.displayableName() ?: "",
-                                onSelect = { country ->
-                                    countryInput =
-                                        country.location()?.displayableName() ?: ""
-                                    countryListExpanded = false
-                                    onShippingRuleSelected(country)
-                                }
+                            Text(
+                                text = rule.location()?.displayableName() ?: "",
+                                style = typography.subheadlineMedium,
+                                color = colors.textAccentGreenBold
                             )
                         }
-                    } else {
-                        items(countryList) {
-                            CountryListItems(
-                                item = it,
-                                title = it.location()?.displayableName() ?: "",
-                                onSelect = { country ->
-                                    countryInput =
-                                        country.location()?.displayableName() ?: ""
-                                    countryListExpanded = false
-                                    onShippingRuleSelected(country)
-                                }
+                    }
+                } else {
+                    countryList.take(5).forEach { rule ->
+                        DropdownMenuItem(
+                            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+                            onClick = {
+                                countryInput =
+                                    rule.location()?.displayableName() ?: ""
+                                countryListExpanded = false
+                                focusManager.clearFocus()
+                                onShippingRuleSelected(rule)
+                            }
+                        ) {
+                            Text(
+                                text = rule.location()?.displayableName() ?: "",
+                                style = typography.subheadlineMedium,
+                                color = colors.textAccentGreenBold
                             )
                         }
                     }

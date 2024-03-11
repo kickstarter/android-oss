@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
@@ -44,8 +46,10 @@ import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
@@ -279,6 +283,7 @@ interface ProjectPageViewModel {
         private val currentConfig = requireNotNull(environment.currentConfigV2())
         private val featureFlagClient = requireNotNull(environment.featureFlagClient())
         private val analyticEvents = requireNotNull(environment.analytics())
+        private val attributionEvents = requireNotNull(environment.attributionEvents())
 
         private val intent = PublishSubject.create<Intent>()
         private val activityResult = BehaviorSubject.create<ActivityResult>()
@@ -357,6 +362,10 @@ interface ProjectPageViewModel {
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         val disposables = CompositeDisposable()
+
+        val shippingRules = PublishSubject.create<List<ShippingRule>>()
+        val addOns = PublishSubject.create<List<Reward>>()
+
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
@@ -431,6 +440,9 @@ interface ProjectPageViewModel {
 
             val refTag = intent
                 .flatMap { ProjectIntentMapper.refTag(it) }
+
+            val fullDeeplink = intent
+                .flatMap { Observable.just(KsOptional.of(it.data)) }
 
             val saveProjectFromDeepLinkActivity = intent
                 .take(1)
@@ -574,12 +586,13 @@ interface ProjectPageViewModel {
                 .subscribe { this.showSavedPrompt.onNext(it) }
                 .addToDisposable(disposables)
 
-            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, Project, ProjectData>(
+            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, KsOptional<Uri?>, Project, ProjectData>(
                 refTag,
                 cookieRefTag,
+                fullDeeplink,
                 currentProject
-            ) { refTagFromIntent, refTagFromCookie, project ->
-                projectData(refTagFromIntent, refTagFromCookie, project)
+            ) { refTagFromIntent, refTagFromCookie, fullDeeplink, project ->
+                projectData(refTagFromIntent, refTagFromCookie, fullDeeplink, project)
             }
 
             currentProjectData
@@ -783,7 +796,7 @@ interface ProjectPageViewModel {
                         it.first.project().toBuilder().backing(it.second).build()
                     } else it.first.project()
 
-                    projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), updatedProject)
+                    projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), KsOptional.of(it.first.fullDeeplink()), updatedProject)
                 }
                 .subscribe { this.updateFragments.onNext(it) }
                 .addToDisposable(disposables)
@@ -969,7 +982,10 @@ interface ProjectPageViewModel {
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
+                    // Send event to segment
                     this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+                    // Send event to backend event attribution
+                    this.attributionEvents.trackProjectPageViewed(dataWithStoredCookieRefTag)
                 }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext
@@ -1006,6 +1022,27 @@ interface ProjectPageViewModel {
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
+
+            projectData.subscribe {
+                it?.project()?.rewards()?.let { reward ->
+                    apolloClient.getShippingRules(
+                        reward = reward.first { theOne ->
+                            !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
+                        }
+                    ).subscribe { shippingRules ->
+                        if (shippingRules.isNotNull()) this.shippingRules.onNext(shippingRules.shippingRules())
+                    }.addToDisposable(disposables)
+                }
+            }.addToDisposable(disposables)
+
+            projectData.subscribe { projectData ->
+                this.apolloClient
+                    .getProjectAddOns(projectData.project().slug() ?: "", projectData.project().location() ?: Location.builder().build())
+                    .onErrorResumeNext(Observable.empty())
+                    .filter { it.isNotNull() }
+                    .subscribe { addOns.onNext(it) }
+                    .addToDisposable(disposables)
+            }.addToDisposable(disposables)
         }
 
         override fun onCleared() {
@@ -1049,11 +1086,12 @@ interface ProjectPageViewModel {
             }
         }
 
-        private fun projectData(refTagFromIntent: KsOptional<RefTag?>, refTagFromCookie: KsOptional<RefTag?>, project: Project): ProjectData {
+        private fun projectData(refTagFromIntent: KsOptional<RefTag?>, refTagFromCookie: KsOptional<RefTag?>, fullDeeplink: KsOptional<Uri?>, project: Project): ProjectData {
             return ProjectData
                 .builder()
                 .refTagFromIntent(refTagFromIntent.getValue())
                 .refTagFromCookie(refTagFromCookie.getValue())
+                .fullDeeplink(fullDeeplink.getValue())
                 .project(project)
                 .build()
         }

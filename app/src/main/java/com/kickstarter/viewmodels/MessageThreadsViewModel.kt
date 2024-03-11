@@ -117,11 +117,11 @@ interface MessageThreadsViewModel {
             val refreshUserOrProject = Observable.merge(onResume, swipeRefresh)
 
             intent()
+                .filter { it.isNotNull() }
                 .compose(Transformers.takeWhenV2(refreshUserOrProject))
                 .switchMap {
                     client.fetchCurrentUser()
                 }
-                .retry(2)
                 .compose(Transformers.neverErrorV2())
                 .distinctUntilChanged()
                 .subscribe {
@@ -183,6 +183,7 @@ interface MessageThreadsViewModel {
                     projectAndMailbox,
                     refreshMessageThreads
                 ) { a, b: Unit -> a }
+                    .distinctUntilChanged()
 
             val paginator =
                 ApiPaginatorV2.builder<MessageThread, MessageThreadsEnvelope, Pair<Mailbox, Project>>()
@@ -194,7 +195,7 @@ interface MessageThreadsViewModel {
                     }
                     .loadWithParams {
                         // - if empty project send null to the API
-                        val proj = if (it.second.id() > 0) it.second else null
+                        val proj = if (it.second.name().isNotEmpty()) it.second else null
                         client.fetchMessageThreads(
                             proj,
                             it.first

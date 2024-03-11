@@ -82,7 +82,6 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testMessageThreadsEmit_Pagination() {
         val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
-        val currentUserV2 = MockCurrentUserV2()
 
         val inboxEnvelope = messageThreadsEnvelope()
             .toBuilder()
@@ -126,16 +125,16 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
         loginUserCase.setToken("beefbod5")
         loginUserCase.setUser(user().toBuilder().unreadMessagesCount(0).build())
 
-        messageThreadList.assertValueCount(2)
-        messageThreadListCount.assertValues(0, 1)
+        messageThreadList.assertValueCount(1)
+        messageThreadListCount.assertValues(1)
 
         vm.inputs.swipeRefresh()
-        messageThreadList.assertValueCount(4)
+        messageThreadList.assertValueCount(1)
 
         vm.inputs.nextPage()
 
-        isFetchingMessageThreads.assertValues(true, false, true, false)
-        messageThreadList.assertValueCount(4)
+        isFetchingMessageThreads.assertValues(false)
+        messageThreadList.assertValueCount(1)
     }
 
     @Test
@@ -232,18 +231,18 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
         loginUserCase.setToken("beefbod5")
         loginUserCase.setUser(user().toBuilder().unreadMessagesCount(0).build())
 
-        messageThreadList.assertValueCount(3)
-        messageThreadListCount.assertValues(1, 0, 1)
+        messageThreadList.assertValueCount(1)
+        messageThreadListCount.assertValues(1)
 
         vm.inputs.onResume()
 
-        messageThreadList.assertValueCount(5)
-        messageThreadListCount.assertValues(1, 0, 1, 0, 1)
+        messageThreadList.assertValueCount(1)
+        messageThreadListCount.assertValues(1)
 
         vm.inputs.mailbox(Mailbox.SENT)
 
-        messageThreadList.assertValueCount(7)
-        messageThreadListCount.assertValues(1, 0, 1, 0, 1, 0, 2)
+        messageThreadList.assertValueCount(3)
+        messageThreadListCount.assertValues(1, 0, 2)
     }
 
     @Test

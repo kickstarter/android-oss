@@ -28,6 +28,7 @@ class AttributionEvents(
     fun trackProjectPageViewed(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(ContextPropertyKeyName.CONTEXT_PAGE.contextName to EventContextValues.ContextPageName.PROJECT.contextName)
         props["context_page_url"] = projectData.fullDeeplink()?.toString() ?: ""
+        props["session_device_type"] = "phone" // Remove when https://kickstarter.atlassian.net/browse/MBL-1275 is complete
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         track(EventName.PROJECT_PAGE_VIEWED.eventName, props, projectData.project())
     }

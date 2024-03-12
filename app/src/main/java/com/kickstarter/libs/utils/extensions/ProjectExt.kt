@@ -11,7 +11,9 @@ import com.kickstarter.libs.utils.I18nUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
+import com.kickstarter.models.Urls
 import com.kickstarter.models.User
+import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -302,6 +304,10 @@ fun Project.reduce(): Project {
  * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
  */
 fun Project.reduceToPreLaunchProject(): Project {
+    val web = Web.builder()
+        .project(this.webProjectUrl())
+        .build()
+
     return Project.Builder()
         .id(this.id())
         .slug(this.slug())
@@ -319,5 +325,6 @@ fun Project.reduceToPreLaunchProject(): Project {
         .currency(this.currency())
         .currencySymbol(this.currencySymbol())
         .currencyTrailingCode(this.currencyTrailingCode())
+        .urls(Urls.builder().web(web).build())
         .build()
 }

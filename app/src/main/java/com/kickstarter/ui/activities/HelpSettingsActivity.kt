@@ -9,21 +9,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityHelpSettingsBinding
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.UrlUtils.baseCustomTabsIntent
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class HelpSettingsActivity : AppCompatActivity() {
 
     private var environment: Environment? = null
     private lateinit var build: Build
-    private lateinit var currentUser: CurrentUserType
+    private lateinit var currentUser: CurrentUserTypeV2
 
     private val mailto = R.string.mailto
     private val supportEmail = R.string.support_email_to_android
@@ -31,6 +33,7 @@ class HelpSettingsActivity : AppCompatActivity() {
     private val supportEmailSubject = R.string.support_email_subject
 
     private lateinit var binding: ActivityHelpSettingsBinding
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,13 +43,16 @@ class HelpSettingsActivity : AppCompatActivity() {
 
         environment = this.getEnvironment()
         this.build = requireNotNull(environment?.build())
-        this.currentUser = requireNotNull(environment?.currentUser())
+        this.currentUser = requireNotNull(environment?.currentUserV2())
 
         binding.contact.setOnClickListener {
             this.currentUser.observable()
+                .filter { it.isPresent() }
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::composeContactEmail)
+                .subscribe {
+                    this.composeContactEmail(it.getValue())
+                }.addToDisposable(disposables)
         }
 
         binding.accessibilityStatement.setOnClickListener {

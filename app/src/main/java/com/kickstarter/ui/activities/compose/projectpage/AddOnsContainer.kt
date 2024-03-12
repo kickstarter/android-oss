@@ -228,7 +228,7 @@ fun getShippingString(context: Context, ksString: KSString?, shippingAmount: Str
     val rewardAndShippingString =
         context.getString(R.string.reward_amount_plus_shipping_cost_each)
     val stringSections = rewardAndShippingString.split("+")
-    val shippingString = "+" + stringSections[1]
+    val shippingString = " +" + stringSections[1]
     val ammountAndShippingString = ksString?.format(
         shippingString,
         "shipping_cost",

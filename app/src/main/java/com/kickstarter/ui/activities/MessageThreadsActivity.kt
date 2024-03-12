@@ -2,33 +2,44 @@ package com.kickstarter.ui.activities
 
 import android.graphics.Typeface
 import android.os.Bundle
+import androidx.activity.addCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.MessageThreadsLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.RecyclerViewPaginator
-import com.kickstarter.libs.SwipeRefresher
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ToolbarUtils.fadeToolbarTitleOnExpand
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.wrapInParentheses
 import com.kickstarter.models.MessageThread
 import com.kickstarter.ui.adapters.MessageThreadsAdapter
 import com.kickstarter.ui.data.Mailbox
-import com.kickstarter.viewmodels.MessageThreadsViewModel
+import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.viewmodels.MessageThreadsViewModel.Factory
+import com.kickstarter.viewmodels.MessageThreadsViewModel.MessageThreadsViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(MessageThreadsViewModel.ViewModel::class)
-class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>() {
+class MessageThreadsActivity : AppCompatActivity() {
     private lateinit var adapter: MessageThreadsAdapter
     private lateinit var ksString: KSString
-    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginatorV2
     private lateinit var binding: MessageThreadsLayoutBinding
+
+    private val disposables = CompositeDisposable()
+
+    private lateinit var viewModelFactory: Factory
+    private val viewModel: MessageThreadsViewModel by viewModels {
+        viewModelFactory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,78 +49,101 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
 
         setUpAdapter()
 
-        ksString = requireNotNull(environment().ksString())
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = Factory(env, intent = intent)
+            env
+        }
+        ksString = requireNotNull(environment?.ksString())
 
         binding.messageThreadsRecyclerView.adapter = adapter
         binding.messageThreadsRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        recyclerViewPaginator = RecyclerViewPaginator(binding.messageThreadsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingMessageThreads())
+        recyclerViewPaginator = RecyclerViewPaginatorV2(
+            binding.messageThreadsRecyclerView,
+            { viewModel.inputs.nextPage() },
+            viewModel.outputs.isFetchingMessageThreads()
+        )
 
-        SwipeRefresher(
-            this, binding.messageThreadsSwipeRefreshLayout, { viewModel.inputs.swipeRefresh() }
-        ) { viewModel.outputs.isFetchingMessageThreads() }
+        binding.messageThreadsSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.inputs.swipeRefresh()
+        }
+
+        viewModel.outputs.isFetchingMessageThreads()
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                // - Hides loading spinner from SwipeRefreshLayout according to isFetchingUpdates
+                binding.messageThreadsSwipeRefreshLayout.isRefreshing = it
+            }
+            .addToDisposable(disposables)
 
         fadeToolbarTitleOnExpand(binding.messageThreadsAppBarLayout, binding.messageThreadsToolbar.messageThreadsCollapsedToolbarTitle)
 
         viewModel.outputs.mailboxTitle()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setMailboxStrings(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.hasNoMessages()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.unreadCountTextView.text = getString(R.string.No_messages) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.hasNoUnreadMessages()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.unreadCountTextView.text = getString(R.string.No_unread_messages) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.messageThreadList()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 adapter.messageThreads(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.unreadCountTextViewColorInt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.unreadCountTextView.setTextColor(ContextCompat.getColor(this, it)) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.unreadCountTextViewTypefaceInt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.unreadCountTextView.typeface = Typeface.create(getString(R.string.font_family_sans_serif), it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.unreadCountToolbarTextViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messageThreadsToolbar.messageThreadsToolbarUnreadCountTextView))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ViewUtils.setGone(binding.messageThreadsToolbar.messageThreadsToolbarUnreadCountTextView)
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.unreadMessagesCount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setUnreadTextViewText(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.unreadMessagesCountIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.setGone(binding.unreadCountTextView, it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.isFetchingMessageThreads()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.messageThreadsSwipeRefreshLayout.isRefreshing = it }
+            .addToDisposable(disposables)
 
         binding.switchMailboxButton.setOnClickListener {
             mailboxSwitchClicked()
         }
+
+        this.onBackPressedDispatcher.addCallback {
+            finishWithAnimation()
+        }
     }
 
-    fun mailboxSwitchClicked() = viewModel.inputs.mailbox(
+    private fun mailboxSwitchClicked() = viewModel.inputs.mailbox(
         if (binding.mailboxTextView.text == this.getString(R.string.messages_navigation_inbox))
             Mailbox.SENT
         else
@@ -122,8 +156,6 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
         binding.messageThreadsToolbar.messageThreadsCollapsedToolbarMailboxTitle.text = mailbox
         binding.switchMailboxButton.text = if (mailbox == this.getString(R.string.messages_navigation_inbox)) getString(R.string.messages_navigation_sent) else this.getString(R.string.messages_navigation_inbox)
     }
-
-    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 
     override fun onDestroy() {
         super.onDestroy()

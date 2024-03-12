@@ -32,7 +32,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rxjava2.subscribeAsState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
@@ -47,7 +46,6 @@ import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
@@ -82,6 +80,7 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
@@ -99,6 +98,9 @@ class ProjectPageActivity :
 
     private lateinit var viewModelFactory: ProjectPageViewModel.Factory
     private val viewModel: ProjectPageViewModel.ProjectPageViewModel by viewModels { viewModelFactory }
+
+    private lateinit var checkoutViewModelFactory: CheckoutFlowViewModel.Factory
+    private val checkoutFlowViewModel: CheckoutFlowViewModel by viewModels { checkoutViewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -145,11 +147,11 @@ class ProjectPageActivity :
 
                     val coroutineScope = rememberCoroutineScope()
 
-                    val shippingRules = viewModel.shippingRules.subscribeAsState(initial = listOf()).value
+                    val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
 
-                    val projectData = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build()).value
+                    val projectData = checkoutFlowViewModel.projectData.subscribeAsState(initial = ProjectData.builder().build()).value
 
-                    val currentUserShippingRule = viewModel.defaultShippingRule.subscribeAsState(
+                    val currentUserShippingRule = checkoutFlowViewModel.defaultShippingRule.subscribeAsState(
                         initial = ShippingRule.builder().build()
                     ).value
 
@@ -157,7 +159,7 @@ class ProjectPageActivity :
 
                     val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
 
-                    val addOns = viewModel.addOns.subscribeAsState(initial = listOf()).value
+                    val addOns = checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
 
                     var totalAmount by remember {
                         mutableDoubleStateOf(0.0)
@@ -232,7 +234,7 @@ class ProjectPageActivity :
                         project = projectData.project(),
                         onRewardSelected = { reward ->
                             selectedReward = reward
-                            viewModel.userCurrentRewardSelection(reward)
+                            checkoutFlowViewModel.userCurrentRewardSelection(reward)
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
                             totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
                             if (reward.hasAddons()) {
@@ -268,6 +270,7 @@ class ProjectPageActivity :
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
+            checkoutViewModelFactory= CheckoutFlowViewModel.Factory(env)
             env
         }
         this.ksString = requireNotNull(environment?.ksString())
@@ -309,6 +312,7 @@ class ProjectPageActivity :
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
+                checkoutFlowViewModel.provideProjectData(it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()
@@ -729,6 +733,7 @@ class ProjectPageActivity :
 
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         var statusBarHeight = 0
+        // TODO: Replace with window insets compat
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
             statusBarHeight = resources.getDimensionPixelSize(resourceId)

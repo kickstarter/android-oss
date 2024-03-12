@@ -29,7 +29,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
@@ -46,10 +45,8 @@ import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
-import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
@@ -362,11 +359,6 @@ interface ProjectPageViewModel {
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         val disposables = CompositeDisposable()
-
-        val shippingRules = PublishSubject.create<List<ShippingRule>>()
-        val addOns = PublishSubject.create<List<Reward>>()
-        val defaultShippingRule = PublishSubject.create<ShippingRule>()
-        val currentUserReward = PublishSubject.create<Reward>()
 
         init {
 
@@ -1024,55 +1016,6 @@ interface ProjectPageViewModel {
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
-
-            projectData.subscribe {
-                it?.project()?.rewards()?.let { reward ->
-                    apolloClient.getShippingRules(
-                        reward = reward.first { theOne ->
-                            !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
-                        }
-                    ).subscribe { shippingRules ->
-                        if (shippingRules.isNotNull()) this.shippingRules.onNext(shippingRules.shippingRules())
-                    }.addToDisposable(disposables)
-                }
-            }.addToDisposable(disposables)
-
-            projectData.subscribe { projectData ->
-                this.apolloClient
-                    .getProjectAddOns(projectData.project().slug() ?: "", projectData.project().location() ?: Location.builder().build())
-                    .onErrorResumeNext(Observable.empty())
-                    .filter { it.isNotNull() }
-                    .subscribe { addOns.onNext(it) }
-                    .addToDisposable(disposables)
-            }.addToDisposable(disposables)
-
-            shippingRules
-                .filter { it.isNotEmpty() }
-                .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(currentUserReward))
-                .filter {
-                    !RewardUtils.isDigital(it.second)
-                            && RewardUtils.isShippable(it.second)
-                            && !RewardUtils.isLocalPickup(
-                        it.second
-                    )
-                }
-                .switchMap { defaultShippingRule(it.first) }
-                .subscribe {
-                    defaultShippingRule.onNext(it)
-                }.addToDisposable(disposables)
-        }
-
-        fun userCurrentRewardSelection(reward: Reward) {
-            this.currentUserReward.onNext(reward)
-        }
-
-        fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
-            return this.currentConfig.observable()
-                .map { it.countryCode() }
-                .map { countryCode ->
-                    shippingRules.firstOrNull { it.location()?.country() == countryCode }
-                        ?: shippingRules.first()
-                }
         }
 
         override fun onCleared() {

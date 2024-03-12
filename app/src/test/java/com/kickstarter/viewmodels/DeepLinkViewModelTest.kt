@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
@@ -36,7 +37,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startProjectActivityForUpdate = TestSubscriber<Uri>()
     private val startProjectActivityToSave = TestSubscriber<Uri>()
     private val startProjectActivityForCommentToUpdate = TestSubscriber<Uri>()
-    private val startPreLaunchProjectActivity = TestSubscriber<Project>()
+    private val startPreLaunchProjectActivity = TestSubscriber<Pair<Uri, Project>>()
     private val finishDeeplinkActivity = TestSubscriber<Unit>()
     private val disposables = CompositeDisposable()
 

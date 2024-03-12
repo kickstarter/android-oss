@@ -76,7 +76,7 @@ interface DeepLinkViewModel {
         fun startProjectActivityToSave(): Observable<Uri>
 
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
-        fun startPreLaunchProjectActivity(): Observable<Project>
+        fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
     }
 
     class DeepLinkViewModel(environment: Environment, private val intent: Intent?, externalCall: CustomNetworkClient) :
@@ -97,7 +97,7 @@ interface DeepLinkViewModel {
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val projectObservable: Observable<Project>
-        private val startPreLaunchProjectActivity = BehaviorSubject.create<Project>()
+        private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
         private val ffClient = requireNotNull(environment.featureFlagClient())
 
@@ -316,7 +316,7 @@ interface DeepLinkViewModel {
                 it.second.displayPrelaunch() == true &&
                 ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
             ) {
-                startPreLaunchProjectActivity.onNext(it.second)
+                startPreLaunchProjectActivity.onNext(Pair(it.first, it.second))
             } else {
                 startProjectPage.onNext(it.first)
             }
@@ -382,7 +382,7 @@ interface DeepLinkViewModel {
 
         override fun startProjectActivityToSave(): Observable<Uri> = startProjectActivityToSave
 
-        override fun startPreLaunchProjectActivity(): Observable<Project> = startPreLaunchProjectActivity
+        override fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>> = startPreLaunchProjectActivity
     }
 
     class Factory(private val environment: Environment, private val intent: Intent? = null, private val customNetworkClient: CustomNetworkClient? = null) : ViewModelProvider.Factory {

@@ -12,11 +12,24 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Location
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+data class RewardSelectionUIState(
+    val rewardList: List<Reward> = listOf(),
+    val project: ProjectData = ProjectData.builder().build()
+)
 
 class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
@@ -30,6 +43,16 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
     val defaultShippingRule = PublishSubject.create<ShippingRule>()
     val currentUserReward = PublishSubject.create<Reward>()
     val projectData = PublishSubject.create<ProjectData>()
+
+    private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
+    val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
+        get() = mutableRewardSelectionUIState
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = RewardSelectionUIState()
+            )
 
     init {
         shippingRules
@@ -53,8 +76,14 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun provideProjectData(projectData: ProjectData) {
-        this.projectData.onNext(projectData)
         viewModelScope.launch {
+            mutableRewardSelectionUIState.emit(
+                RewardSelectionUIState(
+                    rewardList = projectData.project().rewards() ?: listOf(),
+                    project = projectData
+                )
+            )
+
             projectData.project().rewards()?.let { rewards ->
                 apolloClient.getShippingRules(
                     reward = rewards.first { theOne ->
@@ -90,6 +119,12 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
     fun userCurrentRewardSelection(reward: Reward) {
         this.currentUserReward.onNext(reward)
+    }
+
+    private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
+        val pledgeReason = if (projectData.project().isBacking()) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
+        val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
+        return Pair(pledgeData, pledgeReason)
     }
 
     class Factory(private val environment: Environment) :

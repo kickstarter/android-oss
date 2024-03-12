@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aghajari.zoomhelper.ZoomHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -143,13 +144,17 @@ class ProjectPageActivity :
                     var expanded by remember {
                         mutableStateOf(false)
                     }
+
+                    val rewardSelectionUIState by checkoutFlowViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+
+                    val projectData = rewardSelectionUIState.project
+                    val rewardsList = rewardSelectionUIState.rewardList
+
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     val coroutineScope = rememberCoroutineScope()
 
                     val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
-
-                    val projectData = checkoutFlowViewModel.projectData.subscribeAsState(initial = ProjectData.builder().build()).value
 
                     val currentUserShippingRule = checkoutFlowViewModel.defaultShippingRule.subscribeAsState(
                         initial = ShippingRule.builder().build()
@@ -229,7 +234,7 @@ class ProjectPageActivity :
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
-                        rewardsList = projectData.project().rewards()?.filter { !it.isAddOn() } ?: listOf(),
+                        rewardsList = rewardsList,
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->

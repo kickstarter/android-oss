@@ -59,6 +59,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
@@ -148,6 +149,10 @@ class ProjectPageActivity :
 
                     val projectData = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build()).value
 
+                    val currentUserShippingRule = viewModel.defaultShippingRule.subscribeAsState(
+                        initial = ShippingRule.builder().build()
+                    ).value
+
                     var selectedReward: Reward? = null
 
                     val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
@@ -155,6 +160,10 @@ class ProjectPageActivity :
                     val addOns = viewModel.addOns.subscribeAsState(initial = listOf()).value
 
                     var totalAmount by remember {
+                        mutableDoubleStateOf(0.0)
+                    }
+
+                    var totalAmountCurrencyConverted by remember {
                         mutableDoubleStateOf(0.0)
                     }
 
@@ -215,6 +224,7 @@ class ProjectPageActivity :
                                 )
                             }
                         },
+                        currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
                         rewardsList = projectData.project().rewards()?.filter { !it.isAddOn() } ?: listOf(),
@@ -222,7 +232,9 @@ class ProjectPageActivity :
                         project = projectData.project(),
                         onRewardSelected = { reward ->
                             selectedReward = reward
+                            viewModel.userCurrentRewardSelection(reward)
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
+                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
                             if (reward.hasAddons()) {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(
@@ -244,8 +256,11 @@ class ProjectPageActivity :
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
 
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
+                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
                         },
-                        totalAmount = totalAmount
+                        totalAmount = totalAmount,
+                        totalAmountCurrencyConverted = totalAmountCurrencyConverted,
+                        onShippingRuleSelected = {}
                     )
                 }
             }
@@ -545,6 +560,17 @@ class ProjectPageActivity :
     }
 
     private fun getTotalAmount(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
+        var total = 0.0
+        selectedReward?.let {
+            total += it.minimum()
+        }
+        addOnsMap.forEach { rewardCountMap ->
+            total += rewardCountMap.key.minimum() * rewardCountMap.value
+        }
+        return total
+    }
+
+    private fun getTotalAmountConverted(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
         var total = 0.0
         selectedReward?.let {
             total += it.convertedMinimum()

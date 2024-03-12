@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -53,6 +54,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import java.math.RoundingMode
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -81,7 +83,7 @@ private fun AddOnsScreenPreview() {
                         .build()
                 ),
                 onShippingRuleSelected = {},
-                initialCountryInput = "United States Minor Outlying Islands",
+                currentShippingRule = ShippingRule.builder().build(),
                 rewardItems = (0..10).map {
                     Reward.builder()
                         .title("Item Number $it")
@@ -109,7 +111,7 @@ fun AddOnsScreen(
     modifier: Modifier,
     environment: Environment,
     lazyColumnListState: LazyListState,
-    initialCountryInput: String? = null,
+    currentShippingRule: ShippingRule,
     countryList: List<ShippingRule>,
     onShippingRuleSelected: (ShippingRule) -> Unit,
     rewardItems: List<Reward>,
@@ -204,7 +206,7 @@ fun AddOnsScreen(
 
                 CountryInputWithDropdown(
                     interactionSource = interactionSource,
-                    initialCountryInput = initialCountryInput,
+                    initialCountryInput = currentShippingRule.location()?.displayableName(),
                     countryList = countryList,
                     onShippingRuleSelected = onShippingRuleSelected
                 )
@@ -218,11 +220,28 @@ fun AddOnsScreen(
                 AddOnsContainer(
                     title = reward.title() ?: "",
                     amount = environment.ksCurrency()?.format(
-                        reward.convertedMinimum(),
+                        reward.minimum(),
                         project,
                         true,
                     ) ?: "",
-                    shippingAmount = "", // todo in implementation
+                    conversionAmount = environment.ksString()?.format(
+                        stringResource(R.string.About_reward_amount),
+                        "reward_amount", environment.ksCurrency()?.format(
+                            reward.convertedMinimum(),
+                            project,
+                            true,
+                            RoundingMode.HALF_UP,
+                            true
+                        )
+                    ),
+                    shippingAmount = environment.ksCurrency()?.let {
+                        getShippingCost(
+                            ksCurrency = it,
+                            shippingRules = countryList,
+                            selectedShippingRule = currentShippingRule,
+                            project = project
+                        )
+                    },
                     description = reward.description() ?: "",
                     buttonEnabled = reward.isAvailable(),
                     buttonText = stringResource(id = R.string.Add),
@@ -235,7 +254,15 @@ fun AddOnsScreen(
                         }
                         addOnCount = totalRewardsCount
                         onItemAddedOrRemoved(rewardSelections)
-                    }
+                    },
+                    environment = environment,
+                    includesList = reward.addOnsItems()?.map {
+                        environment.ksString()?.format(
+                            "rewards_info_item_quantity_title", it.quantity(),
+                            "quantity", it.quantity().toString(),
+                            "title", it.item().name()
+                        ) ?: ""
+                    } ?: listOf(),
                 )
             }
 
@@ -245,6 +272,24 @@ fun AddOnsScreen(
         }
     }
 }
+
+private fun getShippingCost(
+    ksCurrency: KSCurrency,
+    shippingRules: List<ShippingRule>?,
+    project: Project,
+    selectedShippingRule: ShippingRule
+) =
+    if (shippingRules.isNullOrEmpty()) ""
+    else {
+        var cost = 0.0
+        shippingRules.filter {
+            it.location()?.id() == selectedShippingRule.location()?.id()
+        }.map {
+            cost += it.cost()
+        }
+        if (cost > 0) ksCurrency.format(cost, project)
+        else ""
+    }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

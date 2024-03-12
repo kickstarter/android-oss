@@ -43,7 +43,7 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewards() {
         ConfirmPledgeDetailsScreen(
             modifier = Modifier,
             onContinueClicked = {},
-            initialShippingLocation = "United States",
+            currentShippingRule = ShippingRule.builder().build(),
             totalAmount = "$1",
             totalAmountCurrencyConverted = "About $1",
             initialBonusSupport = "$1",
@@ -65,7 +65,7 @@ private fun ConfirmPledgeDetailsScreenPreviewNoAddOnsOrBonusSupport() {
                 Pair("Cool Item $it", "$20")
             },
             shippingAmount = "$5",
-            initialShippingLocation = "United States",
+            currentShippingRule = ShippingRule.builder().build(),
             totalAmount = "$55",
             totalAmountCurrencyConverted = "About $",
             initialBonusSupport = "$0",
@@ -89,7 +89,7 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsOnly() {
                 Pair("Cool Item $it", "$20")
             },
             shippingAmount = "$5",
-            initialShippingLocation = "United States",
+            currentShippingRule = ShippingRule.builder().build(),
             totalAmount = "$105",
             totalAmountCurrencyConverted = "About $",
             initialBonusSupport = "$0",
@@ -112,7 +112,7 @@ private fun ConfirmPledgeDetailsScreenPreviewBonusSupportOnly() {
                 Pair("Cool Item $it", "$20")
             },
             shippingAmount = "$5",
-            initialShippingLocation = "United States",
+            currentShippingRule = ShippingRule.builder().build(),
             totalAmount = "$55",
             totalAmountCurrencyConverted = "About $",
             initialBonusSupport = "$0",
@@ -136,7 +136,7 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsAndBonusSupport() {
                 Pair("Cool Item $it", "$20")
             },
             shippingAmount = "$5",
-            initialShippingLocation = "United States",
+            currentShippingRule = ShippingRule.builder().build(),
             totalAmount = "$115",
             totalAmountCurrencyConverted = "About $",
             initialBonusSupport = "$0",
@@ -154,7 +154,7 @@ fun ConfirmPledgeDetailsScreen(
     onContinueClicked: () -> Unit,
     rewardsList: List<Pair<String, String>> = listOf(),
     shippingAmount: String = "",
-    initialShippingLocation: String? = null,
+    currentShippingRule: ShippingRule,
     countryList: List<ShippingRule> = listOf(),
     onShippingRuleSelected: (ShippingRule) -> Unit,
     totalAmount: String,
@@ -236,7 +236,9 @@ fun ConfirmPledgeDetailsScreen(
                 )
             }
 
-            if (rewardsList.isNotEmpty() && shippingAmount.isNotEmpty() && !initialShippingLocation.isNullOrEmpty()) {
+            if (rewardsList.isNotEmpty() && shippingAmount.isNotEmpty()
+                && !currentShippingRule.location()?.displayableName().isNullOrEmpty()
+            ) {
                 item {
                     Column(
                         modifier = Modifier.padding(
@@ -262,7 +264,7 @@ fun ConfirmPledgeDetailsScreen(
                                 )
                             } else {
                                 Text(
-                                    text = initialShippingLocation,
+                                    text = currentShippingRule.location()?.displayableName() ?: "",
                                     style = typography.subheadline,
                                     color = colors.textPrimary
                                 )
@@ -390,13 +392,14 @@ fun ConfirmPledgeDetailsScreen(
                         if (shippingAmount.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
+                            val shippingLocation = currentShippingRule.location()?.displayableName()
                             Row {
                                 Text(
                                     text = ksString?.format(
                                         stringResource(id = R.string.Shipping_to_country),
                                         "country",
                                         totalAmount
-                                    ) ?: "Shipping: $initialShippingLocation",
+                                    ) ?: "Shipping: $shippingLocation",
                                     style = typography.subheadlineMedium,
                                     color = colors.textSecondary
                                 )

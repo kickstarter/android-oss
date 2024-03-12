@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,7 +24,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.kickstarter.R
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -49,6 +56,7 @@ private fun AddOnsContainerPreview() {
             limit = 10,
             buttonEnabled = true,
             buttonText = "Add",
+            environment = Environment.builder().build(),
             onItemAddedOrRemoved = { count ->
             }
         )
@@ -66,6 +74,7 @@ fun AddOnsContainer(
     limit: Int = -1,
     buttonEnabled: Boolean,
     buttonText: String,
+    environment: Environment,
     onItemAddedOrRemoved: (count: Int) -> Unit
 ) {
     var addOnCount by rememberSaveable { mutableStateOf(0) }
@@ -88,7 +97,7 @@ fun AddOnsContainer(
 
                 if (!shippingAmount.isNullOrEmpty()) {
                     Text(
-                        text = " + $shippingAmount",
+                        text = getShippingString(LocalContext.current, environment.ksString(), shippingAmount) ?: "",
                         style = typography.callout,
                         color = colors.textAccentGreen
                     )
@@ -133,6 +142,10 @@ fun AddOnsContainer(
                         )
 
                         Text(
+                            modifier = Modifier.padding(
+                                top = dimensions.paddingXSmall,
+                                bottom = dimensions.paddingXSmall
+                            ),
                             text = itemDescription,
                             style = typography.body2,
                             color = colors.textPrimary
@@ -164,6 +177,7 @@ fun AddOnsContainer(
                         isEnabled = buttonEnabled
                     )
                 }
+
                 else -> {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -208,4 +222,18 @@ fun AddOnsContainer(
             }
         }
     }
+}
+
+fun getShippingString(context: Context, ksString: KSString?, shippingAmount: String?): String? {
+    if (shippingAmount.isNullOrEmpty() || ksString.isNull()) return ""
+    val rewardAndShippingString =
+        context.getString(R.string.reward_amount_plus_shipping_cost_each)
+    val stringSections = rewardAndShippingString.split("+")
+    val shippingString = "+" + stringSections[1]
+    val ammountAndShippingString = ksString?.format(
+        shippingString,
+        "shipping_cost",
+        shippingAmount
+    )
+    return ammountAndShippingString
 }

@@ -365,6 +365,8 @@ interface ProjectPageViewModel {
 
         val shippingRules = PublishSubject.create<List<ShippingRule>>()
         val addOns = PublishSubject.create<List<Reward>>()
+        val defaultShippingRule = PublishSubject.create<ShippingRule>()
+        val currentUserReward = PublishSubject.create<Reward>()
 
         init {
 
@@ -1043,6 +1045,34 @@ interface ProjectPageViewModel {
                     .subscribe { addOns.onNext(it) }
                     .addToDisposable(disposables)
             }.addToDisposable(disposables)
+
+            shippingRules
+                .filter { it.isNotEmpty() }
+                .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(currentUserReward))
+                .filter {
+                    !RewardUtils.isDigital(it.second)
+                            && RewardUtils.isShippable(it.second)
+                            && !RewardUtils.isLocalPickup(
+                        it.second
+                    )
+                }
+                .switchMap { defaultShippingRule(it.first) }
+                .subscribe {
+                    defaultShippingRule.onNext(it)
+                }.addToDisposable(disposables)
+        }
+
+        fun userCurrentRewardSelection(reward: Reward) {
+            this.currentUserReward.onNext(reward)
+        }
+
+        fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
+            return this.currentConfig.observable()
+                .map { it.countryCode() }
+                .map { countryCode ->
+                    shippingRules.firstOrNull { it.location()?.country() == countryCode }
+                        ?: shippingRules.first()
+                }
         }
 
         override fun onCleared() {

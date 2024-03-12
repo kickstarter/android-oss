@@ -32,7 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -42,6 +44,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -63,7 +66,10 @@ private fun ProjectPledgeButtonAndContainerPreview() {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(
                             page = pagerState.currentPage - 1,
-                            animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
+                            animationSpec = tween(
+                                durationMillis = 150,
+                                easing = FastOutSlowInEasing
+                            )
                         )
                     }
                 } else {
@@ -85,7 +91,10 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             project = Project.builder().build(),
             onRewardSelected = {},
             onAddOnAddedOrRemoved = {},
-            totalAmount = 0.0
+            totalAmount = 0.0,
+            totalAmountCurrencyConverted = 0.0,
+            currentShippingRule = ShippingRule.builder().build(),
+            onShippingRuleSelected = {}
         )
     }
 }
@@ -99,13 +108,17 @@ fun ProjectPledgeButtonAndFragmentContainer(
     pagerState: PagerState,
     onAddOnsContinueClicked: () -> Unit,
     shippingRules: List<ShippingRule> = listOf(),
+    currentShippingRule: ShippingRule,
     environment: Environment?,
     rewardsList: List<Reward>,
     addOns: List<Reward>,
     project: Project,
     onRewardSelected: (reward: Reward) -> Unit,
     onAddOnAddedOrRemoved: (Map<Reward, Int>) -> Unit,
-    totalAmount: Double
+    totalAmount: Double,
+    totalAmountCurrencyConverted: Double,
+    selectedReward: Reward? = null,
+    onShippingRuleSelected: (ShippingRule) -> Unit
 ) {
     Column {
         Surface(
@@ -205,7 +218,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         environment = environment ?: Environment.builder().build(),
                                         lazyColumnListState = rememberLazyListState(),
                                         countryList = shippingRules,
-                                        onShippingRuleSelected = {},
+                                        currentShippingRule = currentShippingRule,
+                                        onShippingRuleSelected = onShippingRuleSelected,
                                         rewardItems = addOns,
                                         project = project,
                                         onItemAddedOrRemoved = onAddOnAddedOrRemoved,
@@ -216,9 +230,10 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                 2 -> {
                                     ConfirmPledgeDetailsScreen(
                                         modifier = Modifier,
-                                        ksString = environment?.ksString() ?: Environment.builder().build().ksString(),
+                                        ksString = environment?.ksString() ?: Environment.builder()
+                                            .build().ksString(),
                                         onContinueClicked = { },
-                                        onShippingRuleSelected = {},
+                                        onShippingRuleSelected = onShippingRuleSelected,
                                         totalAmount = environment?.ksCurrency()?.let {
                                             RewardViewUtils.styleCurrency(
                                                 totalAmount,
@@ -226,8 +241,30 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                                 it
                                             ).toString()
                                         } ?: "",
+                                        shippingAmount = "",
+                                        currentShippingRule = currentShippingRule,
+                                        countryList = shippingRules,
+                                        totalAmountCurrencyConverted = environment?.ksCurrency()
+                                            ?.let {
+                                                it.format(
+                                                    totalAmountCurrencyConverted,
+                                                    project,
+                                                    true,
+                                                    RoundingMode.HALF_UP,
+                                                    true
+                                                )
+                                            } ?: "",
                                         initialBonusSupport = "$0",
-                                        totalBonusSupport = "$0"
+                                        totalBonusSupport = "$0",
+                                        deliveryDateString = if (selectedReward?.estimatedDeliveryOn()
+                                                .isNotNull()
+                                        ) {
+                                            DateTimeUtils.estimatedDeliveryOn(
+                                                requireNotNull(
+                                                    selectedReward?.estimatedDeliveryOn()
+                                                )
+                                            )
+                                        } else ""
                                     )
                                 }
 

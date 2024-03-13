@@ -32,7 +32,6 @@ import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.KSRewardCard
-import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.joda.time.DateTime
 import java.math.RoundingMode
@@ -144,10 +143,8 @@ fun RewardCarouselScreen(
                         reward
                     ) -> true
 
-                    reward.hasAddons() && project.backing()?.rewardId() == reward.id()
-                            && (project.isLive ||
-                            (project.postCampaignPledgingEnabled() ?: false
-                                    && project.isInPostCampaignPledgingPhase() ?: false)) -> true
+                    reward.hasAddons() && project.backing()
+                        ?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) -> true
 
                     else -> false
                 }
@@ -203,7 +200,7 @@ fun RewardCarouselScreen(
                         },
                         isCTAButtonEnabled = ctaButtonEnabled,
                         includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
-                                .isNullOrEmpty() && environment.ksString().isNotNull()
+                            .isNullOrEmpty() && environment.ksString().isNotNull()
                         ) {
                             reward.rewardsItems()?.map { rewardItems ->
                                 environment.ksString()?.format(

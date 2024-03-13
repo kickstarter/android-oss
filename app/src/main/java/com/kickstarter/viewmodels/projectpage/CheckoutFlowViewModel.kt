@@ -90,9 +90,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                 )
             )
             .filter {
-                !RewardUtils.isDigital(it.second)
-                        && RewardUtils.isShippable(it.second)
-                        && !RewardUtils.isLocalPickup(
+                !RewardUtils.isDigital(it.second) && RewardUtils.isShippable(it.second) && !RewardUtils.isLocalPickup(
                     it.second
                 )
             }
@@ -158,7 +156,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             when (pledgeDataAndReason.second) {
                 PledgeReason.UPDATE_REWARD -> {
                     if (previouslyBackedReward?.hasAddons() == true && !newUserReward.hasAddons())
-                        // Show warning to user
+                    // Show warning to user
                         mutableRewardSelectionUIState.emit(
                             RewardSelectionUIState(
                                 rewardList = currentProjectData.project().rewards() ?: listOf(),
@@ -168,19 +166,19 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                         )
 
                     if (previouslyBackedReward?.hasAddons() == false && !newUserReward.hasAddons())
-                        // Go to confirm page
+                    // Go to confirm page
                         mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
 
                     if (previouslyBackedReward?.hasAddons() == true && newUserReward.hasAddons()) {
                         if (differentShippingTypes(previouslyBackedReward, newUserReward))
-                            // Show warning to user
+                        // Show warning to user
                             mutableRewardSelectionUIState.emit(
-                            RewardSelectionUIState(
-                                rewardList = currentProjectData.project().rewards() ?: listOf(),
-                                project = currentProjectData,
-                                showAlertDialog = true
+                                RewardSelectionUIState(
+                                    rewardList = currentProjectData.project().rewards() ?: listOf(),
+                                    project = currentProjectData,
+                                    showAlertDialog = true
+                                )
                             )
-                        )
                         // Go to add-ons
                         else mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
                     }
@@ -190,14 +188,16 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                         mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
                     }
                 }
+
                 PledgeReason.PLEDGE -> {
                     if (newUserReward.hasAddons())
-                        // Show add-ons
+                    // Show add-ons
                         mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
                     else
-                        // Show confirm page
+                    // Show confirm page
                         mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
                 }
+
                 else -> {
                 }
             }
@@ -248,7 +248,8 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         return if (newRW == null) false
         else if (newRW.id() == backedRW.id()) false
         else {
-            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()?.lowercase(Locale.getDefault()) ?: "")
+            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()
+                ?.lowercase(Locale.getDefault()) ?: "")
         }
     }
 
@@ -274,10 +275,11 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
     fun onBackPressed(currentPage: Int) {
         viewModelScope.launch {
-            when(currentPage) {
+            when (currentPage) {
                 3 -> {
                     mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
                 }
+
                 2 -> {
                     if (newUserReward.hasAddons()) {
                         mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
@@ -285,9 +287,11 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                         mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
                     }
                 }
+
                 1 -> {
                     mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
                 }
+
                 0 -> {
                     mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = false))
                 }
@@ -308,4 +312,3 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 }
-

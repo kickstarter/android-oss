@@ -175,7 +175,6 @@ fun ProjectPledgeButtonAndFragmentContainer(
                 }
             }
 
-
             AnimatedVisibility(
                 visible = expanded,
                 enter = expandVertically(
@@ -285,7 +284,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         initialBonusSupport = "$0",
                                         totalBonusSupport = "$0",
                                         deliveryDateString = if (selectedReward?.estimatedDeliveryOn()
-                                                .isNotNull()
+                                            .isNotNull()
                                         ) {
                                             DateTimeUtils.estimatedDeliveryOn(
                                                 requireNotNull(

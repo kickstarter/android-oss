@@ -233,7 +233,7 @@ class ProjectPageActivity :
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
-            checkoutViewModelFactory= CheckoutFlowViewModel.Factory(env)
+            checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
             env
         }
         this.ksString = requireNotNull(environment?.ksString())

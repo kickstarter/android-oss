@@ -226,7 +226,8 @@ fun AddOnsScreen(
                     ) ?: "",
                     conversionAmount = environment.ksString()?.format(
                         stringResource(R.string.About_reward_amount),
-                        "reward_amount", environment.ksCurrency()?.format(
+                        "reward_amount",
+                        environment.ksCurrency()?.format(
                             reward.convertedMinimum(),
                             project,
                             true,

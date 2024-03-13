@@ -84,6 +84,7 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
+import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
 import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -102,6 +103,9 @@ class ProjectPageActivity :
 
     private lateinit var checkoutViewModelFactory: CheckoutFlowViewModel.Factory
     private val checkoutFlowViewModel: CheckoutFlowViewModel by viewModels { checkoutViewModelFactory }
+
+    private var rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
+    private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -146,12 +150,18 @@ class ProjectPageActivity :
                     val expanded = flowUIState.expanded
                     val currentPage = flowUIState.currentPage
 
-                    val rewardSelectionUIState by checkoutFlowViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+                    val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
 
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
+
+                    LaunchedEffect(Unit) {
+                        rewardsSelectionViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
@@ -203,16 +213,17 @@ class ProjectPageActivity :
                         rewardsList = rewardsList,
                         showRewardCarouselDialog = showRewardCarouselAlertDialog,
                         onRewardAlertDialogNegativeClicked = {
-                            checkoutFlowViewModel.onRewardCarouselAlertClicked(wasPositive = false)
+                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = false)
                         },
                         onRewardAlertDialogPositiveClicked = {
-                            checkoutFlowViewModel.onRewardCarouselAlertClicked(wasPositive = true)
+                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = true)
                         },
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->
                             selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
+                            rewardsSelectionViewModel.onUserRewardSelection(reward)
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
                             totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
                         },
@@ -276,6 +287,7 @@ class ProjectPageActivity :
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
                 checkoutFlowViewModel.provideProjectData(it)
+                rewardsSelectionViewModel.provideProjectData(it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()

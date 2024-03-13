@@ -11,7 +11,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -131,8 +130,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     selectedReward: Reward? = null,
     onShippingRuleSelected: (ShippingRule) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.weight(1f))
+    Column {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),

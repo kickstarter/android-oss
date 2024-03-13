@@ -32,6 +32,7 @@ import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.KSRewardCard
+import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.joda.time.DateTime
 import java.math.RoundingMode

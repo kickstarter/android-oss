@@ -26,9 +26,9 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rxjava2.subscribeAsState
@@ -141,18 +141,30 @@ class ProjectPageActivity :
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 KickstarterApp {
-                    var expanded by remember {
-                        mutableStateOf(false)
-                    }
+                    val flowUIState by checkoutFlowViewModel.flowUIState.collectAsStateWithLifecycle()
+
+                    val expanded = flowUIState.expanded
+                    val currentPage = flowUIState.currentPage
 
                     val rewardSelectionUIState by checkoutFlowViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
 
                     val projectData = rewardSelectionUIState.project
+                    val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
+                    val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     val coroutineScope = rememberCoroutineScope()
+
+                    LaunchedEffect(currentPage) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                page = currentPage,
+                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                            )
+                        }
+                    }
 
                     val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
 
@@ -176,87 +188,33 @@ class ProjectPageActivity :
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
-                        onContinueClicked = { expanded = !expanded },
+                        onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
                         onBackClicked = {
-                            when(pagerState.currentPage) {
-                                3 -> {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(
-                                            page = pagerState.currentPage - 1,
-                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                        )
-                                    }
-                                }
-                                2 -> {
-                                    if (selectedReward?.hasAddons() == true) {
-                                        addOnsMap.clear()
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(
-                                                page = pagerState.currentPage - 1,
-                                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                            )
-                                        }
-                                    } else {
-                                        selectedReward = null
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(
-                                                page = 0,
-                                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                            )
-                                        }
-                                    }
-                                }
-                                1 -> {
-                                    selectedReward = null
-                                    addOnsMap.clear()
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(
-                                            page = pagerState.currentPage - 1,
-                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                        )
-                                    }
-                                }
-                                0 -> {
-                                    selectedReward = null
-                                    expanded = !expanded
-                                }
-                            }
+                            checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
                         onAddOnsContinueClicked = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(
-                                    page = 2,
-                                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                )
-                            }
+                            checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
+                        initialRewardCarouselPosition = indexOfBackedReward,
                         rewardsList = rewardsList,
+                        showRewardCarouselDialog = showRewardCarouselAlertDialog,
+                        onRewardAlertDialogNegativeClicked = {
+                            checkoutFlowViewModel.onRewardCarouselAlertClicked(wasPositive = false)
+                        },
+                        onRewardAlertDialogPositiveClicked = {
+                            checkoutFlowViewModel.onRewardCarouselAlertClicked(wasPositive = true)
+                        },
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->
                             selectedReward = reward
-                            checkoutFlowViewModel.userCurrentRewardSelection(reward)
+                            checkoutFlowViewModel.userRewardSelection(reward)
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
                             totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
-                            if (reward.hasAddons()) {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(
-                                        page = 1,
-                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                    )
-                                }
-                            } else {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(
-                                        page = 2,
-                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                    )
-                                }
-                            }
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
                             addOnsMap[updateAddOnRewardCount.keys.first()] =

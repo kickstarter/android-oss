@@ -2,10 +2,11 @@ package com.kickstarter.ui.activities.compose.projectpage
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -38,6 +40,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -94,7 +97,10 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             totalAmount = 0.0,
             totalAmountCurrencyConverted = 0.0,
             currentShippingRule = ShippingRule.builder().build(),
-            onShippingRuleSelected = {}
+            onShippingRuleSelected = {},
+            showRewardCarouselDialog = false,
+            onRewardAlertDialogPositiveClicked = {},
+            onRewardAlertDialogNegativeClicked = {}
         )
     }
 }
@@ -110,6 +116,10 @@ fun ProjectPledgeButtonAndFragmentContainer(
     shippingRules: List<ShippingRule> = listOf(),
     currentShippingRule: ShippingRule,
     environment: Environment?,
+    initialRewardCarouselPosition: Int = 0,
+    showRewardCarouselDialog: Boolean,
+    onRewardAlertDialogNegativeClicked: () -> Unit,
+    onRewardAlertDialogPositiveClicked: () -> Unit,
     rewardsList: List<Reward>,
     addOns: List<Reward>,
     project: Project,
@@ -123,8 +133,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     Column {
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize(),
+                .fillMaxWidth(),
             shape = if (expanded) {
                 RectangleShape
             } else {
@@ -138,13 +147,13 @@ fun ProjectPledgeButtonAndFragmentContainer(
         ) {
             AnimatedVisibility(
                 visible = !expanded,
-                enter = expandVertically(
+                enter = fadeIn(
                     animationSpec = tween(
-                        durationMillis = 150,
+                        durationMillis = 350,
                         easing = FastOutSlowInEasing
                     )
                 ),
-                exit = shrinkVertically(
+                exit = fadeOut(
                     animationSpec = tween(
                         durationMillis = 150,
                         easing = FastOutSlowInEasing
@@ -164,18 +173,19 @@ fun ProjectPledgeButtonAndFragmentContainer(
                 }
             }
 
-
             AnimatedVisibility(
                 visible = expanded,
                 enter = expandVertically(
+                    expandFrom = Alignment.Bottom,
                     animationSpec = tween(
-                        durationMillis = 150,
+                        durationMillis = 250,
                         easing = FastOutSlowInEasing
                     )
                 ),
                 exit = shrinkVertically(
+                    shrinkTowards = Alignment.Bottom,
                     animationSpec = tween(
-                        durationMillis = 150,
+                        durationMillis = 350,
                         easing = FastOutSlowInEasing
                     )
                 )
@@ -196,6 +206,19 @@ fun ProjectPledgeButtonAndFragmentContainer(
                             .padding(padding)
                             .fillMaxSize()
                     ) {
+
+                        if (showRewardCarouselDialog) {
+                            KSAlertDialog(
+                                setShowDialog = { },
+                                headlineText = stringResource(id = R.string.Continue_with_this_reward),
+                                bodyText = stringResource(id = R.string.It_may_not_offer_some_or_all_of_your_add_ons),
+                                leftButtonText = stringResource(id = R.string.No_go_back),
+                                leftButtonAction = onRewardAlertDialogNegativeClicked,
+                                rightButtonText = stringResource(id = R.string.Yes_continue),
+                                rightButtonAction = onRewardAlertDialogPositiveClicked
+                            )
+                        }
+
                         HorizontalPager(
                             userScrollEnabled = false,
                             state = pagerState
@@ -204,7 +227,9 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                 0 -> {
                                     RewardCarouselScreen(
                                         modifier = Modifier,
-                                        lazyRowState = rememberLazyListState(),
+                                        lazyRowState = rememberLazyListState(
+                                            initialFirstVisibleItemIndex = initialRewardCarouselPosition
+                                        ),
                                         environment = environment ?: Environment.builder().build(),
                                         rewards = rewardsList,
                                         project = project,
@@ -257,7 +282,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         initialBonusSupport = "$0",
                                         totalBonusSupport = "$0",
                                         deliveryDateString = if (selectedReward?.estimatedDeliveryOn()
-                                                .isNotNull()
+                                            .isNotNull()
                                         ) {
                                             DateTimeUtils.estimatedDeliveryOn(
                                                 requireNotNull(

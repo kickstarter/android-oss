@@ -16,7 +16,17 @@ import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+data class FlowUIState(
+    val currentPage: Int = 0,
+    val expanded: Boolean = false
+)
 
 class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
@@ -31,6 +41,19 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
     val currentUserReward = PublishSubject.create<Reward>()
     val projectData = PublishSubject.create<ProjectData>()
 
+    private lateinit var currentProjectData: ProjectData
+    private lateinit var newUserReward: Reward
+
+    private val mutableFlowUIState = MutableStateFlow(FlowUIState())
+    val flowUIState: StateFlow<FlowUIState>
+        get() = mutableFlowUIState
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = FlowUIState()
+            )
+
     init {
         shippingRules
             .filter { it.isNotEmpty() }
@@ -40,9 +63,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                 )
             )
             .filter {
-                !RewardUtils.isDigital(it.second)
-                        && RewardUtils.isShippable(it.second)
-                        && !RewardUtils.isLocalPickup(
+                !RewardUtils.isDigital(it.second) && RewardUtils.isShippable(it.second) && !RewardUtils.isLocalPickup(
                     it.second
                 )
             }
@@ -52,8 +73,14 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             }.addToDisposable(disposables)
     }
 
+    fun changePage(requestedFlowState: FlowUIState) {
+        viewModelScope.launch {
+            mutableFlowUIState.emit(requestedFlowState)
+        }
+    }
+
     fun provideProjectData(projectData: ProjectData) {
-        this.projectData.onNext(projectData)
+        currentProjectData = projectData
         viewModelScope.launch {
             projectData.project().rewards()?.let { rewards ->
                 apolloClient.getShippingRules(
@@ -88,8 +115,60 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             }
     }
 
-    fun userCurrentRewardSelection(reward: Reward) {
-        this.currentUserReward.onNext(reward)
+    fun userRewardSelection(reward: Reward) {
+        viewModelScope.launch {
+            currentUserReward.onNext(reward)
+            newUserReward = reward
+        }
+    }
+
+    fun onAddOnsContinueClicked() {
+        viewModelScope.launch {
+            // Show confirm page
+            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
+        }
+    }
+
+    fun onBackPressed(currentPage: Int) {
+        viewModelScope.launch {
+            when (currentPage) {
+                // From Checkout Screen
+                3 -> {
+                    // To Confirm Details
+                    mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
+                }
+
+                // From Confirm Details Screen
+                2 -> {
+                    if (newUserReward.hasAddons()) {
+                        // To Add-ons
+                        mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
+                    } else {
+                        // To Reward Carousel
+                        mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
+                    }
+                }
+
+                // From Add-ons Screen
+                1 -> {
+                    // To Rewards Carousel
+                    mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
+                }
+
+                // From Rewards Carousel Screen
+                0 -> {
+                    // Leave flow
+                    mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = false))
+                }
+            }
+        }
+    }
+
+    fun onBackThisProjectClicked() {
+        viewModelScope.launch {
+            // Open Flow
+            mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
+        }
     }
 
     class Factory(private val environment: Environment) :
@@ -99,4 +178,3 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 }
-

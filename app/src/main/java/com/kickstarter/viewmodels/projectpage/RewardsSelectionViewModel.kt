@@ -31,7 +31,7 @@ data class RewardSelectionUIState(
     val showAlertDialog: Boolean = false
 )
 
-class RewardsSelectionViewModel: ViewModel() {
+class RewardsSelectionViewModel : ViewModel() {
 
     private lateinit var currentProjectData: ProjectData
     private var previousUserBacking: Backing? = null
@@ -162,8 +162,7 @@ class RewardsSelectionViewModel: ViewModel() {
         return if (newRW == null) false
         else if (newRW.id() == backedRW.id()) false
         else {
-            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()?.lowercase(
-                Locale.getDefault()) ?: "")
+            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()?.lowercase(Locale.getDefault()) ?: "")
         }
     }
 
@@ -194,4 +193,3 @@ class RewardsSelectionViewModel: ViewModel() {
         }
     }
 }
-

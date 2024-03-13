@@ -132,23 +132,32 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
     fun onBackPressed(currentPage: Int) {
         viewModelScope.launch {
             when (currentPage) {
+                // From Checkout Screen
                 3 -> {
+                    // To Confirm Details
                     mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
                 }
 
+                // From Confirm Details Screen
                 2 -> {
                     if (newUserReward.hasAddons()) {
+                        // To Add-ons
                         mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
                     } else {
+                        // To Reward Carousel
                         mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
                     }
                 }
 
+                // From Add-ons Screen
                 1 -> {
+                    // To Rewards Carousel
                     mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
                 }
 
+                // From Rewards Carousel Screen
                 0 -> {
+                    // Leave flow
                     mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = false))
                 }
             }
@@ -157,6 +166,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
     fun onBackThisProjectClicked() {
         viewModelScope.launch {
+            // Open Flow
             mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = true))
         }
     }

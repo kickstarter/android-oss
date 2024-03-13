@@ -237,7 +237,7 @@ fun ConfirmPledgeDetailsScreen(
             }
 
             if (rewardsList.isNotEmpty() && shippingAmount.isNotEmpty() && !currentShippingRule.location()
-                    ?.displayableName().isNullOrEmpty()
+                ?.displayableName().isNullOrEmpty()
             ) {
                 item {
                     Column(

@@ -248,8 +248,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         return if (newRW == null) false
         else if (newRW.id() == backedRW.id()) false
         else {
-            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()
-                ?.lowercase(Locale.getDefault()) ?: "")
+            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()?.lowercase(Locale.getDefault()) ?: "")
         }
     }
 

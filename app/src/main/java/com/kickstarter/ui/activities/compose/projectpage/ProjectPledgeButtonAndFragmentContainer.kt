@@ -34,9 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.RewardViewUtils
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -47,7 +45,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -100,7 +97,11 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             onShippingRuleSelected = {},
             showRewardCarouselDialog = false,
             onRewardAlertDialogPositiveClicked = {},
-            onRewardAlertDialogNegativeClicked = {}
+            onRewardAlertDialogNegativeClicked = {},
+            onConfirmDetailsContinueClicked = {},
+            selectedRewardAndAddOnList = listOf(),
+            onBonusSupportMinusClicked = {},
+            onBonusSupportPlusClicked = {}
         )
     }
 }
@@ -128,7 +129,14 @@ fun ProjectPledgeButtonAndFragmentContainer(
     totalAmount: Double,
     totalAmountCurrencyConverted: Double,
     selectedReward: Reward? = null,
-    onShippingRuleSelected: (ShippingRule) -> Unit
+    onShippingRuleSelected: (ShippingRule) -> Unit,
+    initialBonusSupportAmount: Double = 0.0,
+    totalBonusSupportAmount: Double = 0.0,
+    onConfirmDetailsContinueClicked: () -> Unit,
+    shippingAmount: Double = 0.0,
+    selectedRewardAndAddOnList: List<Reward>,
+    onBonusSupportPlusClicked: () -> Unit,
+    onBonusSupportMinusClicked: () -> Unit
 ) {
     Column {
         Surface(
@@ -255,41 +263,22 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                 2 -> {
                                     ConfirmPledgeDetailsScreen(
                                         modifier = Modifier,
-                                        ksString = environment?.ksString() ?: Environment.builder()
-                                            .build().ksString(),
-                                        onContinueClicked = { },
+                                        environment = environment ?: Environment.builder().build(),
+                                        project = project,
+                                        selectedReward = selectedReward,
+                                        onContinueClicked = onConfirmDetailsContinueClicked,
                                         onShippingRuleSelected = onShippingRuleSelected,
-                                        totalAmount = environment?.ksCurrency()?.let {
-                                            RewardViewUtils.styleCurrency(
-                                                totalAmount,
-                                                project,
-                                                it
-                                            ).toString()
-                                        } ?: "",
-                                        shippingAmount = "",
+                                        totalAmount = totalAmount,
+                                        totalAmountConverted = totalAmountCurrencyConverted,
+                                        shippingAmount = shippingAmount,
                                         currentShippingRule = currentShippingRule,
                                         countryList = shippingRules,
-                                        totalAmountCurrencyConverted = environment?.ksCurrency()
-                                            ?.let {
-                                                it.format(
-                                                    totalAmountCurrencyConverted,
-                                                    project,
-                                                    true,
-                                                    RoundingMode.HALF_UP,
-                                                    true
-                                                )
-                                            } ?: "",
-                                        initialBonusSupport = "$0",
-                                        totalBonusSupport = "$0",
-                                        deliveryDateString = if (selectedReward?.estimatedDeliveryOn()
-                                            .isNotNull()
-                                        ) {
-                                            DateTimeUtils.estimatedDeliveryOn(
-                                                requireNotNull(
-                                                    selectedReward?.estimatedDeliveryOn()
-                                                )
-                                            )
-                                        } else ""
+                                        initialBonusSupport = initialBonusSupportAmount,
+                                        totalBonusSupport = totalBonusSupportAmount,
+                                        rewardsList = getRewardListAndPrices(
+                                            selectedRewardAndAddOnList, environment, project),
+                                        onBonusSupportPlusClicked = onBonusSupportPlusClicked,
+                                        onBonusSupportMinusClicked = onBonusSupportMinusClicked
                                     )
                                 }
 
@@ -302,5 +291,20 @@ fun ProjectPledgeButtonAndFragmentContainer(
                 }
             }
         }
+    }
+}
+
+fun getRewardListAndPrices(rewardsList: List<Reward>, environment: Environment?, project: Project): List<Pair<String, String>> {
+    return rewardsList.map { reward ->
+        Pair(
+            reward.title() ?:"",
+            environment?.ksCurrency()?.let {
+                RewardViewUtils.styleCurrency(
+                    reward.minimum(),
+                    project,
+                    it
+                ).toString()
+            } ?: ""
+        )
     }
 }

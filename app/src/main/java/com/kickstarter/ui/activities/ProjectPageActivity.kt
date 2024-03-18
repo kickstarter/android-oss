@@ -28,11 +28,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rxjava2.subscribeAsState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
@@ -82,6 +79,7 @@ import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
+import com.kickstarter.viewmodels.projectpage.ConfirmDetailsViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
@@ -104,8 +102,11 @@ class ProjectPageActivity :
     private lateinit var checkoutViewModelFactory: CheckoutFlowViewModel.Factory
     private val checkoutFlowViewModel: CheckoutFlowViewModel by viewModels { checkoutViewModelFactory }
 
-    private var rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
+    private val rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
     private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
+
+    private lateinit var confirmDetailsViewModelFactory: ConfirmDetailsViewModel.Factory
+    private val confirmDetailsViewModel: ConfirmDetailsViewModel by viewModels { confirmDetailsViewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -163,6 +164,16 @@ class ProjectPageActivity :
                         }
                     }
 
+                    val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
+
+                    val totalAmount: Double = confirmUiState.totalAmount
+                    val totalAmountConverted = confirmUiState.totalAmountConverted
+                    val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
+                    val shippingAmount = confirmUiState.shippingAmount
+                    val initialBonusAmount = confirmUiState.initialBonusSupportAmount
+                    val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
+
+
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     val coroutineScope = rememberCoroutineScope()
@@ -187,14 +198,6 @@ class ProjectPageActivity :
                     val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
 
                     val addOns = checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
-
-                    var totalAmount by remember {
-                        mutableDoubleStateOf(0.0)
-                    }
-
-                    var totalAmountCurrencyConverted by remember {
-                        mutableDoubleStateOf(0.0)
-                    }
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
@@ -224,19 +227,25 @@ class ProjectPageActivity :
                             selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
-                            totalAmount = getTotalAmount(selectedReward, addOnsMap)
-                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
+                            confirmDetailsViewModel.onUserSelectedReward(reward)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
                             addOnsMap[updateAddOnRewardCount.keys.first()] =
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
 
-                            totalAmount = getTotalAmount(selectedReward, addOnsMap)
-                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
+                            confirmDetailsViewModel.onUserUpdatedAddOns(addOnsMap.map { it.key })
                         },
+                        selectedReward = selectedReward,
                         totalAmount = totalAmount,
-                        totalAmountCurrencyConverted = totalAmountCurrencyConverted,
-                        onShippingRuleSelected = {}
+                        totalAmountCurrencyConverted = totalAmountConverted,
+                        selectedRewardAndAddOnList = rewardsAndAddOns,
+                        initialBonusSupportAmount = initialBonusAmount,
+                        totalBonusSupportAmount = totalBonusSupportAmount,
+                        onShippingRuleSelected = {},
+                        shippingAmount = shippingAmount,
+                        onConfirmDetailsContinueClicked = { checkoutFlowViewModel.onConfirmDetailsContinueClicked() },
+                        onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
+                        onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() }
                     )
                 }
             }
@@ -245,6 +254,7 @@ class ProjectPageActivity :
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
+            confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
             env
         }
         this.ksString = requireNotNull(environment?.ksString())
@@ -288,6 +298,7 @@ class ProjectPageActivity :
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
                 checkoutFlowViewModel.provideProjectData(it)
                 rewardsSelectionViewModel.provideProjectData(it)
+                confirmDetailsViewModel.provideProjectData(it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()
@@ -536,28 +547,6 @@ class ProjectPageActivity :
         }
 
         binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
-    }
-
-    private fun getTotalAmount(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
-        var total = 0.0
-        selectedReward?.let {
-            total += it.minimum()
-        }
-        addOnsMap.forEach { rewardCountMap ->
-            total += rewardCountMap.key.minimum() * rewardCountMap.value
-        }
-        return total
-    }
-
-    private fun getTotalAmountConverted(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
-        var total = 0.0
-        selectedReward?.let {
-            total += it.convertedMinimum()
-        }
-        addOnsMap.forEach { rewardCountMap ->
-            total += rewardCountMap.key.convertedMinimum() * rewardCountMap.value
-        }
-        return total
     }
 
     /**

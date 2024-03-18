@@ -8,6 +8,7 @@ query UserPayments {
         state
         paymentType
         type
+        stripeCardId
       }
     }
   }
@@ -28,6 +29,7 @@ mutation SavePaymentMethod($paymentType: PaymentTypes, $stripeToken: String, $st
       state
       paymentType
       type
+      stripeCardId
     }
   }
 }

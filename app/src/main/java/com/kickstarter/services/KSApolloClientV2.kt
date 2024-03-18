@@ -92,6 +92,7 @@ import type.BackingState
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
+import java.util.Base64
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -315,6 +316,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                         .id(cardData.id())
                                         .lastFourDigits(cardData.lastFour())
                                         .type(it.type())
+                                        .stripeCardId(it.stripeCardId())
                                         .build()
                                     cardsList.add(card)
                                 }

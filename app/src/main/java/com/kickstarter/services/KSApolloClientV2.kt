@@ -92,7 +92,6 @@ import type.BackingState
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
-import java.util.Base64
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>

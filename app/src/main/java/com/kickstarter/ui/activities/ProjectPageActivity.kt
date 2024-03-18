@@ -173,6 +173,12 @@ class ProjectPageActivity :
                     val initialBonusAmount = confirmUiState.initialBonusSupportAmount
                     val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
 
+                    val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(checkoutPayment.id) {
+                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                    }
+
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
@@ -243,7 +249,7 @@ class ProjectPageActivity :
                         totalBonusSupportAmount = totalBonusSupportAmount,
                         onShippingRuleSelected = {},
                         shippingAmount = shippingAmount,
-                        onConfirmDetailsContinueClicked = { checkoutFlowViewModel.onConfirmDetailsContinueClicked() },
+                        onConfirmDetailsContinueClicked = { confirmDetailsViewModel.onContinueClicked() },
                         onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() }
                     )

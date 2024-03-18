@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -59,6 +62,16 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 initialValue = ConfirmDetailsUIState()
             )
 
+    private val mutableCheckoutPayment = MutableStateFlow(CheckoutPayment(id = 0L, paymentUrl = null))
+    val checkoutPayment: StateFlow<CheckoutPayment>
+        get() = mutableCheckoutPayment
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = CheckoutPayment(id = 0L, paymentUrl = null)
+            )
+
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
         viewModelScope.launch {
@@ -81,6 +94,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     }
                     .catch {
                     }
+                    .collect()
             }
         }
     }
@@ -107,8 +121,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             )
         }
 
-        totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
-        totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
+        totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+        totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
 
         viewModelScope.launch {
             mutableConfirmDetailsUIState.emit(
@@ -141,8 +155,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             )
         }
 
-        totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
-        totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
+        totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+        totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
 
         viewModelScope.launch {
             mutableConfirmDetailsUIState.emit(
@@ -236,8 +250,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     fun incrementBonusSupport() {
         addedBonusSupport += 1.0
-        totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
-        totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
+        totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+        totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
         viewModelScope.launch {
             mutableConfirmDetailsUIState.emit(
                 ConfirmDetailsUIState(
@@ -255,8 +269,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     fun decrementBonusSupport() {
         if (addedBonusSupport > 0) {
             addedBonusSupport -= 1.0
-            totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
-            totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport
+            totalAmount = getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+            totalAmountConverted = getTotalAmountConverted(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
             viewModelScope.launch {
                 mutableConfirmDetailsUIState.emit(
                     ConfirmDetailsUIState(
@@ -269,6 +283,27 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     )
                 )
             }
+        }
+    }
+
+    fun onContinueClicked() {
+        viewModelScope.launch {
+            apolloClient.createCheckout(
+                CreateCheckoutData(
+                    project = projectData.project(),
+                    amount = totalAmount.toString(),
+                    locationId = if (::defaultShippingRule.isInitialized) defaultShippingRule.location()?.id()?.toString() else null,
+                    refTag = projectData.refTagFromIntent()
+                )
+            )
+                .asFlow()
+                .map { checkoutPayment ->
+                    mutableCheckoutPayment.emit(checkoutPayment)
+                }
+                .catch {
+                    // Display an error
+                }
+                .collect()
         }
     }
 

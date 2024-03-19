@@ -117,7 +117,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 rule = defaultShippingRule,
                 reason = pledgeReason,
                 bShippingAmount = null,
-                listRw = rewardAndAddOns
+                rewards = rewardAndAddOns
             )
         }
 
@@ -138,12 +138,18 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onUserUpdatedAddOns(addOns: List<Reward>) {
+    fun onUserUpdatedAddOns(addOns: Map<Reward, Int>) {
         val rewardsAndAddOns = mutableListOf<Reward>()
         if (::userSelectedReward.isInitialized && !RewardUtils.isNoReward(userSelectedReward)) {
             rewardsAndAddOns.add(userSelectedReward)
         }
-        rewardsAndAddOns.addAll(addOns)
+
+        addOns.forEach { rewardAndQuantity ->
+            if (rewardAndQuantity.value > 0) {
+                rewardsAndAddOns.add(rewardAndQuantity.key.toBuilder().quantity(rewardAndQuantity.value).build())
+            }
+        }
+
         rewardAndAddOns = rewardsAndAddOns
 
         if (::defaultShippingRule.isInitialized) {
@@ -151,7 +157,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 rule = defaultShippingRule,
                 reason = pledgeReason,
                 bShippingAmount = null,
-                listRw = rewardAndAddOns
+                rewards = rewardAndAddOns
             )
         }
 
@@ -179,14 +185,14 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         rule: ShippingRule,
         reason: PledgeReason,
         bShippingAmount: Float? = null,
-        listRw: List<Reward>
+        rewards: List<Reward>
     ): Double {
-        val rw = listRw.first()
+        val rw = rewards.first()
 
         return when (reason) {
             PledgeReason.UPDATE_REWARD,
             PledgeReason.PLEDGE -> if (rw.hasAddons()) shippingCostForAddOns(
-                listRw,
+                rewards,
                 rule
             ) + rule.cost() else rule.cost()
 
@@ -234,16 +240,24 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     private fun getTotalAmount(rewards: List<Reward>): Double {
         var total = 0.0
-        rewards.forEach {
-            total += it.minimum()
+        rewards.forEach { reward ->
+            reward.quantity()?.let { quantity ->
+                total += (reward.minimum() * quantity)
+            } ?: run {
+                total += reward.minimum()
+            }
         }
         return total
     }
 
     private fun getTotalAmountConverted(rewards: List<Reward>): Double {
         var total = 0.0
-        rewards.forEach {
-            total += it.convertedMinimum()
+        rewards.forEach { reward ->
+            reward.quantity()?.let { quantity ->
+                total += (reward.convertedMinimum() * quantity)
+            } ?: run {
+                total += reward.convertedMinimum()
+            }
         }
         return total
     }

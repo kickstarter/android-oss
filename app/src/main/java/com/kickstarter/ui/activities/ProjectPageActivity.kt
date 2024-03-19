@@ -140,7 +140,7 @@ class ProjectPageActivity :
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
-
+        // TODO: Initialize and use this flow only when post campaign is on and enabled for a project
         val composeView = binding.pledgeContainerCompose
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -180,6 +180,11 @@ class ProjectPageActivity :
                     }
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
+
+                    this@ProjectPageActivity.onBackPressedDispatcher.addCallback {
+                        if (expanded) checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
+                        else finishWithAnimation()
+                    }
 
                     val coroutineScope = rememberCoroutineScope()
 
@@ -244,7 +249,7 @@ class ProjectPageActivity :
                             addOnsMap[updateAddOnRewardCount.keys.first()] =
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
 
-                            confirmDetailsViewModel.onUserUpdatedAddOns(addOnsMap.map { it.key })
+                            confirmDetailsViewModel.onUserUpdatedAddOns(addOnsMap)
                         },
                         selectedReward = selectedReward,
                         totalAmount = totalAmount,
@@ -557,10 +562,12 @@ class ProjectPageActivity :
             }
         }
 
-        this.onBackPressedDispatcher.addCallback {
-            finishWithAnimation()
-        }
+        // TODO: change logic to use this if project is non-post campaign
+//        this.onBackPressedDispatcher.addCallback {
+//            finishWithAnimation()
+//        }
 
+        // TODO: handle the showing/hiding based on project post campaign flags
         binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
     }
 

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -297,15 +298,30 @@ fun ProjectPledgeButtonAndFragmentContainer(
 
 fun getRewardListAndPrices(rewardsList: List<Reward>, environment: Environment?, project: Project): List<Pair<String, String>> {
     return rewardsList.map { reward ->
-        Pair(
-            reward.title() ?: "",
-            environment?.ksCurrency()?.let {
-                RewardViewUtils.styleCurrency(
-                    reward.minimum(),
-                    project,
-                    it
-                ).toString()
-            } ?: ""
-        )
+        if (!reward.quantity().isNullOrZero()) {
+            val title = reward.title() ?: ""
+            val quantity = reward.quantity() ?: 1
+            Pair(
+                "$title X $quantity",
+                environment?.ksCurrency()?.let {
+                    RewardViewUtils.styleCurrency(
+                        reward.minimum() * quantity,
+                        project,
+                        it
+                    ).toString()
+                } ?: ""
+            )
+        } else {
+            Pair(
+                reward.title() ?: "",
+                environment?.ksCurrency()?.let {
+                    RewardViewUtils.styleCurrency(
+                        reward.minimum(),
+                        project,
+                        it
+                    ).toString()
+                } ?: ""
+            )
+        }
     }
 }

@@ -276,7 +276,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         initialBonusSupport = initialBonusSupportAmount,
                                         totalBonusSupport = totalBonusSupportAmount,
                                         rewardsList = getRewardListAndPrices(
-                                            selectedRewardAndAddOnList, environment, project),
+                                            selectedRewardAndAddOnList, environment, project
+                                        ),
                                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                                         onBonusSupportMinusClicked = onBonusSupportMinusClicked
                                     )
@@ -297,7 +298,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
 fun getRewardListAndPrices(rewardsList: List<Reward>, environment: Environment?, project: Project): List<Pair<String, String>> {
     return rewardsList.map { reward ->
         Pair(
-            reward.title() ?:"",
+            reward.title() ?: "",
             environment?.ksCurrency()?.let {
                 RewardViewUtils.styleCurrency(
                     reward.minimum(),

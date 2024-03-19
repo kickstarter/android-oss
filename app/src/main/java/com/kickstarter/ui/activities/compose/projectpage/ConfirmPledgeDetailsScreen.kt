@@ -231,7 +231,6 @@ fun ConfirmPledgeDetailsScreen(
         ) ?: ""
     }
 
-
     val shippingLocation = currentShippingRule.location()?.displayableName() ?: ""
 
     val shippingLocationString = environment?.ksString()?.format(
@@ -334,7 +333,7 @@ fun ConfirmPledgeDetailsScreen(
             }
 
             if (rewardsList.isNotEmpty() && shippingAmountString.isNotEmpty() && !currentShippingRule.location()
-                    ?.displayableName().isNullOrEmpty()
+                ?.displayableName().isNullOrEmpty()
             ) {
                 item {
                     Column(

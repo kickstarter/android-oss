@@ -179,7 +179,6 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked()
                     }
 
-
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     val coroutineScope = rememberCoroutineScope()

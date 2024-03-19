@@ -188,22 +188,28 @@ class ProjectPageActivity :
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(
                                 page = currentPage,
-                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                animationSpec = tween(
+                                    durationMillis = 200,
+                                    easing = FastOutSlowInEasing
+                                )
                             )
                         }
                     }
 
-                    val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
+                    val shippingRules =
+                        checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
 
-                    val currentUserShippingRule = checkoutFlowViewModel.defaultShippingRule.subscribeAsState(
-                        initial = ShippingRule.builder().build()
-                    ).value
+                    val currentUserShippingRule =
+                        checkoutFlowViewModel.defaultShippingRule.subscribeAsState(
+                            initial = ShippingRule.builder().build()
+                        ).value
 
                     var selectedReward: Reward? = null
 
                     val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
 
-                    val addOns = checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
+                    val addOns =
+                        checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
@@ -249,7 +255,11 @@ class ProjectPageActivity :
                         totalBonusSupportAmount = totalBonusSupportAmount,
                         onShippingRuleSelected = {},
                         shippingAmount = shippingAmount,
-                        onConfirmDetailsContinueClicked = { confirmDetailsViewModel.onContinueClicked() },
+                        onConfirmDetailsContinueClicked = {
+                            confirmDetailsViewModel.onContinueClicked {
+                                checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                            }
+                        },
                         onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() }
                     )

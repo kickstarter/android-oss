@@ -286,24 +286,28 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onContinueClicked() {
-        viewModelScope.launch {
-            apolloClient.createCheckout(
-                CreateCheckoutData(
-                    project = projectData.project(),
-                    amount = totalAmount.toString(),
-                    locationId = if (::defaultShippingRule.isInitialized) defaultShippingRule.location()?.id()?.toString() else null,
-                    refTag = projectData.refTagFromIntent()
+    fun onContinueClicked(defaultAction: () -> Unit) {
+        if (projectData.project().postCampaignPledgingEnabled() == true && projectData.project().isInPostCampaignPledgingPhase() == true) {
+            viewModelScope.launch {
+                apolloClient.createCheckout(
+                    CreateCheckoutData(
+                        project = projectData.project(),
+                        amount = totalAmount.toString(),
+                        locationId = if (::defaultShippingRule.isInitialized) defaultShippingRule.location()?.id()?.toString() else null,
+                        refTag = projectData.refTagFromIntent()
+                    )
                 )
-            )
-                .asFlow()
-                .map { checkoutPayment ->
-                    mutableCheckoutPayment.emit(checkoutPayment)
-                }
-                .catch {
-                    // Display an error
-                }
-                .collect()
+                    .asFlow()
+                    .map { checkoutPayment ->
+                        mutableCheckoutPayment.emit(checkoutPayment)
+                    }
+                    .catch {
+                        // Display an error
+                    }
+                    .collect()
+            }
+        } else {
+            defaultAction.invoke()
         }
     }
 

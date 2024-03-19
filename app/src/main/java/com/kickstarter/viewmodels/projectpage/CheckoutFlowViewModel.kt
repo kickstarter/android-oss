@@ -122,12 +122,13 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onAddOnsContinueClicked() {
-        viewModelScope.launch {
-            // Show confirm page
-            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
-        }
-    }
+    // TODO: Replace with onAddOnsContinueClicked in AddOnsViewModel
+//    fun onAddOnsContinueClicked() {
+//        viewModelScope.launch {
+//            // Show confirm page
+//            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
+//        }
+//    }
 
     fun onBackPressed(currentPage: Int) {
         viewModelScope.launch {

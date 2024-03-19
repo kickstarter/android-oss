@@ -81,6 +81,7 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
@@ -106,6 +107,9 @@ class ProjectPageActivity :
 
     private var rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
     private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
+
+    private lateinit var addOnsViewModelFactory: AddOnsViewModel.Factory
+    private val addOnsViewModel: AddOnsViewModel by viewModels { addOnsViewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -163,6 +167,14 @@ class ProjectPageActivity :
                         }
                     }
 
+                    val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(Unit) {
+                        addOnsViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
+
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     val coroutineScope = rememberCoroutineScope()
@@ -204,7 +216,7 @@ class ProjectPageActivity :
                         },
                         pagerState = pagerState,
                         onAddOnsContinueClicked = {
-                            checkoutFlowViewModel.onAddOnsContinueClicked()
+                            addOnsViewModel.onAddOnsContinueClicked()
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
@@ -245,6 +257,7 @@ class ProjectPageActivity :
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
+            addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             env
         }
         this.ksString = requireNotNull(environment?.ksString())
@@ -288,6 +301,7 @@ class ProjectPageActivity :
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
                 checkoutFlowViewModel.provideProjectData(it)
                 rewardsSelectionViewModel.provideProjectData(it)
+                addOnsViewModel.provideProjectData(it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()

@@ -81,6 +81,13 @@ patrocinadores</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Unas cuantas veces al año: Noticias sobresalientes de Kickstarter y eventos cerca de ti.</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Importantes novedades de Kickstarter, además de proyectos y eventos ocasionales elegidos especialmente para ti.</string>
   <string name="Biography" formatted="false">Biografía</string>
+  <string name="Block" formatted="false">Bloquear</string>
+  <string name="Block_this_user" formatted="false">Bloquear a este usuario</string>
+  <string name="Block_user_fail" formatted="false">Tu solicitud no se procesó. Intenta otra vez.</string>
+  <string name="Block_user_success" formatted="false">Este usuario se bloqueó con éxito.</string>
+  <string name="Block_username" formatted="false">¿Bloquear a %{username}?</string>
+  <string name="Blocked_user" formatted="false">Usuario bloqueado</string>
+  <string name="Blocked_user_confirmation" formatted="false">Al bloquear a este usuario, ya no verás sus comentarios ni su contenido. Si guardaste o patrocinaste proyectos del usuario, debes eliminar tu contribución antes de bloquearlo. Puedes desbloquear usuarios desde nuestro Centro de ayuda.</string>
   <string name="Bonus" formatted="false">Extra</string>
   <string name="Bonus_support" formatted="false">Apoyo extra</string>
   <string name="Bookmarks" formatted="false">Marcadores</string>
@@ -111,6 +118,7 @@ patrocinadores</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Echa un vistazo a estos proyectos seleccionados exclusivamente para ti.</string>
   <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">Revisa tu bandeja de entrada para completar este simple paso.</string>
   <string name="Check_your_payment_details" formatted="false">Revisa tu información de pago</string>
+  <string name="Checkout" formatted="false">Checkout</string>
   <string name="Choose_another_reward" formatted="false">Elegir otra recompensa</string>
   <string name="Chooses_location_for_shipping" formatted="false">Destino determinado: %{location}.</string>
   <string name="Chosen_just_for_you" formatted="false">Elegidos especialmente para ti</string>
@@ -127,6 +135,7 @@ patrocinadores</string>
   <string name="Complete_payment" formatted="false">Completar pago</string>
   <string name="Confirm" formatted="false">Confirmar</string>
   <string name="Confirm_password" formatted="false">Confirmar nueva contraseña</string>
+  <string name="Confirm_your_pledge_details" formatted="false">Confirm your pledge details</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>
   <string name="Contact_backer" formatted="false">Contacta al patrocinador</string>
   <string name="Contact_creator" formatted="false">Comunicarse con el creador</string>
@@ -353,6 +362,7 @@ Toca para intentar de nuevo.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter no es una tienda. Es una forma de dar vida a proyectos creativos.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter no es una tienda. Es una forma de dar vida a proyectos creativos.&lt;br/>&lt;a href="%{trust_link}">Más información sobre las responsabilidades&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter presta suma atención a las denuncias de infracción de derecho intelectual. Para encontrar más información e instrucciones sobre cómo denunciar una infracción, visita nuestra Política de copyright y nuestra Política de marca registrada. Solo se pueden procesar las denuncias presentadas por el propietario del copyright o marca registrada.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Información sobre la política de IA en Kickstarter</string>
@@ -449,6 +459,7 @@ Toca para intentar de nuevo.</string>
   <string name="Opens_rewards" formatted="false">Abre recompensas.</string>
   <string name="Opens_shipping_options" formatted="false">Abre las opciones de envío.</string>
   <string name="Opens_update" formatted="false">Abre actualización.</string>
+  <string name="Opens_user_menu" formatted="false">Abre el menú del usuario.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">También puedes seleccionar una de las siguientes recompensas:</string>
   <string name="Other_payment_methods" formatted="false">Otros métodos de pago</string>
   <string name="Other_projects_you_might_like" formatted="false">Otros proyectos que te pueden gustar.</string>
@@ -597,6 +608,7 @@ Toca para intentar de nuevo.</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
   <string name="Select_up_to_five" formatted="false">Selecciona hasta cinco de las opciones que aparecen a continuación.</string>
+  <string name="Select_your_reward" formatted="false">Select your reward</string>
   <string name="Selected" formatted="false">Seleccionada</string>
   <string name="Selected_card" formatted="false">Tarjeta seleccionada</string>
   <string name="Selected_reward" formatted="false">Recompensa seleccionada</string>
@@ -698,6 +710,7 @@ Toca para intentar de nuevo.</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Este proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo a tu método de pago.</string>
   <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">Dado que este proyecto tiene una moneda establecida, no se puede procesar esta opción.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Este proyecto sólo será financiado si se contribuye al menos un monto de %{amount} antes del %{date}.</string>
+  <string name="This_user_has_been_blocked" formatted="false">Este usuario se bloqueó.</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Accede a tus categorías favoritas en el menú en la parte superior de la app.</string>
   <string name="To_learn_how_Kickstarter_encourages_sustainable_practices" formatted="false">para conocer cómo Kickstarter incentiva las prácticas sustentables.</string>
@@ -737,6 +750,7 @@ Toca para intentar de nuevo.</string>
   <string name="View" formatted="false">Ver</string>
   <string name="View_dashboard" formatted="false">Ver panel</string>
   <string name="View_more_replies" formatted="false">Ver más respuestas</string>
+  <string name="View_profile" formatted="false">Ver perfil</string>
   <string name="View_progress" formatted="false">Ver progreso</string>
   <string name="View_project" formatted="false">Ver proyecto</string>
   <string name="View_replies" formatted="false">Ver respuestas</string>
@@ -799,7 +813,10 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Has cancelado tu contribución a este proyecto.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">No puedes usar esta tarjeta de crédito para patrocinar un proyecto de %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>
-  <string name="You_launched_this_project_on_launch_date" formatted="false">Publicaste el proyecto el: %{launch_date}.</string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
+&lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
+&lt;p>This project is now one step closer to a reality, thanks to you. Spread the word!&lt;/p></string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">Publicaste el proyecto el %{launch_date}. Encuentra las herramientas para creadores en nuestro sitio web.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Debes contribuir, al menos, %{reward_minimum} para obtener esta recompensa.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Contribuiste sin recompensa</string>
@@ -813,6 +830,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_message_has_been_sent" formatted="false">Se envió tu mensaje.</string>
   <string name="Your_name_displayed" formatted="false">Tu nombre siempre se muestra en tu perfil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Se efectuó el cargo a tu método de pago.</string>
+  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Your payment method will be charged immediately upon pledge and you’ll receive a confirmation email at %{user_email}. Your pledge cannot be canceled or modified.</string>
   <string name="Your_pledge" formatted="false">Tu contribución</string>
   <string name="Your_pledge_amount" formatted="false">Monto de tu contribución:</string>
   <string name="Your_pledge_details" formatted="false">Los detalles de tu contribución</string>
@@ -1472,6 +1490,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="login_tout_generic_intent_title" formatted="false">¡Un momentito! Primero tienes que iniciar sesión con tu cuenta de Kickstarter para continuar. Regístrate o inicia sesión con tu dirección de correo electrónico o con tu cuenta de Facebook.</string>
   <string name="login_tout_generic_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
   <string name="login_tout_generic_intent_traditional_signup_button" formatted="false">Registrar</string>
+  <string name="login_tout_generic_intent_traditional_signup_or_login_button" formatted="false">Registrarme o iniciar sesión</string>
   <string name="login_tout_generic_intent_traditional_title" formatted="false">Utiliza tu dirección de correo electrónico:</string>
   <string name="login_tout_help_sheet_cancel" formatted="false">Cancelar</string>
   <string name="login_tout_help_sheet_contact" formatted="false">Contacto</string>

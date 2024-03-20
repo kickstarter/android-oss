@@ -313,7 +313,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     fun onContinueClicked(defaultAction: () -> Unit) {
         if (projectData.project().postCampaignPledgingEnabled() == true && projectData.project()
-                .isInPostCampaignPledgingPhase() == true
+            .isInPostCampaignPledgingPhase() == true
         ) {
             viewModelScope.launch {
                 apolloClient.createCheckout(

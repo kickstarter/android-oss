@@ -230,9 +230,9 @@ fun KSRewardCard(
                 }
 
                 LogInSignUpClickableDisclaimerText(
-                        onPrivacyPolicyClicked ={},
-                        onCookiePolicyClicked = {},
-                        onTermsOfUseClicked = {}
+                    onPrivacyPolicyClicked = {},
+                    onCookiePolicyClicked = {},
+                    onTermsOfUseClicked = {}
 
                 )
 

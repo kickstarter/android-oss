@@ -39,7 +39,8 @@ class EncryptionEngine(
     override fun set(value: String?) {
         value?.let {
             val encryptedData = encrypt(key, it)
-            val b64 = Base64.encodeToString(encryptedData, CodeVerifier.PKCE_BASE64_ENCODE_SETTINGS)
+            val b64encoding = Base64.NO_WRAP or Base64.NO_PADDING or Base64.URL_SAFE
+            val b64 = Base64.encodeToString(encryptedData, b64encoding)
             sharedPreferences.edit().putString(key, b64).apply()
         }
     }

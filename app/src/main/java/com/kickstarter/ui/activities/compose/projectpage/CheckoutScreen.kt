@@ -362,16 +362,7 @@ fun CheckoutScreen(
                     ItemizedRewardListContainer(
                         ksString = ksString,
                         rewardsList = rewardsList,
-                        shippingAmount = if (shippingAmount == 0.0) ""
-                        else {
-                            environment.ksCurrency()?.format(
-                                shippingAmount,
-                                project,
-                                true,
-                                RoundingMode.HALF_UP,
-                                true
-                            ) ?: ""
-                        },
+                        shippingAmount = shippingAmount,
                         initialShippingLocation = shippingLocationString,
                         totalAmount = totalAmountString,
                         totalAmountCurrencyConverted = aboutTotalString,
@@ -395,7 +386,8 @@ fun CheckoutScreen(
                             Pair(stringResource(id = R.string.Pledge_without_a_reward), totalAmountString)
                         },
                         initialBonusSupport = "",
-                        totalBonusSupport = ""
+                        totalBonusSupport = "",
+                        shippingAmount = shippingAmount
                     )
                 }
             }

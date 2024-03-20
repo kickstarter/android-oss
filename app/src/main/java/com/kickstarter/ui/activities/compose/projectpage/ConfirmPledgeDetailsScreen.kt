@@ -359,7 +359,7 @@ fun ConfirmPledgeDetailsScreen(
                         start = dimensions.paddingMedium,
                         top = dimensions.paddingMedium
                     ),
-                    text = "Confirm your pledge details.",
+                    text = stringResource(id = R.string.Confirm_your_pledge_details),
                     style = typography.title3Bold,
                     color = colors.textPrimary
                 )

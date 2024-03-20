@@ -230,13 +230,6 @@ fun KSRewardCard(
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 }
 
-                LogInSignUpClickableDisclaimerText(
-                    onPrivacyPolicyClicked = {},
-                    onCookiePolicyClicked = {},
-                    onTermsOfUseClicked = {}
-
-                )
-
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp),

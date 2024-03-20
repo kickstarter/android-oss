@@ -370,8 +370,8 @@ public class ApplicationModule {
   @Singleton
   @AccessTokenPreference
   @NonNull
-  static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
+  static StringPreferenceType provideAccessTokenPreference(final @NonNull RxDataStore<Preferences> dataStorePreference) {
+    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.ACCESS_TOKEN);
   }
 
   @Provides
@@ -385,15 +385,15 @@ public class ApplicationModule {
   @Singleton
   @ConfigPreference
   @NonNull
-  static StringPreferenceType providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, SharedPreferenceKey.CONFIG);
+  static StringPreferenceType providesConfigPreference(final @NonNull RxDataStore<Preferences> dataStorePreference) {
+    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.CONFIG);
   }
 
   @Provides
   @Singleton
   @NonNull
-  static  StringPreferenceType providesFeaturesFlagsPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, SharedPreferenceKey.FEATURE_FLAG);
+  static  StringPreferenceType providesFeaturesFlagsPreference(final @NonNull RxDataStore<Preferences> dataStorePreference) {
+    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.FEATURE_FLAG);
   }
 
   @Provides

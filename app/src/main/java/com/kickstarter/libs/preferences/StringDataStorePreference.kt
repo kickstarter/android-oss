@@ -9,14 +9,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class StringDataStorePreference @JvmOverloads constructor(
     private val dataStore: RxDataStore<Preferences>,
-    private val key: String
+    private val key: String,
+    private val defaultValue: String = ""
 ) : StringPreferenceType {
 
     // Key for saving integer value
     private val stringKey: Preferences.Key<String> = stringPreferencesKey(key)
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun get(): String {
-        var value = ""
+        var value = defaultValue
 
         dataStore.data().map { prefString ->
             prefString[stringKey] ?: ""

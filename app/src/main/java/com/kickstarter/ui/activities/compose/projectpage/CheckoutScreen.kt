@@ -29,7 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -81,9 +80,6 @@ import java.util.Locale
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun CheckoutScreenPreview() {
     KSTheme {
-        val storedCards = listOf(
-            StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.visa()
-        )
         CheckoutScreen(
             isCTAButtonEnabled = true,
             rewardsList = (1..6).map {
@@ -111,6 +107,7 @@ fun CheckoutScreenPreview() {
                     )
                 )
                 .build(),
+            email = "example@example.com",
             pledgeReason = PledgeReason.PLEDGE,
             onPledgeCtaClicked = { },
             newPaymentMethodClicked = { }
@@ -125,6 +122,7 @@ fun CheckoutScreen(
     environment: Environment,
     selectedReward: Reward? = null,
     project: Project,
+    email: String?,
     ksString: KSString? = null,
     rewardsList: List<Pair<String, String>> = listOf(),
     shippingAmount: Double = 0.0,
@@ -168,10 +166,18 @@ fun CheckoutScreen(
                             text = if (pledgeReason == PledgeReason.PLEDGE) stringResource(id = R.string.Pledge) else stringResource(id = R.string.Confirm)
                         )
 
-                        Text(
-                            text = "Your payment method will be charged immediately upon pledge. You’ll receive a confirmation email at %{email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.", textAlign = TextAlign.Center,
-                            style = typography.caption2, color = colors.kds_support_400
-                        )
+                        val formattedEmailDisclaimerString = ksString?.let {
+                            email?.let { email ->
+                                ksString.format(stringResource(id = R.string.Your_payment_method_will_be_charged_immediately), "user_email", email)
+                            }
+                        }
+
+                        if (!formattedEmailDisclaimerString.isNullOrEmpty()) {
+                            Text(
+                                text = formattedEmailDisclaimerString, textAlign = TextAlign.Center,
+                                style = typography.caption2, color = colors.kds_support_400
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
@@ -235,7 +241,7 @@ fun CheckoutScreen(
 
             Text(
                 modifier = Modifier.padding(start = dimensions.paddingMediumLarge, top = dimensions.paddingMediumLarge),
-                text = "Checkout",
+                text = stringResource(id = R.string.Checkout),
                 style = typography.title3Bold,
                 color = colors.kds_black,
             )
@@ -588,7 +594,7 @@ fun KSCardElement(card: StoredCard, ksString: KSString?, isAvailable: Boolean) {
                 "expiration_date", sdf.format(expiration).toString()
             )
         }
-    } ?: "Expiration Date 3/2025sfgdfhgdfkhgkdfhgkdjfhkghdfkghkdfhgkdfhgkdhfg"
+    }
 
     val lastFourString = ksString?.let {
         card.lastFourDigits()?.let { lastFour ->
@@ -597,7 +603,7 @@ fun KSCardElement(card: StoredCard, ksString: KSString?, isAvailable: Boolean) {
                 "last_four", lastFour
             )
         }
-    } ?: ".... 1234"
+    }
 
     Row {
         Image(

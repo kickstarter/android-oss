@@ -115,20 +115,21 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
      * Refreshes the user object if there is not a user logged in with a non-null access token.
      */
     private fun refreshUser() {
-        val accessToken = currentUser.accessToken ?: ""
-
-        // Check if the access token is null and the user is still logged in.
-        if (isLoggedIn && accessToken.isNull()) {
-            forceLogout("access_token_null")
-        } else {
-            if (accessToken.isNotNull() && accessToken.isNotEmpty()) {
-                client.fetchCurrentUser()
-                    .compose(Transformers.neverErrorV2())
-                    .subscribe { user ->
-                        currentUser.refresh(user)
-                    }.addToDisposable(disposables)
-            }
-        }
+        currentUser.accessToken
+            .subscribe { token ->
+                // Check if the access token is null and the user is still logged in.
+                if (isLoggedIn && token.isNull()) {
+                    forceLogout("access_token_null")
+                } else {
+                    if (token.isNotNull() && token.isNotEmpty()) {
+                        client.fetchCurrentUser()
+                            .compose(Transformers.neverErrorV2())
+                            .subscribe { user ->
+                                currentUser.refresh(user)
+                            }.addToDisposable(disposables)
+                    }
+                }
+            }.dispose()
     }
 
     override fun onActivityPaused(activity: Activity) { disposables.clear() }

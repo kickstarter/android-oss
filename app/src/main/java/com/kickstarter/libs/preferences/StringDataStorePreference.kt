@@ -1,62 +1,63 @@
 package com.kickstarter.libs.preferences
 
+import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.rxjava2.RxDataStore
-import io.reactivex.Single
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import androidx.datastore.preferences.preferencesDataStore
+import io.reactivex.Observable
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asObservable
+import timber.log.Timber
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore("oauth")
 
 class StringDataStorePreference @JvmOverloads constructor(
-    private val dataStore: RxDataStore<Preferences>,
+    private val context: Context,
     private val key: String,
     private val defaultValue: String = ""
-) : StringPreferenceType {
+) : RxStringPreferenceType{
 
     // Key for saving integer value
     private val stringKey: Preferences.Key<String> = stringPreferencesKey(key)
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun get(): String {
-        var value = defaultValue
 
-        dataStore.data().map { prefString ->
-            prefString[stringKey] ?: ""
-        }
-            .subscribe { value = it }
-            .dispose()
-        return value
-    }
+    override fun get() =
+        context.dataStore.data
+            .map { preferences ->
+                preferences[stringKey] ?: defaultValue
+            }.asObservable()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val isSet: Boolean
-        get() {
-            var value = false
-            dataStore.data().map { prefString ->
-                prefString.contains(stringKey)
-            }
-                .subscribe { value = it }
-                .dispose()
+    override val isSet: Observable<Boolean>
+        get() = context.dataStore.data
+                .map { preferences ->
+                    preferences.contains(stringKey)
+                }.asObservable()
 
-            return value
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class)
     override fun set(value: String?) {
         value?.let {
-            dataStore.updateDataAsync { prefString ->
-                val mutablePrefs = prefString.toMutablePreferences()
-                mutablePrefs[stringKey] = value
-                Single.just(mutablePrefs)
-            }.subscribe().dispose()
+            GlobalScope.launch {
+                try {
+                    context.dataStore.edit { setting ->
+                        setting[stringKey] = value
+                    }
+                }catch (e: Exception) {
+                    Timber.d("wtf")
+                }
+            }
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class)
     override fun delete() {
-        dataStore.updateDataAsync { prefString ->
-            val mutablePrefs = prefString.toMutablePreferences()
-            mutablePrefs.clear()
-            Single.just(mutablePrefs)
-        }.subscribe().dispose()
+        GlobalScope.launch {
+            context.dataStore.edit { setting ->
+                setting.remove(stringKey)
+            }
+        }
     }
 }

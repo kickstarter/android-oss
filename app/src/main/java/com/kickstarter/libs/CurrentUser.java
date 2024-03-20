@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import com.google.gson.Gson;
+import com.kickstarter.libs.preferences.RxStringPreferenceType;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.models.User;
@@ -12,13 +13,13 @@ import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class CurrentUser extends CurrentUserType {
-  private final StringPreferenceType accessTokenPreference;
+  private final RxStringPreferenceType accessTokenPreference;
   private final DeviceRegistrarType deviceRegistrar;
   private final StringPreferenceType userPreference;
 
   private final BehaviorSubject<User> user = BehaviorSubject.create();
 
-  public CurrentUser(final @NonNull StringPreferenceType accessTokenPreference,
+  public CurrentUser(final @NonNull RxStringPreferenceType accessTokenPreference,
     final @NonNull DeviceRegistrarType deviceRegistrar,
     final @NonNull Gson gson,
     final @NonNull StringPreferenceType userPreference) {
@@ -44,7 +45,7 @@ public class CurrentUser extends CurrentUserType {
     return getUser() != null;
   }
 
-  public String getAccessToken() {
+  public io.reactivex.Observable<String> getAccessToken() {
     return this.accessTokenPreference.get();
   }
 
@@ -57,7 +58,7 @@ public class CurrentUser extends CurrentUserType {
   @Override
   public void setToken(final @NonNull String accessToken) {
     // - Clean previous token in case there is any
-    this.accessTokenPreference.delete();
+    //this.accessTokenPreference.delete();
     this.deviceRegistrar.unregisterDevice();
 
     // - Register new token

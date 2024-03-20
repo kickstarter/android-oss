@@ -51,6 +51,7 @@ import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
 import com.kickstarter.libs.preferences.IntPreferenceType;
+import com.kickstarter.libs.preferences.RxStringPreferenceType;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.preferences.StringDataStorePreference;
 import com.kickstarter.libs.preferences.StringPreferenceType;
@@ -94,9 +95,6 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
-import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.preferences.rxjava2.RxPreferenceDataStoreBuilder;
-import androidx.datastore.rxjava2.RxDataStore;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
@@ -370,8 +368,8 @@ public class ApplicationModule {
   @Singleton
   @AccessTokenPreference
   @NonNull
-  static StringPreferenceType provideAccessTokenPreference(final @NonNull RxDataStore<Preferences> dataStorePreference) {
-    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.ACCESS_TOKEN);
+  static RxStringPreferenceType provideAccessTokenPreference(final @ApplicationContext @NonNull Context context) {
+    return new StringDataStorePreference(context, SharedPreferenceKey.ACCESS_TOKEN);
   }
 
   @Provides
@@ -385,15 +383,15 @@ public class ApplicationModule {
   @Singleton
   @ConfigPreference
   @NonNull
-  static StringPreferenceType providesConfigPreference(final @NonNull RxDataStore<Preferences> dataStorePreference) {
-    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.CONFIG);
+  static StringPreferenceType providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.CONFIG);
   }
 
   @Provides
   @Singleton
   @NonNull
-  static  StringPreferenceType providesFeaturesFlagsPreference(final @NonNull RxDataStore<Preferences> dataStorePreference) {
-    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.FEATURE_FLAG);
+  static  StringPreferenceType providesFeaturesFlagsPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.FEATURE_FLAG);
   }
 
   @Provides
@@ -519,7 +517,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static CurrentUserType provideCurrentUser(final @AccessTokenPreference @NonNull StringPreferenceType accessTokenPreference,
+  static CurrentUserType provideCurrentUser(final @AccessTokenPreference @NonNull RxStringPreferenceType accessTokenPreference,
     final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
     final @NonNull @UserPreference StringPreferenceType userPreference) {
     return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
@@ -527,7 +525,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static CurrentUserTypeV2 provideCurrentUser2(final @AccessTokenPreference @NonNull StringPreferenceType accessTokenPreference,
+  static CurrentUserTypeV2 provideCurrentUser2(final @AccessTokenPreference @NonNull RxStringPreferenceType accessTokenPreference,
                                                final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
                                                final @NonNull @UserPreference StringPreferenceType userPreference) {
     return new CurrentUserV2(accessTokenPreference, deviceRegistrar, gson, userPreference);
@@ -640,16 +638,10 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  RxDataStore<Preferences> provideDataStorePreferences(final @ApplicationContext @NonNull Context context) {
-    return new RxPreferenceDataStoreBuilder(context, "settings").build();
-  }
-
-  @Provides
-  @Singleton
   @UserPreference
   @NonNull
-  static StringPreferenceType provideUserDataStorePreferences(final @NonNull RxDataStore<Preferences> dataStorePreference) {
-    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.USER);
+  static StringPreferenceType provideUserDataStorePreferences(final @NonNull SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.USER);
   }
 
   @Provides

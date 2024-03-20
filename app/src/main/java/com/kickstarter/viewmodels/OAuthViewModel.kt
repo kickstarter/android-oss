@@ -14,6 +14,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.ApiException
 import com.kickstarter.viewmodels.usecases.LoginUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -80,6 +81,7 @@ class OAuthViewModel(
                     .flatMapLatest { token ->
                         Timber.d("$logcat About to persist token to currentUser: $token")
                         loginUseCase.setToken(token.accessToken())
+                        delay(100)
                         apiClient.fetchCurrentUser()
                             .asFlow()
                             .map {
@@ -94,7 +96,7 @@ class OAuthViewModel(
                                 user = null
                             )
                         )
-                        loginUseCase.logout()
+                        //loginUseCase.logout()
                     }
                     .collect { user ->
                         Timber.d("$logcat About to persist user to currentUser: $user")

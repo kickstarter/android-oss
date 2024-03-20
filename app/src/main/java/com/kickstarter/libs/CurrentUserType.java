@@ -31,7 +31,7 @@ public abstract class CurrentUserType {
   /**
    * Get the logged in user's access token.
    */
-  public abstract @Nullable String getAccessToken();
+  public abstract @Nullable io.reactivex.Observable<String> getAccessToken();
 
   /**
    * Updates the persisted current user with a fresh, new user.

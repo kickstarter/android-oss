@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import com.google.gson.Gson
+import com.kickstarter.libs.preferences.RxStringPreferenceType
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -30,7 +31,7 @@ abstract class CurrentUserTypeV2 {
     /**
      * Get the logged in user's access token.
      */
-    abstract val accessToken: String?
+    abstract val accessToken: Observable<String>
 
     /**
      * Updates the persisted current user with a fresh, new user.
@@ -78,7 +79,7 @@ abstract class CurrentUserTypeV2 {
 }
 
 class CurrentUserV2(
-    private val accessTokenPreference: StringPreferenceType,
+    private val accessTokenPreference: RxStringPreferenceType,
     private val deviceRegistrar: DeviceRegistrarType,
     gson: Gson,
     private val userPreference: StringPreferenceType
@@ -109,7 +110,7 @@ class CurrentUserV2(
         return getUser() != null
     }
 
-    override val accessToken: String?
+    override val accessToken: Observable<String>
         get() = accessTokenPreference.get()
 
     override fun login(newUser: User) {
@@ -119,7 +120,7 @@ class CurrentUserV2(
 
     override fun setToken(accessToken: String) {
         // - Clean previous token in case there is any
-        accessTokenPreference.delete()
+        //accessTokenPreference.delete()
         deviceRegistrar.unregisterDevice()
 
         // - Register new token

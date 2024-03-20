@@ -38,9 +38,9 @@ class ApiRequestInterceptor(
             .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
             .addHeader("User-Agent", userAgent(build))
 
-        this.currentUser.accessToken?.let { token ->
+        this.currentUser.accessToken.subscribe { token ->
             if (token.isNotEmpty()) builder.addHeader("X-Auth", "token $token")
-        }
+        }.dispose()
 
         return builder
             .url(url(initialRequest.url))

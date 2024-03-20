@@ -122,12 +122,9 @@ interface SetPasswordViewModel {
                 .compose(Transformers.takePairWhenV2(userHasPassword))
                 .distinctUntilChanged()
                 .subscribe {
-                    currentUserV2.accessToken?.let { accessToken ->
-                        loginUserCase.setToken(accessToken)
                         loginUserCase.setUser(
                             it.first.toBuilder().needsPassword(false).build()
                         )
-                    }
                     this.success.onNext(it.second.updateUserAccount()?.user()?.email() ?: "")
                 }.addToDisposable(disposables)
         }

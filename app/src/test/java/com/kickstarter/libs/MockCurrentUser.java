@@ -36,7 +36,7 @@ public class MockCurrentUser extends CurrentUserType {
   }
 
   @Override
-  public @Nullable String getAccessToken() {
+  public @Nullable io.reactivex.Observable<String> getAccessToken() {
     return this.accessToken;
   }
 

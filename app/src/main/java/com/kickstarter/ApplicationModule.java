@@ -368,8 +368,8 @@ public class ApplicationModule {
   @AccessTokenPreference
   @NonNull
   static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
-    //return new EncryptionEngine(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
-    return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
+    return new EncryptionEngine(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
+    //return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
   }
 
   @Provides

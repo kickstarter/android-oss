@@ -332,147 +332,17 @@ fun ConfirmPledgeDetailsScreen(
                 }
             } else {
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = colors.backgroundSurfacePrimary)
-                            .padding(
-                                start = dimensions.paddingMedium,
-                                end = dimensions.paddingMedium,
-                                bottom = dimensions.paddingLarge,
-                                top = dimensions.paddingMediumLarge
-                            )
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.Your_pledge),
-                            style = typography.headline,
-                            color = colors.textPrimary
-                        )
-
-                        if (deliveryDateString.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
-                            Text(
-                                text = deliveryDateString,
-                                style = typography.caption1,
-                                color = colors.textSecondary
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                        KSDividerLineGrey()
-
-                        rewardsList.forEach {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                            Row {
-                                Text(
-                                    text = it.first,
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textSecondary
-                                )
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Text(
-                                    text = it.second,
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textSecondary
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                            KSDividerLineGrey()
-                        }
-
-                        if (shippingAmount.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                            Row {
-                                Text(
-                                    text = ksString?.format(
-                                        stringResource(id = R.string.Shipping_to_country),
-                                        "country",
-                                        totalAmount
-                                    ) ?: "Shipping: $initialShippingLocation",
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textSecondary
-                                )
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Text(
-                                    text = shippingAmount,
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textSecondary
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                            KSDividerLineGrey()
-                        }
-
-                        if (totalBonusSupport != initialBonusSupport) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                            Row {
-                                Text(
-                                    text = stringResource(id = R.string.Bonus_support),
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textSecondary
-                                )
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Text(
-                                    text = totalBonusSupport,
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textSecondary
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                            KSDividerLineGrey()
-                        }
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                        Row {
-                            Text(
-                                text = stringResource(id = R.string.Total_amount),
-                                style = typography.calloutMedium,
-                                color = colors.textPrimary
-                            )
-
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(
-                                    text = totalAmount,
-                                    style = typography.subheadlineMedium,
-                                    color = colors.textPrimary
-                                )
-
-                                if (totalAmountCurrencyConverted.isNotEmpty()) {
-                                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
-                                    Text(
-                                        text = ksString?.format(
-                                            stringResource(id = R.string.About_reward_amount),
-                                            "reward_amount",
-                                            totalAmount
-                                        ) ?: "About $totalAmount",
-                                        style = typography.footnote,
-                                        color = colors.textPrimary
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    ItemizedRewardListContainer(
+                        ksString = ksString,
+                        rewardsList = rewardsList,
+                        shippingAmount = shippingAmount,
+                        initialShippingLocation = initialShippingLocation,
+                        totalAmount = totalAmount,
+                        totalAmountCurrencyConverted = totalAmountCurrencyConverted,
+                        initialBonusSupport = initialBonusSupport,
+                        totalBonusSupport = totalBonusSupport,
+                        deliveryDateString = deliveryDateString
+                    )
                 }
             }
         }
@@ -544,6 +414,162 @@ fun BonusSupportContainer(
                 style = typography.headline,
                 color = colors.textAccentGreen
             )
+        }
+    }
+}
+
+@Composable
+fun ItemizedRewardListContainer(
+    ksString: KSString? = null,
+    rewardsList: List<Pair<String, String>> = listOf(),
+    shippingAmount: String = "",
+    initialShippingLocation: String? = null,
+    totalAmount: String,
+    totalAmountCurrencyConverted: String = "",
+    initialBonusSupport: String,
+    totalBonusSupport: String,
+    deliveryDateString: String = ""
+
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colors.backgroundSurfacePrimary)
+            .padding(
+                start = dimensions.paddingMedium,
+                end = dimensions.paddingMedium,
+                bottom = dimensions.paddingLarge,
+                top = dimensions.paddingMediumLarge
+            )
+    ) {
+        Text(
+            text = stringResource(id = R.string.Your_pledge),
+            style = typography.headline,
+            color = colors.textPrimary
+        )
+
+        if (deliveryDateString.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
+            Text(
+                text = deliveryDateString,
+                style = typography.caption1,
+                color = colors.textSecondary
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+        KSDividerLineGrey()
+
+        rewardsList.forEach {
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+            Row {
+                Text(
+                    text = it.first,
+                    style = typography.subheadlineMedium,
+                    color = colors.textSecondary
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = it.second,
+                    style = typography.subheadlineMedium,
+                    color = colors.textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+            KSDividerLineGrey()
+        }
+
+        if (shippingAmount.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+            Row {
+                Text(
+                    text = ksString?.format(
+                        stringResource(id = R.string.Shipping_to_country),
+                        "country",
+                        totalAmount
+                    ) ?: "Shipping: $initialShippingLocation",
+                    style = typography.subheadlineMedium,
+                    color = colors.textSecondary
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = shippingAmount,
+                    style = typography.subheadlineMedium,
+                    color = colors.textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+            KSDividerLineGrey()
+        }
+
+        if (totalBonusSupport != initialBonusSupport) {
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+            Row {
+                Text(
+                    text = stringResource(id = R.string.Bonus_support),
+                    style = typography.subheadlineMedium,
+                    color = colors.textSecondary
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = totalBonusSupport,
+                    style = typography.subheadlineMedium,
+                    color = colors.textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+            KSDividerLineGrey()
+        }
+
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+        Row {
+            Text(
+                text = stringResource(id = R.string.Total_amount),
+                style = typography.calloutMedium,
+                color = colors.textPrimary
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = totalAmount,
+                    style = typography.subheadlineMedium,
+                    color = colors.textPrimary
+                )
+
+                if (totalAmountCurrencyConverted.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
+                    Text(
+                        text = ksString?.format(
+                            stringResource(id = R.string.About_reward_amount),
+                            "reward_amount",
+                            totalAmount
+                        ) ?: "About $totalAmount",
+                        style = typography.footnote,
+                        color = colors.textPrimary
+                    )
+                }
+            }
         }
     }
 }

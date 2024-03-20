@@ -81,6 +81,13 @@ backers</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Big Kickstarter news and events near you, delivered just a few times a year.</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Big Kickstarter news, plus occasional projects and events chosen just for you.</string>
   <string name="Biography" formatted="false">Biography</string>
+  <string name="Block" formatted="false">Block</string>
+  <string name="Block_this_user" formatted="false">Block this user</string>
+  <string name="Block_user_fail" formatted="false">Your request did not go through. Try again.</string>
+  <string name="Block_user_success" formatted="false">This user has been successfully blocked</string>
+  <string name="Block_username" formatted="false">Block %{username}?</string>
+  <string name="Blocked_user" formatted="false">Blocked User</string>
+  <string name="Blocked_user_confirmation" formatted="false">Blocking this user means that you won’t see their comments or content anymore. If you have saved or backed projects from this user, you must remove your pledge before blocking. To unblock a user in the future, please go through our Help Center.</string>
   <string name="Bonus" formatted="false">Bonus</string>
   <string name="Bonus_support" formatted="false">Bonus support</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
@@ -111,6 +118,7 @@ backers</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Check out these handpicked projects just for you.</string>
   <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">Check your inbox to complete this simple step.</string>
   <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
+  <string name="Checkout" formatted="false">Checkout</string>
   <string name="Choose_another_reward" formatted="false">Choose another reward</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
   <string name="Chosen_just_for_you" formatted="false">Chosen just for you</string>
@@ -127,6 +135,7 @@ backers</string>
   <string name="Complete_payment" formatted="false">Complete payment</string>
   <string name="Confirm" formatted="false">Confirm</string>
   <string name="Confirm_password" formatted="false">Confirm new password</string>
+  <string name="Confirm_your_pledge_details" formatted="false">Confirm your pledge details</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Connect with Facebook to follow friends and get notified when they back or launch projects.</string>
   <string name="Contact_backer" formatted="false">Contact backer</string>
   <string name="Contact_creator" formatted="false">Contact creator</string>
@@ -353,6 +362,7 @@ with friends.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Learn about AI policy on Kickstarter</string>
@@ -450,6 +460,7 @@ from friends yet.</string>
   <string name="Opens_rewards" formatted="false">Opens rewards.</string>
   <string name="Opens_shipping_options" formatted="false">Opens shipping options.</string>
   <string name="Opens_update" formatted="false">Opens update.</string>
+  <string name="Opens_user_menu" formatted="false">Opens user menu.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Or select a different reward below:</string>
   <string name="Other_payment_methods" formatted="false">Other payment methods</string>
   <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
@@ -599,6 +610,7 @@ daring ideas.</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
   <string name="Select_up_to_five" formatted="false">Select up to five from the options below.</string>
+  <string name="Select_your_reward" formatted="false">Select your reward</string>
   <string name="Selected" formatted="false">Selected</string>
   <string name="Selected_card" formatted="false">Selected card</string>
   <string name="Selected_reward" formatted="false">Selected reward</string>
@@ -701,6 +713,7 @@ catch your eye?</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
   <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">This project has a set currency that can\'t process this option.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>
+  <string name="This_user_has_been_blocked" formatted="false">This user has been blocked</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>
   <string name="To_learn_how_Kickstarter_encourages_sustainable_practices" formatted="false">to learn how Kickstarter encourages sustainable practices.</string>
@@ -740,6 +753,7 @@ catch your eye?</string>
   <string name="View" formatted="false">View</string>
   <string name="View_dashboard" formatted="false">View dashboard</string>
   <string name="View_more_replies" formatted="false">View more replies</string>
+  <string name="View_profile" formatted="false">View profile</string>
   <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">View project</string>
   <string name="View_replies" formatted="false">View replies</string>
@@ -802,7 +816,10 @@ Please try again later.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">You canceled your pledge for this project.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">You can’t use this credit card to back a project from %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
-  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
+&lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
+&lt;p>This project is now one step closer to a reality, thanks to you. Spread the word!&lt;/p></string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}. For creator tools, head to our website!</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>
@@ -816,6 +833,7 @@ Please try again later.</string>
   <string name="Your_message_has_been_sent" formatted="false">Your message has been sent!</string>
   <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Your payment method was successfully charged.</string>
+  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Your payment method will be charged immediately upon pledge and you’ll receive a confirmation email at %{user_email}. Your pledge cannot be canceled or modified.</string>
   <string name="Your_pledge" formatted="false">Your pledge</string>
   <string name="Your_pledge_amount" formatted="false">Your pledge amount</string>
   <string name="Your_pledge_details" formatted="false">Your pledge details</string>
@@ -1475,6 +1493,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="login_tout_generic_intent_title" formatted="false">Whoa there! You must log in to your Kickstarter account to continue. Sign up or log in with your email address or Facebook account below.</string>
   <string name="login_tout_generic_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_generic_intent_traditional_signup_button" formatted="false">Sign up</string>
+  <string name="login_tout_generic_intent_traditional_signup_or_login_button" formatted="false">Sign up or Log in</string>
   <string name="login_tout_generic_intent_traditional_title" formatted="false">Use your email address:</string>
   <string name="login_tout_help_sheet_cancel" formatted="false">Cancel</string>
   <string name="login_tout_help_sheet_contact" formatted="false">Contact</string>

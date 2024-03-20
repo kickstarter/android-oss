@@ -52,6 +52,7 @@ import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.preferences.StringDataStorePreference;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
@@ -93,6 +94,9 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.rxjava2.RxPreferenceDataStoreBuilder;
+import androidx.datastore.rxjava2.RxDataStore;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
@@ -636,10 +640,16 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  RxDataStore<Preferences> provideDataStorePreferences(final @ApplicationContext @NonNull Context context) {
+    return new RxPreferenceDataStoreBuilder(context, "settings").build();
+  }
+
+  @Provides
+  @Singleton
   @UserPreference
   @NonNull
-  static StringPreferenceType provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, SharedPreferenceKey.USER);
+  static StringPreferenceType provideUserDataStorePreferences(final @NonNull RxDataStore<Preferences> dataStorePreference) {
+    return new StringDataStorePreference(dataStorePreference, SharedPreferenceKey.USER);
   }
 
   @Provides

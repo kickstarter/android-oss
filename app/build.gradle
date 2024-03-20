@@ -204,6 +204,7 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     // Chrome Tabs library
     implementation 'androidx.browser:browser:1.7.0'
+    implementation 'androidx.datastore:datastore-rxjava2:1.0.0'
 
     // Architecture components
     def lifecycle_version = "2.2.0"
@@ -291,6 +292,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
+
+    // DataStore - RxJava2 support
+    //implementation "androidx.datastore:datastore:1.0.0"
+    implementation "androidx.datastore:datastore-preferences-rxjava2:1.0.0"
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'

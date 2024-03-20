@@ -58,6 +58,33 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewards() {
             totalAmount = 1.0,
             initialBonusSupport = 1.0,
             totalBonusSupport = 1.0,
+            maxPledgeAmount = 1000.0,
+            minPledgeStep = 1.0,
+            onShippingRuleSelected = {},
+            onBonusSupportMinusClicked = {},
+            onBonusSupportPlusClicked = {}
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun ConfirmPledgeDetailsScreenPreviewNoRewardsWarning() {
+    KSTheme {
+        ConfirmPledgeDetailsScreen(
+            modifier = Modifier,
+            environment = Environment.builder().build(),
+            project = Project.builder().build(),
+            selectedReward = null,
+            onContinueClicked = {},
+            rewardsContainAddOns = false,
+            currentShippingRule = ShippingRule.builder().build(),
+            totalAmount = 1001.0,
+            initialBonusSupport = 1.0,
+            totalBonusSupport = 1.0,
+            maxPledgeAmount = 1000.0,
+            minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
             onBonusSupportPlusClicked = {}
@@ -85,6 +112,8 @@ private fun ConfirmPledgeDetailsScreenPreviewNoAddOnsOrBonusSupport() {
             totalAmount = 55.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 0.0,
+            maxPledgeAmount = 1000.0,
+            minPledgeStep = 1.0,
             countryList = listOf(ShippingRule.builder().build()),
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
@@ -113,6 +142,8 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsOnly() {
             totalAmount = 105.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 0.0,
+            maxPledgeAmount = 1000.0,
+            minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
             onBonusSupportPlusClicked = {}
@@ -140,6 +171,8 @@ private fun ConfirmPledgeDetailsScreenPreviewBonusSupportOnly() {
             totalAmount = 55.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 10.0,
+            maxPledgeAmount = 1000.0,
+            minPledgeStep = 1.0,
             countryList = listOf(ShippingRule.builder().build()),
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
@@ -168,6 +201,8 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsAndBonusSupport() {
             totalAmount = 115.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 10.0,
+            maxPledgeAmount = 1000.0,
+            minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
             onBonusSupportPlusClicked = {}
@@ -191,6 +226,8 @@ fun ConfirmPledgeDetailsScreen(
     totalAmount: Double,
     initialBonusSupport: Double,
     totalBonusSupport: Double,
+    maxPledgeAmount: Double,
+    minPledgeStep: Double,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit
 ) {
@@ -252,6 +289,12 @@ fun ConfirmPledgeDetailsScreen(
             )
         )
     } else ""
+
+    val maxPledgeString = environment?.ksString()?.format(
+        stringResource(R.string.Enter_an_amount_less_than_max_pledge),
+        "max_pledge",
+        maxPledgeAmount.toString()
+    ) ?: ""
 
     Scaffold(
         modifier = modifier,
@@ -371,9 +414,20 @@ fun ConfirmPledgeDetailsScreen(
                     isForNoRewardPledge = rewardsList.isEmpty(),
                     initialValue = initialBonusSupportString,
                     totalBonusAmount = totalBonusSupportString,
+                    canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
                     onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                     onBonusSupportMinusClicked = onBonusSupportMinusClicked
                 )
+
+                if (totalAmount >= maxPledgeAmount) {
+                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
+                    Text(
+                        text = maxPledgeString,
+                        style = typography.headline,
+                        color = colors.textAccentRedBold
+                    )
+                }
             }
 
             if (rewardsList.isEmpty()) {
@@ -437,6 +491,7 @@ fun BonusSupportContainer(
     isForNoRewardPledge: Boolean,
     initialValue: String,
     totalBonusAmount: String,
+    canAddMore: Boolean,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit
 ) {
@@ -467,7 +522,7 @@ fun BonusSupportContainer(
         ) {
             KSStepper(
                 onPlusClicked = onBonusSupportPlusClicked,
-                isPlusEnabled = true,
+                isPlusEnabled = canAddMore,
                 onMinusClicked = onBonusSupportMinusClicked,
                 isMinusEnabled = initialValue != totalBonusAmount,
                 enabledButtonBackgroundColor = colors.kds_white

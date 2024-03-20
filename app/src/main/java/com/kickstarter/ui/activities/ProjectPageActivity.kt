@@ -171,6 +171,9 @@ class ProjectPageActivity :
                     val shippingAmount = confirmUiState.shippingAmount
                     val initialBonusAmount = confirmUiState.initialBonusSupportAmount
                     val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
+                    val currentShippingRule = confirmUiState.currentShippingRule
+                    val maxPledgeAmount = confirmUiState.maxPledgeAmount
+                    val minStepAmount = confirmUiState.minStepAmount
 
                     val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
@@ -224,7 +227,7 @@ class ProjectPageActivity :
                         onAddOnsContinueClicked = {
                             checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
-                        currentShippingRule = currentUserShippingRule,
+                        currentShippingRule = currentShippingRule ?: currentUserShippingRule,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,
@@ -255,7 +258,11 @@ class ProjectPageActivity :
                         selectedRewardAndAddOnList = rewardsAndAddOns,
                         initialBonusSupportAmount = initialBonusAmount,
                         totalBonusSupportAmount = totalBonusSupportAmount,
-                        onShippingRuleSelected = {},
+                        maxPledgeAmount = maxPledgeAmount,
+                        minStepAmount = minStepAmount,
+                        onShippingRuleSelected = {
+                            confirmDetailsViewModel.onShippingRuleSelected(it)
+                        },
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {
                             confirmDetailsViewModel.onContinueClicked {

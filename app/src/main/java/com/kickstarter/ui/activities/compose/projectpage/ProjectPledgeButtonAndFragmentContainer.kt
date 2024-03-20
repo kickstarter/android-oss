@@ -131,6 +131,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onShippingRuleSelected: (ShippingRule) -> Unit,
     initialBonusSupportAmount: Double = 0.0,
     totalBonusSupportAmount: Double = 0.0,
+    maxPledgeAmount: Double = 0.0,
+    minStepAmount: Double = 0.0,
     onConfirmDetailsContinueClicked: () -> Unit,
     shippingAmount: Double = 0.0,
     selectedRewardAndAddOnList: List<Reward>,
@@ -273,6 +275,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         countryList = shippingRules,
                                         initialBonusSupport = initialBonusSupportAmount,
                                         totalBonusSupport = totalBonusSupportAmount,
+                                        maxPledgeAmount = maxPledgeAmount,
+                                        minPledgeStep = minStepAmount,
                                         rewardsList = getRewardListAndPrices(
                                             selectedRewardAndAddOnList, environment, project
                                         ),

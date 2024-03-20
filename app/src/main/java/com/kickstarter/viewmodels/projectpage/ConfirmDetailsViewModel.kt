@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.CheckoutPayment
@@ -33,6 +34,9 @@ data class ConfirmDetailsUIState(
     val totalBonusSupportAmount: Double = 0.0,
     val shippingAmount: Double = 0.0,
     val totalAmount: Double = 0.0,
+    val currentShippingRule: ShippingRule? = null,
+    val minStepAmount: Double = 0.0,
+    val maxPledgeAmount: Double = 0.0
 )
 
 class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
@@ -49,6 +53,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     private var addedBonusSupport = 0.0
     private var shippingAmount: Double = 0.0
     private var totalAmount: Double = 0.0
+    private var minStepAmount: Double = 0.0
+    private var maxPledgeAmount: Double = 0.0
 
     private val mutableConfirmDetailsUIState = MutableStateFlow(ConfirmDetailsUIState())
     val confirmDetailsUIState: StateFlow<ConfirmDetailsUIState>
@@ -74,26 +80,34 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
         viewModelScope.launch {
+            val country = Country.findByCurrencyCode(projectData.project().currency())
+            country?.let {
+                minStepAmount = it.minPledge.toDouble()
+                maxPledgeAmount = it.maxPledge.toDouble()
+            }
             projectData.project().rewards()?.let { rewards ->
-                apolloClient.getShippingRules(
-                    reward = rewards.first { theOne ->
-                        !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
-                    }
-                )
-                    .asFlow()
-                    .map { shippingRulesEnvelope ->
-                        if (shippingRulesEnvelope.isNotNull()) {
-                            getDefaultShippingRule(shippingRulesEnvelope.shippingRules())
-                                .asFlow()
-                                .map {
-                                    defaultShippingRule = it
-                                }.catch {
-                                }
+                val reward = rewards.firstOrNull { theOne ->
+                    !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
+                }
+                reward?.let { rw ->
+                    apolloClient.getShippingRules(
+                        reward = rw
+                    )
+                        .asFlow()
+                        .map { shippingRulesEnvelope ->
+                            if (shippingRulesEnvelope.isNotNull()) {
+                                getDefaultShippingRule(shippingRulesEnvelope.shippingRules())
+                                    .asFlow()
+                                    .map {
+                                        defaultShippingRule = it
+                                    }.catch {
+                                    }
+                            }
                         }
-                    }
-                    .catch {
-                    }
-                    .collect()
+                        .catch {
+                        }
+                        .collect()
+                }
             }
         }
     }
@@ -102,7 +116,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         this.userSelectedReward = reward
         if (RewardUtils.isNoReward(reward)) {
             rewardAndAddOns = listOf()
-            initialBonusSupport = 1.0
+            initialBonusSupport = minStepAmount
         } else {
             rewardAndAddOns = listOf(userSelectedReward)
             initialBonusSupport = 0.0
@@ -131,6 +145,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
                     shippingAmount = shippingAmount,
                     totalAmount = totalAmount,
+                    currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
+                    minStepAmount = minStepAmount,
+                    maxPledgeAmount = maxPledgeAmount
                 )
             )
         }
@@ -172,6 +189,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
                     shippingAmount = shippingAmount,
                     totalAmount = totalAmount,
+                    currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
+                    minStepAmount = minStepAmount,
+                    maxPledgeAmount = maxPledgeAmount
                 )
             )
         }
@@ -250,7 +270,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun incrementBonusSupport() {
-        addedBonusSupport += 1.0
+        addedBonusSupport += minStepAmount
         totalAmount =
             getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
         viewModelScope.launch {
@@ -261,6 +281,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
                     shippingAmount = shippingAmount,
                     totalAmount = totalAmount,
+                    currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
+                    minStepAmount = minStepAmount,
+                    maxPledgeAmount = maxPledgeAmount
                 )
             )
         }
@@ -268,7 +291,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     fun decrementBonusSupport() {
         if (addedBonusSupport > 0) {
-            addedBonusSupport -= 1.0
+            addedBonusSupport -= minStepAmount
             totalAmount =
                 getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
             viewModelScope.launch {
@@ -279,6 +302,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                         totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
                         shippingAmount = shippingAmount,
                         totalAmount = totalAmount,
+                        currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
+                        minStepAmount = minStepAmount,
+                        maxPledgeAmount = maxPledgeAmount
                     )
                 )
             }
@@ -310,6 +336,31 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             }
         } else {
             defaultAction.invoke()
+        }
+    }
+
+    fun onShippingRuleSelected(shippingRule: ShippingRule) {
+        defaultShippingRule = shippingRule
+        shippingAmount = getShippingAmount(
+            rule = defaultShippingRule,
+            reason = pledgeReason,
+            bShippingAmount = null,
+            rewards = rewardAndAddOns
+        )
+
+        viewModelScope.launch {
+            mutableConfirmDetailsUIState.emit(
+                ConfirmDetailsUIState(
+                    rewardsAndAddOns = rewardAndAddOns,
+                    initialBonusSupportAmount = initialBonusSupport,
+                    totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
+                    shippingAmount = shippingAmount,
+                    totalAmount = totalAmount,
+                    currentShippingRule = defaultShippingRule,
+                    minStepAmount = minStepAmount,
+                    maxPledgeAmount = maxPledgeAmount
+                )
+            )
         }
     }
 

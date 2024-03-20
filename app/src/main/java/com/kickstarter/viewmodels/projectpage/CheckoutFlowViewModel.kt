@@ -83,15 +83,20 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         currentProjectData = projectData
         viewModelScope.launch {
             projectData.project().rewards()?.let { rewards ->
-                apolloClient.getShippingRules(
-                    reward = rewards.first { theOne ->
+                if (rewards.isNotEmpty()) {
+                    val reward = rewards.firstOrNull { theOne ->
                         !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
                     }
-                ).subscribe { shippingRulesEnvelope ->
-                    if (shippingRulesEnvelope.isNotNull()) shippingRules.onNext(
-                        shippingRulesEnvelope.shippingRules()
-                    )
-                }.addToDisposable(disposables)
+                    reward?.let {
+                        apolloClient.getShippingRules(
+                            reward = reward
+                        ).subscribe { shippingRulesEnvelope ->
+                            if (shippingRulesEnvelope.isNotNull()) shippingRules.onNext(
+                                shippingRulesEnvelope.shippingRules()
+                            )
+                        }.addToDisposable(disposables)
+                    }
+                }
             }
         }
 

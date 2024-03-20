@@ -21,13 +21,13 @@
     android:padding="@dimen/grid_2">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:importantForAccessibility="no"
-        android:src="@drawable/ic_not_a_store"
-        app:tint="@color/accent" />
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_4"
+      android:importantForAccessibility="no"
+      android:src="@drawable/ic_not_a_store"
+      app:tint="@color/accent" />
 
     <LinearLayout
       android:layout_width="match_parent"

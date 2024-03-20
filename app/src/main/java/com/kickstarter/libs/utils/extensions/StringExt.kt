@@ -163,20 +163,6 @@ fun String.hrefUrlFromTranslation(): String {
     return ret.last()
 }
 
-fun String.hrefUrlListFromTranslation(): List<String> {
-    val matchResults = "<a href=%(.*?)>".toRegex().find(this)
-
-    val list = matchResults?.groups?.map {
-        it?.value ?: ""
-    } ?: emptyList()
-
-    val ret = list.toMutableList()
-
-    // The first group is the entire string, take it out
-    ret.removeAt(0)
-    return ret
-}
-
 /**
  * Takes a String resource with HTMl Returns displayable styled text from the provided HTML string.
  */

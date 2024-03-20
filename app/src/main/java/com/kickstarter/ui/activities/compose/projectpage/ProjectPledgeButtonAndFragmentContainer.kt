@@ -93,7 +93,6 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             onRewardSelected = {},
             onAddOnAddedOrRemoved = {},
             totalAmount = 0.0,
-            totalAmountCurrencyConverted = 0.0,
             currentShippingRule = ShippingRule.builder().build(),
             onShippingRuleSelected = {},
             showRewardCarouselDialog = false,
@@ -128,7 +127,6 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onRewardSelected: (reward: Reward) -> Unit,
     onAddOnAddedOrRemoved: (Map<Reward, Int>) -> Unit,
     totalAmount: Double,
-    totalAmountCurrencyConverted: Double,
     selectedReward: Reward? = null,
     onShippingRuleSelected: (ShippingRule) -> Unit,
     initialBonusSupportAmount: Double = 0.0,
@@ -270,7 +268,6 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         onContinueClicked = onConfirmDetailsContinueClicked,
                                         onShippingRuleSelected = onShippingRuleSelected,
                                         totalAmount = totalAmount,
-                                        totalAmountConverted = totalAmountCurrencyConverted,
                                         shippingAmount = shippingAmount,
                                         currentShippingRule = currentShippingRule,
                                         countryList = shippingRules,
@@ -279,6 +276,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         rewardsList = getRewardListAndPrices(
                                             selectedRewardAndAddOnList, environment, project
                                         ),
+                                        rewardsContainAddOns = selectedRewardAndAddOnList.any { it.isAddOn() },
                                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                                         onBonusSupportMinusClicked = onBonusSupportMinusClicked
                                     )
@@ -296,7 +294,11 @@ fun ProjectPledgeButtonAndFragmentContainer(
     }
 }
 
-fun getRewardListAndPrices(rewardsList: List<Reward>, environment: Environment?, project: Project): List<Pair<String, String>> {
+fun getRewardListAndPrices(
+    rewardsList: List<Reward>,
+    environment: Environment?,
+    project: Project
+): List<Pair<String, String>> {
     return rewardsList.map { reward ->
         if (!reward.quantity().isNullOrZero()) {
             val title = reward.title() ?: ""

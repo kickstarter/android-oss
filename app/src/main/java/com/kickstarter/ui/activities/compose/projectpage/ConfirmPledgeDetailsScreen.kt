@@ -53,9 +53,9 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewards() {
             project = Project.builder().build(),
             selectedReward = null,
             onContinueClicked = {},
+            rewardsContainAddOns = false,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 1.0,
-            totalAmountConverted = 1.0,
             initialBonusSupport = 1.0,
             totalBonusSupport = 1.0,
             onShippingRuleSelected = {},
@@ -79,10 +79,10 @@ private fun ConfirmPledgeDetailsScreenPreviewNoAddOnsOrBonusSupport() {
             rewardsList = (1..2).map {
                 Pair("Cool Item $it", "$20")
             },
+            rewardsContainAddOns = false,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 55.0,
-            totalAmountConverted = 60.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 0.0,
             countryList = listOf(ShippingRule.builder().build()),
@@ -107,10 +107,10 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsOnly() {
             rewardsList = (1..5).map {
                 Pair("Cool Item $it", "$20")
             },
+            rewardsContainAddOns = true,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 105.0,
-            totalAmountConverted = 110.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 0.0,
             onShippingRuleSelected = {},
@@ -134,10 +134,10 @@ private fun ConfirmPledgeDetailsScreenPreviewBonusSupportOnly() {
             rewardsList = (1..2).map {
                 Pair("Cool Item $it", "$20")
             },
+            rewardsContainAddOns = false,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 55.0,
-            totalAmountConverted = 60.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 10.0,
             countryList = listOf(ShippingRule.builder().build()),
@@ -162,10 +162,10 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsAndBonusSupport() {
             rewardsList = (1..5).map {
                 Pair("Cool Item $it", "$20")
             },
+            rewardsContainAddOns = true,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 115.0,
-            totalAmountConverted = 120.0,
             initialBonusSupport = 0.0,
             totalBonusSupport = 10.0,
             onShippingRuleSelected = {},
@@ -183,12 +183,12 @@ fun ConfirmPledgeDetailsScreen(
     selectedReward: Reward?,
     onContinueClicked: () -> Unit,
     rewardsList: List<Pair<String, String>> = listOf(),
+    rewardsContainAddOns: Boolean,
     shippingAmount: Double = 0.0,
     currentShippingRule: ShippingRule,
     countryList: List<ShippingRule> = listOf(),
     onShippingRuleSelected: (ShippingRule) -> Unit,
     totalAmount: Double,
-    totalAmountConverted: Double,
     initialBonusSupport: Double,
     totalBonusSupport: Double,
     onBonusSupportPlusClicked: () -> Unit,
@@ -206,12 +206,11 @@ fun ConfirmPledgeDetailsScreen(
         ).toString()
     } ?: ""
 
-    val totalAmountConvertedString = environment?.ksCurrency()?.format(
-        totalAmountConverted,
+    val totalAmountConvertedString = environment?.ksCurrency()?.formatWithUserPreference(
+        totalAmount,
         project,
-        true,
-        RoundingMode.HALF_UP,
-        true
+        RoundingMode.UP,
+        2
     ) ?: ""
 
     val aboutTotalString = environment?.ksString()?.format(
@@ -220,24 +219,15 @@ fun ConfirmPledgeDetailsScreen(
         totalAmountConvertedString
     ) ?: "About $totalAmountConvertedString"
 
-    val shippingAmountString = if (shippingAmount == 0.0) ""
-    else {
-        environment?.ksCurrency()?.format(
+    val shippingAmountString = environment?.ksCurrency()?.let {
+        RewardViewUtils.styleCurrency(
             shippingAmount,
             project,
-            true,
-            RoundingMode.HALF_UP,
-            true
-        ) ?: ""
-    }
+            it
+        ).toString()
+    } ?: ""
 
     val shippingLocation = currentShippingRule.location()?.displayableName() ?: ""
-
-    val shippingLocationString = environment?.ksString()?.format(
-        stringResource(id = R.string.Shipping_to_country),
-        "country",
-        shippingLocation
-    ) ?: "Shipping: $shippingLocation"
 
     val initialBonusSupportString = environment?.ksCurrency()?.let {
         RewardViewUtils.styleCurrency(
@@ -332,9 +322,7 @@ fun ConfirmPledgeDetailsScreen(
                 )
             }
 
-            if (rewardsList.isNotEmpty() && shippingAmountString.isNotEmpty() && !currentShippingRule.location()
-                ?.displayableName().isNullOrEmpty()
-            ) {
+            if (rewardsList.isNotEmpty() && shippingLocation.isNotEmpty()) {
                 item {
                     Column(
                         modifier = Modifier.padding(
@@ -352,7 +340,7 @@ fun ConfirmPledgeDetailsScreen(
                         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (countryList.isNotEmpty()) {
+                            if (countryList.isNotEmpty() && !rewardsContainAddOns) {
                                 CountryInputWithDropdown(
                                     interactionSource = interactionSource,
                                     countryList = countryList,
@@ -369,7 +357,7 @@ fun ConfirmPledgeDetailsScreen(
                             Spacer(modifier = Modifier.weight(1f))
 
                             Text(
-                                text = "+ $shippingAmount",
+                                text = "+ $shippingAmountString",
                                 style = typography.title3,
                                 color = colors.textSecondary
                             )
@@ -429,8 +417,9 @@ fun ConfirmPledgeDetailsScreen(
                     ItemizedRewardListContainer(
                         ksString = environment?.ksString(),
                         rewardsList = rewardsList,
-                        shippingAmount = shippingAmountString,
-                        initialShippingLocation = currentShippingRule.location()?.displayableName() ?: "",
+                        shippingAmount = shippingAmount,
+                        shippingAmountString = shippingAmountString,
+                        initialShippingLocation = shippingLocation,
                         totalAmount = totalAmountString,
                         totalAmountCurrencyConverted = totalAmountConvertedString,
                         initialBonusSupport = initialBonusSupportString,
@@ -516,8 +505,9 @@ fun BonusSupportContainer(
 fun ItemizedRewardListContainer(
     ksString: KSString? = null,
     rewardsList: List<Pair<String, String>> = listOf(),
-    shippingAmount: String = "",
-    initialShippingLocation: String? = null,
+    shippingAmount: Double,
+    shippingAmountString: String = "",
+    initialShippingLocation: String = "",
     totalAmount: String,
     totalAmountCurrencyConverted: String = "",
     initialBonusSupport: String,
@@ -580,7 +570,7 @@ fun ItemizedRewardListContainer(
             KSDividerLineGrey()
         }
 
-        if (shippingAmount.isNotEmpty()) {
+        if (shippingAmount > 0 && initialShippingLocation.isNotEmpty()) {
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
             Row {
@@ -588,7 +578,7 @@ fun ItemizedRewardListContainer(
                     text = ksString?.format(
                         stringResource(id = R.string.Shipping_to_country),
                         "country",
-                        totalAmount
+                        initialShippingLocation
                     ) ?: "Shipping: $initialShippingLocation",
                     style = typography.subheadlineMedium,
                     color = colors.textSecondary
@@ -597,7 +587,7 @@ fun ItemizedRewardListContainer(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Text(
-                    text = shippingAmount,
+                    text = shippingAmountString,
                     style = typography.subheadlineMedium,
                     color = colors.textSecondary
                 )

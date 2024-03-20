@@ -167,7 +167,6 @@ class ProjectPageActivity :
                     val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
 
                     val totalAmount: Double = confirmUiState.totalAmount
-                    val totalAmountConverted = confirmUiState.totalAmountConverted
                     val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
                     val shippingAmount = confirmUiState.shippingAmount
                     val initialBonusAmount = confirmUiState.initialBonusSupportAmount
@@ -253,7 +252,6 @@ class ProjectPageActivity :
                         },
                         selectedReward = selectedReward,
                         totalAmount = totalAmount,
-                        totalAmountCurrencyConverted = totalAmountConverted,
                         selectedRewardAndAddOnList = rewardsAndAddOns,
                         initialBonusSupportAmount = initialBonusAmount,
                         totalBonusSupportAmount = totalBonusSupportAmount,

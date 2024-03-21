@@ -102,6 +102,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                                         defaultShippingRule = it
                                     }.catch {
                                     }
+                                    .collect()
                             }
                         }
                         .catch {
@@ -206,11 +207,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         bShippingAmount: Float? = null,
         rewards: List<Reward>
     ): Double {
-        val rw = rewards.first()
-
         return when (reason) {
             PledgeReason.UPDATE_REWARD,
-            PledgeReason.PLEDGE -> if (rw.hasAddons()) shippingCostForAddOns(
+            PledgeReason.PLEDGE -> if (rewards.any { it.isAddOn() }) shippingCostForAddOns(
                 rewards,
                 rule
             ) + rule.cost() else rule.cost()
@@ -290,7 +289,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun decrementBonusSupport() {
-        if (addedBonusSupport > 0) {
+        if (addedBonusSupport - minStepAmount >= initialBonusSupport) {
             addedBonusSupport -= minStepAmount
             totalAmount =
                 getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount

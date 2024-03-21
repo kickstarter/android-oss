@@ -92,6 +92,7 @@ import type.BackingState
 import type.CurrencyCode
 import type.NonDeprecatedFlaggingKind
 import type.PaymentTypes
+import type.StripeIntentContextTypes
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -232,7 +233,17 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val createSetupIntentMut = CreateSetupIntentMutation.builder()
                 .apply {
-                    if (project != null) this.projectId(encodeRelayId(project))
+                    project?.let {
+                        this.projectId(encodeRelayId(it))
+                        this.setupIntentContext(
+                            if (it.isInPostCampaignPledgingPhase() == true && it.postCampaignPledgingEnabled() == true)
+                                StripeIntentContextTypes.POST_CAMPAIGN_CHECKOUT
+                            else
+                                StripeIntentContextTypes.CROWDFUNDING_CHECKOUT
+                        )
+                    } ?: run {
+                        this.setupIntentContext(StripeIntentContextTypes.PROFILE_SETTINGS)
+                    }
                 }
                 .build()
 

@@ -34,8 +34,8 @@ query GetBacking($backingId: ID!) {
   }
 }
 
-mutation CreateSetupIntent($projectId: ID) {
-  createSetupIntent(input: { projectId: $projectId } ) {
+mutation CreateSetupIntent($projectId: ID, $setupIntentContext: StripeIntentContextTypes) {
+  createSetupIntent(input: { projectId: $projectId, setupIntentContext: $setupIntentContext } ) {
     clientSecret
   }
 }

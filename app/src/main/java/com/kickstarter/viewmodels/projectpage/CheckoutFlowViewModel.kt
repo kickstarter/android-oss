@@ -1,11 +1,9 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -31,14 +29,11 @@ data class FlowUIState(
 class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
-    private val currentConfig = requireNotNull(environment.currentConfigV2())
 
     private val disposables = CompositeDisposable()
 
     val shippingRules = PublishSubject.create<List<ShippingRule>>()
     val addOns = PublishSubject.create<List<Reward>>()
-    val defaultShippingRule = PublishSubject.create<ShippingRule>()
-    val currentUserReward = PublishSubject.create<Reward>()
     val projectData = PublishSubject.create<ProjectData>()
 
     private lateinit var currentProjectData: ProjectData
@@ -53,25 +48,6 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = FlowUIState()
             )
-
-    init {
-        shippingRules
-            .filter { it.isNotEmpty() }
-            .compose<Pair<List<ShippingRule>, Reward>>(
-                Transformers.combineLatestPair(
-                    currentUserReward
-                )
-            )
-            .filter {
-                !RewardUtils.isDigital(it.second) && RewardUtils.isShippable(it.second) && !RewardUtils.isLocalPickup(
-                    it.second
-                )
-            }
-            .switchMap { getDefaultShippingRule(it.first) }
-            .subscribe {
-                defaultShippingRule.onNext(it)
-            }.addToDisposable(disposables)
-    }
 
     fun changePage(requestedFlowState: FlowUIState) {
         viewModelScope.launch {
@@ -106,29 +82,11 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             .addToDisposable(disposables)
     }
 
-    private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
-        return this.currentConfig.observable()
-            .map { it.countryCode() }
-            .map { countryCode ->
-                shippingRules.firstOrNull { it.location()?.country() == countryCode }
-                    ?: shippingRules.first()
-            }
-    }
-
     fun userRewardSelection(reward: Reward) {
         viewModelScope.launch {
-            currentUserReward.onNext(reward)
             newUserReward = reward
         }
     }
-
-    // TODO: Replace with onAddOnsContinueClicked in AddOnsViewModel
-//    fun onAddOnsContinueClicked() {
-//        viewModelScope.launch {
-//            // Show confirm page
-//            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
-//        }
-//    }
 
     fun onBackPressed(currentPage: Int) {
         viewModelScope.launch {

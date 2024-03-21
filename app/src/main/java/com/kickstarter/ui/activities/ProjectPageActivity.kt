@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
@@ -188,11 +189,15 @@ class ProjectPageActivity :
                         }
                     }
 
+                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
+
                     val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
 
-                    val currentUserShippingRule = checkoutFlowViewModel.defaultShippingRule.subscribeAsState(
-                        initial = ShippingRule.builder().build()
-                    ).value
+//                    var currentUserShippingRule = addOnsViewModel.currentShippingRuleSubject.subscribeAsState(
+//                        initial = ShippingRule.builder().build()
+//                    ).value
+
+                    val currentUserShippingRule = addOnsUIState.currentShippingRule
 
                     var selectedReward: Reward? = null
 
@@ -218,8 +223,9 @@ class ProjectPageActivity :
                         onAddOnsContinueClicked = {
                             addOnsViewModel.onAddOnsContinueClicked()
                         },
-                        currentShippingRule = currentUserShippingRule,
+                        shippingSelectorIsGone = shippingSelectorIsGone,
                         shippingRules = shippingRules,
+                        currentShippingRule = currentUserShippingRule,
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,
                         rewardsList = rewardsList,
@@ -235,6 +241,7 @@ class ProjectPageActivity :
                         onRewardSelected = { reward ->
                             selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
+                            addOnsViewModel.userRewardSelection(reward, shippingRules)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
                             totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
@@ -248,7 +255,10 @@ class ProjectPageActivity :
                         },
                         totalAmount = totalAmount,
                         totalAmountCurrencyConverted = totalAmountCurrencyConverted,
-                        onShippingRuleSelected = {}
+                        onShippingRuleSelected = { shippingRule ->
+                            //currentUserShippingRule = shippingRule
+                            addOnsViewModel.onShippingLocationChanged(shippingRule)
+                        }
                     )
                 }
             }
@@ -720,6 +730,7 @@ class ProjectPageActivity :
         return supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         var statusBarHeight = 0
         // TODO: Replace with window insets compat

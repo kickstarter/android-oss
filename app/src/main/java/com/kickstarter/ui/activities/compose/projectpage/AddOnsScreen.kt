@@ -45,6 +45,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -82,6 +83,7 @@ private fun AddOnsScreenPreview() {
                         .location(Location.builder().displayableName("United States").build())
                         .build()
                 ),
+                shippingSelectorIsGone = false,
                 onShippingRuleSelected = {},
                 currentShippingRule = ShippingRule.builder().build(),
                 rewardItems = (0..10).map {
@@ -111,6 +113,7 @@ fun AddOnsScreen(
     modifier: Modifier,
     environment: Environment,
     lazyColumnListState: LazyListState,
+    shippingSelectorIsGone: Boolean,
     currentShippingRule: ShippingRule,
     countryList: List<ShippingRule>,
     onShippingRuleSelected: (ShippingRule) -> Unit,
@@ -194,22 +197,24 @@ fun AddOnsScreen(
                     color = colors.textPrimary
                 )
 
-                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                if (!shippingSelectorIsGone) {
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
 
-                Text(
-                    text = stringResource(id = R.string.Your_shipping_location),
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
+                    Text(
+                        text = stringResource(id = R.string.Your_shipping_location),
+                        style = typography.subheadlineMedium,
+                        color = colors.textSecondary
+                    )
 
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                    Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
-                CountryInputWithDropdown(
-                    interactionSource = interactionSource,
-                    initialCountryInput = currentShippingRule.location()?.displayableName(),
-                    countryList = countryList,
-                    onShippingRuleSelected = onShippingRuleSelected
-                )
+                    CountryInputWithDropdown(
+                        interactionSource = interactionSource,
+                        initialCountryInput = currentShippingRule.location()?.displayableName(),
+                        countryList = countryList,
+                        onShippingRuleSelected = onShippingRuleSelected
+                    )
+                }
             }
 
             items(
@@ -237,6 +242,7 @@ fun AddOnsScreen(
                     ),
                     shippingAmount = environment.ksCurrency()?.let {
                         getShippingCost(
+                            reward = reward,
                             ksCurrency = it,
                             shippingRules = countryList,
                             selectedShippingRule = currentShippingRule,
@@ -275,13 +281,15 @@ fun AddOnsScreen(
 }
 
 private fun getShippingCost(
+    reward: Reward,
     ksCurrency: KSCurrency,
     shippingRules: List<ShippingRule>?,
     project: Project,
     selectedShippingRule: ShippingRule
-) =
-    if (shippingRules.isNullOrEmpty()) ""
-    else {
+): String {
+    return if (shippingRules.isNullOrEmpty()) {
+        ""
+    } else if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
         var cost = 0.0
         shippingRules.filter {
             it.location()?.id() == selectedShippingRule.location()?.id()
@@ -290,7 +298,10 @@ private fun getShippingCost(
         }
         if (cost > 0) ksCurrency.format(cost, project)
         else ""
+    } else {
+        ""
     }
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

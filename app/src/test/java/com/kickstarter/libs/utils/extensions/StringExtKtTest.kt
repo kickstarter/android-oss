@@ -11,7 +11,6 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun testEncryptDecryptString() {
-
         val textForEncryption = "This my text that will be encrypted!"
         val key = "aesEncryptionKey"
         val secretKey = SecretKeySpec(key.toByteArray(), "AES")

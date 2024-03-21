@@ -54,7 +54,9 @@ data class KSDimensions(
     val appBarSearchPadding: Dp = Dp.Unspecified,
     val clickableButtonHeight: Dp = Dp.Unspecified,
     val dottedListDotSize: Dp = Dp.Unspecified,
-    val countryInputWidth: Dp = Dp.Unspecified
+    val countryInputWidth: Dp = Dp.Unspecified,
+    val storedCardImageHeight: Dp = Dp.Unspecified,
+    val storedCardImageWidth: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -108,5 +110,7 @@ val KSStandardDimensions = KSDimensions(
     appBarSearchPadding = 6.dp,
     clickableButtonHeight = 48.dp,
     dottedListDotSize = 2.dp,
-    countryInputWidth = 164.dp
+    countryInputWidth = 164.dp,
+    storedCardImageHeight = 40.dp,
+    storedCardImageWidth = 64.dp
 )

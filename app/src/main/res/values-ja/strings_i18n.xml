@@ -79,6 +79,13 @@
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Kickstarter に関するビッグニュースやお近くのイベントについて、年に数回お届け。</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Kickstarter のニュースに加え、あなたにピッタリのおすすめプロジェクトやイベントを随時お送りします.</string>
   <string name="Biography" formatted="false">自己紹介</string>
+  <string name="Block" formatted="false">ブロック</string>
+  <string name="Block_this_user" formatted="false">このユーザーをブロックする</string>
+  <string name="Block_user_fail" formatted="false">リクエストを処理できませんでした。もう一度お試しください。</string>
+  <string name="Block_user_success" formatted="false">このユーザーをブロックしました</string>
+  <string name="Block_username" formatted="false">%{username} をブロックしますか？</string>
+  <string name="Blocked_user" formatted="false">ブロックされたユーザー</string>
+  <string name="Blocked_user_confirmation" formatted="false">このユーザーをブロックすると、その後はこのユーザーのコメントやコンテンツを閲覧することができなくなります。このユーザーのプロジェクトを保存またはバックしたことがある場合は、ブロックする前にプレッジを取り消す必要があります。今後ユーザーのブロックを解除するには、ヘルプセンターをご参照ください。</string>
   <string name="Bonus" formatted="false">ボーナス</string>
   <string name="Bonus_support" formatted="false">ボーナスサポート</string>
   <string name="Bookmarks" formatted="false">ブックマーク</string>
@@ -109,6 +116,7 @@
   <string name="Check_out_these_handpicked_projects" formatted="false">あなたにピッタリの Kickstarter イチオシのプロジェクトをご覧ください。</string>
   <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">メールの受信箱をチェックしてこの簡単手続きを完了してください。</string>
   <string name="Check_your_payment_details" formatted="false">お支払い情報をご確認ください</string>
+  <string name="Checkout" formatted="false">Checkout</string>
   <string name="Choose_another_reward" formatted="false">他のリワードを選択</string>
   <string name="Chooses_location_for_shipping" formatted="false">配送先%{location} を選択</string>
   <string name="Chosen_just_for_you" formatted="false">あなたのために選びました</string>
@@ -125,6 +133,7 @@
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm" formatted="false">確定する</string>
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
+  <string name="Confirm_your_pledge_details" formatted="false">Confirm your pledge details</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_backer" formatted="false">バッカーに連絡する</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
@@ -350,6 +359,7 @@
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。&lt;br/>&lt;a href="%{trust_link}">アカウンタビリティについて詳しくみる。&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarterは、知的財産権侵害の報告をすべて真剣に受け止めています。違反行為の報告手順についてのさらなる情報は、著作権ポリシーおよび商標ポリシーをご参照ください。著作権者または商標権者によって提出された申し立てのみ手続きを進めることができます。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Kickstarter の AI ポリシーについて詳しく見る</string>
@@ -446,6 +456,7 @@
   <string name="Opens_rewards" formatted="false">リワードをみる</string>
   <string name="Opens_shipping_options" formatted="false">配送方法をみる</string>
   <string name="Opens_update" formatted="false">アップデートをみる</string>
+  <string name="Opens_user_menu" formatted="false">ユーザーメニューが開きます。</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">別のリワードをみる：</string>
   <string name="Other_payment_methods" formatted="false">その他の支払方法</string>
   <string name="Other_projects_you_might_like" formatted="false">おすすめをさらに見る</string>
@@ -595,6 +606,7 @@
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
   <string name="Select_up_to_five" formatted="false">以下のオプションから最大5つをお選びください。</string>
+  <string name="Select_your_reward" formatted="false">Select your reward</string>
   <string name="Selected" formatted="false">選択済み</string>
   <string name="Selected_card" formatted="false">選択済みのカード</string>
   <string name="Selected_reward" formatted="false">選択したリワード</string>
@@ -696,6 +708,7 @@
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">このプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
   <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">このプロジェクトには、このオプションを処理できない通貨が設定されています。</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">%{date} までに %{amount} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>
+  <string name="This_user_has_been_blocked" formatted="false">このユーザーはブロックされました</string>
   <string name="Time_left_left" formatted="false">あと%{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">上部の「さがす」をタップし、お気に入りカテゴリにアクセス。</string>
   <string name="To_learn_how_Kickstarter_encourages_sustainable_practices" formatted="false">して、Kickstarter がどのようにして持続可能なプロジェクトを促進しているか、その様子をチェックしてみてください。</string>
@@ -735,6 +748,7 @@
   <string name="View" formatted="false">みる</string>
   <string name="View_dashboard" formatted="false">ダッシュボードを表示</string>
   <string name="View_more_replies" formatted="false">他の返信を表示</string>
+  <string name="View_profile" formatted="false">プロフィールを表示</string>
   <string name="View_progress" formatted="false">進捗状況を表示</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>
   <string name="View_replies" formatted="false">返信を表示</string>
@@ -797,7 +811,10 @@
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">このプロジェクトのプレッジはキャンセルされました。</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">%{project_country} のプロジェクトをバックするのにこのクレジットカードを利用することはできません。</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
-  <string name="You_launched_this_project_on_launch_date" formatted="false">このプロジェクトを %{launch_date} にローンチしました。</string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
+&lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
+&lt;p>This project is now one step closer to a reality, thanks to you. Spread the word!&lt;/p></string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">%{launch_date} にこのプロジェクトをローンチしました。クリエイター向けツールにアクセスするには、Kickstarter ウェブサイトにアクセスしてください！</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">このリワードには、最低%{reward_minimum}のプレッジが必要です。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_pledged_without_a_reward" formatted="false">リワードなしでプレッジしました</string>
@@ -811,6 +828,7 @@
   <string name="Your_message_has_been_sent" formatted="false">メッセージが送信されました！</string>
   <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">支払方法の登録完了。</string>
+  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Your payment method will be charged immediately upon pledge and you’ll receive a confirmation email at %{user_email}. Your pledge cannot be canceled or modified.</string>
   <string name="Your_pledge" formatted="false">プレッジ</string>
   <string name="Your_pledge_amount" formatted="false">プレッジ額：</string>
   <string name="Your_pledge_details" formatted="false">プレッジの詳細</string>
@@ -1471,6 +1489,8 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="login_tout_generic_intent_title" formatted="false">続行するにはアカウントにログインが必要です。 メールアドレス、Facebookアカウントで登録するか、ログインしてください。</string>
   <string name="login_tout_generic_intent_traditional_login_button" formatted="false">ログイン</string>
   <string name="login_tout_generic_intent_traditional_signup_button" formatted="false">サインアップ</string>
+  <string name="login_tout_generic_intent_traditional_signup_or_login_button" formatted="false">サインアップ or ログイン\n
+</string>
   <string name="login_tout_generic_intent_traditional_title" formatted="false">メールアドレスを使用：</string>
   <string name="login_tout_help_sheet_cancel" formatted="false">キャンセル</string>
   <string name="login_tout_help_sheet_contact" formatted="false">お問い合わせ</string>

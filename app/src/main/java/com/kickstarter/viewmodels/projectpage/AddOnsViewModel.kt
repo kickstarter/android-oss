@@ -30,7 +30,7 @@ data class AddOnsUIState(
     val project: ProjectData = ProjectData.builder().build(),
     var currentShippingRule: ShippingRule = ShippingRule.builder().build(),
     var shippingSelectorIsGone: Boolean = false,
-//    var currentSelection: MutableMap<Long, Int> = mutableMapOf()
+    var currentAddOnsSelection: MutableMap<Reward, Int> = mutableMapOf()
 )
 class AddOnsViewModel(val environment: Environment) : ViewModel() {
     private val disposables = CompositeDisposable()
@@ -45,7 +45,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     private lateinit var currentProjectData: ProjectData
     private var currentShippingRule: ShippingRule = ShippingRule.builder().build()
     private var shippingSelectorIsGone: Boolean = false
-//    private lateinit var currentSelection: MutableMap<Long, Int>
+    private var currentAddOnsSelections: MutableMap<Reward, Int> = mutableMapOf()
     val addOnsUIState: StateFlow<AddOnsUIState>
         get() = mutableAddOnsUIState
             .asStateFlow()
@@ -93,7 +93,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             .switchMap { getDefaultShippingRule(it.second) }
             .subscribe {
                 defaultShippingRule.onNext(it)
-
+                currentShippingRule = it
                 viewModelScope.launch {
                     mutableAddOnsUIState.emit(
                         AddOnsUIState(
@@ -116,6 +116,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 rule1.location()?.id() == rule2.location()?.id() && rule1.cost() == rule2.cost()
             }
             .subscribe {
+                currentShippingRule = it
                 this.shippingRuleSelected.onNext(it)
             }
             .addToDisposable(disposables)
@@ -162,6 +163,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     }
     fun onShippingLocationChanged(shippingRule: ShippingRule) {
         shippingRuleSelected.onNext(shippingRule)
+        currentShippingRule = shippingRule
 
         viewModelScope.launch {
             mutableAddOnsUIState.emit(
@@ -170,7 +172,21 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                     currentShippingRule = shippingRule,
                     shippingSelectorIsGone = shippingSelectorIsGone,
                     // - Current addOns selection
-                    //currentSelection = currentSelection
+                    currentAddOnsSelection = currentAddOnsSelections
+                )
+            )
+        }
+    }
+
+    fun onAddOnsAddedOrRemoved(addOnsMap: MutableMap<Reward, Int>) {
+        currentAddOnsSelections = addOnsMap
+        viewModelScope.launch {
+            mutableAddOnsUIState.emit(
+                AddOnsUIState(
+                    project = currentProjectData,
+                    currentShippingRule = currentShippingRule,
+                    shippingSelectorIsGone = shippingSelectorIsGone,
+                    currentAddOnsSelection = currentAddOnsSelections
                 )
             )
         }

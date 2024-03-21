@@ -59,7 +59,6 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
@@ -249,7 +248,7 @@ class ProjectPageActivity :
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
                             addOnsMap[updateAddOnRewardCount.keys.first()] =
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-
+                            addOnsViewModel.onAddOnsAddedOrRemoved(addOnsMap)
                             totalAmount = getTotalAmount(selectedReward, addOnsMap)
                             totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
                         },

@@ -1,11 +1,13 @@
 package com.kickstarter.libs.keystore
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.security.keystore.KeyProperties
 import android.security.keystore.KeyProtection
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.extensions.decrypt
 import com.kickstarter.libs.utils.extensions.encrypt
+import com.kickstarter.libs.utils.extensions.isKSApplication
 import timber.log.Timber
 import java.security.KeyStore
 import javax.crypto.KeyGenerator
@@ -15,13 +17,19 @@ class EncryptionEngine(
     private val sharedPreferences: SharedPreferences,
     private val keyAlias: String,
     private val defaultValue: String = "",
-    private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+    private var keyStore: KeyStore? = null
 ) : StringPreferenceType {
 
     // - Overload to be able to use kotlin named parameters from JAVA code
-    constructor(sharedPreferences: SharedPreferences, accessToken: String) : this(sharedPreferences = sharedPreferences, keyAlias = accessToken) {
+    constructor(
+        sharedPreferences: SharedPreferences,
+        accessToken: String,
+        context: Context
+    ) : this(sharedPreferences = sharedPreferences, keyAlias = accessToken) {
         Timber.d("$this :Overloaded constructor")
 
+        // - Avoid instantiating KeyStore on test Applications
+        if (context.isKSApplication()) keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
         if (getSecretKey(keyAlias = keyAlias) == null)
             generateSecretKey(keyAlias = keyAlias)
     }
@@ -67,7 +75,7 @@ class EncryptionEngine(
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                 .build()
 
-        keyStore.setEntry(keyAlias, entry, protectionParameter)
+        keyStore?.setEntry(keyAlias, entry, protectionParameter)
     }
 
     private fun getSecretKey(keyAlias: String) = keyStore?.getKey(keyAlias, null)

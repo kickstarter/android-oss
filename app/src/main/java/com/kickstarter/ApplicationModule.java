@@ -367,8 +367,8 @@ public class ApplicationModule {
   @Singleton
   @AccessTokenPreference
   @NonNull
-  static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new EncryptionEngine(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
+  static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
+    return new EncryptionEngine(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN, context);
     //return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
   }
 

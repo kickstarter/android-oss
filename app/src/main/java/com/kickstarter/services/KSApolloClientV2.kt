@@ -90,7 +90,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.BackingState
 import type.CurrencyCode
-import type.FlaggingKind
+import type.NonDeprecatedFlaggingKind
 import type.PaymentTypes
 
 interface ApolloClientTypeV2 {
@@ -362,7 +362,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             project?.let {
                 val ps = PublishSubject.create<String>()
-                val flagging = FlaggingKind.safeValueOf(flaggingKind)
+                val flagging = NonDeprecatedFlaggingKind.safeValueOf(flaggingKind)
                 val mutation = CreateFlaggingMutation.builder()
                     .contentId(encodeRelayId(it))
                     .details(details)

@@ -9,6 +9,27 @@ import java.util.Locale
 class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
+    fun testEncryptDecryptString() {
+        val textForEncryption = "This my text that will be encrypted!"
+        val secretKey = "aesEncryptionKey"
+        val encryptedString = textForEncryption.encrypt(secretKey = secretKey) ?: ""
+        val decrypted = encryptedString.decrypt(secretKey) ?: ""
+
+        assertEquals(textForEncryption, decrypted)
+        assertTrue(decrypted.isNotEmpty())
+    }
+
+    @Test
+    fun testEncryptDecryptTokenFormat() {
+        val textForEncryption = "003718603ff4a25887d83157bd11d39f0c7501f0"
+        val secretKey = "aesEncryptionKey"
+        val encryptedString = textForEncryption.encrypt(secretKey = secretKey) ?: ""
+        val decrypted = encryptedString.decrypt(secretKey = secretKey) ?: ""
+
+        assertEquals(textForEncryption, decrypted)
+        assertTrue(decrypted.isNotEmpty())
+    }
+    @Test
     fun isEmail_whenGivenEmail_shouldReturnTrue() {
         assertTrue(VALID_EMAIL.isEmail())
     }

@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.Base64
 import android.util.Patterns
 import com.braze.support.emptyToNull
 import com.kickstarter.R
@@ -15,8 +16,41 @@ import java.text.NumberFormat
 import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 const val MINIMUM_PASSWORD_LENGTH = 6
+
+fun String.encrypt(secretKey: String): String? {
+    try {
+        val initVector = "encryptionIntVec"
+        val iv = IvParameterSpec(initVector.toByteArray(charset("UTF-8")))
+        val skeySpec = SecretKeySpec(secretKey.toByteArray(charset("UTF-8")), "AES")
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv)
+        val encrypted = cipher.doFinal(this.toByteArray())
+        return Base64.encodeToString(encrypted, Base64.DEFAULT)
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+    }
+    return null
+}
+
+fun String.decrypt(secretKey: String): String? {
+    try {
+        val initVector = "encryptionIntVec"
+        val iv = IvParameterSpec(initVector.toByteArray(charset("UTF-8")))
+        val skeySpec = SecretKeySpec(secretKey.toByteArray(charset("UTF-8")), "AES")
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv)
+        val original = cipher.doFinal(Base64.decode(this, Base64.DEFAULT))
+        return String(original)
+    } catch (ex: java.lang.Exception) {
+        ex.printStackTrace()
+    }
+    return null
+}
 
 /**
  * Returns a boolean that reflects if the string is an email address

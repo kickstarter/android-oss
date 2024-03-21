@@ -1,51 +1,74 @@
 package com.kickstarter.libs.keystore
 
 import android.content.SharedPreferences
+import android.security.keystore.KeyProperties
+import android.security.keystore.KeyProtection
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.extensions.decrypt
 import com.kickstarter.libs.utils.extensions.encrypt
 import timber.log.Timber
-import java.security.MessageDigest
-import javax.crypto.spec.SecretKeySpec
+import java.security.KeyStore
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 
 class EncryptionEngine(
     private val sharedPreferences: SharedPreferences,
-    private val key: String,
-    private val defaultValue: String = ""
+    private val keyAlias: String,
+    private val defaultValue: String = "",
+    private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
 ) : StringPreferenceType {
 
-    var secretKey: String = "aesEncryptionKey"
-
     // - Overload to be able to use kotlin named parameters from JAVA code
-    constructor(sharedPreferences: SharedPreferences, accessToken: String) : this(sharedPreferences = sharedPreferences, key = accessToken) {
+    constructor(sharedPreferences: SharedPreferences, accessToken: String) : this(sharedPreferences = sharedPreferences, keyAlias = accessToken) {
         Timber.d("$this :Overloaded constructor")
+
+        if (getSecretKey(keyAlias = keyAlias) == null)
+            generateSecretKey(keyAlias = keyAlias)
     }
 
     override val isSet: Boolean
-        get() = sharedPreferences.contains(key)
+        get() = sharedPreferences.contains(keyAlias)
 
     override fun get(): String {
         return if (isSet) {
-            val b64 = sharedPreferences.getString(key, defaultValue) ?: defaultValue
+            val b64 = sharedPreferences.getString(keyAlias, defaultValue) ?: defaultValue
+            val secretKey = getSecretKey(keyAlias)
             return b64.decrypt(secretKey) ?: defaultValue
         } else ""
     }
     override fun set(value: String?) {
         value?.let {
-            val encryptedData = value.encrypt(secretKey)
-            sharedPreferences.edit().putString(key, encryptedData).apply()
+            val secretKey = getSecretKey(keyAlias)
+            val encryptedData = value.encrypt(secretKey = secretKey)
+            sharedPreferences.edit().putString(keyAlias, encryptedData).apply()
         }
     }
 
     override fun delete() {
-        sharedPreferences.edit().remove(key).apply()
+        sharedPreferences.edit().remove(keyAlias).apply()
+    }
+    private fun generateSecretKey(keyAlias: String) {
+
+        val keyGen = KeyGenerator.getInstance("AES")
+        keyGen.init(256)
+        val secretKey: SecretKey = keyGen.generateKey()
+
+        // - Set duration/rotation for the key on the keyStorage
+//        val start: Calendar = Calendar.getInstance()
+//        val end: Calendar = Calendar.getInstance()
+//        end.add(Calendar.YEAR, 2)
+
+        val entry = KeyStore.SecretKeyEntry(secretKey)
+        val protectionParameter =
+            KeyProtection.Builder(KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+//                .setKeyValidityStart(start.time)
+//                .setKeyValidityEnd(end.time)
+                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                .build()
+
+        keyStore.setEntry(keyAlias, entry, protectionParameter)
     }
 
-    private fun generateKey(password: String): SecretKeySpec {
-        val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
-        val bytes = password.toByteArray()
-        digest.update(bytes, 0, bytes.size)
-        val key = digest.digest()
-        return SecretKeySpec(key, "AES")
-    }
+    private fun getSecretKey(keyAlias: String) = keyStore?.getKey(keyAlias, null)
 }

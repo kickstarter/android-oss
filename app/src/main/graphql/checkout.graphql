@@ -34,8 +34,8 @@ query GetBacking($backingId: ID!) {
   }
 }
 
-mutation CreateSetupIntent($projectId: ID) {
-  createSetupIntent(input: { projectId: $projectId } ) {
+mutation CreateSetupIntent($projectId: ID, $setupIntentContext: StripeIntentContextTypes) {
+  createSetupIntent(input: { projectId: $projectId, setupIntentContext: $setupIntentContext } ) {
     clientSecret
   }
 }
@@ -49,8 +49,8 @@ mutation CreateCheckout($projectId: ID!, $amount: String!, $rewardIds: [ID!], $l
   }
 }
 
-mutation CreatePaymentIntent($projectId: ID!, $amount: String!) {
-  createPaymentIntent(input: { projectId: $projectId, amount: $amount } ) {
+mutation CreatePaymentIntent($projectId: ID!, $amount: String!, $paymentIntentContext: StripeIntentContextTypes) {
+  createPaymentIntent(input: { projectId: $projectId, amount: $amount, paymentIntentContext: $paymentIntentContext } ) {
     clientSecret
   }
 }

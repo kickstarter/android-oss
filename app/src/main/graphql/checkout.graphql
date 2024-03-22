@@ -49,8 +49,8 @@ mutation CreateCheckout($projectId: ID!, $amount: String!, $rewardIds: [ID!], $l
   }
 }
 
-mutation CreatePaymentIntent($projectId: ID!, $amount: String!) {
-  createPaymentIntent(input: { projectId: $projectId, amount: $amount } ) {
+mutation CreatePaymentIntent($projectId: ID!, $amount: String!, $paymentIntentContext: StripeIntentContextTypes) {
+  createPaymentIntent(input: { projectId: $projectId, amount: $amount, paymentIntentContext: $paymentIntentContext } ) {
     clientSecret
   }
 }

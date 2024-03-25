@@ -6,17 +6,54 @@ import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.Base64
 import android.util.Patterns
 import com.braze.support.emptyToNull
 import com.kickstarter.R
 import org.jsoup.Jsoup
+import java.nio.charset.StandardCharsets
+import java.security.Key
 import java.security.MessageDigest
 import java.text.NumberFormat
 import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
 
 const val MINIMUM_PASSWORD_LENGTH = 6
+
+fun String.encrypt(secretKey: Key?): String? {
+    return try {
+        val cipher = Cipher.getInstance("AES/CBC/PKCS7PADDING")
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+
+        val cipherText = Base64.encodeToString(cipher.doFinal(this.toByteArray()), Base64.DEFAULT)
+        val iv = Base64.encodeToString(cipher.iv, Base64.DEFAULT)
+
+        "$cipherText.$iv"
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun String.decrypt(secretKey: Key?): String? {
+    return try {
+        val array = this.split(".")
+        val cipherData = Base64.decode(array[0], Base64.DEFAULT)
+        val iv = Base64.decode(array[1], Base64.DEFAULT)
+        val cipher = Cipher.getInstance("AES/CBC/PKCS7PADDING")
+        val spec = IvParameterSpec(iv)
+
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, spec)
+
+        val clearText = cipher.doFinal(cipherData)
+
+        String(clearText, 0, clearText.size, StandardCharsets.UTF_8)
+    } catch (e: Exception) {
+        null
+    }
+}
 
 /**
  * Returns a boolean that reflects if the string is an email address

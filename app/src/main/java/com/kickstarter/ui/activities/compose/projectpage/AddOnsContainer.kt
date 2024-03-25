@@ -56,8 +56,8 @@ private fun AddOnsContainerPreview() {
             buttonEnabled = true,
             buttonText = "Add",
             environment = Environment.builder().build(),
-            onItemAddedOrRemoved = { count ->
-            }
+            onItemAddedOrRemoved = { count -> },
+            itemAddOnCount = 1
         )
     }
 }
@@ -74,10 +74,9 @@ fun AddOnsContainer(
     buttonEnabled: Boolean,
     buttonText: String,
     environment: Environment,
-    onItemAddedOrRemoved: (count: Int) -> Unit
+    onItemAddedOrRemoved: (count: Int) -> Unit,
+    itemAddOnCount: Int
 ) {
-    var addOnCount by rememberSaveable { mutableStateOf(0) }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = colors.kds_white,
@@ -165,12 +164,11 @@ fun AddOnsContainer(
 
             Spacer(Modifier.height(dimensions.paddingLarge))
 
-            when (addOnCount) {
+            when (itemAddOnCount) {
                 0 -> {
                     KSPrimaryBlackButton(
                         onClickAction = {
-                            addOnCount++
-                            onItemAddedOrRemoved(addOnCount)
+                            onItemAddedOrRemoved(itemAddOnCount + 1)
                         },
                         text = buttonText,
                         isEnabled = buttonEnabled
@@ -185,13 +183,11 @@ fun AddOnsContainer(
                     ) {
                         KSStepper(
                             onPlusClicked = {
-                                addOnCount++
-                                onItemAddedOrRemoved(addOnCount)
+                                onItemAddedOrRemoved(itemAddOnCount + 1)
                             },
-                            isPlusEnabled = addOnCount < limit,
+                            isPlusEnabled = itemAddOnCount < limit,
                             onMinusClicked = {
-                                addOnCount--
-                                onItemAddedOrRemoved(addOnCount)
+                                onItemAddedOrRemoved(itemAddOnCount - 1)
                             },
                             isMinusEnabled = true
                         )
@@ -211,7 +207,7 @@ fun AddOnsContainer(
                                 )
                         ) {
                             Text(
-                                text = "$addOnCount",
+                                text = "$itemAddOnCount",
                                 style = typography.callout,
                                 color = colors.textPrimary
                             )

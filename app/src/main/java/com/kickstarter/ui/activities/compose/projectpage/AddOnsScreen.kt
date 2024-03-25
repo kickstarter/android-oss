@@ -267,6 +267,7 @@ fun AddOnsScreen(
                             "title", it.item().name()
                         ) ?: ""
                     } ?: listOf(),
+                    itemAddOnCount = selectedAddOnsMap[reward] ?: 0
                 )
             }
 

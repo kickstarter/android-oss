@@ -5,9 +5,33 @@ import com.kickstarter.R
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
 import java.util.Locale
+import javax.crypto.spec.SecretKeySpec
 
 class StringExtKtTest : KSRobolectricTestCase() {
 
+    @Test
+    fun testEncryptDecryptString() {
+        val textForEncryption = "This my text that will be encrypted!"
+        val key = "aesEncryptionKey"
+        val secretKey = SecretKeySpec(key.toByteArray(), "AES")
+        val encryptedString = textForEncryption.encrypt(secretKey = secretKey) ?: ""
+        val decrypted = encryptedString.decrypt(secretKey) ?: ""
+
+        assertEquals(textForEncryption, decrypted)
+        assertTrue(decrypted.isNotEmpty())
+    }
+
+    @Test
+    fun testEncryptDecryptTokenFormat() {
+        val textForEncryption = "003718603ff4a25887d83157bd11d39f0c7501f0"
+        val key = "aesEncryptionKey"
+        val secretKey = SecretKeySpec(key.toByteArray(), "AES")
+        val encryptedString = textForEncryption.encrypt(secretKey = secretKey) ?: ""
+        val decrypted = encryptedString.decrypt(secretKey = secretKey) ?: ""
+
+        assertEquals(textForEncryption, decrypted)
+        assertTrue(decrypted.isNotEmpty())
+    }
     @Test
     fun isEmail_whenGivenEmail_shouldReturnTrue() {
         assertTrue(VALID_EMAIL.isEmail())

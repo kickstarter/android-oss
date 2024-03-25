@@ -1,7 +1,7 @@
 package com.kickstarter.services.interceptors
 
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.utils.WebUtils
 import okhttp3.Interceptor
@@ -14,17 +14,16 @@ import okhttp3.Response
  */
 class GraphQLInterceptor(
     private val clientId: String,
-    private val currentUser: CurrentUserType,
+    private val currentUser: CurrentUserTypeV2,
     private val build: Build
 ) : Interceptor {
     override fun intercept(chain: Chain): Response {
         val original = chain.request()
         val builder = original.newBuilder().method(original.method, original.body)
 
-        this.currentUser.observable()
-            .subscribe {
-                builder.addHeader("Authorization", "token " + this.currentUser.accessToken)
-            }
+        this.currentUser.accessToken?.let {
+            builder.addHeader("Authorization", "token $it")
+        }
 
         builder.addHeader("User-Agent", WebUtils.userAgent(this.build))
             .addHeader("X-KICKSTARTER-CLIENT", this.clientId)

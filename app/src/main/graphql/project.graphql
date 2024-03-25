@@ -161,7 +161,7 @@ query GetProjectUpdates($slug: String!, $limit: Int!, $cursor: String) {
   }
 }
 
-mutation CreateFlagging($contentId: ID!, $details: String, $kind: FlaggingKind!) {
+mutation CreateFlagging($contentId: ID!, $details: String, $kind: NonDeprecatedFlaggingKind!) {
   createFlagging(input: {
     contentId: $contentId,
     details: $details,

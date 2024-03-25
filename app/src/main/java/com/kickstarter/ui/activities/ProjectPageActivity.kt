@@ -200,7 +200,7 @@ class ProjectPageActivity :
 
                     var selectedReward: Reward? = null
 
-                    val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
+                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
 
                     val addOns = checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
 
@@ -242,16 +242,19 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.userRewardSelection(reward)
                             addOnsViewModel.userRewardSelection(reward, shippingRules)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
-                            totalAmount = getTotalAmount(selectedReward, addOnsMap)
-                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
+                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
+                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, selectedAddOnsMap)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
-                            addOnsMap[updateAddOnRewardCount.keys.first()] =
+                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-                            addOnsViewModel.onAddOnsAddedOrRemoved(addOnsMap)
-                            totalAmount = getTotalAmount(selectedReward, addOnsMap)
-                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, addOnsMap)
+
+                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
+
+                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
+                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, selectedAddOnsMap)
                         },
+                        selectedAddOnsMap = selectedAddOnsMap,
                         totalAmount = totalAmount,
                         totalAmountCurrencyConverted = totalAmountCurrencyConverted,
                         onShippingRuleSelected = { shippingRule ->

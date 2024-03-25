@@ -127,6 +127,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     project: Project,
     onRewardSelected: (reward: Reward) -> Unit,
     onAddOnAddedOrRemoved: (Map<Reward, Int>) -> Unit,
+    selectedAddOnsMap: Map<Reward, Int> = mapOf(),
     totalAmount: Double,
     totalAmountCurrencyConverted: Double,
     selectedReward: Reward? = null,
@@ -251,6 +252,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         rewardItems = addOns,
                                         project = project,
                                         onItemAddedOrRemoved = onAddOnAddedOrRemoved,
+                                        selectedAddOnsMap = selectedAddOnsMap,
                                         onContinueClicked = onAddOnsContinueClicked
                                     )
                                 }

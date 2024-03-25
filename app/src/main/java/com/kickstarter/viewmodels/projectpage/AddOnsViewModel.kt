@@ -67,12 +67,13 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             }
             .distinctUntilChanged()
             .subscribe {
+                shippingSelectorIsGone = true
                 viewModelScope.launch {
                     mutableAddOnsUIState.emit(
                         AddOnsUIState(
                             project = currentProjectData,
                             currentShippingRule = currentShippingRule,
-                            shippingSelectorIsGone = true,
+                            shippingSelectorIsGone = shippingSelectorIsGone,
                             // - Current addOns selection
                             //currentSelection = currentSelection
                         )
@@ -178,8 +179,8 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onAddOnsAddedOrRemoved(addOnsMap: MutableMap<Reward, Int>) {
-        currentAddOnsSelections = addOnsMap
+    fun onAddOnsAddedOrRemoved(currentAddOnsSelections: MutableMap<Reward, Int>) {
+        this.currentAddOnsSelections = currentAddOnsSelections
         viewModelScope.launch {
             mutableAddOnsUIState.emit(
                 AddOnsUIState(

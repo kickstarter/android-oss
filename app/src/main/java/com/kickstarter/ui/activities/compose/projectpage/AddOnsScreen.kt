@@ -102,6 +102,7 @@ private fun AddOnsScreenPreview() {
                     .currentCurrency("USD")
                     .build(),
                 onItemAddedOrRemoved = {},
+                selectedAddOnsMap = mutableMapOf(),
                 onContinueClicked = {}
             )
         }
@@ -120,6 +121,7 @@ fun AddOnsScreen(
     rewardItems: List<Reward>,
     project: Project,
     onItemAddedOrRemoved: (Map<Reward, Int>) -> Unit,
+    selectedAddOnsMap: Map<Reward, Int>,
     onContinueClicked: () -> Unit
 ) {
     val interactionSource = remember {
@@ -128,7 +130,7 @@ fun AddOnsScreen(
     var addOnCount by remember {
         mutableStateOf(0)
     }
-    val rewardSelections: MutableMap<Reward, Int> = mutableMapOf()
+    //val rewardSelections: MutableMap<Reward, Int> = mutableMapOf()
 
     Scaffold(
         modifier = modifier,
@@ -254,13 +256,17 @@ fun AddOnsScreen(
                     buttonText = stringResource(id = R.string.Add),
                     limit = reward.limit() ?: -1,
                     onItemAddedOrRemoved = { count ->
+                        val rewardSelections = mutableMapOf<Reward, Int>()
                         rewardSelections[reward] = count
+
+                        onItemAddedOrRemoved(rewardSelections)
+
+                        // YC - selectedAddOnsMap is now updated
                         var totalRewardsCount = 0
-                        rewardSelections.forEach {
+                        selectedAddOnsMap.forEach {
                             totalRewardsCount += it.value
                         }
                         addOnCount = totalRewardsCount
-                        onItemAddedOrRemoved(rewardSelections)
                     },
                     environment = environment,
                     includesList = reward.addOnsItems()?.map {

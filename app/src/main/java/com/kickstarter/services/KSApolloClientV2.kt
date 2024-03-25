@@ -44,6 +44,7 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
@@ -93,6 +94,7 @@ import type.CurrencyCode
 import type.NonDeprecatedFlaggingKind
 import type.PaymentTypes
 import type.StripeIntentContextTypes
+import java.nio.charset.Charset
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -1570,7 +1572,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             this.service.mutate(
                 CompleteOnSessionCheckoutMutation.builder()
-                    .checkoutId(checkoutId)
+                    .checkoutId(Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())))
                     .paymentIntentClientSecret(paymentIntentClientSecret)
                     .paymentSourceId(paymentSourceId)
                     .build()

@@ -39,11 +39,13 @@ import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import kotlinx.coroutines.launch
 
@@ -101,7 +103,11 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             onConfirmDetailsContinueClicked = {},
             selectedRewardAndAddOnList = listOf(),
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            storedCards = listOf(),
+            userEmail = "test@test.test",
+            onPledgeCtaClicked = {},
+            onAddPaymentMethodClicked = {}
         )
     }
 }
@@ -137,7 +143,11 @@ fun ProjectPledgeButtonAndFragmentContainer(
     shippingAmount: Double = 0.0,
     selectedRewardAndAddOnList: List<Reward>,
     onBonusSupportPlusClicked: () -> Unit,
-    onBonusSupportMinusClicked: () -> Unit
+    onBonusSupportMinusClicked: () -> Unit,
+    storedCards: List<StoredCard>,
+    userEmail: String,
+    onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
+    onAddPaymentMethodClicked: () -> Unit
 ) {
     Column {
         Surface(
@@ -287,7 +297,22 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                 }
 
                                 3 -> {
-                                    // Pledge page
+                                    CheckoutScreen(
+                                        storedCards = storedCards,
+                                        environment = environment ?: Environment.builder().build(),
+                                        ksString = environment?.ksString(),
+                                        project = project,
+                                        email = userEmail,
+                                        selectedReward = selectedReward,
+                                        rewardsList = getRewardListAndPrices(selectedRewardAndAddOnList, environment, project),
+                                        pledgeReason = PledgeReason.PLEDGE,
+                                        shippingAmount = shippingAmount,
+                                        totalAmount = totalAmount,
+                                        totalBonusSupport = totalBonusSupportAmount,
+                                        currentShippingRule = currentShippingRule,
+                                        onPledgeCtaClicked = onPledgeCtaClicked,
+                                        newPaymentMethodClicked = onAddPaymentMethodClicked
+                                    )
                                 }
                             }
                         }

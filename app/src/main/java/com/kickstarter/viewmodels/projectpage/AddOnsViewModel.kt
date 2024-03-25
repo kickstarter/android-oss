@@ -154,6 +154,19 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     // UI events
 
     fun userRewardSelection(reward: Reward, shippingRules: List<ShippingRule>) {
+        // A new reward has been selected, so clear out any previous addons selection
+        this.currentAddOnsSelections = mutableMapOf()
+        viewModelScope.launch {
+            mutableAddOnsUIState.emit(
+                AddOnsUIState(
+                    project = currentProjectData,
+                    currentShippingRule = currentShippingRule,
+                    shippingSelectorIsGone = shippingSelectorIsGone,
+                    currentAddOnsSelection = currentAddOnsSelections
+                )
+            )
+        }
+        
         this.currentUserReward.onNext(reward)
         this.shippingRules.onNext(shippingRules)
     }

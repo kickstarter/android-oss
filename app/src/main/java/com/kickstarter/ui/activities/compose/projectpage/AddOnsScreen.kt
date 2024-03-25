@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,9 +127,8 @@ fun AddOnsScreen(
     val interactionSource = remember {
         MutableInteractionSource()
     }
-    var addOnCount by rememberSaveable {
-        mutableStateOf(0)
-    }
+    val addOnCount = getAddOnCount(selectedAddOnsMap)
+
 
     Scaffold(
         modifier = modifier,
@@ -260,13 +258,6 @@ fun AddOnsScreen(
                         rewardSelections[reward] = count
 
                         onItemAddedOrRemoved(rewardSelections)
-
-                        // YC - selectedAddOnsMap is now updated
-                        var totalRewardsCount = 0
-                        selectedAddOnsMap.forEach {
-                            totalRewardsCount += it.value
-                        }
-                        addOnCount = totalRewardsCount
                     },
                     environment = environment,
                     includesList = reward.addOnsItems()?.map {
@@ -286,6 +277,13 @@ fun AddOnsScreen(
     }
 }
 
+private fun getAddOnCount(selectedAddOnsMap: Map<Reward, Int>): Int {
+    var totalAddOnsCount = 0
+    selectedAddOnsMap.forEach {
+        totalAddOnsCount += it.value
+    }
+    return totalAddOnsCount
+}
 private fun getShippingCost(
     reward: Reward,
     ksCurrency: KSCurrency,

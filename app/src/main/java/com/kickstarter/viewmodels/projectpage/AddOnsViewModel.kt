@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class AddOnsUIState(
-    val project: ProjectData = ProjectData.builder().build(),
     var currentShippingRule: ShippingRule = ShippingRule.builder().build(),
     var shippingSelectorIsGone: Boolean = false,
     var currentAddOnsSelection: MutableMap<Reward, Int> = mutableMapOf()
@@ -42,7 +41,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     private val shippingRuleSelected = PublishSubject.create<ShippingRule>()
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
-    private lateinit var currentProjectData: ProjectData
     private var currentShippingRule: ShippingRule = ShippingRule.builder().build()
     private var shippingSelectorIsGone: Boolean = false
     private var currentAddOnsSelections: MutableMap<Reward, Int> = mutableMapOf()
@@ -71,7 +69,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 viewModelScope.launch {
                     mutableAddOnsUIState.emit(
                         AddOnsUIState(
-                            project = currentProjectData,
                             currentShippingRule = currentShippingRule,
                             shippingSelectorIsGone = shippingSelectorIsGone,
                             currentAddOnsSelection = currentAddOnsSelections
@@ -97,7 +94,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 viewModelScope.launch {
                     mutableAddOnsUIState.emit(
                         AddOnsUIState(
-                            project = currentProjectData,
                             currentShippingRule = it,
                             shippingSelectorIsGone = shippingSelectorIsGone,
                             currentAddOnsSelection = currentAddOnsSelections
@@ -148,7 +144,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         }
 
     fun provideProjectData(projectData: ProjectData) {
-        currentProjectData = projectData
+        // no-op
     }
 
     // UI events
@@ -159,14 +155,13 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         viewModelScope.launch {
             mutableAddOnsUIState.emit(
                 AddOnsUIState(
-                    project = currentProjectData,
                     currentShippingRule = currentShippingRule,
                     shippingSelectorIsGone = shippingSelectorIsGone,
                     currentAddOnsSelection = currentAddOnsSelections
                 )
             )
         }
-        
+
         this.currentUserReward.onNext(reward)
         this.shippingRules.onNext(shippingRules)
     }
@@ -177,7 +172,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         viewModelScope.launch {
             mutableAddOnsUIState.emit(
                 AddOnsUIState(
-                    project = currentProjectData,
                     currentShippingRule = shippingRule,
                     shippingSelectorIsGone = shippingSelectorIsGone,
                     currentAddOnsSelection = currentAddOnsSelections
@@ -190,7 +184,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         viewModelScope.launch {
             mutableAddOnsUIState.emit(
                 AddOnsUIState(
-                    project = currentProjectData,
                     currentShippingRule = currentShippingRule,
                     shippingSelectorIsGone = shippingSelectorIsGone,
                     currentAddOnsSelection = currentAddOnsSelections

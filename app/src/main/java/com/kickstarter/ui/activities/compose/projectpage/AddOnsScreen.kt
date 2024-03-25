@@ -129,7 +129,6 @@ fun AddOnsScreen(
     }
     val addOnCount = getAddOnCount(selectedAddOnsMap)
 
-
     Scaffold(
         modifier = modifier,
         bottomBar = {

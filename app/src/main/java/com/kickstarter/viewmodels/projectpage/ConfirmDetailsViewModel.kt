@@ -135,8 +135,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             )
         }
 
-        totalAmount =
-            getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+        totalAmount = calculateTotal()
 
         viewModelScope.launch {
             mutableConfirmDetailsUIState.emit(
@@ -179,8 +178,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             )
         }
 
-        totalAmount =
-            getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+        totalAmount = calculateTotal()
 
         viewModelScope.launch {
             mutableConfirmDetailsUIState.emit(
@@ -196,6 +194,14 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 )
             )
         }
+    }
+
+    private fun calculateTotal(): Double {
+        var total = 0.0
+        total += getRewardsTotalAmount(rewardAndAddOns)
+        total += initialBonusSupport + addedBonusSupport
+        total += if (RewardUtils.isNoReward(userSelectedReward)) 0.0 else shippingAmount
+        return total
     }
 
     /**
@@ -256,7 +262,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             }
     }
 
-    private fun getTotalAmount(rewards: List<Reward>): Double {
+    private fun getRewardsTotalAmount(rewards: List<Reward>): Double {
         var total = 0.0
         rewards.forEach { reward ->
             reward.quantity()?.let { quantity ->
@@ -270,8 +276,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     fun incrementBonusSupport() {
         addedBonusSupport += minStepAmount
-        totalAmount =
-            getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+        totalAmount = calculateTotal()
         viewModelScope.launch {
             mutableConfirmDetailsUIState.emit(
                 ConfirmDetailsUIState(
@@ -291,8 +296,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     fun decrementBonusSupport() {
         if (addedBonusSupport - minStepAmount >= initialBonusSupport) {
             addedBonusSupport -= minStepAmount
-            totalAmount =
-                getTotalAmount(rewardAndAddOns) + initialBonusSupport + addedBonusSupport + shippingAmount
+            totalAmount = calculateTotal()
             viewModelScope.launch {
                 mutableConfirmDetailsUIState.emit(
                     ConfirmDetailsUIState(
@@ -321,6 +325,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                         amount = totalAmount.toString(),
                         locationId = if (::defaultShippingRule.isInitialized) defaultShippingRule.location()
                             ?.id()?.toString() else null,
+                        rewardsIds = fullIdListForQuantities(rewardAndAddOns),
                         refTag = projectData.refTagFromIntent()
                     )
                 )
@@ -336,6 +341,22 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         } else {
             defaultAction.invoke()
         }
+    }
+
+    private fun fullIdListForQuantities(flattenedList: List<Reward>): List<Reward> {
+        val mutableList = mutableListOf<Reward>()
+
+        flattenedList.map {
+            if (!it.isAddOn()) mutableList.add(it)
+            else {
+                val q = it.quantity() ?: 1
+                for (i in 1..q) {
+                    mutableList.add(it)
+                }
+            }
+        }
+
+        return mutableList.toList()
     }
 
     fun onShippingRuleSelected(shippingRule: ShippingRule) {

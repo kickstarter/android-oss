@@ -38,6 +38,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
     private lateinit var currentProjectData: ProjectData
     private lateinit var newUserReward: Reward
+    private lateinit var allAddOns: List<Reward>
 
     private val mutableFlowUIState = MutableStateFlow(FlowUIState())
     val flowUIState: StateFlow<FlowUIState>
@@ -78,13 +79,29 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             )
             .onErrorResumeNext(Observable.empty())
             .filter { it.isNotNull() }
-            .subscribe { addOns.onNext(it) }
+            .subscribe {
+                allAddOns = it
+                addOns.onNext(it)
+            }
             .addToDisposable(disposables)
     }
 
     fun userRewardSelection(reward: Reward) {
         viewModelScope.launch {
             newUserReward = reward
+
+            val cannotShip = RewardUtils.isDigital(newUserReward) || !RewardUtils.isShippable(newUserReward) || RewardUtils.isLocalPickup(newUserReward)
+            // If reward cannot be shipped, only display addons that also cannot be shipped
+            if (newUserReward.hasAddons() && cannotShip) {
+                addOns.onNext(
+                    allAddOns
+                        .filter { addOn ->
+                            RewardUtils.isDigital(addOn) || !RewardUtils.isShippable(addOn) || RewardUtils.isLocalPickup(addOn)
+                        }
+                )
+            } else {
+                addOns.onNext(allAddOns)
+            }
         }
     }
 

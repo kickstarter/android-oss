@@ -180,7 +180,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                     project = currentProjectData,
                     currentShippingRule = shippingRule,
                     shippingSelectorIsGone = shippingSelectorIsGone,
-                    // - Current addOns selection
                     currentAddOnsSelection = currentAddOnsSelections
                 )
             )

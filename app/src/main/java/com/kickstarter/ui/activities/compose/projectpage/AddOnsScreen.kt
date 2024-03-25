@@ -131,7 +131,6 @@ fun AddOnsScreen(
     var addOnCount by rememberSaveable {
         mutableStateOf(0)
     }
-    //val rewardSelections: MutableMap<Reward, Int> = mutableMapOf()
 
     Scaffold(
         modifier = modifier,

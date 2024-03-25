@@ -192,10 +192,6 @@ class ProjectPageActivity :
 
                     val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
 
-//                    var currentUserShippingRule = addOnsViewModel.currentShippingRuleSubject.subscribeAsState(
-//                        initial = ShippingRule.builder().build()
-//                    ).value
-
                     val currentUserShippingRule = addOnsUIState.currentShippingRule
 
                     var selectedReward: Reward? = null
@@ -258,7 +254,6 @@ class ProjectPageActivity :
                         totalAmount = totalAmount,
                         totalAmountCurrencyConverted = totalAmountCurrencyConverted,
                         onShippingRuleSelected = { shippingRule ->
-                            //currentUserShippingRule = shippingRule
                             addOnsViewModel.onShippingLocationChanged(shippingRule)
                         }
                     )

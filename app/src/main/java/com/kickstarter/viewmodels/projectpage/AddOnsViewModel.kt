@@ -74,8 +74,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                             project = currentProjectData,
                             currentShippingRule = currentShippingRule,
                             shippingSelectorIsGone = shippingSelectorIsGone,
-                            // - Current addOns selection
-                            //currentSelection = currentSelection
+                            currentAddOnsSelection = currentAddOnsSelections
                         )
                     )
                 }
@@ -101,13 +100,10 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                             project = currentProjectData,
                             currentShippingRule = it,
                             shippingSelectorIsGone = shippingSelectorIsGone,
-                            // - Current addOns selection
-                            //currentSelection = currentSelection
+                            currentAddOnsSelection = currentAddOnsSelections
                         )
                     )
                 }
-
-
             }.addToDisposable(disposables)
 
         val shippingRule = getSelectedShippingRule(defaultShippingRule, currentUserReward)
@@ -147,7 +143,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             RewardUtils.isDigital(rw) || !RewardUtils.isShippable(rw) || RewardUtils.isLocalPickup(
                 rw
             ) -> ShippingRuleFactory.emptyShippingRule()
-            //sameReward -> backingShippingRule // TODO: When changing reward for manage pledge flow
+            // sameReward -> backingShippingRule // TODO: When changing reward for manage pledge flow
             else -> defaultShipping
         }
 
@@ -160,7 +156,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     fun userRewardSelection(reward: Reward, shippingRules: List<ShippingRule>) {
         this.currentUserReward.onNext(reward)
         this.shippingRules.onNext(shippingRules)
-
     }
     fun onShippingLocationChanged(shippingRule: ShippingRule) {
         shippingRuleSelected.onNext(shippingRule)
@@ -178,7 +173,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             )
         }
     }
-
     fun onAddOnsAddedOrRemoved(currentAddOnsSelections: MutableMap<Reward, Int>) {
         this.currentAddOnsSelections = currentAddOnsSelections
         viewModelScope.launch {
@@ -198,6 +192,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
         }
     }
+
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

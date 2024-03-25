@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject

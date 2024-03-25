@@ -47,6 +47,7 @@ import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
+import com.kickstarter.libs.keystore.EncryptionEngine;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -284,7 +285,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull Build build) {
+    final @NonNull CurrentUserTypeV2 currentUser, final @NonNull Build build) {
     return new GraphQLInterceptor(clientId, currentUser, build);
   }
 
@@ -366,8 +367,8 @@ public class ApplicationModule {
   @Singleton
   @AccessTokenPreference
   @NonNull
-  static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
+  static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context, final @NonNull FeatureFlagClientType featureFlagClient) {
+    return new EncryptionEngine(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN, context, featureFlagClient);
   }
 
   @Provides

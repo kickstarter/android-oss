@@ -60,12 +60,9 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
 
     init {
         currentUserReward
-            .filter {
-                RewardUtils.isDigital(it) || !RewardUtils.isShippable(it) || RewardUtils.isLocalPickup(it)
-            }
             .distinctUntilChanged()
             .subscribe {
-                shippingSelectorIsGone = true
+                shippingSelectorIsGone = RewardUtils.isDigital(it) || !RewardUtils.isShippable(it) || RewardUtils.isLocalPickup(it)
                 viewModelScope.launch {
                     mutableAddOnsUIState.emit(
                         AddOnsUIState(
@@ -94,7 +91,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 viewModelScope.launch {
                     mutableAddOnsUIState.emit(
                         AddOnsUIState(
-                            currentShippingRule = it,
+                            currentShippingRule = currentShippingRule,
                             shippingSelectorIsGone = shippingSelectorIsGone,
                             currentAddOnsSelection = currentAddOnsSelections
                         )
@@ -142,10 +139,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             // sameReward -> backingShippingRule // TODO: When changing reward for manage pledge flow
             else -> defaultShipping
         }
-
-    fun provideProjectData(projectData: ProjectData) {
-        // no-op
-    }
 
     // UI events
 

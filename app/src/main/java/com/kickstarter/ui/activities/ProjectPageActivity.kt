@@ -308,7 +308,6 @@ class ProjectPageActivity :
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
                 checkoutFlowViewModel.provideProjectData(it)
                 rewardsSelectionViewModel.provideProjectData(it)
-                addOnsViewModel.provideProjectData(it)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()

@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
@@ -55,7 +56,6 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
@@ -78,6 +78,7 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
 import com.kickstarter.viewmodels.projectpage.ConfirmDetailsViewModel
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
@@ -111,6 +112,9 @@ class ProjectPageActivity :
 
     private lateinit var latePledgeCheckoutViewModelFactory: LatePledgeCheckoutViewModel.Factory
     private val latePledgeCheckoutViewModel: LatePledgeCheckoutViewModel by viewModels { latePledgeCheckoutViewModelFactory }
+
+    private lateinit var addOnsViewModelFactory: AddOnsViewModel.Factory
+    private val addOnsViewModel: AddOnsViewModel by viewModels { addOnsViewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -168,6 +172,18 @@ class ProjectPageActivity :
                         }
                     }
 
+                    val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
+
+                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
+                    val currentUserShippingRule = addOnsUIState.currentShippingRule
+                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
+
+                    LaunchedEffect(Unit) {
+                        addOnsViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
+
                     val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
 
                     val totalAmount: Double = confirmUiState.totalAmount
@@ -214,17 +230,9 @@ class ProjectPageActivity :
                         }
                     }
 
-                    val shippingRules =
-                        checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
-
-                    val currentUserShippingRule =
-                        checkoutFlowViewModel.defaultShippingRule.subscribeAsState(
-                            initial = ShippingRule.builder().build()
-                        ).value
+                    val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
 
                     var selectedReward: Reward? = null
-
-                    val addOnsMap: MutableMap<Reward, Int> = mutableMapOf()
 
                     val addOns =
                         checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
@@ -237,9 +245,10 @@ class ProjectPageActivity :
                         },
                         pagerState = pagerState,
                         onAddOnsContinueClicked = {
-                            checkoutFlowViewModel.onAddOnsContinueClicked()
+                            addOnsViewModel.onAddOnsContinueClicked()
                         },
                         currentShippingRule = currentShippingRule ?: currentUserShippingRule,
+                        shippingSelectorIsGone = shippingSelectorIsGone,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,
@@ -256,14 +265,16 @@ class ProjectPageActivity :
                         onRewardSelected = { reward ->
                             selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
+                            addOnsViewModel.userRewardSelection(reward, shippingRules)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
                             confirmDetailsViewModel.onUserSelectedReward(reward)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
-                            addOnsMap[updateAddOnRewardCount.keys.first()] =
+                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
+                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
 
-                            confirmDetailsViewModel.onUserUpdatedAddOns(addOnsMap)
+                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
                         },
                         selectedReward = selectedReward,
                         totalAmount = totalAmount,
@@ -272,8 +283,9 @@ class ProjectPageActivity :
                         totalBonusSupportAmount = totalBonusSupportAmount,
                         maxPledgeAmount = maxPledgeAmount,
                         minStepAmount = minStepAmount,
-                        onShippingRuleSelected = {
-                            confirmDetailsViewModel.onShippingRuleSelected(it)
+                        onShippingRuleSelected = { shippingRule ->
+                            addOnsViewModel.onShippingLocationChanged(shippingRule)
+                            confirmDetailsViewModel.onShippingRuleSelected(shippingRule)
                         },
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {
@@ -290,7 +302,8 @@ class ProjectPageActivity :
                         },
                         onAddPaymentMethodClicked = {
 
-                        }
+                        },
+                        selectedAddOnsMap = selectedAddOnsMap
                     )
                 }
             }
@@ -300,6 +313,7 @@ class ProjectPageActivity :
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
             confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
+            addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
             env
         }
@@ -743,6 +757,7 @@ class ProjectPageActivity :
         return supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         var statusBarHeight = 0
         // TODO: Replace with window insets compat

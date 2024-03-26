@@ -462,7 +462,6 @@ class ProjectPageActivity :
 
     @OptIn(ExperimentalFoundationApi::class)
     private fun latePledgesSetUp(composeView: ComposeView) {
-        val composeView = binding.pledgeContainerCompose
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {

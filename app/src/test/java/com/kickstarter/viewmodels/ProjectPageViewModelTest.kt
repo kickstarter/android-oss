@@ -98,6 +98,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val hideVideoPlayer = TestSubscriber<Boolean>()
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
+    private val postCampaignPledgingEnabled = TestSubscriber<Boolean>()
 
     private val disposables = CompositeDisposable()
 
@@ -150,6 +151,103 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.hideVideoPlayer().subscribe { this.hideVideoPlayer.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.onOpenVideoInFullScreen().subscribe { this.onOpenVideoInFullScreen.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.updateVideoCloseSeekPosition().subscribe { this.updateVideoCloseSeekPosition.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showLatePledgeFlow().subscribe { this.postCampaignPledgingEnabled.onNext(it) }.addToDisposable(disposables)
+    }
+
+    @Test
+    fun testShowLatePledgeFlow_ProjectDisabled_WhenFFOff() {
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(false)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+        this.postCampaignPledgingEnabled.assertNoValues()
+    }
+
+    @Test
+    fun testShowLatePledgeFlow_ProjectEnabled_WhenFFOff() {
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+        this.postCampaignPledgingEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testShowLatePledgeFlow_ProjectDisabled_WhenFFOn() {
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+        this.postCampaignPledgingEnabled.assertNoValues()
+    }
+
+    @Test
+    fun testShowLatePledgeFlow_ProjectEnabled_WhenFFOn() {
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+        this.postCampaignPledgingEnabled.assertValue(true)
     }
 
     @Test

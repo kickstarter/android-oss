@@ -30,7 +30,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
@@ -173,6 +172,8 @@ class ProjectPageActivity :
                     val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
                     val currentUserShippingRule = addOnsUIState.currentShippingRule
                     val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
+                    val addOns = addOnsUIState.addOns
+                    val shippingRules = addOnsUIState.shippingRules
 
                     LaunchedEffect(Unit) {
                         addOnsViewModel.flowUIRequest.collect {
@@ -218,12 +219,7 @@ class ProjectPageActivity :
                         }
                     }
 
-                    val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
-
                     var selectedReward: Reward? = null
-
-                    val addOns =
-                        checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
@@ -253,7 +249,7 @@ class ProjectPageActivity :
                         onRewardSelected = { reward ->
                             selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
-                            addOnsViewModel.userRewardSelection(reward, shippingRules)
+                            addOnsViewModel.userRewardSelection(reward)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
                             confirmDetailsViewModel.onUserSelectedReward(reward)
                         },
@@ -335,8 +331,8 @@ class ProjectPageActivity :
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
-                checkoutFlowViewModel.provideProjectData(it)
                 rewardsSelectionViewModel.provideProjectData(it)
+                addOnsViewModel.provideProjectData(it)
                 confirmDetailsViewModel.provideProjectData(it)
             }.addToDisposable(disposables)
 

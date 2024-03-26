@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
@@ -51,11 +52,13 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -137,129 +140,11 @@ class ProjectPageActivity :
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
-
-        val composeView = binding.pledgeContainerCompose
-        composeView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                KickstarterApp {
-                    val flowUIState by checkoutFlowViewModel.flowUIState.collectAsStateWithLifecycle()
-
-                    val expanded = flowUIState.expanded
-                    val currentPage = flowUIState.currentPage
-
-                    val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
-
-                    val projectData = rewardSelectionUIState.project
-                    val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
-                    val rewardsList = rewardSelectionUIState.rewardList
-                    val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
-
-                    LaunchedEffect(Unit) {
-                        rewardsSelectionViewModel.flowUIRequest.collect {
-                            checkoutFlowViewModel.changePage(it)
-                        }
-                    }
-
-                    val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
-
-                    LaunchedEffect(Unit) {
-                        addOnsViewModel.flowUIRequest.collect {
-                            checkoutFlowViewModel.changePage(it)
-                        }
-                    }
-
-                    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
-
-                    val coroutineScope = rememberCoroutineScope()
-
-                    LaunchedEffect(currentPage) {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(
-                                page = currentPage,
-                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                            )
-                        }
-                    }
-
-                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
-
-                    val shippingRules = checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
-
-                    val currentUserShippingRule = addOnsUIState.currentShippingRule
-
-                    var selectedReward: Reward? = null
-
-                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
-
-                    val addOns = checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
-
-                    var totalAmount by remember {
-                        mutableDoubleStateOf(0.0)
-                    }
-
-                    var totalAmountCurrencyConverted by remember {
-                        mutableDoubleStateOf(0.0)
-                    }
-
-                    ProjectPledgeButtonAndFragmentContainer(
-                        expanded = expanded,
-                        onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
-                        onBackClicked = {
-                            checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
-                        },
-                        pagerState = pagerState,
-                        onAddOnsContinueClicked = {
-                            addOnsViewModel.onAddOnsContinueClicked()
-                        },
-                        shippingSelectorIsGone = shippingSelectorIsGone,
-                        shippingRules = shippingRules,
-                        currentShippingRule = currentUserShippingRule,
-                        environment = getEnvironment(),
-                        initialRewardCarouselPosition = indexOfBackedReward,
-                        rewardsList = rewardsList,
-                        showRewardCarouselDialog = showRewardCarouselAlertDialog,
-                        onRewardAlertDialogNegativeClicked = {
-                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = false)
-                        },
-                        onRewardAlertDialogPositiveClicked = {
-                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = true)
-                        },
-                        addOns = addOns,
-                        project = projectData.project(),
-                        onRewardSelected = { reward ->
-                            selectedReward = reward
-                            checkoutFlowViewModel.userRewardSelection(reward)
-                            addOnsViewModel.userRewardSelection(reward, shippingRules)
-                            rewardsSelectionViewModel.onUserRewardSelection(reward)
-                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
-                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, selectedAddOnsMap)
-                        },
-                        onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
-                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
-                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-
-                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
-
-                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
-                            totalAmountCurrencyConverted = getTotalAmountConverted(selectedReward, selectedAddOnsMap)
-                        },
-                        selectedAddOnsMap = selectedAddOnsMap,
-                        totalAmount = totalAmount,
-                        totalAmountCurrencyConverted = totalAmountCurrencyConverted,
-                        onShippingRuleSelected = { shippingRule ->
-                            addOnsViewModel.onShippingLocationChanged(shippingRule)
-                        }
-                    )
-                }
-            }
-        }
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
@@ -267,6 +152,7 @@ class ProjectPageActivity :
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             env
         }
+
         this.ksString = requireNotNull(environment?.ksString())
 
         viewModel.configureWith(intent)
@@ -300,14 +186,30 @@ class ProjectPageActivity :
             }
         }
 
+        this.viewModel.outputs.showLatePledgeFlow()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showLatePledgeFlow ->
+                if (showLatePledgeFlow) {
+                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
+                    latePledgesSetUp(binding.pledgeContainerCompose)
+                } else {
+                    binding.pledgeContainerCompose.isGone = true
+                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+                }
+            }.addToDisposable(disposables)
+
         this.viewModel.outputs.projectData()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
-                checkoutFlowViewModel.provideProjectData(it)
-                rewardsSelectionViewModel.provideProjectData(it)
+                val fFLatePledge = environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
+
+                if (fFLatePledge && it.project().showLatePledgeFlow()) {
+                    checkoutFlowViewModel.provideProjectData(it)
+                    rewardsSelectionViewModel.provideProjectData(it)
+                }
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()
@@ -554,8 +456,133 @@ class ProjectPageActivity :
         this.onBackPressedDispatcher.addCallback {
             finishWithAnimation()
         }
+    }
 
-        binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
+    @OptIn(ExperimentalFoundationApi::class)
+    private fun latePledgesSetUp(composeView: ComposeView) {
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KickstarterApp {
+                    val flowUIState by checkoutFlowViewModel.flowUIState.collectAsStateWithLifecycle()
+
+                    val expanded = flowUIState.expanded
+                    val currentPage = flowUIState.currentPage
+
+                    val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+
+                    val projectData = rewardSelectionUIState.project
+                    val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
+                    val rewardsList = rewardSelectionUIState.rewardList
+                    val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
+
+                    LaunchedEffect(Unit) {
+                        rewardsSelectionViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
+
+                    val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(Unit) {
+                        addOnsViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
+
+                    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
+
+                    val coroutineScope = rememberCoroutineScope()
+
+                    LaunchedEffect(currentPage) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                page = currentPage,
+                                animationSpec = tween(
+                                    durationMillis = 200,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
+
+                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
+
+                    val shippingRules =
+                        checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
+
+                    val currentUserShippingRule = addOnsUIState.currentShippingRule
+
+                    var selectedReward: Reward? = null
+
+                    val selectedAddOnsMap: MutableMap<Reward, Int> =
+                        addOnsUIState.currentAddOnsSelection
+
+                    val addOns =
+                        checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
+
+                    var totalAmount by remember {
+                        mutableDoubleStateOf(0.0)
+                    }
+
+                    var totalAmountCurrencyConverted by remember {
+                        mutableDoubleStateOf(0.0)
+                    }
+
+                    ProjectPledgeButtonAndFragmentContainer(
+                        expanded = expanded,
+                        onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
+                        onBackClicked = {
+                            checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
+                        },
+                        pagerState = pagerState,
+                        onAddOnsContinueClicked = {
+                            addOnsViewModel.onAddOnsContinueClicked()
+                        },
+                        shippingSelectorIsGone = shippingSelectorIsGone,
+                        shippingRules = shippingRules,
+                        currentShippingRule = currentUserShippingRule,
+                        environment = getEnvironment(),
+                        initialRewardCarouselPosition = indexOfBackedReward,
+                        rewardsList = rewardsList,
+                        showRewardCarouselDialog = showRewardCarouselAlertDialog,
+                        onRewardAlertDialogNegativeClicked = {
+                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = false)
+                        },
+                        onRewardAlertDialogPositiveClicked = {
+                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = true)
+                        },
+                        addOns = addOns,
+                        project = projectData.project(),
+                        onRewardSelected = { reward ->
+                            selectedReward = reward
+                            checkoutFlowViewModel.userRewardSelection(reward)
+                            addOnsViewModel.userRewardSelection(reward, shippingRules)
+                            rewardsSelectionViewModel.onUserRewardSelection(reward)
+                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
+                            totalAmountCurrencyConverted =
+                                getTotalAmountConverted(selectedReward, selectedAddOnsMap)
+                        },
+                        onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
+                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
+                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
+
+                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
+
+                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
+                            totalAmountCurrencyConverted =
+                                getTotalAmountConverted(selectedReward, selectedAddOnsMap)
+                        },
+                        selectedAddOnsMap = selectedAddOnsMap,
+                        totalAmount = totalAmount,
+                        totalAmountCurrencyConverted = totalAmountCurrencyConverted,
+                        onShippingRuleSelected = { shippingRule ->
+                            addOnsViewModel.onShippingLocationChanged(shippingRule)
+                        }
+                    )
+                }
+            }
+        }
     }
 
     private fun getTotalAmount(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {

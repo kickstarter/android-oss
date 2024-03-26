@@ -29,11 +29,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rxjava2.subscribeAsState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
@@ -86,6 +82,7 @@ import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
+import com.kickstarter.viewmodels.projectpage.ConfirmDetailsViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
@@ -108,8 +105,11 @@ class ProjectPageActivity :
     private lateinit var checkoutViewModelFactory: CheckoutFlowViewModel.Factory
     private val checkoutFlowViewModel: CheckoutFlowViewModel by viewModels { checkoutViewModelFactory }
 
-    private var rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
+    private val rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
     private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
+
+    private lateinit var confirmDetailsViewModelFactory: ConfirmDetailsViewModel.Factory
+    private val confirmDetailsViewModel: ConfirmDetailsViewModel by viewModels { confirmDetailsViewModelFactory }
 
     private lateinit var addOnsViewModelFactory: AddOnsViewModel.Factory
     private val addOnsViewModel: AddOnsViewModel by viewModels { addOnsViewModelFactory }
@@ -149,6 +149,7 @@ class ProjectPageActivity :
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
+            confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             env
         }
@@ -207,8 +208,9 @@ class ProjectPageActivity :
                 val fFLatePledge = environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
 
                 if (fFLatePledge && it.project().showLatePledgeFlow()) {
-                    checkoutFlowViewModel.provideProjectData(it)
                     rewardsSelectionViewModel.provideProjectData(it)
+                    addOnsViewModel.provideProjectData(it)
+                    confirmDetailsViewModel.provideProjectData(it)
                 }
             }.addToDisposable(disposables)
 
@@ -484,13 +486,41 @@ class ProjectPageActivity :
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
 
+                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
+                    val currentUserShippingRule = addOnsUIState.currentShippingRule
+                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
+                    val addOns = addOnsUIState.addOns
+                    val shippingRules = addOnsUIState.shippingRules
+
                     LaunchedEffect(Unit) {
                         addOnsViewModel.flowUIRequest.collect {
                             checkoutFlowViewModel.changePage(it)
                         }
                     }
 
+                    val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
+
+                    val totalAmount: Double = confirmUiState.totalAmount
+                    val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
+                    val shippingAmount = confirmUiState.shippingAmount
+                    val initialBonusAmount = confirmUiState.initialBonusSupportAmount
+                    val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
+                    val currentShippingRule = confirmUiState.currentShippingRule
+                    val maxPledgeAmount = confirmUiState.maxPledgeAmount
+                    val minStepAmount = confirmUiState.minStepAmount
+
+                    val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(checkoutPayment.id) {
+                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                    }
+
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
+
+                    this@ProjectPageActivity.onBackPressedDispatcher.addCallback {
+                        if (expanded) checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
+                        else finishWithAnimation()
+                    }
 
                     val coroutineScope = rememberCoroutineScope()
 
@@ -506,28 +536,7 @@ class ProjectPageActivity :
                         }
                     }
 
-                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
-
-                    val shippingRules =
-                        checkoutFlowViewModel.shippingRules.subscribeAsState(initial = listOf()).value
-
-                    val currentUserShippingRule = addOnsUIState.currentShippingRule
-
                     var selectedReward: Reward? = null
-
-                    val selectedAddOnsMap: MutableMap<Reward, Int> =
-                        addOnsUIState.currentAddOnsSelection
-
-                    val addOns =
-                        checkoutFlowViewModel.addOns.subscribeAsState(initial = listOf()).value
-
-                    var totalAmount by remember {
-                        mutableDoubleStateOf(0.0)
-                    }
-
-                    var totalAmountCurrencyConverted by remember {
-                        mutableDoubleStateOf(0.0)
-                    }
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
@@ -539,9 +548,9 @@ class ProjectPageActivity :
                         onAddOnsContinueClicked = {
                             addOnsViewModel.onAddOnsContinueClicked()
                         },
+                        currentShippingRule = currentShippingRule ?: currentUserShippingRule,
                         shippingSelectorIsGone = shippingSelectorIsGone,
                         shippingRules = shippingRules,
-                        currentShippingRule = currentUserShippingRule,
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,
                         rewardsList = rewardsList,
@@ -557,54 +566,41 @@ class ProjectPageActivity :
                         onRewardSelected = { reward ->
                             selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
-                            addOnsViewModel.userRewardSelection(reward, shippingRules)
+                            addOnsViewModel.userRewardSelection(reward)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
-                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
-                            totalAmountCurrencyConverted =
-                                getTotalAmountConverted(selectedReward, selectedAddOnsMap)
+                            confirmDetailsViewModel.onUserSelectedReward(reward)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
                             selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
                                 updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-
                             addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
 
-                            totalAmount = getTotalAmount(selectedReward, selectedAddOnsMap)
-                            totalAmountCurrencyConverted =
-                                getTotalAmountConverted(selectedReward, selectedAddOnsMap)
+                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
                         },
-                        selectedAddOnsMap = selectedAddOnsMap,
+                        selectedReward = selectedReward,
                         totalAmount = totalAmount,
-                        totalAmountCurrencyConverted = totalAmountCurrencyConverted,
+                        selectedRewardAndAddOnList = rewardsAndAddOns,
+                        initialBonusSupportAmount = initialBonusAmount,
+                        totalBonusSupportAmount = totalBonusSupportAmount,
+                        maxPledgeAmount = maxPledgeAmount,
+                        minStepAmount = minStepAmount,
                         onShippingRuleSelected = { shippingRule ->
                             addOnsViewModel.onShippingLocationChanged(shippingRule)
-                        }
+                            confirmDetailsViewModel.onShippingRuleSelected(shippingRule)
+                        },
+                        shippingAmount = shippingAmount,
+                        onConfirmDetailsContinueClicked = {
+                            confirmDetailsViewModel.onContinueClicked {
+                                checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                            }
+                        },
+                        onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
+                        onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
+                        selectedAddOnsMap = selectedAddOnsMap
                     )
                 }
             }
         }
-    }
-
-    private fun getTotalAmount(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
-        var total = 0.0
-        selectedReward?.let {
-            total += it.minimum()
-        }
-        addOnsMap.forEach { rewardCountMap ->
-            total += rewardCountMap.key.minimum() * rewardCountMap.value
-        }
-        return total
-    }
-
-    private fun getTotalAmountConverted(selectedReward: Reward?, addOnsMap: Map<Reward, Int>): Double {
-        var total = 0.0
-        selectedReward?.let {
-            total += it.convertedMinimum()
-        }
-        addOnsMap.forEach { rewardCountMap ->
-            total += rewardCountMap.key.convertedMinimum() * rewardCountMap.value
-        }
-        return total
     }
 
     /**

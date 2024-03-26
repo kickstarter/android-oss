@@ -8,9 +8,12 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.models.Location
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -22,27 +25,39 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 
 data class AddOnsUIState(
     var currentShippingRule: ShippingRule = ShippingRule.builder().build(),
     var shippingSelectorIsGone: Boolean = false,
-    var currentAddOnsSelection: MutableMap<Reward, Int> = mutableMapOf()
+    var currentAddOnsSelection: MutableMap<Reward, Int> = mutableMapOf(),
+    val addOns: List<Reward> = listOf(),
+    val shippingRules: List<ShippingRule> = listOf()
 )
+
 class AddOnsViewModel(val environment: Environment) : ViewModel() {
     private val disposables = CompositeDisposable()
     private val currentConfig = requireNotNull(environment.currentConfigV2())
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private val currentUserReward = PublishSubject.create<Reward>()
-    private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
-    private val defaultShippingRule = PublishSubject.create<ShippingRule>()
-    private val shippingRuleSelected = PublishSubject.create<ShippingRule>()
+    private val shippingRulesObservable = BehaviorSubject.create<List<ShippingRule>>()
+    private val defaultShippingRuleObservable = PublishSubject.create<ShippingRule>()
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
+    private var addOns: List<Reward> = listOf()
+    private var defaultShippingRule: ShippingRule = ShippingRule.builder().build()
     private var currentShippingRule: ShippingRule = ShippingRule.builder().build()
     private var shippingSelectorIsGone: Boolean = false
     private var currentAddOnsSelections: MutableMap<Reward, Int> = mutableMapOf()
+    private var shippingRules: List<ShippingRule> = listOf()
+    private lateinit var projectData: ProjectData
+
     val addOnsUIState: StateFlow<AddOnsUIState>
         get() = mutableAddOnsUIState
             .asStateFlow()
@@ -59,46 +74,28 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
 
     init {
         currentUserReward
-            .distinctUntilChanged()
-            .subscribe {
-                shippingSelectorIsGone = RewardUtils.isDigital(it) || !RewardUtils.isShippable(it) || RewardUtils.isLocalPickup(it)
-                viewModelScope.launch {
-                    mutableAddOnsUIState.emit(
-                        AddOnsUIState(
-                            currentShippingRule = currentShippingRule,
-                            shippingSelectorIsGone = shippingSelectorIsGone,
-                            currentAddOnsSelection = currentAddOnsSelections
-                        )
-                    )
-                }
-            }
-            .addToDisposable(disposables)
-
-        currentUserReward
             .filter {
-                !RewardUtils.isDigital(it) && RewardUtils.isShippable(it) && !RewardUtils.isLocalPickup(it)
+                !RewardUtils.isDigital(it) && RewardUtils.isShippable(it) && !RewardUtils.isLocalPickup(
+                    it
+                )
             }
             .compose<Pair<Reward, List<ShippingRule>>>(
                 Transformers.combineLatestPair(
-                    shippingRules
+                    shippingRulesObservable
                 )
             )
             .switchMap { getDefaultShippingRule(it.second) }
             .subscribe {
-                defaultShippingRule.onNext(it)
+                defaultShippingRuleObservable.onNext(it)
+                defaultShippingRule = it
                 currentShippingRule = it
+                getAddOns(noShippingRule = false)
                 viewModelScope.launch {
-                    mutableAddOnsUIState.emit(
-                        AddOnsUIState(
-                            currentShippingRule = currentShippingRule,
-                            shippingSelectorIsGone = shippingSelectorIsGone,
-                            currentAddOnsSelection = currentAddOnsSelections
-                        )
-                    )
+                    emitCurrentState()
                 }
             }.addToDisposable(disposables)
 
-        val shippingRule = getSelectedShippingRule(defaultShippingRule, currentUserReward)
+        val shippingRule = getSelectedShippingRule(defaultShippingRuleObservable, currentUserReward)
 
         shippingRule
             .distinctUntilChanged { rule1, rule2 ->
@@ -106,9 +103,52 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             }
             .subscribe {
                 currentShippingRule = it
-                this.shippingRuleSelected.onNext(it)
             }
             .addToDisposable(disposables)
+    }
+
+    fun provideProjectData(projectData: ProjectData) {
+        this.projectData = projectData
+
+        projectData.project().rewards()?.let { rewards ->
+            if (rewards.isNotEmpty()) {
+                val reward = rewards.firstOrNull { theOne ->
+                    !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
+                }
+                reward?.let {
+                    apolloClient.getShippingRules(
+                        reward = reward
+                    ).subscribe { shippingRulesEnvelope ->
+                        if (shippingRulesEnvelope.isNotNull()) shippingRulesObservable.onNext(
+                            shippingRulesEnvelope.shippingRules()
+                        )
+                        shippingRules = shippingRulesEnvelope.shippingRules()
+                    }.addToDisposable(disposables)
+                }
+            }
+        }
+    }
+
+    private fun getAddOns(noShippingRule: Boolean) {
+        viewModelScope.launch {
+            apolloClient
+                .getProjectAddOns(
+                    slug = projectData.project().slug() ?: "",
+                    locationId = currentShippingRule.location() ?: defaultShippingRule.location() ?: Location.builder().build()
+                ).asFlow()
+                .map { addOns ->
+                    if (!addOns.isNullOrEmpty()) {
+                        if (noShippingRule) {
+                            this@AddOnsViewModel.addOns = addOns.filter { !RewardUtils.isShippable(it) }
+                        } else {
+                            this@AddOnsViewModel.addOns = addOns
+                        }
+                    }
+                    emitCurrentState()
+                }.catch {
+                    // Show some error
+                }.collect()
+        }
     }
 
     private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -119,6 +159,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                     ?: shippingRules.first()
             }
     }
+
     private fun getSelectedShippingRule(
         defaultShippingRule: Observable<ShippingRule>,
         reward: Observable<Reward>
@@ -130,6 +171,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             return@combineLatest chooseShippingRule(defaultShipping, rw)
         }
     }
+
     private fun chooseShippingRule(defaultShipping: ShippingRule, rw: Reward): ShippingRule =
         when {
             RewardUtils.isDigital(rw) || !RewardUtils.isShippable(rw) || RewardUtils.isLocalPickup(
@@ -141,53 +183,57 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
 
     // UI events
 
-    fun userRewardSelection(reward: Reward, shippingRules: List<ShippingRule>) {
+    fun userRewardSelection(reward: Reward) {
         // A new reward has been selected, so clear out any previous addons selection
         this.currentAddOnsSelections = mutableMapOf()
+        shippingSelectorIsGone =
+            RewardUtils.isDigital(reward) || !RewardUtils.isShippable(reward) || RewardUtils.isLocalPickup(reward)
+
         viewModelScope.launch {
-            mutableAddOnsUIState.emit(
-                AddOnsUIState(
-                    currentShippingRule = currentShippingRule,
-                    shippingSelectorIsGone = shippingSelectorIsGone,
-                    currentAddOnsSelection = currentAddOnsSelections
-                )
-            )
+            emitCurrentState()
         }
+
+        if (shippingSelectorIsGone) getAddOns(noShippingRule = true)
 
         this.currentUserReward.onNext(reward)
-        this.shippingRules.onNext(shippingRules)
     }
+
     fun onShippingLocationChanged(shippingRule: ShippingRule) {
-        shippingRuleSelected.onNext(shippingRule)
         currentShippingRule = shippingRule
+        // A new location has been selected, so clear out any previous addons selection
+        this.currentAddOnsSelections = mutableMapOf()
 
         viewModelScope.launch {
-            mutableAddOnsUIState.emit(
-                AddOnsUIState(
-                    currentShippingRule = shippingRule,
-                    shippingSelectorIsGone = shippingSelectorIsGone,
-                    currentAddOnsSelection = currentAddOnsSelections
-                )
-            )
+            emitCurrentState()
         }
+
+        getAddOns(noShippingRule = false)
     }
+
     fun onAddOnsAddedOrRemoved(currentAddOnsSelections: MutableMap<Reward, Int>) {
         this.currentAddOnsSelections = currentAddOnsSelections
         viewModelScope.launch {
-            mutableAddOnsUIState.emit(
-                AddOnsUIState(
-                    currentShippingRule = currentShippingRule,
-                    shippingSelectorIsGone = shippingSelectorIsGone,
-                    currentAddOnsSelection = currentAddOnsSelections
-                )
-            )
+            emitCurrentState()
         }
     }
+
     fun onAddOnsContinueClicked() {
         viewModelScope.launch {
             // Go to confirm page
             mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
         }
+    }
+
+    private suspend fun emitCurrentState() {
+        mutableAddOnsUIState.emit(
+            AddOnsUIState(
+                currentShippingRule = currentShippingRule,
+                shippingSelectorIsGone = shippingSelectorIsGone,
+                currentAddOnsSelection = currentAddOnsSelections,
+                addOns = addOns,
+                shippingRules = shippingRules
+            )
+        )
     }
 
     class Factory(private val environment: Environment) :

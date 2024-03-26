@@ -13,7 +13,8 @@ class StoredCard private constructor(
     private val lastFourDigits: String?,
     private val type: CreditCardTypes?,
     private val resourceId: Int?,
-    private val clientSetupId: String?
+    private val clientSetupId: String?,
+    private val stripeCardId: String?
 ) : Parcelable {
     fun id() = this.id
     fun expiration() = this.expiration
@@ -21,6 +22,7 @@ class StoredCard private constructor(
     fun type() = this.type
     fun resourceId() = this.resourceId
     fun clientSetupId() = this.clientSetupId
+    fun stripeCardId() = this.stripeCardId
 
     @Parcelize
     data class Builder(
@@ -29,7 +31,8 @@ class StoredCard private constructor(
         private var expiration: Date? = null,
         private var type: CreditCardTypes? = CreditCardTypes.`$UNKNOWN`,
         private var resourceId: Int? = null,
-        private var clientSetupId: String? = null
+        private var clientSetupId: String? = null,
+        private var stripeCardId: String? = null
     ) : Parcelable {
         fun id(id: String?) = apply { this.id = id }
         fun lastFourDigits(lastFourDigits: String?) = apply { this.lastFourDigits = lastFourDigits }
@@ -37,13 +40,15 @@ class StoredCard private constructor(
         fun type(type: CreditCardTypes?) = apply { this.type = type }
         fun resourceId(resourceId: Int?) = apply { this.resourceId = resourceId }
         fun clientSetupId(clientSetupId: String?) = apply { this.clientSetupId = clientSetupId }
+        fun stripeCardId(stripeCardId: String?) = apply { this.stripeCardId = stripeCardId }
         fun build() = StoredCard(
             id = id,
             lastFourDigits = lastFourDigits,
             expiration = expiration,
             type = type,
             resourceId = resourceId,
-            clientSetupId = clientSetupId
+            clientSetupId = clientSetupId,
+            stripeCardId = stripeCardId
         )
     }
 

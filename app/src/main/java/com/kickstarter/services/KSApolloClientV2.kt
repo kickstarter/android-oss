@@ -321,6 +321,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                         .id(cardData.id())
                                         .lastFourDigits(cardData.lastFour())
                                         .type(it.type())
+                                        .stripeCardId(it.stripeCardId())
                                         .build()
                                     cardsList.add(card)
                                 }

@@ -138,18 +138,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         totalAmount = calculateTotal()
 
         viewModelScope.launch {
-            mutableConfirmDetailsUIState.emit(
-                ConfirmDetailsUIState(
-                    rewardsAndAddOns = rewardAndAddOns,
-                    initialBonusSupportAmount = initialBonusSupport,
-                    totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
-                    shippingAmount = shippingAmount,
-                    totalAmount = totalAmount,
-                    currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
-                    minStepAmount = minStepAmount,
-                    maxPledgeAmount = maxPledgeAmount
-                )
-            )
+            emitCurrentState()
         }
     }
 
@@ -181,18 +170,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         totalAmount = calculateTotal()
 
         viewModelScope.launch {
-            mutableConfirmDetailsUIState.emit(
-                ConfirmDetailsUIState(
-                    rewardsAndAddOns = rewardAndAddOns,
-                    initialBonusSupportAmount = initialBonusSupport,
-                    totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
-                    shippingAmount = shippingAmount,
-                    totalAmount = totalAmount,
-                    currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
-                    minStepAmount = minStepAmount,
-                    maxPledgeAmount = maxPledgeAmount
-                )
-            )
+            emitCurrentState()
         }
     }
 
@@ -278,18 +256,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         addedBonusSupport += minStepAmount
         totalAmount = calculateTotal()
         viewModelScope.launch {
-            mutableConfirmDetailsUIState.emit(
-                ConfirmDetailsUIState(
-                    rewardsAndAddOns = rewardAndAddOns,
-                    initialBonusSupportAmount = initialBonusSupport,
-                    totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
-                    shippingAmount = shippingAmount,
-                    totalAmount = totalAmount,
-                    currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
-                    minStepAmount = minStepAmount,
-                    maxPledgeAmount = maxPledgeAmount
-                )
-            )
+            emitCurrentState()
         }
     }
 
@@ -298,18 +265,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             addedBonusSupport -= minStepAmount
             totalAmount = calculateTotal()
             viewModelScope.launch {
-                mutableConfirmDetailsUIState.emit(
-                    ConfirmDetailsUIState(
-                        rewardsAndAddOns = rewardAndAddOns,
-                        initialBonusSupportAmount = initialBonusSupport,
-                        totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
-                        shippingAmount = shippingAmount,
-                        totalAmount = totalAmount,
-                        currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
-                        minStepAmount = minStepAmount,
-                        maxPledgeAmount = maxPledgeAmount
-                    )
-                )
+                emitCurrentState()
             }
         }
     }
@@ -369,19 +325,23 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         )
 
         viewModelScope.launch {
-            mutableConfirmDetailsUIState.emit(
-                ConfirmDetailsUIState(
-                    rewardsAndAddOns = rewardAndAddOns,
-                    initialBonusSupportAmount = initialBonusSupport,
-                    totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
-                    shippingAmount = shippingAmount,
-                    totalAmount = totalAmount,
-                    currentShippingRule = defaultShippingRule,
-                    minStepAmount = minStepAmount,
-                    maxPledgeAmount = maxPledgeAmount
-                )
-            )
+            emitCurrentState()
         }
+    }
+
+    private suspend fun emitCurrentState() {
+        mutableConfirmDetailsUIState.emit(
+            ConfirmDetailsUIState(
+                rewardsAndAddOns = rewardAndAddOns,
+                initialBonusSupportAmount = initialBonusSupport,
+                totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
+                shippingAmount = shippingAmount,
+                totalAmount = totalAmount,
+                currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
+                minStepAmount = minStepAmount,
+                maxPledgeAmount = maxPledgeAmount
+            )
+        )
     }
 
     class Factory(private val environment: Environment) :

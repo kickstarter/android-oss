@@ -243,7 +243,7 @@ fun AddOnsScreen(
                         getShippingCost(
                             reward = reward,
                             ksCurrency = it,
-                            shippingRules = countryList,
+                            shippingRules = reward.shippingRules(),
                             selectedShippingRule = currentShippingRule,
                             project = project
                         )

@@ -28,17 +28,7 @@ data class FlowUIState(
 
 class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
-    private val apolloClient = requireNotNull(environment.apolloClientV2())
-
-    private val disposables = CompositeDisposable()
-
-    val shippingRules = PublishSubject.create<List<ShippingRule>>()
-    val addOns = PublishSubject.create<List<Reward>>()
-    val projectData = PublishSubject.create<ProjectData>()
-
-    private lateinit var currentProjectData: ProjectData
     private lateinit var newUserReward: Reward
-    private lateinit var allAddOns: List<Reward>
 
     private val mutableFlowUIState = MutableStateFlow(FlowUIState())
     val flowUIState: StateFlow<FlowUIState>
@@ -56,58 +46,8 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun provideProjectData(projectData: ProjectData) {
-        currentProjectData = projectData
-        viewModelScope.launch {
-            projectData.project().rewards()?.let { rewards ->
-                if (rewards.isNotEmpty()) {
-                    val reward = rewards.firstOrNull { theOne ->
-                        !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
-                    }
-                    reward?.let {
-                        apolloClient.getShippingRules(
-                            reward = reward
-                        ).subscribe { shippingRulesEnvelope ->
-                            if (shippingRulesEnvelope.isNotNull()) shippingRules.onNext(
-                                shippingRulesEnvelope.shippingRules()
-                            )
-                        }.addToDisposable(disposables)
-                    }
-                }
-            }
-        }
-
-        apolloClient
-            .getProjectAddOns(
-                projectData.project().slug() ?: "",
-                projectData.project().location() ?: Location.builder().build()
-            )
-            .onErrorResumeNext(Observable.empty())
-            .filter { it.isNotNull() }
-            .subscribe {
-                allAddOns = it
-                addOns.onNext(it)
-            }
-            .addToDisposable(disposables)
-    }
-
     fun userRewardSelection(reward: Reward) {
-        viewModelScope.launch {
-            newUserReward = reward
-
-            val cannotShip = RewardUtils.isDigital(newUserReward) || !RewardUtils.isShippable(newUserReward) || RewardUtils.isLocalPickup(newUserReward)
-            // If reward cannot be shipped, only display addons that also cannot be shipped
-            if (newUserReward.hasAddons() && cannotShip) {
-                addOns.onNext(
-                    allAddOns
-                        .filter { addOn ->
-                            RewardUtils.isDigital(addOn) || !RewardUtils.isShippable(addOn) || RewardUtils.isLocalPickup(addOn)
-                        }
-                )
-            } else {
-                addOns.onNext(allAddOns)
-            }
-        }
+        newUserReward = reward
     }
 
     fun onBackPressed(currentPage: Int) {

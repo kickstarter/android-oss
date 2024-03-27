@@ -712,6 +712,50 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProjectProperties_project_post_campaign_enabled_true() {
+        val project = ProjectFactory.projectWithAddOns()
+            .toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(true, expectedProperties["project_project_post_campaign_enabled"])
+    }
+
+    @Test
+    fun testProjectProperties_project_post_campaign_enabled_false() {
+        val project = ProjectFactory.projectWithAddOns()
+            .toBuilder()
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(false, expectedProperties["project_project_post_campaign_enabled"])
+    }
+
+    @Test
     fun testProjectProperties_hasProject_prelaunch_activated() {
         val project = ProjectFactory.projectWithAddOns()
 

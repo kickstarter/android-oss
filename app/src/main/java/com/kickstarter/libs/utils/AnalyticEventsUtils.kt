@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.extensions.refTag
 import com.kickstarter.libs.utils.extensions.rewardCost
 import com.kickstarter.libs.utils.extensions.round
 import com.kickstarter.libs.utils.extensions.shippingAmount
+import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.timeInDaysOfDuration
 import com.kickstarter.libs.utils.extensions.timeInSecondsUntilDeadline
 import com.kickstarter.libs.utils.extensions.totalAmount
@@ -263,7 +264,7 @@ object AnalyticEventsUtils {
                 val rewards = a.filter { isReward(it) }
                 put("rewards_count", rewards.size)
             }
-            put("state", project.state())
+            put("state", if (!project.showLatePledgeFlow()) project.state() else "post_campaign")
             put("static_usd_rate", project.staticUsdRate())
             project.updatesCount()?.let { put("updates_count", it) }
             put("user_is_project_creator", project.userIsCreator(loggedInUser))
@@ -276,6 +277,7 @@ object AnalyticEventsUtils {
             put("has_add_ons", hasAddOns?.hasAddons() ?: false)
             put("tags", project.tags()?.let { it.joinToString(", ") } ?: "")
             put("url", project.urls().web().project())
+            put("project_post_campaign_enabled", project.showLatePledgeFlow())
             project.photo()?.full()?.let { put("image_url", it) }
         }
 

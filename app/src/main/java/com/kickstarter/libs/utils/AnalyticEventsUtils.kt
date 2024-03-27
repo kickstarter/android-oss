@@ -264,7 +264,7 @@ object AnalyticEventsUtils {
                 val rewards = a.filter { isReward(it) }
                 put("rewards_count", rewards.size)
             }
-            put("state", project.state())
+            put("state", if (!project.showLatePledgeFlow()) project.state() else "post_campaign")
             put("static_usd_rate", project.staticUsdRate())
             project.updatesCount()?.let { put("updates_count", it) }
             put("user_is_project_creator", project.userIsCreator(loggedInUser))

@@ -18,12 +18,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -67,18 +64,8 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 initialValue = AddOnsUIState()
             )
 
-    private val mutableFlowUIRequest = MutableSharedFlow<FlowUIState>()
-    val flowUIRequest: SharedFlow<FlowUIState>
-        get() = mutableFlowUIRequest
-            .asSharedFlow()
-
     init {
         currentUserReward
-            .filter {
-                !RewardUtils.isDigital(it) && RewardUtils.isShippable(it) && !RewardUtils.isLocalPickup(
-                    it
-                )
-            }
             .compose<Pair<Reward, List<ShippingRule>>>(
                 Transformers.combineLatestPair(
                     shippingRulesObservable
@@ -214,13 +201,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         this.currentAddOnsSelections = currentAddOnsSelections
         viewModelScope.launch {
             emitCurrentState()
-        }
-    }
-
-    fun onAddOnsContinueClicked() {
-        viewModelScope.launch {
-            // Go to confirm page
-            mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
         }
     }
 

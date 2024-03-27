@@ -88,12 +88,13 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
 
     fun onConfirmDetailsContinueClicked(logInCallback: () -> Unit) {
         viewModelScope.launch {
-            // Show pledge page
             currentUser.isLoggedIn
                 .asFlow()
                 .take(1)
                 .collect { userLoggedIn ->
+                    // - Show pledge page
                     if (userLoggedIn) mutableFlowUIState.emit(FlowUIState(currentPage = 3, expanded = true))
+                    // - Trigger LoginFlow callback
                     else logInCallback()
                 }
         }

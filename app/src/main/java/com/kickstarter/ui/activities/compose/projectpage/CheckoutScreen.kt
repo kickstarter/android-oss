@@ -81,7 +81,6 @@ import java.util.Locale
 fun CheckoutScreenPreview() {
     KSTheme {
         CheckoutScreen(
-            isCTAButtonEnabled = true,
             rewardsList = (1..6).map {
                 Pair("Cool Item $it", "$20")
             },
@@ -109,6 +108,7 @@ fun CheckoutScreenPreview() {
                 .build(),
             email = "example@example.com",
             pledgeReason = PledgeReason.PLEDGE,
+            rewardsHaveShippables = true,
             onPledgeCtaClicked = { },
             newPaymentMethodClicked = { }
         )
@@ -117,8 +117,7 @@ fun CheckoutScreenPreview() {
 
 @Composable
 fun CheckoutScreen(
-    storedCards: List<StoredCard>? = null,
-    isCTAButtonEnabled: Boolean,
+    storedCards: List<StoredCard> = listOf(),
     environment: Environment,
     selectedReward: Reward? = null,
     project: Project,
@@ -129,11 +128,21 @@ fun CheckoutScreen(
     pledgeReason: PledgeReason,
     totalAmount: Double,
     currentShippingRule: ShippingRule,
-    totalAmountConverted: Double = 0.0,
     totalBonusSupport: Double = 0.0,
-    onPledgeCtaClicked: () -> Unit,
+    rewardsHaveShippables: Boolean,
+    onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
     newPaymentMethodClicked: () -> Unit
 ) {
+    var (selectedOption, onOptionSelected) = remember {
+        mutableStateOf(
+            storedCards.firstOrNull {
+                project.acceptedCardType(
+                    it.type()
+                )
+            }
+        )
+    }
+
     Scaffold(
         backgroundColor = colors.backgroundAccentGraySubtle,
         modifier = Modifier
@@ -154,21 +163,32 @@ fun CheckoutScreen(
                     Column(
                         modifier = Modifier
                             .background(colors.kds_white)
-                            .padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge, top = dimensions.paddingMediumLarge)
+                            .padding(
+                                bottom = dimensions.paddingMediumLarge,
+                                start = dimensions.paddingMediumLarge,
+                                end = dimensions.paddingMediumLarge,
+                                top = dimensions.paddingMediumLarge
+                            )
                     ) {
 
                         KSPrimaryGreenButton(
                             modifier = Modifier
                                 .padding(bottom = dimensions.paddingMediumSmall)
                                 .fillMaxWidth(),
-                            onClickAction = onPledgeCtaClicked,
-                            isEnabled = !storedCards.isNullOrEmpty() && isCTAButtonEnabled, // feel free to remove one of these, just wanted to give the option of passing in the value or setting it here based on the information we have
-                            text = if (pledgeReason == PledgeReason.PLEDGE) stringResource(id = R.string.Pledge) else stringResource(id = R.string.Confirm)
+                            onClickAction = { onPledgeCtaClicked(selectedOption) },
+                            isEnabled = project.acceptedCardType(selectedOption?.type()) || selectedOption?.isFromPaymentSheet() ?: false,
+                            text = if (pledgeReason == PledgeReason.PLEDGE) stringResource(id = R.string.Pledge) else stringResource(
+                                id = R.string.Confirm
+                            )
                         )
 
                         val formattedEmailDisclaimerString = ksString?.let {
                             email?.let { email ->
-                                ksString.format(stringResource(id = R.string.Your_payment_method_will_be_charged_immediately), "user_email", email)
+                                ksString.format(
+                                    stringResource(id = R.string.Your_payment_method_will_be_charged_immediately),
+                                    "user_email",
+                                    email
+                                )
                             }
                         }
 
@@ -201,28 +221,45 @@ fun CheckoutScreen(
             ).toString()
         } ?: ""
 
-        val totalAmountConvertedString = if (totalAmountConverted.equals(0.0)) "" else
-            environment.ksCurrency()?.format(
-                totalAmountConverted,
-                project,
-                true,
-                RoundingMode.HALF_UP,
-                true
-            ) ?: ""
+        val totalAmountConvertedString = environment.ksCurrency()?.formatWithUserPreference(
+            totalAmount,
+            project,
+            RoundingMode.UP,
+            2
+        ) ?: ""
 
-        val aboutTotalString = if (totalAmountConvertedString.isEmpty()) "" else environment.ksString()?.format(
-            stringResource(id = R.string.About_reward_amount),
-            "reward_amount",
-            totalAmountConvertedString
-        ) ?: "About $totalAmountConvertedString"
+        val shippingAmountString = environment.ksCurrency()?.let {
+            RewardViewUtils.styleCurrency(
+                shippingAmount,
+                project,
+                it
+            ).toString()
+        } ?: ""
+
+        val initialBonusSupportString = environment.ksCurrency()?.let {
+            RewardViewUtils.styleCurrency(
+                0.0,
+                project,
+                it
+            ).toString()
+        } ?: ""
+
+        val totalBonusSupportString = environment.ksCurrency()?.let {
+            RewardViewUtils.styleCurrency(
+                totalBonusSupport,
+                project,
+                it
+            ).toString()
+        } ?: ""
+
+        val aboutTotalString =
+            if (totalAmountConvertedString.isEmpty()) "" else environment.ksString()?.format(
+                stringResource(id = R.string.About_reward_amount),
+                "reward_amount",
+                totalAmountConvertedString
+            ) ?: "About $totalAmountConvertedString"
 
         val shippingLocation = currentShippingRule.location()?.displayableName() ?: ""
-
-        val shippingLocationString = environment.ksString()?.format(
-            stringResource(id = R.string.Shipping_to_country),
-            "country",
-            shippingLocation
-        ) ?: "Shipping: $shippingLocation"
 
         val deliveryDateString = if (selectedReward?.estimatedDeliveryOn().isNotNull()) {
             stringResource(id = R.string.Estimated_delivery) + " " + DateTimeUtils.estimatedDeliveryOn(
@@ -240,156 +277,174 @@ fun CheckoutScreen(
         ) {
 
             Text(
-                modifier = Modifier.padding(start = dimensions.paddingMediumLarge, top = dimensions.paddingMediumLarge),
+                modifier = Modifier.padding(
+                    start = dimensions.paddingMediumLarge,
+                    top = dimensions.paddingMediumLarge
+                ),
                 text = stringResource(id = R.string.Checkout),
                 style = typography.title3Bold,
                 color = colors.kds_black,
             )
             Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-            if (!storedCards.isNullOrEmpty()) {
-                var (selectedOption, onOptionSelected) = remember { mutableStateOf(storedCards.firstOrNull { project.acceptedCardType(it.type()) }) }
-                storedCards.forEach {
-                    val isAvailable = project.acceptedCardType(it.type()) || it.isFromPaymentSheet()
-                    Card(
-                        backgroundColor = colors.kds_white,
-                        modifier = Modifier
-                            .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
-                            .fillMaxWidth()
-                            .selectableGroup()
-                            .selectable(
-                                enabled = isAvailable,
-                                selected = it == selectedOption,
-                                onClick = {
-                                    onOptionSelected(it)
-                                }
-                            )
-                    ) {
-                        Column {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(
-                                        top = dimensions.paddingSmall,
-                                        bottom = dimensions.paddingSmall
-                                    )
-                            ) {
-
-                                KSRadioButton(
-                                    selected = it == selectedOption, onClick = { onOptionSelected(it) }, enabled = isAvailable
-                                )
-
-                                KSCardElement(card = it, environment.ksString(), isAvailable)
-                            }
-
-                            if (!isAvailable) {
-                                Text(
-                                    modifier = Modifier.padding(start = dimensions.paddingDoubleLarge, end = dimensions.paddingMediumLarge, bottom = dimensions.paddingSmall),
-                                    style = typography.caption1Medium,
-                                    color = colors.kds_alert,
-                                    text = stringResource(id = R.string.This_project_has_a_set_currency_that_cant_process_this_option)
-                                )
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-                }
-
+            storedCards.forEach {
+                val isAvailable = project.acceptedCardType(it.type()) || it.isFromPaymentSheet()
                 Card(
                     backgroundColor = colors.kds_white,
                     modifier = Modifier
                         .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
-                        .clickable { newPaymentMethodClicked.invoke() }
                         .fillMaxWidth()
-                ) {
-                    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = dimensions.paddingMedium, bottom = dimensions.paddingMedium)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_add_rounded),
-                            contentDescription = "",
-                            tint = colors.textAccentGreen,
-                            modifier = Modifier.background(color = colors.kds_create_700.copy(alpha = 0.2f), CircleShape)
+                        .selectableGroup()
+                        .selectable(
+                            enabled = isAvailable,
+                            selected = it == selectedOption,
+                            onClick = {
+                                onOptionSelected(it)
+                            }
                         )
-
-                        Text(
-                            modifier = Modifier.padding(start = dimensions.paddingSmall),
-                            color = colors.textAccentGreen,
-                            style = typography.subheadlineMedium,
-                            text = stringResource(id = R.string.New_payment_method)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(dimensions.paddingLarge))
-
-                Card(
-                    modifier = Modifier.padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium),
-                    shape = RoundedCornerShape(
-                        bottomStart = dimensions.radiusMediumLarge,
-                        bottomEnd = dimensions.radiusMediumLarge,
-                        topStart = dimensions.radiusMediumLarge,
-                        topEnd = dimensions.radiusMediumLarge
-                    ),
-                    backgroundColor = colors.kds_support_200,
                 ) {
-                    Row(modifier = Modifier.padding(dimensions.paddingSmall)) {
-                        Icon(
+                    Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .padding(start = dimensions.paddingMediumSmall, end = dimensions.paddingLarge)
-                                .align(Alignment.CenterVertically),
-                            painter = painterResource(id = R.drawable.ic_not_a_store),
-                            contentDescription = null,
-                            tint = colors.textAccentGreen
-                        )
+                                .padding(
+                                    top = dimensions.paddingSmall,
+                                    bottom = dimensions.paddingSmall
+                                )
+                        ) {
 
-                        Column {
-
-                            Text(
-                                modifier = Modifier.padding(bottom = dimensions.paddingXSmall, top = dimensions.paddingXSmall),
-                                text = stringResource(id = R.string.Kickstarter_is_not_a_store), style = typography.body2Medium, color = colors.kds_support_400
+                            KSRadioButton(
+                                selected = it == selectedOption,
+                                onClick = { onOptionSelected(it) },
+                                enabled = isAvailable
                             )
-                            TextWithClickableAccountabilityLink(
-                                padding = dimensions.paddingXSmall,
-                                html = stringResource(id = R.string.Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability),
+
+                            KSCardElement(card = it, environment.ksString(), isAvailable)
+                        }
+
+                        if (!isAvailable) {
+                            Text(
+                                modifier = Modifier.padding(
+                                    start = dimensions.paddingDoubleLarge,
+                                    end = dimensions.paddingMediumLarge,
+                                    bottom = dimensions.paddingSmall
+                                ),
+                                style = typography.caption1Medium,
+                                color = colors.kds_alert,
+                                text = stringResource(id = R.string.This_project_has_a_set_currency_that_cant_process_this_option)
                             )
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+            }
 
-                Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-
-                if (rewardsList.isNotEmpty()) {
-
-                    ItemizedRewardListContainer(
-                        ksString = ksString,
-                        rewardsList = rewardsList,
-                        shippingAmount = shippingAmount,
-                        initialShippingLocation = shippingLocationString,
-                        totalAmount = totalAmountString,
-                        totalAmountCurrencyConverted = aboutTotalString,
-                        initialBonusSupport = "",
-                        totalBonusSupport = if (totalBonusSupport > 0.0) {
-                            environment.ksCurrency()?.let { ksCurrency ->
-                                RewardViewUtils.styleCurrency(
-                                    totalBonusSupport,
-                                    project,
-                                    ksCurrency
-                                ).toString()
-                            } ?: ""
-                        } else "",
-                        deliveryDateString = deliveryDateString
+            Card(
+                backgroundColor = colors.kds_white,
+                modifier = Modifier
+                    .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
+                    .clickable { newPaymentMethodClicked.invoke() }
+                    .fillMaxWidth()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(
+                        top = dimensions.paddingMedium,
+                        bottom = dimensions.paddingMedium
                     )
-                } else {
-                    ItemizedRewardListContainer(
-                        totalAmount = totalAmountString,
-                        totalAmountCurrencyConverted = aboutTotalString,
-                        rewardsList = (1..1).map {
-                            Pair(stringResource(id = R.string.Pledge_without_a_reward), totalAmountString)
-                        },
-                        initialBonusSupport = "",
-                        totalBonusSupport = "",
-                        shippingAmount = shippingAmount
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add_rounded),
+                        contentDescription = "",
+                        tint = colors.textAccentGreen,
+                        modifier = Modifier.background(
+                            color = colors.kds_create_700.copy(alpha = 0.2f),
+                            CircleShape
+                        )
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(start = dimensions.paddingSmall),
+                        color = colors.textAccentGreen,
+                        style = typography.subheadlineMedium,
+                        text = stringResource(id = R.string.New_payment_method)
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(dimensions.paddingLarge))
+
+            Card(
+                modifier = Modifier.padding(
+                    start = dimensions.paddingMedium,
+                    end = dimensions.paddingMedium
+                ),
+                shape = RoundedCornerShape(
+                    bottomStart = dimensions.radiusMediumLarge,
+                    bottomEnd = dimensions.radiusMediumLarge,
+                    topStart = dimensions.radiusMediumLarge,
+                    topEnd = dimensions.radiusMediumLarge
+                ),
+                backgroundColor = colors.kds_support_200,
+            ) {
+                Row(modifier = Modifier.padding(dimensions.paddingSmall)) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(
+                                start = dimensions.paddingMediumSmall,
+                                end = dimensions.paddingLarge
+                            )
+                            .align(Alignment.CenterVertically),
+                        painter = painterResource(id = R.drawable.ic_not_a_store),
+                        contentDescription = null,
+                        tint = colors.textAccentGreen
+                    )
+
+                    Column {
+
+                        Text(
+                            modifier = Modifier.padding(
+                                bottom = dimensions.paddingXSmall,
+                                top = dimensions.paddingXSmall
+                            ),
+                            text = stringResource(id = R.string.Kickstarter_is_not_a_store),
+                            style = typography.body2Medium,
+                            color = colors.kds_support_400
+                        )
+                        TextWithClickableAccountabilityLink(
+                            padding = dimensions.paddingXSmall,
+                            html = stringResource(id = R.string.Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability),
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+
+            if (rewardsList.isNotEmpty()) {
+
+                ItemizedRewardListContainer(
+                    ksString = ksString,
+                    rewardsList = rewardsList,
+                    shippingAmount = shippingAmount,
+                    shippingAmountString = shippingAmountString,
+                    initialShippingLocation = shippingLocation,
+                    totalAmount = totalAmountString,
+                    totalAmountCurrencyConverted = totalAmountConvertedString,
+                    initialBonusSupport = initialBonusSupportString,
+                    totalBonusSupport = totalBonusSupportString,
+                    deliveryDateString = deliveryDateString,
+                    rewardsHaveShippables = rewardsHaveShippables
+                )
+            } else {
+                ItemizedRewardListContainer(
+                    totalAmount = totalAmountString,
+                    totalAmountCurrencyConverted = totalAmountConvertedString,
+                    initialBonusSupport = initialBonusSupportString,
+                    totalBonusSupport = totalBonusSupportString,
+                    shippingAmount = shippingAmount,
+                )
             }
         }
     }
@@ -626,7 +681,10 @@ fun KSCardElement(card: StoredCard, ksString: KSString?, isAvailable: Boolean) {
                 Text(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = dimensions.paddingXSmall, end = dimensions.paddingMediumLarge),
+                    modifier = Modifier.padding(
+                        top = dimensions.paddingXSmall,
+                        end = dimensions.paddingMediumLarge
+                    ),
                     style = typography.caption2Medium,
                     color = if (isAvailable) colors.kds_support_700 else colors.kds_support_400,
                     text = expirationString

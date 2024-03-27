@@ -83,6 +83,7 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
 import com.kickstarter.viewmodels.projectpage.ConfirmDetailsViewModel
+import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
@@ -110,6 +111,9 @@ class ProjectPageActivity :
 
     private lateinit var confirmDetailsViewModelFactory: ConfirmDetailsViewModel.Factory
     private val confirmDetailsViewModel: ConfirmDetailsViewModel by viewModels { confirmDetailsViewModelFactory }
+
+    private lateinit var latePledgeCheckoutViewModelFactory: LatePledgeCheckoutViewModel.Factory
+    private val latePledgeCheckoutViewModel: LatePledgeCheckoutViewModel by viewModels { latePledgeCheckoutViewModelFactory }
 
     private lateinit var addOnsViewModelFactory: AddOnsViewModel.Factory
     private val addOnsViewModel: AddOnsViewModel by viewModels { addOnsViewModelFactory }
@@ -151,6 +155,7 @@ class ProjectPageActivity :
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
             confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
+            latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
             env
         }
 
@@ -512,7 +517,13 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
                         }
+                        latePledgeCheckoutViewModel.provideCheckoutId(checkoutPayment.id)
                     }
+
+                    val latePledgeCheckoutUIState by latePledgeCheckoutViewModel.latePledgeCheckoutUIState.collectAsStateWithLifecycle()
+
+                    val userStoredCards = latePledgeCheckoutUIState.storeCards
+                    val userEmail = latePledgeCheckoutUIState.userEmail
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
@@ -594,9 +605,16 @@ class ProjectPageActivity :
                                 }
                             }
                         },
+                        storedCards = userStoredCards,
+                        userEmail = userEmail,
                         onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
-                        selectedAddOnsMap = selectedAddOnsMap
+                        selectedAddOnsMap = selectedAddOnsMap,
+                        onPledgeCtaClicked = { selectedCard ->
+                            latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                        },
+                        onAddPaymentMethodClicked = {
+                        }
                     )
                 }
             }

@@ -372,7 +372,7 @@ fun ConfirmPledgeDetailsScreen(
                 )
             }
 
-            if (rewardsList.isNotEmpty() && shippingLocation.isNotEmpty()) {
+            if (rewardsList.isNotEmpty() && shippingLocation.isNotEmpty() && rewardsHaveShippables) {
                 item {
                     Column(
                         modifier = Modifier.padding(
@@ -486,7 +486,8 @@ fun ConfirmPledgeDetailsScreen(
                         totalAmountCurrencyConverted = totalAmountConvertedString,
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalBonusSupportString,
-                        deliveryDateString = deliveryDateString
+                        deliveryDateString = deliveryDateString,
+                        rewardsHaveShippables = rewardsHaveShippables
                     )
                 }
             }
@@ -575,8 +576,8 @@ fun ItemizedRewardListContainer(
     totalAmountCurrencyConverted: String = "",
     initialBonusSupport: String,
     totalBonusSupport: String,
-    deliveryDateString: String = ""
-
+    deliveryDateString: String = "",
+    rewardsHaveShippables: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -633,7 +634,7 @@ fun ItemizedRewardListContainer(
             KSDividerLineGrey()
         }
 
-        if (shippingAmount > 0 && initialShippingLocation.isNotEmpty()) {
+        if (shippingAmount > 0 && initialShippingLocation.isNotEmpty() && rewardsHaveShippables) {
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
             Row {

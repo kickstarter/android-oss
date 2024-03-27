@@ -97,14 +97,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             pledgeReason = pledgeDataAndPledgeReason(projectData, reward).second
         }
 
-        if (::selectedShippingRule.isInitialized) {
-            shippingAmount = getShippingAmount(
-                rule = selectedShippingRule,
-                reason = pledgeReason,
-                bShippingAmount = null,
-                rewards = rewardAndAddOns
-            )
-        }
+        updateShippingAmount()
 
         totalAmount = calculateTotal()
 
@@ -129,14 +122,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
         rewardAndAddOns = rewardsAndAddOns
 
-        if (::selectedShippingRule.isInitialized) {
-            shippingAmount = getShippingAmount(
-                rule = selectedShippingRule,
-                reason = pledgeReason,
-                bShippingAmount = null,
-                rewards = rewardAndAddOns
-            )
-        }
+        updateShippingAmount()
 
         totalAmount = calculateTotal()
 
@@ -149,8 +135,24 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         var total = 0.0
         total += getRewardsTotalAmount(rewardAndAddOns)
         total += initialBonusSupport + addedBonusSupport
-        total += if (RewardUtils.isNoReward(userSelectedReward)) 0.0 else shippingAmount
+        if (::userSelectedReward.isInitialized) {
+            total +=
+                if (RewardUtils.isNoReward(userSelectedReward)) 0.0
+                else if (RewardUtils.isShippable(userSelectedReward)) shippingAmount
+                else 0.0
+        }
         return total
+    }
+
+    private fun updateShippingAmount() {
+        if (::selectedShippingRule.isInitialized) {
+            shippingAmount = getShippingAmount(
+                rule = selectedShippingRule,
+                reason = pledgeReason,
+                bShippingAmount = null,
+                rewards = rewardAndAddOns
+            )
+        } else shippingAmount = 0.0
     }
 
     /**
@@ -277,12 +279,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     fun provideCurrentShippingRule(shippingRule: ShippingRule) {
         selectedShippingRule = shippingRule
-        shippingAmount = getShippingAmount(
-            rule = selectedShippingRule,
-            reason = pledgeReason,
-            bShippingAmount = null,
-            rewards = rewardAndAddOns
-        )
+        updateShippingAmount()
+        totalAmount = calculateTotal()
 
         viewModelScope.launch {
             emitCurrentState()

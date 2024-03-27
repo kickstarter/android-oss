@@ -613,7 +613,6 @@ class ProjectPageActivity :
                             latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
                         },
                         onAddPaymentMethodClicked = {
-
                         }
                     )
                 }

@@ -60,7 +60,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             )
                         )
                     }.catch {
-
+                        // Some error
                     }.collect()
 
                     apolloClient.getStoredCards().asFlow().map { cards ->
@@ -72,11 +72,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             )
                         )
                     }.catch {
-
+                        // Some error
                     }.collect()
                 }
             }?.catch {
-
+                // Some error
             }?.collect()
         }
     }
@@ -152,7 +152,6 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             // Some error
         }.collect()
     }
-
 
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {

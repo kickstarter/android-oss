@@ -132,11 +132,13 @@ fun CheckoutScreen(
     newPaymentMethodClicked: () -> Unit
 ) {
     var (selectedOption, onOptionSelected) = remember {
-        mutableStateOf(storedCards.firstOrNull {
-            project.acceptedCardType(
-                it.type()
-            )
-        })
+        mutableStateOf(
+            storedCards.firstOrNull {
+                project.acceptedCardType(
+                    it.type()
+                )
+            }
+        )
     }
 
     Scaffold(
@@ -207,7 +209,7 @@ fun CheckoutScreen(
             }
         },
 
-        ) { padding ->
+    ) { padding ->
 
         val totalAmountString = environment.ksCurrency()?.let {
             RewardViewUtils.styleCurrency(

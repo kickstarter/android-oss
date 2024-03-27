@@ -194,8 +194,8 @@ class ProjectPageActivity :
                     binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
                     latePledgesSetUp(binding.pledgeContainerCompose)
                 } else {
-                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
-                    latePledgesSetUp(binding.pledgeContainerCompose)
+                    binding.pledgeContainerCompose.isGone = true
+                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
                 }
             }.addToDisposable(disposables)
 
@@ -207,12 +207,11 @@ class ProjectPageActivity :
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
                 val fFLatePledge = environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
 
-                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
-                latePledgesSetUp(binding.pledgeContainerCompose)
+                if (fFLatePledge && it.project().showLatePledgeFlow()) {
                     rewardsSelectionViewModel.provideProjectData(it)
                     addOnsViewModel.provideProjectData(it)
                     confirmDetailsViewModel.provideProjectData(it)
-
+                }
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()

@@ -54,6 +54,7 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewards() {
             selectedReward = null,
             onContinueClicked = {},
             rewardsContainAddOns = false,
+            rewardsHaveShippables = true,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 1.0,
             initialBonusSupport = 1.0,
@@ -79,6 +80,7 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewardsWarning() {
             selectedReward = null,
             onContinueClicked = {},
             rewardsContainAddOns = false,
+            rewardsHaveShippables = true,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 1001.0,
             initialBonusSupport = 1.0,
@@ -107,6 +109,7 @@ private fun ConfirmPledgeDetailsScreenPreviewNoAddOnsOrBonusSupport() {
                 Pair("Cool Item $it", "$20")
             },
             rewardsContainAddOns = false,
+            rewardsHaveShippables = true,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 55.0,
@@ -137,6 +140,7 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsOnly() {
                 Pair("Cool Item $it", "$20")
             },
             rewardsContainAddOns = true,
+            rewardsHaveShippables = true,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 105.0,
@@ -166,6 +170,7 @@ private fun ConfirmPledgeDetailsScreenPreviewBonusSupportOnly() {
                 Pair("Cool Item $it", "$20")
             },
             rewardsContainAddOns = false,
+            rewardsHaveShippables = true,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 55.0,
@@ -196,6 +201,7 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsAndBonusSupport() {
                 Pair("Cool Item $it", "$20")
             },
             rewardsContainAddOns = true,
+            rewardsHaveShippables = true,
             shippingAmount = 5.0,
             currentShippingRule = ShippingRule.builder().build(),
             totalAmount = 115.0,
@@ -219,6 +225,7 @@ fun ConfirmPledgeDetailsScreen(
     onContinueClicked: () -> Unit,
     rewardsList: List<Pair<String, String>> = listOf(),
     rewardsContainAddOns: Boolean,
+    rewardsHaveShippables: Boolean,
     shippingAmount: Double = 0.0,
     currentShippingRule: ShippingRule,
     countryList: List<ShippingRule> = listOf(),
@@ -383,7 +390,7 @@ fun ConfirmPledgeDetailsScreen(
                         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (countryList.isNotEmpty() && !rewardsContainAddOns) {
+                            if (countryList.isNotEmpty() && !rewardsContainAddOns && rewardsHaveShippables) {
                                 CountryInputWithDropdown(
                                     interactionSource = interactionSource,
                                     countryList = countryList,

@@ -194,8 +194,8 @@ class ProjectPageActivity :
                     binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
                     latePledgesSetUp(binding.pledgeContainerCompose)
                 } else {
-                    binding.pledgeContainerCompose.isGone = true
-                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
+                    latePledgesSetUp(binding.pledgeContainerCompose)
                 }
             }.addToDisposable(disposables)
 
@@ -207,11 +207,12 @@ class ProjectPageActivity :
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
                 val fFLatePledge = environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
 
-                if (fFLatePledge && it.project().showLatePledgeFlow()) {
+                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
+                latePledgesSetUp(binding.pledgeContainerCompose)
                     rewardsSelectionViewModel.provideProjectData(it)
                     addOnsViewModel.provideProjectData(it)
                     confirmDetailsViewModel.provideProjectData(it)
-                }
+
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()
@@ -492,10 +493,8 @@ class ProjectPageActivity :
                     val addOns = addOnsUIState.addOns
                     val shippingRules = addOnsUIState.shippingRules
 
-                    LaunchedEffect(Unit) {
-                        addOnsViewModel.flowUIRequest.collect {
-                            checkoutFlowViewModel.changePage(it)
-                        }
+                    LaunchedEffect(currentUserShippingRule) {
+                        confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
                     }
 
                     val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
@@ -505,7 +504,6 @@ class ProjectPageActivity :
                     val shippingAmount = confirmUiState.shippingAmount
                     val initialBonusAmount = confirmUiState.initialBonusSupportAmount
                     val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
-                    val currentShippingRule = confirmUiState.currentShippingRule
                     val maxPledgeAmount = confirmUiState.maxPledgeAmount
                     val minStepAmount = confirmUiState.minStepAmount
 
@@ -548,9 +546,9 @@ class ProjectPageActivity :
                         },
                         pagerState = pagerState,
                         onAddOnsContinueClicked = {
-                            addOnsViewModel.onAddOnsContinueClicked()
+                            checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
-                        currentShippingRule = currentShippingRule ?: currentUserShippingRule,
+                        currentShippingRule = currentUserShippingRule,
                         shippingSelectorIsGone = shippingSelectorIsGone,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
@@ -588,7 +586,6 @@ class ProjectPageActivity :
                         minStepAmount = minStepAmount,
                         onShippingRuleSelected = { shippingRule ->
                             addOnsViewModel.onShippingLocationChanged(shippingRule)
-                            confirmDetailsViewModel.onShippingRuleSelected(shippingRule)
                         },
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {

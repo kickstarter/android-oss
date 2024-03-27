@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -34,7 +33,6 @@ data class ConfirmDetailsUIState(
     val totalBonusSupportAmount: Double = 0.0,
     val shippingAmount: Double = 0.0,
     val totalAmount: Double = 0.0,
-    val currentShippingRule: ShippingRule? = null,
     val minStepAmount: Double = 0.0,
     val maxPledgeAmount: Double = 0.0
 )
@@ -42,13 +40,12 @@ data class ConfirmDetailsUIState(
 class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
-    private val currentConfig = requireNotNull(environment.currentConfigV2())
 
     private lateinit var projectData: ProjectData
     private lateinit var userSelectedReward: Reward
     private var rewardAndAddOns: List<Reward> = listOf()
-    private lateinit var pledgeReason: PledgeReason
-    private lateinit var defaultShippingRule: ShippingRule
+    private var pledgeReason: PledgeReason? = null
+    private lateinit var selectedShippingRule: ShippingRule
     private var initialBonusSupport = 0.0
     private var addedBonusSupport = 0.0
     private var shippingAmount: Double = 0.0
@@ -85,31 +82,6 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 minStepAmount = it.minPledge.toDouble()
                 maxPledgeAmount = it.maxPledge.toDouble()
             }
-            projectData.project().rewards()?.let { rewards ->
-                val reward = rewards.firstOrNull { theOne ->
-                    !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
-                }
-                reward?.let { rw ->
-                    apolloClient.getShippingRules(
-                        reward = rw
-                    )
-                        .asFlow()
-                        .map { shippingRulesEnvelope ->
-                            if (shippingRulesEnvelope.isNotNull()) {
-                                getDefaultShippingRule(shippingRulesEnvelope.shippingRules())
-                                    .asFlow()
-                                    .map {
-                                        defaultShippingRule = it
-                                    }.catch {
-                                    }
-                                    .collect()
-                            }
-                        }
-                        .catch {
-                        }
-                        .collect()
-                }
-            }
         }
     }
 
@@ -126,9 +98,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             pledgeReason = pledgeDataAndPledgeReason(projectData, reward).second
         }
 
-        if (::defaultShippingRule.isInitialized) {
+        if (::selectedShippingRule.isInitialized) {
             shippingAmount = getShippingAmount(
-                rule = defaultShippingRule,
+                rule = selectedShippingRule,
                 reason = pledgeReason,
                 bShippingAmount = null,
                 rewards = rewardAndAddOns
@@ -158,9 +130,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
 
         rewardAndAddOns = rewardsAndAddOns
 
-        if (::defaultShippingRule.isInitialized) {
+        if (::selectedShippingRule.isInitialized) {
             shippingAmount = getShippingAmount(
-                rule = defaultShippingRule,
+                rule = selectedShippingRule,
                 reason = pledgeReason,
                 bShippingAmount = null,
                 rewards = rewardAndAddOns
@@ -187,7 +159,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
      */
     private fun getShippingAmount(
         rule: ShippingRule,
-        reason: PledgeReason,
+        reason: PledgeReason? = null,
         bShippingAmount: Float? = null,
         rewards: List<Reward>
     ): Double {
@@ -198,9 +170,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 rule
             ) + rule.cost() else rule.cost()
 
-            PledgeReason.FIX_PLEDGE,
-            PledgeReason.UPDATE_PAYMENT,
-            PledgeReason.UPDATE_PLEDGE -> bShippingAmount?.toDouble() ?: rule.cost()
+            else -> bShippingAmount?.toDouble() ?: rule.cost()
         }
     }
 
@@ -229,15 +199,6 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         val pledgeData =
             PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
         return Pair(pledgeData, pledgeReason)
-    }
-
-    private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
-        return this.currentConfig.observable()
-            .map { it.countryCode() }
-            .map { countryCode ->
-                shippingRules.firstOrNull { it.location()?.country() == countryCode }
-                    ?: shippingRules.first()
-            }
     }
 
     private fun getRewardsTotalAmount(rewards: List<Reward>): Double {
@@ -279,7 +240,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     CreateCheckoutData(
                         project = projectData.project(),
                         amount = totalAmount.toString(),
-                        locationId = if (::defaultShippingRule.isInitialized) defaultShippingRule.location()
+                        locationId = if (::selectedShippingRule.isInitialized) selectedShippingRule.location()
                             ?.id()?.toString() else null,
                         rewardsIds = fullIdListForQuantities(rewardAndAddOns),
                         refTag = projectData.refTagFromIntent()
@@ -315,10 +276,10 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         return mutableList.toList()
     }
 
-    fun onShippingRuleSelected(shippingRule: ShippingRule) {
-        defaultShippingRule = shippingRule
+    fun provideCurrentShippingRule(shippingRule: ShippingRule) {
+        selectedShippingRule = shippingRule
         shippingAmount = getShippingAmount(
-            rule = defaultShippingRule,
+            rule = selectedShippingRule,
             reason = pledgeReason,
             bShippingAmount = null,
             rewards = rewardAndAddOns
@@ -337,7 +298,6 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
                 shippingAmount = shippingAmount,
                 totalAmount = totalAmount,
-                currentShippingRule = if (::defaultShippingRule.isInitialized) defaultShippingRule else null,
                 minStepAmount = minStepAmount,
                 maxPledgeAmount = maxPledgeAmount
             )

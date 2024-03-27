@@ -100,6 +100,13 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    fun onAddOnsContinueClicked() {
+        viewModelScope.launch {
+            // Go to confirm page
+            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
+        }
+    }
+
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

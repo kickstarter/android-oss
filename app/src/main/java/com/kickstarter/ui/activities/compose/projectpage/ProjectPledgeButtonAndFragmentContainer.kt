@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.Project
@@ -287,6 +288,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                             selectedRewardAndAddOnList, environment, project
                                         ),
                                         rewardsContainAddOns = selectedRewardAndAddOnList.any { it.isAddOn() },
+                                        rewardsHaveShippables = selectedRewardAndAddOnList.any { RewardUtils.isShippable(it) },
                                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                                         onBonusSupportMinusClicked = onBonusSupportMinusClicked
                                     )

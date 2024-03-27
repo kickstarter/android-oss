@@ -67,18 +67,8 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 initialValue = AddOnsUIState()
             )
 
-    private val mutableFlowUIRequest = MutableSharedFlow<FlowUIState>()
-    val flowUIRequest: SharedFlow<FlowUIState>
-        get() = mutableFlowUIRequest
-            .asSharedFlow()
-
     init {
         currentUserReward
-            .filter {
-                !RewardUtils.isDigital(it) && RewardUtils.isShippable(it) && !RewardUtils.isLocalPickup(
-                    it
-                )
-            }
             .compose<Pair<Reward, List<ShippingRule>>>(
                 Transformers.combineLatestPair(
                     shippingRulesObservable
@@ -214,13 +204,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         this.currentAddOnsSelections = currentAddOnsSelections
         viewModelScope.launch {
             emitCurrentState()
-        }
-    }
-
-    fun onAddOnsContinueClicked() {
-        viewModelScope.launch {
-            // Go to confirm page
-            mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
         }
     }
 

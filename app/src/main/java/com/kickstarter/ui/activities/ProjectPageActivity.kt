@@ -512,7 +512,9 @@ class ProjectPageActivity :
                     val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
                     LaunchedEffect(checkoutPayment.id) {
-                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
+                            startLoginToutActivity()
+                        }
                     }
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
@@ -591,7 +593,9 @@ class ProjectPageActivity :
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {
                             confirmDetailsViewModel.onContinueClicked {
-                                checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                                checkoutFlowViewModel.onConfirmDetailsContinueClicked {
+                                    startLoginToutActivity()
+                                }
                             }
                         },
                         onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },

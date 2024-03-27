@@ -515,7 +515,6 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
                         }
-
                     }
 
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })

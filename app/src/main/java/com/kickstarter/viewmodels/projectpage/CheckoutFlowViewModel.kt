@@ -96,7 +96,6 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                     if (userLoggedIn) mutableFlowUIState.emit(FlowUIState(currentPage = 3, expanded = true))
                     else logInCallback()
                 }
-
         }
     }
 

@@ -320,7 +320,7 @@ fun CountryInputWithDropdown(
     }
 
     var countryInput by remember {
-        mutableStateOf(initialCountryInput ?: "United States")
+        mutableStateOf(initialCountryInput ?: "")
     }
 
     val focusManager = LocalFocusManager.current

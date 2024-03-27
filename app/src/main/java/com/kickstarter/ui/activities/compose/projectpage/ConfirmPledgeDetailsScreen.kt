@@ -393,6 +393,7 @@ fun ConfirmPledgeDetailsScreen(
                             if (countryList.isNotEmpty() && !rewardsContainAddOns && rewardsHaveShippables) {
                                 CountryInputWithDropdown(
                                     interactionSource = interactionSource,
+                                    initialCountryInput = shippingLocation,
                                     countryList = countryList,
                                     onShippingRuleSelected = onShippingRuleSelected
                                 )

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -60,7 +61,7 @@ public final class ThanksAdapter extends KSAdapter {
   }
 
   public void takeData(final @NonNull ThanksData data) {
-    setSection(SECTION_SHARE_VIEW, Collections.singletonList(data.getBackedProject()));
+    setSection(SECTION_SHARE_VIEW, Collections.singletonList(Pair.create(data.getBackedProject(), data.getCheckoutData())));
     setSection(SECTION_RECOMMENDED_PROJECTS_VIEW, data.getRecommendedProjects());
     setSection(SECTION_CATEGORY_VIEW, Collections.singletonList(data.getCategory()));
     notifyDataSetChanged();

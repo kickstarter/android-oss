@@ -193,28 +193,6 @@ interface ThanksViewModel {
                     )
                 }
 
-            Observable.combineLatest(
-                project,
-                rootCategory,
-                recommendedProjects.startWith(listOf())
-            ) { backedProject, category, projects ->
-                ThanksData(backedProject, category, projects)
-            }.subscribe { adapterData.onNext(it) }
-                .addToDisposable(disposables)
-
-            adapterData
-                .compose(Transformers.takePairWhenV2(projectOnUserChangeSave))
-                .map {
-                    Pair(it.first, it.second.updateStartedProjectAndDiscoveryParamsList(it.first.recommendedProjects))
-                }
-                .map {
-                    ThanksData(it.first.backedProject, it.first.category, it.second)
-                }.distinctUntilChanged()
-                .subscribe {
-                    adapterData.onNext(it)
-                }
-                .addToDisposable(disposables)
-
             projectOnUserChangeSave
                 .subscribe { this.analyticEvents?.trackWatchProjectCTA(it, THANKS) }
                 .addToDisposable(disposables)
@@ -288,6 +266,29 @@ interface ThanksViewModel {
                     )
                 }
                 .addToDisposable(disposables)
+
+            Observable.combineLatest(
+                    project,
+                    rootCategory,
+                    recommendedProjects.startWith(listOf()),
+                    checkoutData
+            ) { backedProject, category, projects, checkoutData->
+                ThanksData(backedProject, checkoutData, category, projects)
+            }.subscribe { adapterData.onNext(it) }
+                    .addToDisposable(disposables)
+
+            adapterData
+                    .compose(Transformers.takePairWhenV2(projectOnUserChangeSave))
+                    .map {
+                        Pair(it.first, it.second.updateStartedProjectAndDiscoveryParamsList(it.first.recommendedProjects))
+                    }
+                    .map {
+                        ThanksData(it.first.backedProject, it.first.checkoutData, it.first.category, it.second)
+                    }.distinctUntilChanged()
+                    .subscribe {
+                        adapterData.onNext(it)
+                    }
+                    .addToDisposable(disposables)
 
             SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(

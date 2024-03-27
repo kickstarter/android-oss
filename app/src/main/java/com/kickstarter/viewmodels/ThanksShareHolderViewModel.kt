@@ -1,13 +1,17 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
+import com.kickstarter.libs.CurrentUserTypeV2
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag.Companion.thanksFacebookShare
 import com.kickstarter.libs.RefTag.Companion.thanksShare
 import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
+import com.kickstarter.ui.data.CheckoutData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -16,7 +20,7 @@ import io.reactivex.subjects.PublishSubject
 interface ThanksShareHolderViewModel {
     interface Inputs {
         /** Call to configure the view model with a project.  */
-        fun configureWith(project: Project)
+        fun configureWith(projectAndCheckoutData: Pair<Project, CheckoutData>)
 
         /** Call when the share button is clicked.  */
         fun shareClick()
@@ -42,10 +46,13 @@ interface ThanksShareHolderViewModel {
 
         /** Emits the project name and url to share using Twitter.  */
         fun startShareOnTwitter(): Observable<Pair<String, String>>
+
+        fun postCampaignPledgeText(): Observable<Triple<Project, Double, String>>
     }
 
-    class ThanksShareViewHolderViewModel : Inputs, Outputs {
+    class ThanksShareViewHolderViewModel(environment: Environment) : Inputs, Outputs {
 
+        private val projectAndCheckoutData = PublishSubject.create<Pair<Project, CheckoutData>>()
         private val project = PublishSubject.create<Project>()
         private val shareClick = PublishSubject.create<Unit>()
         private val shareOnFacebookClick = PublishSubject.create<Unit>()
@@ -54,6 +61,9 @@ interface ThanksShareHolderViewModel {
         private val startShare = PublishSubject.create<Pair<String, String>>()
         private val startShareOnFacebook = PublishSubject.create<Pair<Project, String>>()
         private val startShareOnTwitter = PublishSubject.create<Pair<String, String>>()
+        private val postCampaignText = PublishSubject.create<Triple<Project, Double, String>>()
+
+        private val currentUser = requireNotNull(environment.currentUserV2())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -61,11 +71,22 @@ interface ThanksShareHolderViewModel {
         private var disposables = CompositeDisposable()
 
         init {
-            project
-                .map { it.name() }
-                .subscribe { projectName.onNext(it) }
-                .addToDisposable(disposables)
+            projectAndCheckoutData
+                    .map { it.first }
+                    .subscribe { project.onNext(it)}
+                    .addToDisposable(disposables)
+//
+//            project
+//                .map { it.name() }
+//                .subscribe { projectName.onNext(it) }
+//                .addToDisposable(disposables)
 
+            projectAndCheckoutData
+//                    .filter { it.isInPostCampaignPledgingPhase().isTrue() }
+//                    .filter { it.postCampaignPledgingEnabled().isTrue() }
+                    .withLatestFrom(currentUser.observable()) { projectAndCheckoutData, user -> Triple(projectAndCheckoutData.first, projectAndCheckoutData.second, user) }
+                    .subscribe { postCampaignText.onNext(Triple(it.first, it.second.amount(),  it.third.getValue()?.email() ?: "")) }
+                    .addToDisposable(disposables)
             project
                 .map {
                     Pair.create(
@@ -100,8 +121,8 @@ interface ThanksShareHolderViewModel {
                 .addToDisposable(disposables)
         }
 
-        override fun configureWith(project: Project) {
-            this.project.onNext(project)
+        override fun configureWith(projectAndCheckoutData: Pair<Project, CheckoutData>) {
+            this.projectAndCheckoutData.onNext(projectAndCheckoutData)
         }
 
         override fun shareClick() {
@@ -121,6 +142,7 @@ interface ThanksShareHolderViewModel {
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
         override fun projectName(): Observable<String> = projectName
 
+        override fun postCampaignPledgeText() : Observable<Triple<Project, Double, String>> = postCampaignText
         override fun onCleared() {
             disposables.clear()
         }

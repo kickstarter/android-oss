@@ -492,10 +492,8 @@ class ProjectPageActivity :
                     val addOns = addOnsUIState.addOns
                     val shippingRules = addOnsUIState.shippingRules
 
-                    LaunchedEffect(Unit) {
-                        addOnsViewModel.flowUIRequest.collect {
-                            checkoutFlowViewModel.changePage(it)
-                        }
+                    LaunchedEffect(currentUserShippingRule) {
+                        confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
                     }
 
                     val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
@@ -505,7 +503,6 @@ class ProjectPageActivity :
                     val shippingAmount = confirmUiState.shippingAmount
                     val initialBonusAmount = confirmUiState.initialBonusSupportAmount
                     val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
-                    val currentShippingRule = confirmUiState.currentShippingRule
                     val maxPledgeAmount = confirmUiState.maxPledgeAmount
                     val minStepAmount = confirmUiState.minStepAmount
 
@@ -548,9 +545,9 @@ class ProjectPageActivity :
                         },
                         pagerState = pagerState,
                         onAddOnsContinueClicked = {
-                            addOnsViewModel.onAddOnsContinueClicked()
+                            checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
-                        currentShippingRule = currentShippingRule ?: currentUserShippingRule,
+                        currentShippingRule = currentUserShippingRule,
                         shippingSelectorIsGone = shippingSelectorIsGone,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
@@ -588,7 +585,6 @@ class ProjectPageActivity :
                         minStepAmount = minStepAmount,
                         onShippingRuleSelected = { shippingRule ->
                             addOnsViewModel.onShippingLocationChanged(shippingRule)
-                            confirmDetailsViewModel.onShippingRuleSelected(shippingRule)
                         },
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {

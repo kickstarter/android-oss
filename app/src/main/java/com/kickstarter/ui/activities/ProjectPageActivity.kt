@@ -517,7 +517,9 @@ class ProjectPageActivity :
                     val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
                     LaunchedEffect(checkoutPayment.id) {
-                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
+                            startLoginToutActivity()
+                        }
                     }
 
                     val latePledgeCheckoutUIState by latePledgeCheckoutViewModel.latePledgeCheckoutUIState.collectAsStateWithLifecycle()
@@ -601,7 +603,9 @@ class ProjectPageActivity :
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {
                             confirmDetailsViewModel.onContinueClicked {
-                                checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                                checkoutFlowViewModel.onConfirmDetailsContinueClicked {
+                                    startLoginToutActivity()
+                                }
                             }
                         },
                         storedCards = userStoredCards,

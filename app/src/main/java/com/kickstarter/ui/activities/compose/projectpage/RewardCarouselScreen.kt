@@ -81,6 +81,7 @@ fun RewardCarouselScreenPreview() {
         }
     }
 }
+
 @Composable
 fun RewardCarouselScreen(
     modifier: Modifier,
@@ -88,7 +89,7 @@ fun RewardCarouselScreen(
     environment: Environment,
     rewards: List<Reward>,
     project: Project,
-    onRewardSelected: () -> Unit
+    onRewardSelected: (reward: Reward) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -115,8 +116,7 @@ fun RewardCarouselScreen(
                 )
             }
         }
-    ) {
-            padding ->
+    ) { padding ->
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -138,8 +138,14 @@ fun RewardCarouselScreen(
 
                 val ctaButtonEnabled = when {
                     !reward.hasAddons() && project.backing()?.isBacked(reward) != true -> true
-                    project.backing()?.rewardId() != reward.id() && RewardUtils.isAvailable(project, reward) -> true
-                    reward.hasAddons() && project.backing()?.rewardId() == reward.id() && project.isLive -> true
+                    project.backing()?.rewardId() != reward.id() && RewardUtils.isAvailable(
+                        project,
+                        reward
+                    ) -> true
+
+                    reward.hasAddons() && project.backing()
+                        ?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) -> true
+
                     else -> false
                 }
                 val isBacked = project.backing()?.isBacked(reward) ?: false
@@ -151,14 +157,17 @@ fun RewardCarouselScreen(
                     KSRewardCard(
                         isCTAButtonEnabled = ctaButtonEnabled,
                         ctaButtonText = stringResource(id = ctaButtonText),
-                        title = if (isBacked) stringResource(id = R.string.You_pledged_without_a_reward) else stringResource(id = R.string.Pledge_without_a_reward),
-                        description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(id = R.string.Back_it_because_you_believe_in_it),
-                        onRewardSelectClicked = onRewardSelected
+                        title = if (isBacked) stringResource(id = R.string.You_pledged_without_a_reward) else stringResource(
+                            id = R.string.Pledge_without_a_reward
+                        ),
+                        description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(
+                            id = R.string.Back_it_because_you_believe_in_it
+                        ),
+                        onRewardSelectClicked = { onRewardSelected(reward) }
                     )
                 } else {
-
                     KSRewardCard(
-                        onRewardSelectClicked = onRewardSelected,
+                        onRewardSelectClicked = { onRewardSelected(reward) },
                         amount = environment.ksCurrency()?.let {
                             RewardViewUtils.styleCurrency(
                                 reward.minimum(),
@@ -182,13 +191,17 @@ fun RewardCarouselScreen(
                         else {
                             environment.ksString()?.let {
                                 it.format(
-                                    "rewards_info_backer_count_backers", requireNotNull(reward.backersCount()),
-                                    "backer_count", NumberUtils.format(requireNotNull(reward.backersCount()))
+                                    "rewards_info_backer_count_backers",
+                                    requireNotNull(reward.backersCount()),
+                                    "backer_count",
+                                    NumberUtils.format(requireNotNull(reward.backersCount()))
                                 )
                             }
                         },
                         isCTAButtonEnabled = ctaButtonEnabled,
-                        includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems().isNullOrEmpty() && environment.ksString().isNotNull()) {
+                        includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
+                            .isNullOrEmpty() && environment.ksString().isNotNull()
+                        ) {
                             reward.rewardsItems()?.map { rewardItems ->
                                 environment.ksString()?.format(
                                     "rewards_info_item_quantity_title", rewardItems.quantity(),
@@ -204,7 +217,10 @@ fun RewardCarouselScreen(
                             DateTimeUtils.estimatedDeliveryOn(requireNotNull(reward.estimatedDeliveryOn()))
                         } else "",
                         yourSelectionIsVisible = project.backing()?.isBacked(reward) ?: false,
-                        localPickup = if (RewardUtils.isLocalPickup(reward) && !RewardUtils.isShippable(reward)) {
+                        localPickup = if (RewardUtils.isLocalPickup(reward) && !RewardUtils.isShippable(
+                                reward
+                            )
+                        ) {
                             reward.localReceiptLocation()?.displayableName() ?: ""
                         } else {
                             ""
@@ -212,12 +228,23 @@ fun RewardCarouselScreen(
                         ctaButtonText = stringResource(id = ctaButtonText),
                         expirationDateText =
                         environment.ksString()?.let {
-                            RewardUtils.deadlineCountdownDetail(reward, context, it) + RewardUtils.deadlineCountdownDetail(reward, context, it)
+                            if (RewardUtils.deadlineCountdownValue(reward) <= 0) ""
+                            else "" + RewardUtils.deadlineCountdownValue(reward) + " " + RewardUtils.deadlineCountdownDetail(
+                                reward,
+                                context,
+                                it
+                            )
                         },
                         shippingSummaryText =
                         environment.ksString()?.let { ksString ->
                             if (RewardUtils.isShippable(reward)) {
-                                RewardUtils.shippingSummary(reward)?.let { RewardViewUtils.shippingSummary(context = context, ksString = ksString, it) }
+                                RewardUtils.shippingSummary(reward)?.let {
+                                    RewardViewUtils.shippingSummary(
+                                        context = context,
+                                        ksString = ksString,
+                                        it
+                                    )
+                                }
                             } else {
                                 ""
                             }
@@ -226,7 +253,11 @@ fun RewardCarouselScreen(
                         environment.ksString()?.let { ksString ->
                             if (!reward.isLimited()) {
                                 if (remaining > 0) {
-                                    ksString.format(stringResource(id = R.string.Left_count_left_few), "left_count", NumberUtils.format(remaining))
+                                    ksString.format(
+                                        stringResource(id = R.string.Left_count_left_few),
+                                        "left_count",
+                                        NumberUtils.format(remaining)
+                                    )
                                 } else ""
                             } else ""
                         },

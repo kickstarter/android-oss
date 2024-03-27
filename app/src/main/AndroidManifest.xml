@@ -187,7 +187,7 @@
             android:screenOrientation="portrait"
             android:exported="true"
             android:configChanges="screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" >
 
         </activity>

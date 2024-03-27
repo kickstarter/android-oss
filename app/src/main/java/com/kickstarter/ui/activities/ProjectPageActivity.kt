@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
@@ -22,8 +23,19 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aghajari.zoomhelper.ZoomHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -36,15 +48,20 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
@@ -63,12 +80,17 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
+import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
+import com.kickstarter.viewmodels.projectpage.ConfirmDetailsViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
+import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
 import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
 class ProjectPageActivity :
     AppCompatActivity(),
@@ -79,6 +101,18 @@ class ProjectPageActivity :
 
     private lateinit var viewModelFactory: ProjectPageViewModel.Factory
     private val viewModel: ProjectPageViewModel.ProjectPageViewModel by viewModels { viewModelFactory }
+
+    private lateinit var checkoutViewModelFactory: CheckoutFlowViewModel.Factory
+    private val checkoutFlowViewModel: CheckoutFlowViewModel by viewModels { checkoutViewModelFactory }
+
+    private val rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
+    private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
+
+    private lateinit var confirmDetailsViewModelFactory: ConfirmDetailsViewModel.Factory
+    private val confirmDetailsViewModel: ConfirmDetailsViewModel by viewModels { confirmDetailsViewModelFactory }
+
+    private lateinit var addOnsViewModelFactory: AddOnsViewModel.Factory
+    private val addOnsViewModel: AddOnsViewModel by viewModels { addOnsViewModelFactory }
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
@@ -114,8 +148,12 @@ class ProjectPageActivity :
 
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
+            checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
+            confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
+            addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             env
         }
+
         this.ksString = requireNotNull(environment?.ksString())
 
         viewModel.configureWith(intent)
@@ -149,12 +187,31 @@ class ProjectPageActivity :
             }
         }
 
+        this.viewModel.outputs.showLatePledgeFlow()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showLatePledgeFlow ->
+                if (showLatePledgeFlow) {
+                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = true
+                    latePledgesSetUp(binding.pledgeContainerCompose)
+                } else {
+                    binding.pledgeContainerCompose.isGone = true
+                    binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+                }
+            }.addToDisposable(disposables)
+
         this.viewModel.outputs.projectData()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
+                val fFLatePledge = environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
+
+                if (fFLatePledge && it.project().showLatePledgeFlow()) {
+                    rewardsSelectionViewModel.provideProjectData(it)
+                    addOnsViewModel.provideProjectData(it)
+                    confirmDetailsViewModel.provideProjectData(it)
+                }
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateTabs()
@@ -403,6 +460,149 @@ class ProjectPageActivity :
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
+    private fun latePledgesSetUp(composeView: ComposeView) {
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KickstarterApp {
+                    val flowUIState by checkoutFlowViewModel.flowUIState.collectAsStateWithLifecycle()
+
+                    val expanded = flowUIState.expanded
+                    val currentPage = flowUIState.currentPage
+
+                    val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+
+                    val projectData = rewardSelectionUIState.project
+                    val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
+                    val rewardsList = rewardSelectionUIState.rewardList
+                    val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
+
+                    LaunchedEffect(Unit) {
+                        rewardsSelectionViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
+
+                    val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
+
+                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
+                    val currentUserShippingRule = addOnsUIState.currentShippingRule
+                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
+                    val addOns = addOnsUIState.addOns
+                    val shippingRules = addOnsUIState.shippingRules
+
+                    LaunchedEffect(Unit) {
+                        addOnsViewModel.flowUIRequest.collect {
+                            checkoutFlowViewModel.changePage(it)
+                        }
+                    }
+
+                    val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
+
+                    val totalAmount: Double = confirmUiState.totalAmount
+                    val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
+                    val shippingAmount = confirmUiState.shippingAmount
+                    val initialBonusAmount = confirmUiState.initialBonusSupportAmount
+                    val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
+                    val currentShippingRule = confirmUiState.currentShippingRule
+                    val maxPledgeAmount = confirmUiState.maxPledgeAmount
+                    val minStepAmount = confirmUiState.minStepAmount
+
+                    val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(checkoutPayment.id) {
+                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                    }
+
+                    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
+
+                    this@ProjectPageActivity.onBackPressedDispatcher.addCallback {
+                        if (expanded) checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
+                        else finishWithAnimation()
+                    }
+
+                    val coroutineScope = rememberCoroutineScope()
+
+                    LaunchedEffect(currentPage) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                page = currentPage,
+                                animationSpec = tween(
+                                    durationMillis = 200,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
+
+                    var selectedReward: Reward? = null
+
+                    ProjectPledgeButtonAndFragmentContainer(
+                        expanded = expanded,
+                        onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
+                        onBackClicked = {
+                            checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
+                        },
+                        pagerState = pagerState,
+                        onAddOnsContinueClicked = {
+                            addOnsViewModel.onAddOnsContinueClicked()
+                        },
+                        currentShippingRule = currentShippingRule ?: currentUserShippingRule,
+                        shippingSelectorIsGone = shippingSelectorIsGone,
+                        shippingRules = shippingRules,
+                        environment = getEnvironment(),
+                        initialRewardCarouselPosition = indexOfBackedReward,
+                        rewardsList = rewardsList,
+                        showRewardCarouselDialog = showRewardCarouselAlertDialog,
+                        onRewardAlertDialogNegativeClicked = {
+                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = false)
+                        },
+                        onRewardAlertDialogPositiveClicked = {
+                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = true)
+                        },
+                        addOns = addOns,
+                        project = projectData.project(),
+                        onRewardSelected = { reward ->
+                            selectedReward = reward
+                            checkoutFlowViewModel.userRewardSelection(reward)
+                            addOnsViewModel.userRewardSelection(reward)
+                            rewardsSelectionViewModel.onUserRewardSelection(reward)
+                            confirmDetailsViewModel.onUserSelectedReward(reward)
+                        },
+                        onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
+                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
+                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
+                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
+
+                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
+                        },
+                        selectedReward = selectedReward,
+                        totalAmount = totalAmount,
+                        selectedRewardAndAddOnList = rewardsAndAddOns,
+                        initialBonusSupportAmount = initialBonusAmount,
+                        totalBonusSupportAmount = totalBonusSupportAmount,
+                        maxPledgeAmount = maxPledgeAmount,
+                        minStepAmount = minStepAmount,
+                        onShippingRuleSelected = { shippingRule ->
+                            addOnsViewModel.onShippingLocationChanged(shippingRule)
+                            confirmDetailsViewModel.onShippingRuleSelected(shippingRule)
+                        },
+                        shippingAmount = shippingAmount,
+                        onConfirmDetailsContinueClicked = {
+                            confirmDetailsViewModel.onContinueClicked {
+                                checkoutFlowViewModel.onConfirmDetailsContinueClicked()
+                            }
+                        },
+                        onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
+                        onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
+                        selectedAddOnsMap = selectedAddOnsMap
+                    )
+                }
+            }
+        }
+    }
+
     /**
      * Give a List of configurations will iterate over it and apply
      * the configuration required.
@@ -549,8 +749,10 @@ class ProjectPageActivity :
         return supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         var statusBarHeight = 0
+        // TODO: Replace with window insets compat
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
             statusBarHeight = resources.getDimensionPixelSize(resourceId)

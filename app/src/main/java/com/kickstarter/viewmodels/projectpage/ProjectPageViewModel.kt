@@ -12,6 +12,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
@@ -42,6 +43,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
@@ -264,6 +266,8 @@ interface ProjectPageViewModel {
         fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>>
 
         fun updateVideoCloseSeekPosition(): Observable<Long>
+
+        fun showLatePledgeFlow(): Observable<Boolean>
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -351,6 +355,7 @@ interface ProjectPageViewModel {
         private val updateTabs = PublishSubject.create<List<PagerTabConfig>>()
         private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
+        private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -359,6 +364,7 @@ interface ProjectPageViewModel {
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         val disposables = CompositeDisposable()
+
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
@@ -413,9 +419,16 @@ interface ProjectPageViewModel {
                 .compose(errorsV2())
 
             mappedProjectValues
-                .filter { it.displayPrelaunch().isTrue() }
-                .map { it.webProjectUrl() }
-                .subscribe { this.prelaunchUrl.onNext(it) }
+                .subscribe {
+                    if (it.showLatePledgeFlow()) {
+                        val isFFEnabled = featureFlagClient.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES)
+                        this.showLatePledgeFlow.onNext(it.showLatePledgeFlow() && isFFEnabled)
+                    }
+
+                    if (it.displayPrelaunch().isTrue()) {
+                        this.prelaunchUrl.onNext(it.webProjectUrl())
+                    }
+                }
                 .addToDisposable(disposables)
 
             val initialProject = mappedProjectValues
@@ -1257,6 +1270,8 @@ interface ProjectPageViewModel {
         override fun playButtonIsVisible(): Observable<Boolean> = this.playButtonIsVisible
 
         override fun backingViewGroupIsVisible(): Observable<Boolean> = this.backingViewGroupIsVisible
+
+        override fun showLatePledgeFlow(): Observable<Boolean> = this.showLatePledgeFlow
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

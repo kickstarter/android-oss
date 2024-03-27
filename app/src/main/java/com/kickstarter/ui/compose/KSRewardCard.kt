@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.ui.activities.compose.login.LogInSignUpClickableDisclaimerText
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -119,6 +118,7 @@ fun KSRewardCard(
                 Modifier
                     .verticalScroll(rememberScrollState())
                     .padding(dimensions.paddingMediumLarge)
+                    .weight(weight = 1f, fill = false)
             ) {
 
                 if (!amount.isNullOrEmpty()) {
@@ -228,13 +228,6 @@ fun KSRewardCard(
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 }
-
-                LogInSignUpClickableDisclaimerText(
-                    onPrivacyPolicyClicked = {},
-                    onCookiePolicyClicked = {},
-                    onTermsOfUseClicked = {}
-
-                )
 
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),

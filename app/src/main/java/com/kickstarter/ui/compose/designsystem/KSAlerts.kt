@@ -265,7 +265,7 @@ fun KSDialogVisual(
     ) {
         // Headline
         safeLet(headline, headlineStyle, headlineSpacing) { text, style, space ->
-            Text(text = text, style = style, color = colors.kds_support_700)
+            Text(text = text, style = style, color = colors.textPrimary)
             Spacer(modifier = Modifier.height(space))
         }
 
@@ -274,7 +274,7 @@ fun KSDialogVisual(
             modifier = Modifier.padding(end = dimensions.paddingSmall),
             text = bodyText,
             style = bodyStyle,
-            color = colors.kds_support_700
+            color = colors.textPrimary
         )
 
         Row(
@@ -293,7 +293,7 @@ fun KSDialogVisual(
                     },
                     colors =
                     ButtonDefaults.buttonColors(
-                        backgroundColor = leftButtonColor ?: colors.kds_white
+                        backgroundColor = leftButtonColor ?: colors.backgroundSurfacePrimary
                     ),
                     elevation = ButtonDefaults.elevation(dimensions.none)
                 ) {
@@ -321,7 +321,7 @@ fun KSDialogVisual(
                     },
                     colors =
                     ButtonDefaults.buttonColors(
-                        backgroundColor = rightButtonColor ?: colors.kds_white
+                        backgroundColor = rightButtonColor ?: colors.backgroundSurfacePrimary
                     ),
                     elevation = ButtonDefaults.elevation(dimensions.none)
                 ) {
@@ -351,7 +351,7 @@ fun KSAlertDialogNoHeadline(
             KSDialogVisual(
                 modifier = Modifier
                     .width(dimensions.dialogWidth)
-                    .background(color = colors.kds_white, shape = shapes.small)
+                    .background(color = colors.backgroundSurfacePrimary, shape = shapes.small)
                     .padding(
                         start = dimensions.paddingLarge,
                         top = dimensions.paddingLarge,
@@ -388,7 +388,7 @@ fun KSAlertDialog(
             KSDialogVisual(
                 modifier = Modifier
                     .width(dimensions.dialogWidth)
-                    .background(color = colors.kds_white, shape = shapes.small)
+                    .background(color = colors.backgroundSurfacePrimary, shape = shapes.small)
                     .padding(
                         start = dimensions.paddingLarge,
                         top = dimensions.paddingLarge,

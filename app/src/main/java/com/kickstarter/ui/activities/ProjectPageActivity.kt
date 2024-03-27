@@ -517,6 +517,7 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
                         }
+                        latePledgeCheckoutViewModel.provideCheckoutId(checkoutPayment.id)
                     }
 
                     val latePledgeCheckoutUIState by latePledgeCheckoutViewModel.latePledgeCheckoutUIState.collectAsStateWithLifecycle()

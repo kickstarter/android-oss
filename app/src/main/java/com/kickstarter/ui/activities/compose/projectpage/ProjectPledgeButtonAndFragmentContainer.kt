@@ -318,6 +318,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         totalAmount = totalAmount,
                                         totalBonusSupport = totalBonusSupportAmount,
                                         currentShippingRule = currentShippingRule,
+                                        rewardsHaveShippables = selectedRewardAndAddOnList.any { RewardUtils.isShippable(it) },
                                         onPledgeCtaClicked = onPledgeCtaClicked,
                                         newPaymentMethodClicked = onAddPaymentMethodClicked
                                     )

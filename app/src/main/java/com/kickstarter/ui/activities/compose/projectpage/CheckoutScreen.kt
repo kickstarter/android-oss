@@ -108,6 +108,7 @@ fun CheckoutScreenPreview() {
                 .build(),
             email = "example@example.com",
             pledgeReason = PledgeReason.PLEDGE,
+            rewardsHaveShippables = true,
             onPledgeCtaClicked = { },
             newPaymentMethodClicked = { }
         )
@@ -128,6 +129,7 @@ fun CheckoutScreen(
     totalAmount: Double,
     currentShippingRule: ShippingRule,
     totalBonusSupport: Double = 0.0,
+    rewardsHaveShippables: Boolean,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
     newPaymentMethodClicked: () -> Unit
 ) {
@@ -432,7 +434,8 @@ fun CheckoutScreen(
                     totalAmountCurrencyConverted = totalAmountConvertedString,
                     initialBonusSupport = initialBonusSupportString,
                     totalBonusSupport = totalBonusSupportString,
-                    deliveryDateString = deliveryDateString
+                    deliveryDateString = deliveryDateString,
+                    rewardsHaveShippables = rewardsHaveShippables
                 )
             } else {
                 ItemizedRewardListContainer(
@@ -440,7 +443,7 @@ fun CheckoutScreen(
                     totalAmountCurrencyConverted = totalAmountConvertedString,
                     initialBonusSupport = initialBonusSupportString,
                     totalBonusSupport = totalBonusSupportString,
-                    shippingAmount = shippingAmount
+                    shippingAmount = shippingAmount,
                 )
             }
         }

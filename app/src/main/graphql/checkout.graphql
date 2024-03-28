@@ -68,9 +68,6 @@ mutation CompleteOnSessionCheckout($checkoutId: ID!, $paymentIntentClientSecret:
   completeOnSessionCheckout(input:{ checkoutId: $checkoutId, paymentIntentClientSecret: $paymentIntentClientSecret, paymentSourceId: $paymentSourceId } ) {
     checkout {
       id
-      backing {
-        requiresAction
-      }
     }
   }
 }

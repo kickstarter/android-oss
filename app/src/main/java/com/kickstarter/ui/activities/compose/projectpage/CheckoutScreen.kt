@@ -136,7 +136,9 @@ fun CheckoutScreen(
     var (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
             storedCards.firstOrNull {
-                project.acceptedCardType(it.type()) || it.isFromPaymentSheet()
+                project.acceptedCardType(
+                    it.type()
+                )
             }
         )
     }

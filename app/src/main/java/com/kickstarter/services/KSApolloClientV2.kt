@@ -187,8 +187,8 @@ interface ApolloClientTypeV2 {
     fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String?
-    ): Observable<Pair<String, Boolean>>
+        paymentSourceId: String
+    ): Observable<String>
 
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
 }
@@ -1565,10 +1565,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String?
-    ): Observable<Pair<String, Boolean>> {
+        paymentSourceId: String
+    ): Observable<String> {
         return Observable.defer {
-            val ps = PublishSubject.create<Pair<String, Boolean>>()
+            val ps = PublishSubject.create<String>()
 
             this.service.mutate(
                 CompleteOnSessionCheckoutMutation.builder()
@@ -1585,10 +1585,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
-                        response.data?.completeOnSessionCheckout()?.checkout()?.id()?.let { checkoutId ->
-                            response.data?.completeOnSessionCheckout()?.checkout()?.backing()?.requiresAction()?.let { requiresAction ->
-                                ps.onNext(Pair(checkoutId, requiresAction))
-                            }
+                        response.data?.completeOnSessionCheckout()?.checkout()?.id()?.let {
+                            ps.onNext(it)
                         } ?: ps.onError(Exception("Checkout ID was null"))
                     }
                     ps.onComplete()

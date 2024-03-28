@@ -8,12 +8,17 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.stripe.android.ApiResultCallback
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
+import com.stripe.android.model.PaymentIntent
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -37,6 +42,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var stripe: Stripe = requireNotNull(environment.stripe())
 
+    private var clientSecretForNewCard: String = ""
+    private var newStoredCard: StoredCard = StoredCard.builder().build()
+    private var errorAction: (message: String?) -> Unit = {}
+
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
     val latePledgeCheckoutUIState: StateFlow<LatePledgeCheckoutUIState>
         get() = mutableLatePledgeCheckoutUIState
@@ -47,36 +56,34 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 initialValue = LatePledgeCheckoutUIState()
             )
 
+    private var mutableClientSecretForNewPaymentMethod = MutableSharedFlow<String>()
+    val clientSecretForNewPaymentMethod: SharedFlow<String>
+        get() = mutableClientSecretForNewPaymentMethod.asSharedFlow()
+
+    private var mutablePaymentRequiresAction = MutableSharedFlow<String>()
+    val paymentRequiresAction: SharedFlow<String>
+        get() = mutablePaymentRequiresAction.asSharedFlow()
+
     init {
         viewModelScope.launch {
             environment.currentUserV2()?.observable()?.asFlow()?.map {
                 if (it.isPresent()) {
                     apolloClient.userPrivacy().asFlow().map { userPrivacy ->
                         userEmail = userPrivacy.email
-                        mutableLatePledgeCheckoutUIState.emit(
-                            LatePledgeCheckoutUIState(
-                                storeCards = storedCards,
-                                userEmail = userEmail,
-                            )
-                        )
+                        emitCurrentState()
                     }.catch {
-                        // Some error
+                        errorAction.invoke(null)
                     }.collect()
 
                     apolloClient.getStoredCards().asFlow().map { cards ->
                         storedCards = cards
-                        mutableLatePledgeCheckoutUIState.emit(
-                            LatePledgeCheckoutUIState(
-                                storeCards = storedCards,
-                                userEmail = userEmail,
-                            )
-                        )
+                        emitCurrentState()
                     }.catch {
-                        // Some error
+                        errorAction.invoke(null)
                     }.collect()
                 }
             }?.catch {
-                // Some error
+                errorAction.invoke(null)
             }?.collect()
         }
     }
@@ -85,7 +92,66 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.checkoutId = checkoutId.toString()
     }
 
+    fun onAddNewCardClicked(project: Project, totalAmount: Double) {
+        viewModelScope.launch {
+            apolloClient.createPaymentIntent(
+                CreatePaymentIntentInput(
+                    project = project,
+                    amount = totalAmount.toString()
+                )
+            ).asFlow().map { clientSecret ->
+                clientSecretForNewCard = clientSecret
+                mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
+            }.catch {
+                errorAction.invoke(null)
+            }.collect()
+        }
+    }
+
+    fun onNewCardSuccessfullyAdded(storedCard: StoredCard) {
+        newStoredCard = storedCard
+        var mutableStoredCardList = storedCards.toMutableList()
+        mutableStoredCardList.add(0, storedCard)
+        storedCards = mutableStoredCardList.toList()
+        viewModelScope.launch {
+            emitCurrentState()
+        }
+    }
+
     fun onPledgeButtonClicked(selectedCard: StoredCard?, project: Project, totalAmount: Double) {
+        if (selectedCard == newStoredCard) {
+            stripe.retrievePaymentIntent(
+                clientSecret = clientSecretForNewCard,
+                callback = object : ApiResultCallback<PaymentIntent> {
+                    override fun onError(e: Exception) {
+                        errorAction.invoke(null)
+                    }
+
+                    override fun onSuccess(result: PaymentIntent) {
+                        result.paymentMethodId?.let { cardId ->
+                            val cardWithId = selectedCard.toBuilder().stripeCardId(cardId).build()
+                            newStoredCard = cardWithId
+                            createPaymentIntentForCheckout(cardWithId, project, totalAmount)
+                        } ?: run {
+                            errorAction.invoke(null)
+                        }
+                    }
+                }
+            )
+        } else {
+            createPaymentIntentForCheckout(selectedCard, project, totalAmount)
+        }
+    }
+
+    fun provideErrorAction(errorAction: (message: String?) -> Unit) {
+        this.errorAction = errorAction
+    }
+
+    private fun createPaymentIntentForCheckout(
+        selectedCard: StoredCard?,
+        project: Project,
+        totalAmount: Double
+    ) {
         viewModelScope.launch {
             apolloClient.createPaymentIntent(
                 CreatePaymentIntentInput(
@@ -97,13 +163,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     checkoutId?.let {
                         validateCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
                     } ?: run {
-                        // Some error
+                        errorAction.invoke(null)
                     }
                 } ?: run {
-                    // Some error
+                    errorAction.invoke(null)
                 }
             }.catch {
-                // Some error
+                errorAction.invoke(null)
             }.collect()
         }
     }
@@ -119,9 +185,14 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 stripeConfirmPaymentIntent(clientSecret = clientSecret, selectedCard = selectedCard)
             } else {
                 // User validation.messages for displaying an error
+                if (validation.messages.isNotEmpty()) {
+                    errorAction.invoke(validation.messages.first())
+                } else {
+                    errorAction.invoke(null)
+                }
             }
         }.catch {
-            // Some error
+            errorAction.invoke(null)
         }.collect()
     }
 
@@ -135,6 +206,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         val paymentIntent = stripe.confirmPaymentIntent(withSDK)
         if (paymentIntent.lastPaymentError.isNotNull()) {
             // Display error with lastPaymentError.message
+            errorAction.invoke(paymentIntent.lastPaymentError?.message)
         } else {
             // Success, move on
             completeOnSessionCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
@@ -145,12 +217,25 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         apolloClient.completeOnSessionCheckout(
             checkoutId = checkoutId ?: "",
             paymentIntentClientSecret = clientSecret,
-            paymentSourceId = selectedCard.id() ?: ""
-        ).asFlow().map {
-            // Full flow success, show thanks page
+            paymentSourceId = if(selectedCard == newStoredCard) null else selectedCard.id() ?: ""
+        ).asFlow().map { iDRequiresActionPair ->
+            if (iDRequiresActionPair.second) {
+                mutablePaymentRequiresAction.emit(clientSecret)
+            } else {
+                // Go to Thanks Page, full complete flow
+            }
         }.catch {
-            // Some error
+            errorAction.invoke(null)
         }.collect()
+    }
+
+    private suspend fun emitCurrentState() {
+        mutableLatePledgeCheckoutUIState.emit(
+            LatePledgeCheckoutUIState(
+                storeCards = storedCards,
+                userEmail = userEmail,
+            )
+        )
     }
 
     class Factory(private val environment: Environment) :

@@ -223,7 +223,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         apolloClient.completeOnSessionCheckout(
             checkoutId = checkoutId ?: "",
             paymentIntentClientSecret = clientSecret,
-            paymentSourceId = if(selectedCard == newStoredCard) null else selectedCard.id() ?: ""
+            paymentSourceId = if (selectedCard == newStoredCard) null else selectedCard.id() ?: ""
         ).asFlow().map { iDRequiresActionPair ->
             if (iDRequiresActionPair.second) {
                 mutablePaymentRequiresAction.emit(clientSecret)

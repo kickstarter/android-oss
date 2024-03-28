@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var stripe: Stripe = requireNotNull(environment.stripe())
 
     private var clientSecretForNewCard: String = ""
-    private var newStoredCard: StoredCard = StoredCard.builder().build()
+    private var newStoredCard: StoredCard? = null
     private var errorAction: (message: String?) -> Unit = {}
 
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
@@ -66,7 +67,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            environment.currentUserV2()?.observable()?.asFlow()?.map {
+            environment.currentUserV2()?.observable()?.asFlow()?.distinctUntilChanged()?.map {
                 if (it.isPresent()) {
                     apolloClient.userPrivacy().asFlow().map { userPrivacy ->
                         userEmail = userPrivacy.email
@@ -77,6 +78,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
                     apolloClient.getStoredCards().asFlow().map { cards ->
                         storedCards = cards
+                        newStoredCard?.let { newCard ->
+                            val mutableStoredCardList = storedCards.toMutableList()
+                            mutableStoredCardList.add(0, newCard)
+                            storedCards = mutableStoredCardList.toList()
+                        }
                         emitCurrentState()
                     }.catch {
                         errorAction.invoke(null)
@@ -110,7 +116,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     fun onNewCardSuccessfullyAdded(storedCard: StoredCard) {
         newStoredCard = storedCard
-        var mutableStoredCardList = storedCards.toMutableList()
+        val mutableStoredCardList = storedCards.toMutableList()
         mutableStoredCardList.add(0, storedCard)
         storedCards = mutableStoredCardList.toList()
         viewModelScope.launch {
@@ -129,7 +135,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
                     override fun onSuccess(result: PaymentIntent) {
                         result.paymentMethodId?.let { cardId ->
-                            val cardWithId = selectedCard.toBuilder().stripeCardId(cardId).build()
+                            val cardWithId = selectedCard?.toBuilder()?.stripeCardId(cardId)?.build()
                             newStoredCard = cardWithId
                             createPaymentIntentForCheckout(cardWithId, project, totalAmount)
                         } ?: run {

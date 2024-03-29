@@ -215,9 +215,8 @@ fun CheckoutScreen(
                         }
                     }
                 }
-            },
-
-            ) { padding ->
+            }
+        ) { padding ->
 
             val totalAmountString = environment.ksCurrency()?.let {
                 RewardViewUtils.styleCurrency(

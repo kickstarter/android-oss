@@ -33,7 +33,8 @@ data class ConfirmDetailsUIState(
     val shippingAmount: Double = 0.0,
     val totalAmount: Double = 0.0,
     val minStepAmount: Double = 0.0,
-    val maxPledgeAmount: Double = 0.0
+    val maxPledgeAmount: Double = 0.0,
+    val isLoading: Boolean = false
 )
 
 class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
@@ -51,6 +52,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     private var totalAmount: Double = 0.0
     private var minStepAmount: Double = 0.0
     private var maxPledgeAmount: Double = 0.0
+    private var errorAction: (message: String?) -> Unit = {}
 
     private val mutableConfirmDetailsUIState = MutableStateFlow(ConfirmDetailsUIState())
     val confirmDetailsUIState: StateFlow<ConfirmDetailsUIState>
@@ -129,6 +131,10 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         viewModelScope.launch {
             emitCurrentState()
         }
+    }
+
+    fun provideErrorAction(errorAction: (message: String?) -> Unit) {
+        this.errorAction = errorAction
     }
 
     private fun calculateTotal(): Double {
@@ -237,6 +243,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             .isInPostCampaignPledgingPhase() == true
         ) {
             viewModelScope.launch {
+                emitCurrentState(isLoading = true)
                 apolloClient.createCheckout(
                     CreateCheckoutData(
                         project = projectData.project(),
@@ -250,9 +257,10 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     .asFlow()
                     .map { checkoutPayment ->
                         mutableCheckoutPayment.emit(checkoutPayment)
+                        emitCurrentState()
                     }
                     .catch {
-                        // Display an error
+                        errorAction.invoke(null)
                     }
                     .collect()
             }
@@ -287,7 +295,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    private suspend fun emitCurrentState() {
+    private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableConfirmDetailsUIState.emit(
             ConfirmDetailsUIState(
                 rewardsAndAddOns = rewardAndAddOns,
@@ -296,7 +304,8 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 shippingAmount = shippingAmount,
                 totalAmount = totalAmount,
                 minStepAmount = minStepAmount,
-                maxPledgeAmount = maxPledgeAmount
+                maxPledgeAmount = maxPledgeAmount,
+                isLoading = isLoading
             )
         )
     }

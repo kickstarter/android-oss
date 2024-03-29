@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -34,7 +36,8 @@ data class AddOnsUIState(
     var shippingSelectorIsGone: Boolean = false,
     var currentAddOnsSelection: MutableMap<Reward, Int> = mutableMapOf(),
     val addOns: List<Reward> = listOf(),
-    val shippingRules: List<ShippingRule> = listOf()
+    val shippingRules: List<ShippingRule> = listOf(),
+    val isLoading: Boolean = false
 )
 
 class AddOnsViewModel(val environment: Environment) : ViewModel() {
@@ -54,6 +57,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     private var currentAddOnsSelections: MutableMap<Reward, Int> = mutableMapOf()
     private var shippingRules: List<ShippingRule> = listOf()
     private lateinit var projectData: ProjectData
+    private var errorAction: (message: String?) -> Unit = {}
 
     val addOnsUIState: StateFlow<AddOnsUIState>
         get() = mutableAddOnsUIState
@@ -76,10 +80,10 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 defaultShippingRuleObservable.onNext(it)
                 defaultShippingRule = it
                 currentShippingRule = it
-                getAddOns(noShippingRule = false)
                 viewModelScope.launch {
                     emitCurrentState()
                 }
+                getAddOns(noShippingRule = false)
             }.addToDisposable(disposables)
 
         val shippingRule = getSelectedShippingRule(defaultShippingRuleObservable, currentUserReward)
@@ -92,6 +96,10 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 currentShippingRule = it
             }
             .addToDisposable(disposables)
+    }
+
+    fun provideErrorAction(errorAction: (message: String?) -> Unit) {
+        this.errorAction = errorAction
     }
 
     fun provideProjectData(projectData: ProjectData) {
@@ -123,7 +131,9 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                     slug = projectData.project().slug() ?: "",
                     locationId = currentShippingRule.location() ?: defaultShippingRule.location() ?: Location.builder().build()
                 ).asFlow()
-                .map { addOns ->
+                .onStart {
+                    emitCurrentState(isLoading = true)
+                }.map { addOns ->
                     if (!addOns.isNullOrEmpty()) {
                         if (noShippingRule) {
                             this@AddOnsViewModel.addOns = addOns.filter { !RewardUtils.isShippable(it) }
@@ -131,9 +141,10 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                             this@AddOnsViewModel.addOns = addOns
                         }
                     }
+                }.onCompletion {
                     emitCurrentState()
                 }.catch {
-                    // Show some error
+                    errorAction.invoke(null)
                 }.collect()
         }
     }
@@ -204,14 +215,15 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    private suspend fun emitCurrentState() {
+    private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableAddOnsUIState.emit(
             AddOnsUIState(
                 currentShippingRule = currentShippingRule,
                 shippingSelectorIsGone = shippingSelectorIsGone,
                 currentAddOnsSelection = currentAddOnsSelections,
                 addOns = addOns,
-                shippingRules = shippingRules
+                shippingRules = shippingRules,
+                isLoading = isLoading
             )
         )
     }

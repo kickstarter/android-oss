@@ -187,7 +187,8 @@ interface ApolloClientTypeV2 {
     fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String?
+        paymentSourceId: String?,
+        paymentSourceReusable: Boolean
     ): Observable<Pair<String, Boolean>>
 
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
@@ -1565,7 +1566,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String?
+        paymentSourceId: String?,
+        paymentSourceReusable: Boolean
     ): Observable<Pair<String, Boolean>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<String, Boolean>>()
@@ -1575,6 +1577,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     .checkoutId(Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())))
                     .paymentIntentClientSecret(paymentIntentClientSecret)
                     .paymentSourceId(paymentSourceId)
+                    .paymentSourceReusable(paymentSourceReusable)
                     .build()
             ).enqueue(object : ApolloCall.Callback<CompleteOnSessionCheckoutMutation.Data>() {
                 override fun onFailure(e: ApolloException) {

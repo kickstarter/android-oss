@@ -24,13 +24,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
 data class LatePledgeCheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),
-    val userEmail: String = ""
+    val userEmail: String = "",
+    val isLoading: Boolean = false
 )
 
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
@@ -54,7 +57,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = LatePledgeCheckoutUIState()
+                initialValue = LatePledgeCheckoutUIState(isLoading = true)
             )
 
     private var mutableClientSecretForNewPaymentMethod = MutableSharedFlow<String>()
@@ -69,24 +72,32 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         viewModelScope.launch {
             environment.currentUserV2()?.observable()?.asFlow()?.distinctUntilChanged()?.map {
                 if (it.isPresent()) {
-                    apolloClient.userPrivacy().asFlow().map { userPrivacy ->
-                        userEmail = userPrivacy.email
-                        emitCurrentState()
-                    }.catch {
-                        errorAction.invoke(null)
-                    }.collect()
+                    apolloClient.userPrivacy().asFlow()
+                        .onStart {
+                            emitCurrentState(isLoading = true)
+                        }.map { userPrivacy ->
+                            userEmail = userPrivacy.email
+                        }.onCompletion {
+                            emitCurrentState()
+                        }.catch {
+                            errorAction.invoke(null)
+                        }.collect()
 
-                    apolloClient.getStoredCards().asFlow().map { cards ->
-                        storedCards = cards
-                        newStoredCard?.let { newCard ->
-                            val mutableStoredCardList = storedCards.toMutableList()
-                            mutableStoredCardList.add(0, newCard)
-                            storedCards = mutableStoredCardList.toList()
-                        }
-                        emitCurrentState()
-                    }.catch {
-                        errorAction.invoke(null)
-                    }.collect()
+                    apolloClient.getStoredCards().asFlow()
+                        .onStart {
+                            emitCurrentState(isLoading = true)
+                        }.map { cards ->
+                            storedCards = cards
+                            newStoredCard?.let { newCard ->
+                                val mutableStoredCardList = storedCards.toMutableList()
+                                mutableStoredCardList.add(0, newCard)
+                                storedCards = mutableStoredCardList.toList()
+                            }
+                        }.onCompletion {
+                            emitCurrentState()
+                        }.catch {
+                            errorAction.invoke(null)
+                        }.collect()
                 }
             }?.catch {
                 errorAction.invoke(null)
@@ -105,9 +116,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     project = project,
                     amount = totalAmount.toString()
                 )
-            ).asFlow().map { clientSecret ->
+            ).asFlow().onStart {
+                emitCurrentState(isLoading = true)
+            }.map { clientSecret ->
                 clientSecretForNewCard = clientSecret
                 mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
+            }.onCompletion {
+                emitCurrentState()
             }.catch {
                 errorAction.invoke(null)
             }.collect()
@@ -135,7 +150,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
                     override fun onSuccess(result: PaymentIntent) {
                         result.paymentMethodId?.let { cardId ->
-                            val cardWithId = selectedCard?.toBuilder()?.stripeCardId(cardId)?.build()
+                            val cardWithId =
+                                selectedCard?.toBuilder()?.stripeCardId(cardId)?.build()
                             newStoredCard = cardWithId
                             createPaymentIntentForCheckout(cardWithId, project, totalAmount)
                         } ?: run {
@@ -164,17 +180,22 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     project = project,
                     amount = totalAmount.toString()
                 )
-            ).asFlow().map { clientSecret ->
+            ).asFlow().onStart {
+                emitCurrentState(isLoading = true)
+            }.map { clientSecret ->
                 selectedCard?.let {
                     checkoutId?.let {
                         validateCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
                     } ?: run {
+                        emitCurrentState()
                         errorAction.invoke(null)
                     }
                 } ?: run {
+                    emitCurrentState()
                     errorAction.invoke(null)
                 }
             }.catch {
+                emitCurrentState()
                 errorAction.invoke(null)
             }.collect()
         }
@@ -192,12 +213,15 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             } else {
                 // User validation.messages for displaying an error
                 if (validation.messages.isNotEmpty()) {
+                    emitCurrentState()
                     errorAction.invoke(validation.messages.first())
                 } else {
+                    emitCurrentState()
                     errorAction.invoke(null)
                 }
             }
         }.catch {
+            emitCurrentState()
             errorAction.invoke(null)
         }.collect()
     }
@@ -212,6 +236,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         val paymentIntent = stripe.confirmPaymentIntent(withSDK)
         if (paymentIntent.lastPaymentError.isNotNull()) {
             // Display error with lastPaymentError.message
+            emitCurrentState()
             errorAction.invoke(paymentIntent.lastPaymentError?.message)
         } else {
             // Success, move on
@@ -230,16 +255,19 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             } else {
                 // Go to Thanks Page, full complete flow
             }
+        }.onCompletion {
+            emitCurrentState()
         }.catch {
             errorAction.invoke(null)
         }.collect()
     }
 
-    private suspend fun emitCurrentState() {
+    private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableLatePledgeCheckoutUIState.emit(
             LatePledgeCheckoutUIState(
                 storeCards = storedCards,
                 userEmail = userEmail,
+                isLoading = isLoading
             )
         )
     }

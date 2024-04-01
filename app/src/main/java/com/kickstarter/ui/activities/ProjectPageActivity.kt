@@ -573,6 +573,22 @@ class ProjectPageActivity :
                         showToastError(message)
                     }
 
+                    LaunchedEffect(Unit) {
+                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
+                            flowControllerPresentPaymentOption(it)
+                        }
+                    }
+
+                    LaunchedEffect(Unit) {
+                        latePledgeCheckoutViewModel.paymentRequiresAction.collect {
+                            stripeNextAction(it)
+                        }
+                    }
+
+                    latePledgeCheckoutViewModel.provideErrorAction { message ->
+                        showToastError(message)
+                    }
+
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
                     this@ProjectPageActivity.onBackPressedDispatcher.addCallback {

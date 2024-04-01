@@ -56,6 +56,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.parseToDouble
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -103,6 +104,7 @@ import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import type.CreditCardPaymentType
 import timber.log.Timber
@@ -700,17 +702,21 @@ class ProjectPageActivity :
                         }
                     )
 
-                    LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.onPledgeSuccess.collect {
-                            val checkoutData = CheckoutData.builder()
+                    val successfulPledge = latePledgeCheckoutViewModel.onPledgeSuccess.collectAsStateWithLifecycle(initialValue = false).value
+
+                    LaunchedEffect(successfulPledge) {
+                        if (successfulPledge) {
+                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
+                                val checkoutData = CheckoutData.builder()
                                     .amount(totalAmount)
                                     .id(checkoutPayment.id)
                                     .paymentType(CreditCardPaymentType.CREDIT_CARD)
                                     .bonusAmount(totalBonusSupportAmount)
                                     .shippingAmount(shippingAmount)
                                     .build()
-                            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
-                            showCreatePledgeSuccess(Pair(checkoutData, pledgeData), userEmail)
+                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
+                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData), userEmail)
+                            }
                         }
                     }
                 }

@@ -261,6 +261,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                     }
                     .catch {
                         errorAction.invoke(null)
+                        emitCurrentState()
                     }
                     .collect()
             }

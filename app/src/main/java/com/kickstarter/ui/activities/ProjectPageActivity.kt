@@ -117,7 +117,7 @@ class ProjectPageActivity :
     private lateinit var checkoutViewModelFactory: CheckoutFlowViewModel.Factory
     private val checkoutFlowViewModel: CheckoutFlowViewModel by viewModels { checkoutViewModelFactory }
 
-    private val rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory()
+    private lateinit var rewardsSelectionViewModelFactory: RewardsSelectionViewModel.Factory
     private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
 
     private lateinit var confirmDetailsViewModelFactory: ConfirmDetailsViewModel.Factory
@@ -167,6 +167,7 @@ class ProjectPageActivity :
         val environment = this.getEnvironment()?.let { env ->
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
+            rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory(env)
             confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
@@ -498,11 +499,11 @@ class ProjectPageActivity :
                     val currentPage = flowUIState.currentPage
 
                     val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
-
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
+                    rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                     LaunchedEffect(Unit) {
                         rewardsSelectionViewModel.flowUIRequest.collect {

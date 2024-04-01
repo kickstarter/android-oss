@@ -1,10 +1,14 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
@@ -14,6 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -32,6 +37,7 @@ import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.KSRewardCard
+import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.joda.time.DateTime
 import java.math.RoundingMode
@@ -89,6 +95,7 @@ fun RewardCarouselScreen(
     environment: Environment,
     rewards: List<Reward>,
     project: Project,
+    isLoading: Boolean = false,
     onRewardSelected: (reward: Reward) -> Unit
 ) {
     val context = LocalContext.current
@@ -264,6 +271,18 @@ fun RewardCarouselScreen(
                         addonsPillVisible = reward.hasAddons()
                     )
                 }
+            }
+        }
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                    .clickable(enabled = false) { },
+                contentAlignment = Alignment.Center
+            ) {
+                KSCircularProgressIndicator()
             }
         }
     }

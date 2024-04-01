@@ -4,6 +4,7 @@ import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
@@ -31,8 +32,9 @@ data class RewardSelectionUIState(
     val showAlertDialog: Boolean = false
 )
 
-class RewardsSelectionViewModel : ViewModel() {
+class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
 
+    private val analytics = requireNotNull(environment.analytics())
     private lateinit var currentProjectData: ProjectData
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
@@ -73,6 +75,8 @@ class RewardsSelectionViewModel : ViewModel() {
         viewModelScope.launch {
             val pledgeDataAndReason = pledgeDataAndPledgeReason(currentProjectData, reward)
             newUserReward = pledgeDataAndReason.first.reward()
+
+            analytics.trackSelectRewardCTA(pledgeDataAndReason.first)
 
             when (pledgeDataAndReason.second) {
                 PledgeReason.UPDATE_REWARD -> {
@@ -186,10 +190,16 @@ class RewardsSelectionViewModel : ViewModel() {
         return 0
     }
 
-    class Factory :
+    fun sendEvent(expanded: Boolean, currentPage: Int, projectData: ProjectData) {
+        if (expanded && currentPage == 0) {
+            analytics.trackRewardsCarouselViewed(projectData = projectData)
+        }
+    }
+
+    class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RewardsSelectionViewModel() as T
+            return RewardsSelectionViewModel(environment = environment) as T
         }
     }
 }

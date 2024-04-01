@@ -76,7 +76,7 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectAndCheckoutData = requireNotNull(data as Pair<Project, CheckoutData>?)
+        val projectAndCheckoutData = requireNotNull(data as Pair<Pair<Project, CheckoutData>, String>?)
         viewModel.inputs.configureWith(projectAndCheckoutData)
     }
 

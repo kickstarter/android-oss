@@ -10,6 +10,7 @@ import com.kickstarter.ui.data.PledgeData
 class ThanksData(
     val backedProject: Project,
     val checkoutData: CheckoutData,
+    val userEmail : String,
     val category: Category,
     val recommendedProjects: List<Pair<Project, DiscoveryParams>>
 )

@@ -127,6 +127,12 @@ interface ThanksViewModel {
                 .ofType(Project::class.java)
                 .take(1)
 
+            val userEmail = intent()
+                .filter { it.getStringExtra(IntentKey.EMAIL).isNotNull() }
+                .map<String?> { it.getStringExtra(IntentKey.EMAIL) }
+                .ofType(String::class.java)
+                .take(1)
+
             val rootCategory = project
                 .switchMap {
                     rootCategory(it, apolloClient)
@@ -271,19 +277,20 @@ interface ThanksViewModel {
                     project,
                     rootCategory,
                     recommendedProjects.startWith(listOf()),
-                    checkoutData
-            ) { backedProject, category, projects, checkoutData->
-                ThanksData(backedProject, checkoutData, category, projects)
+                    checkoutData,
+                    userEmail
+            ) { backedProject, category, projects, checkoutData, email ->
+                ThanksData(backedProject, checkoutData, email, category, projects)
             }.subscribe { adapterData.onNext(it) }
                     .addToDisposable(disposables)
 
             adapterData
                     .compose(Transformers.takePairWhenV2(projectOnUserChangeSave))
-                    .map {
-                        Pair(it.first, it.second.updateStartedProjectAndDiscoveryParamsList(it.first.recommendedProjects))
+                    .withLatestFrom(userEmail) { adapterAndProjectData , email ->
+                        Triple(adapterAndProjectData.first, adapterAndProjectData.second.updateStartedProjectAndDiscoveryParamsList(adapterAndProjectData.first.recommendedProjects), email)
                     }
                     .map {
-                        ThanksData(it.first.backedProject, it.first.checkoutData, it.first.category, it.second)
+                        ThanksData(it.first.backedProject, it.first.checkoutData, it.third, it.first.category, it.second)
                     }.distinctUntilChanged()
                     .subscribe {
                         adapterData.onNext(it)

@@ -60,6 +60,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var selectedReward: Reward? = null
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
+
+    private var mutableOnPledgeSuccessAction = MutableSharedFlow<Unit>()
+    val onPledgeSuccess: SharedFlow<Unit>
+        get() = mutableOnPledgeSuccessAction.asSharedFlow()
+
     val latePledgeCheckoutUIState: StateFlow<LatePledgeCheckoutUIState>
         get() = mutableLatePledgeCheckoutUIState
             .asStateFlow()
@@ -263,7 +268,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             if (iDRequiresActionPair.second) {
                 mutablePaymentRequiresAction.emit(clientSecret)
             } else {
-                // Go to Thanks Page, full complete flow
+                mutableOnPledgeSuccessAction.emit(Unit)
             }
         }.onCompletion {
             emitCurrentState()

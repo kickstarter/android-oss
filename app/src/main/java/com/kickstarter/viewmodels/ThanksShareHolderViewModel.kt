@@ -1,15 +1,14 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag.Companion.thanksFacebookShare
 import com.kickstarter.libs.RefTag.Companion.thanksShare
 import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.CheckoutData
 import io.reactivex.Observable
@@ -20,7 +19,7 @@ import io.reactivex.subjects.PublishSubject
 interface ThanksShareHolderViewModel {
     interface Inputs {
         /** Call to configure the view model with a project.  */
-        fun configureWith(projectAndCheckoutData: Pair<Project, CheckoutData>)
+        fun configureWith(projectAndCheckoutData: Pair<Pair<Project, CheckoutData>, String>)
 
         /** Call when the share button is clicked.  */
         fun shareClick()
@@ -52,7 +51,7 @@ interface ThanksShareHolderViewModel {
 
     class ThanksShareViewHolderViewModel(environment: Environment) : Inputs, Outputs {
 
-        private val projectAndCheckoutData = PublishSubject.create<Pair<Project, CheckoutData>>()
+        private val thanksShareData = PublishSubject.create<Pair<Pair<Project, CheckoutData>, String>>()
         private val project = PublishSubject.create<Project>()
         private val shareClick = PublishSubject.create<Unit>()
         private val shareOnFacebookClick = PublishSubject.create<Unit>()
@@ -63,17 +62,15 @@ interface ThanksShareHolderViewModel {
         private val startShareOnTwitter = PublishSubject.create<Pair<String, String>>()
         private val postCampaignText = PublishSubject.create<Triple<Project, Double, String>>()
 
-        private val currentUser = requireNotNull(environment.currentUserV2())
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         private var disposables = CompositeDisposable()
 
         init {
-            projectAndCheckoutData
+            thanksShareData
                     .map { it.first }
-                    .subscribe { project.onNext(it)}
+                    .subscribe { project.onNext(it.first)}
                     .addToDisposable(disposables)
 //
 //            project
@@ -81,11 +78,10 @@ interface ThanksShareHolderViewModel {
 //                .subscribe { projectName.onNext(it) }
 //                .addToDisposable(disposables)
 
-            projectAndCheckoutData
-//                    .filter { it.isInPostCampaignPledgingPhase().isTrue() }
-//                    .filter { it.postCampaignPledgingEnabled().isTrue() }
-                    .withLatestFrom(currentUser.observable()) { projectAndCheckoutData, user -> Triple(projectAndCheckoutData.first, projectAndCheckoutData.second, user) }
-                    .subscribe { postCampaignText.onNext(Triple(it.first, it.second.amount(),  it.third.getValue()?.email() ?: "")) }
+            thanksShareData
+                    .filter { it.first.first.isInPostCampaignPledgingPhase().isTrue() }
+                    .filter { it.first.first.postCampaignPledgingEnabled().isTrue() }
+                    .subscribe { postCampaignText.onNext(Triple(it.first.first, it.first.second.amount(),  it.second)) }
                     .addToDisposable(disposables)
             project
                 .map {
@@ -121,8 +117,8 @@ interface ThanksShareHolderViewModel {
                 .addToDisposable(disposables)
         }
 
-        override fun configureWith(projectAndCheckoutData: Pair<Project, CheckoutData>) {
-            this.projectAndCheckoutData.onNext(projectAndCheckoutData)
+        override fun configureWith(projectAndCheckoutData: Pair<Pair<Project, CheckoutData>, String>) {
+            this.thanksShareData.onNext(projectAndCheckoutData)
         }
 
         override fun shareClick() {

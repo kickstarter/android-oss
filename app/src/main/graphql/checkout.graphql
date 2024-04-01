@@ -64,8 +64,8 @@ query ValidateCheckout($checkoutId:ID!, $paymentSourceId:String!, $paymentIntent
   }
 }
 
-mutation CompleteOnSessionCheckout($checkoutId: ID!, $paymentIntentClientSecret: String!, $paymentSourceId: String) {
-  completeOnSessionCheckout(input:{ checkoutId: $checkoutId, paymentIntentClientSecret: $paymentIntentClientSecret, paymentSourceId: $paymentSourceId } ) {
+mutation CompleteOnSessionCheckout($checkoutId: ID!, $paymentIntentClientSecret: String!, $paymentSourceId: String, $paymentSourceReusable: Boolean) {
+  completeOnSessionCheckout(input:{ checkoutId: $checkoutId, paymentIntentClientSecret: $paymentIntentClientSecret, paymentSourceId: $paymentSourceId, paymentSourceReusable: $paymentSourceReusable } ) {
     checkout {
       id
       backing {

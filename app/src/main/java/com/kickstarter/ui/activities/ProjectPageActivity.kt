@@ -613,8 +613,18 @@ class ProjectPageActivity :
 
                     var selectedReward: Reward? = null
 
-                    if (currentPage == 3) {
-                        latePledgeCheckoutViewModel.sendPageViewedEvent(projectData, addOns, currentUserShippingRule, selectedReward, shippingAmount, totalAmount, totalBonusSupportAmount)
+                    LaunchedEffect(Unit) {
+                        if (currentPage == 3) {
+                            latePledgeCheckoutViewModel.sendPageViewedEvent(
+                                projectData,
+                                addOns,
+                                currentUserShippingRule,
+                                selectedReward,
+                                shippingAmount,
+                                totalAmount,
+                                totalBonusSupportAmount
+                            )
+                        }
                     }
 
                     ProjectPledgeButtonAndFragmentContainer(
@@ -681,8 +691,10 @@ class ProjectPageActivity :
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
                         selectedAddOnsMap = selectedAddOnsMap,
                         onPledgeCtaClicked = { selectedCard ->
-                            latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, selectedReward, shippingAmount, totalAmount, totalBonusSupportAmount)
-                            //latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            selectedCard?.apply {
+                                latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, selectedReward, shippingAmount, totalAmount, totalBonusSupportAmount)
+                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            }
                         },
                         onAddPaymentMethodClicked = {
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)

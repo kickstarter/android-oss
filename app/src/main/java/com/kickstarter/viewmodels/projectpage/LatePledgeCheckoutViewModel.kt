@@ -299,18 +299,23 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         )
     }
 
-    fun sendPageViewedEvent(projectData: ProjectData,
-                            addOns: List<Reward>,
-                            currentUserShippingRule: ShippingRule,
-                            selectedReward: Reward?,
-                            shippingAmount: Double,
-                            totalAmount: Double,
-                            totalBonusSupportAmount: Double
+    fun sendPageViewedEvent(
+        projectData: ProjectData,
+        addOns: List<Reward>,
+        currentUserShippingRule: ShippingRule,
+        selectedReward: Reward?,
+        shippingAmount: Double,
+        totalAmount: Double,
+        totalBonusSupportAmount: Double
     ) {
         selectedReward?.let {
             val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
-            val checkOutData = createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
-            this.analytics.trackCheckoutScreenViewed(checkoutData = checkOutData, pledgeData = pledgeData)
+            val checkOutData =
+                createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
+            this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(
+                checkoutData = checkOutData,
+                pledgeData = pledgeData
+            )
         }
     }
     fun sendSubmitCTAEvent(
@@ -322,13 +327,14 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         totalAmount: Double,
         totalBonusSupportAmount: Double
     ) {
-        viewModelScope.launch {
-            selectedReward?.let {
-                val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
-                val checkOutData = createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
-                this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(checkoutData = checkOutData, pledgeData = pledgeData)
-                this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(checkoutData = checkOutData, pledgeData = pledgeData)
-            }
+        selectedReward?.let {
+            val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
+            val checkOutData =
+                createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
+            this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
+                checkoutData = checkOutData,
+                pledgeData = pledgeData
+            )
         }
     }
 

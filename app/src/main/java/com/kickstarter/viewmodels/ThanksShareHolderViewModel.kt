@@ -81,7 +81,9 @@ interface ThanksShareHolderViewModel {
             thanksShareData
                     .filter { it.first.first.isInPostCampaignPledgingPhase().isTrue() }
                     .filter { it.first.first.postCampaignPledgingEnabled().isTrue() }
-                    .subscribe { postCampaignText.onNext(Triple(it.first.first, it.first.second.amount(),  it.second)) }
+                    .subscribe {
+                        postCampaignText.onNext(Triple(it.first.first, it.first.second.amount(),  it.second))
+                    }
                     .addToDisposable(disposables)
             project
                 .map {

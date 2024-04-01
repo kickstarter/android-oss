@@ -1071,7 +1071,7 @@ class ProjectPageActivity :
     private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>, email : String = "") {
         val checkoutData = checkoutDataAndProjectData.first
         val pledgeData = checkoutDataAndProjectData.second
-        val projectData = pledgeData.projectData()
+        val projectData= pledgeData.projectData()
 
 //        if (clearFragmentBackStack() || projectData.project().showLatePledgeFlow()) {
             startActivity(

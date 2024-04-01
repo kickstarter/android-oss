@@ -716,6 +716,10 @@ class ProjectPageActivity :
                                     .build()
                                 val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
                                 showCreatePledgeSuccess(Pair(checkoutData, pledgeData), userEmail)
+                                checkoutFlowViewModel.onProjectSuccess()
+                                refreshProject()
+                                binding.pledgeContainerCompose.isGone = true
+                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
                             }
                         }
                     }

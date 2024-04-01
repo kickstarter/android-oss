@@ -612,6 +612,10 @@ class ProjectPageActivity :
 
                     var selectedReward: Reward? = null
 
+                    if (currentPage == 3) {
+                        latePledgeCheckoutViewModel.sendPageViewedEvent(projectData, addOns, currentUserShippingRule, selectedReward, shippingAmount, totalAmount, totalBonusSupportAmount)
+                    }
+
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
                         onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
@@ -676,7 +680,8 @@ class ProjectPageActivity :
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
                         selectedAddOnsMap = selectedAddOnsMap,
                         onPledgeCtaClicked = { selectedCard ->
-                            latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, selectedReward, shippingAmount, totalAmount, totalBonusSupportAmount)
+                            //latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
                         },
                         onAddPaymentMethodClicked = {
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)

@@ -41,6 +41,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIG
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_CONFIRM
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
@@ -406,6 +407,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackPledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_SUBMIT.contextName)
+        props[CONTEXT_TYPE.contextName] = CREDIT_CARD.contextName
+        props[CONTEXT_PAGE.contextName] = CHECKOUT.contextName
+        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data associated with the submit CTA click event to the client.
+     *
+     * @param checkoutData: The checkout data.
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackLatePledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LATE_PLEDGE.contextName)
         props[CONTEXT_TYPE.contextName] = CREDIT_CARD.contextName
         props[CONTEXT_PAGE.contextName] = CHECKOUT.contextName
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))

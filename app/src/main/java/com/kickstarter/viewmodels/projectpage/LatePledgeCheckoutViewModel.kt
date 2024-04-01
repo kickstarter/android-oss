@@ -5,9 +5,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.Checkout
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
@@ -29,6 +35,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
+import type.CreditCardPaymentType
 
 data class LatePledgeCheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),
@@ -39,6 +46,7 @@ data class LatePledgeCheckoutUIState(
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val analytics = requireNotNull(environment.analytics())
 
     private var storedCards: List<StoredCard> = listOf()
     private var userEmail: String = ""
@@ -262,6 +270,25 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }.collect()
     }
 
+    private fun createCheckoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout? = null): CheckoutData {
+        return CheckoutData.builder()
+            .amount(total)
+            .id(checkout?.id())
+            .paymentType(CreditCardPaymentType.CREDIT_CARD)
+            .bonusAmount(bonusAmount)
+            .shippingAmount(shippingAmount)
+            .build()
+    }
+
+    private fun createPledgeData(projectData: ProjectData, addOns: List<Reward>, shippingRule: ShippingRule, reward: Reward): PledgeData {
+        return PledgeData.builder()
+            .projectData(projectData)
+            .addOns(addOns)
+            .shippingRule(shippingRule)
+            .reward(reward)
+            .build()
+    }
+
     private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableLatePledgeCheckoutUIState.emit(
             LatePledgeCheckoutUIState(
@@ -270,6 +297,39 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 isLoading = isLoading
             )
         )
+    }
+
+    fun sendPageViewedEvent(projectData: ProjectData,
+                            addOns: List<Reward>,
+                            currentUserShippingRule: ShippingRule,
+                            selectedReward: Reward?,
+                            shippingAmount: Double,
+                            totalAmount: Double,
+                            totalBonusSupportAmount: Double
+    ) {
+        selectedReward?.let {
+            val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
+            val checkOutData = createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
+            this.analytics.trackCheckoutScreenViewed(checkoutData = checkOutData, pledgeData = pledgeData)
+        }
+    }
+    fun sendSubmitCTAEvent(
+        projectData: ProjectData,
+        addOns: List<Reward>,
+        currentUserShippingRule: ShippingRule,
+        selectedReward: Reward?,
+        shippingAmount: Double,
+        totalAmount: Double,
+        totalBonusSupportAmount: Double
+    ) {
+        viewModelScope.launch {
+            selectedReward?.let {
+                val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
+                val checkOutData = createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
+                this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(checkoutData = checkOutData, pledgeData = pledgeData)
+                this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(checkoutData = checkOutData, pledgeData = pledgeData)
+            }
+        }
     }
 
     class Factory(private val environment: Environment) :

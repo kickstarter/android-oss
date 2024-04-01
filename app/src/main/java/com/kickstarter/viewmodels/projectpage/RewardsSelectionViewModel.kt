@@ -39,6 +39,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
     private lateinit var newUserReward: Reward
+    private var indexOfBackedReward = 0
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -59,15 +60,9 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
         currentProjectData = projectData
         previousUserBacking = projectData.backing()
         previouslyBackedReward = getReward(previousUserBacking)
-        val indexOfBackedReward = indexOfBackedReward(project = projectData.project())
+        indexOfBackedReward = indexOfBackedReward(project = projectData.project())
         viewModelScope.launch {
-            mutableRewardSelectionUIState.emit(
-                RewardSelectionUIState(
-                    rewardList = projectData.project().rewards() ?: listOf(),
-                    initialRewardIndex = indexOfBackedReward,
-                    project = projectData
-                )
-            )
+            emitCurrentState()
         }
     }
 
@@ -82,13 +77,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
                 PledgeReason.UPDATE_REWARD -> {
                     if (previouslyBackedReward?.hasAddons() == true && !newUserReward.hasAddons())
                     // Show warning to user
-                        mutableRewardSelectionUIState.emit(
-                            RewardSelectionUIState(
-                                rewardList = currentProjectData.project().rewards() ?: listOf(),
-                                project = currentProjectData,
-                                showAlertDialog = true
-                            )
-                        )
+                        emitCurrentState(showAlertDialog = true)
 
                     if (previouslyBackedReward?.hasAddons() == false && !newUserReward.hasAddons())
                     // Go to confirm page
@@ -97,13 +86,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
                     if (previouslyBackedReward?.hasAddons() == true && newUserReward.hasAddons()) {
                         if (differentShippingTypes(previouslyBackedReward, newUserReward))
                         // Show warning to user
-                            mutableRewardSelectionUIState.emit(
-                                RewardSelectionUIState(
-                                    rewardList = currentProjectData.project().rewards() ?: listOf(),
-                                    project = currentProjectData,
-                                    showAlertDialog = true
-                                )
-                            )
+                            emitCurrentState(showAlertDialog = true)
                         // Go to add-ons
                         else mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
                     }
@@ -131,13 +114,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
 
     fun onRewardCarouselAlertClicked(wasPositive: Boolean) {
         viewModelScope.launch {
-            mutableRewardSelectionUIState.emit(
-                RewardSelectionUIState(
-                    rewardList = currentProjectData.project().rewards() ?: listOf(),
-                    project = currentProjectData,
-                    showAlertDialog = false
-                )
-            )
+            emitCurrentState()
             if (wasPositive) {
                 if (newUserReward.hasAddons()) {
                     // Go to add-ons
@@ -194,6 +171,18 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
         if (expanded && currentPage == 0) {
             analytics.trackRewardsCarouselViewed(projectData = projectData)
         }
+    }
+    private suspend fun emitCurrentState(
+        showAlertDialog: Boolean = false
+    ) {
+        mutableRewardSelectionUIState.emit(
+            RewardSelectionUIState(
+                rewardList = currentProjectData.project().rewards() ?: listOf(),
+                initialRewardIndex = indexOfBackedReward,
+                project = currentProjectData,
+                showAlertDialog = showAlertDialog,
+            )
+        )
     }
 
     class Factory(private val environment: Environment) :

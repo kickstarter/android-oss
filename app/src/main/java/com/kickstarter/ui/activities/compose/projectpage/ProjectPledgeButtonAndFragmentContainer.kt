@@ -80,6 +80,7 @@ private fun ProjectPledgeButtonAndContainerPreview() {
                     expanded = !expanded
                 }
             },
+            isLoading = false,
             pagerState = pagerState,
             onAddOnsContinueClicked = {
                 coroutineScope.launch {
@@ -122,6 +123,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onContinueClicked: () -> Unit,
     onBackClicked: () -> Unit,
     pagerState: PagerState,
+    isLoading: Boolean,
     onAddOnsContinueClicked: () -> Unit,
     shippingSelectorIsGone: Boolean,
     shippingRules: List<ShippingRule> = listOf(),
@@ -257,7 +259,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         environment = environment ?: Environment.builder().build(),
                                         rewards = rewardsList,
                                         project = project,
-                                        onRewardSelected = onRewardSelected
+                                        onRewardSelected = onRewardSelected,
+                                        isLoading = isLoading
                                     )
                                 }
 
@@ -274,7 +277,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         project = project,
                                         onItemAddedOrRemoved = onAddOnAddedOrRemoved,
                                         selectedAddOnsMap = selectedAddOnsMap,
-                                        onContinueClicked = onAddOnsContinueClicked
+                                        onContinueClicked = onAddOnsContinueClicked,
+                                        isLoading = isLoading,
                                     )
                                 }
 
@@ -298,9 +302,12 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                             selectedRewardAndAddOnList, environment, project
                                         ),
                                         rewardsContainAddOns = selectedRewardAndAddOnList.any { it.isAddOn() },
-                                        rewardsHaveShippables = selectedRewardAndAddOnList.any { RewardUtils.isShippable(it) },
+                                        rewardsHaveShippables = selectedRewardAndAddOnList.any {
+                                            RewardUtils.isShippable(it)
+                                        },
                                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
-                                        onBonusSupportMinusClicked = onBonusSupportMinusClicked
+                                        onBonusSupportMinusClicked = onBonusSupportMinusClicked,
+                                        isLoading = isLoading,
                                     )
                                 }
 
@@ -312,15 +319,22 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         project = project,
                                         email = userEmail,
                                         selectedReward = selectedReward,
-                                        rewardsList = getRewardListAndPrices(selectedRewardAndAddOnList, environment, project),
+                                        rewardsList = getRewardListAndPrices(
+                                            selectedRewardAndAddOnList,
+                                            environment,
+                                            project
+                                        ),
                                         pledgeReason = PledgeReason.PLEDGE,
                                         shippingAmount = shippingAmount,
                                         totalAmount = totalAmount,
                                         totalBonusSupport = totalBonusSupportAmount,
                                         currentShippingRule = currentShippingRule,
-                                        rewardsHaveShippables = selectedRewardAndAddOnList.any { RewardUtils.isShippable(it) },
+                                        rewardsHaveShippables = selectedRewardAndAddOnList.any {
+                                            RewardUtils.isShippable(it)
+                                        },
                                         onPledgeCtaClicked = onPledgeCtaClicked,
-                                        newPaymentMethodClicked = onAddPaymentMethodClicked
+                                        newPaymentMethodClicked = onAddPaymentMethodClicked,
+                                        isLoading = isLoading,
                                     )
                                 }
                             }

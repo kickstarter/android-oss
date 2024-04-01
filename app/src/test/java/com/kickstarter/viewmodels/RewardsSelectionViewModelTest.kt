@@ -297,7 +297,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             uiState.last(),
             RewardSelectionUIState(
                 rewardList = testRewards,
-                initialRewardIndex = 0,
+                initialRewardIndex = 3,
                 project = testProjectData,
                 showAlertDialog = true
             )
@@ -405,7 +405,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 uiState.last(),
                 RewardSelectionUIState(
                     rewardList = testRewards,
-                    initialRewardIndex = 0,
+                    initialRewardIndex = 3,
                     project = testProjectData,
                     showAlertDialog = true
                 )
@@ -462,7 +462,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             uiState.last(),
             RewardSelectionUIState(
                 rewardList = testRewards,
-                initialRewardIndex = 0,
+                initialRewardIndex = 3,
                 project = testProjectData,
                 showAlertDialog = true
             )
@@ -528,7 +528,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             uiState.last(),
             RewardSelectionUIState(
                 rewardList = testRewards,
-                initialRewardIndex = 0,
+                initialRewardIndex = 3,
                 project = testProjectData,
                 showAlertDialog = true
             )
@@ -594,7 +594,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             uiState.last(),
             RewardSelectionUIState(
                 rewardList = testRewards,
-                initialRewardIndex = 0,
+                initialRewardIndex = 3,
                 project = testProjectData,
                 showAlertDialog = true
             )
@@ -608,7 +608,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             uiState.last(),
             RewardSelectionUIState(
                 rewardList = testRewards,
-                initialRewardIndex = 0,
+                initialRewardIndex = 3,
                 project = testProjectData,
                 showAlertDialog = false
             )

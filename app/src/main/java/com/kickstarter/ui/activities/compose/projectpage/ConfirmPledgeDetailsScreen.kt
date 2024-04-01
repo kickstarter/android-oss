@@ -32,6 +32,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSStepper
@@ -235,6 +236,7 @@ fun ConfirmPledgeDetailsScreen(
     totalBonusSupport: Double,
     maxPledgeAmount: Double,
     minPledgeStep: Double,
+    isLoading: Boolean = false,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit
 ) {
@@ -303,193 +305,209 @@ fun ConfirmPledgeDetailsScreen(
         maxPledgeAmount.toString()
     ) ?: ""
 
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            Column {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(
-                        topStart = dimensions.radiusLarge,
-                        topEnd = dimensions.radiusLarge
-                    ),
-                    color = colors.backgroundSurfacePrimary,
-                    elevation = dimensions.elevationLarge,
-                ) {
-                    Box(
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Scaffold(
+            modifier = modifier,
+            bottomBar = {
+                Column {
+                    Surface(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensions.paddingMediumLarge)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(
+                            topStart = dimensions.radiusLarge,
+                            topEnd = dimensions.radiusLarge
+                        ),
+                        color = colors.backgroundSurfacePrimary,
+                        elevation = dimensions.elevationLarge,
                     ) {
-                        Column {
-                            if (rewardsList.isNotEmpty()) {
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        text = stringResource(id = R.string.Total_amount),
-                                        style = typography.subheadlineMedium,
-                                        color = colors.textPrimary
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(dimensions.paddingMediumLarge)
+                        ) {
+                            Column {
+                                if (rewardsList.isNotEmpty()) {
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(id = R.string.Total_amount),
+                                            style = typography.subheadlineMedium,
+                                            color = colors.textPrimary
+                                        )
+
+                                        Spacer(modifier = Modifier.weight(1f))
+
+                                        Text(
+                                            text = totalAmountString,
+                                            style = typography.subheadlineMedium,
+                                            color = colors.textPrimary
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                                }
+                                KSPrimaryGreenButton(
+                                    onClickAction = onContinueClicked,
+                                    text = stringResource(id = R.string.Continue),
+                                    isEnabled = true
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            backgroundColor = colors.backgroundAccentGraySubtle
+        ) { padding ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize()
+            ) {
+
+                item {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = dimensions.paddingMedium,
+                            top = dimensions.paddingMedium
+                        ),
+                        text = stringResource(id = R.string.Confirm_your_pledge_details),
+                        style = typography.title3Bold,
+                        color = colors.textPrimary
+                    )
+                }
+
+                if (rewardsList.isNotEmpty() && shippingLocation.isNotEmpty() && rewardsHaveShippables) {
+                    item {
+                        Column(
+                            modifier = Modifier.padding(
+                                start = dimensions.paddingMedium,
+                                end = dimensions.paddingMedium,
+                                top = dimensions.paddingMedium
+                            )
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.Your_shipping_location),
+                                style = typography.subheadlineMedium,
+                                color = colors.textPrimary
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (countryList.isNotEmpty() && !rewardsContainAddOns && rewardsHaveShippables) {
+                                    CountryInputWithDropdown(
+                                        interactionSource = interactionSource,
+                                        initialCountryInput = shippingLocation,
+                                        countryList = countryList,
+                                        onShippingRuleSelected = onShippingRuleSelected
                                     )
-
-                                    Spacer(modifier = Modifier.weight(1f))
-
+                                } else {
                                     Text(
-                                        text = totalAmountString,
-                                        style = typography.subheadlineMedium,
+                                        text = shippingLocation,
+                                        style = typography.subheadline,
                                         color = colors.textPrimary
                                     )
                                 }
 
-                                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-                            }
-                            KSPrimaryGreenButton(
-                                onClickAction = onContinueClicked,
-                                text = stringResource(id = R.string.Continue),
-                                isEnabled = true
-                            )
-                        }
-                    }
-                }
-            }
-        },
-        backgroundColor = colors.backgroundAccentGraySubtle
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
+                                Spacer(modifier = Modifier.weight(1f))
 
-            item {
-                Text(
-                    modifier = Modifier.padding(
-                        start = dimensions.paddingMedium,
-                        top = dimensions.paddingMedium
-                    ),
-                    text = stringResource(id = R.string.Confirm_your_pledge_details),
-                    style = typography.title3Bold,
-                    color = colors.textPrimary
-                )
-            }
-
-            if (rewardsList.isNotEmpty() && shippingLocation.isNotEmpty() && rewardsHaveShippables) {
-                item {
-                    Column(
-                        modifier = Modifier.padding(
-                            start = dimensions.paddingMedium,
-                            end = dimensions.paddingMedium,
-                            top = dimensions.paddingMedium
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.Your_shipping_location),
-                            style = typography.subheadlineMedium,
-                            color = colors.textPrimary
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (countryList.isNotEmpty() && !rewardsContainAddOns && rewardsHaveShippables) {
-                                CountryInputWithDropdown(
-                                    interactionSource = interactionSource,
-                                    initialCountryInput = shippingLocation,
-                                    countryList = countryList,
-                                    onShippingRuleSelected = onShippingRuleSelected
-                                )
-                            } else {
                                 Text(
-                                    text = shippingLocation,
-                                    style = typography.subheadline,
-                                    color = colors.textPrimary
+                                    text = "+ $shippingAmountString",
+                                    style = typography.title3,
+                                    color = colors.textSecondary
                                 )
                             }
-
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            Text(
-                                text = "+ $shippingAmountString",
-                                style = typography.title3,
-                                color = colors.textSecondary
-                            )
                         }
                     }
                 }
-            }
 
-            item {
-                BonusSupportContainer(
-                    isForNoRewardPledge = rewardsList.isEmpty(),
-                    initialValue = initialBonusSupportString,
-                    totalBonusAmount = totalBonusSupportString,
-                    canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
-                    onBonusSupportPlusClicked = onBonusSupportPlusClicked,
-                    onBonusSupportMinusClicked = onBonusSupportMinusClicked
-                )
-
-                if (totalAmount >= maxPledgeAmount) {
-                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
-                    Text(
-                        text = maxPledgeString,
-                        style = typography.headline,
-                        color = colors.textAccentRedBold
+                item {
+                    BonusSupportContainer(
+                        isForNoRewardPledge = rewardsList.isEmpty(),
+                        initialValue = initialBonusSupportString,
+                        totalBonusAmount = totalBonusSupportString,
+                        canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
+                        onBonusSupportPlusClicked = onBonusSupportPlusClicked,
+                        onBonusSupportMinusClicked = onBonusSupportMinusClicked
                     )
+
+                    if (totalAmount >= maxPledgeAmount) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
+                        Text(
+                            text = maxPledgeString,
+                            style = typography.headline,
+                            color = colors.textAccentRedBold
+                        )
+                    }
                 }
-            }
 
-            if (rewardsList.isEmpty()) {
-                item {
-                    Column(modifier = Modifier.padding(all = dimensions.paddingMedium)) {
-                        KSDividerLineGrey()
+                if (rewardsList.isEmpty()) {
+                    item {
+                        Column(modifier = Modifier.padding(all = dimensions.paddingMedium)) {
+                            KSDividerLineGrey()
 
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                        Row {
-                            Text(
-                                text = stringResource(id = R.string.Total),
-                                style = typography.headline,
-                                color = colors.textPrimary
-                            )
-
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            Column(horizontalAlignment = Alignment.End) {
+                            Row {
                                 Text(
-                                    text = totalAmountString,
+                                    text = stringResource(id = R.string.Total),
                                     style = typography.headline,
                                     color = colors.textPrimary
                                 )
 
-                                if (aboutTotalString.isNotEmpty()) {
-                                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                                Spacer(modifier = Modifier.weight(1f))
 
+                                Column(horizontalAlignment = Alignment.End) {
                                     Text(
-                                        text = aboutTotalString,
-                                        style = typography.footnote,
+                                        text = totalAmountString,
+                                        style = typography.headline,
                                         color = colors.textPrimary
                                     )
+
+                                    if (aboutTotalString.isNotEmpty()) {
+                                        Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
+                                        Text(
+                                            text = aboutTotalString,
+                                            style = typography.footnote,
+                                            color = colors.textPrimary
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    item {
+                        ItemizedRewardListContainer(
+                            ksString = environment?.ksString(),
+                            rewardsList = rewardsList,
+                            shippingAmount = shippingAmount,
+                            shippingAmountString = shippingAmountString,
+                            initialShippingLocation = shippingLocation,
+                            totalAmount = totalAmountString,
+                            totalAmountCurrencyConverted = totalAmountConvertedString,
+                            initialBonusSupport = initialBonusSupportString,
+                            totalBonusSupport = totalBonusSupportString,
+                            deliveryDateString = deliveryDateString,
+                            rewardsHaveShippables = rewardsHaveShippables
+                        )
+                    }
                 }
-            } else {
-                item {
-                    ItemizedRewardListContainer(
-                        ksString = environment?.ksString(),
-                        rewardsList = rewardsList,
-                        shippingAmount = shippingAmount,
-                        shippingAmountString = shippingAmountString,
-                        initialShippingLocation = shippingLocation,
-                        totalAmount = totalAmountString,
-                        totalAmountCurrencyConverted = totalAmountConvertedString,
-                        initialBonusSupport = initialBonusSupportString,
-                        totalBonusSupport = totalBonusSupportString,
-                        deliveryDateString = deliveryDateString,
-                        rewardsHaveShippables = rewardsHaveShippables
-                    )
-                }
+            }
+        }
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colors.backgroundAccentGraySubtle.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                KSCircularProgressIndicator()
             }
         }
     }

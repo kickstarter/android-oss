@@ -518,9 +518,14 @@ class ProjectPageActivity :
                     val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
                     val addOns = addOnsUIState.addOns
                     val shippingRules = addOnsUIState.shippingRules
+                    val addOnsIsLoading = addOnsUIState.isLoading
 
                     LaunchedEffect(currentUserShippingRule) {
                         confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
+                    }
+
+                    addOnsViewModel.provideErrorAction { message ->
+                        showToastError(message)
                     }
 
                     val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
@@ -532,6 +537,7 @@ class ProjectPageActivity :
                     val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
                     val maxPledgeAmount = confirmUiState.maxPledgeAmount
                     val minStepAmount = confirmUiState.minStepAmount
+                    val confirmDetailsIsLoading = confirmUiState.isLoading
 
                     val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
@@ -542,10 +548,31 @@ class ProjectPageActivity :
                         latePledgeCheckoutViewModel.provideCheckoutId(checkoutPayment.id)
                     }
 
+                    confirmDetailsViewModel.provideErrorAction { message ->
+                        showToastError(message)
+                    }
+
                     val latePledgeCheckoutUIState by latePledgeCheckoutViewModel.latePledgeCheckoutUIState.collectAsStateWithLifecycle()
 
                     val userStoredCards = latePledgeCheckoutUIState.storeCards
                     val userEmail = latePledgeCheckoutUIState.userEmail
+                    val checkoutLoading = latePledgeCheckoutUIState.isLoading
+
+                    LaunchedEffect(Unit) {
+                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
+                            flowControllerPresentPaymentOption(it)
+                        }
+                    }
+
+                    LaunchedEffect(Unit) {
+                        latePledgeCheckoutViewModel.paymentRequiresAction.collect {
+                            stripeNextAction(it)
+                        }
+                    }
+
+                    latePledgeCheckoutViewModel.provideErrorAction { message ->
+                        showToastError(message)
+                    }
 
                     LaunchedEffect(Unit) {
                         latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
@@ -593,6 +620,7 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
+                        isLoading = addOnsIsLoading || confirmDetailsIsLoading || checkoutLoading,
                         onAddOnsContinueClicked = {
                             checkoutFlowViewModel.onAddOnsContinueClicked()
                         },

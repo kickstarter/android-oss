@@ -547,6 +547,7 @@ class ProjectPageActivity :
 
                     val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
+                    val projectData2 by confirmDetailsViewModel.provideProjectData()
                     LaunchedEffect(checkoutPayment.id) {
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()

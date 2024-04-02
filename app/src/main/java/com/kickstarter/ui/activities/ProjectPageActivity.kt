@@ -104,7 +104,6 @@ import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 import type.CreditCardPaymentType
 import timber.log.Timber
@@ -1068,10 +1067,10 @@ class ProjectPageActivity :
         showSnackbar(binding.snackbarAnchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>, email : String = "") {
+    private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>, email: String = "") {
         val checkoutData = checkoutDataAndProjectData.first
         val pledgeData = checkoutDataAndProjectData.second
-        val projectData= pledgeData.projectData()
+        val projectData = pledgeData.projectData()
 
         val fFLatePledge = getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
 

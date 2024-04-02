@@ -33,7 +33,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startShareOnTwitter().subscribe { startShareOnTwitter.onNext(it) }
             .addToDisposable(disposables)
         vm.outputs.postCampaignPledgeText().subscribe { postCampaignText.onNext(it) }
-                .addToDisposable(disposables)
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -42,9 +42,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment()
 
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
         vm.configureWith(Pair(Pair(project, checkoutData), ""))
 
@@ -57,9 +57,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
         val project = setUpProjectWithWebUrls()
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
         vm.configureWith(Pair(Pair(project, checkoutData), ""))
         vm.inputs.shareClick()
@@ -75,9 +75,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
         val project = setUpProjectWithWebUrls()
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
 
         vm.configureWith(Pair(Pair(project, checkoutData), ""))
@@ -95,9 +95,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
         val project = setUpProjectWithWebUrls()
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
         vm.configureWith(Pair(Pair(project, checkoutData), ""))
         vm.inputs.shareOnTwitterClick()
@@ -113,9 +113,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
         val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(true).postCampaignPledgingEnabled(true).build()
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
         vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
 
@@ -129,9 +129,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
         val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(false).postCampaignPledgingEnabled(false).build()
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
         vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
 
@@ -145,9 +145,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
 
         val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(null).postCampaignPledgingEnabled(null).build()
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
         vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
 

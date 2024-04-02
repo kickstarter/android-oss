@@ -27,7 +27,7 @@ import java.util.Locale
 
 data class RewardSelectionUIState(
     val rewardList: List<Reward> = listOf(),
-    val selectedReward : Reward = Reward.builder().build(),
+    val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
     val project: ProjectData = ProjectData.builder().build(),
     val showAlertDialog: Boolean = false

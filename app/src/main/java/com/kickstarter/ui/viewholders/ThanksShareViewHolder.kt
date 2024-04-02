@@ -32,9 +32,9 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
             .addToDisposable(disposables)
 
         viewModel.outputs.postCampaignPledgeText()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showPostCampaignPledgeText(it)}
-                .addToDisposable(disposables)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showPostCampaignPledgeText(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startShare()
             .observeOn(AndroidSchedulers.mainThread())
@@ -88,8 +88,8 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_backed_project_html), "project_name", projectName))
     }
 
-    private fun showPostCampaignPledgeText(pcptext :Triple<Project, Double, String> ) {
-        binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html), "project_name", pcptext.first.name(), "pledge_total", ksCurrency.format(initialValue = pcptext.second,  project = pcptext.first, roundingMode =  RoundingMode.HALF_UP), "user_email", pcptext.third))
+    private fun showPostCampaignPledgeText(pcptext: Triple<Project, Double, String>) {
+        binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html), "project_name", pcptext.first.name(), "pledge_total", ksCurrency.format(initialValue = pcptext.second, project = pcptext.first, roundingMode = RoundingMode.HALF_UP), "user_email", pcptext.third))
     }
 
     private fun startShare(projectNameAndShareUrl: Pair<String, String>) {

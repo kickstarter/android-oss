@@ -274,28 +274,28 @@ interface ThanksViewModel {
                 .addToDisposable(disposables)
 
             Observable.combineLatest(
-                    project,
-                    rootCategory,
-                    recommendedProjects.startWith(listOf()),
-                    checkoutData,
-                    userEmail
+                project,
+                rootCategory,
+                recommendedProjects.startWith(listOf()),
+                checkoutData,
+                userEmail
             ) { backedProject, category, projects, checkoutData, email ->
                 ThanksData(backedProject, checkoutData, email, category, projects)
             }.subscribe { adapterData.onNext(it) }
-                    .addToDisposable(disposables)
+                .addToDisposable(disposables)
 
             adapterData
-                    .compose(Transformers.takePairWhenV2(projectOnUserChangeSave))
-                    .withLatestFrom(userEmail) { adapterAndProjectData , email ->
-                        Triple(adapterAndProjectData.first, adapterAndProjectData.second.updateStartedProjectAndDiscoveryParamsList(adapterAndProjectData.first.recommendedProjects), email)
-                    }
-                    .map {
-                        ThanksData(it.first.backedProject, it.first.checkoutData, it.third, it.first.category, it.second)
-                    }.distinctUntilChanged()
-                    .subscribe {
-                        adapterData.onNext(it)
-                    }
-                    .addToDisposable(disposables)
+                .compose(Transformers.takePairWhenV2(projectOnUserChangeSave))
+                .withLatestFrom(userEmail) { adapterAndProjectData, email ->
+                    Triple(adapterAndProjectData.first, adapterAndProjectData.second.updateStartedProjectAndDiscoveryParamsList(adapterAndProjectData.first.recommendedProjects), email)
+                }
+                .map {
+                    ThanksData(it.first.backedProject, it.first.checkoutData, it.third, it.first.category, it.second)
+                }.distinctUntilChanged()
+                .subscribe {
+                    adapterData.onNext(it)
+                }
+                .addToDisposable(disposables)
 
             SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(

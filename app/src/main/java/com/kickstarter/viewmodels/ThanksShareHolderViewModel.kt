@@ -70,24 +70,24 @@ interface ThanksShareHolderViewModel {
 
         init {
             thanksShareData
-                    .map { it.first }
-                    .subscribe { project.onNext(it.first)}
-                    .addToDisposable(disposables)
+                .map { it.first }
+                .subscribe { project.onNext(it.first) }
+                .addToDisposable(disposables)
 
             thanksShareData
-                    .filter { it.first.first.isInPostCampaignPledgingPhase().isFalse() }
-                    .filter { it.first.first.postCampaignPledgingEnabled().isFalse() }
-                    .map { it.first.first.name() }
+                .filter { it.first.first.isInPostCampaignPledgingPhase().isFalse() }
+                .filter { it.first.first.postCampaignPledgingEnabled().isFalse() }
+                .map { it.first.first.name() }
                 .subscribe { projectName.onNext(it) }
                 .addToDisposable(disposables)
 
             thanksShareData
-                    .filter { it.first.first.isInPostCampaignPledgingPhase().isTrue() }
-                    .filter { it.first.first.postCampaignPledgingEnabled().isTrue() }
-                    .subscribe {
-                        postCampaignText.onNext(Triple(it.first.first, it.first.second.amount(),  it.second))
-                    }
-                    .addToDisposable(disposables)
+                .filter { it.first.first.isInPostCampaignPledgingPhase().isTrue() }
+                .filter { it.first.first.postCampaignPledgingEnabled().isTrue() }
+                .subscribe {
+                    postCampaignText.onNext(Triple(it.first.first, it.first.second.amount(), it.second))
+                }
+                .addToDisposable(disposables)
             project
                 .map {
                     Pair.create(
@@ -143,7 +143,7 @@ interface ThanksShareHolderViewModel {
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
         override fun projectName(): Observable<String> = projectName
 
-        override fun postCampaignPledgeText() : Observable<Triple<Project, Double, String>> = postCampaignText
+        override fun postCampaignPledgeText(): Observable<Triple<Project, Double, String>> = postCampaignText
         override fun onCleared() {
             disposables.clear()
         }

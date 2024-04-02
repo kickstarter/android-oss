@@ -685,11 +685,7 @@ fun ItemizedRewardListContainer(
 
             Row {
                 Text(
-                    text = stringResource(
-                        id =
-                        if (rewardsList.isNotEmpty()) R.string.Bonus_support
-                        else R.string.Pledge_without_a_reward
-                    ),
+                    text = stringResource(id = R.string.Bonus_support),
                     style = typography.subheadlineMedium,
                     color = colors.textSecondary
                 )

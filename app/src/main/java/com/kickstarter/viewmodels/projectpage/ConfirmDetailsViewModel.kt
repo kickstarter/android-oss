@@ -99,7 +99,6 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         if (::projectData.isInitialized) {
             pledgeReason = pledgeDataAndPledgeReason(projectData, reward).second
         }
-        addedBonusSupport = 0.0
 
         updateShippingAmount()
 
@@ -231,7 +230,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun decrementBonusSupport() {
-        if ((addedBonusSupport + initialBonusSupport) - minStepAmount >= initialBonusSupport) {
+        if (addedBonusSupport - minStepAmount >= initialBonusSupport) {
             addedBonusSupport -= minStepAmount
             totalAmount = calculateTotal()
             viewModelScope.launch {

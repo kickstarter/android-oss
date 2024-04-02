@@ -26,7 +26,7 @@ fun ImageView.loadCircleImage(url: String?) {
                 Glide.with(context)
                     .load(it)
                     .placeholder(ColorDrawable(Color.TRANSPARENT))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .circleCrop()
                     .into(this)
             }
@@ -43,7 +43,7 @@ fun ImageView.loadImage(url: String?) {
             Glide.with(context)
                 .load(url)
                 .placeholder(ColorDrawable(Color.TRANSPARENT))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(this)
         } catch (e: Exception) {
             this.setImageResource(R.drawable.image_placeholder)
@@ -61,7 +61,7 @@ fun ImageView.loadImageWithResize(
         try {
             Glide.with(context)
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(RequestOptions().override(targetImageWidth, targetImageHeight))
                 .centerCrop()
                 .placeholder(placeholder)

@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.squareup.picasso.Callback
@@ -33,6 +34,8 @@ fun ImageView.loadCircleImage(url: String?) {
         } catch (e: Exception) {
             // - Empty by default in case or error
             this.setImageResource(R.drawable.image_placeholder)
+            FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadCircleImage", " with url: $it ${e.message ?: ""}")
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }
@@ -47,6 +50,8 @@ fun ImageView.loadImage(url: String?) {
                 .into(this)
         } catch (e: Exception) {
             this.setImageResource(R.drawable.image_placeholder)
+            FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImage", " with url: $it ${e.message ?: ""}")
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }
@@ -68,42 +73,60 @@ fun ImageView.loadImageWithResize(
                 .into(this)
         } catch (e: Exception) {
             this.setImageResource(R.drawable.image_placeholder)
+            FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImageWithResize", " with url: $it ${e.message ?: ""}")
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }
 fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: AppCompatImageView? = null) {
-    val target = this
-    if (context.applicationContext.isKSApplication()) {
-        Picasso
-            .get()
-            .load(url)
-            .into(
-                this,
-                object : Callback {
-                    override fun onSuccess() {
-                        imageViewPlaceholder?.setImageDrawable(target.drawable)
-                    }
+    url?.let {
+        val target = this
+        if (context.applicationContext.isKSApplication()) {
+            try {
+                Picasso
+                    .get()
+                    .load(url)
+                    .into(
+                        this,
+                        object : Callback {
+                            override fun onSuccess() {
+                                imageViewPlaceholder?.setImageDrawable(target.drawable)
+                            }
 
-                    override fun onError(e: Exception?) {
-                        target.setImageDrawable(null)
-                        imageViewPlaceholder?.setImageDrawable(null)
-                    }
-                }
-            )
-    } else {
-        this.setImageResource(R.drawable.image_placeholder)
+                            override fun onError(e: Exception?) {
+                                target.setImageDrawable(null)
+                                imageViewPlaceholder?.setImageDrawable(null)
+                            }
+                        }
+                    )
+            } catch (e: Exception) {
+                this.setImageResource(R.drawable.image_placeholder)
+                FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImageWithResize", " with url: $it ${e.message ?: ""}")
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+        } else {
+            this.setImageResource(R.drawable.image_placeholder)
+        }
     }
 }
 
 fun ImageView.loadGifImage(url: String?, context: Context) {
-    if (context.applicationContext.isKSApplication()) {
-        Glide.with(context)
-            .asGif()
-            .placeholder(ColorDrawable(Color.TRANSPARENT))
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .load(url)
-            .into(this)
-    } else {
-        this.setImageResource(R.drawable.image_placeholder)
+    url?.let {
+        if (context.applicationContext.isKSApplication()) {
+            try {
+                Glide.with(context)
+                    .asGif()
+                    .placeholder(ColorDrawable(Color.TRANSPARENT))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .load(url)
+                    .into(this)
+            } catch (e: Exception) {
+                this.setImageResource(R.drawable.image_placeholder)
+                FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImageWithResize", " with url: $url ${e.message ?: ""}")
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+        } else {
+            this.setImageResource(R.drawable.image_placeholder)
+        }
     }
 }

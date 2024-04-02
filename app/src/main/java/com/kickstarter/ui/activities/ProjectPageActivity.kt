@@ -547,7 +547,6 @@ class ProjectPageActivity :
 
                     val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
-                    val projectData2 by confirmDetailsViewModel.provideProjectData()
                     LaunchedEffect(checkoutPayment.id) {
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
@@ -1074,7 +1073,9 @@ class ProjectPageActivity :
         val pledgeData = checkoutDataAndProjectData.second
         val projectData= pledgeData.projectData()
 
-//        if (clearFragmentBackStack() || projectData.project().showLatePledgeFlow()) {
+        val fFLatePledge = getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
+
+        if (clearFragmentBackStack() || (projectData.project().showLatePledgeFlow() && fFLatePledge)) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.EMAIL, email)
@@ -1082,7 +1083,7 @@ class ProjectPageActivity :
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
                     .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             )
-//        }
+        }
     }
 
     private fun showPledgeNotCancelableDialog() {

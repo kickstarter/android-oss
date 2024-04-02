@@ -8,6 +8,7 @@ import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.CheckoutData
@@ -72,11 +73,13 @@ interface ThanksShareHolderViewModel {
                     .map { it.first }
                     .subscribe { project.onNext(it.first)}
                     .addToDisposable(disposables)
-//
-//            project
-//                .map { it.name() }
-//                .subscribe { projectName.onNext(it) }
-//                .addToDisposable(disposables)
+
+            thanksShareData
+                    .filter { it.first.first.isInPostCampaignPledgingPhase().isFalse() }
+                    .filter { it.first.first.postCampaignPledgingEnabled().isFalse() }
+                    .map { it.first.first.name() }
+                .subscribe { projectName.onNext(it) }
+                .addToDisposable(disposables)
 
             thanksShareData
                     .filter { it.first.first.isInPostCampaignPledgingPhase().isTrue() }

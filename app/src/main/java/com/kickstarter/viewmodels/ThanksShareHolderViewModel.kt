@@ -20,7 +20,7 @@ import io.reactivex.subjects.PublishSubject
 interface ThanksShareHolderViewModel {
     interface Inputs {
         /** Call to configure the view model with a project.  */
-        fun configureWith(projectAndCheckoutData: Pair<Pair<Project, CheckoutData>, String>)
+        fun configureWith(thanksShareData: Pair<Pair<Project, CheckoutData>, String>)
 
         /** Call when the share button is clicked.  */
         fun shareClick()
@@ -122,8 +122,8 @@ interface ThanksShareHolderViewModel {
                 .addToDisposable(disposables)
         }
 
-        override fun configureWith(projectAndCheckoutData: Pair<Pair<Project, CheckoutData>, String>) {
-            this.thanksShareData.onNext(projectAndCheckoutData)
+        override fun configureWith(thanksShareData: Pair<Pair<Project, CheckoutData>, String>) {
+            this.thanksShareData.onNext(thanksShareData)
         }
 
         override fun shareClick() {

@@ -13,7 +13,6 @@ import com.kickstarter.databinding.ProjectCardViewBinding;
 import com.kickstarter.databinding.ThanksCategoryViewBinding;
 import com.kickstarter.databinding.ThanksShareViewBinding;
 import com.kickstarter.ui.adapters.data.ThanksData;
-import com.kickstarter.ui.data.CheckoutData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -22,7 +21,6 @@ import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
 
 import java.util.Collections;
 
-import kotlin.Triple;
 
 public final class ThanksAdapter extends KSAdapter {
   private static final int SECTION_SHARE_VIEW = 0;

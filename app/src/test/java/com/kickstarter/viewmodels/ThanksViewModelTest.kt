@@ -20,6 +20,7 @@ import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.category
 import com.kickstarter.mock.factories.CategoryFactory.ceramicsCategory
 import com.kickstarter.mock.factories.CategoryFactory.tabletopGamesCategory
+import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory.checkoutData
 import com.kickstarter.mock.factories.LocationFactory.germany
 import com.kickstarter.mock.factories.ProjectDataFactory.project
@@ -95,7 +96,19 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .category(artCategory())
             .build()
-        setUpEnvironment(intent = Intent().putExtra(IntentKey.PROJECT, project))
+
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+
+        setUpEnvironment(
+            intent = Intent()
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+                .putExtra(IntentKey.EMAIL, "email@email.com")
+        )
 
         adapterData.assertValueCount(1)
         vm.inputs.onHeartButtonClicked(project)
@@ -111,7 +124,18 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(artCategory())
             .build()
 
-        setUpEnvironment(intent = Intent().putExtra(IntentKey.PROJECT, project))
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+
+        setUpEnvironment(
+            intent = Intent()
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+                .putExtra(IntentKey.EMAIL, "email@email.com")
+        )
 
         adapterData.assertValueCount(1)
     }

@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.creator
 import com.kickstarter.models.Project
@@ -20,15 +21,18 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
     private val startShare = TestSubscriber<Pair<String, String>>()
     private val startShareOnFacebook = TestSubscriber<Pair<Project, String>>()
     private val startShareOnTwitter = TestSubscriber<Pair<String, String>>()
+    private val postCampaignText = TestSubscriber<Triple<Project, Double, String>>()
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment() {
-        vm = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel()
+        vm = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel(environment())
         vm.outputs.projectName().subscribe { projectName.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startShare().subscribe { startShare.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startShareOnFacebook().subscribe { startShareOnFacebook.onNext(it) }
             .addToDisposable(disposables)
         vm.outputs.startShareOnTwitter().subscribe { startShareOnTwitter.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.postCampaignPledgeText().subscribe { postCampaignText.onNext(it) }
             .addToDisposable(disposables)
     }
 
@@ -37,7 +41,12 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         val project = project()
         setUpEnvironment()
 
-        vm.configureWith(project)
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        vm.configureWith(Pair(Pair(project, checkoutData), ""))
 
         projectName.assertValues(project.name())
     }
@@ -47,8 +56,12 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment()
 
         val project = setUpProjectWithWebUrls()
-
-        vm.configureWith(project)
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        vm.configureWith(Pair(Pair(project, checkoutData), ""))
         vm.inputs.shareClick()
         val expectedShareUrl =
             "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_share"
@@ -61,7 +74,14 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment()
 
         val project = setUpProjectWithWebUrls()
-        vm.configureWith(project)
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+
+        vm.configureWith(Pair(Pair(project, checkoutData), ""))
+
         vm.inputs.shareOnFacebookClick()
         val expectedShareUrl =
             "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_facebook_share"
@@ -74,12 +94,65 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment()
 
         val project = setUpProjectWithWebUrls()
-        vm.configureWith(project)
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        vm.configureWith(Pair(Pair(project, checkoutData), ""))
         vm.inputs.shareOnTwitterClick()
         val expectedShareUrl =
             "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_twitter_share"
 
         startShareOnTwitter.assertValue(Pair.create("Best Project 2K19", expectedShareUrl))
+    }
+
+    @Test
+    fun testShowLatePledges_whenTrue_ShowLatePledgeFlow() {
+        setUpEnvironment()
+
+        val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(true).postCampaignPledgingEnabled(true).build()
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
+
+        postCampaignText.assertValue(Triple(project, checkoutData.amount(), "email@email.com"))
+        projectName.assertNoValues()
+    }
+
+    @Test
+    fun testShowLatePledges_whenFalse_noEmission() {
+        setUpEnvironment()
+
+        val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(false).postCampaignPledgingEnabled(false).build()
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
+
+        postCampaignText.assertNoValues()
+        projectName.assertValue(project.name())
+    }
+
+    @Test
+    fun testShowLatePledges_whenNull_noEmission() {
+        setUpEnvironment()
+
+        val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(null).postCampaignPledgingEnabled(null).build()
+        val checkoutData = CheckoutDataFactory.checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
+
+        postCampaignText.assertNoValues()
+        projectName.assertValue(project.name())
     }
 
     private fun setUpProjectWithWebUrls(): Project {

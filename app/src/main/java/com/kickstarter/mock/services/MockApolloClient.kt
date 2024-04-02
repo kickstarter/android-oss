@@ -289,7 +289,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String?
+        paymentSourceId: String?,
+        paymentSourceReusable: Boolean
     ): io.reactivex.Observable<Pair<String, Boolean>> {
         return io.reactivex.Observable.empty()
     }

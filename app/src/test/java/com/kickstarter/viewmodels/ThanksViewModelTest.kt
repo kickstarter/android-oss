@@ -98,16 +98,16 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
 
         setUpEnvironment(
-                intent = Intent()
-                        .putExtra(IntentKey.PROJECT, project)
-                        .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                        .putExtra(IntentKey.EMAIL, "email@email.com")
+            intent = Intent()
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+                .putExtra(IntentKey.EMAIL, "email@email.com")
         )
 
         adapterData.assertValueCount(1)
@@ -125,16 +125,16 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val checkoutData = CheckoutDataFactory.checkoutData(
-                3L,
-                20.0,
-                30.0
+            3L,
+            20.0,
+            30.0
         )
 
         setUpEnvironment(
-                intent = Intent()
-                        .putExtra(IntentKey.PROJECT, project)
-                        .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                        .putExtra(IntentKey.EMAIL, "email@email.com")
+            intent = Intent()
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+                .putExtra(IntentKey.EMAIL, "email@email.com")
         )
 
         adapterData.assertValueCount(1)

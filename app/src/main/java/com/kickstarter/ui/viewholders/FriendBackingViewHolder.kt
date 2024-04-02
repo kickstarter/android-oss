@@ -2,10 +2,10 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFriendBackingViewBinding
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.models.Activity
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadCircleImage
+import com.kickstarter.ui.extensions.loadImage
 
 class FriendBackingViewHolder(
     private val binding: ActivityFriendBackingViewBinding,
@@ -25,17 +25,12 @@ class FriendBackingViewHolder(
         val projectCategory = activityProject.category() ?: return
         val projectPhoto = activityProject.photo() ?: return
         activityUser.avatar().small()?.let {
-            Picasso.get()
-                .load(it)
-                .transform(CircleTransformation())
-                .into(binding.avatar)
+            binding.avatar.loadCircleImage(it)
         }
 
         binding.creatorName.text = ksString.format(context.getString(R.string.project_creator_by_creator), "creator_name", projectCreator.name())
         binding.projectName.text = activityProject.name()
-        Picasso.get()
-            .load(projectPhoto.little())
-            .into(binding.projectPhoto)
+        binding.projectPhoto.loadImage(projectPhoto.little())
         binding.title.text = SocialUtils.friendBackingActivityTitle(
             context,
             activityUser.name(),

@@ -6,7 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ProfileCardViewBinding
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.models.Project
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadImage
 
 class ProfileCardViewHolder(
     private val binding: ProfileCardViewBinding,
@@ -32,9 +32,7 @@ class ProfileCardViewHolder(
             binding.profileCardImage.apply {
                 visibility = View.VISIBLE
                 ContextCompat.getDrawable(context, R.drawable.gray_gradient)?.let {
-                    Picasso.get().load(photo.med())
-                        .placeholder(it)
-                        .into(this)
+                    this.loadImage(photo.med())
                 }
             }
         }

@@ -57,7 +57,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.userRewardSelection(reward)
 
-        assertEquals(uiState.last(),
+        assertEquals(
+            uiState.last(),
             AddOnsUIState(
                 shippingSelectorIsGone = true
             )
@@ -78,7 +79,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.userRewardSelection(reward)
 
-        assertEquals(uiState.last(),
+        assertEquals(
+            uiState.last(),
             AddOnsUIState(
                 shippingSelectorIsGone = false
             )
@@ -96,7 +98,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onShippingLocationChanged(newShippingRule)
 
-        assertEquals(uiState.last(),
+        assertEquals(
+            uiState.last(),
             AddOnsUIState(
                 currentShippingRule = newShippingRule,
                 shippingSelectorIsGone = false
@@ -120,18 +123,20 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onAddOnsAddedOrRemoved(currentAddOnsSelections)
 
-        assertEquals(uiState.last(),
+        assertEquals(
+            uiState.last(),
             AddOnsUIState(
                 currentAddOnsSelection = currentAddOnsSelections
             )
         )
 
-        //Decrement addOnReward to quantity 1
+        // Decrement addOnReward to quantity 1
         currentAddOnsSelections[addOnReward] = 1
 
         viewModel.onAddOnsAddedOrRemoved(currentAddOnsSelections)
 
-        assertEquals(uiState.last(),
+        assertEquals(
+            uiState.last(),
             AddOnsUIState(
                 currentAddOnsSelection = currentAddOnsSelections
             )

@@ -562,12 +562,6 @@ class ProjectPageActivity :
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
 
                     LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
-                            flowControllerPresentPaymentOption(it)
-                        }
-                    }
-
-                    LaunchedEffect(Unit) {
                         latePledgeCheckoutViewModel.paymentRequiresAction.collect {
                             stripeNextAction(it)
                         }

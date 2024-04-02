@@ -608,11 +608,21 @@ class ProjectPageActivity :
                                     easing = FastOutSlowInEasing
                                 )
                             )
+
+                            if (currentPage == 3) {
+                                latePledgeCheckoutViewModel.sendPageViewedEvent(
+                                    projectData,
+                                    addOns,
+                                    currentUserShippingRule,
+                                    shippingAmount,
+                                    totalAmount,
+                                    totalBonusSupportAmount
+                                )
+                            }
                         }
                     }
 
                     var selectedReward: Reward? = null
-
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
                         onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
@@ -645,6 +655,7 @@ class ProjectPageActivity :
                             addOnsViewModel.userRewardSelection(reward)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
                             confirmDetailsViewModel.onUserSelectedReward(reward)
+                            latePledgeCheckoutViewModel.userRewardSelection(reward)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
                             selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
@@ -677,7 +688,10 @@ class ProjectPageActivity :
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
                         selectedAddOnsMap = selectedAddOnsMap,
                         onPledgeCtaClicked = { selectedCard ->
-                            latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            selectedCard?.apply {
+                                latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)
+                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            }
                         },
                         onAddPaymentMethodClicked = {
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)

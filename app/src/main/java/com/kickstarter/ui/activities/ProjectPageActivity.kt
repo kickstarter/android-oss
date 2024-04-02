@@ -68,6 +68,7 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.finishWithAnimation
@@ -103,6 +104,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import type.CreditCardPaymentType
 
 class ProjectPageActivity :
     AppCompatActivity(),
@@ -503,6 +505,7 @@ class ProjectPageActivity :
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
+                    val selectedReward = rewardSelectionUIState.selectedReward
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                     LaunchedEffect(Unit) {
@@ -559,12 +562,6 @@ class ProjectPageActivity :
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
 
                     LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
-                            flowControllerPresentPaymentOption(it)
-                        }
-                    }
-
-                    LaunchedEffect(Unit) {
                         latePledgeCheckoutViewModel.paymentRequiresAction.collect {
                             stripeNextAction(it)
                         }
@@ -608,10 +605,19 @@ class ProjectPageActivity :
                                     easing = FastOutSlowInEasing
                                 )
                             )
+
+                            if (currentPage == 3) {
+                                latePledgeCheckoutViewModel.sendPageViewedEvent(
+                                    projectData,
+                                    addOns,
+                                    currentUserShippingRule,
+                                    shippingAmount,
+                                    totalAmount,
+                                    totalBonusSupportAmount
+                                )
+                            }
                         }
                     }
-
-                    var selectedReward: Reward? = null
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
@@ -640,11 +646,11 @@ class ProjectPageActivity :
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->
-                            selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
                             addOnsViewModel.userRewardSelection(reward)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
                             confirmDetailsViewModel.onUserSelectedReward(reward)
+                            latePledgeCheckoutViewModel.userRewardSelection(reward)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
                             selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
@@ -677,12 +683,37 @@ class ProjectPageActivity :
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
                         selectedAddOnsMap = selectedAddOnsMap,
                         onPledgeCtaClicked = { selectedCard ->
-                            latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            selectedCard?.apply {
+                                latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)
+                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                            }
                         },
                         onAddPaymentMethodClicked = {
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)
                         }
                     )
+
+                    val successfulPledge = latePledgeCheckoutViewModel.onPledgeSuccess.collectAsStateWithLifecycle(initialValue = false).value
+
+                    LaunchedEffect(successfulPledge) {
+                        if (successfulPledge) {
+                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
+                                val checkoutData = CheckoutData.builder()
+                                    .amount(totalAmount)
+                                    .id(checkoutPayment.id)
+                                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                                    .bonusAmount(totalBonusSupportAmount)
+                                    .shippingAmount(shippingAmount)
+                                    .build()
+                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
+                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData), userEmail)
+                                checkoutFlowViewModel.onProjectSuccess()
+                                refreshProject()
+                                binding.pledgeContainerCompose.isGone = true
+                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1028,13 +1059,17 @@ class ProjectPageActivity :
         showSnackbar(binding.snackbarAnchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(checkoutDatandProjectData: Pair<CheckoutData, PledgeData>) {
-        val checkoutData = checkoutDatandProjectData.first
-        val pledgeData = checkoutDatandProjectData.second
+    private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>, email: String = "") {
+        val checkoutData = checkoutDataAndProjectData.first
+        val pledgeData = checkoutDataAndProjectData.second
         val projectData = pledgeData.projectData()
-        if (clearFragmentBackStack()) {
+
+        val fFLatePledge = getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
+
+        if (clearFragmentBackStack() || (projectData.project().showLatePledgeFlow() && fFLatePledge)) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
+                    .putExtra(IntentKey.EMAIL, email)
                     .putExtra(IntentKey.PROJECT, projectData.project())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
                     .putExtra(IntentKey.PLEDGE_DATA, pledgeData)

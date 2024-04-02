@@ -44,6 +44,7 @@ class EventContextValues {
         SIGN_UP_INITIATE("sign_up_initiate"),
         COMMENT_POST("comment_post"),
         PROJECT_SELECT("project_select"),
+        LATE_PLEDGE("late_pledge"),
     }
 
     /**

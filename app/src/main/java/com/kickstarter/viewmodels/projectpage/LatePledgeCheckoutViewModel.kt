@@ -58,6 +58,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var newStoredCard: StoredCard? = null
     private var errorAction: (message: String?) -> Unit = {}
 
+    private var selectedReward: Reward? = null
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
     val latePledgeCheckoutUIState: StateFlow<LatePledgeCheckoutUIState>
         get() = mutableLatePledgeCheckoutUIState
@@ -304,12 +305,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         projectData: ProjectData,
         addOns: List<Reward>,
         currentUserShippingRule: ShippingRule,
-        selectedReward: Reward?,
         shippingAmount: Double,
         totalAmount: Double,
         totalBonusSupportAmount: Double
     ) {
-        selectedReward?.let {
+        this.selectedReward?.let {
             val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
             val checkOutData =
                 createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
@@ -323,12 +323,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         projectData: ProjectData,
         addOns: List<Reward>,
         currentUserShippingRule: ShippingRule,
-        selectedReward: Reward?,
         shippingAmount: Double,
         totalAmount: Double,
         totalBonusSupportAmount: Double
     ) {
-        selectedReward?.let {
+        this.selectedReward?.let {
             val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
             val checkOutData =
                 createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
@@ -337,6 +336,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 pledgeData = pledgeData
             )
         }
+    }
+
+    fun userRewardSelection(reward: Reward) {
+        this.selectedReward = reward
     }
 
     class Factory(private val environment: Environment) :

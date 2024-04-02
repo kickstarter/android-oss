@@ -56,7 +56,7 @@ class OAuthViewModel(
     }
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
-    lateinit var codeVerifier: String
+    private var codeVerifier: String? = null
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -73,9 +73,9 @@ class OAuthViewModel(
             val host = uri.host
             val code = uri.getQueryParameter("code")
 
-            if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank()) {
+            if (isAfterRedirectionStep(scheme, host, code, codeVerifier)) {
                 Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
-                apiClient.loginWithCodes(codeVerifier, code, clientID)
+                apiClient.loginWithCodes(requireNotNull(codeVerifier), requireNotNull(code), clientID)
                     .asFlow()
                     .flatMapLatest { token ->
                         Timber.d("$logcat About to persist token to currentUser: $token")
@@ -106,32 +106,27 @@ class OAuthViewModel(
                         )
                         analyticEvents.trackLogInButtonCtaClicked()
                     }
-            }
-
-            if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && code.isNullOrBlank()) {
-                val error = "$logcat No code after redirection"
-                Timber.e(error)
-                mutableUIState.emit(
-                    OAuthUiState(
-                        error = error,
-                        user = null
-                    )
-                )
+            } else {
+                mutableUIState.emit(OAuthUiState(error = "$code / $codeVerifier empty or null or wrong redirection", user = null))
             }
 
             if (intent.data == null) {
                 codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
-                val url = generateAuthorizationUrlWithParams()
-                Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
-                mutableUIState.emit(
-                    OAuthUiState(
-                        authorizationUrl = url,
-                        isAuthorizationStep = true,
+                codeVerifier?.let { verifier ->
+                    val url = generateAuthorizationUrlWithParams(verifier)
+                    Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
+                    mutableUIState.emit(
+                        OAuthUiState(
+                            authorizationUrl = url,
+                            isAuthorizationStep = true,
+                        )
                     )
-                )
+                }
             }
         }
     }
+    fun isAfterRedirectionStep(scheme: String?, host: String?, code: String?, codeVerifier: String?) =
+        scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank() && !codeVerifier.isNullOrBlank()
 
     private fun processThrowable(throwable: Throwable): String {
         if (!throwable.message.isNullOrBlank()) return throwable.message ?: ""
@@ -145,13 +140,13 @@ class OAuthViewModel(
         return "error while getting the token or user"
     }
 
-    private fun generateAuthorizationUrlWithParams(): String {
+    private fun generateAuthorizationUrlWithParams(verifier: String): String {
         val authParams = mapOf(
             "redirect_uri" to REDIRECT_URI_SCHEMA,
             "scope" to "1", // profile/email
             "client_id" to clientID,
             "response_type" to "1", // code
-            "code_challenge" to verifier.generateCodeChallenge(codeVerifier),
+            "code_challenge" to this.verifier.generateCodeChallenge(verifier),
             "code_challenge_method" to "S256"
         ).map { (k, v) -> "${(k)}=$v" }.joinToString("&")
         return "$hostEndpoint/oauth/authorizations/new?$authParams"

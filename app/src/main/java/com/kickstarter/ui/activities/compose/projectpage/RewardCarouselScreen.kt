@@ -157,7 +157,13 @@ fun RewardCarouselScreen(
                     else -> false
                 }
                 val isBacked = project.backing()?.isBacked(reward) ?: false
-                val ctaButtonText = RewardViewUtils.pledgeButtonText(project, reward)
+
+                val backing = project.backing()
+
+                val ctaButtonText = when {
+                    ctaButtonEnabled -> R.string.Select
+                    else -> R.string.No_longer_available
+                }
 
                 val remaining = reward.remaining() ?: -1
 

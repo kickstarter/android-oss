@@ -158,8 +158,6 @@ fun RewardCarouselScreen(
                 }
                 val isBacked = project.backing()?.isBacked(reward) ?: false
 
-                val backing = project.backing()
-
                 val ctaButtonText = when {
                     ctaButtonEnabled -> R.string.Select
                     else -> R.string.No_longer_available

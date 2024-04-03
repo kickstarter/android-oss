@@ -38,7 +38,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.SignupActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -237,18 +236,6 @@ fun Activity.startPreLaunchProjectActivity(uri: Uri, project: Project, previousS
     ref?.let { intent.putExtra(IntentKey.REF_TAG, RefTag.from(ref)) }
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
-    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
-}
-
-fun Activity.startLogin() {
-    val intent = Intent().getLoginActivityIntent(this)
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
-}
-
-fun Activity.startSignup() {
-    val intent = Intent().setClass(this, SignupActivity::class.java)
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }
 

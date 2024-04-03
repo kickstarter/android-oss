@@ -203,11 +203,6 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.SignupActivity"
-            android:parentActivityName=".ui.activities.LoginToutActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Login" />
-        <activity
             android:name=".ui.activities.SurveyResponseActivity"
             android:parentActivityName=".ui.activities.ActivityFeedActivity" /> <!-- TODO: Maybe the parent should be the project? -->
         <activity

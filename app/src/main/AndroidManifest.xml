@@ -215,10 +215,6 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ThanksActivity" />
         <activity
-            android:name=".ui.activities.TwoFactorActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Login" />
-        <activity
             android:name=".ui.activities.UpdateActivity"
             android:parentActivityName=".ui.activities.ProjectUpdatesActivity" />
         <activity

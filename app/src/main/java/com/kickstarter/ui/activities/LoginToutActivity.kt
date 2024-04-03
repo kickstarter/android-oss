@@ -11,7 +11,6 @@ import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.lifecycleScope
-import com.facebook.AccessToken
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
@@ -219,9 +218,9 @@ class LoginToutActivity : ComponentActivity() {
     }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-            Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
-            // - Intent generated when the deepLink redirection takes place
-            intent?.let { oAuthViewModel.produceState(intent = it) }
+        Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
+        // - Intent generated when the deepLink redirection takes place
+        intent?.let { oAuthViewModel.produceState(intent = it) }
     }
 
     private fun setUpOAuthViewModel() {
@@ -283,15 +282,6 @@ class LoginToutActivity : ComponentActivity() {
         val intent = Intent(this, FacebookConfirmationActivity::class.java)
             .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
             .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(this, TransitionUtils.fadeIn())
-    }
-
-    // TODO: REMOVE
-    private fun startTwoFactorFacebookChallenge() {
-        val intent = Intent(this, TwoFactorActivity::class.java)
-            .putExtra(IntentKey.FACEBOOK_LOGIN, true)
-            .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken()?.token)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }

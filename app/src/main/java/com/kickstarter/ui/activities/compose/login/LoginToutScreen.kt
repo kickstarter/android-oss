@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSFacebookButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
-import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions

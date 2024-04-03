@@ -9,6 +9,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.util.Pair
 import android.view.MotionEvent
@@ -45,12 +46,14 @@ import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -60,6 +63,7 @@ import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
@@ -77,6 +81,7 @@ import com.kickstarter.ui.extensions.selectPledgeFragment
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.extensions.startVideoActivity
@@ -690,6 +695,16 @@ class ProjectPageActivity :
                         },
                         onAddPaymentMethodClicked = {
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)
+                        },
+                        onDisclaimerItemClicked = { disclaimerItem ->
+                            getEnvironment()?.let { environment ->
+                                showDisclaimerScreen(disclaimerItem, environment)
+                            } ?: run {
+                                showToastError()
+                            }
+                        },
+                        onAccountabilityLinkClicked = {
+                            showAccountabilityPage()
                         }
                     )
 
@@ -716,6 +731,19 @@ class ProjectPageActivity :
                     }
                 }
             }
+        }
+    }
+
+    private fun showDisclaimerScreen(disclaimerItem: DisclaimerItems, environment: Environment) {
+        startDisclaimerChromeTab(disclaimerItem, environment)
+    }
+
+    private fun showAccountabilityPage() {
+        getEnvironment()?.webEndpoint()?.let { endpoint ->
+            val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+            ChromeTabsHelperActivity.openCustomTab(this, UrlUtils.baseCustomTabsIntent(this), Uri.parse(trustUrl), null)
+        } ?: run {
+            showToastError()
         }
     }
 

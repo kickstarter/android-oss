@@ -41,6 +41,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -111,7 +112,9 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             storedCards = listOf(),
             userEmail = "test@test.test",
             onPledgeCtaClicked = {},
-            onAddPaymentMethodClicked = {}
+            onAddPaymentMethodClicked = {},
+            onDisclaimerItemClicked = {},
+            onAccountabilityLinkClicked = {}
         )
     }
 }
@@ -154,7 +157,9 @@ fun ProjectPledgeButtonAndFragmentContainer(
     storedCards: List<StoredCard>,
     userEmail: String,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
-    onAddPaymentMethodClicked: () -> Unit
+    onAddPaymentMethodClicked: () -> Unit,
+    onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
+    onAccountabilityLinkClicked: () -> Unit
 ) {
     Column {
         Surface(
@@ -335,6 +340,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         onPledgeCtaClicked = onPledgeCtaClicked,
                                         newPaymentMethodClicked = onAddPaymentMethodClicked,
                                         isLoading = isLoading,
+                                        onDisclaimerItemClicked = onDisclaimerItemClicked,
+                                        onAccountabilityLinkClicked = onAccountabilityLinkClicked
                                     )
                                 }
                             }

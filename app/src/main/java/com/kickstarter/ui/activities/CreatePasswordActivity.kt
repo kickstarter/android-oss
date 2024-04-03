@@ -105,9 +105,7 @@ class CreatePasswordActivity : AppCompatActivity() {
         this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
         startActivity(
-            Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.CREATE_PASSWORD)
-                .putExtra(IntentKey.EMAIL, email)
+            Intent(this, LoginToutActivity::class.java)
         )
     }
 }

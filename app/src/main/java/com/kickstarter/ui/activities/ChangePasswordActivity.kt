@@ -101,13 +101,7 @@ class ChangePasswordActivity : ComponentActivity() {
     private fun logout(email: String) {
         this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
-        val intent = if (oAuthIsEnabled) {
-            Intent(this, LoginToutActivity::class.java)
-        } else {
-            Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD)
-                .putExtra(IntentKey.EMAIL, email)
-        }
+        val intent =  Intent(this, LoginToutActivity::class.java)
         startActivity(
             intent
         )

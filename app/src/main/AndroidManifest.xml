@@ -108,12 +108,10 @@
             android:theme="@style/WebViewActivity" />
         <activity
             android:name=".ui.activities.ResetPasswordActivity"
-            android:parentActivityName=".ui.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.SetPasswordActivity"
-            android:parentActivityName=".ui.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
@@ -138,11 +136,6 @@
         <activity
             android:name=".ui.activities.ProfileActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity" />
-        <activity
-            android:name=".ui.activities.LoginActivity"
-            android:parentActivityName=".ui.activities.LoginToutActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.LoginToutActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -223,7 +216,6 @@
             android:theme="@style/ThanksActivity" />
         <activity
             android:name=".ui.activities.TwoFactorActivity"
-            android:parentActivityName=".ui.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity

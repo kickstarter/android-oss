@@ -188,6 +188,47 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test attempt to obtain Token And User with invalid codeVerifier will generate Error state`() = runTest {
+
+        val environment = environment()
+            .toBuilder()
+            .apiClientV2(MockApiClientV2())
+            .currentUserV2(MockCurrentUserV2())
+            .build()
+
+        val mockCodeVerifier = object : PKCE {
+            override fun generateCodeChallenge(codeVerifier: String): String {
+                return "" // invalid
+            }
+
+            override fun generateRandomCodeVerifier(entropy: Int): String {
+                return "" // invalid
+            }
+        }
+
+        setUpEnvironment(environment, mockCodeVerifier)
+
+        val testCode = "" // invalid
+        val state = mutableListOf<OAuthUiState>()
+        val redirectionUrl = "ksrauth2://authenticate?code=$testCode&redirect_uri=ksrauth2&response_type=1&scope=1"
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.produceState(Intent())
+            vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
+            vm.uiState.toList(state)
+        }
+
+        // - First empty emission due the initialization
+        assertEquals(
+            listOf(
+                OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = null, error = ""),
+                OAuthUiState(authorizationUrl = "", isAuthorizationStep = false, user = null, error = " /  empty or null or wrong redirection"),
+            ),
+            state
+        )
+    }
+
+    @Test
     fun testProduceState_getTokeAndUser_ErrorWhileFetchUser() = runTest {
 
         val apiClient = object : MockApiClientV2() {
@@ -297,5 +338,13 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
         )
 
         assertEquals(currentUserV2.accessToken, null)
+    }
+
+    @Test
+    fun `test invalid information after redirection`() {
+        setUpEnvironment(environment(), CodeVerifier())
+
+        assertFalse(vm.isAfterRedirectionStep(null, null, null, null))
+        assertFalse(vm.isAfterRedirectionStep("http", "someHost.com", "", ""))
     }
 }

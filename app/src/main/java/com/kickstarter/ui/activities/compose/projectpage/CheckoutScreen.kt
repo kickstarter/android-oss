@@ -113,7 +113,9 @@ fun CheckoutScreenPreview() {
             pledgeReason = PledgeReason.PLEDGE,
             rewardsHaveShippables = true,
             onPledgeCtaClicked = { },
-            newPaymentMethodClicked = { }
+            newPaymentMethodClicked = { },
+            onDisclaimerItemClicked = {},
+            onAccountabilityLinkClicked = {}
         )
     }
 }
@@ -135,7 +137,9 @@ fun CheckoutScreen(
     rewardsHaveShippables: Boolean,
     isLoading: Boolean = false,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
-    newPaymentMethodClicked: () -> Unit
+    newPaymentMethodClicked: () -> Unit,
+    onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
+    onAccountabilityLinkClicked: () -> Unit
 ) {
     var (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
@@ -208,9 +212,15 @@ fun CheckoutScreen(
                             Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                             TermsOfUseClickableText(
-                                onPrivacyPolicyClicked = {},
-                                onCookiePolicyClicked = {},
-                                onTermsOfUseClicked = {}
+                                onPrivacyPolicyClicked = {
+                                    onDisclaimerItemClicked.invoke(DisclaimerItems.PRIVACY)
+                                },
+                                onCookiePolicyClicked = {
+                                    onDisclaimerItemClicked.invoke(DisclaimerItems.COOKIES)
+                                },
+                                onTermsOfUseClicked = {
+                                    onDisclaimerItemClicked.invoke(DisclaimerItems.TERMS)
+                                }
                             )
                         }
                     }
@@ -420,6 +430,9 @@ fun CheckoutScreen(
                             TextWithClickableAccountabilityLink(
                                 padding = dimensions.paddingXSmall,
                                 html = stringResource(id = R.string.Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability),
+                                onClickCallback = {
+                                    onAccountabilityLinkClicked.invoke()
+                                }
                             )
                         }
                     }

@@ -144,19 +144,24 @@ fun RewardCarouselScreen(
             ) { reward ->
 
                 val ctaButtonEnabled = when {
+                    RewardUtils.isNoReward(reward) && (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false) -> true
                     !reward.hasAddons() && project.backing()?.isBacked(reward) != true -> true
                     project.backing()?.rewardId() != reward.id() && RewardUtils.isAvailable(
                         project,
                         reward
-                    ) -> true
+                    ) && reward.isAvailable() -> true
 
                     reward.hasAddons() && project.backing()
-                        ?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) -> true
+                        ?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) && reward.isAvailable() -> true
 
                     else -> false
                 }
                 val isBacked = project.backing()?.isBacked(reward) ?: false
-                val ctaButtonText = RewardViewUtils.pledgeButtonText(project, reward)
+
+                val ctaButtonText = when {
+                    ctaButtonEnabled -> R.string.Select
+                    else -> R.string.No_longer_available
+                }
 
                 val remaining = reward.remaining() ?: -1
 

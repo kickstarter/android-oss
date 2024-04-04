@@ -6,7 +6,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.activities.CreatorBioActivity
-import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
@@ -162,7 +162,7 @@ fun Intent.getLoginActivityIntent(
     email: String? = null,
     loginReason: LoginReason? = null
 ): Intent {
-    return this.setClass(context, LoginActivity::class.java).apply {
+    return this.setClass(context, LoginToutActivity::class.java).apply {
         loginReason?.let {
             this.putExtra(IntentKey.LOGIN_REASON, it)
         }

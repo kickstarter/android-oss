@@ -11,7 +11,6 @@ import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.lifecycleScope
-import com.facebook.AccessToken
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
@@ -34,8 +33,6 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
-import com.kickstarter.ui.extensions.startLogin
-import com.kickstarter.ui.extensions.startSignup
 import com.kickstarter.viewmodels.LoginToutViewModel
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory
@@ -67,8 +64,6 @@ class LoginToutActivity : ComponentActivity() {
 
     private val oAuthLogcat = "OAuth: "
 
-    var oauthFlagEnabled: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var darkModeEnabled = false
@@ -83,7 +78,6 @@ class LoginToutActivity : ComponentActivity() {
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                 ?: AppThemes.MATCH_SYSTEM.ordinal
-            oauthFlagEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false
         }
 
         setContent {
@@ -103,8 +97,6 @@ class LoginToutActivity : ComponentActivity() {
                 LoginToutScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onFacebookButtonClicked = { facebookLoginClick() },
-                    onEmailLoginClicked = { loginButtonClick() },
-                    onEmailSignupClicked = { signupButtonClick() },
                     onTermsOfUseClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.TERMS) },
                     onPrivacyPolicyClicked = {
                         viewModel.inputs.disclaimerItemClicked(
@@ -115,7 +107,6 @@ class LoginToutActivity : ComponentActivity() {
                     onHelpClicked = {
                         viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
                     },
-                    featureFlagState = oauthFlagEnabled,
                     onSignUpOrLogInClicked = {
                         oAuthViewModel.produceState(intent = intent)
                     }
@@ -125,9 +116,7 @@ class LoginToutActivity : ComponentActivity() {
 
         logInAndSignUpAndLoginWithFacebookVM()
 
-        if (oauthFlagEnabled) {
-            setUpOAuthViewModel()
-        }
+        setUpOAuthViewModel()
     }
 
     /***
@@ -152,20 +141,6 @@ class LoginToutActivity : ComponentActivity() {
             .subscribe { finishWithSuccessfulResult() }
             .addToDisposable(disposables)
 
-        viewModel.outputs.startLoginActivity()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                this.startLogin()
-            }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.startSignupActivity()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                this.startSignup()
-            }
-            .addToDisposable(disposables)
-
         viewModel.outputs.startFacebookConfirmationActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startFacebookConfirmationActivity(it.first, it.second) }
@@ -186,11 +161,6 @@ class LoginToutActivity : ComponentActivity() {
         showErrorMessageToasts()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showToast(this) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.startTwoFactorChallenge()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startTwoFactorFacebookChallenge() }
             .addToDisposable(disposables)
 
         viewModel.outputs.showUnauthorizedErrorDialog()
@@ -248,11 +218,9 @@ class LoginToutActivity : ComponentActivity() {
     }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (oauthFlagEnabled) {
-            Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
-            // - Intent generated when the deepLink redirection takes place
-            intent?.let { oAuthViewModel.produceState(intent = it) }
-        }
+        Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
+        // - Intent generated when the deepLink redirection takes place
+        intent?.let { oAuthViewModel.produceState(intent = it) }
     }
 
     private fun setUpOAuthViewModel() {
@@ -287,12 +255,6 @@ class LoginToutActivity : ComponentActivity() {
             resources.getStringArray(R.array.facebook_permissions_array).asList()
         )
 
-    private fun loginButtonClick() =
-        viewModel.inputs.loginClick()
-
-    private fun signupButtonClick() =
-        viewModel.inputs.signupClick()
-
     private fun showErrorMessageToasts(): Observable<String?> {
         return viewModel.outputs.showMissingFacebookEmailErrorToast()
             .map(coalesceWithV2(getString(R.string.login_errors_unable_to_log_in)))
@@ -320,14 +282,6 @@ class LoginToutActivity : ComponentActivity() {
         val intent = Intent(this, FacebookConfirmationActivity::class.java)
             .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
             .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(this, TransitionUtils.fadeIn())
-    }
-
-    private fun startTwoFactorFacebookChallenge() {
-        val intent = Intent(this, TwoFactorActivity::class.java)
-            .putExtra(IntentKey.FACEBOOK_LOGIN, true)
-            .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken()?.token)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }

@@ -64,7 +64,7 @@ class FacebookConfirmationActivity : BaseActivity<FacebookConfirmationViewModel.
     }
 
     private fun loginWithEmailClick() {
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, LoginToutActivity::class.java)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
     }

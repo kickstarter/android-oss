@@ -83,7 +83,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 viewModelScope.launch {
                     emitCurrentState()
                 }
-                getAddOns(noShippingRule = false)
+                getAddOns(noShippingRule = shippingSelectorIsGone)
             }.addToDisposable(disposables)
 
         val shippingRule = getSelectedShippingRule(defaultShippingRuleObservable, currentUserReward)
@@ -191,8 +191,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             emitCurrentState()
         }
 
-        if (shippingSelectorIsGone) getAddOns(noShippingRule = true)
-
         this.currentUserReward.onNext(reward)
     }
 
@@ -205,7 +203,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             emitCurrentState()
         }
 
-        getAddOns(noShippingRule = false)
+        getAddOns(noShippingRule = shippingSelectorIsGone)
     }
 
     fun onAddOnsAddedOrRemoved(currentAddOnsSelections: MutableMap<Reward, Int>) {

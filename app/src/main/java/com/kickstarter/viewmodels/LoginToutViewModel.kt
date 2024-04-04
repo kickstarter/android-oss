@@ -40,12 +40,6 @@ interface LoginToutViewModel {
         /** Call when the Login to Facebook button is clicked.  */
         fun facebookLoginClick(activity: LoginToutActivity?, facebookPermissions: List<String>)
 
-        /** Call when the login button is clicked.  */
-        fun loginClick()
-
-        /** Call when the signup button is clicked.  */
-        fun signupClick()
-
         /** Call when the disclaimer Item  is clicked.  */
         fun disclaimerItemClicked(disclaimerItem: DisclaimerItems)
 
@@ -80,12 +74,6 @@ interface LoginToutViewModel {
 
         /** Emits when the login activity should be started.  */
         fun startLoginActivity(): Observable<Unit>
-
-        /** Emits when the signup activity should be started.  */
-        fun startSignupActivity(): Observable<Unit>
-
-        /** Emits when a user has successfully logged in using Facebook, but has require two-factor authentication enabled.  */
-        fun startTwoFactorChallenge(): Observable<Unit>
 
         /** Emits when click one of disclaimer items  */
         fun showDisclaimerActivity(): Observable<DisclaimerItems>
@@ -160,7 +148,6 @@ interface LoginToutViewModel {
         private val startResetPasswordActivity = BehaviorSubject.create<Unit>()
         private val startFacebookConfirmationActivity: Observable<Pair<ErrorEnvelope.FacebookUser, String>>
         private val startLoginActivity: Observable<Unit>
-        private val startSignupActivity: Observable<Unit>
         private val showDisclaimerActivity: Observable<DisclaimerItems>
 
         private val finishOauthWithSuccessfulResult = BehaviorSubject.create<Unit>()
@@ -188,14 +175,6 @@ interface LoginToutViewModel {
 
         override fun onResetPasswordFacebookErrorDialogClicked() {
             onResetPasswordFacebookErrorDialogClicked.onNext(Unit)
-        }
-
-        override fun loginClick() {
-            loginClick.onNext(Unit)
-        }
-
-        override fun signupClick() {
-            signupClick.onNext(Unit)
         }
 
         override fun disclaimerItemClicked(disclaimerItem: DisclaimerItems) {
@@ -242,16 +221,6 @@ interface LoginToutViewModel {
 
         override fun startLoginActivity(): Observable<Unit> {
             return startLoginActivity
-        }
-
-        override fun startSignupActivity(): Observable<Unit> {
-            return startSignupActivity
-        }
-
-        override fun startTwoFactorChallenge(): Observable<Unit> {
-            return loginError
-                .filter(ErrorEnvelope::isTfaRequiredError)
-                .map { }
         }
 
         override fun showDisclaimerActivity(): Observable<DisclaimerItems> {
@@ -318,7 +287,6 @@ interface LoginToutViewModel {
                 .addToDisposable(disposables)
 
             startLoginActivity = loginClick
-            startSignupActivity = signupClick
             showDisclaimerActivity = disclaimerItemClicked
 
             facebookLoginClick
@@ -329,14 +297,6 @@ interface LoginToutViewModel {
                         ContextPageName.LOGIN_SIGN_UP.contextName
                     )
                 }
-                .addToDisposable(disposables)
-
-            loginClick
-                .subscribe { analyticEvents?.trackLogInInitiateCtaClicked() }
-                .addToDisposable(disposables)
-
-            signupClick
-                .subscribe { analyticEvents?.trackSignUpInitiateCtaClicked() }
                 .addToDisposable(disposables)
 
             onResetPasswordFacebookErrorDialogClicked

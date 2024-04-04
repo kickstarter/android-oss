@@ -30,7 +30,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     private val finishOathWithSuccessfulResult = TestSubscriber<Unit>()
     private val loginError = TestSubscriber<ErrorEnvelope>()
     private val startLoginActivity = TestSubscriber<Unit>()
-    private val startSignupActivity = TestSubscriber<Unit>()
     private val currentUser = TestSubscriber<User?>()
     private val showDisclaimerActivity = TestSubscriber<DisclaimerItems>()
     private val startResetPasswordActivity = TestSubscriber<Unit>()
@@ -43,8 +42,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         vm.outputs.finishWithSuccessfulResult().subscribe { finishWithSuccessfulResult.onNext(it) }
             .addToDisposable(disposables)
         vm.loginError.subscribe { loginError.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.startSignupActivity().subscribe { startSignupActivity.onNext(it) }
-            .addToDisposable(disposables)
         vm.outputs.startLoginActivity().subscribe { startLoginActivity.onNext(it) }
             .addToDisposable(disposables)
         vm.outputs.showFacebookErrorDialog().subscribe { showFacebookErrorDialog.onNext(it) }
@@ -60,33 +57,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         vm.provideLoginReason(loginReason)
-    }
-
-    @Test
-    fun testLoginButtonClicked() {
-        val environment = environment()
-
-        setUpEnvironment(environment, LoginReason.DEFAULT)
-
-        startLoginActivity.assertNoValues()
-
-        vm.inputs.loginClick()
-
-        startLoginActivity.assertValueCount(1)
-        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testSignupButtonClicked() {
-        val environment = environment()
-
-        setUpEnvironment(environment, LoginReason.DEFAULT)
-        startSignupActivity.assertNoValues()
-
-        vm.inputs.signupClick()
-
-        startSignupActivity.assertValueCount(1)
-        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test

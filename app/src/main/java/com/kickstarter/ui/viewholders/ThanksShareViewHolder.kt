@@ -16,7 +16,6 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import java.math.RoundingMode
 
 class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
     private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel(environment())

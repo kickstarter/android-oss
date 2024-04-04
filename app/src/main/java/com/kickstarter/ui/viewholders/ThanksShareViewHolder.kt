@@ -16,7 +16,6 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import java.math.RoundingMode
 
 class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
     private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel(environment())
@@ -89,7 +88,9 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
     }
 
     private fun showPostCampaignPledgeText(pcptext: Triple<Project, Double, String>) {
-        binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html), "project_name", pcptext.first.name(), "pledge_total", ksCurrency.format(initialValue = pcptext.second, project = pcptext.first, roundingMode = RoundingMode.HALF_UP), "user_email", pcptext.third))
+        // TODO: Change to use new string once it is available
+        // binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html), "project_name", pcptext.first.name(), "pledge_total", ksCurrency.format(initialValue = pcptext.second, project = pcptext.first, roundingMode = RoundingMode.HALF_UP), "user_email", pcptext.third))
+        binding.backedProject.text = ""
     }
 
     private fun startShare(projectNameAndShareUrl: Pair<String, String>) {

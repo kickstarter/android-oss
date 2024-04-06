@@ -22,29 +22,11 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.viewmodels.OAuthViewModel
 
-class CustomWebViewClient(private val context: Context, private val callback: (String) -> Unit) : WebViewClient() {
-    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-        request?.url?.let {
-            if (OAuthViewModel.isAfterRedirectionStep(it)) {
-                callback(it.toString())
-            }
-        } ?: callback("")
-        return false
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onReceivedHttpAuthRequest(
-        view: WebView?,
-        handler: HttpAuthHandler?,
-        host: String?,
-        realm: String?
-    ) {
-        val webDatabase = WebViewDatabase.getInstance(context)
-        webDatabase.setHttpAuthUsernamePassword(host, realm, "creative", "studyingatewinterfunny")
-        handler?.proceed("creative", "studyingatewinterfunny")
-        return super.onReceivedHttpAuthRequest(view, handler, host, realm)
-    }
-}
+/**
+ * Will be used for OAuth when default Browser is not Chrome
+ * with other browsers (Firefox, Opera, Arc, Duck Duck Go ... etc) even based in Chromium
+ * the redirection was not triggered on `LoginToutActivity.onNewIntent`, and the customTabInstance was never killed.
+ */
 class OAuthWebViewActivity : ComponentActivity() {
     val callback: (String) -> Unit = { inputString ->
         val intent = Intent()
@@ -79,5 +61,32 @@ class OAuthWebViewActivity : ComponentActivity() {
         }, update = {
                 it.loadUrl(url)
             })
+    }
+}
+
+class CustomWebViewClient(private val context: Context, private val callback: (String) -> Unit) : WebViewClient() {
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        request?.url?.let {
+            if (OAuthViewModel.isAfterRedirectionStep(it)) {
+                callback(it.toString())
+            }
+        } ?: callback("")
+        return false
+    }
+
+    /**
+     * Only used on staging environments for basic http authentication
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onReceivedHttpAuthRequest(
+        view: WebView?,
+        handler: HttpAuthHandler?,
+        host: String?,
+        realm: String?
+    ) {
+        val webDatabase = WebViewDatabase.getInstance(context)
+        webDatabase.setHttpAuthUsernamePassword(host, realm, "creative", "studyingatewinterfunny")
+        handler?.proceed("creative", "studyingatewinterfunny")
+        return super.onReceivedHttpAuthRequest(view, handler, host, realm)
     }
 }

@@ -46,7 +46,8 @@ class OAuthWebViewActivity : ComponentActivity() {
         val url = intent.getStringExtra(IntentKey.URL) ?: ""
         this.getEnvironment()?.let { env ->
             setContent {
-                KickstarterApp(useDarkTheme = this.isDarkModeEnabled(env = env)) {
+                val darModeEnabled = this.isDarkModeEnabled(env = env)
+                KickstarterApp(useDarkTheme = darModeEnabled) {
                     WebView(url, this, callback)
                 }
             }

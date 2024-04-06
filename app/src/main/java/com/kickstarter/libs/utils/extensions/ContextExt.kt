@@ -25,8 +25,8 @@ fun Context.getEnvironment(): Environment? {
 
 @Composable
 fun Context.isDarkModeEnabled(env: Environment): Boolean {
-    var darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
-    var theme = env.sharedPreferences()
+    val darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+    val theme = env.sharedPreferences()
         ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
         ?: AppThemes.MATCH_SYSTEM.ordinal
 

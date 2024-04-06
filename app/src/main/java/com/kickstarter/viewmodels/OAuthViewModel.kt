@@ -123,6 +123,7 @@ class OAuthViewModel(
                                 )
                             )
                             analyticEvents.trackLogInButtonCtaClicked()
+                            codeVerifier = null
                         }
                 } else {
                     mutableUIState.emit(
@@ -131,10 +132,12 @@ class OAuthViewModel(
                             user = null
                         )
                     )
+                    codeVerifier = null
                 }
             }
 
             if (intent.data == null && uri == null) {
+                codeVerifier = null
                 codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
                 codeVerifier?.let {
                     val url = generateAuthorizationUrlWithParams(it)

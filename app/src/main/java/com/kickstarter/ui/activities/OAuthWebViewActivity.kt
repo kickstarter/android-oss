@@ -1,7 +1,9 @@
 package com.kickstarter.ui.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +13,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.webkit.WebViewDatabase
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -18,8 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.extensions.text
 import com.kickstarter.viewmodels.OAuthViewModel
 
 /**
@@ -85,8 +91,35 @@ class CustomWebViewClient(private val context: Context, private val callback: (S
         realm: String?
     ) {
         val webDatabase = WebViewDatabase.getInstance(context)
-        webDatabase.setHttpAuthUsernamePassword(host, realm, "creative", "studyingatewinterfunny")
-        handler?.proceed("creative", "studyingatewinterfunny")
-        return super.onReceivedHttpAuthRequest(view, handler, host, realm)
+
+        val alert: AlertDialog.Builder = AlertDialog.Builder(context)
+
+        val container = LinearLayout(context)
+        container.orientation = LinearLayout.VERTICAL
+        val user = EditText(context)
+        user.hint = "Staging credential User:"
+        val password = EditText(context)
+        password.hint = "Staging credential Password:"
+
+        container.addView(user)
+        container.addView(password)
+
+        alert.setView(container)
+        alert.setPositiveButton(
+            "Send",
+            DialogInterface.OnClickListener { dialog, whichButton ->
+                if (user.isNotNull() && password.isNotNull()) {
+                    webDatabase.setHttpAuthUsernamePassword(
+                        host,
+                        realm,
+                        user.text(),
+                        password.text()
+                    )
+                    handler?.proceed(user.text(), password.text())
+                    super.onReceivedHttpAuthRequest(view, handler, host, realm)
+                }
+            }
+        )
+        alert.show()
     }
 }

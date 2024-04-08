@@ -111,7 +111,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
         val redirectionUrl = "ksrauth2://authenticate?&redirect_uri=ksrauth2&response_type=1&scope=1"
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
+            vm.produceState(Intent(), Uri.parse(redirectionUrl))
             vm.uiState.toList(state)
         }
 
@@ -168,7 +168,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.produceState(Intent())
-            vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
+            vm.produceState(Intent(), Uri.parse(redirectionUrl))
             vm.uiState.toList(state)
         }
 
@@ -214,7 +214,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.produceState(Intent())
-            vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
+            vm.produceState(Intent(), Uri.parse(redirectionUrl))
             vm.uiState.toList(state)
         }
 
@@ -270,7 +270,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             vm.produceState(Intent())
-            vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
+            vm.produceState(Intent(), Uri.parse(redirectionUrl))
             vm.uiState.toList(state)
         }
 
@@ -322,7 +322,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
         val redirectionUrl = "ksrauth2://authenticate?code=$testCode&redirect_uri=ksrauth2&response_type=1&scope=1"
 
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            vm.produceState(Intent().setData(Uri.parse(redirectionUrl)))
+            vm.produceState(Intent(), Uri.parse(redirectionUrl))
             vm.uiState.toList(state)
         }
 
@@ -344,7 +344,8 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
     fun `test invalid information after redirection`() {
         setUpEnvironment(environment(), CodeVerifier())
 
-        assertFalse(vm.isAfterRedirectionStep(null, null, null, null))
-        assertFalse(vm.isAfterRedirectionStep("http", "someHost.com", "", ""))
+        assertFalse(OAuthViewModel.isAfterRedirectionStep(Uri.parse("")))
+        assertFalse(OAuthViewModel.isAfterRedirectionStep(Uri.parse("http://someurelrandom")))
+        assertTrue(OAuthViewModel.isAfterRedirectionStep(Uri.parse("ksrauth2://authenticate?code=12345")))
     }
 }

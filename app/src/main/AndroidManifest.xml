@@ -107,6 +107,10 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/WebViewActivity" />
         <activity
+            android:name=".ui.activities.OAuthWebViewActivity"
+            android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:theme="@style/WebViewActivity" />
+        <activity
             android:name=".ui.activities.ResetPasswordActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />

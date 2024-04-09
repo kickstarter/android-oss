@@ -107,6 +107,13 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    fun onProjectSuccess() {
+        viewModelScope.launch {
+            // Open Flow
+            mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = false))
+        }
+    }
+
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

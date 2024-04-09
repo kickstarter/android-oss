@@ -1,17 +1,18 @@
 package com.kickstarter.ui.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.lifecycleScope
-import com.facebook.AccessToken
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
@@ -34,8 +35,6 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
-import com.kickstarter.ui.extensions.startLogin
-import com.kickstarter.ui.extensions.startSignup
 import com.kickstarter.viewmodels.LoginToutViewModel
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory
@@ -67,7 +66,15 @@ class LoginToutActivity : ComponentActivity() {
 
     private val oAuthLogcat = "OAuth: "
 
-    var oauthFlagEnabled: Boolean = false
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let {
+                val url = it.getStringExtra(IntentKey.OAUTH_REDIRECT_URL) ?: ""
+                // - Redirection takes place from WebView, as default browser is not Chrome
+                afterRedirection(url, it)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +90,6 @@ class LoginToutActivity : ComponentActivity() {
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                 ?: AppThemes.MATCH_SYSTEM.ordinal
-            oauthFlagEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false
         }
 
         setContent {
@@ -103,8 +109,6 @@ class LoginToutActivity : ComponentActivity() {
                 LoginToutScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onFacebookButtonClicked = { facebookLoginClick() },
-                    onEmailLoginClicked = { loginButtonClick() },
-                    onEmailSignupClicked = { signupButtonClick() },
                     onTermsOfUseClicked = { viewModel.inputs.disclaimerItemClicked(DisclaimerItems.TERMS) },
                     onPrivacyPolicyClicked = {
                         viewModel.inputs.disclaimerItemClicked(
@@ -115,7 +119,6 @@ class LoginToutActivity : ComponentActivity() {
                     onHelpClicked = {
                         viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
                     },
-                    featureFlagState = oauthFlagEnabled,
                     onSignUpOrLogInClicked = {
                         oAuthViewModel.produceState(intent = intent)
                     }
@@ -125,9 +128,7 @@ class LoginToutActivity : ComponentActivity() {
 
         logInAndSignUpAndLoginWithFacebookVM()
 
-        if (oauthFlagEnabled) {
-            setUpOAuthViewModel()
-        }
+        setUpOAuthViewModel()
     }
 
     /***
@@ -152,20 +153,6 @@ class LoginToutActivity : ComponentActivity() {
             .subscribe { finishWithSuccessfulResult() }
             .addToDisposable(disposables)
 
-        viewModel.outputs.startLoginActivity()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                this.startLogin()
-            }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.startSignupActivity()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                this.startSignup()
-            }
-            .addToDisposable(disposables)
-
         viewModel.outputs.startFacebookConfirmationActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startFacebookConfirmationActivity(it.first, it.second) }
@@ -186,11 +173,6 @@ class LoginToutActivity : ComponentActivity() {
         showErrorMessageToasts()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showToast(this) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.startTwoFactorChallenge()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startTwoFactorFacebookChallenge() }
             .addToDisposable(disposables)
 
         viewModel.outputs.showUnauthorizedErrorDialog()
@@ -248,10 +230,19 @@ class LoginToutActivity : ComponentActivity() {
     }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (oauthFlagEnabled) {
-            Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
-            // - Intent generated when the deepLink redirection takes place
-            intent?.let { oAuthViewModel.produceState(intent = it) }
+        Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
+        intent?.let {
+            val url = intent.data.toString()
+            // - Redirection takes place from ChromeTab, as the defaultBrowser is Chrome
+            afterRedirection(url, it)
+        }
+    }
+
+    private fun afterRedirection(url: String, intent: Intent) {
+        val uri = Uri.parse(url)
+        uri?.let {
+            if (OAuthViewModel.isAfterRedirectionStep(it))
+                oAuthViewModel.produceState(intent = intent, uri)
         }
     }
 
@@ -260,7 +251,7 @@ class LoginToutActivity : ComponentActivity() {
             oAuthViewModel.uiState.collect { state ->
                 // - Intent generated with onCreate
                 if (state.isAuthorizationStep && state.authorizationUrl.isNotEmpty()) {
-                    openChromeTabWithUrl(state.authorizationUrl)
+                    openChromeTabOrWebViewWithUrl(state.authorizationUrl)
                 }
 
                 if (state.user.isNotNull()) {
@@ -271,14 +262,25 @@ class LoginToutActivity : ComponentActivity() {
         }
     }
 
-    private fun openChromeTabWithUrl(url: String) {
+    /**
+     * If default Browser is Chrome a CustomChromeTab will be open with give URL
+     * If default Browser is not Chrome Webview will be open with given URL
+     */
+    private fun openChromeTabOrWebViewWithUrl(url: String) {
         val authorizationUri = Uri.parse(url)
 
         val tabIntent = CustomTabsIntent.Builder().build()
 
         val packageName = ChromeTabsHelper.getPackageNameToUse(this)
-        tabIntent.intent.setPackage(packageName)
-        tabIntent.launchUrl(this, authorizationUri)
+        if (packageName == "com.android.chrome") {
+            tabIntent.intent.setPackage(packageName)
+            tabIntent.launchUrl(this, authorizationUri)
+        } else {
+            val intent: Intent = Intent(this, OAuthWebViewActivity::class.java)
+                .putExtra(IntentKey.URL, authorizationUri.toString())
+            startForResult.launch(intent)
+            this.overridePendingTransition(R.anim.slide_up, R.anim.fade_out)
+        }
     }
 
     private fun facebookLoginClick() =
@@ -286,12 +288,6 @@ class LoginToutActivity : ComponentActivity() {
             this,
             resources.getStringArray(R.array.facebook_permissions_array).asList()
         )
-
-    private fun loginButtonClick() =
-        viewModel.inputs.loginClick()
-
-    private fun signupButtonClick() =
-        viewModel.inputs.signupClick()
 
     private fun showErrorMessageToasts(): Observable<String?> {
         return viewModel.outputs.showMissingFacebookEmailErrorToast()
@@ -320,14 +316,6 @@ class LoginToutActivity : ComponentActivity() {
         val intent = Intent(this, FacebookConfirmationActivity::class.java)
             .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
             .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(this, TransitionUtils.fadeIn())
-    }
-
-    private fun startTwoFactorFacebookChallenge() {
-        val intent = Intent(this, TwoFactorActivity::class.java)
-            .putExtra(IntentKey.FACEBOOK_LOGIN, true)
-            .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken()?.token)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }

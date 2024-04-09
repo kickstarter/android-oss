@@ -107,13 +107,15 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/WebViewActivity" />
         <activity
+            android:name=".ui.activities.OAuthWebViewActivity"
+            android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:theme="@style/WebViewActivity" />
+        <activity
             android:name=".ui.activities.ResetPasswordActivity"
-            android:parentActivityName=".ui.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.SetPasswordActivity"
-            android:parentActivityName=".ui.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Login" />
         <activity
@@ -138,11 +140,6 @@
         <activity
             android:name=".ui.activities.ProfileActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity" />
-        <activity
-            android:name=".ui.activities.LoginActivity"
-            android:parentActivityName=".ui.activities.LoginToutActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.LoginToutActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -210,22 +207,12 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.SignupActivity"
-            android:parentActivityName=".ui.activities.LoginToutActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Login" />
-        <activity
             android:name=".ui.activities.SurveyResponseActivity"
             android:parentActivityName=".ui.activities.ActivityFeedActivity" /> <!-- TODO: Maybe the parent should be the project? -->
         <activity
             android:name=".ui.activities.ThanksActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ThanksActivity" />
-        <activity
-            android:name=".ui.activities.TwoFactorActivity"
-            android:parentActivityName=".ui.activities.LoginActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.UpdateActivity"
             android:parentActivityName=".ui.activities.ProjectUpdatesActivity" />

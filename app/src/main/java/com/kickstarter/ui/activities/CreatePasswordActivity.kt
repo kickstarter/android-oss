@@ -15,11 +15,9 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.CreatePasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.CreatePasswordViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -105,9 +103,7 @@ class CreatePasswordActivity : AppCompatActivity() {
         this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
         startActivity(
-            Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.CREATE_PASSWORD)
-                .putExtra(IntentKey.EMAIL, email)
+            Intent(this, LoginToutActivity::class.java)
         )
     }
 }

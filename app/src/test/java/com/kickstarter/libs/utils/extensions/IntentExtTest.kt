@@ -113,16 +113,16 @@ class IntentExtTest : KSRobolectricTestCase() {
     @Test
     fun testLoginActivityIntent() {
         val intent = Intent().getLoginActivityIntent(context())
-        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.LoginActivity")
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.LoginToutActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), null)
 
         val intent1 = Intent().getLoginActivityIntent(context(), loginReason = LoginReason.RESET_PASSWORD)
-        assertEquals(intent1.component?.className, "com.kickstarter.ui.activities.LoginActivity")
+        assertEquals(intent1.component?.className, "com.kickstarter.ui.activities.LoginToutActivity")
         assertEquals(intent1.extras?.get(IntentKey.EMAIL), null)
         assertEquals(intent1.extras?.get(IntentKey.LOGIN_REASON), LoginReason.RESET_PASSWORD)
 
         val intent2 = Intent().getLoginActivityIntent(context(), email = "test@kickstarter.com")
-        assertEquals(intent2.component?.className, "com.kickstarter.ui.activities.LoginActivity")
+        assertEquals(intent2.component?.className, "com.kickstarter.ui.activities.LoginToutActivity")
         assertEquals(intent2.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
         assertEquals(intent2.extras?.get(IntentKey.LOGIN_REASON), null)
     }

@@ -46,6 +46,7 @@ class OAuthViewModel(
 
     private val logcat = "Oauth :"
     private val hostEndpoint = environment.webEndpoint()
+    private val sharedPreferences = environment.sharedPreferences()
     private val loginUseCase = LoginUseCase(environment)
     private val analyticEvents = requireNotNull(environment.analytics())
     private val apiClient = requireNotNull(environment.apiClientV2())
@@ -56,7 +57,16 @@ class OAuthViewModel(
     }
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
-    lateinit var codeVerifier: String
+    private var codeVerifier: String?
+        get() {
+            return sharedPreferences?.getString("KSCodeVerifier", "")
+        }
+        set(value) {
+            if (value == null) sharedPreferences?.edit()?.remove("KSCodeVerifier")?.apply()
+            else sharedPreferences?.edit()
+                ?.putString("KSCodeVerifier", value)
+                ?.apply()
+        }
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -66,69 +76,79 @@ class OAuthViewModel(
             )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun produceState(intent: Intent) {
+    fun produceState(intent: Intent, uri: Uri? = null) {
         viewModelScope.launch {
-            val uri = Uri.parse(intent.data.toString())
-            val scheme = uri.scheme
-            val host = uri.host
-            val code = uri.getQueryParameter("code")
-
-            if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank()) {
-                Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
-                apiClient.loginWithCodes(codeVerifier, code, clientID)
-                    .asFlow()
-                    .flatMapLatest { token ->
-                        Timber.d("$logcat About to persist token to currentUser: $token")
-                        loginUseCase.setToken(token.accessToken())
-                        apiClient.fetchCurrentUser()
-                            .asFlow()
-                            .map {
-                                it
-                            }
-                    }
-                    .catch {
-                        Timber.e("$logcat error while getting the token or user: ${processThrowable(it)}")
-                        mutableUIState.emit(
-                            OAuthUiState(
-                                error = processThrowable(it),
-                                user = null
-                            )
-                        )
-                        loginUseCase.logout()
-                    }
-                    .collect { user ->
-                        Timber.d("$logcat About to persist user to currentUser: $user")
-                        loginUseCase.setUser(user)
-                        mutableUIState.emit(
-                            OAuthUiState(
-                                user = user,
-                            )
-                        )
-                        analyticEvents.trackLogInButtonCtaClicked()
-                    }
-            }
-
-            if (scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && code.isNullOrBlank()) {
-                val error = "$logcat No code after redirection"
-                Timber.e(error)
-                mutableUIState.emit(
-                    OAuthUiState(
-                        error = error,
-                        user = null
+            uri?.let {
+                val code = uri.getQueryParameter("code")
+                if (isAfterRedirectionStep(uri)) {
+                    Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
+                    apiClient.loginWithCodes(
+                        requireNotNull(codeVerifier),
+                        requireNotNull(code),
+                        clientID
                     )
-                )
+                        .asFlow()
+                        .flatMapLatest { token ->
+                            Timber.d("$logcat About to persist token to currentUser: $token")
+                            loginUseCase.setToken(token.accessToken())
+                            apiClient.fetchCurrentUser()
+                                .asFlow()
+                                .map {
+                                    it
+                                }
+                        }
+                        .catch {
+                            Timber.e(
+                                "$logcat error while getting the token or user: ${
+                                processThrowable(
+                                    it
+                                )
+                                }"
+                            )
+                            mutableUIState.emit(
+                                OAuthUiState(
+                                    error = processThrowable(it),
+                                    user = null
+                                )
+                            )
+                            loginUseCase.logout()
+                            codeVerifier = null
+                        }
+                        .collect { user ->
+                            Timber.d("$logcat About to persist user to currentUser: $user")
+                            loginUseCase.setUser(user)
+                            mutableUIState.emit(
+                                OAuthUiState(
+                                    user = user,
+                                )
+                            )
+                            analyticEvents.trackLogInButtonCtaClicked()
+                            codeVerifier = null
+                        }
+                } else {
+                    mutableUIState.emit(
+                        OAuthUiState(
+                            error = "$code / $codeVerifier empty or null or wrong redirection",
+                            user = null
+                        )
+                    )
+                    codeVerifier = null
+                }
             }
 
-            if (intent.data == null) {
+            if (intent.data == null && uri == null) {
+                codeVerifier = null
                 codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
-                val url = generateAuthorizationUrlWithParams()
-                Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
-                mutableUIState.emit(
-                    OAuthUiState(
-                        authorizationUrl = url,
-                        isAuthorizationStep = true,
+                codeVerifier?.let {
+                    val url = generateAuthorizationUrlWithParams(it)
+                    Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
+                    mutableUIState.emit(
+                        OAuthUiState(
+                            authorizationUrl = url,
+                            isAuthorizationStep = true,
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -145,21 +165,27 @@ class OAuthViewModel(
         return "error while getting the token or user"
     }
 
-    private fun generateAuthorizationUrlWithParams(): String {
+    private fun generateAuthorizationUrlWithParams(verifier: String): String {
         val authParams = mapOf(
             "redirect_uri" to REDIRECT_URI_SCHEMA,
             "scope" to "1", // profile/email
             "client_id" to clientID,
             "response_type" to "1", // code
-            "code_challenge" to verifier.generateCodeChallenge(codeVerifier),
+            "code_challenge" to this.verifier.generateCodeChallenge(verifier),
             "code_challenge_method" to "S256"
         ).map { (k, v) -> "${(k)}=$v" }.joinToString("&")
         return "$hostEndpoint/oauth/authorizations/new?$authParams"
     }
 
-    private companion object {
+    companion object {
         const val REDIRECT_URI_SCHEMA = "ksrauth2"
         const val REDIRECT_URI_HOST = "authenticate"
+        fun isAfterRedirectionStep(uri: Uri): Boolean {
+            val scheme = uri.scheme
+            val host = uri.host
+            val code = uri.getQueryParameter("code")
+            return scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank()
+        }
     }
 }
 

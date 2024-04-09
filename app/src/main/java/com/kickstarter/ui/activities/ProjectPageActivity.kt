@@ -9,6 +9,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.util.Pair
 import android.view.MotionEvent
@@ -45,12 +46,14 @@ import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -60,6 +63,7 @@ import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
@@ -68,6 +72,7 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.finishWithAnimation
@@ -76,6 +81,7 @@ import com.kickstarter.ui.extensions.selectPledgeFragment
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.extensions.startVideoActivity
@@ -103,6 +109,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import type.CreditCardPaymentType
 
 class ProjectPageActivity :
     AppCompatActivity(),
@@ -503,6 +510,7 @@ class ProjectPageActivity :
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
+                    val selectedReward = rewardSelectionUIState.selectedReward
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                     LaunchedEffect(Unit) {
@@ -557,12 +565,6 @@ class ProjectPageActivity :
                     val userStoredCards = latePledgeCheckoutUIState.storeCards
                     val userEmail = latePledgeCheckoutUIState.userEmail
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
-
-                    LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
-                            flowControllerPresentPaymentOption(it)
-                        }
-                    }
 
                     LaunchedEffect(Unit) {
                         latePledgeCheckoutViewModel.paymentRequiresAction.collect {
@@ -622,7 +624,6 @@ class ProjectPageActivity :
                         }
                     }
 
-                    var selectedReward: Reward? = null
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
                         onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
@@ -650,7 +651,6 @@ class ProjectPageActivity :
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->
-                            selectedReward = reward
                             checkoutFlowViewModel.userRewardSelection(reward)
                             addOnsViewModel.userRewardSelection(reward)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
@@ -695,10 +695,55 @@ class ProjectPageActivity :
                         },
                         onAddPaymentMethodClicked = {
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)
+                        },
+                        onDisclaimerItemClicked = { disclaimerItem ->
+                            getEnvironment()?.let { environment ->
+                                showDisclaimerScreen(disclaimerItem, environment)
+                            } ?: run {
+                                showToastError()
+                            }
+                        },
+                        onAccountabilityLinkClicked = {
+                            showAccountabilityPage()
                         }
                     )
+
+                    val successfulPledge = latePledgeCheckoutViewModel.onPledgeSuccess.collectAsStateWithLifecycle(initialValue = false).value
+
+                    LaunchedEffect(successfulPledge) {
+                        if (successfulPledge) {
+                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
+                                val checkoutData = CheckoutData.builder()
+                                    .amount(totalAmount)
+                                    .id(checkoutPayment.id)
+                                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                                    .bonusAmount(totalBonusSupportAmount)
+                                    .shippingAmount(shippingAmount)
+                                    .build()
+                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
+                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData), userEmail)
+                                checkoutFlowViewModel.onProjectSuccess()
+                                refreshProject()
+                                binding.pledgeContainerCompose.isGone = true
+                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+                            }
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    private fun showDisclaimerScreen(disclaimerItem: DisclaimerItems, environment: Environment) {
+        startDisclaimerChromeTab(disclaimerItem, environment)
+    }
+
+    private fun showAccountabilityPage() {
+        getEnvironment()?.webEndpoint()?.let { endpoint ->
+            val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+            ChromeTabsHelperActivity.openCustomTab(this, UrlUtils.baseCustomTabsIntent(this), Uri.parse(trustUrl), null)
+        } ?: run {
+            showToastError()
         }
     }
 
@@ -1042,13 +1087,17 @@ class ProjectPageActivity :
         showSnackbar(binding.snackbarAnchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(checkoutDatandProjectData: Pair<CheckoutData, PledgeData>) {
-        val checkoutData = checkoutDatandProjectData.first
-        val pledgeData = checkoutDatandProjectData.second
+    private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>, email: String = "") {
+        val checkoutData = checkoutDataAndProjectData.first
+        val pledgeData = checkoutDataAndProjectData.second
         val projectData = pledgeData.projectData()
-        if (clearFragmentBackStack()) {
+
+        val fFLatePledge = getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
+
+        if (clearFragmentBackStack() || (projectData.project().showLatePledgeFlow() && fFLatePledge)) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
+                    .putExtra(IntentKey.EMAIL, email)
                     .putExtra(IntentKey.PROJECT, projectData.project())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
                     .putExtra(IntentKey.PLEDGE_DATA, pledgeData)

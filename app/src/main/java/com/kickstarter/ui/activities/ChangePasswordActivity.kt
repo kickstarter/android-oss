@@ -15,11 +15,9 @@ import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.ChangePasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.ChangePasswordViewModel
 import com.kickstarter.viewmodels.ChangePasswordViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
@@ -101,13 +99,7 @@ class ChangePasswordActivity : ComponentActivity() {
     private fun logout(email: String) {
         this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
-        val intent = if (oAuthIsEnabled) {
-            Intent(this, LoginToutActivity::class.java)
-        } else {
-            Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD)
-                .putExtra(IntentKey.EMAIL, email)
-        }
+        val intent = Intent(this, LoginToutActivity::class.java)
         startActivity(
             intent
         )

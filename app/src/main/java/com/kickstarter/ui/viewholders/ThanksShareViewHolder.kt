@@ -12,13 +12,15 @@ import com.kickstarter.databinding.ThanksShareViewBinding
 import com.kickstarter.libs.TweetComposer
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
+import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
 class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
-    private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel()
+    private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel(environment())
     private val ksString = requireNotNull(environment().ksString())
+    private var ksCurrency = requireNotNull(environment().ksCurrency())
     private val shareDialog: ShareDialog = ShareDialog(context() as Activity)
     private var disposables = CompositeDisposable()
 
@@ -26,6 +28,11 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         viewModel.outputs.projectName()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showBackedProject(it) }
+            .addToDisposable(disposables)
+
+        viewModel.outputs.postCampaignPledgeText()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showPostCampaignPledgeText(it) }
             .addToDisposable(disposables)
 
         viewModel.outputs.startShare()
@@ -68,8 +75,8 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val project = requireNotNull(data as Project?)
-        viewModel.inputs.configureWith(project)
+        val projectAndCheckoutData = requireNotNull(data as Pair<Pair<Project, CheckoutData>, String>?)
+        viewModel.inputs.configureWith(projectAndCheckoutData)
     }
 
     private fun shareString(projectName: String): String {
@@ -78,6 +85,12 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
 
     private fun showBackedProject(projectName: String) {
         binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_backed_project_html), "project_name", projectName))
+    }
+
+    private fun showPostCampaignPledgeText(pcptext: Triple<Project, Double, String>) {
+        // TODO: Change to use new string once it is available
+        // binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html), "project_name", pcptext.first.name(), "pledge_total", ksCurrency.format(initialValue = pcptext.second, project = pcptext.first, roundingMode = RoundingMode.HALF_UP), "user_email", pcptext.third))
+        binding.backedProject.text = ""
     }
 
     private fun startShare(projectNameAndShareUrl: Pair<String, String>) {

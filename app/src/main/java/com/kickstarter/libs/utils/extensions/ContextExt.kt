@@ -5,16 +5,41 @@ import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.ui.activities.AppThemes
 import com.stripe.android.paymentsheet.PaymentSheet
 
 fun Context.isKSApplication() = (this is KSApplication) && !this.isInUnitTests
 
 fun Context.getEnvironment(): Environment? {
     return (this.applicationContext as KSApplication).component().environment()
+}
+
+@Composable
+fun Context.isDarkModeEnabled(env: Environment): Boolean {
+    val darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
+    val theme = env.sharedPreferences()
+        ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+        ?: AppThemes.MATCH_SYSTEM.ordinal
+
+    return if (darkModeEnabled) {
+        when (theme) {
+            AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+            AppThemes.DARK.ordinal -> true
+            AppThemes.LIGHT.ordinal -> false
+            else -> false
+        }
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        isSystemInDarkTheme() // Force dark mode uses system theme
+    } else false
 }
 
 /**

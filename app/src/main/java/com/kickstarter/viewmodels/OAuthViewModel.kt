@@ -100,9 +100,9 @@ class OAuthViewModel(
                         .catch {
                             Timber.e(
                                 "$logcat error while getting the token or user: ${
-                                    processThrowable(
-                                        it
-                                    )
+                                processThrowable(
+                                    it
+                                )
                                 }"
                             )
                             mutableUIState.emit(

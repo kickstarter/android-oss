@@ -8,12 +8,14 @@ import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isKSApplication
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
+import javax.sql.DataSource
 
 fun ImageView.loadCircleImage(url: String?) {
     url?.let {
@@ -80,25 +82,55 @@ fun ImageView.loadImageWithResize(
 }
 fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: AppCompatImageView? = null) {
     url?.let {
-        val target = this
+        val targetView = this
         if (context.applicationContext.isKSApplication()) {
             try {
-                Picasso
-                    .get()
-                    .load(url)
-                    .into(
-                        this,
-                        object : Callback {
-                            override fun onSuccess() {
-                                imageViewPlaceholder?.setImageDrawable(target.drawable)
-                            }
+//                Picasso
+//                    .get()
+//                    .load(url)
+//                    .into(
+//                        this,
+//                        object : Callback {
+//                            override fun onSuccess() {
+//                                imageViewPlaceholder?.setImageDrawable(target.drawable)
+//                            }
+//
+//                            override fun onError(e: Exception?) {
+//                                target.setImageDrawable(null)
+//                                imageViewPlaceholder?.setImageDrawable(null)
+//                            }
+//                        }
+//                    )
 
-                            override fun onError(e: Exception?) {
-                                target.setImageDrawable(null)
-                                imageViewPlaceholder?.setImageDrawable(null)
-                            }
+                Glide.with(context)
+                    .load(url)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: com.bumptech.glide.load.DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            imageViewPlaceholder?.setImageDrawable(resource)
+                            return isFirstResource
                         }
-                    )
+
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            targetView.setImageDrawable(null)
+                            imageViewPlaceholder?.setImageDrawable(null)
+                            return isFirstResource
+                        }
+                    })
+                    .placeholder(ColorDrawable(Color.TRANSPARENT))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .load(url)
+                    .into(this)
             } catch (e: Exception) {
                 this.setImageResource(R.drawable.image_placeholder)
                 FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImageWithResize", " with url: $it ${e.message ?: ""}")

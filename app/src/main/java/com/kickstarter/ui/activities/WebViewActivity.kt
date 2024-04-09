@@ -6,6 +6,7 @@ import androidx.activity.addCallback
 import com.kickstarter.databinding.WebViewLayoutBinding
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.ui.views.KSWebView
 
 class WebViewActivity : ComponentActivity() {
     private lateinit var binding: WebViewLayoutBinding
@@ -17,6 +18,21 @@ class WebViewActivity : ComponentActivity() {
 
         val toolbarTitle = intent.getStringExtra(IntentKey.TOOLBAR_TITLE)
         toolbarTitle?.let { binding.webViewToolbar.webViewToolbar.setTitle(it) }
+
+        binding.webView.setDelegate(object : KSWebView.Delegate {
+            override fun externalLinkActivated(url: String) {
+            }
+
+            override fun pageIntercepted(url: String) {
+                if (url.contains("authenticate")) {
+                    finish()
+                }
+            }
+
+            override fun onReceivedError(url: String) {
+            }
+        })
+
         val url = intent.getStringExtra(IntentKey.URL)
         url?.let { binding.webView.loadUrl(it) }
 

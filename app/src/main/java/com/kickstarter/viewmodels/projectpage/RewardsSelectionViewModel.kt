@@ -27,6 +27,7 @@ import java.util.Locale
 
 data class RewardSelectionUIState(
     val rewardList: List<Reward> = listOf(),
+    val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
     val project: ProjectData = ProjectData.builder().build(),
     val showAlertDialog: Boolean = false
@@ -38,8 +39,8 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
     private lateinit var currentProjectData: ProjectData
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
-    private lateinit var newUserReward: Reward
     private var indexOfBackedReward = 0
+    private var newUserReward: Reward = Reward.builder().build()
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>

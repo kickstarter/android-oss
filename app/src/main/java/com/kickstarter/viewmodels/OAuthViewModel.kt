@@ -46,6 +46,7 @@ class OAuthViewModel(
 
     private val logcat = "Oauth :"
     private val hostEndpoint = environment.webEndpoint()
+    private val sharedPreferences = environment.sharedPreferences()
     private val loginUseCase = LoginUseCase(environment)
     private val analyticEvents = requireNotNull(environment.analytics())
     private val apiClient = requireNotNull(environment.apiClientV2())
@@ -56,7 +57,20 @@ class OAuthViewModel(
     }
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
+<<<<<<< HEAD
     private var codeVerifier: String? = null
+=======
+    private var codeVerifier: String?
+        get() {
+            return sharedPreferences?.getString("KSCodeVerifier", "")
+        }
+        set(value) {
+            if (value == null) sharedPreferences?.edit()?.remove("KSCodeVerifier")?.apply()
+            else sharedPreferences?.edit()
+                ?.putString("KSCodeVerifier", value)
+                ?.apply()
+        }
+>>>>>>> dec62ddd0c92a2140f16d8cbed7df3d2194ee7cb
     val uiState: StateFlow<OAuthUiState>
         get() = mutableUIState.asStateFlow()
             .stateIn(
@@ -66,8 +80,9 @@ class OAuthViewModel(
             )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun produceState(intent: Intent) {
+    fun produceState(intent: Intent, uri: Uri? = null) {
         viewModelScope.launch {
+<<<<<<< HEAD
             val uri = Uri.parse(intent.data.toString())
             val scheme = uri.scheme
             val host = uri.host
@@ -108,12 +123,76 @@ class OAuthViewModel(
                     }
             } else {
                 mutableUIState.emit(OAuthUiState(error = "$code / $codeVerifier empty or null or wrong redirection", user = null))
+=======
+            uri?.let {
+                val code = uri.getQueryParameter("code")
+                if (isAfterRedirectionStep(uri)) {
+                    Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
+                    apiClient.loginWithCodes(
+                        requireNotNull(codeVerifier),
+                        requireNotNull(code),
+                        clientID
+                    )
+                        .asFlow()
+                        .flatMapLatest { token ->
+                            Timber.d("$logcat About to persist token to currentUser: $token")
+                            loginUseCase.setToken(token.accessToken())
+                            apiClient.fetchCurrentUser()
+                                .asFlow()
+                                .map {
+                                    it
+                                }
+                        }
+                        .catch {
+                            Timber.e(
+                                "$logcat error while getting the token or user: ${
+                                processThrowable(
+                                    it
+                                )
+                                }"
+                            )
+                            mutableUIState.emit(
+                                OAuthUiState(
+                                    error = processThrowable(it),
+                                    user = null
+                                )
+                            )
+                            loginUseCase.logout()
+                            codeVerifier = null
+                        }
+                        .collect { user ->
+                            Timber.d("$logcat About to persist user to currentUser: $user")
+                            loginUseCase.setUser(user)
+                            mutableUIState.emit(
+                                OAuthUiState(
+                                    user = user,
+                                )
+                            )
+                            analyticEvents.trackLogInButtonCtaClicked()
+                            codeVerifier = null
+                        }
+                } else {
+                    mutableUIState.emit(
+                        OAuthUiState(
+                            error = "$code / $codeVerifier empty or null or wrong redirection",
+                            user = null
+                        )
+                    )
+                    codeVerifier = null
+                }
+>>>>>>> dec62ddd0c92a2140f16d8cbed7df3d2194ee7cb
             }
 
-            if (intent.data == null) {
+            if (intent.data == null && uri == null) {
+                codeVerifier = null
                 codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
+<<<<<<< HEAD
                 codeVerifier?.let { verifier ->
                     val url = generateAuthorizationUrlWithParams(verifier)
+=======
+                codeVerifier?.let {
+                    val url = generateAuthorizationUrlWithParams(it)
+>>>>>>> dec62ddd0c92a2140f16d8cbed7df3d2194ee7cb
                     Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
                     mutableUIState.emit(
                         OAuthUiState(
@@ -152,9 +231,15 @@ class OAuthViewModel(
         return "$hostEndpoint/oauth/authorizations/new?$authParams"
     }
 
-    private companion object {
+    companion object {
         const val REDIRECT_URI_SCHEMA = "ksrauth2"
         const val REDIRECT_URI_HOST = "authenticate"
+        fun isAfterRedirectionStep(uri: Uri): Boolean {
+            val scheme = uri.scheme
+            val host = uri.host
+            val code = uri.getQueryParameter("code")
+            return scheme == REDIRECT_URI_SCHEMA && host == REDIRECT_URI_HOST && !code.isNullOrBlank()
+        }
     }
 }
 

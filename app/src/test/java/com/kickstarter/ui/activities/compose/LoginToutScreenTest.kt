@@ -38,10 +38,6 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(LoginToutTestTag.FACEBOOK_BUTTON.name)
     private val facebookDisclaimer =
         composeTestRule.onNodeWithTag(LoginToutTestTag.FACEBOOK_DISCLAIMER.name)
-    private val emailLogInButton =
-        composeTestRule.onNodeWithTag(LoginToutTestTag.EMAIL_LOG_IN_BUTTON.name)
-    private val emailSignUpButton =
-        composeTestRule.onNodeWithTag(LoginToutTestTag.EMAIL_SIGN_UP_BUTTON.name)
     private val touPpCookieDisclaimer =
         composeTestRule.onNodeWithTag(LoginToutTestTag.TOU_PP_COOKIE_DISCLAIMER.name)
     private val signUpOrLogInButton =
@@ -54,13 +50,10 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
                 LoginToutScreen(
                     onBackClicked = { },
                     onFacebookButtonClicked = { },
-                    onEmailLoginClicked = { },
-                    onEmailSignupClicked = { },
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
                     onCookiePolicyClicked = { },
                     onHelpClicked = { },
-                    featureFlagState = false,
                     {}
                 )
             }
@@ -93,8 +86,6 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
         logoTitle.assertIsDisplayed()
         facebookButton.assertIsDisplayed()
         facebookDisclaimer.assertIsDisplayed()
-        emailLogInButton.assertIsDisplayed()
-        emailSignUpButton.assertIsDisplayed()
         touPpCookieDisclaimer.assertIsDisplayed()
     }
 
@@ -104,13 +95,10 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
                 LoginToutScreen(
                     onBackClicked = { },
                     onFacebookButtonClicked = { },
-                    onEmailLoginClicked = { },
-                    onEmailSignupClicked = { },
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
                     onCookiePolicyClicked = { },
                     onHelpClicked = { },
-                    featureFlagState = true,
                     {}
                 )
             }
@@ -143,8 +131,6 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
         logoTitle.assertIsDisplayed()
         facebookButton.assertIsDisplayed()
         facebookDisclaimer.assertIsDisplayed()
-        emailLogInButton.assertDoesNotExist()
-        emailSignUpButton.assertDoesNotExist()
         touPpCookieDisclaimer.assertIsDisplayed()
         signUpOrLogInButton.assertIsDisplayed()
     }
@@ -156,13 +142,10 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
                 LoginToutScreen(
                     onBackClicked = { },
                     onFacebookButtonClicked = { },
-                    onEmailLoginClicked = { },
-                    onEmailSignupClicked = { },
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
                     onCookiePolicyClicked = { },
                     onHelpClicked = { },
-                    featureFlagState = false,
                     {}
                 )
             }
@@ -194,11 +177,9 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testClickActionsWork_featureFlag_Off() {
+    fun testClickActionsWork() {
         var backClickedCount = 0
         var facebookClickedCount = 0
-        var emailLoginClickedCount = 0
-        var emailSignUpClickedCount = 0
         var termsOfUseClickedCount = 0
         var privacyPolicyClickedCount = 0
         var cookiePolicyClickedCount = 0
@@ -210,13 +191,10 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
                 LoginToutScreen(
                     onBackClicked = { backClickedCount++ },
                     onFacebookButtonClicked = { facebookClickedCount++ },
-                    onEmailLoginClicked = { emailLoginClickedCount++ },
-                    onEmailSignupClicked = { emailSignUpClickedCount++ },
                     onTermsOfUseClicked = { termsOfUseClickedCount++ },
                     onPrivacyPolicyClicked = { privacyPolicyClickedCount++ },
                     onCookiePolicyClicked = { cookiePolicyClickedCount++ },
                     onHelpClicked = { helpClickedCount++ },
-                    featureFlagState = false,
                     onSignUpOrLogInClicked = { signUpOrLogInClicked++ }
                 )
             }
@@ -227,75 +205,6 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
 
         facebookButton.performClick()
         assertEquals(facebookClickedCount, 1)
-
-        emailLogInButton.performClick()
-        assertEquals(emailLoginClickedCount, 1)
-
-        emailSignUpButton.performClick()
-        assertEquals(emailSignUpClickedCount, 1)
-
-        signUpOrLogInButton.assertDoesNotExist()
-        assertEquals(signUpOrLogInClicked, 0)
-
-        optionsIcon.performClick()
-        optionsTerms.performClick()
-        assertEquals(termsOfUseClickedCount, 1)
-
-        optionsIcon.performClick()
-        optionsPrivacyPolicy.performClick()
-        assertEquals(privacyPolicyClickedCount, 1)
-
-        optionsIcon.performClick()
-        optionsCookie.performClick()
-        assertEquals(cookiePolicyClickedCount, 1)
-
-        optionsIcon.performClick()
-        optionsHelp.performClick()
-        assertEquals(helpClickedCount, 1)
-
-        // TODO find a way to click hyperlinks in touPpCookieDisclaimer text reliably to test
-    }
-
-    @Test
-    fun testClickActionsWork_featureFlag_On() {
-        var backClickedCount = 0
-        var facebookClickedCount = 0
-        var emailLoginClickedCount = 0
-        var emailSignUpClickedCount = 0
-        var termsOfUseClickedCount = 0
-        var privacyPolicyClickedCount = 0
-        var cookiePolicyClickedCount = 0
-        var helpClickedCount = 0
-        var signUpOrLogInClicked = 0
-
-        composeTestRule.setContent {
-            KSTheme {
-                LoginToutScreen(
-                    onBackClicked = { backClickedCount++ },
-                    onFacebookButtonClicked = { facebookClickedCount++ },
-                    onEmailLoginClicked = { emailLoginClickedCount++ },
-                    onEmailSignupClicked = { emailSignUpClickedCount++ },
-                    onTermsOfUseClicked = { termsOfUseClickedCount++ },
-                    onPrivacyPolicyClicked = { privacyPolicyClickedCount++ },
-                    onCookiePolicyClicked = { cookiePolicyClickedCount++ },
-                    onHelpClicked = { helpClickedCount++ },
-                    featureFlagState = true,
-                    onSignUpOrLogInClicked = { signUpOrLogInClicked++ }
-                )
-            }
-        }
-
-        backButton.performClick()
-        assertEquals(backClickedCount, 1)
-
-        facebookButton.performClick()
-        assertEquals(facebookClickedCount, 1)
-
-        emailLogInButton.assertDoesNotExist()
-        assertEquals(emailLoginClickedCount, 0)
-
-        emailSignUpButton.assertDoesNotExist()
-        assertEquals(emailSignUpClickedCount, 0)
 
         signUpOrLogInButton.performClick()
         assertEquals(signUpOrLogInClicked, 1)

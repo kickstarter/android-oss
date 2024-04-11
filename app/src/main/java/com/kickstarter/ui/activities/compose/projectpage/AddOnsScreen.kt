@@ -235,7 +235,7 @@ fun AddOnsScreen(
                             project,
                             true,
                         ) ?: "",
-                        conversionAmount = environment.ksString()?.format(
+                        conversionAmount = if(project.currentCurrency() == project.currency()) "" else { environment.ksString()?.format(
                             stringResource(R.string.About_reward_amount),
                             "reward_amount",
                             environment.ksCurrency()?.format(
@@ -245,7 +245,7 @@ fun AddOnsScreen(
                                 RoundingMode.HALF_UP,
                                 true
                             )
-                        ),
+                        ) },
                         shippingAmount = environment.ksCurrency()?.let {
                             getShippingCost(
                                 reward = reward,

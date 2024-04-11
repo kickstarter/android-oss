@@ -33,6 +33,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import okhttp3.internal.format
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -92,19 +93,19 @@ fun KSRewardCard(
             if (yourSelectionIsVisible) {
                 Box(
                     modifier = Modifier
-                        .background(
-                            color = colors.kds_trust_500,
-                            shape = RoundedCornerShape(
-                                topStart = dimensions.radiusMediumSmall,
-                                bottomEnd = dimensions.radiusMediumSmall
+                            .background(
+                                    color = colors.kds_trust_500,
+                                    shape = RoundedCornerShape(
+                                            topStart = dimensions.radiusMediumSmall,
+                                            bottomEnd = dimensions.radiusMediumSmall
+                                    )
                             )
-                        )
-                        .padding(
-                            top = dimensions.paddingSmall,
-                            bottom = dimensions.paddingSmall,
-                            start = dimensions.paddingMediumLarge,
-                            end = dimensions.paddingMediumLarge
-                        ),
+                            .padding(
+                                    top = dimensions.paddingSmall,
+                                    bottom = dimensions.paddingSmall,
+                                    start = dimensions.paddingMediumLarge,
+                                    end = dimensions.paddingMediumLarge
+                            ),
                 ) {
                     Text(
                         text = stringResource(id = R.string.Your_selection),
@@ -115,10 +116,10 @@ fun KSRewardCard(
             }
 
             Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(dimensions.paddingMediumLarge)
-                    .weight(weight = 1f, fill = false)
+                    Modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(dimensions.paddingMediumLarge)
+                            .weight(weight = 1f, fill = false)
             ) {
 
                 if (!amount.isNullOrEmpty()) {
@@ -177,9 +178,9 @@ fun KSRewardCard(
 
                             Box(
                                 modifier = Modifier
-                                    .padding(end = dimensions.paddingSmall)
-                                    .size(dimensions.paddingXSmall)
-                                    .background(color = colors.kds_support_400, shape = CircleShape),
+                                        .padding(end = dimensions.paddingSmall)
+                                        .size(dimensions.paddingXSmall)
+                                        .background(color = colors.kds_support_400, shape = CircleShape),
                             )
 
                             Text(
@@ -265,8 +266,8 @@ fun KSRewardCard(
             if (isCTAButtonVisible) {
                 KSPrimaryGreenButton(
                     modifier = Modifier
-                        .padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge)
-                        .fillMaxWidth(),
+                            .padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge)
+                            .fillMaxWidth(),
                     onClickAction = onRewardSelectClicked,
                     isEnabled = isCTAButtonEnabled,
                     text = ctaButtonText

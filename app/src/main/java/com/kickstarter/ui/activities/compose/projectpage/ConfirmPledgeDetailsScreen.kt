@@ -259,11 +259,13 @@ fun ConfirmPledgeDetailsScreen(
         2
     ) ?: ""
 
-    val aboutTotalString = environment?.ksString()?.format(
-        stringResource(id = R.string.About_reward_amount),
-        "reward_amount",
-        totalAmountConvertedString
-    ) ?: "About $totalAmountConvertedString"
+    val aboutTotalString = if(project.currentCurrency() == project.currency()) "" else {
+        environment?.ksString()?.format(
+                stringResource(id = R.string.About_reward_amount),
+                "reward_amount",
+                totalAmountConvertedString
+        ) ?: "About $totalAmountConvertedString"
+    }
 
     val shippingAmountString = environment?.ksCurrency()?.let {
         RewardViewUtils.styleCurrency(
@@ -467,7 +469,7 @@ fun ConfirmPledgeDetailsScreen(
                                         color = colors.textPrimary
                                     )
 
-                                    if (aboutTotalString.isNotEmpty()) {
+                                    if (!aboutTotalString.isNullOrEmpty()) {
                                         Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
                                         Text(
@@ -489,7 +491,7 @@ fun ConfirmPledgeDetailsScreen(
                             shippingAmountString = shippingAmountString,
                             initialShippingLocation = shippingLocation,
                             totalAmount = totalAmountString,
-                            totalAmountCurrencyConverted = totalAmountConvertedString,
+                            totalAmountCurrencyConverted = aboutTotalString,
                             initialBonusSupport = initialBonusSupportString,
                             totalBonusSupport = totalBonusSupportString,
                             deliveryDateString = deliveryDateString,
@@ -730,11 +732,7 @@ fun ItemizedRewardListContainer(
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
                     Text(
-                        text = ksString?.format(
-                            stringResource(id = R.string.About_reward_amount),
-                            "reward_amount",
-                            totalAmountCurrencyConverted
-                        ) ?: "About $totalAmountCurrencyConverted",
+                        text = totalAmountCurrencyConverted,
                         style = typography.footnote,
                         color = colors.textPrimary
                     )

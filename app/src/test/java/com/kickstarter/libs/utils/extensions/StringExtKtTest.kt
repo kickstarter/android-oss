@@ -268,8 +268,8 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
-        private const val VALID_GIF_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"
-        private const val VALID_PNG_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.png?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"
+        private const val VALID_GIF_URL = "https://i.kickstarter.com/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?origin=ugc-qa&q=92&sig=C1dWB6NvmlwKGw4lty6s4FGU6Dn3rzNv%2F3p%2B4bhSpzk%3D"
+        private const val VALID_PNG_URL = "https://i.kickstarter.com/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.png?origin=ugc-qa&q=92&sig=iSSBt1qHa27bdxfYfQ74P9TI7MVDjHLOsUXaLxxPFmU%3D"
         private const val INVALID_EMAIL = "hello@kickstarer"
         private const val EMPTY_STRING = ""
         private const val EMPTY_SPACE = " "

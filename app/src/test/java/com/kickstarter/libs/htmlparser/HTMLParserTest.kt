@@ -46,7 +46,7 @@ class HTMLParserTest {
 
     @Test
     fun parseImageWithoutCaptionOrLink() {
-        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?ixlib=rb-4.0.2&w=700&fit=max&v=1635378787&auto=format&gif-q=50&lossless=true&s=02a9283693d143fe7ba04c1a0d52fa4c"
+        val src = "https://i.kickstarter.com/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?fit=contain&origin=ugc-qa&width=700&sig=P9RjFGgKL2eitGUu20BEbr0sAUraetXK4FRXi9lirbI%3D"
         val onlyImageHtml = "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"\" data-id=\"35272957\">\\n " +
             "<figure>\\n " + "" +
             "<img alt=\"\" class=\"fit\" src=\"$src\">\\n " +
@@ -62,7 +62,7 @@ class HTMLParserTest {
 
     @Test
     fun parseImageWithCaptionWithoutLink() {
-        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?ixlib=rb-4.0.2&w=700&fit=max&v=1635378787&auto=format&gif-q=50&lossless=true&s=02a9283693d143fe7ba04c1a0d52fa4c"
+        val src = "https://i.kickstarter.com/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?fit=contain&origin=ugc-qa&width=700&sig=P9RjFGgKL2eitGUu20BEbr0sAUraetXK4FRXi9lirbI%3D"
         val onlyImageHtml = "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is Coach Beard with a caption\" data-id=\"35272957\">\\n " +
             "<figure>\\n " + "" +
             "<img alt=\"\" class=\"fit\" src=\"$src\">\\n " +
@@ -78,7 +78,7 @@ class HTMLParserTest {
 
     @Test
     fun parseImageWithCaptionAndLink() {
-        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?ixlib=rb-4.0.2&w=700&fit=max&v=1635378787&auto=format&gif-q=50&lossless=true&s=02a9283693d143fe7ba04c1a0d52fa4c"
+        val src = "https://i.kickstarter.com/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?fit=contain&origin=ugc-qa&width=700&sig=P9RjFGgKL2eitGUu20BEbr0sAUraetXK4FRXi9lirbI%3D"
         val href = "http://record.pt/"
         val onlyImageHtml = "<a href=$href target=\"_blank\" rel=\"noopener\">" +
             "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is an Android with a caption and a link\" data-id=\"35272959\">\n" +
@@ -99,12 +99,12 @@ class HTMLParserTest {
 
     @Test
     fun parseGifWithCaptionAndLink() {
-        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?ixlib=rb-4.0.2&w=700&fit=max&v=1635378954&auto=format&frame=1&q=92&s=fae855ae1e9f3919c1631c074419cd43"
+        val src = "https://i.kickstarter.com/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?anim=false&fit=contain&origin=ugc-qa&q=92&width=700&sig=rvKKMk41FS3KoXYlBctOWRpnysKR58LIBwkmNXHmL5I%3D"
         val href = "https://twitter.com/TedLasso"
         val onlyImageHtml = "<a href=\"https://twitter.com/TedLasso\" target=\"_blank\" rel=\"noopener\">" +
             "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is Ted having the time of his life with a caption and a link\" data-id=\"35272962\">\n" +
             "<figure>" +
-            "\n<img alt=\"\" class=\"fit js-lazy-image\" data-src=$src src=\\\"https://ksr-qa-ugc.imgix.net/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?ixlib=rb-4.0.2&amp;w=700&amp;fit=max&amp;v=1635378954&amp;auto=format&amp;frame=1&amp;q=92&amp;s=fae855ae1e9f3919c1631c074419cd43\\\">\n" +
+            "\n<img alt=\"\" class=\"fit js-lazy-image\" data-src=$src src=\\\"https://i.kickstarter.com/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?anim=false&amp;fit=contain&amp;origin=ugc-qa&amp;q=92&amp;width=700&amp;sig=rvKKMk41FS3KoXYlBctOWRpnysKR58LIBwkmNXHmL5I%3D\\\">\n" +
             "<figcaption class=\"px2\">This is Ted having the time of his life with a caption and a link</figcaption>" +
             "</figure>" +
             "\n\n</div>\n" +

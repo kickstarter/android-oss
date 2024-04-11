@@ -267,8 +267,8 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
 
     companion object {
         private const val MESSAGE_THREAD_ID = 17848074L
-        private const val PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/1176555/photo-original.png?v=1407175667&w=120&h=120&fit=crop&auto=format&q=92&s=2065d33620d4fef280c4c2d451c2fa93"
-        private const val USER_PHOTO = "https://ksr-ugc.imgix.net/avatars/1583412/portrait.original.png?v=1330782076&w=120&h=120&fit=crop&auto=format&q=92&s=a9029da56a3deab8c4b87818433e3430"
+        private const val PROJECT_PHOTO = "https://i.kickstarter.com/projects/1176555/photo-original.png?fit=crop&height=120&origin=ugc&q=92&width=120&sig=N2Cp7NJ%2BwWAL9uCCnDUJsBTrlnu2jsA2YEbnMhMAmL8%3D"
+        private const val USER_PHOTO = "https://i.kickstarter.com/avatars/1583412/portrait.original.png?fit=crop&height=120&origin=ugc&q=92&width=120&sig=pAy%2BjUnR58ihUt%2BFabs6mq7DaYWvg3RC%2FYloU8fuTuE%3D"
         private const val PROJECT_ID = 1761344210L
     }
 }

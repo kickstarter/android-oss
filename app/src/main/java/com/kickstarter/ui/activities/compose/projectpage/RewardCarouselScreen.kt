@@ -107,11 +107,11 @@ fun RewardCarouselScreen(
             Column {
                 Text(
                     modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                    bottom = KSTheme.dimensions.paddingMediumSmall,
-                                    top = KSTheme.dimensions.paddingMediumSmall
-                            ),
+                        .fillMaxWidth()
+                        .padding(
+                            bottom = KSTheme.dimensions.paddingMediumSmall,
+                            top = KSTheme.dimensions.paddingMediumSmall
+                        ),
                     text = environment.ksString()?.let {
                         it.format(
                             "Rewards_count_rewards", project.rewards()?.size ?: 0,
@@ -126,9 +126,9 @@ fun RewardCarouselScreen(
     ) { padding ->
         LazyRow(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(paddingValues = padding),
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(paddingValues = padding),
             state = lazyRowState,
             contentPadding =
             PaddingValues(
@@ -189,13 +189,13 @@ fun RewardCarouselScreen(
                         },
                         conversion = if (project.currentCurrency() == project.currency()) "" else {
                             val conversionAmount = environment.ksCurrency()?.format(
-                                    reward.convertedMinimum(),
-                                    project,
-                                    true,
-                                    RoundingMode.HALF_UP,
-                                    true
+                                reward.convertedMinimum(),
+                                project,
+                                true,
+                                RoundingMode.HALF_UP,
+                                true
                             )
-                            environment.ksString()?.format(stringResource(id = R.string.About_reward_amount), "reward_amount", conversionAmount )
+                            environment.ksString()?.format(stringResource(id = R.string.About_reward_amount), "reward_amount", conversionAmount)
                         },
                         description = reward.description(),
                         title = reward.title(),
@@ -283,9 +283,9 @@ fun RewardCarouselScreen(
         if (isLoading) {
             Box(
                 modifier = Modifier
-                        .fillMaxSize()
-                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                        .clickable(enabled = false) { },
+                    .fillMaxSize()
+                    .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                    .clickable(enabled = false) { },
                 contentAlignment = Alignment.Center
             ) {
                 KSCircularProgressIndicator()

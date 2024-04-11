@@ -259,11 +259,11 @@ fun ConfirmPledgeDetailsScreen(
         2
     ) ?: ""
 
-    val aboutTotalString = if(project.currentCurrency() == project.currency()) "" else {
+    val aboutTotalString = if (project.currentCurrency() == project.currency()) "" else {
         environment?.ksString()?.format(
-                stringResource(id = R.string.About_reward_amount),
-                "reward_amount",
-                totalAmountConvertedString
+            stringResource(id = R.string.About_reward_amount),
+            "reward_amount",
+            totalAmountConvertedString
         ) ?: "About $totalAmountConvertedString"
     }
 

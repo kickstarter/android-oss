@@ -238,10 +238,10 @@ fun CheckoutScreen(
 
             val totalAmountConvertedString = if (project.currentCurrency() == project.currency()) "" else {
                 environment.ksCurrency()?.formatWithUserPreference(
-                        totalAmount,
-                        project,
-                        RoundingMode.UP,
-                        2
+                    totalAmount,
+                    project,
+                    RoundingMode.UP,
+                    2
                 ) ?: ""
             }
 

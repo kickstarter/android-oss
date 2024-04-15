@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectStateChangedViewBinding
 import com.kickstarter.models.Activity
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadImage
 
 class ProjectStateChangedViewHolder(
     private val binding: ActivityProjectStateChangedViewBinding,
@@ -21,9 +21,7 @@ class ProjectStateChangedViewHolder(
         val user = activity().user()
         val photo = project?.photo()
         if (project != null && user != null && photo != null) {
-            Picasso.get()
-                .load(photo.little())
-                .into(binding.projectPhoto)
+            binding.projectPhoto.loadImage(photo.little())
 
             val title = when (activity().category()) {
                 Activity.CATEGORY_FAILURE -> context().getString(R.string.activity_project_state_change_project_was_not_successfully_funded)

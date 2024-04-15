@@ -4,13 +4,12 @@ import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.User
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.LoggedInViewHolderViewModel
-import com.squareup.picasso.Picasso
 
 class LoggedInViewHolder(
     private val binding: DiscoveryDrawerLoggedInViewBinding,
@@ -32,10 +31,7 @@ class LoggedInViewHolder(
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                Picasso.get()
-                    .load(it)
-                    .transform(CircleTransformation())
-                    .into(binding.userImageView)
+                binding.userImageView.loadCircleImage(it)
             }
 
         this.viewModel.outputs.name()

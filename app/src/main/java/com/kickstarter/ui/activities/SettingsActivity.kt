@@ -18,15 +18,14 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.viewmodels.SettingsViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -86,8 +85,7 @@ class SettingsActivity : AppCompatActivity() {
         this.viewModel.outputs.avatarImageViewUrl()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url ->
-                Picasso.get().load(url).transform(CircleTransformation())
-                    .into(binding.profilePictureImageView)
+                binding.profilePictureImageView.loadCircleImage(url)
             }
             .addToDisposable(disposables)
 

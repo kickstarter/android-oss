@@ -15,7 +15,7 @@ import com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.data.MediaElement
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadImageWithResize
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -88,12 +88,7 @@ class MediaHeader @JvmOverloads constructor(
             if (element?.thumbnailUrl != null) {
                 ResourcesCompat.getDrawable(context.resources, R.drawable.gray_gradient, null)
                     ?.let {
-                        Picasso.get()
-                            .load(element.thumbnailUrl)
-                            .resize(targetImageWidth, targetImageHeight)
-                            .centerCrop()
-                            .placeholder(it)
-                            .into(binding.videoProjectPhoto)
+                        binding.videoProjectPhoto.loadImageWithResize(element.thumbnailUrl, targetImageWidth, targetImageHeight, it)
                     }
             }
 

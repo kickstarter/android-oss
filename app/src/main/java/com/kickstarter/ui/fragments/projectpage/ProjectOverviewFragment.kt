@@ -23,7 +23,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
@@ -36,6 +35,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setClickableHtml
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startLoginActivity
@@ -43,7 +43,6 @@ import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
@@ -224,10 +223,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url: String? ->
                 url?.let {
-                    Picasso.get()
-                        .load(it)
-                        .transform(CircleTransformation())
-                        .into(binding.projectSocialImage)
+                    binding.projectSocialImage.loadCircleImage(it)
                 }
             }
             .addToDisposable(disposables)
@@ -393,10 +389,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
     }
 
     private fun setAvatar(url: String) {
-        Picasso.get()
-            .load(url)
-            .transform(CircleTransformation())
-            .into(binding.avatar)
+        binding.avatar.loadCircleImage(url)
     }
 
     private fun setConvertedCurrencyView(pledgedAndGoal: Pair<String, String>) {

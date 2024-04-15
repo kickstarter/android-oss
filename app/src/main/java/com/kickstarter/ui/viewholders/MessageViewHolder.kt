@@ -10,12 +10,11 @@ import android.view.View
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isGone
 import com.kickstarter.databinding.MessageViewBinding
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Message
 import com.kickstarter.ui.activities.DeepLinkActivity
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.MessageHolderViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -102,8 +101,6 @@ class MessageViewHolder(private val binding: MessageViewBinding) : KSViewHolder(
     }
 
     private fun setParticipantAvatarImageView(avatarUrl: String) {
-        Picasso.get().load(avatarUrl)
-            .transform(CircleTransformation())
-            .into(binding.messageSenderAvatarImageView)
+        binding.messageSenderAvatarImageView.loadCircleImage(avatarUrl)
     }
 }

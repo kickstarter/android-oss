@@ -11,15 +11,14 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.ProfileViewModel
-import com.squareup.picasso.Picasso
 
 @RequiresActivityViewModel(ProfileViewModel.ViewModel::class)
 class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
@@ -46,7 +45,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.avatarImageViewUrl()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(binding.avatarImageView) }
+            .subscribe { url -> binding.avatarImageView.loadCircleImage(url) }
 
         this.viewModel.outputs.backedCountTextViewHidden()
             .compose(bindToLifecycle())

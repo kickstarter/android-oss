@@ -5,7 +5,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Activity
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadImage
 import org.joda.time.DateTime
 
 class ProjectStateChangedPositiveViewHolder(
@@ -72,9 +72,7 @@ class ProjectStateChangedPositiveViewHolder(
             }
             // TODO: Switch to "You launched a project" if current user launched
             // return context.getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
-            Picasso.get()
-                .load(photo.full())
-                .into(binding.projectPhoto)
+            binding.projectPhoto.loadImage(photo.full())
         }
         binding.cardView.setOnClickListener {
             onClick()

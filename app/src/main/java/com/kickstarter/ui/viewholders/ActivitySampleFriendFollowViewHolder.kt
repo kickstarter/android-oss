@@ -4,11 +4,10 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Activity
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.ActivitySampleFriendFollowViewHolderViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.disposables.CompositeDisposable
 
 class ActivitySampleFriendFollowViewHolder(
@@ -32,9 +31,7 @@ class ActivitySampleFriendFollowViewHolder(
             .subscribe {
                 it.user()?.let { user ->
                     user.avatar().small().let { url ->
-                        Picasso.get().load(url)
-                            .transform(CircleTransformation())
-                            .into(binding.activityImage)
+                        binding.activityImage.loadCircleImage(url)
                     }
 
                     binding.activityTitle.text = ksString.format(

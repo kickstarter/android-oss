@@ -5,8 +5,8 @@ import com.kickstarter.databinding.ActivitySampleProjectViewBinding
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
+import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.viewmodels.ActivitySampleProjectViewHolderViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -40,9 +40,7 @@ class ActivitySampleProjectViewHolder(
                 activity.project()?.let { project ->
                     val photo = project.photo()
                     photo?.let {
-                        Picasso.get()
-                            .load(photo.little())
-                            .into(binding.activityImage)
+                        binding.activityImage.loadImage(it.little())
                     }
                     binding.activityTitle.text = project.name()
                     val activitySubtitleText = when (activity.category()) {

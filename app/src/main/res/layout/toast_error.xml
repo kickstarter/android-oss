@@ -19,7 +19,7 @@
       android:orientation="horizontal"
       android:padding="@dimen/grid_2">
 
-      <ImageView
+      <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/toast_icon"
         android:layout_width="@dimen/grid_5_half"
         android:layout_height="wrap_content"

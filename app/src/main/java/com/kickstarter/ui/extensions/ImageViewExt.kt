@@ -85,23 +85,6 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
         val targetView = this
         if (context.applicationContext.isKSApplication()) {
             try {
-//                Picasso
-//                    .get()
-//                    .load(url)
-//                    .into(
-//                        this,
-//                        object : Callback {
-//                            override fun onSuccess() {
-//                                imageViewPlaceholder?.setImageDrawable(target.drawable)
-//                            }
-//
-//                            override fun onError(e: Exception?) {
-//                                target.setImageDrawable(null)
-//                                imageViewPlaceholder?.setImageDrawable(null)
-//                            }
-//                        }
-//                    )
-
                 Glide.with(context)
                     .load(url)
                     .listener(object : RequestListener<Drawable> {

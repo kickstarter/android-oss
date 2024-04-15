@@ -61,7 +61,7 @@ interface ExpandableHeaderViewHolderViewModel {
                 .addToDisposable(disposables)
 
             projectAndReward
-                .map { this.ksCurrency.format(it.second.minimum(), it.first) }
+                .map { this.ksCurrency.format(it.second.minimum() * (it.second.quantity() ?: 1), it.first) }
                 .subscribe { this.amountForSummary.onNext(it) }
                 .addToDisposable(disposables)
         }

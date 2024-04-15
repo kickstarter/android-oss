@@ -2,8 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFriendFollowViewBinding
-import com.kickstarter.libs.transformations.CircleTransformation
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadCircleImage
 
 class FriendFollowViewHolder(private val binding: ActivityFriendFollowViewBinding) :
     ActivityListViewHolder(binding.root) {
@@ -12,10 +11,7 @@ class FriendFollowViewHolder(private val binding: ActivityFriendFollowViewBindin
         val context = context()
         val friend = activity().user() ?: return
         friend.avatar().small()?.let {
-            Picasso.get()
-                .load(it)
-                .transform(CircleTransformation())
-                .into(binding.avatar)
+            binding.avatar.loadCircleImage(it)
         }
         // TODO: bold username
         binding.title.text = StringBuilder(friend.name())

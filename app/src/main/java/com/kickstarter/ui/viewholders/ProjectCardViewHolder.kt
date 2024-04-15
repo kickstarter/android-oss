@@ -24,8 +24,8 @@ import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.extensions.loadCircleImage
+import com.kickstarter.ui.extensions.loadImageWithResize
 import com.kickstarter.viewmodels.ProjectCardHolderViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 
@@ -322,15 +322,7 @@ class ProjectCardViewHolder(
         avatarUrl?.let {
             ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)
                 ?.let { placeholder ->
-                    Picasso.get()
-                        .load(it)
-                        .resize(
-                            targetImageWidth,
-                            targetImageHeight
-                        ) // required to fit properly into apis < 18
-                        .centerCrop()
-                        .placeholder(placeholder)
-                        .into(binding.projectCardPhoto.photo)
+                    binding.projectCardPhoto.photo.loadImageWithResize(it, targetImageWidth, targetImageHeight, placeholder)
                 }
         }
     }

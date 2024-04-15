@@ -6,16 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.core.view.isGone
 import com.kickstarter.databinding.ActivityEditProfileBinding
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.models.User
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.EditProfileViewModel
-import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -40,7 +39,7 @@ class EditProfileActivity : ComponentActivity() {
         this.viewModel.outputs.userAvatarUrl()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url ->
-                Picasso.get().load(url).transform(CircleTransformation()).into(binding.avatarImageView)
+                binding.avatarImageView.loadCircleImage(url)
             }.addToDisposable(disposables)
 
         this.viewModel.outputs.user()

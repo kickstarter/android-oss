@@ -6,13 +6,12 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySurveyViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.SurveyResponseActivity
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.SurveyHolderViewModel
-import com.squareup.picasso.Picasso
 
 class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
     KSViewHolder(binding.root) {
@@ -40,10 +39,7 @@ class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
     }
 
     private fun setCreatorAvatarImage(creatorAvatarImage: String) {
-        Picasso.get()
-            .load(creatorAvatarImage)
-            .transform(CircleTransformation())
-            .into(binding.surveyAvatarImage)
+        binding.surveyAvatarImage.loadCircleImage(creatorAvatarImage)
     }
 
     private fun startSurveyResponseActivity(surveyResponse: SurveyResponse) {

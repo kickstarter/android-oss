@@ -8,15 +8,14 @@ import com.kickstarter.R
 import com.kickstarter.databinding.MessageThreadViewBinding
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.wrapInParentheses
 import com.kickstarter.models.MessageThread
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessagesActivity
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.MessageThreadHolderViewModel
-import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
 
 class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : KSViewHolder(binding.root) {
@@ -46,9 +45,7 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
     }
 
     private fun setParticipantAvatarImageView(avatarUrl: String) {
-        Picasso.get().load(avatarUrl)
-            .transform(CircleTransformation())
-            .into(binding.participantAvatarImageView)
+        binding.participantAvatarImageView.loadCircleImage(avatarUrl)
     }
 
     private fun setUnreadCountTextView(unreadCount: String) {

@@ -18,10 +18,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestOptions;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
-import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.extensions.AnyExtKt;
 import com.kickstarter.libs.utils.extensions.IntentExtKt;
 import com.kickstarter.models.MessageThread;
@@ -38,18 +40,17 @@ import com.kickstarter.ui.activities.MessagesActivity;
 import com.kickstarter.ui.activities.ProjectPageActivity;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.ui.activities.UpdateActivity;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
@@ -415,14 +416,23 @@ public final class PushNotifications {
     }
 
     try {
-      RequestCreator requestCreator =  Picasso.get().load(url).transform(new CropSquareTransformation());
       if (transformIntoCircle) {
-        requestCreator = requestCreator.transform(new CircleTransformation());
+        final FutureTarget<Bitmap> circleCrop = Glide.with(this.context)
+          .asBitmap()
+          .load(url)
+          .apply(RequestOptions.circleCropTransform())
+          .submit();
+        return circleCrop.get();
+      } else {
+        final FutureTarget<Bitmap> SquareRoundCorners = Glide.with(this.context)
+          .asBitmap()
+          .load(url)
+          .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(10)))
+          .submit();
+        return SquareRoundCorners.get();
       }
-      return requestCreator.get();
-    } catch (IOException e) {
-      Timber.e(e.getMessage(), "Failed to load large icon: %s");
-      return null;
+    } catch (ExecutionException | InterruptedException e) {
+      throw new RuntimeException(e);
     }
   }
 

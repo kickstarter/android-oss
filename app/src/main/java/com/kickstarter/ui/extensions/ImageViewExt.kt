@@ -89,10 +89,10 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                     .load(url)
                     .listener(object : RequestListener<Drawable> {
                         override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
+                            resource: Drawable,
+                            model: Any,
                             target: Target<Drawable>?,
-                            dataSource: com.bumptech.glide.load.DataSource?,
+                            dataSource: com.bumptech.glide.load.DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
                             imageViewPlaceholder?.setImageDrawable(resource)
@@ -102,7 +102,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                         override fun onLoadFailed(
                             e: GlideException?,
                             model: Any?,
-                            target: Target<Drawable>?,
+                            target: Target<Drawable>,
                             isFirstResource: Boolean
                         ): Boolean {
                             targetView.setImageDrawable(null)

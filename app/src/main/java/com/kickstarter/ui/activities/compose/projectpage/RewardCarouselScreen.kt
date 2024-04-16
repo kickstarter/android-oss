@@ -187,14 +187,15 @@ fun RewardCarouselScreen(
                                 it
                             ).toString()
                         },
-                        conversion = environment.ksCurrency()?.let {
-                            it.format(
+                        conversion = if (project.currentCurrency() == project.currency()) "" else {
+                            val conversionAmount = environment.ksCurrency()?.format(
                                 reward.convertedMinimum(),
                                 project,
                                 true,
                                 RoundingMode.HALF_UP,
                                 true
                             )
+                            environment.ksString()?.format(stringResource(id = R.string.About_reward_amount), "reward_amount", conversionAmount)
                         },
                         description = reward.description(),
                         title = reward.title(),

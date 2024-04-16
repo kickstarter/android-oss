@@ -236,12 +236,14 @@ fun CheckoutScreen(
                 ).toString()
             } ?: ""
 
-            val totalAmountConvertedString = environment.ksCurrency()?.formatWithUserPreference(
-                totalAmount,
-                project,
-                RoundingMode.UP,
-                2
-            ) ?: ""
+            val totalAmountConvertedString = if (project.currentCurrency() == project.currency()) "" else {
+                environment.ksCurrency()?.formatWithUserPreference(
+                    totalAmount,
+                    project,
+                    RoundingMode.UP,
+                    2
+                ) ?: ""
+            }
 
             val shippingAmountString = environment.ksCurrency()?.let {
                 RewardViewUtils.styleCurrency(
@@ -449,7 +451,7 @@ fun CheckoutScreen(
                         shippingAmountString = shippingAmountString,
                         initialShippingLocation = shippingLocation,
                         totalAmount = totalAmountString,
-                        totalAmountCurrencyConverted = totalAmountConvertedString,
+                        totalAmountCurrencyConverted = aboutTotalString,
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
@@ -458,7 +460,7 @@ fun CheckoutScreen(
                 } else {
                     ItemizedRewardListContainer(
                         totalAmount = totalAmountString,
-                        totalAmountCurrencyConverted = totalAmountConvertedString,
+                        totalAmountCurrencyConverted = aboutTotalString,
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalBonusSupportString,
                         shippingAmount = shippingAmount,

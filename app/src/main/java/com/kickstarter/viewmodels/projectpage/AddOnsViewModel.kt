@@ -119,6 +119,8 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                         )
                         shippingRules = shippingRulesEnvelope.shippingRules()
                     }.addToDisposable(disposables)
+                } ?: run {
+                    shippingRulesObservable.onNext(listOf())
                 }
             }
         }
@@ -153,8 +155,12 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
         return this.currentConfig.observable()
             .map { it.countryCode() }
             .map { countryCode ->
-                shippingRules.firstOrNull { it.location()?.country() == countryCode }
-                    ?: shippingRules.first()
+                if (shippingRules.isNotEmpty()) {
+                    shippingRules.firstOrNull { it.location()?.country() == countryCode }
+                        ?: shippingRules.first()
+                } else {
+                    ShippingRule.builder().build()
+                }
             }
     }
 

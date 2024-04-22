@@ -95,7 +95,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onUserRewardSelection(testRewards[2])
 
-        assert(uiState.size == 2)
+        assert(uiState.size == 3)
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
@@ -141,7 +141,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onUserRewardSelection(testRewards[2])
 
-        assert(uiState.size == 2)
+        assert(uiState.size == 3)
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
@@ -191,7 +191,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onUserRewardSelection(testRewards[2])
 
-        assert(uiState.size == 2)
+        assert(uiState.size == 3)
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
@@ -241,7 +241,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onUserRewardSelection(testRewards[2])
 
-        assert(uiState.size == 2)
+        assert(uiState.size == 3)
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
@@ -299,7 +299,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = true
+                showAlertDialog = true,
+                selectedReward = testRewards[2]
             )
         )
 
@@ -346,7 +347,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         viewModel.onUserRewardSelection(testRewards[2])
 
-        assert(uiState.size == 2)
+        assert(uiState.size == 3)
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
@@ -407,7 +408,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                     rewardList = testRewards,
                     initialRewardIndex = 3,
                     project = testProjectData,
-                    showAlertDialog = true
+                    showAlertDialog = true,
+                    selectedReward = testRewards[2]
                 )
             )
 
@@ -464,7 +466,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = true
+                showAlertDialog = true,
+                selectedReward = testRewards[2]
             )
         )
 
@@ -530,7 +533,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = true
+                showAlertDialog = true,
+                selectedReward = testRewards[2]
             )
         )
 
@@ -596,7 +600,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = true
+                showAlertDialog = true,
+                selectedReward = testRewards[2]
             )
         )
 
@@ -610,7 +615,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = false
+                showAlertDialog = false,
+                selectedReward = testRewards[2]
             )
         )
 

@@ -71,7 +71,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
         viewModelScope.launch {
             val pledgeDataAndReason = pledgeDataAndPledgeReason(currentProjectData, reward)
             newUserReward = pledgeDataAndReason.first.reward()
-
+            emitCurrentState()
             analytics.trackSelectRewardCTA(pledgeDataAndReason.first)
 
             when (pledgeDataAndReason.second) {
@@ -182,6 +182,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
                 initialRewardIndex = indexOfBackedReward,
                 project = currentProjectData,
                 showAlertDialog = showAlertDialog,
+                selectedReward = newUserReward
             )
         )
     }

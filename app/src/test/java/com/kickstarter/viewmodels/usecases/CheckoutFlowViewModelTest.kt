@@ -41,6 +41,7 @@ class CheckoutFlowViewModelTest : KSRobolectricTestCase() {
 
         // - make sure empty FlowUISate has been produced, `onConfirmDetailsContinueClicked` will produce states ONLY if user present
         assertEquals(state, listOf(FlowUIState()))
+        assertNotSame(state, listOf(FlowUIState(currentPage = 4, expanded = true)))
         assertNotSame(state, listOf(FlowUIState(currentPage = 3, expanded = true)))
         assert(state.size == 1)
     }
@@ -70,7 +71,7 @@ class CheckoutFlowViewModelTest : KSRobolectricTestCase() {
         }
 
         // - make sure next page FlowUIState has been generated, not just the initial empty state
-        assertEquals(state, listOf(FlowUIState(), FlowUIState(currentPage = 3, expanded = true)))
+        assertEquals(state, listOf(FlowUIState(), FlowUIState(currentPage = 4, expanded = true)))
         assert(state.size == 2)
     }
 }

@@ -624,6 +624,46 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `Test rewards list when given a list of rewards that contains unavailable rewards will produce a list of rewards with only rewards available`() = runTest {
+        createViewModel()
+        val testRewards = (0..8).map {
+            if (it % 2 == 0)
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
+                .build()
+            else
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(false).hasAddons(it != 2).shippingType("$it")
+                    .build()
+        }
+
+        val testProject = Project.builder().rewards(testRewards).build()
+        val testProjectData = ProjectData.builder().project(testProject).build()
+
+        viewModel.provideProjectData(testProjectData)
+
+        val uiState = mutableListOf<RewardSelectionUIState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.rewardSelectionUIState.toList(uiState)
+        }
+
+        val filteredRewards = testRewards.filter { it.isAvailable() }
+        assertEquals(uiState.size, 2)
+
+        // - make sure the uiState output reward list is filtered
+        assertEquals(
+            uiState.last(),
+            RewardSelectionUIState(
+                rewardList = filteredRewards,
+                initialRewardIndex = 0,
+                project = testProjectData,
+                showAlertDialog = false
+            )
+        )
+
+        // - make sure the uiState output reward list is not the same as the provided reward list
+        assertNotSame(uiState.last().rewardList, testRewards.size)
+    }
+
+    @Test
     fun `test send analytic event trackRewardsCarouselViewed() when the currentPage is rewards and is expanded mode`() {
         createViewModel()
 

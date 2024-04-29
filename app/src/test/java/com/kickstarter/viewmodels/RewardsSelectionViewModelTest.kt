@@ -33,7 +33,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     fun test_providing_project_should_initialize_UIState() = runTest {
         createViewModel()
 
-        val testRewards = (0..5).map { Reward.builder().title("$it").id(it.toLong()).build() }
+        val testRewards = (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).build() }
         val testBacking =
             Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
         val testProject = Project.builder().rewards(testRewards).backing(testBacking).build()
@@ -65,7 +65,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).hasAddons(true).build() }
+            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).build() }
         val testProject = Project.builder().rewards(testRewards).build()
         val testProjectData = ProjectData.builder().project(testProject).build()
 
@@ -111,7 +111,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).hasAddons(false).build() }
+            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(false).build() }
         val testProject = Project.builder().rewards(testRewards).build()
         val testProjectData = ProjectData.builder().project(testProject).build()
 
@@ -157,7 +157,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).hasAddons(true).build() }
+            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).build() }
         val testBacking =
             Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
         val testProject =
@@ -207,7 +207,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).hasAddons(true).build() }
+            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).build() }
         val testBacking =
             Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
         val testProject =
@@ -257,7 +257,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).hasAddons(it != 2).build() }
+            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).build() }
         val testBacking =
             Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
         val testProject =
@@ -313,7 +313,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).hasAddons(false).build() }
+            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(false).build() }
         val testBacking =
             Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
         val testProject =
@@ -364,7 +364,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             createViewModel()
 
             val testRewards = (0..5).map {
-                Reward.builder().title("$it").id(it.toLong()).hasAddons(true).shippingType("$it")
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).shippingType("$it")
                     .build()
             }
             val testBacking =
@@ -422,7 +422,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards = (0..5).map {
-            Reward.builder().title("$it").id(it.toLong()).hasAddons(true).shippingType("$it")
+            Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).shippingType("$it")
                 .build()
         }
         val testBacking =
@@ -489,7 +489,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards = (0..5).map {
-            Reward.builder().title("$it").id(it.toLong()).hasAddons(it != 2).shippingType("$it")
+            Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
                 .build()
         }
         val testBacking =
@@ -556,7 +556,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         createViewModel()
 
         val testRewards = (0..5).map {
-            Reward.builder().title("$it").id(it.toLong()).hasAddons(it != 2).shippingType("$it")
+            Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
                 .build()
         }
         val testBacking =

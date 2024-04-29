@@ -629,7 +629,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val testRewards = (0..8).map {
             if (it % 2 == 0)
                 Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
-                .build()
+                    .build()
             else
                 Reward.builder().title("$it").id(it.toLong()).isAvailable(false).hasAddons(it != 2).shippingType("$it")
                     .build()

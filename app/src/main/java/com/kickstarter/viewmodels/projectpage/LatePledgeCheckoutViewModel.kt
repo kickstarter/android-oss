@@ -18,6 +18,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -132,7 +133,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onNewCardSuccessfullyAdded() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             apolloClient.savePaymentMethod(
                 SavePaymentMethodData(
                     reusable = true,

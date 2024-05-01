@@ -1217,7 +1217,6 @@ class ProjectPageActivity :
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
             flowController.confirm()
-            latePledgeCheckoutViewModel.onNewCardSuccessfullyAdded()
         }
     }
 
@@ -1241,6 +1240,7 @@ class ProjectPageActivity :
             }
 
             is PaymentSheetResult.Completed -> {
+                latePledgeCheckoutViewModel.onNewCardSuccessfullyAdded()
             }
         }
     }

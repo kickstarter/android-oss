@@ -1217,6 +1217,7 @@ class ProjectPageActivity :
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
             flowController.confirm()
+            latePledgeCheckoutViewModel.loading()
         }
     }
 

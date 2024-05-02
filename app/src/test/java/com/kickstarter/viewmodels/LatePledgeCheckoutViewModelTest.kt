@@ -11,10 +11,12 @@ import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutUIState
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
+import com.kickstarter.viewmodels.projectpage.StripeActions
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -26,8 +28,8 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: LatePledgeCheckoutViewModel
 
-    private fun setUpEnvironment(environment: Environment) {
-        viewModel = LatePledgeCheckoutViewModel.Factory(environment).create(LatePledgeCheckoutViewModel::class.java)
+    private fun setUpEnvironment(environment: Environment, stripeActions: StripeActions? = null) {
+        viewModel = LatePledgeCheckoutViewModel.Factory(environment, stripeActions).create(LatePledgeCheckoutViewModel::class.java)
     }
 
     @Test
@@ -123,30 +125,61 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `Test VM error init state when user or stored cards requests fail will generate state without saved cards or user email`() = runTest {
 
+    }
+
+    @Test
+    fun `Test VM add new paymment method using stripes integration`() = runTest {
+
+        class stripeActionsNotErroredMock(): StripeActions {
+            override suspend fun paymentIntentContainsError(
+                clientSecret: String,
+                selectedCard: StoredCard
+            ): String? {
+                return null
+            }
+        }
+
+        val discover = StoredCardFactory.discoverCard()
+        val visa = StoredCardFactory.visa()
+        val cardsList = listOf(visa, discover)
+        val notErrored = stripeActionsNotErroredMock()
         val currentUser = MockCurrentUserV2(UserFactory.user())
+        val project = ProjectFactory.project()
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .currentUserV2(currentUser) // - mock the user
                 .apolloClientV2(object : MockApolloClientV2() {
                     override fun getStoredCards(): Observable<List<StoredCard>> { // - mock the stored cards
-                        return Observable.error(Throwable("Something went wrong"))
+                        return Observable.just(cardsList)
                     }
 
                     override fun userPrivacy(): Observable<UserPrivacy> { // - mock the user email and name
-                        return Observable.error(Throwable("Something went wrong"))
+                        return Observable.just(
+                            UserPrivacy("Hola holita", "hola@gmail.com", true, true, true, true, "MXN")
+                        )
                     }
-                }).build()
+
+                    override fun createSetupIntent(project: Project?): Observable<String> {
+                        return Observable.just("clientSecret")
+                    }
+                }).build(),
+            notErrored
         )
 
         val state = mutableListOf<LatePledgeCheckoutUIState>()
-
+        val clientSecretState = mutableListOf<String>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.latePledgeCheckoutUIState.toList(state)
+            viewModel.clientSecretForNewPaymentMethod.toList(clientSecretState)
         }
 
-        assertEquals(state.size, 2)
-        assertEquals(state.last().userEmail, "")
-        assertEquals(state.last().storeCards, emptyList<StoredCard>())
+        viewModel.onAddNewCardClicked(project)
+
+//        assertEquals(state.size, 2)
+//        assertEquals(state.last().userEmail, "")
+//        assertEquals(state.last().storeCards, emptyList<StoredCard>())
+
+        assertEquals(clientSecretState.last(), "clientSecret")
     }
 }

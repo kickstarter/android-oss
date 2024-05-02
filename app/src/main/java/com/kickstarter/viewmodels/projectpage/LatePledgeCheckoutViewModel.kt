@@ -18,6 +18,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
+import com.stripe.android.model.PaymentIntent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,7 +43,41 @@ data class LatePledgeCheckoutUIState(
     val isLoading: Boolean = false
 )
 
-class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
+interface StripeActions {
+    suspend fun paymentIntentContainsError(clientSecret: String, selectedCard: StoredCard): String?
+}
+class StripeWrapper(
+    private val environment: Environment
+): StripeActions {
+    private suspend fun paymentIntent(
+        clientSecret: String,
+        selectedCard: StoredCard
+    ): PaymentIntent? {
+        val intentParams = ConfirmPaymentIntentParams.createWithPaymentMethodId(
+            clientSecret = clientSecret,
+            paymentMethodId = selectedCard.stripeCardId() ?: ""
+        )
+        val withSDK =
+            intentParams.withShouldUseStripeSdk(shouldUseStripeSdk = true)
+        val paymentIntent = environment.stripe()?.confirmPaymentIntent(withSDK)
+        return paymentIntent
+    }
+
+    override suspend fun paymentIntentContainsError(clientSecret: String, selectedCard: StoredCard): String? {
+        val intent = paymentIntent(clientSecret,selectedCard)
+        return if (intent?.lastPaymentError.isNotNull()) {
+            // Display error with lastPaymentError.message
+            return intent?.lastPaymentError?.message
+        } else {
+            return null
+        }
+    }
+
+}
+class LatePledgeCheckoutViewModel(
+    private val environment: Environment,
+    private val stripeWrapper: StripeActions?
+) : ViewModel() {
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analytics = requireNotNull(environment.analytics())
@@ -61,6 +96,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
 
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
+
     val onPledgeSuccess: SharedFlow<Boolean>
         get() = mutableOnPledgeSuccessAction
             .asSharedFlow()
@@ -81,7 +117,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var mutableClientSecretForNewPaymentMethod = MutableSharedFlow<String>()
     val clientSecretForNewPaymentMethod: SharedFlow<String>
-        get() = mutableClientSecretForNewPaymentMethod.asSharedFlow()
+        get() {
+            return mutableClientSecretForNewPaymentMethod.asSharedFlow()
+        }
 
     private var mutablePaymentRequiresAction = MutableSharedFlow<String>()
     val paymentRequiresAction: SharedFlow<String>
@@ -122,7 +160,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 emitCurrentState(isLoading = true)
             }.map { clientSecret ->
                 clientSecretForNewCard = clientSecret
-                mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
+                mutableClientSecretForNewPaymentMethod.emit(clientSecret)
             }.onCompletion {
                 emitCurrentState()
             }.catch {
@@ -228,17 +266,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     private suspend fun stripeConfirmPaymentIntent(clientSecret: String, selectedCard: StoredCard) {
-        val intentParams = ConfirmPaymentIntentParams.createWithPaymentMethodId(
-            clientSecret = clientSecret,
-            paymentMethodId = selectedCard.stripeCardId() ?: ""
-        )
-        val withSDK =
-            intentParams.withShouldUseStripeSdk(shouldUseStripeSdk = true)
-        val paymentIntent = stripe.confirmPaymentIntent(withSDK)
-        if (paymentIntent.lastPaymentError.isNotNull()) {
+        val containsErrors = stripeWrapper?.paymentIntentContainsError(clientSecret, selectedCard)
+        if (containsErrors.isNotNull()) {
             // Display error with lastPaymentError.message
             emitCurrentState()
-            errorAction.invoke(paymentIntent.lastPaymentError?.message)
+            errorAction.invoke(containsErrors)
         } else {
             // Success, move on
             completeOnSessionCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
@@ -334,10 +366,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.selectedReward = reward
     }
 
-    class Factory(private val environment: Environment) :
+    class Factory(private val environment: Environment, private val stripeActions: StripeActions? = StripeWrapper(environment)) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return LatePledgeCheckoutViewModel(environment) as T
+            return LatePledgeCheckoutViewModel(environment, stripeWrapper = stripeActions) as T
         }
     }
 }

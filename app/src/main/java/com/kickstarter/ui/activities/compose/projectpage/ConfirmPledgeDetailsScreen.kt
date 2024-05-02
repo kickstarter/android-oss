@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,14 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -29,6 +34,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -64,7 +70,8 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewards() {
             minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {}
         )
     }
 }
@@ -90,7 +97,8 @@ private fun ConfirmPledgeDetailsScreenPreviewNoRewardsWarning() {
             minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {}
         )
     }
 }
@@ -121,7 +129,8 @@ private fun ConfirmPledgeDetailsScreenPreviewNoAddOnsOrBonusSupport() {
             countryList = listOf(ShippingRule.builder().build()),
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {}
         )
     }
 }
@@ -151,7 +160,8 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsOnly() {
             minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {}
         )
     }
 }
@@ -182,7 +192,8 @@ private fun ConfirmPledgeDetailsScreenPreviewBonusSupportOnly() {
             countryList = listOf(ShippingRule.builder().build()),
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {}
         )
     }
 }
@@ -212,7 +223,8 @@ private fun ConfirmPledgeDetailsScreenPreviewAddOnsAndBonusSupport() {
             minPledgeStep = 1.0,
             onShippingRuleSelected = {},
             onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {}
+            onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {}
         )
     }
 }
@@ -238,7 +250,8 @@ fun ConfirmPledgeDetailsScreen(
     minPledgeStep: Double,
     isLoading: Boolean = false,
     onBonusSupportPlusClicked: () -> Unit,
-    onBonusSupportMinusClicked: () -> Unit
+    onBonusSupportMinusClicked: () -> Unit,
+    onBonusSupportInputted: (input: Double) -> Unit
 ) {
     val interactionSource = remember {
         MutableInteractionSource()
@@ -428,14 +441,17 @@ fun ConfirmPledgeDetailsScreen(
                 item {
                     BonusSupportContainer(
                         isForNoRewardPledge = rewardsList.isEmpty(),
-                        initialValue = initialBonusSupportString,
-                        totalBonusAmount = totalBonusSupportString,
+                        initialBonusSupport = initialBonusSupport, //$0
+                        initialBonusSupportString = initialBonusSupportString,
+                        totalBonusSupport = totalBonusSupport, //$0
+                        totalBonusSupportString = totalBonusSupportString,
                         canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
-                        onBonusSupportMinusClicked = onBonusSupportMinusClicked
+                        onBonusSupportMinusClicked = onBonusSupportMinusClicked,
+                        onBonusSupportInputted = onBonusSupportInputted
                     )
 
-                    if (totalAmount >= maxPledgeAmount) {
+                    if (totalAmount >= maxPledgeAmount) { // totalAmount = 1.0
                         Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
                         Text(
@@ -518,12 +534,16 @@ fun ConfirmPledgeDetailsScreen(
 @Composable
 fun BonusSupportContainer(
     isForNoRewardPledge: Boolean,
-    initialValue: String,
-    totalBonusAmount: String,
+    initialBonusSupport: Double,
+    initialBonusSupportString: String,
+    totalBonusSupport: Double,
+    totalBonusSupportString: String,
     canAddMore: Boolean,
     onBonusSupportPlusClicked: () -> Unit,
-    onBonusSupportMinusClicked: () -> Unit
+    onBonusSupportMinusClicked: () -> Unit,
+    onBonusSupportInputted: (input: Double) -> Unit
 ) {
+
     Column(
         modifier = Modifier.padding(all = dimensions.paddingMedium)
     ) {
@@ -553,7 +573,7 @@ fun BonusSupportContainer(
                 onPlusClicked = onBonusSupportPlusClicked,
                 isPlusEnabled = canAddMore,
                 onMinusClicked = onBonusSupportMinusClicked,
-                isMinusEnabled = initialValue != totalBonusAmount,
+                isMinusEnabled = initialBonusSupport != totalBonusSupport,
                 enabledButtonBackgroundColor = colors.kds_white
             )
 
@@ -565,21 +585,39 @@ fun BonusSupportContainer(
                 Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
             }
 
-            Text(
+            TextField(
+                value = totalBonusSupport.toString(),
+                onValueChange = {
+                    onBonusSupportInputted(it.parseToDouble())
+                },
                 modifier = Modifier
                     .background(
                         color = colors.kds_white,
                         shape = shapes.small
                     )
-                    .padding(
-                        start = dimensions.paddingMediumSmall,
-                        top = dimensions.paddingMediumSmall,
-                        bottom = dimensions.paddingMediumSmall,
-                        end = dimensions.paddingMediumSmall
-                    ),
-                text = totalBonusAmount,
-                style = typography.headline,
-                color = colors.textAccentGreen
+//                    .padding(
+//                        start = dimensions.paddingMediumSmall,
+//                        top = dimensions.paddingMediumSmall,
+//                        bottom = dimensions.paddingMediumSmall,
+//                        end = dimensions.paddingMediumSmall
+//                    )
+                    .width(IntrinsicSize.Min),
+                //textStyle = typography.headline,
+                textStyle = typography.headline,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = colors.kds_support_200,
+                    errorLabelColor = colors.kds_alert,
+                    errorIndicatorColor = colors.kds_alert,
+                    unfocusedLabelColor = colors.kds_support_700,
+                    unfocusedIndicatorColor = colors.kds_support_700,
+                    focusedLabelColor = colors.kds_create_700,
+                    focusedIndicatorColor = colors.kds_create_700,
+                    cursorColor = colors.kds_create_700,
+                    errorCursorColor = colors.kds_alert,
+                    textColor = colors.kds_support_700,
+                    disabledTextColor = colors.textDisabled
+                )
             )
         }
     }

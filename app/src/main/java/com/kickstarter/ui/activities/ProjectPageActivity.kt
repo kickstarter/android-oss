@@ -686,6 +686,9 @@ class ProjectPageActivity :
                         userEmail = userEmail,
                         onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
                         onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
+                        onBonusSupportInputted = {
+                            input -> confirmDetailsViewModel.inputBonusSupport(input)
+                        },
                         selectedAddOnsMap = selectedAddOnsMap,
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {

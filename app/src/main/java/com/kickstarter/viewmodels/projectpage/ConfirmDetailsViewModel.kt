@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import android.util.Log
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -238,6 +239,22 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
                 emitCurrentState()
             }
         }
+    }
+
+    fun inputBonusSupport(input: Double) {
+        addedBonusSupport = input
+        totalAmount = calculateTotal()
+
+        // TODO: YC - remove logs
+        val temp = initialBonusSupport + addedBonusSupport
+        Log.d("Yun", "initialBonusSupportAmount = "+ initialBonusSupport +
+            "\naddedBonusSupport = "+ addedBonusSupport +
+            "\ntotalBonusSupport = "+ temp)
+
+        viewModelScope.launch {
+            emitCurrentState()
+        }
+
     }
 
     fun onContinueClicked(defaultAction: () -> Unit) {

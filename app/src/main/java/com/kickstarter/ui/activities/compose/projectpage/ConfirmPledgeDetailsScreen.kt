@@ -306,6 +306,13 @@ fun ConfirmPledgeDetailsScreen(
         ).toString()
     } ?: ""
 
+    val currencySymbol = environment?.ksCurrency()?.let {
+        RewardViewUtils.getCurrencySymbol(
+            project,
+            it
+        )
+    } ?: ""
+
     val deliveryDateString = if (selectedReward?.estimatedDeliveryOn().isNotNull()) {
         DateTimeUtils.estimatedDeliveryOn(
             requireNotNull(
@@ -445,6 +452,7 @@ fun ConfirmPledgeDetailsScreen(
                         initialBonusSupportString = initialBonusSupportString,
                         totalBonusSupport = totalBonusSupport, //$0
                         totalBonusSupportString = totalBonusSupportString,
+                        currencySymbol = currencySymbol,
                         canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                         onBonusSupportMinusClicked = onBonusSupportMinusClicked,
@@ -538,6 +546,7 @@ fun BonusSupportContainer(
     initialBonusSupportString: String,
     totalBonusSupport: Double,
     totalBonusSupportString: String,
+    currencySymbol: String,
     canAddMore: Boolean,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit,
@@ -584,6 +593,10 @@ fun BonusSupportContainer(
 
                 Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
             }
+
+            Text(
+                text = currencySymbol
+            )
 
             TextField(
                 value = totalBonusSupport.toString(),

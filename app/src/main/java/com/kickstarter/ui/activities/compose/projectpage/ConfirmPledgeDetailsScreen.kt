@@ -15,16 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -448,10 +448,8 @@ fun ConfirmPledgeDetailsScreen(
                 item {
                     BonusSupportContainer(
                         isForNoRewardPledge = rewardsList.isEmpty(),
-                        initialBonusSupport = initialBonusSupport, //$0
-                        initialBonusSupportString = initialBonusSupportString,
-                        totalBonusSupport = totalBonusSupport, //$0
-                        totalBonusSupportString = totalBonusSupportString,
+                        initialBonusSupport = initialBonusSupport,
+                        totalBonusSupport = totalBonusSupport,
                         currencySymbol = currencySymbol,
                         canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
@@ -459,13 +457,13 @@ fun ConfirmPledgeDetailsScreen(
                         onBonusSupportInputted = onBonusSupportInputted
                     )
 
-                    if (totalAmount >= maxPledgeAmount) { // totalAmount = 1.0
+                    if (totalAmount >= maxPledgeAmount) {
                         Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
                         Text(
                             text = maxPledgeString,
-                            style = typography.headline,
-                            color = colors.textAccentRedBold
+                            style = typography.title3,
+                            color = colors.textPrimary
                         )
                     }
                 }
@@ -543,15 +541,14 @@ fun ConfirmPledgeDetailsScreen(
 fun BonusSupportContainer(
     isForNoRewardPledge: Boolean,
     initialBonusSupport: Double,
-    initialBonusSupportString: String,
     totalBonusSupport: Double,
-    totalBonusSupportString: String,
     currencySymbol: String,
     canAddMore: Boolean,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit,
     onBonusSupportInputted: (input: Double) -> Unit
 ) {
+    val bonusAmountMaxDigits = integerResource(R.integer.max_length)
 
     Column(
         modifier = Modifier.padding(all = dimensions.paddingMedium)
@@ -572,6 +569,7 @@ fun BonusSupportContainer(
                 style = typography.body2,
                 color = colors.textSecondary
             )
+            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
         }
 
         Row(
@@ -588,50 +586,47 @@ fun BonusSupportContainer(
 
             Spacer(modifier = Modifier.weight(1f))
 
+//            BasicTextField(
+//                value = totalBonusSupport.toString(),
+//                modifier = Modifier.background(Color.Red).width(IntrinsicSize.Min),
+//                onValueChange = { onBonusSupportInputted(it.parseToDouble()) }
+//            )
+
+
             if (!isForNoRewardPledge) {
                 Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
 
                 Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
             }
 
-            Text(
-                text = currencySymbol
-            )
-
-            TextField(
-                value = totalBonusSupport.toString(),
-                onValueChange = {
-                    onBonusSupportInputted(it.parseToDouble())
-                },
-                modifier = Modifier
-                    .background(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.background(
                         color = colors.kds_white,
                         shape = shapes.small
-                    )
-//                    .padding(
-//                        start = dimensions.paddingMediumSmall,
-//                        top = dimensions.paddingMediumSmall,
-//                        bottom = dimensions.paddingMediumSmall,
-//                        end = dimensions.paddingMediumSmall
-//                    )
-                    .width(IntrinsicSize.Min),
-                //textStyle = typography.headline,
-                textStyle = typography.headline,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = colors.kds_support_200,
-                    errorLabelColor = colors.kds_alert,
-                    errorIndicatorColor = colors.kds_alert,
-                    unfocusedLabelColor = colors.kds_support_700,
-                    unfocusedIndicatorColor = colors.kds_support_700,
-                    focusedLabelColor = colors.kds_create_700,
-                    focusedIndicatorColor = colors.kds_create_700,
-                    cursorColor = colors.kds_create_700,
-                    errorCursorColor = colors.kds_alert,
-                    textColor = colors.kds_support_700,
-                    disabledTextColor = colors.textDisabled
+                ).padding(
+                    start = dimensions.paddingXSmall,
+                    top = dimensions.paddingXSmall,
+                    bottom = dimensions.paddingXSmall,
+                    end = dimensions.paddingXSmall
+                ),
+
+            ) {
+                Text(
+                    text = currencySymbol,
+                    color = colors.kds_create_700
                 )
-            )
+                BasicTextField(
+                    modifier = Modifier.width(IntrinsicSize.Min),
+                    value = if (totalBonusSupport % 1.0 == 0.0) totalBonusSupport.toInt().toString() else totalBonusSupport.toString(),
+                    onValueChange = {
+                        if (it.length <= bonusAmountMaxDigits) onBonusSupportInputted(it.parseToDouble())
+                    },
+                    textStyle = typography.title1.copy(color = colors.kds_create_700),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                )
+            }
+
         }
     }
 }

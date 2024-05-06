@@ -334,6 +334,12 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.selectedReward = reward
     }
 
+    fun loading() {
+        viewModelScope.launch {
+            emitCurrentState(isLoading = true)
+        }
+    }
+
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -30,7 +30,6 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
@@ -608,8 +607,8 @@ fun BonusSupportContainer(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.background(
-                        color = colors.kds_white,
-                        shape = shapes.small
+                    color = colors.kds_white,
+                    shape = shapes.small
                 ).padding(
                     start = dimensions.paddingXSmall,
                     top = dimensions.paddingXSmall,
@@ -638,7 +637,6 @@ fun BonusSupportContainer(
                     color = colors.kds_create_700
                 )
             }
-
         }
     }
 }

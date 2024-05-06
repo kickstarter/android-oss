@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.util.Log
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

@@ -84,15 +84,6 @@ object RewardViewUtils {
     }
 
     /**
-     * Returns a String representing currency symbol
-     *
-     */
-    fun getCurrencySymbol(project: Project, ksCurrency: KSCurrency): String {
-        val country = Country.findByCurrencyCode(project.currency()) ?: return ""
-        return ksCurrency.getCurrencySymbol(country, true).trimAllWhitespace()
-    }
-
-    /**
      * Returns the title for an Add On ie: 1 x TITLE
      *  [1 x] in green
      *  TITLE regular string

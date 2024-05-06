@@ -306,12 +306,20 @@ fun ConfirmPledgeDetailsScreen(
         ).toString()
     } ?: ""
 
-    val currencySymbol = environment?.ksCurrency()?.let {
-        RewardViewUtils.getCurrencySymbol(
+    // Currency symbol, which can be positioned at start or end of amount depending on country
+    val currencySymbolStartAndEnd = environment?.ksCurrency()?.let {
+        val symbolAndStart = RewardViewUtils.currencySymbolAndPosition(
             project,
             it
         )
-    } ?: ""
+        val symbol = symbolAndStart.first
+        val symbolAtStart = symbolAndStart.second
+        if (symbolAtStart) {
+            Pair(symbol.toString(), null)
+        } else {
+            Pair(null, symbol.toString())
+        }
+    } ?: Pair(null, null)
 
     val deliveryDateString = if (selectedReward?.estimatedDeliveryOn().isNotNull()) {
         DateTimeUtils.estimatedDeliveryOn(
@@ -450,7 +458,8 @@ fun ConfirmPledgeDetailsScreen(
                         isForNoRewardPledge = rewardsList.isEmpty(),
                         initialBonusSupport = initialBonusSupport,
                         totalBonusSupport = totalBonusSupport,
-                        currencySymbol = currencySymbol,
+                        currencySymbolAtStart = currencySymbolStartAndEnd.first,
+                        currencySymbolAtEnd = currencySymbolStartAndEnd.second,
                         canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                         onBonusSupportMinusClicked = onBonusSupportMinusClicked,
@@ -542,7 +551,8 @@ fun BonusSupportContainer(
     isForNoRewardPledge: Boolean,
     initialBonusSupport: Double,
     totalBonusSupport: Double,
-    currencySymbol: String,
+    currencySymbolAtStart: String?,
+    currencySymbolAtEnd: String?,
     canAddMore: Boolean,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit,
@@ -586,13 +596,6 @@ fun BonusSupportContainer(
 
             Spacer(modifier = Modifier.weight(1f))
 
-//            BasicTextField(
-//                value = totalBonusSupport.toString(),
-//                modifier = Modifier.background(Color.Red).width(IntrinsicSize.Min),
-//                onValueChange = { onBonusSupportInputted(it.parseToDouble()) }
-//            )
-
-
             if (!isForNoRewardPledge) {
                 Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
 
@@ -613,7 +616,7 @@ fun BonusSupportContainer(
 
             ) {
                 Text(
-                    text = currencySymbol,
+                    text = currencySymbolAtStart ?: "",
                     color = colors.kds_create_700
                 )
                 BasicTextField(
@@ -624,6 +627,10 @@ fun BonusSupportContainer(
                     },
                     textStyle = typography.title1.copy(color = colors.kds_create_700),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                )
+                Text(
+                    text = currencySymbolAtEnd ?: "",
+                    color = colors.kds_create_700
                 )
             }
 

@@ -93,34 +93,6 @@ object RewardViewUtils {
     }
 
     /**
-     * Returns a Pair of SpannableString and a Boolean where the
-     * SpannableString represents a project's currency symbol that shrinks currency symbol if it's necessary and the
-     * Boolean represents whether the symbol should be shown at the end or the start of the currency.
-     * Special case: US people looking at US currency just get the currency symbol.
-     *
-     */
-    fun currencySymbolAndPosition(project: Project, ksCurrency: KSCurrency): Pair<SpannableString, Boolean> {
-        val formattedCurrency = ksCurrency.format(0.0, project, RoundingMode.HALF_UP)
-
-        val country = Country.findByCurrencyCode(project.currency()) ?: return Pair.create(SpannableString(""), true)
-
-        val currencySymbolToDisplay = ksCurrency.getCurrencySymbol(country, true)
-
-        var symbolAtStart = true
-        if (formattedCurrency.endsWith(currencySymbolToDisplay.trimAllWhitespace())) {
-            symbolAtStart = false
-        }
-
-        val spannableString = SpannableString(currencySymbolToDisplay)
-
-        val start = 0
-        val end = currencySymbolToDisplay.length
-        spannableString.setSpan(RelativeSizeSpan(.5f), start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-        return Pair.create(spannableString, symbolAtStart)
-    }
-
-    /**
      * Returns the title for an Add On ie: 1 x TITLE
      *  [1 x] in green
      *  TITLE regular string

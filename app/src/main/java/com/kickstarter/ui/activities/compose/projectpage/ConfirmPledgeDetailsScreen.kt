@@ -28,12 +28,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.parseToDouble
@@ -310,7 +313,7 @@ fun ConfirmPledgeDetailsScreen(
 
     // Currency symbol, which can be positioned at start or end of amount depending on country
     val currencySymbolStartAndEnd = environment?.ksCurrency()?.let {
-        val symbolAndStart = RewardViewUtils.currencySymbolAndPosition(
+        val symbolAndStart = ProjectViewUtils.currencySymbolAndPosition(
             project,
             it
         )
@@ -334,7 +337,9 @@ fun ConfirmPledgeDetailsScreen(
     val maxPledgeString = environment?.ksString()?.format(
         stringResource(R.string.Enter_an_amount_less_than_max_pledge),
         "max_pledge",
-        maxPledgeAmount.toString()
+        (currencySymbolStartAndEnd.first ?: "") +
+                if (maxPledgeAmount % 1.0 == 0.0) maxPledgeAmount.toInt().toString() else maxPledgeAmount.toString() +
+                (currencySymbolStartAndEnd.second ?: "")
     ) ?: ""
 
     Box(
@@ -469,12 +474,15 @@ fun ConfirmPledgeDetailsScreen(
                     )
 
                     if (totalAmount >= maxPledgeAmount) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
                         Text(
                             text = maxPledgeString,
-                            style = typography.title3,
-                            color = colors.textPrimary
+                            textAlign = TextAlign.Right,
+                            style = typography.footnoteMedium,
+                            color = colors.textAccentRed,
+                            modifier = Modifier.fillMaxWidth().padding(
+                                start = dimensions.paddingMedium,
+                                end = dimensions.paddingMedium,
+                            )
                         )
                     }
                 }
@@ -619,7 +627,7 @@ fun BonusSupportContainer(
             ) {
                 Text(
                     text = currencySymbolAtStart ?: "",
-                    color = colors.kds_create_700
+                    color = colors.textAccentGreen
                 )
                 BasicTextField(
                     modifier = Modifier.width(IntrinsicSize.Min),
@@ -627,14 +635,17 @@ fun BonusSupportContainer(
                     onValueChange = {
                         if (it.length <= bonusAmountMaxDigits) onBonusSupportInputted(it.parseToDouble())
                     },
-                    textStyle = typography.title1.copy(color = colors.kds_create_700),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    cursorBrush = SolidColor(Color.LightGray)
+                    textStyle = typography.title1.copy(color = colors.textAccentGreen),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    cursorBrush = SolidColor(colors.iconSubtle)
 
                 )
                 Text(
                     text = currencySymbolAtEnd ?: "",
-                    color = colors.kds_create_700
+                    color = colors.textAccentGreen
                 )
             }
         }

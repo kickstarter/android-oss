@@ -27,6 +27,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -148,6 +149,9 @@ fun CheckoutScreen(
             }
         )
     }
+
+    // - After adding new payment method, selected card should be updated to the newly added
+    UpdateSelectedCardIfNewCardAdded(remember { mutableStateOf(storedCards.size) }, storedCards, onOptionSelected)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -304,19 +308,22 @@ fun CheckoutScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                storedCards.forEach {
-                    val isAvailable = project.acceptedCardType(it.type()) || it.isFromPaymentSheet()
+                storedCards.forEachIndexed { index, card ->
+                    val isAvailable = project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
                     Card(
                         backgroundColor = colors.kds_white,
                         modifier = Modifier
-                            .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
+                            .padding(
+                                start = dimensions.paddingMedium,
+                                end = dimensions.paddingMedium
+                            )
                             .fillMaxWidth()
                             .selectableGroup()
                             .selectable(
                                 enabled = isAvailable,
-                                selected = it == selectedOption,
+                                selected = if (index == 0) true else false,
                                 onClick = {
-                                    onOptionSelected(it)
+                                    onOptionSelected(card)
                                 }
                             )
                     ) {
@@ -331,12 +338,12 @@ fun CheckoutScreen(
                             ) {
 
                                 KSRadioButton(
-                                    selected = it == selectedOption,
-                                    onClick = { onOptionSelected(it) },
+                                    selected = card == selectedOption,
+                                    onClick = { onOptionSelected(card) },
                                     enabled = isAvailable
                                 )
 
-                                KSCardElement(card = it, environment.ksString(), isAvailable)
+                                KSCardElement(card = card, environment.ksString(), isAvailable)
                             }
 
                             if (!isAvailable) {
@@ -479,6 +486,18 @@ fun CheckoutScreen(
                 KSCircularProgressIndicator()
             }
         }
+    }
+}
+
+@Composable
+private fun UpdateSelectedCardIfNewCardAdded(
+    index: MutableState<Int>,
+    storedCards: List<StoredCard>,
+    onOptionSelected: (StoredCard?) -> Unit
+) {
+    if (index.value != storedCards.size) {
+        onOptionSelected(storedCards.first())
+        index.value = storedCards.size
     }
 }
 

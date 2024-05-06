@@ -244,17 +244,9 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     fun inputBonusSupport(input: Double) {
         addedBonusSupport = input
         totalAmount = calculateTotal()
-
-        // TODO: YC - remove logs
-        val temp = initialBonusSupport + addedBonusSupport
-        Log.d("Yun", "initialBonusSupportAmount = "+ initialBonusSupport +
-            "\naddedBonusSupport = "+ addedBonusSupport +
-            "\ntotalBonusSupport = "+ temp)
-
         viewModelScope.launch {
             emitCurrentState()
         }
-
     }
 
     fun onContinueClicked(defaultAction: () -> Unit) {

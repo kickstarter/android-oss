@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
@@ -334,12 +333,15 @@ fun ConfirmPledgeDetailsScreen(
         )
     } else ""
 
+    val maxPledgeAmountWithCurrency =
+        (currencySymbolStartAndEnd.first ?: "") +
+            if (maxPledgeAmount % 1.0 == 0.0) maxPledgeAmount.toInt().toString() else maxPledgeAmount.toString() +
+                (currencySymbolStartAndEnd.second ?: "")
+
     val maxPledgeString = environment?.ksString()?.format(
         stringResource(R.string.Enter_an_amount_less_than_max_pledge),
         "max_pledge",
-        (currencySymbolStartAndEnd.first ?: "") +
-                if (maxPledgeAmount % 1.0 == 0.0) maxPledgeAmount.toInt().toString() else maxPledgeAmount.toString() +
-                (currencySymbolStartAndEnd.second ?: "")
+        maxPledgeAmountWithCurrency
     ) ?: ""
 
     Box(

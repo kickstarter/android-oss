@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
@@ -90,10 +89,9 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         viewModelScope.launch {
             currentUser.isLoggedIn
                 .asFlow()
-                .take(1)
                 .collect { userLoggedIn ->
-                    // - Show pledge page
-                    if (userLoggedIn) mutableFlowUIState.emit(FlowUIState(currentPage = 3, expanded = true))
+                    // - Show checkout page
+                    if (userLoggedIn) mutableFlowUIState.emit(FlowUIState(currentPage = 4, expanded = true))
                     // - Trigger LoginFlow callback
                     else logInCallback()
                 }

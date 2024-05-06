@@ -62,7 +62,6 @@ import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
@@ -108,7 +107,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import type.CreditCardPaymentType
 
 class ProjectPageActivity :
@@ -697,7 +695,7 @@ class ProjectPageActivity :
                             }
                         },
                         onAddPaymentMethodClicked = {
-                            latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project(), totalAmount = totalAmount)
+                            latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project())
                         },
                         onDisclaimerItemClicked = { disclaimerItem ->
                             getEnvironment()?.let { environment ->
@@ -1221,14 +1219,8 @@ class ProjectPageActivity :
     // Update the UI with the returned PaymentOption
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
-            val storedCard = StoredCard.Builder(
-                lastFourDigits = paymentOption.label.takeLast(4),
-                resourceId = paymentOption.drawableResourceId,
-                clientSetupId = "-1"
-            ).build()
-            latePledgeCheckoutViewModel.onNewCardSuccessfullyAdded(storedCard)
-            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")
             flowController.confirm()
+            latePledgeCheckoutViewModel.onNewCardSuccessfullyAdded()
         }
     }
 
@@ -1271,8 +1263,8 @@ class ProjectPageActivity :
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String) {
-        flowController.configureWithPaymentIntent(
-            paymentIntentClientSecret = clientSecret,
+        flowController.configureWithSetupIntent(
+            setupIntentClientSecret = clientSecret,
             configuration = getPaymentSheetConfiguration(),
             callback = ::onConfigured
         )

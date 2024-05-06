@@ -11,14 +11,13 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData
-import com.stripe.android.ApiResultCallback
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
-import com.stripe.android.model.PaymentIntent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -103,21 +102,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             errorAction.invoke(null)
                         }.collect()
 
-                    apolloClient.getStoredCards().asFlow()
-                        .onStart {
-                            emitCurrentState(isLoading = true)
-                        }.map { cards ->
-                            storedCards = cards
-                            newStoredCard?.let { newCard ->
-                                val mutableStoredCardList = storedCards.toMutableList()
-                                mutableStoredCardList.add(0, newCard)
-                                storedCards = mutableStoredCardList.toList()
-                            }
-                        }.onCompletion {
-                            emitCurrentState()
-                        }.catch {
-                            errorAction.invoke(null)
-                        }.collect()
+                    refreshUserCards()
                 }
             }?.catch {
                 errorAction.invoke(null)
@@ -129,13 +114,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.checkoutId = checkoutId.toString()
     }
 
-    fun onAddNewCardClicked(project: Project, totalAmount: Double) {
+    fun onAddNewCardClicked(project: Project) {
         viewModelScope.launch {
-            apolloClient.createPaymentIntent(
-                CreatePaymentIntentInput(
-                    project = project,
-                    amount = totalAmount.toString()
-                )
+            apolloClient.createSetupIntent(
+                project = project,
             ).asFlow().onStart {
                 emitCurrentState(isLoading = true)
             }.map { clientSecret ->
@@ -149,40 +131,39 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onNewCardSuccessfullyAdded(storedCard: StoredCard) {
-        newStoredCard = storedCard
-        val mutableStoredCardList = storedCards.toMutableList()
-        mutableStoredCardList.add(0, storedCard)
-        storedCards = mutableStoredCardList.toList()
+    fun onNewCardSuccessfullyAdded() {
         viewModelScope.launch {
-            emitCurrentState()
+            apolloClient.savePaymentMethod(
+                SavePaymentMethodData(
+                    reusable = true,
+                    intentClientSecret = clientSecretForNewCard
+                )
+            ).asFlow().onStart {
+                emitCurrentState(isLoading = true)
+            }.map {
+                refreshUserCards()
+            }.catch {
+                emitCurrentState()
+                errorAction.invoke(null)
+            }.collect()
         }
     }
 
-    fun onPledgeButtonClicked(selectedCard: StoredCard?, project: Project, totalAmount: Double) {
-        if (selectedCard == newStoredCard) {
-            stripe.retrievePaymentIntent(
-                clientSecret = clientSecretForNewCard,
-                callback = object : ApiResultCallback<PaymentIntent> {
-                    override fun onError(e: Exception) {
-                        errorAction.invoke(null)
-                    }
+    private suspend fun refreshUserCards() {
+        apolloClient.getStoredCards()
+            .asFlow().onStart {
+                emitCurrentState(isLoading = true)
+            }.map { cards ->
+                storedCards = cards
+            }.onCompletion {
+                emitCurrentState()
+            }.catch {
+                errorAction.invoke(null)
+            }.collect()
+    }
 
-                    override fun onSuccess(result: PaymentIntent) {
-                        result.paymentMethodId?.let { cardId ->
-                            val cardWithId =
-                                selectedCard?.toBuilder()?.stripeCardId(cardId)?.build()
-                            newStoredCard = cardWithId
-                            createPaymentIntentForCheckout(cardWithId, project, totalAmount)
-                        } ?: run {
-                            errorAction.invoke(null)
-                        }
-                    }
-                }
-            )
-        } else {
-            createPaymentIntentForCheckout(selectedCard, project, totalAmount)
-        }
+    fun onPledgeButtonClicked(selectedCard: StoredCard?, project: Project, totalAmount: Double) {
+        createPaymentIntentForCheckout(selectedCard, project, totalAmount)
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {

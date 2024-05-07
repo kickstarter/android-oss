@@ -36,6 +36,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.parseToDouble
@@ -333,16 +334,7 @@ fun ConfirmPledgeDetailsScreen(
         )
     } else ""
 
-    val maxPledgeAmountWithCurrency =
-        (currencySymbolStartAndEnd.first ?: "") +
-            if (maxPledgeAmount % 1.0 == 0.0) maxPledgeAmount.toInt().toString() else maxPledgeAmount.toString() +
-                (currencySymbolStartAndEnd.second ?: "")
-
-    val maxPledgeString = environment?.ksString()?.format(
-        stringResource(R.string.Enter_an_amount_less_than_max_pledge),
-        "max_pledge",
-        maxPledgeAmountWithCurrency
-    ) ?: ""
+    val maxInputString = getMaxInputString(selectedReward, maxPledgeAmount, totalAmount, totalBonusSupport, currencySymbolStartAndEnd, environment)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -475,9 +467,9 @@ fun ConfirmPledgeDetailsScreen(
                         onBonusSupportInputted = onBonusSupportInputted
                     )
 
-                    if (totalAmount >= maxPledgeAmount) {
+                    if (totalAmount > maxPledgeAmount) {
                         Text(
-                            text = maxPledgeString,
+                            text = maxInputString,
                             textAlign = TextAlign.Right,
                             style = typography.footnoteMedium,
                             color = colors.textAccentRed,
@@ -809,4 +801,34 @@ fun ItemizedRewardListContainer(
             }
         }
     }
+}
+
+@Composable
+private fun getMaxInputString(
+    selectedReward: Reward?,
+    maxPledgeAmount: Double,
+    totalAmount: Double,
+    totalBonusSupport: Double,
+    currencySymbolStartAndEnd: Pair<String?, String?>,
+    environment: Environment?
+): String {
+    // rewardAmount + totalBonusSupport = totalAmount
+    // totalAmount must be <= maxPledgeAmount
+
+    val maxInputAmount = if (selectedReward != null && RewardUtils.isNoReward(selectedReward)) {
+        maxPledgeAmount
+    } else {
+        val rewardAmount = totalAmount - totalBonusSupport
+        maxPledgeAmount - rewardAmount
+    }
+    val maxInputAmountWithCurrency =
+        (currencySymbolStartAndEnd.first ?: "") +
+            if (maxInputAmount % 1.0 == 0.0) maxInputAmount.toInt().toString()
+            else maxInputAmount.toString() + (currencySymbolStartAndEnd.second ?: "")
+
+    return environment?.ksString()?.format(
+        stringResource(R.string.Enter_an_amount_less_than_max_pledge), // TODO: MBL-1416 Copy should say less than or equal to
+        "max_pledge",
+        maxInputAmountWithCurrency
+    ) ?: ""
 }

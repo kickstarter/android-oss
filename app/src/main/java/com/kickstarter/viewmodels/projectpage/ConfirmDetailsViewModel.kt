@@ -30,7 +30,7 @@ import kotlinx.coroutines.rx2.asFlow
 data class ConfirmDetailsUIState(
     val rewardsAndAddOns: List<Reward> = listOf(),
     val initialBonusSupportAmount: Double = 0.0,
-    val totalBonusSupportAmount: Double = 0.0,
+    val finalBonusSupportAmount: Double = 0.0,
     val shippingAmount: Double = 0.0,
     val totalAmount: Double = 0.0,
     val minStepAmount: Double = 0.0,
@@ -142,7 +142,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     private fun calculateTotal(): Double {
         var total = 0.0
         total += getRewardsTotalAmount(rewardAndAddOns)
-        total += initialBonusSupport + addedBonusSupport
+        total += if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport
         if (::userSelectedReward.isInitialized) {
             total +=
                 if (RewardUtils.isNoReward(userSelectedReward)) 0.0
@@ -312,7 +312,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = rewardAndAddOns,
                 initialBonusSupportAmount = initialBonusSupport,
-                totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
+                finalBonusSupportAmount = if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport,
                 shippingAmount = shippingAmount,
                 totalAmount = totalAmount,
                 minStepAmount = minStepAmount,

@@ -540,7 +540,7 @@ class ProjectPageActivity :
                     val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
                     val shippingAmount = confirmUiState.shippingAmount
                     val initialBonusAmount = confirmUiState.initialBonusSupportAmount
-                    val totalBonusSupportAmount = confirmUiState.totalBonusSupportAmount
+                    val totalBonusSupportAmount = confirmUiState.finalBonusSupportAmount
                     val maxPledgeAmount = confirmUiState.maxPledgeAmount
                     val minStepAmount = confirmUiState.minStepAmount
                     val confirmDetailsIsLoading = confirmUiState.isLoading

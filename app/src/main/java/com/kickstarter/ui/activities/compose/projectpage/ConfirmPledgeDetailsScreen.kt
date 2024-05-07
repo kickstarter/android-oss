@@ -473,10 +473,12 @@ fun ConfirmPledgeDetailsScreen(
                             textAlign = TextAlign.Right,
                             style = typography.footnoteMedium,
                             color = colors.textAccentRed,
-                            modifier = Modifier.fillMaxWidth().padding(
-                                start = dimensions.paddingMedium,
-                                end = dimensions.paddingMedium,
-                            )
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = dimensions.paddingMedium,
+                                    end = dimensions.paddingMedium,
+                                )
                         )
                     }
                 }
@@ -608,15 +610,17 @@ fun BonusSupportContainer(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.background(
-                    color = colors.kds_white,
-                    shape = shapes.small
-                ).padding(
-                    start = dimensions.paddingXSmall,
-                    top = dimensions.paddingXSmall,
-                    bottom = dimensions.paddingXSmall,
-                    end = dimensions.paddingXSmall
-                ),
+                modifier = Modifier
+                    .background(
+                        color = colors.kds_white,
+                        shape = shapes.small
+                    )
+                    .padding(
+                        start = dimensions.paddingXSmall,
+                        top = dimensions.paddingXSmall,
+                        bottom = dimensions.paddingXSmall,
+                        end = dimensions.paddingXSmall
+                    ),
 
             ) {
                 Text(

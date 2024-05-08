@@ -7,8 +7,11 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.webp.decoder.WebpDrawable
+import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -110,7 +113,6 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
                             return isFirstResource
                         }
                     })
-                    .placeholder(ColorDrawable(Color.TRANSPARENT))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .load(url)
                     .into(this)
@@ -125,6 +127,23 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
     }
 }
 
+fun ImageView.loadWebp(url: String?, context: Context) {
+    url?.let {
+        try {
+            val roundedCorners = RoundedCorners(1)
+            Glide.with(this)
+                .load(it)
+                .optionalTransform(roundedCorners)
+                .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(roundedCorners))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(this)
+        } catch (e: Exception) {
+            this.setImageResource(R.drawable.image_placeholder)
+            FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImageWithResize", " with url: $url ${e.message ?: ""}")
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
+    }
+}
 fun ImageView.loadGifImage(url: String?, context: Context) {
     url?.let {
         if (context.applicationContext.isKSApplication()) {
@@ -132,7 +151,6 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
                 Glide.with(context)
                     .asGif()
                     .load(it)
-                    .placeholder(ColorDrawable(Color.TRANSPARENT))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(this)
             } catch (e: Exception) {

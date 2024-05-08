@@ -12,9 +12,9 @@ import com.aghajari.zoomhelper.ZoomHelper
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif
-import com.kickstarter.libs.utils.extensions.isWebp
 import com.kickstarter.ui.extensions.loadGifImage
 import com.kickstarter.ui.extensions.loadImage
+import com.kickstarter.ui.extensions.loadWebp
 import com.kickstarter.ui.extensions.makeLinks
 
 @SuppressLint("ClickableViewAccessibility")
@@ -40,15 +40,17 @@ class ImageWithCaptionView @JvmOverloads constructor(
                 binding.imageView.loadImage(src, context)
             }
 
-            if (src.isGif()) {
-                binding.imageView.loadGifImage(src, context)
-            } else if (src.isWebp()) {
-                binding.imageView.loadImage(src, context)
-            }
-            else {
-                binding.imageView.loadImage(src, context, binding.imageViewPlaceholder)
-                ZoomHelper.addZoomableView(binding.imageView)
-                ZoomHelper.removeZoomableView(binding.imageViewPlaceholder)
+            // - it's a webp format
+            if (src.contains(".webp")) {
+                binding.imageView.loadWebp(src, context)
+            } else {
+                if (src.isGif()) {
+                    binding.imageView.loadGifImage(src, context)
+                } else {
+                    binding.imageView.loadImage(src, context, binding.imageViewPlaceholder)
+                    ZoomHelper.addZoomableView(binding.imageView)
+                    ZoomHelper.removeZoomableView(binding.imageViewPlaceholder)
+                }
             }
         }
     }

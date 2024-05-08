@@ -142,7 +142,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     private fun calculateTotal(): Double {
         var total = 0.0
         total += getRewardsTotalAmount(rewardAndAddOns)
-        total += if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport
+        total += RewardUtils.getFinalBonusSupportAmount(addedBonusSupport, initialBonusSupport)
         if (::userSelectedReward.isInitialized) {
             total +=
                 if (RewardUtils.isNoReward(userSelectedReward)) 0.0
@@ -312,7 +312,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = rewardAndAddOns,
                 initialBonusSupportAmount = initialBonusSupport,
-                finalBonusSupportAmount = if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport,
+                finalBonusSupportAmount = RewardUtils.getFinalBonusSupportAmount(addedBonusSupport, initialBonusSupport),
                 shippingAmount = shippingAmount,
                 totalAmount = totalAmount,
                 minStepAmount = minStepAmount,

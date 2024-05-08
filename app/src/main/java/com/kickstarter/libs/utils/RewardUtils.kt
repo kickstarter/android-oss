@@ -208,4 +208,17 @@ object RewardUtils {
             else -> floor(seconds / 60.0 / 60.0 / 24.0).toInt()
         }
     }
+
+    /**
+     * Returns the finalBonusSupportAmount as either the initialBonusSupport OR the addedBonusSupport,
+     * depending on if the user chose to change the bonus amount from the original initialBonusAmount.
+     *
+     * The initialBonusSupport is the bonus amount the user initially sees upon landing on the Confirm
+     * Pledge Details screen. Most of the time initialBonusSupport will be 0, but for the case of No
+     * Reward, the initialBonusSupport is 1. If the user inputs a bonus amount, we use that as
+     * the finalBonusSupportAmount, otherwise we use the initialBonusSupport.
+     */
+    fun getFinalBonusSupportAmount(addedBonusSupport: Double, initialBonusSupport: Double): Double {
+        return if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport
+    }
 }

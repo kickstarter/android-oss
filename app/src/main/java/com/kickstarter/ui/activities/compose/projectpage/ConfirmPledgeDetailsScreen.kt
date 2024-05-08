@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -36,7 +37,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.parseToDouble
@@ -334,7 +334,7 @@ fun ConfirmPledgeDetailsScreen(
         )
     } else ""
 
-    val maxInputString = getMaxInputString(selectedReward, maxPledgeAmount, totalAmount, totalBonusSupport, currencySymbolStartAndEnd, environment)
+    val maxInputString = RewardViewUtils.getMaxInputString(LocalContext.current, selectedReward, maxPledgeAmount, totalAmount, totalBonusSupport, currencySymbolStartAndEnd, environment)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -805,34 +805,4 @@ fun ItemizedRewardListContainer(
             }
         }
     }
-}
-
-@Composable
-private fun getMaxInputString(
-    selectedReward: Reward?,
-    maxPledgeAmount: Double,
-    totalAmount: Double,
-    totalBonusSupport: Double,
-    currencySymbolStartAndEnd: Pair<String?, String?>,
-    environment: Environment?
-): String {
-    // rewardAmount + totalBonusSupport = totalAmount
-    // totalAmount must be <= maxPledgeAmount
-
-    val maxInputAmount = if (selectedReward != null && RewardUtils.isNoReward(selectedReward)) {
-        maxPledgeAmount
-    } else {
-        val rewardAmount = totalAmount - totalBonusSupport
-        maxPledgeAmount - rewardAmount
-    }
-    val maxInputAmountWithCurrency =
-        (currencySymbolStartAndEnd.first ?: "") +
-            if (maxInputAmount % 1.0 == 0.0) maxInputAmount.toInt().toString()
-            else maxInputAmount.toString() + (currencySymbolStartAndEnd.second ?: "")
-
-    return environment?.ksString()?.format(
-        stringResource(R.string.Enter_an_amount_less_than_max_pledge), // TODO: MBL-1416 Copy should say less than or equal to
-        "max_pledge",
-        maxInputAmountWithCurrency
-    ) ?: ""
 }

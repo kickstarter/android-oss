@@ -81,7 +81,7 @@ fun Element.parseImageElement(): ImageViewElement {
 
     // - it's a gif collect attribute scr
     if (src.contains(".webp")) {
-        src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("data-src").toString()
+        src = "https://i.kickstarter.com/assets/044/690/634/1a2c5e757fa2a5b0db60876b56e11295_original.webp?fit=scale-down&origin=ugc&q=92&width=680&sig=XdHJg5mflYq9mMNM%2BwgPCcgifpniWypIkTtHcX37ZU4%3D"
     }
 
     return ImageViewElement(src = src, href = href, caption = caption)

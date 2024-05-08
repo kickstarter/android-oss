@@ -36,6 +36,10 @@ class ImageWithCaptionView @JvmOverloads constructor(
             binding.imageView.setImageDrawable(null)
             binding.imageViewPlaceholder.setImageDrawable(null)
         } else {
+            if (src.contains(".webp")) {
+                binding.imageView.loadImage(src, context)
+            }
+
             if (src.isGif()) {
                 binding.imageView.loadGifImage(src, context)
             } else if (src.isWebp()) {

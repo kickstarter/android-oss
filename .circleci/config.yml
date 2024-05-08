@@ -33,7 +33,7 @@ jobs:
           paths:
             - ~/.gradle
             - ~/.android
-      - run: ./gradlew assembleExternalRelease
+      - run: ./gradlew assembleExternalRelease --debug --stacktrace
       - persist_to_workspace:
           root: ~/project
           paths:

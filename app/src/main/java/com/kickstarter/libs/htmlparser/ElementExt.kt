@@ -79,11 +79,6 @@ fun Element.parseImageElement(): ImageViewElement {
         src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("data-src").toString()
     }
 
-    // - it's an animated gif or image collect attribute scr for webp format
-    if (src.contains(".webp")) {
-        src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("src").toString()
-    }
-
     return ImageViewElement(src = src, href = href, caption = caption)
 }
 

@@ -15,7 +15,6 @@ import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isKSApplication
-import javax.sql.DataSource
 
 fun ImageView.loadCircleImage(url: String?) {
     url?.let {
@@ -80,7 +79,7 @@ fun ImageView.loadImageWithResize(
         }
     }
 }
-fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: AppCompatImageView? = null) {
+fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder: AppCompatImageView? = null) {
     url?.let {
         val targetView = this
         if (context.applicationContext.isKSApplication()) {
@@ -95,7 +94,8 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                             dataSource: com.bumptech.glide.load.DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            imageViewPlaceholder?.setImageDrawable(resource)
+                            targetView.setImageDrawable(resource)
+                            imageZoomablePlaceholder?.setImageDrawable(resource)
                             return isFirstResource
                         }
 
@@ -106,7 +106,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                             isFirstResource: Boolean
                         ): Boolean {
                             targetView.setImageDrawable(null)
-                            imageViewPlaceholder?.setImageDrawable(null)
+                            imageZoomablePlaceholder?.setImageDrawable(null)
                             return isFirstResource
                         }
                     })
@@ -131,9 +131,9 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
             try {
                 Glide.with(context)
                     .asGif()
+                    .load(it)
                     .placeholder(ColorDrawable(Color.TRANSPARENT))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .load(url)
                     .into(this)
             } catch (e: Exception) {
                 this.setImageResource(R.drawable.image_placeholder)

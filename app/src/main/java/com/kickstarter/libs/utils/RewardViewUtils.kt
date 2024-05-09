@@ -105,7 +105,7 @@ object RewardViewUtils {
      * Returns the string for the error message a user receives when their inputted bonus amount causes
      * the total pledge amount to exceed the max pledge amount:
      *
-     *  Enter an amount less than $X
+     *  Enter an amount less than $X.
      *
      *  where X is calculated as maxPledgeAmount - rewardAmount
      */

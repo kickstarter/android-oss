@@ -3,8 +3,11 @@ package com.kickstarter.libs.utils
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.mock.factories.MessageFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import org.junit.Test
 
@@ -63,5 +66,23 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
         assertEquals("Limited shipping", RewardViewUtils.shippingSummary(context(), ksString, Pair(R.string.Limited_shipping, null)))
         assertEquals("Limited shipping", RewardViewUtils.shippingSummary(context(), ksString, Pair(R.string.location_name_only, null)))
         assertEquals("Nigeria only", RewardViewUtils.shippingSummary(context(), ksString, Pair(R.string.location_name_only, "Nigeria")))
+    }
+
+    @Test
+    fun `test when user exceeds max pledge amount the appropriate error message is returned`() {
+        val maxPledgeAmount = 1000.0
+        val totalAmount = 1100.0
+        val totalBonusSupport = 600.0
+
+        val maxInputString = RewardViewUtils.getMaxInputString(
+            context(),
+            RewardFactory.reward(),
+            maxPledgeAmount,
+            totalAmount,
+            totalBonusSupport,
+            kotlin.Pair<String?, String?>("$", null),
+            environment().toBuilder().build()
+        )
+        assertEquals("Enter an amount less than $500.", maxInputString)
     }
 }

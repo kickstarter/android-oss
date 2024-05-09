@@ -3,11 +3,8 @@ package com.kickstarter.libs.utils
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.MockCurrentUserV2
-import com.kickstarter.mock.factories.MessageFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import org.junit.Test
 

@@ -71,7 +71,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(),
                 initialBonusSupportAmount = 1.0,
-                totalBonusSupportAmount = 1.0,
+                finalBonusSupportAmount = 1.0,
                 shippingAmount = 0.0,
                 totalAmount = 1.0,
                 minStepAmount = 1.0,
@@ -99,7 +99,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 0.0,
+                finalBonusSupportAmount = 0.0,
                 shippingAmount = 0.0,
                 totalAmount = 20.0,
                 minStepAmount = 1.0,
@@ -131,7 +131,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 0.0,
+                finalBonusSupportAmount = 0.0,
                 shippingAmount = 0.0,
                 totalAmount = 40.0,
                 minStepAmount = 1.0,
@@ -147,7 +147,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_2),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 0.0,
+                finalBonusSupportAmount = 0.0,
                 shippingAmount = 0.0,
                 totalAmount = 60.0,
                 minStepAmount = 1.0,
@@ -180,7 +180,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 1.0,
+                finalBonusSupportAmount = 1.0,
                 shippingAmount = 0.0,
                 totalAmount = 41.0,
                 minStepAmount = 1.0,
@@ -196,7 +196,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 2.0,
+                finalBonusSupportAmount = 2.0,
                 shippingAmount = 0.0,
                 totalAmount = 42.0,
                 minStepAmount = 1.0,
@@ -212,7 +212,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 1.0,
+                finalBonusSupportAmount = 1.0,
                 shippingAmount = 0.0,
                 totalAmount = 41.0,
                 minStepAmount = 1.0,
@@ -228,7 +228,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 0.0,
+                finalBonusSupportAmount = 0.0,
                 shippingAmount = 0.0,
                 totalAmount = 40.0,
                 minStepAmount = 1.0,
@@ -262,7 +262,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 0.0,
+                finalBonusSupportAmount = 0.0,
                 shippingAmount = 30.0,
                 totalAmount = 70.0,
                 minStepAmount = 1.0,
@@ -278,7 +278,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = listOf(reward, addOnQuantity_1),
                 initialBonusSupportAmount = 0.0,
-                totalBonusSupportAmount = 0.0,
+                finalBonusSupportAmount = 0.0,
                 shippingAmount = 40.0,
                 totalAmount = 80.0,
                 minStepAmount = 1.0,

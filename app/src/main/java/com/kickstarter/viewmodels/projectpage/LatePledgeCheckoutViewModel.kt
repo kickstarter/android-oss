@@ -176,29 +176,35 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         totalAmount: Double
     ) {
         viewModelScope.launch {
-            apolloClient.createPaymentIntent(
-                CreatePaymentIntentInput(
-                    project = project,
-                    amount = totalAmount.toString()
-                )
-            ).asFlow().onStart {
-                emitCurrentState(isLoading = true)
-            }.map { clientSecret ->
-                selectedCard?.let {
-                    checkoutId?.let {
-                        validateCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
+            checkoutId?.let {
+                apolloClient.createPaymentIntent(
+                    CreatePaymentIntentInput(
+                        project = project,
+                        amount = totalAmount.toString(),
+                        checkoutId = it
+                    )
+                ).asFlow().onStart {
+                    emitCurrentState(isLoading = true)
+                }.map { clientSecret ->
+                    selectedCard?.let {
+                        checkoutId?.let {
+                            validateCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
+                        } ?: run {
+                            emitCurrentState()
+                            errorAction.invoke(null)
+                        }
                     } ?: run {
                         emitCurrentState()
                         errorAction.invoke(null)
                     }
-                } ?: run {
+                }.catch {
                     emitCurrentState()
                     errorAction.invoke(null)
-                }
-            }.catch {
+                }.collect()
+            } ?: run {
                 emitCurrentState()
                 errorAction.invoke(null)
-            }.collect()
+            }
         }
     }
 

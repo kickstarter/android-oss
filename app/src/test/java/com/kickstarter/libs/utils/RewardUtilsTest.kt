@@ -64,7 +64,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         rewardLimitReached = RewardFactory.limitReached()
         rewardMultipleShippingLocation = RewardFactory.multipleLocationShipping()
         rewardWorldWideShipping = RewardFactory.rewardWithShipping()
-        rewardSingleShippingLocation = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
+        rewardSingleShippingLocation =
+            RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
         rewardWithAddons = RewardFactory.rewardHasAddOns()
     }
 
@@ -329,10 +330,22 @@ class RewardUtilsTest : KSRobolectricTestCase() {
             .build()
         assertNull(shippingSummary(rewardWithNullShipping))
         assertNull(shippingSummary(reward))
-        assertEquals(Pair.create(R.string.Limited_shipping, ""), shippingSummary(rewardWithNullLocation))
-        assertEquals(Pair.create<Int, Any?>(R.string.Limited_shipping, null), shippingSummary(rewardMultipleShippingLocation))
-        assertEquals(Pair.create(R.string.location_name_only, COUNTRY_NIGERIA), shippingSummary(rewardSingleShippingLocation))
-        assertEquals(Pair.create<Int, Any?>(R.string.Ships_worldwide, null), shippingSummary(rewardWorldWideShipping))
+        assertEquals(
+            Pair.create(R.string.Limited_shipping, ""),
+            shippingSummary(rewardWithNullLocation)
+        )
+        assertEquals(
+            Pair.create<Int, Any?>(R.string.Limited_shipping, null),
+            shippingSummary(rewardMultipleShippingLocation)
+        )
+        assertEquals(
+            Pair.create(R.string.location_name_only, COUNTRY_NIGERIA),
+            shippingSummary(rewardSingleShippingLocation)
+        )
+        assertEquals(
+            Pair.create<Int, Any?>(R.string.Ships_worldwide, null),
+            shippingSummary(rewardWorldWideShipping)
+        )
     }
 
     @Test
@@ -450,6 +463,16 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         val reward = RewardFactory.localReceiptLocation()
         assertFalse(isShippable(reward))
         assertTrue(isLocalPickup(reward))
+    }
+
+    @Test
+    fun `test when user doesn't input any extra bonus amount that the final bonus support amount is initial bonus support amount `() {
+        assertEquals(1.0, RewardUtils.getFinalBonusSupportAmount(0.0, 1.0))
+    }
+
+    @Test
+    fun `test when user inputs some extra bonus amount that the final bonus support amount is whatever the user inputted`() {
+        assertEquals(5.0, RewardUtils.getFinalBonusSupportAmount(5.0, 1.0))
     }
 
     companion object {

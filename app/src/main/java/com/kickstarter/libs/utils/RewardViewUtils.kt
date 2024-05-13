@@ -9,6 +9,7 @@ import android.text.style.RelativeSizeSpan
 import android.util.Pair
 import androidx.annotation.StringRes
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.Country
@@ -98,5 +99,44 @@ object RewardViewUtils {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return spannable
+    }
+
+    /**
+     * Returns the string for the error message a user receives when their inputted bonus amount causes
+     * the total pledge amount to exceed the max pledge amount:
+     *
+     *  Enter an amount less than $X.
+     *
+     *  where X is calculated as maxPledgeAmount - rewardAmount
+     */
+    fun getMaxInputString(
+        context: Context,
+        selectedReward: Reward?,
+        maxPledgeAmount: Double,
+        totalAmount: Double,
+        totalBonusSupport: Double,
+        currencySymbolStartAndEnd: kotlin.Pair<String?, String?>,
+        environment: Environment?
+    ): String {
+
+        // rewardAmount + totalBonusSupport = totalAmount
+        // totalAmount must be <= maxPledgeAmount
+
+        val maxInputAmount = if (selectedReward != null && RewardUtils.isNoReward(selectedReward)) {
+            maxPledgeAmount
+        } else {
+            val rewardAmount = totalAmount - totalBonusSupport
+            maxPledgeAmount - rewardAmount
+        }
+        val maxInputAmountWithCurrency =
+            (currencySymbolStartAndEnd.first ?: "") +
+                if (maxInputAmount % 1.0 == 0.0) maxInputAmount.toInt().toString()
+                else maxInputAmount.toString() + (currencySymbolStartAndEnd.second ?: "")
+
+        return environment?.ksString()?.format(
+            context.getString(R.string.Enter_an_amount_less_than_max_pledge), // TODO: MBL-1416 Copy should say less than or equal to
+            "max_pledge",
+            maxInputAmountWithCurrency
+        ) ?: ""
     }
 }

@@ -719,7 +719,7 @@ class ProjectPageActivity :
                                     .shippingAmount(shippingAmount)
                                     .build()
                                 val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
-                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData), userEmail)
+                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData))
                                 checkoutFlowViewModel.onProjectSuccess()
                                 refreshProject()
                                 binding.pledgeContainerCompose.isGone = true
@@ -1085,7 +1085,7 @@ class ProjectPageActivity :
         showSnackbar(binding.snackbarAnchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>, email: String = "") {
+    private fun showCreatePledgeSuccess(checkoutDataAndProjectData: Pair<CheckoutData, PledgeData>) {
         val checkoutData = checkoutDataAndProjectData.first
         val pledgeData = checkoutDataAndProjectData.second
         val projectData = pledgeData.projectData()
@@ -1095,7 +1095,6 @@ class ProjectPageActivity :
         if (clearFragmentBackStack() || (projectData.project().showLatePledgeFlow() && fFLatePledge)) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
-                    .putExtra(IntentKey.EMAIL, email)
                     .putExtra(IntentKey.PROJECT, projectData.project())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
                     .putExtra(IntentKey.PLEDGE_DATA, pledgeData)

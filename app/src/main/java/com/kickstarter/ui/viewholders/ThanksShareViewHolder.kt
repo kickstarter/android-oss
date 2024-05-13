@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.text.Html
 import android.util.Pair
 import com.facebook.share.model.ShareLinkContent
@@ -16,6 +17,7 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import java.math.RoundingMode
 
 class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
     private val viewModel = ThanksShareHolderViewModel.ThanksShareViewHolderViewModel(environment())
@@ -75,7 +77,7 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectAndCheckoutData = requireNotNull(data as Pair<Pair<Project, CheckoutData>, String>?)
+        val projectAndCheckoutData = requireNotNull(data as Pair<Project, CheckoutData>?)
         viewModel.inputs.configureWith(projectAndCheckoutData)
     }
 
@@ -87,10 +89,32 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_backed_project_html), "project_name", projectName))
     }
 
-    private fun showPostCampaignPledgeText(pcptext: Triple<Project, Double, String>) {
-        // TODO: Change to use new string once it is available
-        // binding.backedProject.text = Html.fromHtml(ksString.format(context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html), "project_name", pcptext.first.name(), "pledge_total", ksCurrency.format(initialValue = pcptext.second, project = pcptext.first, roundingMode = RoundingMode.HALF_UP), "user_email", pcptext.third))
-        binding.backedProject.text = ""
+    private fun showPostCampaignPledgeText(pcptext: Pair<Double, Project>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            binding.backedProject.text = Html.fromHtml(
+                ksString.format(
+                    context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
+                    "pledge_total",
+                    ksCurrency.format(
+                        initialValue = pcptext.first,
+                        project = pcptext.second,
+                        roundingMode = RoundingMode.HALF_UP
+                    )
+                ), Html.FROM_HTML_MODE_LEGACY)
+        }
+        else {
+            binding.backedProject.text = Html.fromHtml(
+                    ksString.format(
+                        context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
+                        "pledge_total",
+                        ksCurrency.format(
+                            initialValue = pcptext.first,
+                            project = pcptext.second,
+                            roundingMode = RoundingMode.HALF_UP
+                        )
+                    ),
+            )
+        }
     }
 
     private fun startShare(projectNameAndShareUrl: Pair<String, String>) {

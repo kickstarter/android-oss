@@ -100,19 +100,20 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
                         project = pcptext.second,
                         roundingMode = RoundingMode.HALF_UP
                     )
-                ), Html.FROM_HTML_MODE_LEGACY)
-        }
-        else {
+                ),
+                Html.FROM_HTML_MODE_LEGACY
+            )
+        } else {
             binding.backedProject.text = Html.fromHtml(
-                    ksString.format(
-                        context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
-                        "pledge_total",
-                        ksCurrency.format(
-                            initialValue = pcptext.first,
-                            project = pcptext.second,
-                            roundingMode = RoundingMode.HALF_UP
-                        )
-                    ),
+                ksString.format(
+                    context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
+                    "pledge_total",
+                    ksCurrency.format(
+                        initialValue = pcptext.first,
+                        project = pcptext.second,
+                        roundingMode = RoundingMode.HALF_UP
+                    )
+                ),
             )
         }
     }

@@ -77,7 +77,7 @@ fun SearchTopBar(
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
-                contentDescription = stringResource(id = R.string.back),
+                contentDescription = stringResource(id = R.string.Back),
                 tint = colors.kds_black
             )
         }

@@ -112,7 +112,7 @@ fun FormularyScreen(
             value = outputs.email().subscribeAsState(initial = "").value,
             onValueChange = {},
             readOnly = true,
-            label = { Text(stringResource(id = R.string.email)) },
+            label = { Text(stringResource(id = R.string.Email)) },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = colors.kds_support_200,
                 errorLabelColor = colors.kds_alert,

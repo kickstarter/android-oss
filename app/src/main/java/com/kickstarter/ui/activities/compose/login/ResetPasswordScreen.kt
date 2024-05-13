@@ -190,7 +190,7 @@ fun ResetPasswordScreen(
                         )
                     )
                     .testTag(ResetPasswordTestTag.EMAIL.name),
-                label = stringResource(id = R.string.email),
+                label = stringResource(id = R.string.Email),
                 initialValue = initialEmail,
                 onValueChanged = { value ->
                     emailInput = value

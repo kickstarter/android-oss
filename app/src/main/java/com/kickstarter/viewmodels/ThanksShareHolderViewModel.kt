@@ -20,7 +20,7 @@ import io.reactivex.subjects.PublishSubject
 interface ThanksShareHolderViewModel {
     interface Inputs {
         /** Call to configure the view model with a project.  */
-        fun configureWith(thanksShareData: Pair<Pair<Project, CheckoutData>, String>)
+        fun configureWith(thanksShareData: Pair<Project, CheckoutData>)
 
         /** Call when the share button is clicked.  */
         fun shareClick()
@@ -47,12 +47,12 @@ interface ThanksShareHolderViewModel {
         /** Emits the project name and url to share using Twitter.  */
         fun startShareOnTwitter(): Observable<Pair<String, String>>
 
-        fun postCampaignPledgeText(): Observable<Triple<Project, Double, String>>
+        fun postCampaignPledgeText(): Observable<Pair<Double, Project>>
     }
 
     class ThanksShareViewHolderViewModel(environment: Environment) : Inputs, Outputs {
 
-        private val thanksShareData = PublishSubject.create<Pair<Pair<Project, CheckoutData>, String>>()
+        private val thanksShareData = PublishSubject.create<Pair<Project, CheckoutData>>()
         private val project = PublishSubject.create<Project>()
         private val shareClick = PublishSubject.create<Unit>()
         private val shareOnFacebookClick = PublishSubject.create<Unit>()
@@ -61,7 +61,7 @@ interface ThanksShareHolderViewModel {
         private val startShare = PublishSubject.create<Pair<String, String>>()
         private val startShareOnFacebook = PublishSubject.create<Pair<Project, String>>()
         private val startShareOnTwitter = PublishSubject.create<Pair<String, String>>()
-        private val postCampaignText = PublishSubject.create<Triple<Project, Double, String>>()
+        private val postCampaignText = PublishSubject.create<Pair<Double, Project>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -71,21 +71,21 @@ interface ThanksShareHolderViewModel {
         init {
             thanksShareData
                 .map { it.first }
-                .subscribe { project.onNext(it.first) }
+                .subscribe { project.onNext(it) }
                 .addToDisposable(disposables)
 
             thanksShareData
-                .filter { it.first.first.isInPostCampaignPledgingPhase().isFalse() }
-                .filter { it.first.first.postCampaignPledgingEnabled().isFalse() }
-                .map { it.first.first.name() }
+                .filter { it.first.isInPostCampaignPledgingPhase().isFalse() }
+                .filter { it.first.postCampaignPledgingEnabled().isFalse() }
+                .map { it.first.name() }
                 .subscribe { projectName.onNext(it) }
                 .addToDisposable(disposables)
 
             thanksShareData
-                .filter { it.first.first.isInPostCampaignPledgingPhase().isTrue() }
-                .filter { it.first.first.postCampaignPledgingEnabled().isTrue() }
+                .filter { it.first.isInPostCampaignPledgingPhase().isTrue() }
+                .filter { it.first.postCampaignPledgingEnabled().isTrue() }
                 .subscribe {
-                    postCampaignText.onNext(Triple(it.first.first, it.first.second.amount(), it.second))
+                    postCampaignText.onNext(Pair(it.second.amount(), it.first))
                 }
                 .addToDisposable(disposables)
             project
@@ -122,7 +122,7 @@ interface ThanksShareHolderViewModel {
                 .addToDisposable(disposables)
         }
 
-        override fun configureWith(thanksShareData: Pair<Pair<Project, CheckoutData>, String>) {
+        override fun configureWith(thanksShareData: Pair<Project, CheckoutData>) {
             this.thanksShareData.onNext(thanksShareData)
         }
 
@@ -143,7 +143,7 @@ interface ThanksShareHolderViewModel {
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
         override fun projectName(): Observable<String> = projectName
 
-        override fun postCampaignPledgeText(): Observable<Triple<Project, Double, String>> = postCampaignText
+        override fun postCampaignPledgeText(): Observable<Pair<Double, Project>> = postCampaignText
         override fun onCleared() {
             disposables.clear()
         }

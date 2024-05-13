@@ -816,6 +816,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>Vous venez de vous engager à soutenir le projet &lt;b>%{project_name}&lt;/b>. Votre contribution de &lt;b>%{pledge_total}&lt;/b> a bien été prélevée.&lt;/p>\n
 &lt;p>Vous recevrez une confirmation à l\'adresse %{user_email} dès que votre récompense sera prête à être expédiée. Il vous sera alors demandé de régler les taxes et frais de port.&lt;/p>\n
 &lt;p>Grâce à vous, ce projet se concrétise. Parlez-en autour de vous !&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html_short" formatted="false">Votre engagement de &lt;b>%{pledge_total}&lt;/b> contribue à faire vivre ce projet. Consultez votre messagerie pour plus de détails.</string>
   <string name="You_launched_this_project_on_launch_date" formatted="false">Vous avez lancé ce projet le %{launch_date}. Rendez-vous sur notre site Web pour accéder aux outils du créateur !</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Vous devez vous engager à hauteur de %{reward_minimum} ou plus pour sélectionner cette récompense.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
@@ -830,6 +831,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_message_has_been_sent" formatted="false">Votre message a été envoyé.</string>
   <string name="Your_name_displayed" formatted="false">Votre nom s\'affichera toujours sur votre profil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Votre moyen de paiement a bien été débité.</string>
+  <string name="Your_payment_method_will_be_charged" formatted="false">Votre moyen de paiement sera &lt;b>débité immédiatement&lt;/b>. Vous &lt;b>ne pourrez pas modifier ni annuler&lt;/b> votre contribution.</string>
   <string name="Your_payment_method_will_be_charged_immediately" formatted="false">La somme sera immédiatement prélevée sur votre moyen de paiement et vous recevrez une confirmation à l\'adresse %{user_email}. Cet engagement ne pourra être ni annulé, ni modifié.</string>
   <string name="Your_pledge" formatted="false">Mon engagement</string>
   <string name="Your_pledge_amount" formatted="false">Montant engagé :</string>

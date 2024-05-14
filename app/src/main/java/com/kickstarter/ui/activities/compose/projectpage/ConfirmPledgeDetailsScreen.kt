@@ -411,46 +411,14 @@ fun ConfirmPledgeDetailsScreen(
 
                 if (rewardsList.isNotEmpty() && shippingLocation.isNotEmpty() && rewardsHaveShippables) {
                     item {
-                        Column(
-                            modifier = Modifier.padding(
-                                start = dimensions.paddingMedium,
-                                end = dimensions.paddingMedium,
-                                top = dimensions.paddingMedium
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.Your_shipping_location),
-                                style = typography.subheadlineMedium,
-                                color = colors.textPrimary
-                            )
-
-                            Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                if (countryList.isNotEmpty() && !rewardsContainAddOns && rewardsHaveShippables) {
-                                    CountryInputWithDropdown(
-                                        interactionSource = interactionSource,
-                                        initialCountryInput = shippingLocation,
-                                        countryList = countryList,
-                                        onShippingRuleSelected = onShippingRuleSelected
-                                    )
-                                } else {
-                                    Text(
-                                        text = shippingLocation,
-                                        style = typography.subheadline,
-                                        color = colors.textPrimary
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Text(
-                                    text = "+ $shippingAmountString",
-                                    style = typography.title3,
-                                    color = colors.textSecondary
-                                )
-                            }
-                        }
+                        ShippingLocationView(
+                            countryList,
+                            rewardsContainAddOns,
+                            interactionSource,
+                            shippingLocation,
+                            shippingAmountString,
+                            onShippingRuleSelected
+                        )
                     }
                 }
 
@@ -803,6 +771,57 @@ fun ItemizedRewardListContainer(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ShippingLocationView(
+    countryList: List<ShippingRule>,
+    rewardsContainAddOns: Boolean,
+    interactionSource: MutableInteractionSource,
+    shippingLocation: String,
+    shippingAmountString: String,
+    onShippingRuleSelected: (ShippingRule) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(
+            start = dimensions.paddingMedium,
+            end = dimensions.paddingMedium,
+            top = dimensions.paddingMedium
+        )
+    ) {
+        Text(
+            text = stringResource(id = R.string.Your_shipping_location),
+            style = typography.subheadlineMedium,
+            color = colors.textPrimary
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (countryList.isNotEmpty() && !rewardsContainAddOns) {
+                CountryInputWithDropdown(
+                    interactionSource = interactionSource,
+                    initialCountryInput = shippingLocation,
+                    countryList = countryList,
+                    onShippingRuleSelected = onShippingRuleSelected
+                )
+            } else {
+                Text(
+                    text = shippingLocation,
+                    style = typography.subheadline,
+                    color = colors.textPrimary
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = "+ $shippingAmountString",
+                style = typography.title3,
+                color = colors.textSecondary
+            )
         }
     }
 }

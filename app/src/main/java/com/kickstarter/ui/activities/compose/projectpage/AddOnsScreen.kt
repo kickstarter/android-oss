@@ -340,7 +340,7 @@ fun CountryInputWithDropdown(
         mutableStateOf(false)
     }
 
-    var countryInput by remember {
+    var countryInput by remember(key1 = initialCountryInput) {
         mutableStateOf(initialCountryInput ?: "")
     }
 

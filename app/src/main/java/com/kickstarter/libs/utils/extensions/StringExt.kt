@@ -143,7 +143,7 @@ fun String.isWebp(): Boolean {
 }
 
 /**
- * Returns a boolean that reflects if the string contains the .webp extension
+ * Returns a boolean that reflects if the string contains the .gif extension
  */
 fun String.isGif(): Boolean {
     val gifPattern = "(?:\\/\\/.*\\.(?:gif))"

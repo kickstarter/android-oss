@@ -1499,11 +1499,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<String>()
 
+            val checkoutId = createPaymentIntentInput.checkoutId
             this.service.mutate(
                 CreatePaymentIntentMutation.builder()
                     .projectId(encodeRelayId(createPaymentIntentInput.project))
                     .amount(createPaymentIntentInput.amount)
                     .paymentIntentContext(StripeIntentContextTypes.POST_CAMPAIGN_CHECKOUT)
+                    .checkoutId(Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())))
                     .build()
             ).enqueue(object : ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
                 override fun onFailure(e: ApolloException) {

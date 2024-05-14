@@ -12,6 +12,7 @@ import com.aghajari.zoomhelper.ZoomHelper
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif
+import com.kickstarter.libs.utils.extensions.isWebp
 import com.kickstarter.ui.extensions.loadGifImage
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.extensions.loadWebp
@@ -36,17 +37,14 @@ class ImageWithCaptionView @JvmOverloads constructor(
             binding.imageView.setImageDrawable(null)
             binding.imageViewPlaceholder.setImageDrawable(null)
         } else {
-            if (src.contains(".webp")) {
-                binding.imageView.loadImage(src, context)
-            }
-
-            // - it's a webp format
-            if (src.contains(".webp")) {
-                binding.imageView.loadWebp(src, context)
-            } else {
-                if (src.isGif()) {
+            when {
+                src.isWebp() -> {
+                    binding.imageView.loadWebp(src, context)
+                }
+                src.isGif() -> {
                     binding.imageView.loadGifImage(src, context)
-                } else {
+                }
+                else -> {
                     binding.imageView.loadImage(src, context, binding.imageViewPlaceholder)
                     ZoomHelper.addZoomableView(binding.imageView)
                     ZoomHelper.removeZoomableView(binding.imageViewPlaceholder)

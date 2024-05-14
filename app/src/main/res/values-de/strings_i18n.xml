@@ -118,7 +118,7 @@ Unterstützer</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Sieh dir dieses speziell für dich ausgesuchten Projekte an.</string>
   <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">Sieh bitte in deinem Posteingang nach und schließe diesen einfachen Schritt ab.</string>
   <string name="Check_your_payment_details" formatted="false">Überprüfe die Daten deiner Zahlungsweise</string>
-  <string name="Checkout" formatted="false">Checkout</string>
+  <string name="Checkout" formatted="false">Kasse</string>
   <string name="Choose_another_reward" formatted="false">Andere Belohnung auswählen</string>
   <string name="Chooses_location_for_shipping" formatted="false">Legt %{location} als Versandort fest.</string>
   <string name="Chosen_just_for_you" formatted="false">Speziell für dich ausgewählt</string>
@@ -135,7 +135,7 @@ Unterstützer</string>
   <string name="Complete_payment" formatted="false">Zahlung abschließen</string>
   <string name="Confirm" formatted="false">Bestätigen</string>
   <string name="Confirm_password" formatted="false">Neues Passwort bestätigen</string>
-  <string name="Confirm_your_pledge_details" formatted="false">Confirm your pledge details</string>
+  <string name="Confirm_your_pledge_details" formatted="false">Bestätige die Details zu deinem Finanzierungsbeitrag</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.</string>
   <string name="Contact_backer" formatted="false">Unterstützer kontaktieren</string>
   <string name="Contact_creator" formatted="false">Projektgründer kontaktieren</string>
@@ -607,7 +607,7 @@ Antippen und erneut versuchen</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
   <string name="Select_up_to_five" formatted="false">Wähle bis zu fünf aus den unten stehenden Optionen aus.</string>
-  <string name="Select_your_reward" formatted="false">Select your reward</string>
+  <string name="Select_your_reward" formatted="false">Belohnung auswählen</string>
   <string name="Selected" formatted="false">Ausgewählt</string>
   <string name="Selected_card" formatted="false">Ausgewählte Karte</string>
   <string name="Selected_reward" formatted="false">Gewählte Belohnung</string>
@@ -812,9 +812,10 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Du hast den Finanzierungsbeitrag für dieses Projekt zurückgezogen.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Diese Karte kann nicht verwendet werden, um ein Projekt aus dem folgenden Land zu unterstützen: %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>
-  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
-&lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
-&lt;p>This project is now one step closer to a reality, thanks to you. Spread the word!&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>Du hast &lt;b>%{project_name}&lt;/b> mit deinem Beitrag erfolgreich unterstützt. Dein Beitrag in Höhe von &lt;b>%{pledge_total}&lt;/b> wurde eingezogen.&lt;/p>\n
+&lt;p>Du erhältst eine E-Mail an %{user_email}, wenn deine Belohnungen zur Erfüllung bereit sind, damit du alles finalisieren und für Versand und Steuern zahlen kannst.&lt;/p>\n
+&lt;p>Dank dir ist dieses Projekt seiner Realisierung einen Schritt nähergekommen. Erzähl auch deinen Freunden und Bekannten davon!&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html_short" formatted="false">Dein Beitrag in Höhe von &lt;b>%{pledge_total}&lt;/b> wird dabei helfen, dieses Projekt Wirklichkeit werden zu lassen. Weitere Details findest du in der E-Mail, die du von uns erhalten hast.</string>
   <string name="You_launched_this_project_on_launch_date" formatted="false">Du hast dieses Projekt am %{launch_date} veröffentlicht. Tools für Projektgründer findest du auf unserer Website.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Diese Belohnung hat einen Mindestfinanzierungsbeitrag von %{reward_minimum}.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
@@ -829,7 +830,8 @@ Bitte versuche es später noch einmal.</string>
   <string name="Your_message_has_been_sent" formatted="false">Deine Nachricht wurde versandt!</string>
   <string name="Your_name_displayed" formatted="false">Dein Name wird auf deinem Profil angezeigt.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Deine Zahlungsmethode wurde erfolgreich belastet.</string>
-  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Your payment method will be charged immediately upon pledge and you’ll receive a confirmation email at %{user_email}. Your pledge cannot be canceled or modified.</string>
+  <string name="Your_payment_method_will_be_charged" formatted="false">Deine Zahlungsmethode für den Finanzierungsbeitrag wird &lt;b>umgehend belastet&lt;b>. Dein Beitrag &lt;b>kann nicht storniert oder geändert&lt;/b> werden.</string>
+  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Deine Zahlungsmethode wird umgehend belastet und du erhältst eine Bestätigungs-E-Mail an %{user_email}. Dein Beitrag kann nicht storniert oder geändert werden.</string>
   <string name="Your_pledge" formatted="false">Dein Beitrag</string>
   <string name="Your_pledge_amount" formatted="false">Dein Beitrag:</string>
   <string name="Your_pledge_details" formatted="false">Einzelheiten deines Beitrags</string>

@@ -30,7 +30,7 @@ import kotlinx.coroutines.rx2.asFlow
 data class ConfirmDetailsUIState(
     val rewardsAndAddOns: List<Reward> = listOf(),
     val initialBonusSupportAmount: Double = 0.0,
-    val totalBonusSupportAmount: Double = 0.0,
+    val finalBonusSupportAmount: Double = 0.0,
     val shippingAmount: Double = 0.0,
     val totalAmount: Double = 0.0,
     val minStepAmount: Double = 0.0,
@@ -142,7 +142,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
     private fun calculateTotal(): Double {
         var total = 0.0
         total += getRewardsTotalAmount(rewardAndAddOns)
-        total += initialBonusSupport + addedBonusSupport
+        total += RewardUtils.getFinalBonusSupportAmount(addedBonusSupport, initialBonusSupport)
         if (::userSelectedReward.isInitialized) {
             total +=
                 if (RewardUtils.isNoReward(userSelectedReward)) 0.0
@@ -240,6 +240,14 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    fun inputBonusSupport(input: Double) {
+        addedBonusSupport = input
+        totalAmount = calculateTotal()
+        viewModelScope.launch {
+            emitCurrentState()
+        }
+    }
+
     fun onContinueClicked(defaultAction: () -> Unit) {
         if (projectData.project().postCampaignPledgingEnabled() == true && projectData.project()
             .isInPostCampaignPledgingPhase() == true
@@ -304,7 +312,7 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             ConfirmDetailsUIState(
                 rewardsAndAddOns = rewardAndAddOns,
                 initialBonusSupportAmount = initialBonusSupport,
-                totalBonusSupportAmount = initialBonusSupport + addedBonusSupport,
+                finalBonusSupportAmount = RewardUtils.getFinalBonusSupportAmount(addedBonusSupport, initialBonusSupport),
                 shippingAmount = shippingAmount,
                 totalAmount = totalAmount,
                 minStepAmount = minStepAmount,

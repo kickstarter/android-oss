@@ -64,4 +64,22 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
         assertEquals("Limited shipping", RewardViewUtils.shippingSummary(context(), ksString, Pair(R.string.location_name_only, null)))
         assertEquals("Nigeria only", RewardViewUtils.shippingSummary(context(), ksString, Pair(R.string.location_name_only, "Nigeria")))
     }
+
+    @Test
+    fun `test when user exceeds max pledge amount the appropriate error message is returned`() {
+        val maxPledgeAmount = 1000.0
+        val totalAmount = 1100.0
+        val totalBonusSupport = 600.0
+
+        val maxInputString = RewardViewUtils.getMaxInputString(
+            context(),
+            RewardFactory.reward(),
+            maxPledgeAmount,
+            totalAmount,
+            totalBonusSupport,
+            kotlin.Pair<String?, String?>("$", null),
+            environment().toBuilder().build()
+        )
+        assertEquals("Enter an amount less than $500.", maxInputString)
+    }
 }

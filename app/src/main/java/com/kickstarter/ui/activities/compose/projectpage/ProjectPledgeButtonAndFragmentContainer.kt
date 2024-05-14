@@ -109,6 +109,7 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             selectedRewardAndAddOnList = listOf(),
             onBonusSupportMinusClicked = {},
             onBonusSupportPlusClicked = {},
+            onBonusSupportInputted = {},
             storedCards = listOf(),
             userEmail = "test@test.test",
             onPledgeCtaClicked = {},
@@ -154,6 +155,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     selectedRewardAndAddOnList: List<Reward>,
     onBonusSupportPlusClicked: () -> Unit,
     onBonusSupportMinusClicked: () -> Unit,
+    onBonusSupportInputted: (input: Double) -> Unit,
     storedCards: List<StoredCard>,
     userEmail: String,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
@@ -312,6 +314,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         },
                                         onBonusSupportPlusClicked = onBonusSupportPlusClicked,
                                         onBonusSupportMinusClicked = onBonusSupportMinusClicked,
+                                        onBonusSupportInputted = onBonusSupportInputted,
                                         isLoading = isLoading,
                                     )
                                 }

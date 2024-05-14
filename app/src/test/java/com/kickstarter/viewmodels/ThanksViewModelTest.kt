@@ -107,7 +107,6 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             intent = Intent()
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                .putExtra(IntentKey.EMAIL, "email@email.com")
         )
 
         adapterData.assertValueCount(1)
@@ -134,7 +133,6 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             intent = Intent()
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                .putExtra(IntentKey.EMAIL, "email@email.com")
         )
 
         adapterData.assertValueCount(1)

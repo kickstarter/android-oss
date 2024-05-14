@@ -118,7 +118,7 @@ patrocinadores</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Echa un vistazo a estos proyectos seleccionados exclusivamente para ti.</string>
   <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">Revisa tu bandeja de entrada para completar este simple paso.</string>
   <string name="Check_your_payment_details" formatted="false">Revisa tu información de pago</string>
-  <string name="Checkout" formatted="false">Checkout</string>
+  <string name="Checkout" formatted="false">Pago</string>
   <string name="Choose_another_reward" formatted="false">Elegir otra recompensa</string>
   <string name="Chooses_location_for_shipping" formatted="false">Destino determinado: %{location}.</string>
   <string name="Chosen_just_for_you" formatted="false">Elegidos especialmente para ti</string>
@@ -135,7 +135,7 @@ patrocinadores</string>
   <string name="Complete_payment" formatted="false">Completar pago</string>
   <string name="Confirm" formatted="false">Confirmar</string>
   <string name="Confirm_password" formatted="false">Confirmar nueva contraseña</string>
-  <string name="Confirm_your_pledge_details" formatted="false">Confirm your pledge details</string>
+  <string name="Confirm_your_pledge_details" formatted="false">Confirma los datos de tu contribución</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>
   <string name="Contact_backer" formatted="false">Contacta al patrocinador</string>
   <string name="Contact_creator" formatted="false">Comunicarse con el creador</string>
@@ -608,7 +608,7 @@ Toca para intentar de nuevo.</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
   <string name="Select_up_to_five" formatted="false">Selecciona hasta cinco de las opciones que aparecen a continuación.</string>
-  <string name="Select_your_reward" formatted="false">Select your reward</string>
+  <string name="Select_your_reward" formatted="false">Selecciona tu recompensa</string>
   <string name="Selected" formatted="false">Seleccionada</string>
   <string name="Selected_card" formatted="false">Tarjeta seleccionada</string>
   <string name="Selected_reward" formatted="false">Recompensa seleccionada</string>
@@ -813,9 +813,10 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Has cancelado tu contribución a este proyecto.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">No puedes usar esta tarjeta de crédito para patrocinar un proyecto de %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>
-  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
-&lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
-&lt;p>This project is now one step closer to a reality, thanks to you. Spread the word!&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito y tu contribución por &lt;b>%{pledge_total}&lt;/b> se ha recaudado.&lt;/p>\n
+&lt;p>Recibirás la confirmación en %{user_email} cuando estemos por entregarte las recompensas para que puedas pagar los costos de envío e impuestos.&lt;/p>\n
+&lt;p>Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Ayuda a correr la voz!&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html_short" formatted="false">Tu contribución de &lt;b>%{pledge_total}&lt;/b> ayudará a que este proyecto cobre vida. Revisa tu correo electrónico para más detalles.</string>
   <string name="You_launched_this_project_on_launch_date" formatted="false">Publicaste el proyecto el %{launch_date}. Encuentra las herramientas para creadores en nuestro sitio web.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Debes contribuir, al menos, %{reward_minimum} para obtener esta recompensa.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
@@ -830,7 +831,8 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_message_has_been_sent" formatted="false">Se envió tu mensaje.</string>
   <string name="Your_name_displayed" formatted="false">Tu nombre siempre se muestra en tu perfil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Se efectuó el cargo a tu método de pago.</string>
-  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Your payment method will be charged immediately upon pledge and you’ll receive a confirmation email at %{user_email}. Your pledge cannot be canceled or modified.</string>
+  <string name="Your_payment_method_will_be_charged" formatted="false">Al hacer la contribución, &lt;b>se hará el cargo inmediatamente&lt;/b> a tu método de pago. Tu contribución &lt;b>no puede cancelarse ni modificarse&lt;/b>.</string>
+  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Al hacer la contribución, se hará el cargo inmediatamente a tu método de pago y recibirás un correo electrónico de confirmación en %{user_email}. Tu contribución no puede cancelarse ni modificarse.</string>
   <string name="Your_pledge" formatted="false">Tu contribución</string>
   <string name="Your_pledge_amount" formatted="false">Monto de tu contribución:</string>
   <string name="Your_pledge_details" formatted="false">Los detalles de tu contribución</string>

@@ -1,9 +1,11 @@
 package com.kickstarter.viewmodels
 
 import DeletePaymentSourceMutation
+import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
@@ -58,7 +60,7 @@ interface Outputs {
     fun successDeleting(): Observable<String>
 
     /** Emits after calling CreateSetupIntent mutation with the SetupClientId. */
-    fun presentPaymentSheet(): Observable<String>
+    fun presentPaymentSheet(): Observable<Pair<String, String>>
 
     /** Emits in case something went wrong with CreateSetupIntent mutation  */
     fun showError(): Observable<String>
@@ -82,7 +84,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     private val showDeleteCardDialog = BehaviorSubject.create<Unit>()
     private val successDeleting = BehaviorSubject.create<String>()
     private val successSaving = BehaviorSubject.create<String>()
-    private val presentPaymentSheet = PublishSubject.create<String>()
+    private val presentPaymentSheet = PublishSubject.create<Pair<String, String>>()
     private val showError = PublishSubject.create<String>()
     private val loadingConfirmed = PublishSubject.create<Boolean>()
 
@@ -151,6 +153,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
         compositeDisposable.add(
             shouldPresentPaymentSheet
                 .compose(valuesV2())
+                .compose(combineLatestPair(userEmail()))
                 .subscribe {
                     this.presentPaymentSheet.onNext(it)
                 }
@@ -171,7 +174,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             .map {
                 SavePaymentMethodData(
                     reusable = true,
-                    intentClientSecret = it
+                    intentClientSecret = it.first
                 )
             }
             .switchMap {
@@ -243,6 +246,12 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
     }
 
+    private fun userEmail(): Observable<String> {
+        return this.apolloClient.userPrivacy()
+            .compose(neverErrorV2())
+            .map { it.email }
+    }
+
     // - Inputs
     override fun newCardButtonClicked() = this.newCardButtonPressed.onNext(Unit)
 
@@ -276,7 +285,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     override fun successDeleting(): Observable<String> = this.successDeleting
 
     @Override
-    override fun presentPaymentSheet(): Observable<String> =
+    override fun presentPaymentSheet(): Observable<Pair<String, String>> =
         this.presentPaymentSheet
 
     @Override

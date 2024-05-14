@@ -21,7 +21,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
     private val startShare = TestSubscriber<Pair<String, String>>()
     private val startShareOnFacebook = TestSubscriber<Pair<Project, String>>()
     private val startShareOnTwitter = TestSubscriber<Pair<String, String>>()
-    private val postCampaignText = TestSubscriber<Triple<Project, Double, String>>()
+    private val postCampaignText = TestSubscriber<Pair<Double, Project>>()
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment() {
@@ -46,7 +46,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        vm.configureWith(Pair(Pair(project, checkoutData), ""))
+        vm.configureWith(Pair(project, checkoutData))
 
         projectName.assertValues(project.name())
     }
@@ -61,7 +61,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        vm.configureWith(Pair(Pair(project, checkoutData), ""))
+        vm.configureWith(Pair(project, checkoutData))
         vm.inputs.shareClick()
         val expectedShareUrl =
             "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_share"
@@ -80,7 +80,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             30.0
         )
 
-        vm.configureWith(Pair(Pair(project, checkoutData), ""))
+        vm.configureWith(Pair(project, checkoutData))
 
         vm.inputs.shareOnFacebookClick()
         val expectedShareUrl =
@@ -99,7 +99,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        vm.configureWith(Pair(Pair(project, checkoutData), ""))
+        vm.configureWith(Pair(project, checkoutData))
         vm.inputs.shareOnTwitterClick()
         val expectedShareUrl =
             "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_twitter_share"
@@ -117,9 +117,9 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
+        vm.configureWith(Pair(project, checkoutData))
 
-        postCampaignText.assertValue(Triple(project, checkoutData.amount(), "email@email.com"))
+        postCampaignText.assertValue(Pair(checkoutData.amount(), project))
         projectName.assertNoValues()
     }
 
@@ -133,7 +133,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
+        vm.configureWith(Pair(project, checkoutData))
 
         postCampaignText.assertNoValues()
         projectName.assertValue(project.name())
@@ -149,7 +149,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        vm.configureWith(Pair(Pair(project, checkoutData), "email@email.com"))
+        vm.configureWith(Pair(project, checkoutData))
 
         postCampaignText.assertNoValues()
         projectName.assertValue(project.name())

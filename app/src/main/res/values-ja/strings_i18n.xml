@@ -116,7 +116,7 @@
   <string name="Check_out_these_handpicked_projects" formatted="false">あなたにピッタリの Kickstarter イチオシのプロジェクトをご覧ください。</string>
   <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">メールの受信箱をチェックしてこの簡単手続きを完了してください。</string>
   <string name="Check_your_payment_details" formatted="false">お支払い情報をご確認ください</string>
-  <string name="Checkout" formatted="false">Checkout</string>
+  <string name="Checkout" formatted="false">チェックアウト</string>
   <string name="Choose_another_reward" formatted="false">他のリワードを選択</string>
   <string name="Chooses_location_for_shipping" formatted="false">配送先%{location} を選択</string>
   <string name="Chosen_just_for_you" formatted="false">あなたのために選びました</string>
@@ -133,7 +133,7 @@
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm" formatted="false">確定する</string>
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
-  <string name="Confirm_your_pledge_details" formatted="false">Confirm your pledge details</string>
+  <string name="Confirm_your_pledge_details" formatted="false">プレッジの詳細を確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_backer" formatted="false">バッカーに連絡する</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
@@ -606,7 +606,7 @@
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
   <string name="Select_up_to_five" formatted="false">以下のオプションから最大5つをお選びください。</string>
-  <string name="Select_your_reward" formatted="false">Select your reward</string>
+  <string name="Select_your_reward" formatted="false">リワードの選択</string>
   <string name="Selected" formatted="false">選択済み</string>
   <string name="Selected_card" formatted="false">選択済みのカード</string>
   <string name="Selected_reward" formatted="false">選択したリワード</string>
@@ -811,9 +811,10 @@
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">このプロジェクトのプレッジはキャンセルされました。</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">%{project_country} のプロジェクトをバックするのにこのクレジットカードを利用することはできません。</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
-  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
-&lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
-&lt;p>This project is now one step closer to a reality, thanks to you. Spread the word!&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>&lt;b>%{project_name}&lt;/b>にプレッジしました。これに伴い、&lt;b>%{pledge_total}&lt;/b>のプレッジが収集されました。&lt;/p>\n
+&lt;p>リワード配送の準備が整い次第、%{user_email} 宛てに確認メールが届き、配送料と税金の最終確認とお支払いを行うことができます。&lt;/p>\n
+&lt;p>あなたのプレッジのおかげで、このプロジェクトが実現へと一歩近づきました。ありがとうございます。ぜひこのプロジェクトを沢山の人に知ってもらいましょう！&lt;/p></string>
+  <string name="You_have_successfully_pledged_to_project_post_campaign_html_short" formatted="false">あなたの &lt;b>%{pledge_total}&lt;/b> のプレッジがこのプロジェクトの実現をサポートします。詳しくはメールをご確認ください。</string>
   <string name="You_launched_this_project_on_launch_date" formatted="false">%{launch_date} にこのプロジェクトをローンチしました。クリエイター向けツールにアクセスするには、Kickstarter ウェブサイトにアクセスしてください！</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">このリワードには、最低%{reward_minimum}のプレッジが必要です。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
@@ -828,7 +829,8 @@
   <string name="Your_message_has_been_sent" formatted="false">メッセージが送信されました！</string>
   <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">支払方法の登録完了。</string>
-  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">Your payment method will be charged immediately upon pledge and you’ll receive a confirmation email at %{user_email}. Your pledge cannot be canceled or modified.</string>
+  <string name="Your_payment_method_will_be_charged" formatted="false">お支払い方法にはプレッジ後&lt;b>すぐに請求が行われます&lt;/b>。プレッジを&lt;b>キャンセルまたは変更することはできません&lt;/b>。</string>
+  <string name="Your_payment_method_will_be_charged_immediately" formatted="false">お支払い方法にはプレッジ時にただちに請求が行われ、その確認メールが %{user_email} 宛てに送られます。プレッジをキャンセルまたは変更することはできません。</string>
   <string name="Your_pledge" formatted="false">プレッジ</string>
   <string name="Your_pledge_amount" formatted="false">プレッジ額：</string>
   <string name="Your_pledge_details" formatted="false">プレッジの詳細</string>

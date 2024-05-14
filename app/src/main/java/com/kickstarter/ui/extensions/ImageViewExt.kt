@@ -113,7 +113,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
                             return isFirstResource
                         }
                     })
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .load(url)
                     .into(this)
             } catch (e: Exception) {
@@ -135,7 +135,7 @@ fun ImageView.loadWebp(url: String?, context: Context) {
                 .load(it)
                 .optionalTransform(roundedCorners)
                 .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(roundedCorners))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(this)
         } catch (e: Exception) {
             this.setImageResource(R.drawable.image_placeholder)
@@ -151,7 +151,7 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
                 Glide.with(context)
                     .asGif()
                     .load(it)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(this)
             } catch (e: Exception) {
                 this.setImageResource(R.drawable.image_placeholder)

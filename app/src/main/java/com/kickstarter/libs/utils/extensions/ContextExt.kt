@@ -103,12 +103,12 @@ fun Context.showAlertDialog(
  * Provides the configuration for the PaymentSheet, following the specs
  *  @see [link](https://stripe.com/docs/payments/accept-a-payment?platform=android&ui=elements#android-flowcontroller)
  */
-fun Context.getPaymentSheetConfiguration(userEmail: String?): PaymentSheet.Configuration {
+fun Context.getPaymentSheetConfiguration(userEmail: String, alwaysHideLink: Boolean): PaymentSheet.Configuration {
 //    val stripeLinkEnabled = this.getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_STRIPE_LINK) ?: false
     val stripeLinkEnabled = true // TODO: YC - remove after adding feature flag to remote config
 
     val billingDetailsCollectionConfiguration =
-        if (!stripeLinkEnabled) {
+        if (alwaysHideLink || !stripeLinkEnabled) {
             PaymentSheet.BillingDetailsCollectionConfiguration(
                 email = PaymentSheet.BillingDetailsCollectionConfiguration.CollectionMode.Always // Turn off Link
             )

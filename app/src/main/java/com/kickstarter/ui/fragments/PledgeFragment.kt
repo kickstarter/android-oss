@@ -701,7 +701,7 @@ class PledgeFragment :
         context?.let {
             flowController.configureWithSetupIntent(
                 setupIntentClientSecret = clientSecret,
-                configuration = it.getPaymentSheetConfiguration(userEmail),
+                configuration = it.getPaymentSheetConfiguration(userEmail, false),
                 callback = ::onConfigured
             )
         }

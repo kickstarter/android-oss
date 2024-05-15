@@ -114,7 +114,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    flowControllerPresentPaymentOption(it.first, it.second)
+                    flowControllerPresentPaymentOption(it)
                 }
         )
 
@@ -143,10 +143,10 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String?) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String) {
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = this.getPaymentSheetConfiguration(userEmail),
+            configuration = this.getPaymentSheetConfiguration("", true),
             callback = ::onConfigured
         )
     }

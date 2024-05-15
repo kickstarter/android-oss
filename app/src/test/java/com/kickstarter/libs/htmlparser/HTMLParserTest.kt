@@ -1,7 +1,10 @@
 package com.kickstarter.libs.htmlparser
 
+import com.kickstarter.libs.utils.extensions.isGif
+import com.kickstarter.libs.utils.extensions.isWebp
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
 import java.net.URI
 
@@ -343,5 +346,28 @@ class HTMLParserTest {
         assert(h6.components.size == 1)
         assert(h6.components[0].styles[0] == TextComponent.TextStyleType.HEADER6)
         assert(h6.components[0].text == "This is heading 6")
+    }
+
+    @Test
+    fun given_HTML_withGifAndWebpExtensions_HtmlParser_returns_ImageViewElement_with_URL() {
+        val htmlGif = "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"\" data-id=\"44904170\">\n" +
+            " <figure class=\"image\">\n" +
+            "  <img alt=\"\" class=\"fit js-lazy-image\" data-src=\"https://i.kickstarter.com/assets/044/904/170/8f34ecce9f82c23fde692cc4142c4630_original.gif?fit=scale-down&amp;amp;origin=ugc&amp;amp;q=92&amp;amp;width=700&amp;amp;sig=ZqRtxdLrF0UP7iJ0za7PZozt0HPUbVshM%2Bnphli8oTA%3D\" src=\"https://i.kickstarter.com/assets/044/904/170/8f34ecce9f82c23fde692cc4142c4630_original.gif?anim=false&amp;amp;fit=scale-down&amp;amp;origin=ugc&amp;amp;q=92&amp;amp;width=700&amp;amp;sig=%2FNSNA716ADltGnCen9XnFGjlOi6nSy36sef7hdFe9eQ%3D\" > \n" +
+            " </figure>\n" +
+            "</div>\n"
+        val htmlWebMP =
+            "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"\" data-id=\"44690634\">\n" +
+                " <figure class=\"image\">\n" +
+                "  <img alt=\"\" class=\"fit\" src=\"https://i.kickstarter.com/assets/044/690/634/1a2c5e757fa2a5b0db60876b56e11295_original.webp?fit=scale-down&amp;amp;origin=ugc&amp;amp;q=92&amp;amp;width=700&amp;amp;sig=4V3Wnp7WocWKYQWv9ErXnbB4%2FPeGiCv59bBv3e04Kqs%3D\">\n" +
+                " </figure>\n" +
+                "</div>"
+
+        val listOfElements = HTMLParser().parse(htmlGif + htmlWebMP)
+        assert(listOfElements.size == 2)
+        val imageViewGif: ImageViewElement = listOfElements.first() as ImageViewElement
+        val imageViewWebp: ImageViewElement = listOfElements.last() as ImageViewElement
+
+        assertTrue(imageViewGif.src.isGif())
+        assertTrue(imageViewWebp.src.isWebp())
     }
 }

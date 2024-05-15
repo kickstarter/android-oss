@@ -108,9 +108,9 @@ fun Context.getPaymentSheetConfiguration(userEmail: String?): PaymentSheet.Confi
     val stripeLinkEnabled = true // TODO: YC - remove after adding feature flag to remote config
 
     val billingDetailsCollectionConfiguration =
-        if (stripeLinkEnabled) {
+        if (!stripeLinkEnabled) {
             PaymentSheet.BillingDetailsCollectionConfiguration(
-                email = PaymentSheet.BillingDetailsCollectionConfiguration.CollectionMode.Always
+                email = PaymentSheet.BillingDetailsCollectionConfiguration.CollectionMode.Always // Turn off Link
             )
         } else {
             PaymentSheet.BillingDetailsCollectionConfiguration(

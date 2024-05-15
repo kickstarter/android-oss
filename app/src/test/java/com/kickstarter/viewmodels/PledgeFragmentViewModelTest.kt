@@ -107,7 +107,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingSummaryAmount = TestSubscriber<CharSequence>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingSummaryLocation = TestSubscriber<String>()
-    private val presentPaymentSheet = TestSubscriber<String>()
+    private val presentPaymentSheet = TestSubscriber<Pair<String, String>>()
     private val showPledgeError = TestSubscriber<Unit>()
     private val showPledgeSuccess = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val showSelectedCard = TestSubscriber<Pair<Int, CardState>>()
@@ -1951,9 +1951,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val clientSecretID = "clientSecretId"
+        val userEmail = "some@email.com"
         val environment = environment()
             .toBuilder()
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user().toBuilder().email(userEmail).build()))
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(clientSecretID)
@@ -1966,7 +1967,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         // - Configure PaymentSheet
         this.vm.inputs.newCardButtonClicked()
-        this.presentPaymentSheet.assertValue(clientSecretID)
+        this.presentPaymentSheet.assertValue(Pair(clientSecretID, userEmail))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.loadingState.assertValues(State.LOADING)
@@ -2021,7 +2022,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), backedProject, PledgeReason.FIX_PLEDGE)
 
         this.vm.inputs.newCardButtonClicked()
-        this.presentPaymentSheet.assertValue("")
+        this.presentPaymentSheet.assertValue(Pair("", "some@email.com"))
         this.segmentTrack.assertNoValues()
         this.pledgeButtonIsEnabled.assertValues(false, false)
         this.loadingState.assertValues(State.LOADING)
@@ -2042,7 +2043,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), backedProject, PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.newCardButtonClicked()
-        this.presentPaymentSheet.assertValue("")
+        this.presentPaymentSheet.assertValue(Pair("", "some@email.com"))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.loadingState.assertValues(State.LOADING)

@@ -7,15 +7,17 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.webp.decoder.WebpDrawable
+import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isKSApplication
-import javax.sql.DataSource
 
 fun ImageView.loadCircleImage(url: String?) {
     url?.let {
@@ -80,7 +82,7 @@ fun ImageView.loadImageWithResize(
         }
     }
 }
-fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: AppCompatImageView? = null) {
+fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder: AppCompatImageView? = null) {
     url?.let {
         val targetView = this
         if (context.applicationContext.isKSApplication()) {
@@ -95,7 +97,8 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                             dataSource: com.bumptech.glide.load.DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            imageViewPlaceholder?.setImageDrawable(resource)
+                            targetView.setImageDrawable(resource)
+                            imageZoomablePlaceholder?.setImageDrawable(resource)
                             return isFirstResource
                         }
 
@@ -106,12 +109,11 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                             isFirstResource: Boolean
                         ): Boolean {
                             targetView.setImageDrawable(null)
-                            imageViewPlaceholder?.setImageDrawable(null)
+                            imageZoomablePlaceholder?.setImageDrawable(null)
                             return isFirstResource
                         }
                     })
-                    .placeholder(ColorDrawable(Color.TRANSPARENT))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .load(url)
                     .into(this)
             } catch (e: Exception) {
@@ -125,15 +127,31 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
     }
 }
 
+fun ImageView.loadWebp(url: String?, context: Context) {
+    url?.let {
+        try {
+            val roundedCorners = RoundedCorners(1)
+            Glide.with(this)
+                .load(it)
+                .optionalTransform(roundedCorners)
+                .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(roundedCorners))
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(this)
+        } catch (e: Exception) {
+            this.setImageResource(R.drawable.image_placeholder)
+            FirebaseCrashlytics.getInstance().setCustomKey("ImageView.loadImageWithResize", " with url: $url ${e.message ?: ""}")
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
+    }
+}
 fun ImageView.loadGifImage(url: String?, context: Context) {
     url?.let {
         if (context.applicationContext.isKSApplication()) {
             try {
                 Glide.with(context)
                     .asGif()
-                    .placeholder(ColorDrawable(Color.TRANSPARENT))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .load(url)
+                    .load(it)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(this)
             } catch (e: Exception) {
                 this.setImageResource(R.drawable.image_placeholder)

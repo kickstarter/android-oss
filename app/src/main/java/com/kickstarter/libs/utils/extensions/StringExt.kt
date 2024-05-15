@@ -135,7 +135,15 @@ fun String?.parseToDouble(): Double {
 }
 
 /**
- * Returns a boolean that reflects if the string is an email address
+ * Returns a boolean that reflects if the string contains the .webp extension
+ */
+fun String.isWebp(): Boolean {
+    val gifPattern = "(?:\\/\\/.*\\.(?:webp))"
+    return gifPattern.toRegex().find(this) != null
+}
+
+/**
+ * Returns a boolean that reflects if the string contains the .gif extension
  */
 fun String.isGif(): Boolean {
     val gifPattern = "(?:\\/\\/.*\\.(?:gif))"

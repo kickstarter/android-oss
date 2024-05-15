@@ -1951,10 +1951,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val clientSecretID = "clientSecretId"
-        val userEmail = "some@email.com"
         val environment = environment()
             .toBuilder()
-            .currentUserV2(MockCurrentUserV2(UserFactory.user().toBuilder().email(userEmail).build()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(clientSecretID)
@@ -1967,7 +1966,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         // - Configure PaymentSheet
         this.vm.inputs.newCardButtonClicked()
-        this.presentPaymentSheet.assertValue(Pair(clientSecretID, userEmail))
+        this.presentPaymentSheet.assertValue(Pair(clientSecretID, "some@email.com"))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.loadingState.assertValues(State.LOADING)

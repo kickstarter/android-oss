@@ -2042,7 +2042,6 @@ interface PledgeFragmentViewModel {
         override fun localPickUpName(): Observable<String> =
             localPickUpName
 
-        // TODO: YC - update this to return a Pair
         override fun presentPaymentSheet(): Observable<Pair<String, String>> =
             this.presentPaymentSheet
 

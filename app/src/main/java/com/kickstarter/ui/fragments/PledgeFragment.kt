@@ -583,9 +583,9 @@ class PledgeFragment :
 
         this.viewModel.outputs.presentPaymentSheet()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                setupClientId = it
-                flowControllerPresentPaymentOption(it)
+            .subscribe { clientSecretAndUserEmail: Pair<String, String> ->
+                setupClientId = clientSecretAndUserEmail.first
+                flowControllerPresentPaymentOption(clientSecretAndUserEmail.first, clientSecretAndUserEmail.second)
             }
             .addToDisposable(disposables)
 
@@ -697,11 +697,11 @@ class PledgeFragment :
         }
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
         context?.let {
             flowController.configureWithSetupIntent(
                 setupIntentClientSecret = clientSecret,
-                configuration = it.getPaymentSheetConfiguration(),
+                configuration = it.getPaymentSheetConfiguration(userEmail, false),
                 callback = ::onConfigured
             )
         }

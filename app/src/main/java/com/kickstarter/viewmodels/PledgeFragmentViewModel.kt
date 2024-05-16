@@ -332,7 +332,7 @@ interface PledgeFragmentViewModel {
         fun localPickUpName(): Observable<String>
 
         /** Emits the String with the SetupIntent ClientID to present the PaymentSheet **/
-        fun presentPaymentSheet(): Observable<String>
+        fun presentPaymentSheet(): Observable<Pair<String, String>>
 
         fun showError(): Observable<String>
 
@@ -464,7 +464,7 @@ interface PledgeFragmentViewModel {
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
 
-        private val presentPaymentSheet = PublishSubject.create<String>()
+        private val presentPaymentSheet = PublishSubject.create<Pair<String, String>>()
         private val paymentSheetResult = PublishSubject.create<PaymentSheetResult>()
         private val paySheetPresented = PublishSubject.create<Boolean>()
         private val showError = PublishSubject.create<String>()
@@ -1253,6 +1253,7 @@ interface PledgeFragmentViewModel {
 
             shouldPresentPaymentSheet
                 .compose(valuesV2())
+                .compose(combineLatestPair(userEmail()))
                 .subscribe {
                     this.presentPaymentSheet.onNext(it)
                 }
@@ -1847,6 +1848,12 @@ interface PledgeFragmentViewModel {
                 .compose(neverErrorV2())
         }
 
+        private fun userEmail(): Observable<String> {
+            return this.apolloClient.userPrivacy()
+                .compose(neverErrorV2())
+                .map { it.email }
+        }
+
         override fun onCleared() {
             disposables.clear()
             super.onCleared()
@@ -2035,7 +2042,7 @@ interface PledgeFragmentViewModel {
         override fun localPickUpName(): Observable<String> =
             localPickUpName
 
-        override fun presentPaymentSheet(): Observable<String> =
+        override fun presentPaymentSheet(): Observable<Pair<String, String>> =
             this.presentPaymentSheet
 
         override fun showError(): Observable<String> =

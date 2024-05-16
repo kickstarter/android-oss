@@ -70,7 +70,7 @@ fun TopToolBar(
                 ) {
                     Icon(
                         imageVector = leftIcon,
-                        contentDescription = stringResource(id = R.string.back),
+                        contentDescription = stringResource(id = R.string.Back),
                         tint = leftIconColor ?: colors.kds_black
                     )
                 }

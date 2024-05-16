@@ -576,7 +576,7 @@ class ProjectPageActivity :
 
                     LaunchedEffect(Unit) {
                         latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
-                            flowControllerPresentPaymentOption(it)
+                            flowControllerPresentPaymentOption(it, latePledgeCheckoutUIState.userEmail)
                         }
                     }
 
@@ -1262,10 +1262,10 @@ class ProjectPageActivity :
         }
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = getPaymentSheetConfiguration(),
+            configuration = getPaymentSheetConfiguration(userEmail, false),
             callback = ::onConfigured
         )
     }

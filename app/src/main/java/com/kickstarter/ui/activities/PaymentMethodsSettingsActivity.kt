@@ -146,7 +146,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
     private fun flowControllerPresentPaymentOption(clientSecret: String) {
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = this.getPaymentSheetConfiguration(),
+            configuration = this.getPaymentSheetConfiguration("", true), // Always hide Link on settings page
             callback = ::onConfigured
         )
     }

@@ -64,7 +64,8 @@ enum class FlagKey(val key: String) {
     ANDROID_POST_CAMPAIGN_PLEDGES("android_post_campaign_pledges"),
     ANDROID_OAUTH("android_oauth"),
     ANDROID_ENCRYPT("android_encrypt_token"),
-    ANDROID_STRIPE_LINK("android_stripe_link")
+    ANDROID_STRIPE_LINK("android_stripe_link"),
+    ANDROID_PLEDGED_PROJECTS_OVERVIEW("android_pledged_projects_overview")
 }
 
 fun FeatureFlagClient.getFetchInterval(): Long =

@@ -760,7 +760,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             val ps = PublishSubject.create<Checkout>()
             service.mutate(updateBackingPaymentSourceMutation)
-                .enqueue(object: ApolloCall.Callback<UpdateBackingPaymentSourceMutation.Data>() {
+                .enqueue(object : ApolloCall.Callback<UpdateBackingPaymentSourceMutation.Data>() {
                     override fun onFailure(e: ApolloException) {
                         ps.onError(e)
                     }

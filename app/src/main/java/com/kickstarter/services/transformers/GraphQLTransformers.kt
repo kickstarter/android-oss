@@ -122,6 +122,8 @@ fun rewardTransformer(
     addOnItems: List<RewardsItem> = emptyList()
 ): Reward {
     val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val latePledgeAmount = rewardGr.latePledgeAmount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val pledgeAmount = rewardGr.pledgeAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val convertedAmount =
         rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
@@ -156,6 +158,8 @@ fun rewardTransformer(
         .title(title)
         .convertedMinimum(convertedAmount)
         .minimum(amount)
+        .pledgeAmount(pledgeAmount)
+        .latePledgeAmount(latePledgeAmount)
         .limit(limit)
         .remaining(remaining)
         .endsAt(endsAt)
@@ -712,6 +716,8 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
         .build()
     val status = backingGr?.status()?.rawValue() ?: ""
 
+    val isPostCampaign = backingGr?.isPostCampaign ?: false
+
     return Backing.builder()
         .amount(backingGr?.amount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
         .bonusAmount(backingGr?.bonusAmount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
@@ -733,6 +739,7 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
         .status(status)
         .cancelable(backingGr?.cancelable() ?: false)
         .completedByBacker(completedByBacker)
+        .isPostCampaign(isPostCampaign)
         .build()
 }
 

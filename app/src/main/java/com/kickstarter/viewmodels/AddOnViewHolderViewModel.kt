@@ -188,7 +188,12 @@ interface AddOnViewHolderViewModel {
             this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true)
 
         private fun buildCurrency(project: Project, reward: Reward): String {
-            val completeCurrency = ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)
+            val completeCurrency = if (project.backing()?.isPostCampaign() == true) {
+                ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)
+            } else {
+                ksCurrency.format(reward.pledgeAmount(), project, RoundingMode.HALF_UP)
+            }
+
             val country = Country.findByCurrencyCode(project.currency()) ?: ""
 
             return completeCurrency.removePrefix(country.toString())

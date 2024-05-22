@@ -87,7 +87,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/profile_projects_backed_projects"
-      app:drawableStartCompat="@drawable/ic_person"
+      app:drawableStartCompat="@drawable/ic_notification_bell"
       android:visibility="gone"/>
 
   <LinearLayout

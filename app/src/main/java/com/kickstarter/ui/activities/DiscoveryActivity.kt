@@ -15,6 +15,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
+import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Environment
@@ -179,6 +180,11 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe { startProfileActivity() }
 
+        viewModel.outputs.showPledgedProjects()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startPledgedProjectsOverview() }
+
         viewModel.outputs.showSettings()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -272,6 +278,12 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
     private fun startProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startPledgedProjectsOverview() {
+        val intent = Intent(this, PledgedProjectsOverviewActivity::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

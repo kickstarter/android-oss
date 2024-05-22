@@ -3,10 +3,15 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoggedInViewHolderViewModel.ViewModel
@@ -17,16 +22,19 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private val name = TestSubscriber<String>()
     private val unreadMessagesCount = TestSubscriber<Int>()
     private val user = TestSubscriber<User>()
+    private val pledgedProjectsIsVisible = TestSubscriber<Boolean>()
+    private val disposables = CompositeDisposable()
 
     fun setUpEnvironment(environment: Environment) {
         this.vm = LoggedInViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.activityCount().subscribe(this.activityCount)
-        this.vm.outputs.activityCountTextColor().subscribe(this.activityCountTextColor)
-        this.vm.outputs.avatarUrl().subscribe(this.avatarUrl)
-        this.vm.outputs.dashboardRowIsGone().subscribe(this.dashboardRowIsGone)
-        this.vm.outputs.name().subscribe(this.name)
-        this.vm.outputs.unreadMessagesCount().subscribe(this.unreadMessagesCount)
-        this.vm.outputs.user().subscribe(this.user)
+        this.vm.outputs.activityCount().subscribe { this.activityCount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.activityCountTextColor().subscribe { this.activityCountTextColor.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.avatarUrl().subscribe { this.avatarUrl.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.dashboardRowIsGone().subscribe { this.dashboardRowIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.name().subscribe { this.name.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.unreadMessagesCount().subscribe { this.unreadMessagesCount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.user().subscribe { this.user.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgedProjectsIsVisible().subscribe { this.pledgedProjectsIsVisible.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -148,5 +156,40 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(user)
 
         this.user.assertValue(user)
+    }
+
+    @Test
+    fun `when pledged projects feature is flag off, should emit false`() {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return false
+                }
+            }
+
+        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).build())
+        val user = UserFactory.user()
+
+        this.pledgedProjectsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun `when pledged projects feature is flag on, should emit true`() {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
+        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).build())
+        val user = UserFactory.user()
+
+        this.pledgedProjectsIsVisible.assertValue(true)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

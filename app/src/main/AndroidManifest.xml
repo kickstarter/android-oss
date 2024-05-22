@@ -166,6 +166,9 @@
             android:name=".ui.activities.MessageThreadsActivity"
             android:parentActivityName=".ui.activities.ProfileActivity" />
         <activity
+            android:name=".features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity" />
+        <activity
             android:name=".ui.activities.NewsletterActivity"
             android:theme="@style/SettingsActivity" />
         <activity

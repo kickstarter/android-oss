@@ -56,6 +56,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val showMessages = TestSubscriber<Void>()
     private val showProfile = TestSubscriber<Void>()
     private val showSettings = TestSubscriber<Void>()
+    private val showPledgedProjects = TestSubscriber<Void>()
     private val updatePage = TestSubscriber<Int>()
     private val updateParams = TestSubscriber<DiscoveryParams>()
     private val updateToolbarWithParams = TestSubscriber<DiscoveryParams>()
@@ -244,6 +245,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showMessages().subscribe(showMessages)
         vm.outputs.showProfile().subscribe(showProfile)
         vm.outputs.showSettings().subscribe(showSettings)
+        vm.outputs.showPledgedProjects().subscribe(showPledgedProjects)
         showActivityFeed.assertNoValues()
         showHelp.assertNoValues()
         showInternalTools.assertNoValues()
@@ -251,6 +253,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         showMessages.assertNoValues()
         showProfile.assertNoValues()
         showSettings.assertNoValues()
+        showPledgedProjects.assertNoValues()
         vm.inputs.loggedInViewHolderActivityClick(
             Mockito.mock(
                 LoggedInViewHolder::class.java
@@ -293,6 +296,13 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             ),
             user()
         )
+
+        vm.inputs.loggedInViewHolderPledgedProjectsClick(
+            Mockito.mock(
+                LoggedInViewHolder::class.java
+            )
+        )
+
         showActivityFeed.assertValueCount(2)
         showHelp.assertValueCount(1)
         showInternalTools.assertValueCount(1)
@@ -300,6 +310,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         showMessages.assertValueCount(1)
         showProfile.assertValueCount(1)
         showSettings.assertValueCount(1)
+        showPledgedProjects.assertValueCount(1)
     }
 
     @Test

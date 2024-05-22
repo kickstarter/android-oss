@@ -94,6 +94,9 @@ interface DiscoveryViewModel {
         /** Start profile activity.  */
         fun showProfile(): Observable<Void?>
 
+        /** Start pledged projects overview activity.  */
+        fun showPledgedProjects(): Observable<Void?>
+
         /** Start settings activity.  */
         fun showSettings(): Observable<Void?>
 
@@ -154,6 +157,7 @@ interface DiscoveryViewModel {
         private val showNotifPermissionRequest = BehaviorSubject.create<Void?>()
         private val showConsentManagementDialog = BehaviorSubject.create<Void?>()
         private val settingsClick = PublishSubject.create<Void?>()
+        private val pledgedProjectsClick = PublishSubject.create<Void?>()
         private val sortClicked = PublishSubject.create<Int>()
         private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
         private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
@@ -170,6 +174,7 @@ interface DiscoveryViewModel {
         private val showMessages: Observable<Void?>
         private val showProfile: Observable<Void?>
         private val showSettings: Observable<Void?>
+        private val showPledgedProjects: Observable<Void?>
         private val updateParamsForPage = BehaviorSubject.create<DiscoveryParams>()
         private val updateToolbarWithParams = BehaviorSubject.create<DiscoveryParams>()
         private val successMessage = PublishSubject.create<String>()
@@ -185,6 +190,7 @@ interface DiscoveryViewModel {
             showMessages = messagesClick
             showProfile = profileClick
             showSettings = settingsClick
+            showPledgedProjects = pledgedProjectsClick
 
             val currentUser = currentUserType.observable()
 
@@ -387,7 +393,8 @@ interface DiscoveryViewModel {
                 activityFeedClick.map { false },
                 messagesClick.map { false },
                 profileClick.map { false },
-                settingsClick.map { false }
+                settingsClick.map { false },
+                pledgedProjectsClick.map { false }
             )
 
             Observable.merge(drawerOpenObservables)
@@ -416,6 +423,7 @@ interface DiscoveryViewModel {
         override fun loggedInViewHolderMessagesClick(viewHolder: LoggedInViewHolder) { messagesClick.onNext(null) }
         override fun loggedInViewHolderProfileClick(viewHolder: LoggedInViewHolder, user: User) { profileClick.onNext(null) }
         override fun loggedInViewHolderSettingsClick(viewHolder: LoggedInViewHolder, user: User) { settingsClick.onNext(null) }
+        override fun loggedInViewHolderPledgedProjectsClick(viewHolder: LoggedInViewHolder) { pledgedProjectsClick.onNext(null) }
         override fun loggedOutViewHolderActivityClick(viewHolder: LoggedOutViewHolder) { activityFeedClick.onNext(null) }
         override fun loggedOutViewHolderInternalToolsClick(viewHolder: LoggedOutViewHolder) { internalToolsClick.onNext(null) }
         override fun loggedOutViewHolderLoginToutClick(viewHolder: LoggedOutViewHolder) { loggedOutLoginToutClick.onNext(null) }
@@ -446,6 +454,7 @@ interface DiscoveryViewModel {
         override fun showLoginTout(): Observable<Void?> { return showLoginTout }
         override fun showMessages(): Observable<Void?> { return showMessages }
         override fun showProfile(): Observable<Void?> { return showProfile }
+        override fun showPledgedProjects(): Observable<Void?> { return showPledgedProjects }
         override fun showSettings(): Observable<Void?> { return showSettings }
         override fun updateParamsForPage(): Observable<DiscoveryParams> { return updateParamsForPage }
         override fun updateToolbarWithParams(): Observable<DiscoveryParams> { return updateToolbarWithParams }

@@ -81,6 +81,15 @@
 
   </LinearLayout>
 
+  <TextView
+      android:id="@+id/pledged_projects_overview"
+      style="@style/DrawerTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/profile_projects_backed_projects"
+      app:drawableStartCompat="@drawable/ic_person"
+      android:visibility="gone"/>
+
   <LinearLayout
     android:id="@+id/drawer_activity"
     style="@style/DrawerCountContainer"

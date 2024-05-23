@@ -1,23 +1,26 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
-import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface LoggedInViewHolderViewModel {
 
     interface Inputs {
         /** Call with the current user when the data is bound to the view. */
         fun configureWith(user: User)
+
+        /** Call when the viewholder is finished. */
+        fun onCleared()
     }
 
     interface Outputs {
@@ -41,9 +44,10 @@ interface LoggedInViewHolderViewModel {
 
         /** Emits the user to pass to delegate. */
         fun user(): Observable<User>
+        fun pledgedProjectsIsVisible(): Observable<Boolean>
     }
 
-    class ViewModel(val environment: Environment) : ActivityViewModel<LoggedInViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(val environment: Environment) : Inputs, Outputs {
 
         private val user = PublishSubject.create<User>()
 
@@ -54,7 +58,9 @@ interface LoggedInViewHolderViewModel {
         private val name = BehaviorSubject.create<String>()
         private val unreadMessagesCount = BehaviorSubject.create<Int>()
         private val userOutput = BehaviorSubject.create<User>()
+        private val pledgedProjectsIsVisible = BehaviorSubject.create<Boolean>()
 
+        private val disposables = CompositeDisposable()
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -62,66 +68,72 @@ interface LoggedInViewHolderViewModel {
 
             this.user
                 .map { it.name() }
-                .compose(bindToLifecycle())
-                .subscribe(this.name)
+                .subscribe { this.name.onNext(it) }
+                .addToDisposable(disposables)
 
             this.user
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             this.user
                 .map { it.avatar().medium() }
-                .compose(bindToLifecycle())
-                .subscribe(this.avatarUrl)
+                .subscribe { this.avatarUrl.onNext(it) }
+                .addToDisposable(disposables)
 
             this.user
                 .map { it.unreadMessagesCount() }
-                .compose(bindToLifecycle())
-                .subscribe(this.unreadMessagesCount)
+                .subscribe { this.unreadMessagesCount.onNext(it) }
+                .addToDisposable(disposables)
 
             this.user
                 .map {
                     it.unseenActivityCount().intValueOrZero() + it.erroredBackingsCount()
                         .intValueOrZero()
                 }
-                .compose(bindToLifecycle())
-                .subscribe(this.activityCount)
+                .subscribe { this.activityCount.onNext(it) }
+                .addToDisposable(disposables)
 
             this.user
                 .map { it.erroredBackingsCount().intValueOrZero().isZero() }
                 .map { if (it.isTrue()) R.color.text_primary else R.color.kds_alert }
-                .compose(bindToLifecycle())
-                .subscribe(this.activityCountTextColor)
+                .subscribe { this.activityCountTextColor.onNext(it) }
+                .addToDisposable(disposables)
 
             this.user
                 .map { it.memberProjectsCount().intValueOrZero().isZero() }
-                .compose(bindToLifecycle())
-                .subscribe(this.dashboardRowIsGone)
+                .subscribe { this.dashboardRowIsGone.onNext(it) }
+                .addToDisposable(disposables)
+
+            Observable.just(
+                environment.featureFlagClient()
+                    ?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
+            )
+                .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
+                .addToDisposable(disposables)
         }
 
-        override fun configureWith(@NonNull user: User) {
+        override fun configureWith(user: User) {
             this.user.onNext(user)
         }
 
-        @NonNull
+        override fun onCleared() {
+            disposables.clear()
+        }
+
         override fun activityCount(): Observable<Int> = this.activityCount
 
-        @NonNull
         override fun activityCountTextColor(): Observable<Int> = this.activityCountTextColor
 
-        @NonNull
         override fun avatarUrl(): Observable<String> = this.avatarUrl
 
-        @NonNull
         override fun dashboardRowIsGone(): Observable<Boolean> = this.dashboardRowIsGone
 
-        @NonNull
         override fun name(): Observable<String> = this.name
 
-        @NonNull
         override fun unreadMessagesCount(): Observable<Int> = this.unreadMessagesCount
 
-        @NonNull
         override fun user(): Observable<User> = this.userOutput
+
+        override fun pledgedProjectsIsVisible(): Observable<Boolean> = this.pledgedProjectsIsVisible
     }
 }

@@ -13,6 +13,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,43 +25,20 @@ class UpdatesPagingSource(
     private val apolloClient: ApolloClientTypeV2,
     private val project: Project,
     private val limit: Int = 25
-) : PagingSource<PageInfoEnvelope, Update>() {
-    override fun getRefreshKey(state: PagingState<PageInfoEnvelope, Update>): PageInfoEnvelope? {
-        return null
+) : PagingSource<String, Update>() {
+    override fun getRefreshKey(state: PagingState<String, Update>): String {
+        return "" // - Default first page is empty string when paginating with graphQL
     }
 
-    override suspend fun load(params: LoadParams<PageInfoEnvelope>): LoadResult<PageInfoEnvelope, Update> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, Update> {
         return try {
-//            var projectsList = emptyList<Project>()
-//
-//            val discoveryParams = params.key?.first
-//
-//            val currentPageUrl = params.key?.second
-//            var nextPageUrl: String? = null
-//
-//            if (currentPageUrl.isNotNull()) {
-//                // - Following pages will call the endpoint, with a paging URL.
-//                // In an ideal implementation calling the network layer should be suspend functions, not converted to a flow Stream
-//                apiClient.fetchProjects(requireNotNull(currentPageUrl)).asFlow().collect {
-//                    projectsList = it.projects()
-//                    nextPageUrl = it.urls()?.api()?.moreProjects()
-//                }
-//            } else {
-//                // - First page requires discovery query params either the search one or the default ones
-//                // In an ideal implementation calling the network layer should be suspend functions, not converted to a flow Stream
-//                apiClient.fetchProjects(queryParams).asFlow().collect {
-//                    projectsList = it.projects()
-//                    nextPageUrl = it.urls()?.api()?.moreProjects()
-//                }
-//            }
-
-            val currentPageEnvelope = params.key ?: PageInfoEnvelope.builder().build()
+            val currentPageEnvelope = params.key ?: "" // - Default first page is empty string when paginating with graphQL
             var updatesList = emptyList<Update>()
             var nextPageEnvelope: PageInfoEnvelope? = null
 
             apolloClient.getProjectUpdates(
                 slug = project.slug() ?: "",
-                cursor = currentPageEnvelope.startCursor ?: "",
+                cursor = currentPageEnvelope,
                 limit = limit
             )
                 .asFlow()
@@ -70,9 +48,9 @@ class UpdatesPagingSource(
                 }
 
             return LoadResult.Page(
-                data = updatesList,
-                prevKey = null, // only forward pagination
-                nextKey = nextPageEnvelope
+                data = updatesList, // - must be a list of whatever data type we need
+                prevKey = null, // - only forward pagination
+                nextKey = nextPageEnvelope?.startCursor // - If needed reversed pagination use endCursor
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
@@ -87,7 +65,11 @@ class PaginationViewModel(
     private val _uiState = MutableStateFlow<PagingData<Update>>(PagingData.empty())
     val projectUpdatesState: StateFlow<PagingData<Update>> = _uiState.asStateFlow()
     init {
-        viewModelScope.launch {
+        loadUpdates()
+    }
+
+    fun loadUpdates() {
+        viewModelScope.launch(Dispatchers.IO) {
             val project = Project.builder().slug("frosthaven").build()
             val limit = 25
             try {
@@ -103,7 +85,7 @@ class PaginationViewModel(
                     .flow
                     .cachedIn(viewModelScope)
                     .collectLatest { pagingData ->
-                        _uiState.emit(pagingData)
+                        _uiState.value = pagingData
                     }
             } catch (e: Exception) {
                 // emit error

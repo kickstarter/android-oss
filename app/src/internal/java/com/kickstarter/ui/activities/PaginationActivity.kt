@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -59,9 +60,10 @@ class PaginationActivity : ComponentActivity() {
                 val darModeEnabled = this.isDarkModeEnabled(env = env)
 
                 val updatesPagingSource = viewModel.projectUpdatesState.collectAsLazyPagingItems()
+                val total = viewModel.totalItemsState.collectAsStateWithLifecycle()
 
                 KickstarterApp(useDarkTheme = darModeEnabled) {
-                    Screen(updatesPagingSource) { viewModel.loadUpdates() }
+                    Screen(updatesPagingSource, total.value) { viewModel.loadUpdates() }
                 }
             }
         }
@@ -75,12 +77,16 @@ fun PreviewScreen() {
         UpdateFactory.update().toBuilder().id(it.toLong()).build()
     }
     val updatesList = flowOf(PagingData.from(list)).collectAsLazyPagingItems()
-    Screen(updatesPagingSource = updatesList)
+    Screen(updatesPagingSource = updatesList, total = 100)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Screen(updatesPagingSource: LazyPagingItems<Update>, pullRefreshCallback: () -> Unit = {}) {
+fun Screen(
+    updatesPagingSource: LazyPagingItems<Update>,
+    total: Int = 0,
+    pullRefreshCallback: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             TopToolBar(
@@ -98,6 +104,10 @@ fun Screen(updatesPagingSource: LazyPagingItems<Update>, pullRefreshCallback: ()
         val pullRefreshState = rememberPullRefreshState(isLoading, pullRefreshCallback)
         val lazyListState = rememberLazyListState()
 
+        Text(
+            modifier = Modifier.padding(innerPadding),
+            text = " Complete collection of items $total"
+        )
         ItemsList(
             modifier = Modifier.padding(innerPadding),
             listState = lazyListState,

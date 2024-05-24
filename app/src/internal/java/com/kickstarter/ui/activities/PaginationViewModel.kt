@@ -24,7 +24,8 @@ import kotlinx.coroutines.rx2.asFlow
 class UpdatesPagingSource(
     private val apolloClient: ApolloClientTypeV2,
     private val project: Project,
-    private val limit: Int = 25
+    private val limit: Int = 25,
+    private val _totalCount: MutableStateFlow<Int>
 ) : PagingSource<String, Update>() {
     override fun getRefreshKey(state: PagingState<String, Update>): String {
         return "" // - Default first page is empty string when paginating with graphQL
@@ -43,6 +44,7 @@ class UpdatesPagingSource(
             )
                 .asFlow()
                 .collect { envelope ->
+                    _totalCount.emit(envelope.totalCount ?: 0)
                     updatesList = envelope.updates ?: emptyList()
                     nextPageEnvelope = if (envelope.pageInfoEnvelope?.hasNextPage == true) envelope.pageInfoEnvelope else null
                 }
@@ -63,6 +65,8 @@ class PaginationViewModel(
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val _uiState = MutableStateFlow<PagingData<Update>>(PagingData.empty())
+    private val _totalCount = MutableStateFlow<Int>(0)
+    val totalItemsState = _totalCount.asStateFlow()
     val projectUpdatesState: StateFlow<PagingData<Update>> = _uiState.asStateFlow()
     init {
         loadUpdates()
@@ -77,10 +81,10 @@ class PaginationViewModel(
                     PagingConfig(
                         pageSize = limit,
                         prefetchDistance = 3,
-                        enablePlaceholders = true
+                        enablePlaceholders = true,
                     )
                 ) {
-                    UpdatesPagingSource(apolloClient, project, limit)
+                    UpdatesPagingSource(apolloClient, project, limit, _totalCount)
                 }
                     .flow
                     .cachedIn(viewModelScope)

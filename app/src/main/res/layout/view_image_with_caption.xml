@@ -30,7 +30,6 @@
         android:id="@+id/compose_view_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="image_view_placeholder,image_view" />
+        app:constraint_referenced_ids="image_view, compose_view_image" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="0dp"

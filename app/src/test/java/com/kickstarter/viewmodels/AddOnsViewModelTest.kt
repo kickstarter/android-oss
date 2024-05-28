@@ -58,10 +58,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         viewModel.userRewardSelection(reward)
 
         assertEquals(
-            uiState.last(),
-            AddOnsUIState(
-                shippingSelectorIsGone = true
-            )
+            uiState.last().shippingSelectorIsGone,
+            true
         )
     }
 

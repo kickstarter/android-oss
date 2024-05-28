@@ -128,7 +128,6 @@ interface ApolloClientTypeV2 {
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
-    fun updateBackingPaymentSource(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
     fun createPassword(
@@ -741,55 +740,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onComplete()
                     }
                 })
-            return@defer ps
-        }
-    }
-
-    override fun updateBackingPaymentSource(updateBackingData: UpdateBackingData): Observable<Checkout> {
-        return Observable.defer {
-            val updateBackingPaymentSourceMutation =
-                UpdateBackingPaymentSourceMutation
-                    .builder()
-                    .backingId(encodeRelayId(updateBackingData.backing))
-                    .apply {
-                        updateBackingData.paymentSourceId?.let {
-                            this.paymentSourceId(it)
-                        }
-                    }
-                    .build()
-
-            val ps = PublishSubject.create<Checkout>()
-            service.mutate(updateBackingPaymentSourceMutation)
-                .enqueue(object : ApolloCall.Callback<UpdateBackingPaymentSourceMutation.Data>() {
-                    override fun onFailure(e: ApolloException) {
-                        ps.onError(e)
-                    }
-
-                    override fun onResponse(response: Response<UpdateBackingPaymentSourceMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Throwable(response.errors?.first()?.message))
-                        } else {
-                            val checkoutPayload = response.data?.updateBackingPaymentSource()?.checkout()
-                            val backing = Checkout.Backing.builder()
-                                .clientSecret(
-                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                        ?.clientSecret()
-                                )
-                                .requiresAction(
-                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                        ?.requiresAction() ?: false
-                                )
-                                .build()
-
-                            val checkout = Checkout.builder()
-                                .id(decodeRelayId(checkoutPayload?.id()))
-                                .backing(backing)
-                                .build()
-                            ps.onNext(checkout)
-                        }
-                    }
-                })
-
             return@defer ps
         }
     }

@@ -1366,7 +1366,7 @@ interface PledgeFragmentViewModel {
                 paymentMethod,
                 project
             ) { b, a, l, r, pMethod, pro ->
-                if (pro.isBacking()) {
+                if (pro.isBacking() && pro.backing()?.amount().toString() == a) {
                     Pair(this.getUpdateBackingData(b, null, l, r, pMethod), pro)
                 } else {
                     Pair(this.getUpdateBackingData(b, a, l, r, pMethod), pro)
@@ -1699,8 +1699,14 @@ interface PledgeFragmentViewModel {
             var totalPledgeAmount = 0.0
             rewards.forEach {
                 totalPledgeAmount += if (isLatePledge) {
-                    if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Cost of the selected Reward
-                    else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Cost of each addOn
+                    if (it.latePledgeAmount() > 0) {
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.latePledgeAmount() // - Cost of the selected Reward
+                        else it.quantity()?.let { q -> (q * it.latePledgeAmount()) } ?: it.latePledgeAmount() // - Cost of each addOn
+                    } else {
+                        // We don't have a late pledge amount to work with, use the default minimum
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Default cost of the selected Reward
+                        else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Default cost of each addOn
+                    }
                 } else {
                     // We have a pledge amount to work with, use it
                     if (it.pledgeAmount() > 0.0) {

@@ -138,6 +138,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val showError = TestSubscriber<String>()
     private val loadingState = TestSubscriber<State>()
     private val thirdPartyEvent = TestSubscriber<Boolean>()
+    private val pledgeAmountHeader = TestSubscriber<String>()
     private val disposables = CompositeDisposable()
 
     @After
@@ -246,6 +247,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showError().subscribe { this.showError.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.setState().subscribe { this.loadingState.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.eventSent().subscribe { this.thirdPartyEvent.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeAmountHeader().subscribe { this.pledgeAmountHeader.onNext(it.toString()) }.addToDisposable(disposables)
     }
 
     @Test
@@ -3559,6 +3561,56 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         assertTrue(updateBackingData.paymentSourceId == null)
         assertTrue(updateBackingData.intentClientSecret == null)
         assertNotNull(updateBackingData.backing)
+    }
+
+    @Test
+    fun `test_when_backing_is_not_late_pledge_then_pledge_amount_header_is_correct`() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .amount(20.0)
+            .shippingAmount(0f)
+            .reward(reward)
+            .rewardId(reward.id())
+            .isPostCampaign(false) // original price from campaign should be used ($20)
+            .build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        vm.shippingRuleSelected(shipRule)
+
+        // Reward amount is 20 with no shipping
+        this.pledgeAmountHeader.assertValues("$20")
+    }
+
+    @Test
+    fun `test_when_backing_is_late_pledge_then_pledge_amount_header_is_correct`() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .amount(30.0)
+            .shippingAmount(0f)
+            .reward(reward)
+            .rewardId(reward.id())
+            .isPostCampaign(true) // new price from late pledges should be used ($30)
+            .build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        vm.shippingRuleSelected(shipRule)
+
+        // Reward amount for late pledge is 30 with no shipping
+        this.pledgeAmountHeader.assertValues("$30")
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {

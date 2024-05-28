@@ -42,12 +42,12 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
     private var addOns: List<Reward> = listOf()
-    private var currentUserReward: Reward = Reward.builder().build() // Local variable
-    private var defaultShippingRule: ShippingRule = ShippingRule.builder().build() // Local variable
+    private var currentUserReward: Reward = Reward.builder().build()
+    private var defaultShippingRule: ShippingRule = ShippingRule.builder().build()
     private var currentShippingRule: ShippingRule = ShippingRule.builder().build()
     private var shippingSelectorIsGone: Boolean = false
     private var currentAddOnsSelections: MutableMap<Reward, Int> = mutableMapOf()
-    private var shippingRules: List<ShippingRule> = listOf() // Local variable
+    private var shippingRules: List<ShippingRule> = listOf()
     private lateinit var projectData: ProjectData
     private var errorAction: (message: String?) -> Unit = {}
 
@@ -59,10 +59,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = AddOnsUIState()
             )
-
-    init {
-        recalculateShippingRule()
-    }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
@@ -81,6 +77,7 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                         reward = reward
                     ).subscribe { shippingRulesEnvelope ->
                         shippingRules = shippingRulesEnvelope.shippingRules()
+                        recalculateShippingRule()
                     }.addToDisposable(disposables)
                 }
             }
@@ -137,7 +134,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
             RewardUtils.isDigital(rw) || !RewardUtils.isShippable(rw) || RewardUtils.isLocalPickup(
                 rw
             ) -> ShippingRuleFactory.emptyShippingRule()
-            // sameReward -> backingShippingRule // TODO: When changing reward for manage pledge flow
             else -> defaultShipping
         }
 
@@ -196,7 +192,6 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
                     emitCurrentState()
                 }
         }
-
 
         viewModelScope.launch {
             emitCurrentState()

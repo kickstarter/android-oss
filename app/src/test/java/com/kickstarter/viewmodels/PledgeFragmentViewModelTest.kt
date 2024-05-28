@@ -3377,6 +3377,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping().toBuilder()
             .hasAddons(true)
             .minimum(50.0)
+            .pledgeAmount(50.0)
+            .latePledgeAmount(60.0)
             .build()
         val project = ProjectFactory.project()
             .toBuilder()
@@ -3386,6 +3388,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
             .minimum(9.0)
+            .pledgeAmount(9.0)
+            .latePledgeAmount(10.0)
             .shippingRules(
                 listOf(
                     ShippingRuleFactory.usShippingRule()
@@ -3399,6 +3403,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val addOn2 = RewardFactory.itemizedAddOn().toBuilder().quantity(4)
             .minimum(11.0)
+            .pledgeAmount(11.0)
+            .latePledgeAmount(15.0)
             .shippingRules(
                 listOf(
                     ShippingRuleFactory.usShippingRule()
@@ -3412,6 +3418,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val addOn3 = RewardFactory.itemizedAddOn().toBuilder().quantity(10)
             .minimum(15.0)
+            .pledgeAmount(15.0)
+            .latePledgeAmount(20.0)
             .shippingRules(
                 listOf(
                     ShippingRuleFactory.usShippingRule()
@@ -3439,6 +3447,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping().toBuilder()
             .hasAddons(true)
             .minimum(50.0)
+            .pledgeAmount(50.0)
+            .latePledgeAmount(60.0)
             .build()
         val project = ProjectFactory.project()
             .toBuilder()
@@ -3448,6 +3458,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
             .minimum(9.0)
+            .pledgeAmount(9.0)
+            .latePledgeAmount(10.0)
             .shippingRules(
                 listOf(
                     ShippingRuleFactory.usShippingRule()
@@ -3461,6 +3473,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val addOn2 = RewardFactory.itemizedAddOn().toBuilder().quantity(4)
             .minimum(11.0)
+            .pledgeAmount(11.0)
+            .latePledgeAmount(12.0)
             .shippingRules(
                 listOf(
                     ShippingRuleFactory.usShippingRule()
@@ -3474,6 +3488,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val addOn3 = RewardFactory.itemizedAddOn().toBuilder().quantity(10)
             .minimum(15.0)
+            .pledgeAmount(15.0)
+            .latePledgeAmount(20.0)
             .shippingRules(
                 listOf(
                     ShippingRuleFactory.usShippingRule()

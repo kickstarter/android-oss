@@ -53,6 +53,8 @@ object RewardFactory {
             .description(description)
             .estimatedDeliveryOn(ESTIMATED_DELIVERY)
             .minimum(20.0)
+            .pledgeAmount(20.0)
+            .latePledgeAmount(30.0)
             .shippingPreference("unrestricted")
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
             .title("Digital Bundle")
@@ -96,6 +98,8 @@ object RewardFactory {
         return reward().toBuilder()
             .id(rewardId)
             .minimum(10.0)
+            .pledgeAmount(10.0)
+            .latePledgeAmount(20.0)
             .isAddOn(true)
             .addOnsItems(
                 listOf(
@@ -124,6 +128,8 @@ object RewardFactory {
     fun maxReward(country: Country): Reward {
         return reward().toBuilder()
             .minimum(country.maxPledge.toDouble())
+            .pledgeAmount(country.maxPledge.toDouble())
+            .latePledgeAmount(country.maxPledge.toDouble() + 10.0)
             .backersCount(0)
             .build()
     }
@@ -137,6 +143,8 @@ object RewardFactory {
             .description("A digital download of the album and documentary.")
             .limit(50)
             .minimum(20.0)
+            .pledgeAmount(20.0)
+            .latePledgeAmount(30.0)
             .remaining(0)
             .title("Digital Bundle")
             .build()
@@ -188,6 +196,8 @@ object RewardFactory {
             .estimatedDeliveryOn(null)
             .description("No reward")
             .minimum(1.0)
+            .pledgeAmount(1.0)
+            .latePledgeAmount(1.0)
             .build()
     }
 

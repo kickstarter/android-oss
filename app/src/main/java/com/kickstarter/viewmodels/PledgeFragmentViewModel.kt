@@ -1702,8 +1702,15 @@ interface PledgeFragmentViewModel {
                     if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Cost of the selected Reward
                     else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Cost of each addOn
                 } else {
-                    if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.pledgeAmount() // - Cost of the selected Reward during the campaign
-                    else it.quantity()?.let { q -> (q * it.pledgeAmount()) } ?: it.pledgeAmount() // - Cost of each addOn during the campaign
+                    // We have a pledge amount to work with, use it
+                    if (it.pledgeAmount() > 0.0) {
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.pledgeAmount() // - Cost of the selected Reward during the campaign
+                        else it.quantity()?.let { q -> (q * it.pledgeAmount()) } ?: it.pledgeAmount() // - Cost of each addOn during the campaign
+                    } else {
+                        // We don't have a pledge amount to work with, use the default minimum
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Default cost of the selected Reward
+                        else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Default cost of each addOn
+                    }
                 }
             }
             return totalPledgeAmount

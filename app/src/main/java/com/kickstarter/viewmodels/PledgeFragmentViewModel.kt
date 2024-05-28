@@ -618,9 +618,8 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             val pledgeAmountHeader = this.rewardAndAddOns
-                .compose<Pair<List<Reward>, Backing>>(combineLatestPair(backing))
-                .filter { !RewardUtils.isNoReward(it.first.first()) }
-                .map { getPledgeAmount(it.first, it.second.isPostCampaign()) }
+                .filter { !RewardUtils.isNoReward(it.first()) }
+                .map { getPledgeAmount(it, backing.blockingLast(Backing.builder().build()).isPostCampaign()) }
 
             pledgeAmountHeader
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -1367,25 +1366,20 @@ interface PledgeFragmentViewModel {
                 paymentMethod,
                 project
             ) { b, a, l, r, pMethod, pro ->
-                Pair(this.getUpdateBackingData(b, a, l, r, pMethod), pro)
+                if (pro.isBacking()) {
+                    Pair(this.getUpdateBackingData(b, null, l, r, pMethod), pro)
+                } else {
+                    Pair(this.getUpdateBackingData(b, a, l, r, pMethod), pro)
+                }
             }
                 .compose<Pair<UpdateBackingData, Project>>(takeWhenV2(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                 .switchMap {
-                    if (it.second.postCampaignPledgingEnabled() == true && it.second.isInPostCampaignPledgingPhase() == true && !it.first.backing.isPostCampaign()) {
-                        this.apolloClient.updateBackingPaymentSource(it.first)
-                            .doOnSubscribe {
-                                this.pledgeProgressIsGone.onNext(false)
-                                this.pledgeButtonIsEnabled.onNext(false)
-                            }
-                            .materialize()
-                    } else {
-                        this.apolloClient.updateBacking(it.first)
-                            .doOnSubscribe {
-                                this.pledgeProgressIsGone.onNext(false)
-                                this.pledgeButtonIsEnabled.onNext(false)
-                            }
-                            .materialize()
-                    }
+                    this.apolloClient.updateBacking(it.first)
+                        .doOnSubscribe {
+                            this.pledgeProgressIsGone.onNext(false)
+                            this.pledgeButtonIsEnabled.onNext(false)
+                        }
+                        .materialize()
                 }
                 .share()
 

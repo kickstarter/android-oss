@@ -700,7 +700,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val updateBackingMutation = UpdateBackingMutation.builder()
                 .backingId(encodeRelayId(updateBackingData.backing))
-                .amount(updateBackingData.amount.toString())
+                .amount(updateBackingData.amount)
                 .locationId(updateBackingData.locationId)
                 .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                 .apply {

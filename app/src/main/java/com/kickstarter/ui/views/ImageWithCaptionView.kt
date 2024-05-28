@@ -9,7 +9,7 @@ import android.view.View.OnClickListener
 import androidx.cardview.widget.CardView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale.Companion.FillWidth
 import androidx.core.view.isVisible
@@ -42,7 +42,6 @@ class ImageWithCaptionView @JvmOverloads constructor(
     fun setImage(src: String) {
         if (src.isEmpty() || src.isBlank()) {
             binding.imageView.setImageDrawable(null)
-            // binding.imageViewPlaceholder.setImageDrawable(null)
             binding.composeViewImage.visibility = GONE
         } else {
             when {
@@ -57,9 +56,6 @@ class ImageWithCaptionView @JvmOverloads constructor(
                     binding.composeViewImage.visibility = GONE
                 }
                 else -> {
-                    // binding.imageView.loadImage(src, context, binding.imageViewPlaceholder)
-                    // ZoomHelper.addZoomableView(binding.composeViewImage)
-                    // ZoomHelper.removeZoomableView(binding.imageViewPlaceholder)
                     binding.composeViewImage.visibility = VISIBLE
                     binding.imageView.visibility = GONE
                     binding.composeViewImage.setContent {
@@ -75,7 +71,7 @@ class ImageWithCaptionView @JvmOverloads constructor(
                                 ) {
                                     val state = painter.state
                                     if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-                                        CircularProgressIndicator()
+                                        LinearProgressIndicator()
                                     } else {
                                         SubcomposeAsyncImageContent()
                                     }

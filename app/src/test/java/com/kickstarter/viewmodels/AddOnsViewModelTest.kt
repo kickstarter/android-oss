@@ -47,7 +47,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory
             .rewardHasAddOns()
             .toBuilder()
-            .shippingPreference(Reward.ShippingPreference.NONE.name)
+            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
             .build()
 
         val uiState = mutableListOf<AddOnsUIState>()
@@ -68,8 +68,9 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `test_show_location_selection_on_reward_is_shippable`() = runTest {
         val reward = RewardFactory
-            .rewardWithShipping()
+            .rewardHasAddOns()
             .toBuilder()
+            .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
             .build()
 
         val uiState = mutableListOf<AddOnsUIState>()

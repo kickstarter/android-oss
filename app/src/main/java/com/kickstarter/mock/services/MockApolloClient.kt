@@ -164,10 +164,6 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
-    override fun updateBackingPaymentSource(updateBackingData: UpdateBackingData): io.reactivex.Observable<Checkout> {
-        return io.reactivex.Observable.empty()
-    }
-
     override fun createBacking(createBackingData: CreateBackingData): io.reactivex.Observable<Checkout> {
         return io.reactivex.Observable.empty()
     }

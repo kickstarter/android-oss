@@ -189,9 +189,17 @@ interface AddOnViewHolderViewModel {
 
         private fun buildCurrency(project: Project, reward: Reward): String {
             val completeCurrency = if (project.backing()?.isPostCampaign() == true) {
-                ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)
+                if (reward.latePledgeAmount() > 0) {
+                    ksCurrency.format(reward.latePledgeAmount(), project, RoundingMode.HALF_UP)
+                } else {
+                    ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)
+                }
             } else {
-                ksCurrency.format(reward.pledgeAmount(), project, RoundingMode.HALF_UP)
+                if (reward.pledgeAmount() > 0) {
+                    ksCurrency.format(reward.pledgeAmount(), project, RoundingMode.HALF_UP)
+                } else {
+                    ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)
+                }
             }
 
             val country = Country.findByCurrencyCode(project.currency()) ?: ""

@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Pair;
 
@@ -22,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.extensions.AnyExtKt;
@@ -420,6 +422,7 @@ public final class PushNotifications {
         final FutureTarget<Bitmap> circleCrop = Glide.with(this.context)
           .asBitmap()
           .load(url)
+          .error(R.drawable.logo)
           .apply(RequestOptions.circleCropTransform())
           .submit();
         return circleCrop.get();
@@ -427,12 +430,15 @@ public final class PushNotifications {
         final FutureTarget<Bitmap> SquareRoundCorners = Glide.with(this.context)
           .asBitmap()
           .load(url)
+          .error(R.drawable.logo)
           .transform(new MultiTransformation<>(new CenterCrop(), new RoundedCorners(10)))
           .submit();
         return SquareRoundCorners.get();
       }
     } catch (ExecutionException | InterruptedException e) {
-      throw new RuntimeException(e);
+      final Throwable error = new Throwable(url, e);
+      FirebaseCrashlytics.getInstance().recordException(error);
+      return BitmapFactory.decodeResource(this.context.getResources(), R.drawable.logo);
     }
   }
 

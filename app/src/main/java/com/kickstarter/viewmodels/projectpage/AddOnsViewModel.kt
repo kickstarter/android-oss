@@ -5,14 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Location
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +34,6 @@ data class AddOnsUIState(
 )
 
 class AddOnsViewModel(val environment: Environment) : ViewModel() {
-    private val disposables = CompositeDisposable()
     private val currentConfig = requireNotNull(environment.currentConfigV2())
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
@@ -67,18 +64,20 @@ class AddOnsViewModel(val environment: Environment) : ViewModel() {
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
 
-        projectData.project().rewards()?.let { rewards ->
-            if (rewards.isNotEmpty()) {
-                val reward = rewards.firstOrNull { theOne ->
-                    !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
-                }
-                reward?.let {
-                    apolloClient.getShippingRules(
-                        reward = reward
-                    ).subscribe { shippingRulesEnvelope ->
-                        shippingRules = shippingRulesEnvelope.shippingRules()
-                        recalculateShippingRule()
-                    }.addToDisposable(disposables)
+        viewModelScope.launch {
+            projectData.project().rewards()?.let { rewards ->
+                if (rewards.isNotEmpty()) {
+                    val reward = rewards.firstOrNull { theOne ->
+                        !theOne.isAddOn() && theOne.isAvailable() && RewardUtils.isShippable(theOne)
+                    }
+                    reward?.let {
+                        apolloClient.getShippingRules(reward = reward)
+                            .asFlow()
+                            .collect { shippingRulesEnvelope ->
+                                shippingRules = shippingRulesEnvelope.shippingRules()
+                                recalculateShippingRule()
+                            }
+                    }
                 }
             }
         }

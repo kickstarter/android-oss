@@ -267,7 +267,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     //Compose Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:32.8.1')
@@ -297,9 +297,6 @@ dependencies {
 
     // Paging 3 for compose dependency
     implementation "androidx.paging:paging-compose:3.3.0"
-
-    // Zoom on Images
-    implementation 'io.github.aghajari:ZoomHelper:1.1.0'
 
     // Testing
     testImplementation "junit:junit:4.13.2"

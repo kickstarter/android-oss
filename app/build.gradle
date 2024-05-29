@@ -264,7 +264,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     //Compose Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:32.8.1')
@@ -291,9 +291,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
-
-    // Zoom on Images
-    implementation 'io.github.aghajari:ZoomHelper:1.1.0'
 
     // Testing
     testImplementation "junit:junit:4.13.2"

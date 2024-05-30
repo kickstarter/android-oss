@@ -78,7 +78,7 @@ fun PPOCardPreview() {
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
+                    showBadge = false,
                     onActionButtonClicked = {},
                     timeNumberForAction = 6
                 )
@@ -110,7 +110,7 @@ fun PPOCardPreview() {
                     pledgeAmount = "$60.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
+                    showBadge = false,
                     onActionButtonClicked = {},
                     timeNumberForAction = 7
                 )
@@ -142,7 +142,7 @@ fun PPOCardPreview() {
                     pledgeAmount = "$70.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
+                    showBadge = false,
                     onActionButtonClicked = {},
                     timeNumberForAction = 8
                 )
@@ -191,9 +191,7 @@ fun PPOCardView(
             border = BorderStroke(width = dimensions.borderThickness, color = colors.borderSubtle),
         ) {
             Column(
-                Modifier
-                    .padding(top = dimensions.paddingXSmall)
-                    .clickable { onCardClick.invoke() }
+                Modifier.clickable { onCardClick.invoke() }
             ) {
                 when (viewType) {
                     PPOCardViewType.CONFIRM_ADDRESS -> {}
@@ -212,8 +210,6 @@ fun PPOCardView(
                     imageUrl = imageUrl,
                     imageContentDescription = imageContentDescription
                 )
-
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
                 CreatorNameSendMessageView(
                     creatorName = creatorName,
@@ -245,7 +241,7 @@ fun ProjectPledgeSummaryView(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
+            .padding(all = dimensions.paddingMediumSmall)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -305,7 +301,10 @@ fun CreatorNameSendMessageView(
             modifier = Modifier
                 .weight(0.7f)
                 .padding(
-                    all = dimensions.paddingSmall
+                    top = dimensions.paddingMediumSmall,
+                    bottom = dimensions.paddingMediumSmall,
+                    start = dimensions.paddingMediumSmall,
+                    end = dimensions.paddingSmall
                 )
         ) {
             Text(
@@ -327,9 +326,9 @@ fun CreatorNameSendMessageView(
             modifier = Modifier
                 .weight(0.3f)
                 .padding(
-                    end = dimensions.paddingSmall,
-                    top = dimensions.paddingSmall,
-                    bottom = dimensions.paddingSmall
+                    end = dimensions.paddingMediumSmall,
+                    top = dimensions.paddingMediumSmall,
+                    bottom = dimensions.paddingMediumSmall
                 )
                 .clickable { sendAMessageClickAction.invoke() }
         ) {
@@ -357,7 +356,7 @@ fun FixPaymentAlertsView(daysRemaining: Int = -1) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
     ) {
         KSCoralBadge(
             leadingIcon = {
@@ -401,7 +400,7 @@ fun FixPaymentAlertsView(daysRemaining: Int = -1) {
 fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
+        modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onFixPaymentClicked.invoke() },
         text = "Fix Payment",
         isEnabled = true,
@@ -414,7 +413,7 @@ fun AuthenticateCardAlertsView(daysRemaining: Int = -1) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
     ) {
         KSCoralBadge(
             leadingIcon = {
@@ -458,7 +457,7 @@ fun AuthenticateCardAlertsView(daysRemaining: Int = -1) {
 fun PaymentFixedButtonView(onFixPaymentClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
+        modifier = Modifier.padding(dimensions.paddingMediumSmall),
         leadingIcon = {
             Image(
                 modifier = Modifier
@@ -480,7 +479,7 @@ fun PaymentFixedButtonView(onFixPaymentClicked: () -> Unit) {
 fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
+        modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = "Authenticate Card",
         isEnabled = true,
@@ -492,7 +491,7 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
 fun CardAuthenticatedButtonView(onFixPaymentClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
+        modifier = Modifier.padding(dimensions.paddingMediumSmall),
         leadingIcon = {
             Image(
                 modifier = Modifier
@@ -515,7 +514,7 @@ fun TakeSurveyAlertsView(hoursRemaining: Int = -1) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
     ) {
         KSCoralBadge(
             leadingIcon = {
@@ -557,7 +556,7 @@ fun TakeSurveyAlertsView(hoursRemaining: Int = -1) {
 fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSPrimaryGreenButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
+        modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = "Take Survey",
         isEnabled = true,
@@ -571,7 +570,7 @@ fun SurveySubmittedAlertsView(hoursRemaining: Int = -1) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensions.paddingSmall)
+                .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
         ) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
@@ -598,7 +597,7 @@ fun SurveySubmittedAlertsView(hoursRemaining: Int = -1) {
 fun SurveySubmittedButtonView(onFixPaymentClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSPrimaryGreenButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
+        modifier = Modifier.padding(dimensions.paddingMediumSmall),
         leadingIcon = {
             Image(
                 modifier = Modifier

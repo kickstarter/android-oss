@@ -159,6 +159,7 @@ fragment backing on Backing {
     cancelable
     pledgedOn
     backerCompleted
+    isPostCampaign
     project {
         ... project
     }
@@ -288,6 +289,12 @@ fragment reward on Reward {
     estimatedDeliveryOn
     available
     amount {
+        ... amount
+    }
+    pledgeAmount {
+        ... amount
+    }
+    latePledgeAmount {
         ... amount
     }
     convertedAmount{

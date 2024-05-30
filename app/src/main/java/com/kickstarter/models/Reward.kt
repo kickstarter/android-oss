@@ -15,6 +15,8 @@ class Reward private constructor(
     private val id: Long,
     private val limit: Int?,
     private val minimum: Double,
+    private val pledgeAmount: Double,
+    private val latePledgeAmount: Double,
     private val estimatedDeliveryOn: DateTime?,
     private val remaining: Int?,
     private val rewardsItems: List<RewardsItem>?,
@@ -57,6 +59,8 @@ class Reward private constructor(
     override fun id() = this.id
     fun limit() = this.limit
     fun minimum() = this.minimum
+    fun pledgeAmount() = this.pledgeAmount
+    fun latePledgeAmount() = this.latePledgeAmount
     fun estimatedDeliveryOn() = this.estimatedDeliveryOn
     fun remaining() = this.remaining
     fun rewardsItems() = this.rewardsItems
@@ -85,6 +89,8 @@ class Reward private constructor(
         private var id: Long = 0L,
         private var limit: Int? = null,
         private var minimum: Double = 0.0,
+        private var pledgeAmount: Double = 0.0,
+        private var latePledgeAmount: Double = 0.0,
         private var estimatedDeliveryOn: DateTime? = null,
         private var remaining: Int? = null,
         private var rewardsItems: List<RewardsItem>? = emptyList(),
@@ -110,6 +116,8 @@ class Reward private constructor(
         fun id(id: Long?) = apply { this.id = id ?: -1L }
         fun limit(limit: Int?) = apply { this.limit = limit }
         fun minimum(minimum: Double?) = apply { this.minimum = minimum ?: 0.0 }
+        fun pledgeAmount(pledgeAmount: Double?) = apply { this.pledgeAmount = pledgeAmount ?: 0.0 }
+        fun latePledgeAmount(latePledgeAmount: Double?) = apply { this.latePledgeAmount = latePledgeAmount ?: 0.0 }
         fun estimatedDeliveryOn(estimatedDeliveryOn: DateTime?) = apply {
             this.estimatedDeliveryOn = estimatedDeliveryOn
         }
@@ -136,6 +144,8 @@ class Reward private constructor(
             id = id,
             limit = limit,
             minimum = minimum,
+            pledgeAmount = pledgeAmount,
+            latePledgeAmount = latePledgeAmount,
             estimatedDeliveryOn = estimatedDeliveryOn,
             remaining = remaining,
             rewardsItems = rewardsItems,
@@ -173,6 +183,8 @@ class Reward private constructor(
         id = id,
         limit = limit,
         minimum = minimum,
+        pledgeAmount = pledgeAmount,
+        latePledgeAmount = latePledgeAmount,
         estimatedDeliveryOn = estimatedDeliveryOn,
         remaining = remaining,
         rewardsItems = rewardsItems,
@@ -201,6 +213,8 @@ class Reward private constructor(
                 id() == other.id() &&
                 limit() == other.limit() &&
                 minimum() == other.minimum() &&
+                pledgeAmount() == other.pledgeAmount() &&
+                latePledgeAmount() == other.latePledgeAmount() &&
                 estimatedDeliveryOn() == other.estimatedDeliveryOn() &&
                 remaining() == other.remaining() &&
                 rewardsItems() == other.rewardsItems() &&

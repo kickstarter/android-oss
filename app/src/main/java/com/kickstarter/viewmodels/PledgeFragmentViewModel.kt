@@ -619,7 +619,7 @@ interface PledgeFragmentViewModel {
 
             val pledgeAmountHeader = this.rewardAndAddOns
                 .filter { !RewardUtils.isNoReward(it.first()) }
-                .map { getPledgeAmount(it) }
+                .map { getPledgeAmount(it, backing.blockingLast(Backing.builder().build()).isPostCampaign()) }
 
             pledgeAmountHeader
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -1363,13 +1363,18 @@ interface PledgeFragmentViewModel {
                 totalString,
                 locationId,
                 extendedListForCheckOut,
-                paymentMethod
-            ) { b, a, l, r, pMethod ->
-                this.getUpdateBackingData(b, a, l, r, pMethod)
+                paymentMethod,
+                project
+            ) { b, a, l, r, pMethod, pro ->
+                if (pro.isBacking() && pro.backing()?.amount().toString() == a) {
+                    Pair(this.getUpdateBackingData(b, null, l, r, pMethod), pro)
+                } else {
+                    Pair(this.getUpdateBackingData(b, a, l, r, pMethod), pro)
+                }
             }
-                .compose<UpdateBackingData>(takeWhenV2(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
+                .compose<Pair<UpdateBackingData, Project>>(takeWhenV2(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                 .switchMap {
-                    this.apolloClient.updateBacking(it)
+                    this.apolloClient.updateBacking(it.first)
                         .doOnSubscribe {
                             this.pledgeProgressIsGone.onNext(false)
                             this.pledgeButtonIsEnabled.onNext(false)
@@ -1690,11 +1695,29 @@ interface PledgeFragmentViewModel {
         /**
          *  Calculate the pledge amount for the selected reward + addOns
          */
-        private fun getPledgeAmount(rewards: List<Reward>): Double {
+        private fun getPledgeAmount(rewards: List<Reward>, isLatePledge: Boolean): Double {
             var totalPledgeAmount = 0.0
             rewards.forEach {
-                totalPledgeAmount += if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Cost of the selected Reward
-                else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Cost of each addOn
+                totalPledgeAmount += if (isLatePledge) {
+                    if (it.latePledgeAmount() > 0) {
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.latePledgeAmount() // - Cost of the selected Reward
+                        else it.quantity()?.let { q -> (q * it.latePledgeAmount()) } ?: it.latePledgeAmount() // - Cost of each addOn
+                    } else {
+                        // We don't have a late pledge amount to work with, use the default minimum
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Default cost of the selected Reward
+                        else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Default cost of each addOn
+                    }
+                } else {
+                    // We have a pledge amount to work with, use it
+                    if (it.pledgeAmount() > 0.0) {
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.pledgeAmount() // - Cost of the selected Reward during the campaign
+                        else it.quantity()?.let { q -> (q * it.pledgeAmount()) } ?: it.pledgeAmount() // - Cost of each addOn during the campaign
+                    } else {
+                        // We don't have a pledge amount to work with, use the default minimum
+                        if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Default cost of the selected Reward
+                        else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Default cost of each addOn
+                    }
+                }
             }
             return totalPledgeAmount
         }
@@ -2074,7 +2097,7 @@ fun PledgeFragmentViewModel.PledgeFragmentViewModel.getUpdateBackingData(
     backing: Backing,
     amount: String? = null,
     locationId: String? = null,
-    rewardsList: List<Reward>,
+    rewardsList: List<Reward> = listOf(),
     pMethod: StoredCard? = null
 ): UpdateBackingData {
     return pMethod?.let { card ->

@@ -34,6 +34,7 @@ class Backing private constructor(
     private val status: String,
     private val addOns: List<Reward>?,
     private val bonusAmount: Double,
+    private val isPostCampaign: Boolean
 ) : Parcelable, Relay {
     fun amount() = this.amount
     fun backer() = this.backer
@@ -61,6 +62,7 @@ class Backing private constructor(
     fun status() = this.status
     fun addOns() = this.addOns
     fun bonusAmount() = this.bonusAmount
+    fun isPostCampaign() = this.isPostCampaign
 
     @Parcelize
     data class Builder(
@@ -90,6 +92,7 @@ class Backing private constructor(
         private var status: String = "",
         private var addOns: List<Reward>? = null,
         private var bonusAmount: Double = 0.0,
+        private var isPostCampaign: Boolean = false
     ) : Parcelable {
         fun amount(amount: Double?) = apply { this.amount = amount ?: 0.0 }
         fun backer(backer: User?) = apply { this.backer = backer }
@@ -116,6 +119,7 @@ class Backing private constructor(
         fun status(status: String?) = apply { this.status = status ?: "" }
         fun addOns(addOns: List<Reward>?) = apply { this.addOns = addOns ?: emptyList() }
         fun bonusAmount(bonusAmount: Double?) = apply { this.bonusAmount = bonusAmount ?: 0.0 }
+        fun isPostCampaign(isPostCampaign: Boolean) = apply { this.isPostCampaign = isPostCampaign }
         fun build() = Backing(
             amount = amount,
             backer = backer,
@@ -141,7 +145,8 @@ class Backing private constructor(
             shippingAmount = shippingAmount,
             status = status,
             addOns = addOns,
-            bonusAmount = bonusAmount
+            bonusAmount = bonusAmount,
+            isPostCampaign = isPostCampaign
         )
     }
 
@@ -170,7 +175,8 @@ class Backing private constructor(
         shippingAmount = shippingAmount,
         status = status,
         addOns = addOns,
-        bonusAmount = bonusAmount
+        bonusAmount = bonusAmount,
+        isPostCampaign = isPostCampaign
     )
 
     override fun equals(other: Any?): Boolean {

@@ -114,7 +114,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    flowControllerPresentPaymentOption(it)
+                    flowControllerPresentPaymentOption(it.first, it.second)
                 }
         )
 
@@ -143,10 +143,10 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = this.getPaymentSheetConfiguration("", true), // Always hide Link on settings page
+            configuration = this.getPaymentSheetConfiguration(userEmail),
             callback = ::onConfigured
         )
     }

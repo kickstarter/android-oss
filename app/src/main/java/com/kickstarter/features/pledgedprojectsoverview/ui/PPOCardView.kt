@@ -404,7 +404,7 @@ fun ShippingAddressView(
                 .height(dimensions.clickableButtonHeight)
                 .clip(shapes.small),
             color = colors.textPrimary,
-            style = typography.footnoteMedium,
+            style = typography.caption1Medium,
         )
 
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
@@ -414,7 +414,7 @@ fun ShippingAddressView(
             modifier = Modifier
                 .weight(0.75f),
             color = colors.textPrimary,
-            style = typography.footnote,
+            style = typography.caption1,
             overflow = TextOverflow.Ellipsis,
             minLines = 4,
             maxLines = 6

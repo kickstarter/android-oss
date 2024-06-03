@@ -57,7 +57,7 @@ fun PPOCardPreview() {
         ) {
             item {
                 PPOCardView(
-                    viewType = PPOCardViewType.CONFIRM_ADDRESS,
+                    viewType = PPOCardViewType.ADDRESS_CONFIRMED,
                     onCardClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
@@ -221,7 +221,7 @@ fun PPOCardView(
             ) {
                 when (viewType) {
                     PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressAlertsView(timeNumberForAction)
-                    PPOCardViewType.ADDRESS_CONFIRMED -> {}
+                    PPOCardViewType.ADDRESS_CONFIRMED -> ConfirmAddressAlertsView(timeNumberForAction)
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentAlertsView(timeNumberForAction)
                     PPOCardViewType.PAYMENT_FIXED -> {}
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardAlertsView(timeNumberForAction)
@@ -427,7 +427,7 @@ fun ConfirmAddressAlertsView(hoursRemaining: Int = -1) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
     ) {
         if (hoursRemaining > 0) {
             AddressLocksAlertView(hoursRemaining)

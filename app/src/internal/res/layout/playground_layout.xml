@@ -83,12 +83,13 @@
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <Button
-      android:id="@+id/new_project_activity"
+      android:id="@+id/start_activity"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/Project_activity"
+      android:text="Start new activity"
       android:layout_marginStart="@dimen/grid_2"
       android:layout_marginEnd="@dimen/grid_2"
       android:layout_marginTop="@dimen/grid_4"
-      app:layout_constraintTop_toBottomOf="@id/stepper_container"/>
+      android:layout_marginBottom="@dimen/grid_4"
+      app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

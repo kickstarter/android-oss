@@ -36,6 +36,7 @@ import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
+import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -45,8 +46,8 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.shapes
 
 @Composable
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showSystemUi = true, showBackground = true, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showSystemUi = true, showBackground = true, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PPOCardPreview() {
     KSTheme {
         LazyColumn(
@@ -54,6 +55,23 @@ fun PPOCardPreview() {
                 .background(color = colors.backgroundSurfacePrimary),
             contentPadding = PaddingValues(dimensions.paddingMedium)
         ) {
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.ADDRESS_CONFIRMED,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$50.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+                    showBadge = true,
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    timeNumberForAction = 5
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
             item {
                 PPOCardView(
                     viewType = PPOCardViewType.FIX_PAYMENT,
@@ -64,6 +82,7 @@ fun PPOCardPreview() {
                     sendAMessageClickAction = {},
                     showBadge = true,
                     onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
                     timeNumberForAction = 6
                 )
 
@@ -80,6 +99,7 @@ fun PPOCardPreview() {
                     sendAMessageClickAction = {},
                     showBadge = false,
                     onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
                     timeNumberForAction = 6
                 )
 
@@ -96,6 +116,7 @@ fun PPOCardPreview() {
                     sendAMessageClickAction = {},
                     showBadge = true,
                     onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
                     timeNumberForAction = 7
                 )
 
@@ -112,6 +133,7 @@ fun PPOCardPreview() {
                     sendAMessageClickAction = {},
                     showBadge = false,
                     onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
                     timeNumberForAction = 7
                 )
 
@@ -128,6 +150,7 @@ fun PPOCardPreview() {
                     sendAMessageClickAction = {},
                     showBadge = true,
                     onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
                     timeNumberForAction = 8
                 )
 
@@ -144,6 +167,7 @@ fun PPOCardPreview() {
                     sendAMessageClickAction = {},
                     showBadge = false,
                     onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
                     timeNumberForAction = 8
                 )
 
@@ -174,8 +198,10 @@ fun PPOCardView(
     imageContentDescription: String? = null,
     creatorName: String? = null,
     sendAMessageClickAction: () -> Unit,
+    shippingAddress: String? = null,
     showBadge: Boolean = false,
     onActionButtonClicked: () -> Unit,
+    onSecondaryActionButtonClicked: () -> Unit,
     timeNumberForAction: Int = 0
 ) {
 
@@ -194,8 +220,8 @@ fun PPOCardView(
                 Modifier.clickable { onCardClick.invoke() }
             ) {
                 when (viewType) {
-                    PPOCardViewType.CONFIRM_ADDRESS -> {}
-                    PPOCardViewType.ADDRESS_CONFIRMED -> {}
+                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressAlertsView(timeNumberForAction)
+                    PPOCardViewType.ADDRESS_CONFIRMED -> ConfirmAddressAlertsView(timeNumberForAction)
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentAlertsView(timeNumberForAction)
                     PPOCardViewType.PAYMENT_FIXED -> {}
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardAlertsView(timeNumberForAction)
@@ -216,15 +242,26 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
+                if (viewType == PPOCardViewType.CONFIRM_ADDRESS ||
+                    viewType == PPOCardViewType.ADDRESS_CONFIRMED ||
+                    viewType == PPOCardViewType.SURVEY_SUBMITTED
+                ) {
+                    Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                    ShippingAddressView(
+                        shippingAddress = shippingAddress
+                    )
+                }
+
                 when (viewType) {
-                    PPOCardViewType.CONFIRM_ADDRESS -> {}
-                    PPOCardViewType.ADDRESS_CONFIRMED -> {}
+                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(onActionButtonClicked, onSecondaryActionButtonClicked)
+                    PPOCardViewType.ADDRESS_CONFIRMED -> AddressConfirmedButtonView()
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
-                    PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView { }
+                    PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView()
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
                     PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView { }
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
-                    PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView { }
+                    PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
                 }
             }
         }
@@ -352,6 +389,102 @@ fun CreatorNameSendMessageView(
 }
 
 @Composable
+fun ShippingAddressView(
+    shippingAddress: String? = null
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensions.paddingSmall)
+    ) {
+        Text(
+            text = "Shipping address",
+            modifier = Modifier
+                .weight(0.25f)
+                .height(dimensions.clickableButtonHeight)
+                .clip(shapes.small),
+            color = colors.textPrimary,
+            style = typography.caption1Medium,
+        )
+
+        Spacer(modifier = Modifier.width(dimensions.paddingSmall))
+
+        Text(
+            text = shippingAddress ?: "",
+            modifier = Modifier
+                .weight(0.75f),
+            color = colors.textPrimary,
+            style = typography.caption1,
+            overflow = TextOverflow.Ellipsis,
+            minLines = 4,
+            maxLines = 6
+        )
+    }
+}
+
+@Composable
+fun ConfirmAddressAlertsView(hoursRemaining: Int = -1) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
+    ) {
+        if (hoursRemaining > 0) {
+            AddressLocksAlertView(hoursRemaining)
+        }
+    }
+}
+@Composable
+fun ConfirmAddressButtonsView(onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensions.paddingSmall)
+    ) {
+        // TODO: Replace with translated string
+        KSPrimaryBlackButton(
+            modifier = Modifier
+                .weight(0.5f),
+            onClickAction = { onEditAddressClicked.invoke() },
+            text = "Edit",
+            isEnabled = true,
+            textStyle = typography.buttonText
+        )
+        Spacer(modifier = Modifier.width(dimensions.paddingSmall))
+
+        KSPrimaryGreenButton(
+            modifier = Modifier
+                .weight(0.5f),
+            onClickAction = { onConfirmAddressClicked.invoke() },
+            text = "Confirm",
+            isEnabled = true,
+            textStyle = typography.buttonText
+        )
+    }
+}
+@Composable
+fun AddressConfirmedButtonView() {
+    // TODO: Replace with translated string
+    KSSecondaryRedButton(
+        modifier = Modifier.padding(dimensions.paddingMedium),
+        leadingIcon = {
+            Image(
+                modifier = Modifier
+                    .padding(end = dimensions.paddingXSmall)
+                    .size(dimensions.paddingMedium),
+                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
+                contentDescription = "Address Confirmed",
+                colorFilter = ColorFilter.tint(color = colors.textSecondary)
+            )
+        },
+        onClickAction = {},
+        text = "Address Confirmed",
+        isEnabled = false,
+        textStyle = typography.buttonText
+    )
+}
+
+@Composable
 fun FixPaymentAlertsView(daysRemaining: Int = -1) {
     Column(
         modifier = Modifier
@@ -454,7 +587,7 @@ fun AuthenticateCardAlertsView(daysRemaining: Int = -1) {
 }
 
 @Composable
-fun PaymentFixedButtonView(onFixPaymentClicked: () -> Unit) {
+fun PaymentFixedButtonView() {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
@@ -468,7 +601,7 @@ fun PaymentFixedButtonView(onFixPaymentClicked: () -> Unit) {
                 colorFilter = ColorFilter.tint(color = colors.textSecondary)
             )
         },
-        onClickAction = { onFixPaymentClicked.invoke() },
+        onClickAction = { },
         text = "Payment Fixed",
         isEnabled = false,
         textStyle = typography.buttonText
@@ -502,7 +635,7 @@ fun CardAuthenticatedButtonView(onFixPaymentClicked: () -> Unit) {
                 colorFilter = ColorFilter.tint(color = colors.textSecondary)
             )
         },
-        onClickAction = { onFixPaymentClicked.invoke() },
+        onClickAction = { },
         text = "Card Authenticated",
         isEnabled = false,
         textStyle = typography.buttonText
@@ -522,12 +655,12 @@ fun TakeSurveyAlertsView(hoursRemaining: Int = -1) {
                 Image(
                     modifier = Modifier.padding(end = dimensions.paddingXSmall),
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_icon_alert),
-                    contentDescription = "Complete Survey",
+                    contentDescription = "Take Survey",
                     colorFilter = ColorFilter.tint(colors.textSecondary)
                 )
             },
             // TODO: Replace with translated string
-            text = "Complete Survey",
+            text = "Take Survey",
         )
 
         if (hoursRemaining > 0) {
@@ -574,27 +707,30 @@ fun SurveySubmittedAlertsView(hoursRemaining: Int = -1) {
         ) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
-            KSCoralBadge(
-                leadingIcon = {
-                    // TODO: Replace with translated string
-                    Image(
-                        modifier = Modifier
-                            .padding(end = dimensions.paddingXSmall)
-                            .size(dimensions.alertIconSize),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                        contentDescription = "Address locks in $hoursRemaining hours",
-                        colorFilter = ColorFilter.tint(colors.textSecondary)
-                    )
-                },
-                // TODO: Replace with translated string
-                text = "Address locks in $hoursRemaining hours",
-            )
+            AddressLocksAlertView(hoursRemaining)
         }
     }
 }
-
 @Composable
-fun SurveySubmittedButtonView(onFixPaymentClicked: () -> Unit) {
+fun AddressLocksAlertView(hoursRemaining: Int = -1) {
+    KSCoralBadge(
+        leadingIcon = {
+            // TODO: Replace with translated string
+            Image(
+                modifier = Modifier
+                    .padding(end = dimensions.paddingXSmall)
+                    .size(dimensions.alertIconSize),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
+                contentDescription = "Address locks in $hoursRemaining hours",
+                colorFilter = ColorFilter.tint(colors.textSecondary)
+            )
+        },
+        // TODO: Replace with translated string
+        text = "Address locks in $hoursRemaining hours",
+    )
+}
+@Composable
+fun SurveySubmittedButtonView() {
     // TODO: Replace with translated string
     KSPrimaryGreenButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
@@ -608,7 +744,7 @@ fun SurveySubmittedButtonView(onFixPaymentClicked: () -> Unit) {
                 colorFilter = ColorFilter.tint(color = colors.textSecondary)
             )
         },
-        onClickAction = { onFixPaymentClicked.invoke() },
+        onClickAction = { },
         text = "Survey Submitted",
         isEnabled = false,
         textStyle = typography.buttonText

@@ -56,7 +56,8 @@ data class KSDimensions(
     val dottedListDotSize: Dp = Dp.Unspecified,
     val countryInputWidth: Dp = Dp.Unspecified,
     val storedCardImageHeight: Dp = Dp.Unspecified,
-    val storedCardImageWidth: Dp = Dp.Unspecified
+    val storedCardImageWidth: Dp = Dp.Unspecified,
+    val alertIconSize: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -75,7 +76,7 @@ val KSStandardDimensions = KSDimensions(
     paddingXXLarge = 40.dp,
     paddingDoubleLarge = 48.dp,
     paddingTripleLarge = 72.dp,
-    minButtonHeight = 48.dp,
+    minButtonHeight = 40.dp,
     stepperHeight = 36.dp,
     stepperWidth = 108.dp,
     stepperButtonWidth = 54.dp,
@@ -112,5 +113,6 @@ val KSStandardDimensions = KSDimensions(
     dottedListDotSize = 2.dp,
     countryInputWidth = 164.dp,
     storedCardImageHeight = 40.dp,
-    storedCardImageWidth = 64.dp
+    storedCardImageWidth = 64.dp,
+    alertIconSize = 14.dp
 )

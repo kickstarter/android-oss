@@ -3,6 +3,7 @@ package com.kickstarter.ui.compose.designsystem
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -38,9 +40,11 @@ fun KSBadgesPreview() {
 
 @Composable
 fun KSGreenBadge(
-    text: String
+    leadingIcon: @Composable () -> Unit = {},
+    text: String,
+    textColor: Color = colors.textAccentGreen
 ) {
-    Text(
+    Row(
         modifier = Modifier
             .background(
                 color = colors.backgroundAccentGreenSubtle,
@@ -51,18 +55,25 @@ fun KSGreenBadge(
                 top = dimensions.paddingSmall,
                 bottom = dimensions.paddingSmall,
                 end = dimensions.paddingMediumSmall
-            ),
-        text = text,
-        color = colors.textAccentGreen,
-        style = typography.footnoteMedium
-    )
+            )
+    ) {
+        leadingIcon()
+
+        Text(
+            text = text,
+            color = textColor,
+            style = typography.footnoteMedium
+        )
+    }
 }
 
 @Composable
 fun KSCoralBadge(
-    text: String
+    leadingIcon: @Composable () -> Unit = {},
+    text: String,
+    textColor: Color = colors.textSecondary
 ) {
-    Text(
+    Row(
         modifier = Modifier
             .background(
                 color = colors.backgroundDangerSubtle,
@@ -73,9 +84,14 @@ fun KSCoralBadge(
                 top = dimensions.paddingSmall,
                 bottom = dimensions.paddingSmall,
                 end = dimensions.paddingMediumSmall
-            ),
-        text = text,
-        color = colors.textSecondary,
-        style = typography.footnoteMedium
-    )
+            )
+    ) {
+        leadingIcon()
+
+        Text(
+            text = text,
+            color = textColor,
+            style = typography.footnoteMedium
+        )
+    }
 }

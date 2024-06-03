@@ -1261,7 +1261,7 @@ class ProjectPageActivity :
     private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = getPaymentSheetConfiguration(userEmail, false),
+            configuration = getPaymentSheetConfiguration(userEmail),
             callback = ::onConfigured
         )
     }

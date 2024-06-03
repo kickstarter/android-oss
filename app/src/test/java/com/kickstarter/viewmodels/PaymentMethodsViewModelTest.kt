@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import DeletePaymentSourceMutation
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory
@@ -25,7 +26,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val showDeleteCardDialog = TestSubscriber<Unit>()
     private val successDeleting = TestSubscriber<String>()
-    private val presentPaymentSheet = TestSubscriber<String>()
+    private val presentPaymentSheet = TestSubscriber<Pair<String, String>>()
     private val showError = TestSubscriber<String>()
     private val successSaving = TestSubscriber<String>()
     private val compositeDisposable = CompositeDisposable()
@@ -148,6 +149,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPresentPaymentSheetSuccess() {
         val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
+        val email = "some@email.com"
 
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
@@ -159,7 +161,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
 
-        this.presentPaymentSheet.assertValue(setupClientId)
+        this.presentPaymentSheet.assertValue(Pair.create(setupClientId, email))
         this.progressBarIsVisible.assertValues(false, true, false, true, false)
         this.showError.assertNoValues()
     }
@@ -185,6 +187,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSavePaymentMethodSuccess() {
         val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
+        val email = "some@email.com"
         val card = StoredCardFactory.visa()
         val cardsList = listOf(StoredCardFactory.discoverCard())
         val cardsListUpdated = listOf(StoredCardFactory.discoverCard(), card)
@@ -214,7 +217,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         // - Button clicked
         this.vm.inputs.newCardButtonClicked()
 
-        this.presentPaymentSheet.assertValue(setupClientId)
+        this.presentPaymentSheet.assertValue(Pair.create(setupClientId, email))
         this.progressBarIsVisible.assertValues(false, true, false, true, false)
         this.showError.assertNoValues()
 
@@ -230,6 +233,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSavePaymentMethodError() {
         val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
+        val email = "some@email.com"
         val cardsList = listOf(StoredCardFactory.discoverCard())
         var numberOfCalls = 1
         val errorString = "Something went wrong"
@@ -258,7 +262,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         // - Button clicked
         this.vm.inputs.newCardButtonClicked()
 
-        this.presentPaymentSheet.assertValue(setupClientId)
+        this.presentPaymentSheet.assertValue((Pair.create(setupClientId, email)))
         this.progressBarIsVisible.assertValues(false, true, false, true, false)
         this.showError.assertNoValues()
 

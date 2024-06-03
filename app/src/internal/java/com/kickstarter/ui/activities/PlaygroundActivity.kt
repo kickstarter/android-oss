@@ -16,7 +16,6 @@ import com.kickstarter.libs.htmlparser.getStyledComponents
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -51,7 +50,7 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         binding.h6.text = (listOfElements[5] as TextViewElement).getStyledComponents(this)
 
         setStepper()
-        setProjectActivityButtonClicks()
+        setStartActivity()
     }
 
     /**
@@ -70,14 +69,12 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
             }.dispose()
     }
 
-    private fun setProjectActivityButtonClicks() {
-        binding.newProjectActivity.setOnClickListener { startProjectActivity(Pair(ProjectFactory.project(), RefTag.searchFeatured())) }
+    private fun setStartActivity() {
+        binding.startActivity.setOnClickListener { startProjectActivity(Pair(ProjectFactory.project(), RefTag.searchFeatured())) }
     }
 
     private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, ProjectPageActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
-            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
+        val intent = Intent(this, PaginationActivity::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

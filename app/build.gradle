@@ -70,6 +70,9 @@ android {
         def fabricProps = new Properties()
         file("fabric.properties").withInputStream { fabricProps.load(it) }
         manifestPlaceholders = [apiKey: fabricProps.getProperty('apiKey'), performanceLogs: false]
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     signingConfigs {
@@ -281,7 +284,7 @@ dependencies {
     implementation "androidx.compose.material:material:1.6.2"
     debugImplementation "androidx.compose.ui:ui-tooling:1.4.3"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.activity:activity-compose:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.0.1'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.30.1"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
@@ -291,6 +294,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$coroutines"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
+
+    // Paging 3 for compose dependency
+    implementation "androidx.paging:paging-compose:3.3.0"
 
     // Testing
     testImplementation "junit:junit:4.13.2"

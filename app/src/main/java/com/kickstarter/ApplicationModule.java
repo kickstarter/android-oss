@@ -427,7 +427,7 @@ public class ApplicationModule {
   @Singleton
   SegmentTrackingClient provideSegmentTrackingClient(
           final @ApplicationContext @NonNull Context context,
-          final @NonNull CurrentUserType currentUser,
+          final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull FeatureFlagClientType featureFlagClient) {

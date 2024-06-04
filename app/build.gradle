@@ -252,7 +252,7 @@ dependencies {
     implementation 'net.danlew:android.joda:2.10.7'
 
     // Analytics Segment-Braze
-    implementation 'com.segment.analytics.android:analytics:4.11.3'
+    implementation 'com.segment.analytics.kotlin:android:1.16.3'
     implementation 'com.appboy:appboy-segment-integration:15.0.1'
 
     // Dependencies for HTML Parser

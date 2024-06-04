@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +22,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 data class RewardSelectionUIState(
     val rewardList: List<Reward> = listOf(),
@@ -70,47 +67,18 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
 
     fun onUserRewardSelection(reward: Reward) {
         viewModelScope.launch {
-            val pledgeDataAndReason = pledgeDataAndPledgeReason(currentProjectData, reward)
-            newUserReward = pledgeDataAndReason.first.reward()
+            val pledgeData =
+                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, currentProjectData, reward)
+            newUserReward = reward
             emitCurrentState()
-            analytics.trackSelectRewardCTA(pledgeDataAndReason.first)
+            analytics.trackSelectRewardCTA(pledgeData)
 
-            when (pledgeDataAndReason.second) {
-                PledgeReason.UPDATE_REWARD -> {
-                    if (previouslyBackedReward?.hasAddons() == true && !newUserReward.hasAddons())
-                    // Show warning to user
-                        emitCurrentState(showAlertDialog = true)
-
-                    if (previouslyBackedReward?.hasAddons() == false && !newUserReward.hasAddons())
-                    // Go to confirm page
-                        mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
-
-                    if (previouslyBackedReward?.hasAddons() == true && newUserReward.hasAddons()) {
-                        if (differentShippingTypes(previouslyBackedReward, newUserReward))
-                        // Show warning to user
-                            emitCurrentState(showAlertDialog = true)
-                        // Go to add-ons
-                        else mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
-                    }
-
-                    if (previouslyBackedReward?.hasAddons() == false && newUserReward.hasAddons()) {
-                        // Go to add-ons
-                        mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
-                    }
-                }
-
-                PledgeReason.PLEDGE -> {
-                    if (newUserReward.hasAddons())
-                    // Show add-ons
-                        mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
-                    else
-                    // Show confirm page
-                        mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
-                }
-
-                else -> {
-                }
-            }
+            if (newUserReward.hasAddons())
+            // Show add-ons
+                mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
+            else
+            // Show confirm page
+                mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
         }
     }
 
@@ -126,26 +94,6 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
                     mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
                 }
             }
-        }
-    }
-
-    private fun pledgeDataAndPledgeReason(
-        projectData: ProjectData,
-        reward: Reward
-    ): Pair<PledgeData, PledgeReason> {
-        val pledgeReason =
-            if (projectData.project().isBacking()) PledgeReason.UPDATE_REWARD
-            else PledgeReason.PLEDGE
-        val pledgeData =
-            PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
-        return Pair(pledgeData, pledgeReason)
-    }
-
-    private fun differentShippingTypes(newRW: Reward?, backedRW: Reward): Boolean {
-        return if (newRW == null) false
-        else if (newRW.id() == backedRW.id()) false
-        else {
-            (newRW.shippingType()?.lowercase(Locale.getDefault()) ?: "") != (backedRW.shippingType()?.lowercase(Locale.getDefault()) ?: "")
         }
     }
 
@@ -174,6 +122,7 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
             analytics.trackRewardsCarouselViewed(projectData = projectData)
         }
     }
+
     private suspend fun emitCurrentState(
         showAlertDialog: Boolean = false
     ) {

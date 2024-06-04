@@ -28,7 +28,6 @@ data class RewardSelectionUIState(
     val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
     val project: ProjectData = ProjectData.builder().build(),
-    val showAlertDialog: Boolean = false
 )
 
 class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
@@ -82,21 +81,6 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun onRewardCarouselAlertClicked(wasPositive: Boolean) {
-        viewModelScope.launch {
-            emitCurrentState()
-            if (wasPositive) {
-                if (newUserReward.hasAddons()) {
-                    // Go to add-ons
-                    mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
-                } else {
-                    // Show confirm page
-                    mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
-                }
-            }
-        }
-    }
-
     private fun getReward(backingObj: Backing?): Reward? {
         backingObj?.let { backing ->
             return backing.reward()?.let { reward ->
@@ -123,16 +107,13 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    private suspend fun emitCurrentState(
-        showAlertDialog: Boolean = false
-    ) {
+    private suspend fun emitCurrentState() {
         val filteredRewards = currentProjectData.project().rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
         mutableRewardSelectionUIState.emit(
             RewardSelectionUIState(
                 rewardList = filteredRewards,
                 initialRewardIndex = indexOfBackedReward,
                 project = currentProjectData,
-                showAlertDialog = showAlertDialog,
                 selectedReward = newUserReward
             )
         )

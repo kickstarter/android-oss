@@ -1,6 +1,7 @@
 package com.kickstarter.services.transformers
 
 import CreateAttributionEventMutation
+import CreateOrUpdateBackingAddressMutation
 import TriggerThirdPartyEventMutation
 import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
@@ -32,6 +33,7 @@ import com.kickstarter.models.Video
 import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
+import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
 import fragment.ProjectCard
@@ -40,6 +42,7 @@ import org.joda.time.DateTime
 import type.AppDataInput
 import type.CollaboratorPermission
 import type.CreateAttributionEventInput
+import type.CreateOrUpdateBackingAddressInput
 import type.CreditCardPaymentType
 import type.CurrencyCode
 import type.RewardType
@@ -885,4 +888,14 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
 
     return CreateAttributionEventMutation.builder().input(graphInput)
         .build()
+}
+
+fun getCreateOrUpdateBackingAddressMutation(eventInput : CreateOrUpdateBackingAddressData) : CreateOrUpdateBackingAddressMutation {
+    val graphInput =
+        CreateOrUpdateBackingAddressInput.builder()
+            .addressId(eventInput.addressID)
+            .backingId(eventInput.backingId)
+            .build()
+
+    return CreateOrUpdateBackingAddressMutation.builder().input(graphInput).build()
 }

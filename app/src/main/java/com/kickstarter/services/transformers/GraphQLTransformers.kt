@@ -890,7 +890,7 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
         .build()
 }
 
-fun getCreateOrUpdateBackingAddressMutation(eventInput : CreateOrUpdateBackingAddressData) : CreateOrUpdateBackingAddressMutation {
+fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAddressData): CreateOrUpdateBackingAddressMutation {
     val graphInput =
         CreateOrUpdateBackingAddressInput.builder()
             .addressId(eventInput.addressID)

@@ -28,6 +28,7 @@
         android:theme="@style/KSTheme"
         tools:replace="android:supportsRtl">
         <!-- ACTIVITIES -->
+        <activity android:name="androidx.activity.ComponentActivity" /> <!-- Workaround for https://github.com/robolectric/robolectric/pull/4736 -->
         <activity
             android:name=".ui.activities.AccountActivity"
             android:theme="@style/SettingsActivity" />

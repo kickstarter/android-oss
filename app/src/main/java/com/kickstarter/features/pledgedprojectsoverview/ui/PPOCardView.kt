@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,7 +58,7 @@ fun PPOCardPreview() {
         ) {
             item {
                 PPOCardView(
-                    viewType = PPOCardViewType.ADDRESS_CONFIRMED,
+                    viewType = PPOCardViewType.CONFIRM_ADDRESS,
                     onCardClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
@@ -188,6 +189,12 @@ enum class PPOCardViewType {
     SURVEY_SUBMITTED
 }
 
+
+enum class PPOCardViewTestTag {
+    SHIPPING_ADDRESS_VIEW,
+    CONFIRM_ADDRESS_BUTTONS_VIEW
+}
+
 @Composable
 fun PPOCardView(
     viewType: PPOCardViewType,
@@ -259,7 +266,7 @@ fun PPOCardView(
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
                     PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView()
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
-                    PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView { }
+                    PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView ()
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
                 }
@@ -396,6 +403,7 @@ fun ShippingAddressView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimensions.paddingSmall)
+            .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
         Text(
             text = "Shipping address",
@@ -440,8 +448,9 @@ fun ConfirmAddressButtonsView(onEditAddressClicked: () -> Unit, onConfirmAddress
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimensions.paddingSmall)
+            .testTag(PPOCardViewTestTag.CONFIRM_ADDRESS_BUTTONS_VIEW.name)
     ) {
-        // TODO: Replace with translated string
+        // TODO: Replace with translated strings
         KSPrimaryBlackButton(
             modifier = Modifier
                 .weight(0.5f),
@@ -508,23 +517,7 @@ fun FixPaymentAlertsView(daysRemaining: Int = -1) {
 
         if (daysRemaining > 0) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-
-            KSCoralBadge(
-                leadingIcon = {
-                    // TODO: Replace with translated string
-                    Image(
-                        modifier = Modifier
-                            .padding(end = dimensions.paddingXSmall)
-                            .size(dimensions.alertIconSize),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                        contentDescription = "Pledge will be dropped in $daysRemaining days",
-                        colorFilter = ColorFilter.tint(colors.textAccentRedBold)
-                    )
-                },
-                // TODO: Replace with translated string
-                text = "Pledge will be dropped in $daysRemaining days",
-                textColor = colors.textAccentRedBold
-            )
+            PledgeWillBeDroppedAlert(daysRemaining)
         }
     }
 }
@@ -565,23 +558,7 @@ fun AuthenticateCardAlertsView(daysRemaining: Int = -1) {
 
         if (daysRemaining > 0) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-
-            KSCoralBadge(
-                leadingIcon = {
-                    // TODO: Replace with translated string
-                    Image(
-                        modifier = Modifier
-                            .padding(end = dimensions.paddingXSmall)
-                            .size(dimensions.alertIconSize),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                        contentDescription = "Pledge will be dropped in $daysRemaining days",
-                        colorFilter = ColorFilter.tint(colors.textAccentRedBold)
-                    )
-                },
-                // TODO: Replace with translated string
-                text = "Pledge will be dropped in $daysRemaining days",
-                textColor = colors.textAccentRedBold
-            )
+            PledgeWillBeDroppedAlert(daysRemaining)
         }
     }
 }
@@ -621,7 +598,7 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
 }
 
 @Composable
-fun CardAuthenticatedButtonView(onFixPaymentClicked: () -> Unit) {
+fun CardAuthenticatedButtonView() {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
@@ -665,22 +642,7 @@ fun TakeSurveyAlertsView(hoursRemaining: Int = -1) {
 
         if (hoursRemaining > 0) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-
-            KSCoralBadge(
-                leadingIcon = {
-                    // TODO: Replace with translated string
-                    Image(
-                        modifier = Modifier
-                            .padding(end = dimensions.paddingXSmall)
-                            .size(dimensions.alertIconSize),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                        contentDescription = "Address locks in $hoursRemaining hours",
-                        colorFilter = ColorFilter.tint(colors.textSecondary)
-                    )
-                },
-                // TODO: Replace with translated string
-                text = "Address locks in $hoursRemaining hours",
-            )
+            AddressLocksAlertView(hoursRemaining)
         }
     }
 }
@@ -711,6 +673,30 @@ fun SurveySubmittedAlertsView(hoursRemaining: Int = -1) {
         }
     }
 }
+
+@Composable
+fun SurveySubmittedButtonView() {
+    // TODO: Replace with translated string
+    KSPrimaryGreenButton(
+        modifier = Modifier
+            .padding(dimensions.paddingMediumSmall),
+        leadingIcon = {
+            Image(
+                modifier = Modifier
+                    .padding(end = dimensions.paddingXSmall)
+                    .size(dimensions.paddingMedium),
+                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
+                contentDescription = "x",
+                colorFilter = ColorFilter.tint(color = colors.textSecondary)
+            )
+        },
+        onClickAction = { },
+        text = "Survey Submitted",
+        isEnabled = false,
+        textStyle = typography.buttonText
+    )
+}
+
 @Composable
 fun AddressLocksAlertView(hoursRemaining: Int = -1) {
     KSCoralBadge(
@@ -730,23 +716,21 @@ fun AddressLocksAlertView(hoursRemaining: Int = -1) {
     )
 }
 @Composable
-fun SurveySubmittedButtonView() {
-    // TODO: Replace with translated string
-    KSPrimaryGreenButton(
-        modifier = Modifier.padding(dimensions.paddingMediumSmall),
+fun PledgeWillBeDroppedAlert(daysRemaining: Int = -1) {
+    KSCoralBadge(
         leadingIcon = {
+            // TODO: Replace with translated string
             Image(
                 modifier = Modifier
                     .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.paddingMedium),
-                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
-                contentDescription = "Survey Submitted",
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
+                    .size(dimensions.alertIconSize),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
+                contentDescription = "Pledge will be dropped in $daysRemaining days",
+                colorFilter = ColorFilter.tint(colors.textAccentRedBold)
             )
         },
-        onClickAction = { },
-        text = "Survey Submitted",
-        isEnabled = false,
-        textStyle = typography.buttonText
+        // TODO: Replace with translated string
+        text = "Pledge will be dropped in $daysRemaining days",
+        textColor = colors.textAccentRedBold
     )
 }

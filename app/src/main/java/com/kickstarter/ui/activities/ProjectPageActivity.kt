@@ -563,12 +563,6 @@ class ProjectPageActivity :
                     val userEmail = latePledgeCheckoutUIState.userEmail
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
 
-                    LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.paymentRequiresAction.collect {
-                            stripeNextAction(it)
-                        }
-                    }
-
                     latePledgeCheckoutViewModel.provideErrorAction { message ->
                         showToastError(message)
                     }
@@ -1227,6 +1221,7 @@ class ProjectPageActivity :
                     binding.pledgeContainerCompose,
                     getString(R.string.general_error_oops)
                 )
+                latePledgeCheckoutViewModel.onNewCardFailed()
             }
 
             is PaymentSheetResult.Failed -> {
@@ -1236,6 +1231,7 @@ class ProjectPageActivity :
                     binding.pledgeContainerCompose,
                     errorMessage
                 )
+                latePledgeCheckoutViewModel.onNewCardFailed()
             }
 
             is PaymentSheetResult.Completed -> {
@@ -1287,11 +1283,12 @@ class ProjectPageActivity :
             object : ApiResultCallback<PaymentIntentResult> {
                 override fun onSuccess(result: PaymentIntentResult) {
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        // Go to thanks page
+                        latePledgeCheckoutViewModel.completeOnSessionCheckoutFor3DS()
                     } else showToastError()
                 }
 
                 override fun onError(e: Exception) {
+                    latePledgeCheckoutViewModel.clear3DSValues()
                     showToastError()
                 }
             }

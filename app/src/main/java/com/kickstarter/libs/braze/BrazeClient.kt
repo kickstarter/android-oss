@@ -3,18 +3,19 @@ package com.kickstarter.libs.braze
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.braze.Braze
-import com.braze.BrazeActivityLifecycleCallbackListener
-import com.braze.configuration.BrazeConfig
-import com.braze.push.BrazeFirebaseMessagingService
-import com.braze.support.BrazeLogger
-import com.braze.ui.inappmessage.BrazeInAppMessageManager
+//import com.braze.Braze
+//import com.braze.BrazeActivityLifecycleCallbackListener
+//import com.braze.configuration.BrazeConfig
+//import com.braze.push.BrazeFirebaseMessagingService
+//import com.braze.support.BrazeLogger
+//import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
+import com.segment.analytics.kotlin.destinations.braze.BrazeDestination
 
 /**
  * Remote PushNotifications specification
@@ -54,7 +55,7 @@ interface RemotePushClientType {
      * Application Lifecycle events Callbacks,
      * Should be registered on Application.OnCreate
      */
-    fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks
+    //fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks
 
     /**
      * Flag that will indicate if the internal instance of the SDK
@@ -65,7 +66,7 @@ interface RemotePushClientType {
     /**
      * Will call internally getLifeCycleCallbacks for the current Application Context
      */
-    fun registerActivityLifecycleCallbacks(context: Context)
+    //fun registerActivityLifecycleCallbacks(context: Context)
 }
 
 /**
@@ -89,18 +90,18 @@ open class BrazeClient(
 
     override fun init() {
         if (isSDKEnabled() && !this.initialized) {
-            val appBoyConfig = BrazeConfig.Builder()
-                .setIsFirebaseCloudMessagingRegistrationEnabled(true)
-                .setFirebaseCloudMessagingSenderIdKey(getIdSender())
-                // .setDefaultNotificationChannelName("General") --> TODO: Define notification channels for the new push notifications types
-                // .setDefaultNotificationChannelDescription("Braze related push")
-                .setHandlePushDeepLinksAutomatically(true)
-                .build()
-            Braze.configure(context, appBoyConfig)
-
-            if (this.build.isDebug || Build.isInternal()) {
-                BrazeLogger.logLevel = Log.VERBOSE
-            }
+//            val appBoyConfig = BrazeConfig.Builder()
+//                .setIsFirebaseCloudMessagingRegistrationEnabled(true)
+//                .setFirebaseCloudMessagingSenderIdKey(getIdSender())
+//                // .setDefaultNotificationChannelName("General") --> TODO: Define notification channels for the new push notifications types
+//                // .setDefaultNotificationChannelDescription("Braze related push")
+//                .setHandlePushDeepLinksAutomatically(true)
+//                .build()
+//            Braze.configure(context, appBoyConfig)
+//
+//            if (this.build.isDebug || Build.isInternal()) {
+//                BrazeLogger.logLevel = Log.VERBOSE
+//            }
 
             initialized = true
         }
@@ -124,26 +125,25 @@ open class BrazeClient(
     }
 
     override fun registerPushMessages(context: Context, token: String) {
-        if (isSDKEnabled())
-            Braze.getInstance(context).registeredPushToken = token
+//        if (isSDKEnabled())
+//            BrazeDestination(context).braze.registeredPushToken = token
     }
 
     override fun handleRemoteMessages(context: Context, message: RemoteMessage): Boolean {
         var handleMessage = false
-        if (isSDKEnabled())
-            handleMessage = BrazeFirebaseMessagingService.handleBrazeRemoteMessage(context, message)
+//        if (isSDKEnabled())
+//            handleMessage = BrazeFirebaseMessagingService.handleBrazeRemoteMessage(context, message)
 
         return handleMessage
     }
+//
+//    override fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks = BrazeActivityLifecycleCallbackListener(true, false)
 
-    override fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks =
-        BrazeActivityLifecycleCallbackListener(true, false)
-
-    override fun registerActivityLifecycleCallbacks(context: Context) {
-        if (isSDKEnabled() && context.isKSApplication()) {
-            context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
-        }
-    }
+//    override fun registerActivityLifecycleCallbacks(context: Context) {
+//        if (isSDKEnabled() && context.isKSApplication()) {
+//            context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
+//        }
+//    }
 
     /**
      * Static initialization for the `setCustomInAppMessageManagerListener`
@@ -152,7 +152,7 @@ open class BrazeClient(
      */
     companion object {
         fun setInAppCustomListener(currentUser: CurrentUserType, build: Build) {
-            BrazeInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, build))
+           //BrazeInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, build))
         }
     }
 }

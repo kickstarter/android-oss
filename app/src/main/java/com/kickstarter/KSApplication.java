@@ -86,7 +86,7 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
     }
 
     // - Register lifecycle callback for Braze
-    this.remotePushClientType.registerActivityLifecycleCallbacks(this);
+    //this.remotePushClientType.registerActivityLifecycleCallbacks(this);
 
     return true;
   }

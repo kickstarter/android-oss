@@ -253,7 +253,7 @@ dependencies {
 
     // Analytics Segment-Braze
     implementation 'com.segment.analytics.kotlin:android:1.16.3'
-    implementation 'com.appboy:appboy-segment-integration:15.0.1'
+    implementation 'com.braze:braze-segment-kotlin:1.4.2'
 
     // Dependencies for HTML Parser
     implementation 'org.jsoup:jsoup:1.16.1'

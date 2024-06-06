@@ -8,7 +8,6 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Patterns
-import com.braze.support.emptyToNull
 import com.kickstarter.R
 import org.jsoup.Jsoup
 import java.nio.charset.StandardCharsets
@@ -117,6 +116,8 @@ fun String.wrapInParentheses() = "($this)"
 fun String.parseHtmlTag(): String {
     return Jsoup.parse(this).text()
 }
+
+fun String?.emptyToNull(): String? = if (this == null || this?.isEmpty() == true) null else this
 
 /**
  * Returns a double for the given string taking into account the locale of the device or 0.0

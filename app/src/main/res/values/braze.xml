@@ -1,4 +1,7 @@
 <resources>
+    <bool name="com_braze_firebase_cloud_messaging_registration_enabled">true</bool>
+    <string translatable="false" name="com_braze_firebase_cloud_messaging_sender_id">516661510770</string>
+    <bool name="com_braze_push_adm_messaging_registration_enabled">true</bool>
     <drawable name="com_appboy_push_small_notification_icon">@drawable/ic_kickstarter_micro_k</drawable>
     <item type="color" name="com_appboy_default_notification_accent_color">@color/kds_create_700</item>
 </resources>

@@ -5,10 +5,12 @@ import android.content.SharedPreferences
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
+import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getTraits
 import com.segment.analytics.kotlin.android.Analytics
 import com.segment.analytics.kotlin.core.Analytics
+import com.segment.analytics.kotlin.destinations.braze.BrazeDestination
 import timber.log.Timber
 
 open class SegmentTrackingClient(
@@ -28,13 +30,11 @@ open class SegmentTrackingClient(
     private var prefStorage = preference
     private lateinit var segmentClient: Analytics
     init {
-
         privateInitializer()
 
         this.currentUser.observable()
             .filter { it.isPresent() }
             .map { requireNotNull(it.getValue()) }
-            .distinctUntilChanged()
             .subscribe {
                 this.loggedInUser = it
                 identify(it)
@@ -65,8 +65,9 @@ open class SegmentTrackingClient(
                 apiKey = Secrets.Segment.STAGING
 
                 segmentClient = Analytics(apiKey, context) {
-                    trackApplicationLifecycleEvents = true
-                    trackDeepLinks = true
+                    this.collectDeviceId = true
+                    this.trackApplicationLifecycleEvents = true
+                    this.trackDeepLinks = true
                     flushAt = 1
                 }
 //                segmentClient = Analytics.Builder(context, apiKey)
@@ -80,8 +81,9 @@ open class SegmentTrackingClient(
 //                    .build()
             } else {
                 segmentClient = Analytics(apiKey, context) {
-                    trackApplicationLifecycleEvents = true
-                    trackDeepLinks = true
+                    this.collectDeviceId = true
+                    this.trackApplicationLifecycleEvents = true
+                    this.trackDeepLinks = true
                 }
 //                segmentClient = Analytics.Builder(context, apiKey)
 //                    // - This flag will activate sending information to Braze
@@ -93,6 +95,7 @@ open class SegmentTrackingClient(
 //                    .build()
             }
 
+            segmentClient.add(plugin = BrazeDestination(context))
             // Analytics.setSingletonInstance(segmentClient)
 
             // - onIntegrationReady Callback will be called once Segment has finalized the integration with Braze

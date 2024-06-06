@@ -69,6 +69,7 @@ import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvel
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.CreateCheckoutData
+import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -79,6 +80,7 @@ import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.getCreateAttributionEventMutation
+import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
@@ -192,6 +194,7 @@ interface ApolloClientTypeV2 {
     ): Observable<Pair<String, Boolean>>
 
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
+    fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
 }
 
 private const val PAGE_SIZE = 25
@@ -1622,6 +1625,34 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                         response.data?.let {
                             val isSuccess = it.createAttributionEvent()?.successful() ?: false
+                            ps.onNext(isSuccess)
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+
+            val mutation = getCreateOrUpdateBackingAddressMutation(eventInput)
+
+            service.mutate(mutation)
+                .enqueue(object : ApolloCall.Callback<CreateOrUpdateBackingAddressMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateOrUpdateBackingAddressMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                        }
+
+                        response.data?.let {
+                            val isSuccess = it.createOrUpdateBackingAddress()?.success() ?: false
                             ps.onNext(isSuccess)
                         }
                         ps.onComplete()

@@ -151,7 +151,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                     timeNumberForAction = timeNumberForAction
                 )
             }
-
         }
 
         // Alerts

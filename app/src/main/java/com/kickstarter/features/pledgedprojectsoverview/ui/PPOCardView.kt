@@ -189,7 +189,6 @@ enum class PPOCardViewType {
     SURVEY_SUBMITTED
 }
 
-
 enum class PPOCardViewTestTag {
     SHIPPING_ADDRESS_VIEW,
     CONFIRM_ADDRESS_BUTTONS_VIEW
@@ -266,7 +265,7 @@ fun PPOCardView(
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
                     PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView()
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
-                    PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView ()
+                    PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView()
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
                 }

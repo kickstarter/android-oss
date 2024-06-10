@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.ui.activities.compose.login.CreatePasswordScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -52,10 +51,10 @@ private fun PledgedProjectsOverviewScreenPreview() {
 @Composable
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
-    alertsAmount : Int = 0,
+    alertsAmount: Int = 0,
     onBackPressed: () -> Unit,
     lazyColumnListState: LazyListState,
-    ppoCards : List<PPOCardDataMock> = listOf(),
+    ppoCards: List<PPOCardDataMock> = listOf(),
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -133,15 +132,15 @@ enum class PledgedProjectsOverviewScreenTestTag {
 data class PPOCardDataMock(
     val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
     val onCardClick: () -> Unit = { },
-    val projectName : String = "This is a project name",
-    val pledgeAmount : String = "$14.00",
-    val imageUrl : String = "",
-    val imageContentDescription : String = "",
-    val creatorName : String = "Creator Name",
+    val projectName: String = "This is a project name",
+    val pledgeAmount: String = "$14.00",
+    val imageUrl: String = "",
+    val imageContentDescription: String = "",
+    val creatorName: String = "Creator Name",
     val sendAMessageClickAction: () -> Unit = { },
-    val shippingAddress : String = "",
-    val showBadge : Boolean = true,
+    val shippingAddress: String = "",
+    val showBadge: Boolean = true,
     val onActionButtonClicked: () -> Unit = {},
     val onSecondaryActionButtonClicked: () -> Unit = {},
-    val timeNumberForAction : Int = 25
+    val timeNumberForAction: Int = 25
 )

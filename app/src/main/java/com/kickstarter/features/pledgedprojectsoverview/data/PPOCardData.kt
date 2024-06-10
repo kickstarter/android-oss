@@ -4,7 +4,7 @@ import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 
 data class PPOCardData(
     val ppoCardViewType: PPOCardViewType,
-    val projectName : String,
-    val creatorName : String,
-    val pledgeAmount : Int,
+    val projectName: String,
+    val creatorName: String,
+    val pledgeAmount: Int,
 )

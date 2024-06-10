@@ -57,6 +57,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var newStoredCard: StoredCard? = null
     private var errorAction: (message: String?) -> Unit = {}
 
+    private var clientSecretFor3DSVerification: String = ""
+    private var selectedCardFor3DSVerification: StoredCard? = null
+
     private var selectedReward: Reward? = null
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
 
@@ -146,6 +149,12 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 emitCurrentState()
                 errorAction.invoke(null)
             }.collect()
+        }
+    }
+
+    fun onNewCardFailed() {
+        viewModelScope.launch {
+            emitCurrentState()
         }
     }
 
@@ -241,7 +250,12 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         val withSDK =
             intentParams.withShouldUseStripeSdk(shouldUseStripeSdk = true)
         val paymentIntent = stripe.confirmPaymentIntent(withSDK)
-        if (paymentIntent.lastPaymentError.isNotNull()) {
+        if (paymentIntent.requiresAction()) {
+            clientSecretFor3DSVerification = clientSecret
+            selectedCardFor3DSVerification = selectedCard
+            mutablePaymentRequiresAction.emit(clientSecret)
+            emitCurrentState()
+        } else if (paymentIntent.lastPaymentError.isNotNull()) {
             // Display error with lastPaymentError.message
             emitCurrentState()
             errorAction.invoke(paymentIntent.lastPaymentError?.message)
@@ -268,6 +282,40 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }.catch {
             errorAction.invoke(null)
         }.collect()
+    }
+
+    fun completeOnSessionCheckoutFor3DS() {
+        viewModelScope.launch {
+            if (clientSecretFor3DSVerification.isNotEmpty() && selectedCardFor3DSVerification.isNotNull()) {
+                apolloClient.completeOnSessionCheckout(
+                    checkoutId = checkoutId ?: "",
+                    paymentIntentClientSecret = clientSecretFor3DSVerification,
+                    paymentSourceId = if (selectedCardFor3DSVerification == newStoredCard) null else selectedCardFor3DSVerification?.id() ?: "",
+                    paymentSourceReusable = true
+                ).asFlow().map { iDRequiresActionPair ->
+                    if (iDRequiresActionPair.second) {
+                        mutablePaymentRequiresAction.emit(clientSecretFor3DSVerification)
+                    } else {
+                        mutableOnPledgeSuccessAction.emit(true)
+                    }
+                }.onStart {
+                    emitCurrentState(isLoading = true)
+                }.onCompletion {
+                    emitCurrentState()
+                }.catch {
+                    errorAction.invoke(null)
+                    clear3DSValues()
+                }.collect()
+            } else {
+                errorAction.invoke(null)
+                clear3DSValues()
+            }
+        }
+    }
+
+    fun clear3DSValues() {
+        clientSecretFor3DSVerification = ""
+        selectedCardFor3DSVerification = null
     }
 
     private fun createCheckoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout? = null): CheckoutData {

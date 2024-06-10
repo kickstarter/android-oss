@@ -89,6 +89,7 @@ class LoginToutScreenTest : KSRobolectricTestCase() {
         touPpCookieDisclaimer.assertIsDisplayed()
     }
 
+    @Test
     fun testComponentsVisible_featureFlag_On() {
         composeTestRule.setContent {
             KSTheme {

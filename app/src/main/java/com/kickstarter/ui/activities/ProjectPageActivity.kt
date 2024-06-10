@@ -506,7 +506,6 @@ class ProjectPageActivity :
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
-                    val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
                     val selectedReward = rewardSelectionUIState.selectedReward
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
@@ -562,12 +561,6 @@ class ProjectPageActivity :
                     val userStoredCards = latePledgeCheckoutUIState.storeCards
                     val userEmail = latePledgeCheckoutUIState.userEmail
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
-
-                    LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.paymentRequiresAction.collect {
-                            stripeNextAction(it)
-                        }
-                    }
 
                     latePledgeCheckoutViewModel.provideErrorAction { message ->
                         showToastError(message)
@@ -638,13 +631,6 @@ class ProjectPageActivity :
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,
                         rewardsList = rewardsList,
-                        showRewardCarouselDialog = showRewardCarouselAlertDialog,
-                        onRewardAlertDialogNegativeClicked = {
-                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = false)
-                        },
-                        onRewardAlertDialogPositiveClicked = {
-                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = true)
-                        },
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->
@@ -1227,6 +1213,7 @@ class ProjectPageActivity :
                     binding.pledgeContainerCompose,
                     getString(R.string.general_error_oops)
                 )
+                latePledgeCheckoutViewModel.onNewCardFailed()
             }
 
             is PaymentSheetResult.Failed -> {
@@ -1236,6 +1223,7 @@ class ProjectPageActivity :
                     binding.pledgeContainerCompose,
                     errorMessage
                 )
+                latePledgeCheckoutViewModel.onNewCardFailed()
             }
 
             is PaymentSheetResult.Completed -> {
@@ -1287,11 +1275,12 @@ class ProjectPageActivity :
             object : ApiResultCallback<PaymentIntentResult> {
                 override fun onSuccess(result: PaymentIntentResult) {
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        // Go to thanks page
+                        latePledgeCheckoutViewModel.completeOnSessionCheckoutFor3DS()
                     } else showToastError()
                 }
 
                 override fun onError(e: Exception) {
+                    latePledgeCheckoutViewModel.clear3DSValues()
                     showToastError()
                 }
             }

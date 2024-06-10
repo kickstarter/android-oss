@@ -54,7 +54,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 2,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
     }
@@ -89,7 +88,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 0,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
 
@@ -135,7 +133,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 0,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
 
@@ -185,7 +182,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 2,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
 
@@ -235,7 +231,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
 
@@ -246,62 +241,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             flowState.last(),
             FlowUIState(currentPage = 1, expanded = true)
-        )
-
-        this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun test_selecting_reward_with_no_addOns_previous_backing_has_addOns() = runTest {
-        createViewModel()
-
-        val testRewards =
-            (0..5).map { Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).build() }
-        val testBacking =
-            Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
-        val testProject =
-            Project.builder().rewards(testRewards).backing(testBacking).isBacking(true).build()
-        val testProjectData =
-            ProjectData.builder().project(testProject).backing(testBacking).build()
-
-        viewModel.provideProjectData(testProjectData)
-
-        val uiState = mutableListOf<RewardSelectionUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.rewardSelectionUIState.toList(uiState)
-        }
-
-        val flowState = mutableListOf<FlowUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.flowUIRequest.toList(flowState)
-        }
-
-        assert(uiState.size == 2)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = false
-            )
-        )
-
-        viewModel.onUserRewardSelection(testRewards[2])
-
-        assert(uiState.size == 3)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = true,
-                selectedReward = testRewards[2]
-            )
         )
 
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
@@ -341,7 +280,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
 
@@ -352,272 +290,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             flowState.last(),
             FlowUIState(currentPage = 2, expanded = true)
-        )
-
-        this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun test_selecting_reward_with_addOns_previous_backing_has_addOns_different_shipping() =
-        runTest {
-            createViewModel()
-
-            val testRewards = (0..5).map {
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).shippingType("$it")
-                    .build()
-            }
-            val testBacking =
-                Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
-            val testProject =
-                Project.builder().rewards(testRewards).backing(testBacking).isBacking(true).build()
-            val testProjectData =
-                ProjectData.builder().project(testProject).backing(testBacking).build()
-
-            viewModel.provideProjectData(testProjectData)
-
-            val uiState = mutableListOf<RewardSelectionUIState>()
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                viewModel.rewardSelectionUIState.toList(uiState)
-            }
-
-            val flowState = mutableListOf<FlowUIState>()
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                viewModel.flowUIRequest.toList(flowState)
-            }
-
-            assert(uiState.size == 2)
-            assert(flowState.size == 0)
-            assertEquals(
-                uiState.last(),
-                RewardSelectionUIState(
-                    rewardList = testRewards,
-                    initialRewardIndex = 3,
-                    project = testProjectData,
-                    showAlertDialog = false
-                )
-            )
-
-            viewModel.onUserRewardSelection(testRewards[2])
-
-            assert(uiState.size == 3)
-            assert(flowState.size == 0)
-            assertEquals(
-                uiState.last(),
-                RewardSelectionUIState(
-                    rewardList = testRewards,
-                    initialRewardIndex = 3,
-                    project = testProjectData,
-                    showAlertDialog = true,
-                    selectedReward = testRewards[2]
-                )
-            )
-
-            this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun test_alert_dialog_positive_option_reward_has_add_ons() = runTest {
-        createViewModel()
-
-        val testRewards = (0..5).map {
-            Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true).shippingType("$it")
-                .build()
-        }
-        val testBacking =
-            Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
-        val testProject =
-            Project.builder().rewards(testRewards).backing(testBacking).isBacking(true).build()
-        val testProjectData =
-            ProjectData.builder().project(testProject).backing(testBacking).build()
-
-        viewModel.provideProjectData(testProjectData)
-
-        val uiState = mutableListOf<RewardSelectionUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.rewardSelectionUIState.toList(uiState)
-        }
-
-        val flowState = mutableListOf<FlowUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.flowUIRequest.toList(flowState)
-        }
-
-        assert(uiState.size == 2)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = false
-            )
-        )
-
-        viewModel.onUserRewardSelection(testRewards[2])
-
-        assert(uiState.size == 3)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = true,
-                selectedReward = testRewards[2]
-            )
-        )
-
-        viewModel.onRewardCarouselAlertClicked(wasPositive = true)
-
-        assert(uiState.size == 4)
-        assert(flowState.size == 1)
-        assertEquals(
-            flowState.last(),
-            FlowUIState(currentPage = 1, expanded = true)
-        )
-
-        this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun test_alert_dialog_positive_option_reward_no_add_ons() = runTest {
-        createViewModel()
-
-        val testRewards = (0..5).map {
-            Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
-                .build()
-        }
-        val testBacking =
-            Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
-        val testProject =
-            Project.builder().rewards(testRewards).backing(testBacking).isBacking(true).build()
-        val testProjectData =
-            ProjectData.builder().project(testProject).backing(testBacking).build()
-
-        viewModel.provideProjectData(testProjectData)
-
-        val uiState = mutableListOf<RewardSelectionUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.rewardSelectionUIState.toList(uiState)
-        }
-
-        val flowState = mutableListOf<FlowUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.flowUIRequest.toList(flowState)
-        }
-
-        assert(uiState.size == 2)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = false
-            )
-        )
-
-        viewModel.onUserRewardSelection(testRewards[2])
-
-        assert(uiState.size == 3)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = true,
-                selectedReward = testRewards[2]
-            )
-        )
-
-        viewModel.onRewardCarouselAlertClicked(wasPositive = true)
-
-        assert(uiState.size == 4)
-        assert(flowState.size == 1)
-        assertEquals(
-            flowState.last(),
-            FlowUIState(currentPage = 2, expanded = true)
-        )
-
-        this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun test_alert_dialog_negative_option_reward_no_add_ons() = runTest {
-        createViewModel()
-
-        val testRewards = (0..5).map {
-            Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
-                .build()
-        }
-        val testBacking =
-            Backing.builder().reward(testRewards[3]).rewardId(testRewards[3].id()).build()
-        val testProject =
-            Project.builder().rewards(testRewards).backing(testBacking).isBacking(true).build()
-        val testProjectData =
-            ProjectData.builder().project(testProject).backing(testBacking).build()
-
-        viewModel.provideProjectData(testProjectData)
-
-        val uiState = mutableListOf<RewardSelectionUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.rewardSelectionUIState.toList(uiState)
-        }
-
-        val flowState = mutableListOf<FlowUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.flowUIRequest.toList(flowState)
-        }
-
-        assert(uiState.size == 2)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = false
-            )
-        )
-
-        viewModel.onUserRewardSelection(testRewards[2])
-
-        assert(uiState.size == 3)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = true,
-                selectedReward = testRewards[2]
-            )
-        )
-
-        viewModel.onRewardCarouselAlertClicked(wasPositive = false)
-
-        assert(uiState.size == 4)
-        assert(flowState.size == 0)
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                rewardList = testRewards,
-                initialRewardIndex = 3,
-                project = testProjectData,
-                showAlertDialog = false,
-                selectedReward = testRewards[2]
-            )
         )
 
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
@@ -655,7 +327,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 rewardList = filteredRewards,
                 initialRewardIndex = 0,
                 project = testProjectData,
-                showAlertDialog = false
             )
         )
 

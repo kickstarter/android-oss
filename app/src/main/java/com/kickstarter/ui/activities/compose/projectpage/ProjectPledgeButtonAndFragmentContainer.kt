@@ -42,7 +42,6 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.activities.DisclaimerItems
-import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -102,9 +101,6 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             shippingSelectorIsGone = false,
             currentShippingRule = ShippingRule.builder().build(),
             onShippingRuleSelected = {},
-            showRewardCarouselDialog = false,
-            onRewardAlertDialogPositiveClicked = {},
-            onRewardAlertDialogNegativeClicked = {},
             onConfirmDetailsContinueClicked = {},
             selectedRewardAndAddOnList = listOf(),
             onBonusSupportMinusClicked = {},
@@ -134,9 +130,6 @@ fun ProjectPledgeButtonAndFragmentContainer(
     currentShippingRule: ShippingRule,
     environment: Environment?,
     initialRewardCarouselPosition: Int = 0,
-    showRewardCarouselDialog: Boolean,
-    onRewardAlertDialogNegativeClicked: () -> Unit,
-    onRewardAlertDialogPositiveClicked: () -> Unit,
     rewardsList: List<Reward>,
     addOns: List<Reward>,
     project: Project,
@@ -239,19 +232,6 @@ fun ProjectPledgeButtonAndFragmentContainer(
                             .padding(padding)
                             .fillMaxSize()
                     ) {
-
-                        if (showRewardCarouselDialog) {
-                            KSAlertDialog(
-                                setShowDialog = { },
-                                headlineText = stringResource(id = R.string.Continue_with_this_reward),
-                                bodyText = stringResource(id = R.string.It_may_not_offer_some_or_all_of_your_add_ons),
-                                leftButtonText = stringResource(id = R.string.No_go_back),
-                                leftButtonAction = onRewardAlertDialogNegativeClicked,
-                                rightButtonText = stringResource(id = R.string.Yes_continue),
-                                rightButtonAction = onRewardAlertDialogPositiveClicked
-                            )
-                        }
-
                         HorizontalPager(
                             userScrollEnabled = false,
                             state = pagerState

@@ -506,7 +506,6 @@ class ProjectPageActivity :
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
-                    val showRewardCarouselAlertDialog = rewardSelectionUIState.showAlertDialog
                     val selectedReward = rewardSelectionUIState.selectedReward
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
@@ -632,13 +631,6 @@ class ProjectPageActivity :
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,
                         rewardsList = rewardsList,
-                        showRewardCarouselDialog = showRewardCarouselAlertDialog,
-                        onRewardAlertDialogNegativeClicked = {
-                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = false)
-                        },
-                        onRewardAlertDialogPositiveClicked = {
-                            rewardsSelectionViewModel.onRewardCarouselAlertClicked(wasPositive = true)
-                        },
                         addOns = addOns,
                         project = projectData.project(),
                         onRewardSelected = { reward ->

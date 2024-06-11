@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -27,46 +29,49 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val env = this.getEnvironment()?.let { env ->
-            viewModelFactory = PledgedProjectsOverviewViewModel.Factory(env)
+        this.getEnvironment()?.let { env ->
+            setContent {
+                viewModelFactory = PledgedProjectsOverviewViewModel.Factory(env)
 
-            theme = env.sharedPreferences()
-                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
-                ?: AppThemes.MATCH_SYSTEM.ordinal
-            env
-        }
+                theme = env.sharedPreferences()
+                    ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
+                    ?: AppThemes.MATCH_SYSTEM.ordinal
 
-        setContent {
+                val darkModeEnabled = this.isDarkModeEnabled(env = env)
+                val lazyListState = rememberLazyListState()
 
-            val darkModeEnabled = env?.let { this.isDarkModeEnabled(env = it) } ?: false
-            val lazyListState = rememberLazyListState()
+                val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
+                val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle()
 
-            KickstarterApp(
-                useDarkTheme =
-                if (darkModeEnabled) {
-                    when (theme) {
-                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
-                        AppThemes.DARK.ordinal -> true
-                        AppThemes.LIGHT.ordinal -> false
-                        else -> false
-                    }
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    isSystemInDarkTheme()
-                } else false
-            ) {
-                PledgedProjectsOverviewScreen(
-                    modifier = Modifier,
-                    onBackPressed = { onBackPressedDispatcher.onBackPressed() },
-                    lazyColumnListState = lazyListState
-                )
-            }
-
-            onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    finish()
-                    this@PledgedProjectsOverviewActivity.transition(TransitionUtils.slideInFromLeft())
+                KickstarterApp(
+                    useDarkTheme =
+                    if (darkModeEnabled) {
+                        when (theme) {
+                            AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
+                            AppThemes.DARK.ordinal -> true
+                            AppThemes.LIGHT.ordinal -> false
+                            else -> false
+                        }
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        isSystemInDarkTheme()
+                    } else false
+                ) {
+                    PledgedProjectsOverviewScreen(
+                        modifier = Modifier,
+                        onBackPressed = { onBackPressedDispatcher.onBackPressed() },
+                        lazyColumnListState = lazyListState,
+                        ppoCards = ppoCardPagingSource,
+                        totalAlerts = totalAlerts.value
+                    )
                 }
-            })
+
+                onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        finish()
+                        this@PledgedProjectsOverviewActivity.transition(TransitionUtils.slideInFromLeft())
+                    }
+                })
+            }
         }
     }
 }

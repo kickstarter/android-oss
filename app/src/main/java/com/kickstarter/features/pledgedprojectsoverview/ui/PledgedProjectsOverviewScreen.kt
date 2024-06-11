@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -20,12 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.toolbars.compose.TopToolBar
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -33,15 +36,17 @@ import com.kickstarter.ui.toolbars.compose.TopToolBar
 private fun PledgedProjectsOverviewScreenPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = colors.backgroundAccentGraySubtle
+            backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
+            val ppoCardList1 = (0..10).map {
+                PPOCardDataMock()
+            }
+            val ppoCardList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
             PledgedProjectsOverviewScreen(
                 modifier = Modifier.padding(padding),
                 lazyColumnListState = rememberLazyListState(),
-                ppoCards = (0..10).map {
-                    PPOCardDataMock()
-                },
-                alertsAmount = 10,
+                ppoCards = ppoCardList,
+                totalAlerts = 10,
                 onBackPressed = {}
             )
         }
@@ -51,10 +56,10 @@ private fun PledgedProjectsOverviewScreenPreview() {
 @Composable
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
-    alertsAmount: Int = 0,
     onBackPressed: () -> Unit,
     lazyColumnListState: LazyListState,
-    ppoCards: List<PPOCardDataMock> = listOf(),
+    ppoCards: LazyPagingItems<PPOCardDataMock>,
+    totalAlerts : Int = 0
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -65,14 +70,14 @@ fun PledgedProjectsOverviewScreen(
             topBar = {
                 TopToolBar(
                     title = stringResource(id = R.string.project_alerts_fpo),
-                    titleColor = colors.kds_support_700,
+                    titleColor = colors.textPrimary,
                     leftOnClickAction = onBackPressed,
-                    leftIconColor = colors.kds_support_700,
+                    leftIconColor = colors.icon,
                     leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
-                    backgroundColor = colors.kds_white,
+                    backgroundColor = colors.backgroundSurfacePrimary,
                 )
             },
-            backgroundColor = colors.kds_white
+            backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
             LazyColumn(
                 modifier = Modifier
@@ -88,32 +93,34 @@ fun PledgedProjectsOverviewScreen(
             ) {
                 item {
                     Text(
-                        text = stringResource(id = R.string.alerts_fpo, alertsAmount),
+                        text = stringResource(id = R.string.alerts_fpo, totalAlerts),
                         style = typography.title3Bold,
                         color = colors.textPrimary
                     )
                 }
 
                 items(
-                    items = ppoCards
-                ) { ppoCard ->
+                    count = ppoCards.itemCount
+                ) { index ->
                     Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                    PPOCardView(
-                        viewType = ppoCard.viewType,
-                        onCardClick = { },
-                        projectName = ppoCard.projectName,
-                        pledgeAmount = ppoCard.pledgeAmount,
-                        imageUrl = ppoCard.imageUrl,
-                        imageContentDescription = ppoCard.imageContentDescription,
-                        creatorName = ppoCard.creatorName,
-                        sendAMessageClickAction = { },
-                        shippingAddress = ppoCard.shippingAddress,
-                        showBadge = ppoCard.showBadge,
-                        onActionButtonClicked = { },
-                        onSecondaryActionButtonClicked = { },
-                        timeNumberForAction = ppoCard.timeNumberForAction
-                    )
+                    ppoCards[index]?.let {
+                        PPOCardView(
+                            viewType = it.viewType,
+                            onCardClick = { },
+                            projectName = it.projectName,
+                            pledgeAmount = it.pledgeAmount,
+                            imageUrl = it.imageUrl,
+                            imageContentDescription = it.imageContentDescription,
+                            creatorName = it.creatorName,
+                            sendAMessageClickAction = { },
+                            shippingAddress = it.shippingAddress,
+                            showBadge = it.showBadge,
+                            onActionButtonClicked = { },
+                            onSecondaryActionButtonClicked = { },
+                            timeNumberForAction = it.timeNumberForAction
+                        )
+                    }
                 }
 
                 item {

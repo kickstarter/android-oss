@@ -15,7 +15,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     private val totalAlerts = MutableStateFlow<Int>(0)
 
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
-    val totalAlertsState = totalAlerts.asStateFlow()
+    val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {

@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val uiState = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.empty())
+    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.empty())
     private val totalAlerts = MutableStateFlow<Int>(0)
 
-    val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = uiState.asStateFlow()
+    val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
     val totalAlertsState = totalAlerts.asStateFlow()
 
     class Factory(private val environment: Environment) :

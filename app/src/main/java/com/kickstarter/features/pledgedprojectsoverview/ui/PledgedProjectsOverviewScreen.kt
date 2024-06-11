@@ -59,7 +59,7 @@ fun PledgedProjectsOverviewScreen(
     onBackPressed: () -> Unit,
     lazyColumnListState: LazyListState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
-    totalAlerts : Int = 0
+    totalAlerts: Int = 0
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),

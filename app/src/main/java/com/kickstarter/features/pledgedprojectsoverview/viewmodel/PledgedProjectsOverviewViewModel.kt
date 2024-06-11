@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardDataMock
 import com.kickstarter.libs.Environment
-import com.kickstarter.models.Update
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

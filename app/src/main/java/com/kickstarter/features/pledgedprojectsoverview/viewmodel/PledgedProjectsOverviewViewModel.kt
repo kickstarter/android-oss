@@ -15,12 +15,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.shareIn
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
@@ -29,7 +29,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     private val mutableError = MutableSharedFlow<Unit>()
     private var mutableProjectFlow = MutableSharedFlow<Project>()
 
-    private val apolloClient = requireNotNull( environment.apolloClientV2())
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
@@ -55,15 +55,15 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun onMessageCreatorClicked(projectName : String) {
+    fun onMessageCreatorClicked(projectName: String) {
         viewModelScope.launch {
             apolloClient.getProject(
                 slug = projectName,
             )
                 .asFlow()
                 .onStart {
-                    //TODO emit loading ui state
-                }.map {project ->
+                    // TODO emit loading ui state
+                }.map { project ->
                     mutableProjectFlow.emit(project)
                 }.catch {
                     mutableError.emit(Unit)

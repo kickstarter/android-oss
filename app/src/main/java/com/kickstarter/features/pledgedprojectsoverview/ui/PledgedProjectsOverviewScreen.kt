@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
@@ -66,7 +65,7 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
-    onSendMessageClick : (projectName: String) -> Unit
+    onSendMessageClick: (projectName: String) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -75,7 +74,8 @@ fun PledgedProjectsOverviewScreen(
         Scaffold(
             snackbarHost = {
                 SnackbarHost(
-                    hostState = errorSnackBarHostState)
+                    hostState = errorSnackBarHostState
+                )
             },
             modifier = modifier,
             topBar = {

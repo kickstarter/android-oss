@@ -29,13 +29,13 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
             val project = ProjectFactory.successfulProject()
             viewModel = PledgedProjectsOverviewViewModel.Factory(
-            environment = environment().toBuilder()
-                .apolloClientV2(object : MockApolloClientV2() {
-                    override fun getProject(slug: String): Observable<Project> {
-                        return Observable.just(project)
-                    }
-                }).build()
-        ).create(PledgedProjectsOverviewViewModel::class.java)
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun getProject(slug: String): Observable<Project> {
+                            return Observable.just(project)
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.projectFlow.toList(projectState)
@@ -46,7 +46,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 projectState.last(),
                 project
             )
-    }
+        }
 
     @Test
     fun `emits_error_when_message_creator_called`() =
@@ -55,13 +55,13 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
             val project = ProjectFactory.successfulProject()
             viewModel = PledgedProjectsOverviewViewModel.Factory(
-            environment = environment().toBuilder()
-                .apolloClientV2(object : MockApolloClientV2() {
-                    override fun getProject(slug: String): Observable<Project> {
-                        return Observable.error(Throwable("error"))
-                    }
-                }).build()
-        ).create(PledgedProjectsOverviewViewModel::class.java)
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun getProject(slug: String): Observable<Project> {
+                            return Observable.error(Throwable("error"))
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.error.toList(errorState)
@@ -72,6 +72,5 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 errorState.size,
                 1
             )
-    }
-
+        }
 }

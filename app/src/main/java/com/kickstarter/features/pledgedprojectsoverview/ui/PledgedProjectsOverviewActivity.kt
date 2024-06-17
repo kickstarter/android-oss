@@ -74,15 +74,15 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts.value,
-                        onSendMessageClick = { projectName ->  viewModel.onMessageCreatorClicked(projectName) }
+                        onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) }
                     )
                 }
 
                 LaunchedEffect(Unit) {
                     viewModel.projectFlow
                         .collect {
-                        startCreatorMessageActivity(it, previousScreen = MessagePreviousScreenType.PLEDGED_PROJECTS_OVERVIEW)
-                    }
+                            startCreatorMessageActivity(it, previousScreen = MessagePreviousScreenType.PLEDGED_PROJECTS_OVERVIEW)
+                        }
                 }
 
                 LaunchedEffect(Unit) {
@@ -101,11 +101,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         }
     }
 
-        private fun startComposeMessageActivity(it: Project?) {
-            startActivity(
-                Intent(this, MessageCreatorActivity::class.java)
-                    .putExtra(IntentKey.PROJECT, it)
-            )
-        }
+    private fun startComposeMessageActivity(it: Project?) {
+        startActivity(
+            Intent(this, MessageCreatorActivity::class.java)
+                .putExtra(IntentKey.PROJECT, it)
+        )
     }
-
+}

@@ -13,5 +13,6 @@ enum class MessagePreviousScreenType(val trackingString: String) {
     CREATOR_BIO_MODAL("creator_bio_modal"),
     MESSAGES("messages"),
     PROJECT_PAGE("project_page"),
-    PUSH("push")
+    PUSH("push"),
+    PLEDGED_PROJECTS_OVERVIEW("pledged_projects_overview")
 }

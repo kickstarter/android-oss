@@ -25,7 +25,7 @@ import kotlinx.coroutines.rx2.asFlow
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.from(listOf(PPOCardDataMock(projectSlug = "duality-collection-enamel-pins-by-tabauble-make-100"))))
+    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.from(listOf(PPOCardDataMock(projectSlug = "duality-collection-enamel-pins-by-tabauble-make-100"), PPOCardDataMock(projectSlug = "duality-collection-enamel-pins-by-tabauble-make-100121e32"))))
     private val totalAlerts = MutableStateFlow<Int>(0)
     private val mutableError = MutableSharedFlow<Unit>()
     private var mutableProjectFlow = MutableSharedFlow<Project>()

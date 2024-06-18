@@ -86,7 +86,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                 viewModel.provideSnackbarAction {
                     coroutineScope.launch {
-                        showSnackbar(snackbarHostState, it)
+                        snackbarHostState.showSnackbar(getString(it))
                     }
                 }
 
@@ -98,9 +98,5 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 })
             }
         }
-    }
-
-    private suspend fun showSnackbar(snackbarHostState: SnackbarHostState, stringID: Int) {
-        snackbarHostState.showSnackbar(getString(stringID))
     }
 }

@@ -1,6 +1,5 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -16,17 +15,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
-import com.kickstarter.models.Project
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
-import com.kickstarter.ui.activities.MessageCreatorActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
@@ -89,10 +84,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                 val coroutineScope = rememberCoroutineScope()
 
-                        viewModel.provideSnackbarAction {
-                            coroutineScope.launch {
-                                showSnackbar(snackbarHostState, it)
-                            }
+                viewModel.provideSnackbarAction {
+                    coroutineScope.launch {
+                        showSnackbar(snackbarHostState, it)
+                    }
                 }
 
                 onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
@@ -105,7 +100,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun showSnackbar(snackbarHostState : SnackbarHostState, stringID : Int) {
+    private suspend fun showSnackbar(snackbarHostState: SnackbarHostState, stringID: Int) {
         snackbarHostState.showSnackbar(getString(stringID))
     }
 }

@@ -8,7 +8,6 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardDataMock
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,7 +29,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     private val totalAlerts = MutableStateFlow<Int>(0)
     private val mutableError = MutableSharedFlow<Unit>()
     private var mutableProjectFlow = MutableSharedFlow<Project>()
-    private var snackbarAction : (stringID: Int) -> Unit = {}
+    private var snackbarAction: (stringID: Int) -> Unit = {}
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
@@ -59,7 +58,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun provideSnackbarAction(snackBarAction : (Int) -> Unit ) {
+    fun provideSnackbarAction(snackBarAction: (Int) -> Unit) {
         this.snackbarAction = snackBarAction
     }
 

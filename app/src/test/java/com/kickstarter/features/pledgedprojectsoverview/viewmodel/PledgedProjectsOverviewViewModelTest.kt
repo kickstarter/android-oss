@@ -64,7 +64,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             viewModel.provideSnackbarAction { snackbarAction = it }
             viewModel.onMessageCreatorClicked("test_project_slug")
 
-            //Should equal error string id
+            // Should equal error string id
             assertEquals(
                 snackbarAction,
                 2131952284

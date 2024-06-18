@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -29,6 +30,7 @@ import com.kickstarter.ui.activities.MessageCreatorActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
+import kotlinx.coroutines.launch
 
 class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
@@ -85,10 +87,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         }
                 }
 
-                LaunchedEffect(Unit) {
-                    viewModel.error.collect {
-                        snackbarHostState.showSnackbar(getString(R.string.Something_went_wrong_please_try_again))
-                    }
+                val coroutineScope = rememberCoroutineScope()
+
+                        viewModel.provideSnackbarAction {
+                            coroutineScope.launch {
+                                showSnackbar(snackbarHostState, it)
+                            }
                 }
 
                 onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
@@ -101,10 +105,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         }
     }
 
-    private fun startComposeMessageActivity(it: Project?) {
-        startActivity(
-            Intent(this, MessageCreatorActivity::class.java)
-                .putExtra(IntentKey.PROJECT, it)
-        )
+    private suspend fun showSnackbar(snackbarHostState : SnackbarHostState, stringID : Int) {
+        snackbarHostState.showSnackbar(getString(stringID))
     }
 }

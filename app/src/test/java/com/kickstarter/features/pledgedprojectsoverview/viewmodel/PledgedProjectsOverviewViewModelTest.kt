@@ -51,9 +51,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `emits_error_when_message_creator_called`() =
         runTest {
-            val errorState = mutableListOf<Unit>()
-
-            val project = ProjectFactory.successfulProject()
+            var snackbarAction: Int? = 1234
             viewModel = PledgedProjectsOverviewViewModel.Factory(
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -63,14 +61,13 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     }).build()
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                viewModel.error.toList(errorState)
-            }
+            viewModel.provideSnackbarAction { snackbarAction = it }
             viewModel.onMessageCreatorClicked("test_project_slug")
 
+            //Should equal error string id
             assertEquals(
-                errorState.size,
-                1
+                snackbarAction,
+                2131952284
             )
         }
 }

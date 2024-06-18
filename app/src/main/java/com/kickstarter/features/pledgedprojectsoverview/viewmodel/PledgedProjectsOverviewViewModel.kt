@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardDataMock
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,6 +30,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     private val totalAlerts = MutableStateFlow<Int>(0)
     private val mutableError = MutableSharedFlow<Unit>()
     private var mutableProjectFlow = MutableSharedFlow<Project>()
+    private var snackbarAction : (stringID: Int) -> Unit = {}
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
@@ -40,6 +43,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
             )
+
     val projectFlow: SharedFlow<Project>
         get() = mutableProjectFlow
             .asSharedFlow()
@@ -55,6 +59,10 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
+    fun provideSnackbarAction(snackBarAction : (Int) -> Unit ) {
+        this.snackbarAction = snackBarAction
+    }
+
     fun onMessageCreatorClicked(projectName: String) {
         viewModelScope.launch {
             apolloClient.getProject(
@@ -66,7 +74,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 }.map { project ->
                     mutableProjectFlow.emit(project)
                 }.catch {
-                    mutableError.emit(Unit)
+                    snackbarAction.invoke(R.string.Something_went_wrong_please_try_again)
                 }.collect()
         }
     }

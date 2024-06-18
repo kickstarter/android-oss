@@ -1,6 +1,7 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -51,7 +52,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `emits_error_when_message_creator_called`() =
         runTest {
-            var snackbarAction: Int? = 1234
+            var snackbarAction = 0
             viewModel = PledgedProjectsOverviewViewModel.Factory(
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -61,13 +62,13 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     }).build()
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
-            viewModel.provideSnackbarAction { snackbarAction = it }
+            viewModel.provideSnackbarMessage { snackbarAction = it }
             viewModel.onMessageCreatorClicked("test_project_slug")
 
             // Should equal error string id
             assertEquals(
                 snackbarAction,
-                2131952284
+                R.string.Something_went_wrong_please_try_again
             )
         }
 }

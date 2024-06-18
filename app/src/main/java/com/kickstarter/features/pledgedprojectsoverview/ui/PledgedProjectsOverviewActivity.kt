@@ -84,7 +84,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                 val coroutineScope = rememberCoroutineScope()
 
-                viewModel.provideSnackbarAction {
+                viewModel.provideSnackbarMessage {
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(getString(it))
                     }

@@ -25,23 +25,14 @@ import kotlinx.coroutines.rx2.asFlow
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.from(listOf(PPOCardDataMock(projectSlug = "duality-collection-enamel-pins-by-tabauble-make-100"), PPOCardDataMock(projectSlug = "duality-collection-enamel-pins-by-tabauble-make-100121e32"))))
+    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.empty())
     private val totalAlerts = MutableStateFlow<Int>(0)
-    private val mutableError = MutableSharedFlow<Unit>()
     private var mutableProjectFlow = MutableSharedFlow<Project>()
-    private var snackbarAction: (stringID: Int) -> Unit = {}
+    private var snackbarMessage: (stringID: Int) -> Unit = {}
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
-
-    val error: SharedFlow<Unit>
-        get() = mutableError
-            .asSharedFlow()
-            .shareIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(),
-            )
 
     val projectFlow: SharedFlow<Project>
         get() = mutableProjectFlow
@@ -58,8 +49,8 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun provideSnackbarAction(snackBarAction: (Int) -> Unit) {
-        this.snackbarAction = snackBarAction
+    fun provideSnackbarMessage(snackBarMessage: (Int) -> Unit) {
+        this.snackbarMessage = snackBarMessage
     }
 
     fun onMessageCreatorClicked(projectName: String) {
@@ -73,7 +64,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 }.map { project ->
                     mutableProjectFlow.emit(project)
                 }.catch {
-                    snackbarAction.invoke(R.string.Something_went_wrong_please_try_again)
+                    snackbarMessage.invoke(R.string.Something_went_wrong_please_try_again)
                 }.collect()
         }
     }

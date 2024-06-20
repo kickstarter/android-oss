@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -39,6 +40,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                 val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
+                val scaffoldState = rememberScaffoldState()
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
                 val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle()
@@ -61,7 +63,9 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onBackPressed = { onBackPressedDispatcher.onBackPressed() },
                         lazyColumnListState = lazyListState,
                         ppoCards = ppoCardPagingSource,
-                        totalAlerts = totalAlerts.value
+                        totalAlerts = totalAlerts.value,
+                        onAddressConfirmed = { viewModel.refreshCardsList() },
+                        scaffoldState = scaffoldState
                     )
                 }
 

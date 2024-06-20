@@ -17,6 +17,10 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
+    fun refreshCardsList() {
+        // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
+    }
+
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

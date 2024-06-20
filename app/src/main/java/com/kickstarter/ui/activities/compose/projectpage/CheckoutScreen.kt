@@ -142,12 +142,16 @@ fun CheckoutScreen(
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit
 ) {
-    var (selectedOption, onOptionSelected) = remember {
+    val selectedOption = remember {
         mutableStateOf(
             storedCards.firstOrNull {
                 project.acceptedCardType(it.type()) || it.isFromPaymentSheet()
             }
         )
+    }
+
+    val onOptionSelected: (StoredCard?) -> Unit = {
+        selectedOption.value = it
     }
 
     // - After adding new payment method, selected card should be updated to the newly added
@@ -189,8 +193,8 @@ fun CheckoutScreen(
                                 modifier = Modifier
                                     .padding(bottom = dimensions.paddingMediumSmall)
                                     .fillMaxWidth(),
-                                onClickAction = { onPledgeCtaClicked(selectedOption) },
-                                isEnabled = project.acceptedCardType(selectedOption?.type()) || selectedOption?.isFromPaymentSheet() ?: false,
+                                onClickAction = { onPledgeCtaClicked(selectedOption.value) },
+                                isEnabled = project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false,
                                 text = if (pledgeReason == PledgeReason.PLEDGE) stringResource(id = R.string.Pledge) else stringResource(
                                     id = R.string.Confirm
                                 )
@@ -338,7 +342,7 @@ fun CheckoutScreen(
                             ) {
 
                                 KSRadioButton(
-                                    selected = card == selectedOption,
+                                    selected = card == selectedOption.value,
                                     onClick = { onOptionSelected(card) },
                                     enabled = isAvailable
                                 )

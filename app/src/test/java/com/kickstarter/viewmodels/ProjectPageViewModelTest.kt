@@ -365,7 +365,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
-        playButtonIsVisible.assertValues(false)
+        playButtonIsVisible.assertValues(false, false)
     }
 
     @Test
@@ -385,7 +385,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
-        playButtonIsVisible.assertValues(true)
+        playButtonIsVisible.assertValues(true, true)
     }
 
     @Test

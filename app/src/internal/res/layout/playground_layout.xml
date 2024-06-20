@@ -80,6 +80,13 @@
         app:layout_constraintTop_toBottomOf="@id/h5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pay_button"
+        android:text="Trigger PaymentSheet"
+        app:layout_constraintTop_toBottomOf="@id/h6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <Button

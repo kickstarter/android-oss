@@ -18,12 +18,20 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
+import com.stripe.android.model.PaymentMethod
+import com.stripe.android.paymentsheet.CreateIntentCallback
+import com.stripe.android.paymentsheet.CreateIntentResult
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 @RequiresActivityViewModel(PlaygroundViewModel.ViewModel::class)
 class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
     private lateinit var binding: PlaygroundLayoutBinding
     private lateinit var view: View
+
+    private lateinit var paymentSheet: PaymentSheet
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,25 +40,66 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         view = binding.root
         setContentView(view)
 
-        val html2 = "<h1>This is heading 1</h1>\n" +
-            "<h2>This is heading 2</h2>\n" +
-            "<h3>This is heading 3</h3>\n" +
-            "<h4>This is heading 4</h4>\n" +
-            "<h5>This is heading 5</h5>\n" +
-            "<h6>This is heading 6</h6>"
 
-        val listOfElements = HTMLParser().parse(html2)
+        paymentSheet = PaymentSheet(
+            activity = this,
+            createIntentCallback = { paymentMethod, shouldSavePaymentMethod ->
+                // Make a request to your server to create a PaymentIntent and return its client secret
+//                try {
+//                    val response = myNetworkClient.createIntent(
+//                        paymentMethodId = paymentMethod.id!!,
+//                        shouldSavePaymentMethod = shouldSavePaymentMethod,
+//                    )
+//                    CreateIntentResult.Success(response.clientSecret)
+//                } catch (e: Exception) {
+//                    CreateIntentResult.Failure(
+//                        cause = e,
+//                        displayMessage = e.message
+//                    )
+//                }
+                // - Will call endpoint here that will validate paymentMethod
+                Timber.d("payment Information ${paymentMethod}")
+                CreateIntentResult.Success("clientSecret")
+            },
+            paymentResultCallback = ::onPaymentSheetResult,
+        )
 
-        // - The parser detects 6 elements and applies the style to each one
-        binding.h1.text = (listOfElements[0] as TextViewElement).getStyledComponents(this)
-        binding.h2.text = (listOfElements[1] as TextViewElement).getStyledComponents(this)
-        binding.h3.text = (listOfElements[2] as TextViewElement).getStyledComponents(this)
-        binding.h4.text = (listOfElements[3] as TextViewElement).getStyledComponents(this)
-        binding.h5.text = (listOfElements[4] as TextViewElement).getStyledComponents(this)
-        binding.h6.text = (listOfElements[5] as TextViewElement).getStyledComponents(this)
+        this.binding.payButton.setOnClickListener {
+            presentPaymentSheet()
+        }
+    }
 
-        setStepper()
-        setStartActivity()
+    fun presentPaymentSheet() {
+        val intentConfig = PaymentSheet.IntentConfiguration(
+            mode = PaymentSheet.IntentConfiguration.Mode.Payment(
+                amount = 1099,
+                currency = "usd",
+            ),
+        )
+
+        paymentSheet.presentWithIntentConfiguration(
+            intentConfiguration = intentConfig,
+            // Optional configuration - See the "Customize the sheet" section in this guide
+            configuration = PaymentSheet.Configuration(
+                merchantDisplayName = "Kickstarter",
+            )
+        )
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when(paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                // Customer canceled - you should probably do nothing.
+            }
+            is PaymentSheetResult.Failed -> {
+                print("Error: ${paymentSheetResult.error}")
+                // PaymentSheet encountered an unrecoverable error. You can display the error to the user, log it, etc.
+            }
+            is PaymentSheetResult.Completed -> {
+                // Display, for example, an order confirmation screen
+                print("Completed")
+            }
+        }
     }
 
     /**

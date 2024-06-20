@@ -11,9 +11,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
@@ -82,10 +82,8 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         }
                 }
 
-                val coroutineScope = rememberCoroutineScope()
-
                 viewModel.provideSnackbarMessage {
-                    coroutineScope.launch {
+                    lifecycleScope.launch {
                         snackbarHostState.showSnackbar(getString(it))
                     }
                 }

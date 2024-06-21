@@ -153,10 +153,11 @@ fun PledgedProjectsOverviewScreen(
                             sendAMessageClickAction = { onSendMessageClick(it.projectSlug) },
                             shippingAddress = it.shippingAddress,
                             showBadge = it.showBadge,
-                            onActionButtonClicked = {  },
+                            onActionButtonClicked = { },
                             onSecondaryActionButtonClicked = {
+                                confirmedAddress = it.shippingAddress
                                 openConfirmAddressAlertDialog.value = true
-                                                             },
+                            },
                             timeNumberForAction = it.timeNumberForAction
                         )
                     }
@@ -176,11 +177,16 @@ fun PledgedProjectsOverviewScreen(
                 headlineText = "Confirm your address:",
                 bodyText = confirmedAddress,
                 leftButtonText = "Cancel",
-                leftButtonAction =  { openConfirmAddressAlertDialog.value = false },
+                leftButtonAction = { openConfirmAddressAlertDialog.value = false },
                 rightButtonText = "Confirm",
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
 
+                    // Call confirm address API
+                    // TODO: MBL-1556 Add network call to confirm address
+
+                    // Show snackbar
+                    // TODO: Use translated strings
                     coroutineScope.launch {
                         scaffoldState.snackbarHostState.showSnackbar(
                             message = "Address confirmed! Need to change your address before it locks? Visit your backing details on our website."

@@ -331,7 +331,7 @@ class LoginToutActivity : ComponentActivity() {
     }
 
     private fun goToSurveyIfSurveyPresent() {
-         val surveyResponse = IntentCompat.getParcelableExtra(intent, IntentKey.SURVEY_RESPONSE, SurveyResponse::class.java)
+        val surveyResponse = IntentCompat.getParcelableExtra(intent, IntentKey.SURVEY_RESPONSE, SurveyResponse::class.java)
         surveyResponse?.let {
             startSurveyResponseActivity(surveyResponse)
         }

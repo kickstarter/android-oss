@@ -12,11 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +57,6 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
-                scaffoldState = rememberScaffoldState(),
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState()
             )
@@ -76,7 +73,6 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
-    scaffoldState: ScaffoldState,
     onSendMessageClick: (projectName: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()

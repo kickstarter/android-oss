@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -47,7 +46,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                 val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
-                val scaffoldState = rememberScaffoldState()
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
@@ -74,7 +72,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts.value,
                         onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
-                        scaffoldState = scaffoldState,
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) }
                     )
                 }

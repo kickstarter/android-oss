@@ -16,6 +16,7 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
@@ -36,6 +37,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.activities.MessagesActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -269,4 +271,13 @@ fun Activity.startDisclaimerChromeTab(disclaimerItem: DisclaimerItems, environme
     }
 
     ChromeTabsHelperActivity.openCustomTab(this, UrlUtils.baseCustomTabsIntent(this), uri, fallback)
+}
+
+fun Activity.startCreatorMessageActivity(project: Project, previousScreen: MessagePreviousScreenType) {
+    startActivity(
+        Intent(this, MessagesActivity::class.java)
+            .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, previousScreen)
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.BACKING, project.backing())
+    )
 }

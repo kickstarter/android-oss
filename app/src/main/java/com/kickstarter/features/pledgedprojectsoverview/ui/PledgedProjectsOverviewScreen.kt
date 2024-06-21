@@ -61,7 +61,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
-                scaffoldState = rememberScaffoldState()
+                scaffoldState = rememberScaffoldState(),
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState()
             )
@@ -78,7 +78,7 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
     onSendMessageClick: (projectName: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()

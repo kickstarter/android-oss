@@ -8,8 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -74,7 +74,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts.value,
                         onAddressConfirmed = { viewModel.refreshCardsList() },
-                        scaffoldState = scaffoldState
+                        scaffoldState = scaffoldState,
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) }
                     )
                 }

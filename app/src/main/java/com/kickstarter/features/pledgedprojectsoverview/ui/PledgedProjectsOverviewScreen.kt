@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -61,6 +62,8 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onBackPressed = {},
                 onAddressConfirmed = {},
                 scaffoldState = rememberScaffoldState()
+                onSendMessageClick = {},
+                errorSnackBarHostState = SnackbarHostState()
             )
         }
     }
@@ -72,9 +75,11 @@ fun PledgedProjectsOverviewScreen(
     onBackPressed: () -> Unit,
     onAddressConfirmed: () -> Unit,
     lazyColumnListState: LazyListState,
+    errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
     scaffoldState: ScaffoldState
+    onSendMessageClick: (projectName: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
@@ -85,6 +90,11 @@ fun PledgedProjectsOverviewScreen(
         contentAlignment = Alignment.Center
     ) {
         Scaffold(
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = errorSnackBarHostState
+                )
+            },
             modifier = modifier,
             topBar = {
                 TopToolBar(
@@ -140,7 +150,7 @@ fun PledgedProjectsOverviewScreen(
                             imageUrl = it.imageUrl,
                             imageContentDescription = it.imageContentDescription,
                             creatorName = it.creatorName,
-                            sendAMessageClickAction = { },
+                            sendAMessageClickAction = { onSendMessageClick(it.projectSlug) },
                             shippingAddress = it.shippingAddress,
                             showBadge = it.showBadge,
                             onActionButtonClicked = {  },
@@ -194,6 +204,7 @@ data class PPOCardDataMock(
     val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
     val onCardClick: () -> Unit = { },
     val projectName: String = "This is a project name",
+    val projectSlug: String = "",
     val pledgeAmount: String = "$14.00",
     val imageUrl: String = "",
     val imageContentDescription: String = "",

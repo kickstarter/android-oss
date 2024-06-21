@@ -1,6 +1,7 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -29,7 +30,9 @@ class PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     modifier = Modifier,
                     onBackPressed = { backClickedCount++ },
                     lazyColumnListState = rememberLazyListState(),
-                    ppoCards = ppoCardList
+                    ppoCards = ppoCardList,
+                    errorSnackBarHostState = SnackbarHostState(),
+                    onSendMessageClick = {}
                 )
             }
         }

@@ -33,14 +33,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
-import com.kickstarter.ui.compose.designsystem.KSHeadsUpRoundedText
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -106,15 +104,7 @@ fun PledgedProjectsOverviewScreen(
                     backgroundColor = colors.backgroundSurfacePrimary,
                 )
             },
-            backgroundColor = colors.backgroundSurfacePrimary,
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = scaffoldState.snackbarHostState,
-                    snackbar = { data ->
-                        KSHeadsUpRoundedText(text = data.message)
-                    }
-                )
-            }
+            backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
             LazyColumn(
                 modifier = Modifier
@@ -185,15 +175,7 @@ fun PledgedProjectsOverviewScreen(
                     // Call confirm address API
                     // TODO: MBL-1556 Add network call to confirm address
 
-                    // Show snackbar
-                    // TODO: Use translated strings
-                    coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Address confirmed! Need to change your address before it locks? Visit your backing details on our website."
-                        )
-                    }
-
-                    // Refresh list
+                    // Show snackbar and refresh list
                     onAddressConfirmed()
                 }
             )

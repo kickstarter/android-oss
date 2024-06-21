@@ -34,7 +34,9 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
-    fun refreshCardsList() {
+    fun showSnackbarAndRefreshCardsList() {
+        snackbarMessage.invoke(R.string.Confirm) // TODO: Replace with actual translated string
+
         // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
     }
 

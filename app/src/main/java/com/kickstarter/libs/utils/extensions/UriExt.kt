@@ -160,7 +160,10 @@ fun Uri.isModalUri(webEndpoint: String): Boolean {
 }
 
 fun Uri.isProjectSurveyUri(webEndpoint: String): Boolean {
-    return isKickstarterUri(webEndpoint) && PROJECT_SURVEY.matcher(path()).matches()
+    return isKickstarterUri(webEndpoint) && (
+            PROJECT_SURVEY.matcher(path()).matches() || PROJECT_SURVEY_EDIT.matcher(path())
+                .matches() || PROJECT_SURVEY_EDIT_ADDRESS.matcher(path()).matches()
+            )
 }
 
 fun Uri.isProjectCommentUri(webEndpoint: String): Boolean {
@@ -242,6 +245,16 @@ private val PROJECT_PATTERN = Pattern.compile(
 //  /projects/:creator_param/:project_param/surveys/:survey_param
 private val PROJECT_SURVEY = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\z"
+)
+
+//  /projects/:creator_param/:project_param/surveys/:survey_param/edit
+private val PROJECT_SURVEY_EDIT = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]\\/edit+\\z"
+)
+
+//  /projects/:creator_param/:project_param/surveys/:survey_param/edit_address
+private val PROJECT_SURVEY_EDIT_ADDRESS = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]\\/edit_address+\\z"
 )
 
 //  /projects/:creator_param/:project_param/mark_reward_fulfilled/true

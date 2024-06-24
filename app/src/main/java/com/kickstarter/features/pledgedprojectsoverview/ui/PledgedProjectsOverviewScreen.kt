@@ -16,6 +16,10 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -25,6 +29,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -50,6 +55,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 ppoCards = ppoCardList,
                 totalAlerts = 10,
                 onBackPressed = {},
+                onAddressConfirmed = {},
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState()
             )
@@ -61,12 +67,16 @@ private fun PledgedProjectsOverviewScreenPreview() {
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
     onBackPressed: () -> Unit,
+    onAddressConfirmed: () -> Unit,
     lazyColumnListState: LazyListState,
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
     onSendMessageClick: (projectName: String) -> Unit
 ) {
+    val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
+    var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -128,7 +138,10 @@ fun PledgedProjectsOverviewScreen(
                             shippingAddress = it.shippingAddress,
                             showBadge = it.showBadge,
                             onActionButtonClicked = { },
-                            onSecondaryActionButtonClicked = { },
+                            onSecondaryActionButtonClicked = {
+                                confirmedAddress = it.shippingAddress
+                                openConfirmAddressAlertDialog.value = true
+                            },
                             timeNumberForAction = it.timeNumberForAction
                         )
                     }
@@ -138,6 +151,28 @@ fun PledgedProjectsOverviewScreen(
                     Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
                 }
             }
+        }
+    }
+
+    when {
+        openConfirmAddressAlertDialog.value -> {
+            KSAlertDialog(
+                setShowDialog = { openConfirmAddressAlertDialog.value = it },
+                headlineText = "Confirm your address:",
+                bodyText = confirmedAddress,
+                leftButtonText = "Cancel",
+                leftButtonAction = { openConfirmAddressAlertDialog.value = false },
+                rightButtonText = "Confirm",
+                rightButtonAction = {
+                    openConfirmAddressAlertDialog.value = false
+
+                    // Call confirm address API
+                    // TODO: MBL-1556 Add network call to confirm address
+
+                    // Show snackbar and refresh list
+                    onAddressConfirmed()
+                }
+            )
         }
     }
 }

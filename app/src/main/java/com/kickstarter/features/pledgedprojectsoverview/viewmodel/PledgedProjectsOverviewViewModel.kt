@@ -34,6 +34,12 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
+    fun showSnackbarAndRefreshCardsList() {
+        snackbarMessage.invoke(R.string.address_confirmed_snackbar_text)
+
+        // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
+    }
+
     val projectFlow: SharedFlow<Project>
         get() = mutableProjectFlow
             .asSharedFlow()

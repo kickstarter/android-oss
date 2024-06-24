@@ -38,6 +38,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startProjectActivityToSave = TestSubscriber<Uri>()
     private val startProjectActivityForCommentToUpdate = TestSubscriber<Uri>()
     private val startPreLaunchProjectActivity = TestSubscriber<Pair<Uri, Project>>()
+    private val startProjectSurveyActivity = TestSubscriber<Pair<Uri, Boolean>>()
     private val finishDeeplinkActivity = TestSubscriber<Unit>()
     private val disposables = CompositeDisposable()
 
@@ -62,6 +63,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startProjectActivityToSave().subscribe { startProjectActivityToSave.onNext(it) }.addToDisposable(disposables)
         vm.outputs.finishDeeplinkActivity().subscribe { finishDeeplinkActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     @After
@@ -83,6 +85,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -101,6 +104,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         finishDeeplinkActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -133,6 +137,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -166,6 +171,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -180,6 +186,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -194,6 +201,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -208,6 +216,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -224,6 +233,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -239,6 +249,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -255,6 +266,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -270,6 +282,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCommentToUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -287,6 +300,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCommentToUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -303,6 +317,52 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertValue(Uri.parse(expectedUrl))
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+    }
+
+    @Test
+    fun testProjectSurveyDeeplink_startsSurveyActivity() {
+        val url =
+            "https://www.kickstarter.com/projects/creator/project/surveys/survey-param"
+        setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testProjectSurveyEditDeeplink_startsSurveyActivity() {
+        val url =
+            "https://www.kickstarter.com/projects/creator/project/surveys/survey-param/edit"
+        setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testProjectSurveyEditAddressDeeplink_startsSurveyActivity() {
+        val url =
+            "https://www.kickstarter.com/projects/creator/project/surveys/survey-param/edit_address"
+        setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertValueCount(1)
     }
 
     @Test
@@ -327,6 +387,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -350,6 +411,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -363,6 +425,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -379,6 +442,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
 //        finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -395,6 +459,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
 //        finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -409,6 +474,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         finishDeeplinkActivity.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -435,6 +501,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -461,6 +528,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -485,6 +553,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -501,6 +570,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertValueCount(0)
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
     }
 
     @Test
@@ -523,6 +593,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
         startBrowser.assertNoValues()
     }
 
@@ -555,6 +626,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startBrowser.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startPreLaunchProjectActivity.assertValueCount(1)
     }

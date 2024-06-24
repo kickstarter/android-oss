@@ -10,6 +10,7 @@ import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -20,7 +21,9 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
+import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
@@ -109,6 +112,24 @@ class DeepLinkActivity : AppCompatActivity() {
             .subscribe {
                 startPreLaunchProjectActivity(it.first, it.second, "DEEPLINK")
             }.addToDisposable(disposables)
+
+        viewModel.outputs.startProjectSurvey()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val uri = it.first
+                val isLoggedIn = it.second
+                val surveyResponse =
+                    SurveyResponse.builder().urls(
+                        SurveyResponse.Urls.builder()
+                            .web(SurveyResponse.Urls.Web.builder().survey(uri.toString()).build())
+                            .build()
+                    ).build()
+                if (isLoggedIn) {
+                    startSurveyResponseActivity(surveyResponse)
+                } else {
+                    startLoginForSurveys(surveyResponse)
+                }
+            }.addToDisposable(disposables)
     }
 
     private fun projectIntent(uri: Uri): Intent {
@@ -190,6 +211,21 @@ class DeepLinkActivity : AppCompatActivity() {
 
     private fun startBrowser(url: String) {
         ApplicationUtils.openUrlExternally(this, url)
+        finish()
+    }
+
+    private fun startLoginForSurveys(surveyResponse: SurveyResponse) {
+        val intent = Intent(this, LoginToutActivity::class.java)
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
+            .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+    }
+
+    private fun startSurveyResponseActivity(surveyResponse: SurveyResponse) {
+        ApplicationUtils.startNewDiscoveryActivity(this)
+        val intent = Intent(this, SurveyResponseActivity::class.java)
+            .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse)
+        startActivity(intent)
         finish()
     }
 

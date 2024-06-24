@@ -58,6 +58,10 @@ class UriExtTest : KSRobolectricTestCase() {
         Uri.parse("https://www.ksr.com/projects/creator/project?token=token")
     private val projectSurveyUri =
         Uri.parse("https://www.ksr.com/projects/creator/project/surveys/survey-param")
+    private val projectSurveyEditUri =
+        Uri.parse("https://www.ksr.com/projects/creator/project/surveys/survey-param/edit")
+    private val projectSurveyEditAddressUri =
+        Uri.parse("https://www.ksr.com/projects/creator/project/surveys/survey-param/edit_address")
     private val updatesUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts")
     private val updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id")
     private val userSurveyUri = Uri.parse("https://www.ksr.com/users/user-param/surveys/survey-id")
@@ -147,6 +151,8 @@ class UriExtTest : KSRobolectricTestCase() {
     @Test
     fun testUri_isProjectSurveyUri() {
         assertTrue(projectSurveyUri.isProjectSurveyUri(webEndpoint))
+        assertTrue(projectSurveyEditUri.isProjectSurveyUri(webEndpoint))
+        assertTrue(projectSurveyEditAddressUri.isProjectSurveyUri(webEndpoint))
         assertFalse(userSurveyUri.isProjectSurveyUri(webEndpoint))
     }
 

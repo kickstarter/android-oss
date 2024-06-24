@@ -71,6 +71,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts.value,
+                        onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) }
                     )
                 }

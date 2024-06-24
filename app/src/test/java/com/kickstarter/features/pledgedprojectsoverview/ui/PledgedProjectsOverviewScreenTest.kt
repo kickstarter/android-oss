@@ -32,7 +32,8 @@ class PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     lazyColumnListState = rememberLazyListState(),
                     ppoCards = ppoCardList,
                     errorSnackBarHostState = SnackbarHostState(),
-                    onSendMessageClick = {}
+                    onSendMessageClick = {},
+                    onAddressConfirmed = {}
                 )
             }
         }

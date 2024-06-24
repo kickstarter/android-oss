@@ -1,5 +1,6 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -10,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,6 +24,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
+import com.kickstarter.ui.activities.ProfileActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
@@ -44,12 +47,16 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                     ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                     ?: AppThemes.MATCH_SYSTEM.ordinal
 
+                val ppoUIState by viewModel.pledgedProjectsOverviewUIState.collectAsStateWithLifecycle()
+
                 val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
-                val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle()
+                val totalAlerts = ppoUIState.totalAlerts
+                val isLoading = ppoUIState.isLoading || !ppoCardPagingSource.loadState.isIdle
+                val isErrored = ppoUIState.isErrored || ppoCardPagingSource.loadState.hasError
 
                 KickstarterApp(
                     useDarkTheme =
@@ -70,8 +77,11 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         lazyColumnListState = lazyListState,
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
-                        totalAlerts = totalAlerts.value,
-                        onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) }
+                        totalAlerts = totalAlerts,
+                        onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
+                        isLoading = isLoading,
+                        isErrored = isErrored,
+                        onSeeAllBackedProjectsClick = { startProfileActivity() }
                     )
                 }
 
@@ -95,6 +105,15 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                     }
                 })
             }
+        }
+    }
+
+    fun startProfileActivity() {
+        startActivity(
+            Intent(this, ProfileActivity::class.java)
+        )
+        this.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }
     }
 }

@@ -1,7 +1,11 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,11 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
+import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -48,9 +55,10 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 modifier = Modifier.padding(padding),
                 lazyColumnListState = rememberLazyListState(),
                 ppoCards = ppoCardList,
-                totalAlerts = 10,
+                totalAlerts = 0,
                 onBackPressed = {},
                 onSendMessageClick = {},
+                onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState()
             )
         }
@@ -65,7 +73,10 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
-    onSendMessageClick: (projectName: String) -> Unit
+    onSendMessageClick: (projectName: String) -> Unit,
+    onSeeAllBackedProjectsClick : () -> Unit,
+    isLoading: Boolean = false,
+    isErrored: Boolean = false,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -90,55 +101,114 @@ fun PledgedProjectsOverviewScreen(
             },
             backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(
-                        start = dimensions.paddingMedium,
-                        end = dimensions.paddingMedium,
-                        top = dimensions.paddingMedium
-                    )
-                    .padding(paddingValues = padding),
-                state = lazyColumnListState
-            ) {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.alerts_fpo, totalAlerts),
-                        style = typography.title3Bold,
-                        color = colors.textPrimary
-                    )
-                }
-
-                items(
-                    count = ppoCards.itemCount
-                ) { index ->
-                    Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                    ppoCards[index]?.let {
-                        PPOCardView(
-                            viewType = it.viewType,
-                            onCardClick = { },
-                            projectName = it.projectName,
-                            pledgeAmount = it.pledgeAmount,
-                            imageUrl = it.imageUrl,
-                            imageContentDescription = it.imageContentDescription,
-                            creatorName = it.creatorName,
-                            sendAMessageClickAction = { onSendMessageClick(it.projectSlug) },
-                            shippingAddress = it.shippingAddress,
-                            showBadge = it.showBadge,
-                            onActionButtonClicked = { },
-                            onSecondaryActionButtonClicked = { },
-                            timeNumberForAction = it.timeNumberForAction
+            if (isErrored) {
+                //show errored screen
+            }
+            else if (totalAlerts == 0) {
+                PPOScreenEmptyState(onSeeAllBackedProjectsClick)
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(
+                            start = dimensions.paddingMedium,
+                            end = dimensions.paddingMedium,
+                            top = dimensions.paddingMedium
+                        )
+                        .padding(paddingValues = padding),
+                    state = lazyColumnListState
+                ) {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.alerts_fpo, totalAlerts),
+                            style = typography.title3Bold,
+                            color = colors.textPrimary
                         )
                     }
-                }
 
-                item {
-                    Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
+                    items(
+                        count = ppoCards.itemCount
+                    ) { index ->
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                        ppoCards[index]?.let {
+                            PPOCardView(
+                                viewType = it.viewType,
+                                onCardClick = { },
+                                projectName = it.projectName,
+                                pledgeAmount = it.pledgeAmount,
+                                imageUrl = it.imageUrl,
+                                imageContentDescription = it.imageContentDescription,
+                                creatorName = it.creatorName,
+                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug) },
+                                shippingAddress = it.shippingAddress,
+                                showBadge = it.showBadge,
+                                onActionButtonClicked = { },
+                                onSecondaryActionButtonClicked = { },
+                                timeNumberForAction = it.timeNumberForAction
+                            )
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
+                    }
+                }
+            }
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                        .clickable(enabled = false) { },
+                    contentAlignment = Alignment.Center
+                ) {
+                    KSCircularProgressIndicator()
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PPOScreenEmptyState(
+    onSeeAllBackedProjectsClick : () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(
+                start = dimensions.paddingMedium,
+                end = dimensions.paddingMedium,
+                top = dimensions.paddingMedium
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally ,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            color = colors.textPrimary,
+            text = stringResource(id = R.string.youre_all_caught_up_fpo),
+            style = typography.title3Bold,
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+
+        Text(
+            color = colors.textPrimary,
+            text = stringResource(id = R.string.when_projects_youve_backed_need_your_attention_youll_see_them_here_fpo),
+            style = typography.body,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+
+        KSPrimaryGreenButton(
+            modifier = Modifier,
+            onClickAction = { onSeeAllBackedProjectsClick.invoke() },
+            text = stringResource(id = R.string.see_all_backed__projects_fpo),
+            isEnabled = true)
     }
 }
 
@@ -158,6 +228,8 @@ data class PPOCardDataMock(
     val creatorName: String = "Creator Name",
     val sendAMessageClickAction: () -> Unit = { },
     val shippingAddress: String = "",
+    val addressId: String = "",
+    val backingID: String = "",
     val showBadge: Boolean = true,
     val onActionButtonClicked: () -> Unit = {},
     val onSecondaryActionButtonClicked: () -> Unit = {},

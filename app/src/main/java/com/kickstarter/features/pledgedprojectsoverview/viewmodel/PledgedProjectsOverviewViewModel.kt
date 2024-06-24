@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardDataMock
+import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,21 +19,39 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
+data class PledgedProjectsOverviewUIState(
+    val totalAlerts: Int = 10,
+    val isLoading: Boolean = false,
+    val isErrored: Boolean = false,
+)
+
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.empty())
-    private val totalAlerts = MutableStateFlow<Int>(0)
+    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.from(listOf(PPOCardDataMock(backingID = "1234", addressId = "1234", shippingAddress = "shipping address here", viewType = PPOCardViewType.CONFIRM_ADDRESS))))
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int) -> Unit = {}
-
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+
     val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
-    val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
+    private val mutablePledgedProjectsOverviewUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
+
+    private var totalAlerts = 10
+
+    val pledgedProjectsOverviewUIState: StateFlow<PledgedProjectsOverviewUIState>
+        get() = mutablePledgedProjectsOverviewUIState
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = PledgedProjectsOverviewUIState(),
+            )
 
     val projectFlow: SharedFlow<Project>
         get() = mutableProjectFlow
@@ -60,12 +79,25 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
             )
                 .asFlow()
                 .onStart {
-                    // TODO emit loading ui state
+                    emitCurrentState(isLoading = true)
                 }.map { project ->
                     mutableProjectFlow.emit(project)
                 }.catch {
                     snackbarMessage.invoke(R.string.Something_went_wrong_please_try_again)
-                }.collect()
+                }.onCompletion {
+                    emitCurrentState()
+                }
+                .collect()
         }
+    }
+
+    private suspend fun emitCurrentState(isLoading: Boolean = false, isErrored: Boolean = false) {
+        mutablePledgedProjectsOverviewUIState.emit(
+            PledgedProjectsOverviewUIState(
+                totalAlerts = totalAlerts,
+                isLoading = isLoading,
+                isErrored = isErrored,
+            )
+        )
     }
 }

@@ -52,6 +52,8 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.Comment
+import com.kickstarter.models.CompleteOrderInput
+import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
@@ -92,6 +94,7 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.BackingState
+import type.CreateOrUpdateBackingAddressInput
 import type.CurrencyCode
 import type.NonDeprecatedFlaggingKind
 import type.PaymentTypes
@@ -195,6 +198,7 @@ interface ApolloClientTypeV2 {
 
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
+    fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
 }
 
 private const val PAGE_SIZE = 25
@@ -1658,6 +1662,43 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onComplete()
                     }
                 })
+            return@defer ps
+        }
+    }
+
+    override fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CompleteOrderPayload>()
+
+            this.service.mutate(
+                CompleteOrderMutation.builder()
+                    .projectId(orderInput.projectId)
+                    .orderId(orderInput.orderId)
+                    .stripePaymentMethodId(orderInput.stripePaymentMethodId)
+                    .paymentSourceId(orderInput.paymentSourceId)
+                    .paymentSourceReusable(orderInput.paymentSourceReusable)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<CompleteOrderMutation.Data>() {
+                override fun onFailure(exception: ApolloException) {
+                    ps.onError(exception)
+                }
+
+                override fun onResponse(response: Response<CompleteOrderMutation.Data>) {
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                    }
+
+                    response.data?.completeOrder()?.let {
+                        val payload = CompleteOrderPayload(
+                            status = it.status(),
+                            clientSecret = it?.clientSecret() ?: ""
+                        )
+                        ps.onNext(payload)
+                    }
+                    ps.onComplete()
+                }
+            })
+
             return@defer ps
         }
     }

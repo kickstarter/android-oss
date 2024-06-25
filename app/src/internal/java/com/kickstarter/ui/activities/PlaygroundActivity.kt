@@ -64,8 +64,12 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
             paymentResultCallback = ::onPaymentSheetResult,
         )
 
-        this.binding.payButton.setOnClickListener {
+        this.binding.newMethodButton.setOnClickListener {
             presentPaymentSheet()
+        }
+
+        this.binding.pledgeButton.setOnClickListener {
+
         }
     }
 

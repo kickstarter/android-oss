@@ -82,9 +82,16 @@
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/pay_button"
-        android:text="Trigger PaymentSheet"
+        android:id="@+id/new_method_button"
+        android:text="Add new payment method"
         app:layout_constraintTop_toBottomOf="@id/h6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pledge_button"
+        android:text="Pledge"
+        app:layout_constraintTop_toBottomOf="@id/new_method_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
   </androidx.constraintlayout.widget.ConstraintLayout>

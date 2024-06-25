@@ -5,11 +5,11 @@ package com.kickstarter.models
  */
 data class CompleteOrderInput(
     val projectId: String,
-    val orderId: String?,
-    val stripePaymentMethodId: String?,
-    val paymentSourceId: String?,
-    val paymentSourceReusable: Boolean?,
-    val paymentMethodTypes: List<String>?
+    val orderId: String? = null,
+    val stripePaymentMethodId: String? = null,
+    val paymentSourceId: String? = null,
+    val paymentSourceReusable: Boolean? = null,
+    val paymentMethodTypes: List<String>? = null
 )
 
 /**

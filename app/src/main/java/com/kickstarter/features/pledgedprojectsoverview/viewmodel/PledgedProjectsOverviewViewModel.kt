@@ -35,7 +35,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
     fun showSnackbarAndRefreshCardsList() {
-        snackbarMessage.invoke(R.string.address_confirmed_snackbar_text)
+        snackbarMessage.invoke(R.string.address_confirmed_snackbar_text_fpo)
 
         // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
     }

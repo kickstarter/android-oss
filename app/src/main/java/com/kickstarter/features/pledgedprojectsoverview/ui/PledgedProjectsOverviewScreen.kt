@@ -56,6 +56,8 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
+                onCardClick = {},
+                onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState()
             )
@@ -72,6 +74,8 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCardDataMock>,
     totalAlerts: Int = 0,
+    onCardClick: () -> Unit,
+    onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
     onSendMessageClick: (projectName: String) -> Unit
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
@@ -129,6 +133,7 @@ fun PledgedProjectsOverviewScreen(
                         PPOCardView(
                             viewType = it.viewType,
                             onCardClick = { },
+                            onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl) },
                             projectName = it.projectName,
                             pledgeAmount = it.pledgeAmount,
                             imageUrl = it.imageUrl,
@@ -196,5 +201,6 @@ data class PPOCardDataMock(
     val showBadge: Boolean = true,
     val onActionButtonClicked: () -> Unit = {},
     val onSecondaryActionButtonClicked: () -> Unit = {},
-    val timeNumberForAction: Int = 25
+    val timeNumberForAction: Int = 25,
+    val backingDetailsUrl: String = "https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion"
 )

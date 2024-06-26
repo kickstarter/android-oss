@@ -82,7 +82,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             // Should equal address confirmed string id
             assertEquals(
                 snackbarAction,
-                R.string.address_confirmed_snackbar_text
+                R.string.address_confirmed_snackbar_text_fpo
             )
         }
 }

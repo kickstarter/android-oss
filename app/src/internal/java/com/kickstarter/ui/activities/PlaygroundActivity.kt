@@ -84,6 +84,7 @@ class PlaygroundActivity : ComponentActivity() {
                 amount = 1099,
                 currency = "usd",
             ),
+            onBehalfOf = ""
         )
 
         paymentSheet.presentWithIntentConfiguration(

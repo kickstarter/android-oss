@@ -16,6 +16,8 @@ import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.getPaymentSheetAppearance
+import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.Project
@@ -94,9 +96,7 @@ class PlaygroundActivity : ComponentActivity() {
         paymentSheet.presentWithIntentConfiguration(
             intentConfiguration = intentConfig,
             // Optional configuration - See the "Customize the sheet" section in this guide
-            configuration = PaymentSheet.Configuration(
-                merchantDisplayName = "Kickstarter",
-            )
+            configuration = this.getPaymentSheetConfiguration("arkariang@gmail.com")
         )
     }
 

@@ -44,6 +44,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@id/appBar">
     <com.kickstarter.ui.views.Stepper
+        android:visibility="invisible"
         android:id="@+id/stepper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -97,6 +98,7 @@
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <Button
+      android:visibility="invisible"
       android:id="@+id/start_activity"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

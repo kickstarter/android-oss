@@ -36,6 +36,24 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test_when_loading_called_then_state_shows_loading`() = runTest {
+        setUpWithEnvironment(environment())
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.loading()
+        assertEquals(
+            state.last(),
+            LatePledgeCheckoutUIState(
+                isLoading = true
+            )
+        )
+    }
+
+    @Test
     fun `test_when_user_logged_in_then_email_is_provided`() = runTest {
         val user = UserFactory.user()
         val currentUserV2 = MockCurrentUserV2(initialUser = user)

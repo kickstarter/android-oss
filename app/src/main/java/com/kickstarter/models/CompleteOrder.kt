@@ -16,6 +16,6 @@ data class CompleteOrderInput(
  * Data model for complete order mutation response
  */
 data class CompleteOrderPayload(
-    val status: String,
-    val clientSecret: String
+    val status: String = "",
+    val clientSecret: String = ""
 )

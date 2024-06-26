@@ -1673,7 +1673,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             this.service.mutate(
                 CompleteOrderMutation.builder()
                     .projectId(orderInput.projectId)
-                    .orderId(orderInput.orderId)
                     .stripePaymentMethodId(orderInput.stripePaymentMethodId)
                     .paymentSourceId(orderInput.paymentSourceId)
                     .paymentSourceReusable(orderInput.paymentSourceReusable)

@@ -6,32 +6,27 @@ import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.htmlparser.HTMLParser
-import com.kickstarter.libs.htmlparser.TextViewElement
-import com.kickstarter.libs.htmlparser.getStyledComponents
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.Project
-import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import com.kickstarter.viewmodels.PlaygroundViewModel.Factory
-import com.kickstarter.viewmodels.SearchViewModel
-import com.stripe.android.model.PaymentMethod
-import com.stripe.android.paymentsheet.CreateIntentCallback
 import com.stripe.android.paymentsheet.CreateIntentResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.android.schedulers.AndroidSchedulers
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 class PlaygroundActivity : ComponentActivity() {
     private lateinit var binding: PlaygroundLayoutBinding
@@ -54,15 +49,22 @@ class PlaygroundActivity : ComponentActivity() {
             viewModelFactory = Factory(env)
         }
 
+
         paymentSheet = PaymentSheet(
             activity = this,
             createIntentCallback = { paymentMethod, shouldSavePaymentMethod ->
                 stripePaymentMethod = paymentMethod.id ?: ""
                 savePayment = shouldSavePaymentMethod
 
-                viewModel.completeOrder(stripePaymentMethod)
-                Timber.d("payment Information ${paymentMethod}")
-                CreateIntentResult.Success("clientSecret")
+                var payload = CompleteOrderPayload()
+
+//                viewModel.completeOrder(stripePaymentMethod)
+//                viewModel.payloadUIState.collect {
+//                    payload = it
+//                }
+
+                //Timber.d("payment Information ${paymentMethod}")
+                CreateIntentResult.Success(payload.clientSecret)
             },
             paymentResultCallback = ::onPaymentSheetResult,
         )
@@ -72,11 +74,13 @@ class PlaygroundActivity : ComponentActivity() {
         }
 
         this.binding.pledgeButton.setOnClickListener {
-            stripePaymentMethod?.let {
+            stripePaymentMethod.let {
                 viewModel.completeOrder(it)
             }
         }
+
     }
+
 
     fun presentPaymentSheet() {
         val intentConfig = PaymentSheet.IntentConfiguration(
@@ -84,7 +88,7 @@ class PlaygroundActivity : ComponentActivity() {
                 amount = 1099,
                 currency = "usd",
             ),
-            onBehalfOf = ""
+            onBehalfOf = "acct_1Ir6hZ4NJG33TWAg"
         )
 
         paymentSheet.presentWithIntentConfiguration(

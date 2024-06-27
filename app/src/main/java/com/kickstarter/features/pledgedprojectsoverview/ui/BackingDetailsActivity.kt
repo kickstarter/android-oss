@@ -4,45 +4,42 @@ import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.kickstarter.databinding.ActivityBackingDetailsBinding
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.BackingDetailsViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 
 class BackingDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBackingDetailsBinding
-    private lateinit var viewModelFactory: BackingDetailsViewModel.BackingDetailsViewModel.Factory
-    private val viewModel: BackingDetailsViewModel.BackingDetailsViewModel by viewModels { viewModelFactory }
-
-    private val disposables = CompositeDisposable()
+    private lateinit var viewModelFactory: BackingDetailsViewModel.Factory
+    private val viewModel: BackingDetailsViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBackingDetailsBinding.inflate(layoutInflater)
 
         this.getEnvironment()?.let { env ->
-            viewModelFactory = BackingDetailsViewModel.BackingDetailsViewModel.Factory(env, intent = intent)
+            viewModelFactory = BackingDetailsViewModel.Factory(env, intent = intent)
             env
         }
 
         setContentView(binding.root)
 
-        this.viewModel.outputs.url()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.webView.loadUrl(it) }
-            .addToDisposable(disposables)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.url.collect { url ->
+                    binding.webView.loadUrl(url)
+                }
+            }
+        }
 
         this.onBackPressedDispatcher.addCallback {
             finishWithAnimation()
         }
-    }
-
-    override fun onDestroy() {
-        disposables.clear()
-        super.onDestroy()
     }
 }

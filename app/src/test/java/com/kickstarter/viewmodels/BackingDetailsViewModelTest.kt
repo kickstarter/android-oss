@@ -12,7 +12,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class BackingDetailsViewModelTest  : KSRobolectricTestCase() {
+class BackingDetailsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: BackingDetailsViewModel
 
     private fun setUpEnvironment(environment: Environment, intent: Intent) {

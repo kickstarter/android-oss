@@ -7,9 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -17,10 +16,9 @@ import kotlinx.coroutines.rx2.asFlow
 
 class BackingDetailsViewModel(environment: Environment, private val intent: Intent? = null) : ViewModel() {
 
-    private var mutableUrl = MutableSharedFlow<String>()
-    val url: SharedFlow<String>
+    private var mutableUrl = MutableStateFlow<String>("")
+    val url: StateFlow<String>
         get() = mutableUrl
-            .asSharedFlow()
     private fun intent() = this.intent?.let { Observable.just(it) } ?: Observable.empty()
 
     init {

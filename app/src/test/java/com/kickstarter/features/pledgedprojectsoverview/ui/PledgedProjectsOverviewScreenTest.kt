@@ -33,7 +33,9 @@ class PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     ppoCards = ppoCardList,
                     errorSnackBarHostState = SnackbarHostState(),
                     onSendMessageClick = {},
-                    onAddressConfirmed = {}
+                    onAddressConfirmed = {},
+                    onCardClick = {},
+                    onProjectPledgeSummaryClick = {}
                 )
             }
         }

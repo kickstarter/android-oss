@@ -5,40 +5,43 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.libs.utils.extensions.getPaymentSheetAppearance
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.Project
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.snackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import com.kickstarter.viewmodels.PlaygroundViewModel.Factory
 import com.stripe.android.paymentsheet.CreateIntentResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.model.PaymentOption
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.coroutines.launch
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.rx2.asObservable
+import timber.log.Timber
 
 class PlaygroundActivity : ComponentActivity() {
     private lateinit var binding: PlaygroundLayoutBinding
     private lateinit var view: View
     private lateinit var viewModelFactory: Factory
     private var stripePaymentMethod: String = ""
-    private var savePayment = false
     val viewModel: PlaygroundViewModel by viewModels { viewModelFactory }
 
-    private lateinit var paymentSheet: PaymentSheet
+    private lateinit var flowController: PaymentSheet.FlowController
+
+    private val compositeDisposable = CompositeDisposable()
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,52 +54,71 @@ class PlaygroundActivity : ComponentActivity() {
             viewModelFactory = Factory(env)
         }
 
+        viewModel.payloadUIState.asObservable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.status.isNotBlank())
+                    Toast.makeText(this, "complete_order status: ${it.status}", Toast.LENGTH_LONG).show()
+            }
+            .addToDisposable(compositeDisposable)
 
-        paymentSheet = PaymentSheet(
-            activity = this,
-            createIntentCallback = { paymentMethod, shouldSavePaymentMethod ->
-                stripePaymentMethod = paymentMethod.id ?: ""
-                savePayment = shouldSavePaymentMethod
 
-                var payload = CompleteOrderPayload()
-
-//                viewModel.completeOrder(stripePaymentMethod)
-//                viewModel.payloadUIState.collect {
-//                    payload = it
-//                }
-
-                //Timber.d("payment Information ${paymentMethod}")
-                CreateIntentResult.Success(payload.clientSecret)
-            },
-            paymentResultCallback = ::onPaymentSheetResult,
-        )
+        flowController = createFlowController()
+        configureFlowController()
 
         this.binding.newMethodButton.setOnClickListener {
-            presentPaymentSheet()
+            flowController.presentPaymentOptions()
         }
 
         this.binding.pledgeButton.setOnClickListener {
-            stripePaymentMethod.let {
-                viewModel.completeOrder(it)
-            }
+            flowController.confirm()
         }
 
     }
 
+    private fun createFlowController() = PaymentSheet.FlowController.create(
+        activity = this,
+        paymentOptionCallback = ::onPaymentOption,
+        createIntentCallback = { paymentMethod, _ ->
+            // -  createIntentCallback is triggered with flowController.confirm()
+            // -  Make a request to complete to create a PaymentIntent and return its client secret
+            try {
+                viewModel.completeOrder(paymentMethod.id ?: "")
+                viewModel.payloadUIState.collect {
+                    CreateIntentResult.Success(it.clientSecret)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "error when calling complete_order", Toast.LENGTH_LONG).show()
+                CreateIntentResult.Failure(
+                    cause = e,
+                    displayMessage = e.message
+                )
+            }
+        },
+        paymentResultCallback = ::onPaymentSheetResult,
+    )
 
-    fun presentPaymentSheet() {
-        val intentConfig = PaymentSheet.IntentConfiguration(
-            mode = PaymentSheet.IntentConfiguration.Mode.Payment(
-                amount = 1099,
-                currency = "usd",
+    private fun onPaymentOption(paymentOption: PaymentOption?) {
+        paymentOption?.let {
+            val toast = Toast.makeText(this, "new payment added: ${paymentOption.label}", Toast.LENGTH_LONG) // in Activity
+            toast.show()
+            Timber.d("paymentOption: $paymentOption" )
+        }
+    }
+
+
+    private fun configureFlowController() {
+        flowController.configureWithIntentConfiguration(
+            intentConfiguration = PaymentSheet.IntentConfiguration(
+                mode = PaymentSheet.IntentConfiguration.Mode.Payment(
+                    amount = 1099,
+                    currency = "usd",
+                ),
             ),
-            onBehalfOf = "acct_1Ir6hZ4NJG33TWAg"
-        )
-
-        paymentSheet.presentWithIntentConfiguration(
-            intentConfiguration = intentConfig,
-            // Optional configuration - See the "Customize the sheet" section in this guide
-            configuration = this.getPaymentSheetConfiguration("arkariang@gmail.com")
+            //onBehalfOf = "acct_1Ir6hZ4NJG33TWAg",
+            configuration = this.getPaymentSheetConfiguration("arkariang@gmail.com"),
+            callback = { success, error ->
+            },
         )
     }
 

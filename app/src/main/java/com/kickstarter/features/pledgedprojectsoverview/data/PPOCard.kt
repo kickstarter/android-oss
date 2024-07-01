@@ -113,7 +113,7 @@ class PPOCard private constructor(
                 projectSlug() == other.projectSlug() &&
                 creatorName() == other.creatorName() &&
                 imageUrl() == other.imageUrl() &&
-                    backingDetailsUrl() == other.backingDetailsUrl() &&
+                backingDetailsUrl() == other.backingDetailsUrl() &&
                 viewType() == other.viewType()
         }
         return equals

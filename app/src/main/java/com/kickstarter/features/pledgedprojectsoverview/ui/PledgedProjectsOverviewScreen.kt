@@ -168,11 +168,11 @@ fun PledgedProjectsOverviewScreen(
         openConfirmAddressAlertDialog.value -> {
             KSAlertDialog(
                 setShowDialog = { openConfirmAddressAlertDialog.value = it },
-                headlineText = "Confirm your address:",
+                headlineText = "Confirm your address",
                 bodyText = confirmedAddress,
-                leftButtonText = "Cancel",
+                leftButtonText = stringResource(id = R.string.Cancel),
                 leftButtonAction = { openConfirmAddressAlertDialog.value = false },
-                rightButtonText = "Confirm",
+                rightButtonText = stringResource(id = R.string.Confirm),
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
 

@@ -27,16 +27,11 @@ class BackingDetailsViewModel(environment: Environment, private val intent: Inte
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = ""
             )
-    private fun intent() = this.intent?.let { Observable.just(it) } ?: Observable.empty()
-
     init {
         viewModelScope.launch {
-            intent()
-                .map { it.getStringExtra(IntentKey.URL) }
-                .ofType(String::class.java)
-                .asFlow().map { url ->
-                    mutableUrl.emit(url)
-                }.collect()
+            intent?.getStringExtra(IntentKey.URL)?.let { url ->
+                mutableUrl.emit(url)
+            }
         }
     }
 

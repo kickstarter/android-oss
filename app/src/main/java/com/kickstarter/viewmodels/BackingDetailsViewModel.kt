@@ -6,16 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.ui.IntentKey
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlow
 
 class BackingDetailsViewModel(environment: Environment, private val intent: Intent? = null) : ViewModel() {
 

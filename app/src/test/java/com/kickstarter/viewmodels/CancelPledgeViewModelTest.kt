@@ -19,7 +19,7 @@ import org.junit.After
 import org.junit.Test
 import java.math.RoundingMode
 
-class CancelPPOCardViewModelTest : KSRobolectricTestCase() {
+class CancelPledgeViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: CancelPledgeViewModel
 

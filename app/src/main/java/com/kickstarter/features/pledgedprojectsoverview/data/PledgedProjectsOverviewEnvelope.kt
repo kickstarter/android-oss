@@ -6,32 +6,32 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class PledgedProjectsOverviewEnvelope private constructor(
-    val ppoCardData : List<PPOCard>?,
+    val ppoCards : List<PPOCard>?,
     val pageInfoEnvelope: PageInfoEnvelope,
     val totalCount: Int?,
     val categories : List<Category>?
     ) : Parcelable {
 
-        fun pledges() = this.ppoCardData
+        fun pledges() = this.ppoCards
         fun pageInfoEnvelope() = this.pageInfoEnvelope
         fun totalCount() = this.totalCount
         fun categories() = this.categories
         @Parcelize
         data class Builder(
-            var PPOCard: List<PPOCard>? = null,
+            var ppoCards: List<PPOCard>? = null,
             var pageInfoEnvelope: PageInfoEnvelope = PageInfoEnvelope.builder().build(),
             var totalCount: Int? = null,
             var categories: List<Category>? = null,
         ) : Parcelable {
 
-            fun pledges(PPOCard : List<PPOCard>?) = apply { this.PPOCard = PPOCard }
+            fun pledges(ppoCards : List<PPOCard>?) = apply { this.ppoCards = ppoCards }
             fun pageInfoEnvelope(pageInfoEnvelope: PageInfoEnvelope) = apply { this.pageInfoEnvelope = pageInfoEnvelope }
             fun totalCount(totalCount: Int?) = apply { this.totalCount = totalCount }
 
             fun categories(categories: List<Category>?) = apply { this.categories = categories }
 
             fun build() = PledgedProjectsOverviewEnvelope(
-                ppoCardData = PPOCard,
+                ppoCards = ppoCards,
                 pageInfoEnvelope = pageInfoEnvelope,
                 totalCount = totalCount,
                 categories = categories
@@ -43,7 +43,7 @@ class PledgedProjectsOverviewEnvelope private constructor(
     }
 
     fun toBuilder() = Builder(
-        PPOCard = ppoCardData,
+        ppoCards = ppoCards,
         pageInfoEnvelope = pageInfoEnvelope,
         totalCount = totalCount,
         categories = categories

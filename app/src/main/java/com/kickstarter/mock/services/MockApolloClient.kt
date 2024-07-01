@@ -8,7 +8,7 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import android.util.Pair
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewData
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
@@ -307,7 +307,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
-    override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewData): io.reactivex.Observable<PledgedProjectsOverviewEnvelope> {
+    override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): io.reactivex.Observable<PledgedProjectsOverviewEnvelope> {
         return io.reactivex.Observable.empty()
     }
 }

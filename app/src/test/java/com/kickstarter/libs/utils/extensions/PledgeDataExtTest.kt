@@ -8,7 +8,7 @@ import com.kickstarter.ui.data.PledgeData.Companion.with
 import com.kickstarter.ui.data.PledgeFlowContext
 import junit.framework.TestCase
 
-class PPOCardDataExtTest : TestCase() {
+class PledgeDataExtTest : TestCase() {
 
     fun testAddOnsCountTotalEmpty() {
         val project = ProjectFactory.project()

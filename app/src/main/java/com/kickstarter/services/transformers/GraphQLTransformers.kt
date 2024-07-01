@@ -5,7 +5,6 @@ import CreateOrUpdateBackingAddressMutation
 import PledgedProjectsOverviewQuery
 import TriggerThirdPartyEventMutation
 import UserPrivacyQuery
-import android.provider.Telephony.Mms.Addr
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.AddressEnvelope
@@ -38,12 +37,11 @@ import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewData
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
-import fragment.PpoCard
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -908,7 +906,7 @@ fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAdd
     return CreateOrUpdateBackingAddressMutation.builder().input(graphInput).build()
 }
 
-fun getPledgedProjectsOverviewQuery(queryInput : PledgedProjectsOverviewData) : PledgedProjectsOverviewQuery {
+fun getPledgedProjectsOverviewQuery(queryInput : PledgedProjectsOverviewQueryData) : PledgedProjectsOverviewQuery {
         return PledgedProjectsOverviewQuery.builder()
             .after(queryInput.after)
             .before(queryInput.before)

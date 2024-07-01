@@ -73,7 +73,7 @@ import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewData
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
@@ -200,7 +200,7 @@ interface ApolloClientTypeV2 {
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
 
-    fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewData): Observable<PledgedProjectsOverviewEnvelope>
+    fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
 }
 
 private const val PAGE_SIZE = 25
@@ -1668,8 +1668,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
-    //Replace returned observable type with internal model, transform response into this model
-    override fun getPledgedProjectsOverviewPledges(inputData : PledgedProjectsOverviewData) : Observable<PledgedProjectsOverviewEnvelope>{
+    override fun getPledgedProjectsOverviewPledges(inputData : PledgedProjectsOverviewQueryData) : Observable<PledgedProjectsOverviewEnvelope>{
         return Observable.defer {
             val ps = PublishSubject.create<PledgedProjectsOverviewEnvelope>()
 

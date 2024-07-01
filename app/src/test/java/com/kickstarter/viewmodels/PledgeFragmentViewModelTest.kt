@@ -66,7 +66,7 @@ import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
 
-class PPOCardFragmentViewModelTest : KSRobolectricTestCase() {
+class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel
     private val deadline = DateTime.parse("2020-10-23T18:13:09Z")

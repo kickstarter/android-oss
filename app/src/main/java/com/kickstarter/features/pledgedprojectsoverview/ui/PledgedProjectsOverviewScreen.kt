@@ -144,8 +144,13 @@ fun PledgedProjectsOverviewScreen(
                             showBadge = it.showBadge,
                             onActionButtonClicked = { },
                             onSecondaryActionButtonClicked = {
-                                confirmedAddress = it.shippingAddress
-                                openConfirmAddressAlertDialog.value = true
+                                when (it.viewType) {
+                                    PPOCardViewType.CONFIRM_ADDRESS -> {
+                                        confirmedAddress = it.shippingAddress
+                                        openConfirmAddressAlertDialog.value = true
+                                    }
+                                    else ->  {}
+                                }
                             },
                             timeNumberForAction = it.timeNumberForAction
                         )
@@ -189,18 +194,14 @@ enum class PledgedProjectsOverviewScreenTestTag {
 // For preview purposes only, will remove once we have the PPO Card payload model from graph
 data class PPOCardDataMock(
     val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
-    val onCardClick: () -> Unit = { },
     val projectName: String = "This is a project name",
     val projectSlug: String = "",
     val pledgeAmount: String = "$14.00",
     val imageUrl: String = "",
     val imageContentDescription: String = "",
     val creatorName: String = "Creator Name",
-    val sendAMessageClickAction: () -> Unit = { },
     val shippingAddress: String = "",
     val showBadge: Boolean = true,
-    val onActionButtonClicked: () -> Unit = {},
-    val onSecondaryActionButtonClicked: () -> Unit = {},
     val timeNumberForAction: Int = 25,
     val backingDetailsUrl: String = "https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion"
 )

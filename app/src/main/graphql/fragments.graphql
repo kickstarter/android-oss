@@ -362,6 +362,32 @@ fragment shippingRule on ShippingRule {
     }
 }
 
+
+
+fragment ppoCard on Backing {
+    id
+    deliveryAddress {
+        addressLine1
+        addressLine2
+        city
+        countryCode
+        id
+        postalCode
+    }
+    amount {
+        ...amount
+    }
+    project {
+        name
+        id
+        slug
+        ...full
+        creator {
+            name
+        }
+    }
+}
+
 fragment user on User {
     name
     id

@@ -22,7 +22,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
+class LatePPOCardCheckoutViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: LatePledgeCheckoutViewModel
 

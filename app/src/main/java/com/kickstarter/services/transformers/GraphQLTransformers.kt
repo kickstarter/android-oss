@@ -2,10 +2,14 @@ package com.kickstarter.services.transformers
 
 import CreateAttributionEventMutation
 import CreateOrUpdateBackingAddressMutation
+import PledgedProjectsOverviewQuery
 import TriggerThirdPartyEventMutation
 import UserPrivacyQuery
+import android.provider.Telephony.Mms.Addr
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.features.pledgedprojectsoverview.data.AddressEnvelope
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
@@ -34,8 +38,12 @@ import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewData
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
+import fragment.PpoCard
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -898,4 +906,64 @@ fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAdd
             .build()
 
     return CreateOrUpdateBackingAddressMutation.builder().input(graphInput).build()
+}
+
+fun getPledgedProjectsOverviewQuery(queryInput : PledgedProjectsOverviewData) : PledgedProjectsOverviewQuery {
+        return PledgedProjectsOverviewQuery.builder()
+            .after(queryInput.after)
+            .before(queryInput.before)
+            .first(queryInput.first)
+            .last(queryInput.last)
+            .build()
+}
+
+fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse : PledgedProjectsOverviewQuery.PledgeProjectsOverview) : PledgedProjectsOverviewEnvelope {
+    val ppoCards = ppoResponse.pledges()?.edges()?.map {
+        val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
+         PPOCard.builder()
+             .backingId(ppoBackingData?.id())
+             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
+             .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
+             .currencySymbol(ppoBackingData?.amount()?.fragments()?.amount()?.symbol())
+             .projectName(ppoBackingData?.project()?.name())
+             .projectId(ppoBackingData?.project()?.id())
+             .projectSlug(ppoBackingData?.project()?.slug())
+             .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
+             .creatorName(ppoBackingData?.project()?.creator()?.name())
+             .address(
+                 AddressEnvelope.builder()
+                     .addressLine1(ppoBackingData?.deliveryAddress()?.addressLine1())
+                     .addressLine2(ppoBackingData?.deliveryAddress()?.addressLine2())
+                     .city(ppoBackingData?.deliveryAddress()?.city())
+                     .postalCode(ppoBackingData?.deliveryAddress()?.postalCode())
+                     .countryCode(ppoBackingData?.deliveryAddress()?.countryCode())
+                     .id(ppoBackingData?.deliveryAddress()?.id())
+                     .build()
+             )
+            .build()
+        //will add additional fields such as card type and badges once backend response is finished
+    }
+
+    val categories = ppoResponse.categories()?.map {
+        com.kickstarter.features.pledgedprojectsoverview.data.Category.builder()
+            .title(it.title())
+            .count(it.count())
+            .slug(it.slug())
+            .build()
+    }
+
+     val pageInfoEnvelope = ppoResponse.pledges()?.pageInfo().let {
+         PageInfoEnvelope.builder()
+             .hasNextPage(it?.hasNextPage() ?: false)
+             .endCursor(it?.endCursor() ?: "")
+             .hasPreviousPage(it?.hasPreviousPage() ?: false)
+             .startCursor(it?.startCursor() ?: "")
+             .build()
+     }
+
+    return PledgedProjectsOverviewEnvelope.builder()
+        .pledges(ppoCards)
+        .categories(categories)
+        .pageInfoEnvelope(pageInfoEnvelope)
+        .build()
 }

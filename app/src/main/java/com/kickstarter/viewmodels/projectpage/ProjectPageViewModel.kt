@@ -2,11 +2,13 @@ package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewData
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
@@ -417,6 +419,13 @@ interface ProjectPageViewModel {
 
             val mappedProjectErrors = mappedProjectNotification
                 .compose(errorsV2())
+
+            apolloClient.getPledgedProjectsOverviewPledges(
+                PledgedProjectsOverviewData(5, null, 5, null)
+            ).subscribe {
+                Log.d("leigh", it.ppoCardData.toString())
+            }.addToDisposable(disposables)
+
 
             mappedProjectValues
                 .subscribe {

@@ -8,7 +8,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
 import org.junit.Test
 
-class PledgeDataTest : KSRobolectricTestCase() {
+class PPOCardDataTest : KSRobolectricTestCase() {
     @Test
     fun testDefaultInit() {
         val project = ProjectFactory.project()

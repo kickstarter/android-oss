@@ -18,6 +18,7 @@ class PPOCardFactory private constructor() {
             projectSlug: String?,
             imageUrl: String?,
             creatorName: String?,
+            backingDetailsUrl: String?,
             viewType: PPOCardViewType?
         ): PPOCard {
             return PPOCard.builder()
@@ -31,6 +32,7 @@ class PPOCardFactory private constructor() {
                 .projectSlug(projectSlug)
                 .imageUrl(imageUrl)
                 .creatorName(creatorName)
+                .backingDetailsUrl(backingDetailsUrl)
                 .viewType(viewType)
                 .build()
         }
@@ -47,6 +49,7 @@ class PPOCardFactory private constructor() {
                 projectSlug = "hello/hello",
                 imageUrl = "image/url",
                 creatorName = "creatorName",
+                backingDetailsUrl = "backing/details/url",
                 viewType = PPOCardViewType.CONFIRM_ADDRESS
             )
         }

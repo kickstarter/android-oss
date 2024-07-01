@@ -17,6 +17,7 @@ class PPOCard private constructor(
     val projectSlug: String?,
     val imageUrl: String?,
     val creatorName: String?,
+    val backingDetailsUrl: String?,
     val viewType: PPOCardViewType?
 
 ) : Parcelable {
@@ -31,6 +32,7 @@ class PPOCard private constructor(
     fun projectSlug() = this.projectSlug
     fun imageUrl() = this.imageUrl
     fun creatorName() = this.creatorName
+    fun backingDetailsUrl() = this.backingDetailsUrl
     fun viewType() = this.viewType
 
     @Parcelize
@@ -45,6 +47,7 @@ class PPOCard private constructor(
         var projectSlug: String? = null,
         var imageUrl: String? = null,
         var creatorName: String? = null,
+        var backingDetailsUrl: String? = null,
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
 
@@ -58,6 +61,7 @@ class PPOCard private constructor(
         fun projectSlug(projectSlug: String?) = apply { this.projectSlug = projectSlug }
         fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
         fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
+        fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
@@ -71,6 +75,7 @@ class PPOCard private constructor(
             projectSlug = projectSlug,
             imageUrl = imageUrl,
             creatorName = creatorName,
+            backingDetailsUrl = backingDetailsUrl,
             viewType = viewType,
         )
     }
@@ -86,6 +91,7 @@ class PPOCard private constructor(
         projectSlug = projectSlug,
         imageUrl = imageUrl,
         creatorName = creatorName,
+        backingDetailsUrl = backingDetailsUrl,
         viewType = viewType,
     )
 
@@ -107,6 +113,7 @@ class PPOCard private constructor(
                 projectSlug() == other.projectSlug() &&
                 creatorName() == other.creatorName() &&
                 imageUrl() == other.imageUrl() &&
+                    backingDetailsUrl() == other.backingDetailsUrl() &&
                 viewType() == other.viewType()
         }
         return equals

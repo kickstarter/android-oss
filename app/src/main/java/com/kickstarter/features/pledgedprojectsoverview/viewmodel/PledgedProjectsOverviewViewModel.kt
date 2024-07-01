@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardDataMock
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
@@ -25,13 +27,13 @@ import kotlinx.coroutines.rx2.asFlow
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val ppoCards = MutableStateFlow<PagingData<PPOCardDataMock>>(PagingData.empty())
+    private val ppoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.from(listOf(PPOCardFactory.confirmAddressCard())))
     private val totalAlerts = MutableStateFlow<Int>(0)
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int) -> Unit = {}
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
-    val ppoCardsState: StateFlow<PagingData<PPOCardDataMock>> = ppoCards.asStateFlow()
+    val ppoCardsState: StateFlow<PagingData<PPOCard>> = ppoCards.asStateFlow()
     val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
 
     fun showSnackbarAndRefreshCardsList() {

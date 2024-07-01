@@ -12,7 +12,8 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 
-class PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
+class
+PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
 
     private val backButton =
         composeTestRule.onNodeWithTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name)

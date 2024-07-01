@@ -167,6 +167,9 @@
             android:name=".ui.activities.MessageThreadsActivity"
             android:parentActivityName=".ui.activities.ProfileActivity" />
         <activity
+          android:name=".features.pledgedprojectsoverview.ui.BackingDetailsActivity"
+          android:parentActivityName=".features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity" />
+        <activity
             android:name=".features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity" />
         <activity

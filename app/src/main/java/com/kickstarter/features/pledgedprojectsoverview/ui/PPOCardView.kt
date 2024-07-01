@@ -68,6 +68,7 @@ fun PPOCardPreview() {
                     showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 5
                 )
 
@@ -84,6 +85,7 @@ fun PPOCardPreview() {
                     showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 6
                 )
 
@@ -101,6 +103,7 @@ fun PPOCardPreview() {
                     showBadge = false,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 6
                 )
 
@@ -118,6 +121,7 @@ fun PPOCardPreview() {
                     showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 7
                 )
 
@@ -135,6 +139,7 @@ fun PPOCardPreview() {
                     showBadge = false,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 7
                 )
 
@@ -152,6 +157,7 @@ fun PPOCardPreview() {
                     showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 8
                 )
 
@@ -169,6 +175,7 @@ fun PPOCardPreview() {
                     showBadge = false,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
                     timeNumberForAction = 8
                 )
 
@@ -198,6 +205,7 @@ enum class PPOCardViewTestTag {
 fun PPOCardView(
     viewType: PPOCardViewType,
     onCardClick: () -> Unit,
+    onProjectPledgeSummaryClick: () -> Unit,
     projectName: String? = null,
     pledgeAmount: String? = null,
     imageUrl: String? = null,
@@ -240,7 +248,8 @@ fun PPOCardView(
                     projectName = projectName,
                     pledgeAmount = pledgeAmount,
                     imageUrl = imageUrl,
-                    imageContentDescription = imageContentDescription
+                    imageContentDescription = imageContentDescription,
+                    onProjectPledgeSummaryClick = onProjectPledgeSummaryClick
                 )
 
                 CreatorNameSendMessageView(
@@ -280,9 +289,11 @@ fun ProjectPledgeSummaryView(
     pledgeAmount: String? = null,
     imageUrl: String? = null,
     imageContentDescription: String? = null,
+    onProjectPledgeSummaryClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
+            .clickable { onProjectPledgeSummaryClick.invoke() }
             .fillMaxWidth()
             .padding(all = dimensions.paddingMediumSmall)
     ) {

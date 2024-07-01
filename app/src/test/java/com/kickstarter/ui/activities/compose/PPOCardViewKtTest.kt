@@ -24,6 +24,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.CONFIRM_ADDRESS,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
@@ -53,6 +54,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.ADDRESS_CONFIRMED,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
@@ -83,6 +85,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.FIX_PAYMENT,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
@@ -113,6 +116,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.PAYMENT_FIXED,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
@@ -141,6 +145,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.AUTHENTICATE_CARD,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$60.00",
                     creatorName = "Some really really really really really really really long name",
@@ -171,6 +176,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.CARD_AUTHENTICATED,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$60.00",
                     creatorName = "Some really really really really really really really long name",
@@ -199,6 +205,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.TAKE_SURVEY,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$70.00",
                     creatorName = "Some really really really really really really really long name",
@@ -228,6 +235,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                 PPOCardView(
                     viewType = PPOCardViewType.SURVEY_SUBMITTED,
                     onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$70.00",
                     creatorName = "Some really really really really really really really long name",

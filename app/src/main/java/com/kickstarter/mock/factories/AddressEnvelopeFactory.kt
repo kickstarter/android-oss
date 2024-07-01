@@ -13,7 +13,7 @@ class AddressEnvelopeFactory private constructor() {
             countryCode: CountryCode?,
             postalCode: String?,
             id: String?,
-        ) : AddressEnvelope {
+        ): AddressEnvelope {
             return AddressEnvelope.builder()
                 .addressLine1(addressLine1)
                 .addressLine2(addressLine2)
@@ -24,7 +24,7 @@ class AddressEnvelopeFactory private constructor() {
                 .build()
         }
 
-        fun usaAddress() : AddressEnvelope {
+        fun usaAddress(): AddressEnvelope {
             return addressEnvelope(
                 addressLine1 = "1234 Maple Lane",
                 addressLine2 = "",
@@ -32,7 +32,7 @@ class AddressEnvelopeFactory private constructor() {
                 countryCode = CountryCode.US,
                 postalCode = "12345",
                 id = "1234567890",
-                )
+            )
         }
     }
 }

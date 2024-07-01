@@ -4,7 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import type.CountryCode
 
-
 @Parcelize
 class AddressEnvelope private constructor(
     val addressLine1: String?,
@@ -33,12 +32,12 @@ class AddressEnvelope private constructor(
         var id: String? = null,
     ) : Parcelable {
 
-        fun addressLine1(addressLine1 : String?) = apply { this.addressLine1 = addressLine1 }
-        fun addressLine2(addressLine2 : String?) = apply { this.addressLine2 = addressLine2 }
-        fun city(city : String?) = apply { this.city = city }
-        fun countryCode(countryCode : CountryCode?) = apply { this.countryCode = countryCode }
-        fun postalCode(postalCode : String?) = apply { this.postalCode = postalCode }
-        fun id(id : String?) = apply { this.id = id }
+        fun addressLine1(addressLine1: String?) = apply { this.addressLine1 = addressLine1 }
+        fun addressLine2(addressLine2: String?) = apply { this.addressLine2 = addressLine2 }
+        fun city(city: String?) = apply { this.city = city }
+        fun countryCode(countryCode: CountryCode?) = apply { this.countryCode = countryCode }
+        fun postalCode(postalCode: String?) = apply { this.postalCode = postalCode }
+        fun id(id: String?) = apply { this.id = id }
 
         fun build() = AddressEnvelope(
             addressLine1 = addressLine1,
@@ -56,24 +55,24 @@ class AddressEnvelope private constructor(
         city = city,
         countryCode = countryCode,
         postalCode = postalCode,
-        id = id    )
+        id = id
+    )
 
     companion object {
         @JvmStatic
-        fun builder() =  Builder()
+        fun builder() = Builder()
     }
 
     override fun equals(other: Any?): Boolean {
         var equals = super.equals(other)
         if (other is AddressEnvelope) {
-            equals =  addressLine1() == other.addressLine1() &&
-                    addressLine2() == other.addressLine2() &&
-                    city() == other.city() &&
-                    countryCode() == other.countryCode() &&
-                    postalCode() == other.postalCode() &&
-                    id() == other.id()
+            equals = addressLine1() == other.addressLine1() &&
+                addressLine2() == other.addressLine2() &&
+                city() == other.city() &&
+                countryCode() == other.countryCode() &&
+                postalCode() == other.postalCode() &&
+                id() == other.id()
         }
         return equals
     }
-
 }

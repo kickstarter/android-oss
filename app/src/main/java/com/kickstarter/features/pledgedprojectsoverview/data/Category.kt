@@ -1,14 +1,13 @@
 package com.kickstarter.features.pledgedprojectsoverview.data
 
 import android.os.Parcelable
-import com.kickstarter.services.apiresponses.ProjectsEnvelope
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class Category private constructor(
-    val count : Int?,
-    val slug : String?,
-    val title : String?
+    val count: Int?,
+    val slug: String?,
+    val title: String?
 ) : Parcelable {
 
     fun count() = this.count
@@ -48,8 +47,8 @@ class Category private constructor(
         var equals = super.equals(other)
         if (other is Category) {
             equals = count() == other.count() &&
-                    slug() == other.slug() &&
-                    title() == other.title()
+                slug() == other.slug() &&
+                title() == other.title()
         }
         return equals
     }

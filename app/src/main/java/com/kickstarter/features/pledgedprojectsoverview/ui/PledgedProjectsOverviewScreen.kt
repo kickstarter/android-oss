@@ -149,7 +149,7 @@ fun PledgedProjectsOverviewScreen(
                                         confirmedAddress = it.shippingAddress
                                         openConfirmAddressAlertDialog.value = true
                                     }
-                                    else ->  {}
+                                    else -> {}
                                 }
                             },
                             timeNumberForAction = it.timeNumberForAction

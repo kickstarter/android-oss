@@ -46,6 +46,8 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -73,8 +75,6 @@ import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
 import com.kickstarter.services.transformers.commentTransformer
@@ -1668,7 +1668,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
-    override fun getPledgedProjectsOverviewPledges(inputData : PledgedProjectsOverviewQueryData) : Observable<PledgedProjectsOverviewEnvelope>{
+    override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<PledgedProjectsOverviewEnvelope>()
 

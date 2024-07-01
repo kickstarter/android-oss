@@ -8,7 +8,7 @@ class PPOCardFactory private constructor() {
     companion object {
 
         fun ppoCard(
-            backingID : String?,
+            backingID: String?,
             address: AddressEnvelope?,
             amount: String?,
             currencyCode: CurrencyCode?,
@@ -19,7 +19,7 @@ class PPOCardFactory private constructor() {
             imageUrl: String?,
             creatorName: String?,
             viewType: PPOCardViewType?
-        ) : PPOCard {
+        ): PPOCard {
             return PPOCard.builder()
                 .backingId(backingID)
                 .address(address)
@@ -35,7 +35,7 @@ class PPOCardFactory private constructor() {
                 .build()
         }
 
-        fun confirmAddressCard() : PPOCard {
+        fun confirmAddressCard(): PPOCard {
             return ppoCard(
                 backingID = "1234",
                 amount = "12.0",
@@ -48,7 +48,7 @@ class PPOCardFactory private constructor() {
                 imageUrl = "image/url",
                 creatorName = "creatorName",
                 viewType = PPOCardViewType.CONFIRM_ADDRESS
-                )
+            )
         }
     }
 }

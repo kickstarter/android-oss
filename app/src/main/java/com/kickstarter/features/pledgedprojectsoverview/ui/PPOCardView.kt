@@ -193,7 +193,8 @@ enum class PPOCardViewType {
     AUTHENTICATE_CARD,
     CARD_AUTHENTICATED,
     TAKE_SURVEY,
-    SURVEY_SUBMITTED
+    SURVEY_SUBMITTED,
+    UNKNOWN,
 }
 
 enum class PPOCardViewTestTag {
@@ -242,6 +243,7 @@ fun PPOCardView(
                     PPOCardViewType.CARD_AUTHENTICATED -> {}
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyAlertsView(timeNumberForAction)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedAlertsView(timeNumberForAction)
+                    PPOCardViewType.UNKNOWN -> { }
                 }
 
                 ProjectPledgeSummaryView(
@@ -277,6 +279,7 @@ fun PPOCardView(
                     PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView()
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
+                    PPOCardViewType.UNKNOWN -> {}
                 }
             }
         }

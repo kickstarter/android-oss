@@ -8,6 +8,8 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import android.util.Pair
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutFactory
@@ -302,6 +304,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): io.reactivex.Observable<Boolean> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): io.reactivex.Observable<PledgedProjectsOverviewEnvelope> {
         return io.reactivex.Observable.empty()
     }
 }

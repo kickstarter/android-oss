@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.AddressEnvelope
+import com.kickstarter.mock.factories.AddressEnvelopeFactory
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -64,7 +66,7 @@ fun PPOCardPreview() {
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+                    shippingAddress = AddressEnvelopeFactory.usaAddress().addressLine1(),
                     showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
@@ -193,7 +195,8 @@ enum class PPOCardViewType {
     AUTHENTICATE_CARD,
     CARD_AUTHENTICATED,
     TAKE_SURVEY,
-    SURVEY_SUBMITTED
+    SURVEY_SUBMITTED,
+    UNKNOWN,
 }
 
 enum class PPOCardViewTestTag {
@@ -242,6 +245,7 @@ fun PPOCardView(
                     PPOCardViewType.CARD_AUTHENTICATED -> {}
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyAlertsView(timeNumberForAction)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedAlertsView(timeNumberForAction)
+                    PPOCardViewType.UNKNOWN -> { }
                 }
 
                 ProjectPledgeSummaryView(
@@ -277,6 +281,7 @@ fun PPOCardView(
                     PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView()
                     PPOCardViewType.TAKE_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
+                    PPOCardViewType.UNKNOWN -> {}
                 }
             }
         }

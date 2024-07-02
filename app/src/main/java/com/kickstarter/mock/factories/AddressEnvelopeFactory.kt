@@ -7,12 +7,12 @@ class AddressEnvelopeFactory private constructor() {
     companion object {
 
         fun addressEnvelope(
-            addressLine1: String?,
-            addressLine2: String?,
-            city: String?,
-            countryCode: CountryCode?,
-            postalCode: String?,
-            id: String?,
+            addressLine1: String? = null,
+            addressLine2: String? = null,
+            city: String? = null,
+            countryCode: CountryCode? = null,
+            postalCode: String? = null,
+            id: String? = null,
         ): AddressEnvelope {
             return AddressEnvelope.builder()
                 .addressLine1(addressLine1)

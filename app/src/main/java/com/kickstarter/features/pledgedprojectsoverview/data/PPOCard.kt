@@ -16,8 +16,11 @@ class PPOCard private constructor(
     val projectId: String?,
     val projectSlug: String?,
     val imageUrl: String?,
+    val imageContentDescription: String?,
     val creatorName: String?,
     val backingDetailsUrl: String?,
+    val showBadge: Boolean,
+    val timeNumberForAction: Int,
     val viewType: PPOCardViewType?
 
 ) : Parcelable {
@@ -31,8 +34,11 @@ class PPOCard private constructor(
     fun projectId() = this.projectId
     fun projectSlug() = this.projectSlug
     fun imageUrl() = this.imageUrl
+    fun imageContentDescription() = this.imageContentDescription
     fun creatorName() = this.creatorName
     fun backingDetailsUrl() = this.backingDetailsUrl
+    fun showBadge() = this.showBadge
+    fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
 
     @Parcelize
@@ -46,8 +52,11 @@ class PPOCard private constructor(
         var projectId: String? = null,
         var projectSlug: String? = null,
         var imageUrl: String? = null,
+        var imageContentDescription: String? = null,
         var creatorName: String? = null,
         var backingDetailsUrl: String? = null,
+        var showBadge: Boolean = false,
+        var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
 
@@ -60,8 +69,11 @@ class PPOCard private constructor(
         fun projectId(projectId: String?) = apply { this.projectId = projectId }
         fun projectSlug(projectSlug: String?) = apply { this.projectSlug = projectSlug }
         fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
+        fun imageContentDescription(imageContentDescription: String?) = apply { this.imageContentDescription = imageContentDescription }
         fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
+        fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
+        fun showBadge(showBadge: Boolean) = apply { this.showBadge = showBadge }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
@@ -74,8 +86,11 @@ class PPOCard private constructor(
             projectId = projectId,
             projectSlug = projectSlug,
             imageUrl = imageUrl,
+            imageContentDescription = imageUrl,
             creatorName = creatorName,
             backingDetailsUrl = backingDetailsUrl,
+            showBadge = showBadge,
+            timeNumberForAction = timeNumberForAction,
             viewType = viewType,
         )
     }
@@ -90,8 +105,11 @@ class PPOCard private constructor(
         projectId = projectId,
         projectSlug = projectSlug,
         imageUrl = imageUrl,
+        imageContentDescription = imageContentDescription,
         creatorName = creatorName,
         backingDetailsUrl = backingDetailsUrl,
+        showBadge = showBadge,
+        timeNumberForAction = timeNumberForAction,
         viewType = viewType,
     )
 
@@ -113,7 +131,10 @@ class PPOCard private constructor(
                 projectSlug() == other.projectSlug() &&
                 creatorName() == other.creatorName() &&
                 imageUrl() == other.imageUrl() &&
+                imageContentDescription() == other.imageContentDescription() &&
                 backingDetailsUrl() == other.backingDetailsUrl() &&
+                showBadge() == other.showBadge() &&
+                timeNumberForAction() == other.timeNumberForAction() &&
                 viewType() == other.viewType()
         }
         return equals

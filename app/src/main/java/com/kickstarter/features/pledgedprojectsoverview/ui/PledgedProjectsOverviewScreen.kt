@@ -29,6 +29,9 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.mock.factories.AddressEnvelopeFactory
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -46,13 +49,13 @@ private fun PledgedProjectsOverviewScreenPreview() {
             backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
             val ppoCardList1 = (0..10).map {
-                PPOCardDataMock()
+                PPOCardFactory.confirmAddressCard()
             }
-            val ppoCardList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
             PledgedProjectsOverviewScreen(
                 modifier = Modifier.padding(padding),
                 lazyColumnListState = rememberLazyListState(),
-                ppoCards = ppoCardList,
+                ppoCards = ppoCardPagingList,
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
@@ -72,14 +75,14 @@ fun PledgedProjectsOverviewScreen(
     onAddressConfirmed: () -> Unit,
     lazyColumnListState: LazyListState,
     errorSnackBarHostState: SnackbarHostState,
-    ppoCards: LazyPagingItems<PPOCardDataMock>,
+    ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
     onCardClick: () -> Unit,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
     onSendMessageClick: (projectName: String) -> Unit
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
-    var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
+    var confirmedAddress by remember { mutableStateOf(AddressEnvelopeFactory.addressEnvelope()) } // TODO: This is either the original shipping address or the user-edited address
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -131,28 +134,28 @@ fun PledgedProjectsOverviewScreen(
 
                     ppoCards[index]?.let {
                         PPOCardView(
-                            viewType = it.viewType,
+                            viewType = it.viewType() ?: PPOCardViewType.UNKNOWN,
                             onCardClick = { },
-                            onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl) },
-                            projectName = it.projectName,
-                            pledgeAmount = it.pledgeAmount,
-                            imageUrl = it.imageUrl,
-                            imageContentDescription = it.imageContentDescription,
-                            creatorName = it.creatorName,
-                            sendAMessageClickAction = { onSendMessageClick(it.projectSlug) },
-                            shippingAddress = it.shippingAddress,
-                            showBadge = it.showBadge,
+                            onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
+                            projectName = it.projectName(),
+                            pledgeAmount = it.amount(),
+                            imageUrl = it.imageUrl(),
+                            imageContentDescription = it.imageContentDescription(),
+                            creatorName = it.creatorName(),
+                            sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
+                            shippingAddress = it.address()?.addressLine1() ?: "", //TODO replace with formatted address from PPO response
+                            showBadge = it.showBadge(),
                             onActionButtonClicked = { },
                             onSecondaryActionButtonClicked = {
-                                when (it.viewType) {
+                                when (it.viewType()) {
                                     PPOCardViewType.CONFIRM_ADDRESS -> {
-                                        confirmedAddress = it.shippingAddress
+                                        confirmedAddress = it.address() ?: AddressEnvelopeFactory.addressEnvelope()
                                         openConfirmAddressAlertDialog.value = true
                                     }
                                     else -> {}
                                 }
                             },
-                            timeNumberForAction = it.timeNumberForAction
+                            timeNumberForAction = it.timeNumberForAction()
                         )
                     }
                 }
@@ -169,7 +172,7 @@ fun PledgedProjectsOverviewScreen(
             KSAlertDialog(
                 setShowDialog = { openConfirmAddressAlertDialog.value = it },
                 headlineText = "Confirm your address",
-                bodyText = confirmedAddress,
+                bodyText = confirmedAddress.addressLine1() ?: "",
                 leftButtonText = stringResource(id = R.string.Cancel),
                 leftButtonAction = { openConfirmAddressAlertDialog.value = false },
                 rightButtonText = stringResource(id = R.string.Confirm),
@@ -192,16 +195,16 @@ enum class PledgedProjectsOverviewScreenTestTag {
 }
 
 // For preview purposes only, will remove once we have the PPO Card payload model from graph
-data class PPOCardDataMock(
-    val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
-    val projectName: String = "This is a project name",
-    val projectSlug: String = "",
-    val pledgeAmount: String = "$14.00",
-    val imageUrl: String = "",
-    val imageContentDescription: String = "",
-    val creatorName: String = "Creator Name",
-    val shippingAddress: String = "",
-    val showBadge: Boolean = true,
-    val timeNumberForAction: Int = 25,
-    val backingDetailsUrl: String = "https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion"
-)
+//data class PPOCardDataMock(
+//    val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
+//    val projectName: String = "This is a project name",
+//    val projectSlug: String = "",
+//    val pledgeAmount: String = "$14.00",
+//    val imageUrl: String = "",
+//    val imageContentDescription: String = "",
+//    val creatorName: String = "Creator Name",
+//    val shippingAddress: String = "",
+//    val showBadge: Boolean = true,
+//    val timeNumberForAction: Int = 25,
+//    val backingDetailsUrl: String = "https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion"
+//)

@@ -19,10 +19,17 @@ import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.Project
+import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.snackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import com.kickstarter.viewmodels.PlaygroundViewModel.Factory
+import com.stripe.android.ApiResultCallback
+import com.stripe.android.PaymentIntentResult
+import com.stripe.android.Stripe
+import com.stripe.android.StripeIntentResult
+import com.stripe.android.confirmPaymentIntent
+import com.stripe.android.model.ConfirmPaymentIntentParams
 import com.stripe.android.paymentsheet.CreateIntentResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
@@ -40,6 +47,7 @@ class PlaygroundActivity : ComponentActivity() {
     val viewModel: PlaygroundViewModel by viewModels { viewModelFactory }
 
     private lateinit var flowController: PaymentSheet.FlowController
+    private lateinit var stripeSDK: Stripe
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -52,13 +60,27 @@ class PlaygroundActivity : ComponentActivity() {
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = Factory(env)
+            stripeSDK = requireNotNull(env.stripe())
         }
 
         viewModel.payloadUIState.asObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (it.status.isNotBlank())
-                    Toast.makeText(this, "complete_order status: ${it.status}", Toast.LENGTH_LONG).show()
+                if (it.status == "succeeded")
+                    Toast.makeText(this, "complete_order status: ${it.status}", Toast.LENGTH_LONG)
+                        .show()
+                if (it.trigger3ds && it.stripePaymentMethodId.isNotEmpty()) {
+                    Toast.makeText(
+                        this,
+                        "complete_order status: ${it.status} triggering 3DS flow",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    stripeSDK.handleNextActionForPayment(
+                        this,
+                        clientSecret = it.clientSecret,
+                        //   accountid = "acct_1Ir6hZ4NJG33TWAg"
+                    )
+                }
             }
             .addToDisposable(compositeDisposable)
 
@@ -76,6 +98,28 @@ class PlaygroundActivity : ComponentActivity() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        stripeSDK.onPaymentResult(
+            requestCode, intent,
+            object : ApiResultCallback<PaymentIntentResult> {
+                override fun onSuccess(result: PaymentIntentResult) {
+                    if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
+                        if (result.intent.requiresAction() == false ) {
+                            Toast.makeText(this@PlaygroundActivity, " 3DS flow StripeIntentResult.Outcome = SUCCEEDED, PaymentIntent: ${result.intent.id} requiresAction: ${result.intent.requiresAction()}", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
+                }
+
+                override fun onError(e: Exception) {
+                    Toast.makeText(this@PlaygroundActivity, " 3DS flow StripeIntentResult.Outcome = ERRORED", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        )
+    }
+
     private fun createFlowController() = PaymentSheet.FlowController.create(
         activity = this,
         paymentOptionCallback = ::onPaymentOption,
@@ -84,8 +128,12 @@ class PlaygroundActivity : ComponentActivity() {
             // -  Make a request to complete to create a PaymentIntent and return its client secret
             try {
                 viewModel.completeOrder(paymentMethod.id ?: "")
+                viewModel.payloadUIState.value.apply {
+                    if (this.status == "succeeded") {
+                        CreateIntentResult.Success(this.clientSecret)
+                    }
+                }
                 viewModel.payloadUIState.collect {
-                    CreateIntentResult.Success(it.clientSecret)
                 }
             } catch (e: Exception) {
                 Toast.makeText(this, "error when calling complete_order", Toast.LENGTH_LONG).show()

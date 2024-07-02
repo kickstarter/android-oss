@@ -17,5 +17,7 @@ data class CompleteOrderInput(
  */
 data class CompleteOrderPayload(
     val status: String = "",
-    val clientSecret: String = ""
+    val clientSecret: String = "",
+    val trigger3ds: Boolean = false,
+    val stripePaymentMethodId: String = ""
 )

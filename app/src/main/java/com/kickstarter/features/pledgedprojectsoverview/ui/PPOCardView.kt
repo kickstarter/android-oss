@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
-import com.kickstarter.features.pledgedprojectsoverview.data.AddressEnvelope
 import com.kickstarter.mock.factories.AddressEnvelopeFactory
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey

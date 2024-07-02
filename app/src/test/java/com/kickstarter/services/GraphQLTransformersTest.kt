@@ -1,6 +1,5 @@
 package com.kickstarter.services
 
-import PledgedProjectsOverviewQuery
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.services.transformers.aiDisclosureTransformer

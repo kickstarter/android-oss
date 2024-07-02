@@ -143,7 +143,7 @@ fun PledgedProjectsOverviewScreen(
                             imageContentDescription = it.imageContentDescription(),
                             creatorName = it.creatorName(),
                             sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
-                            shippingAddress = it.address()?.addressLine1() ?: "", //TODO replace with formatted address from PPO response
+                            shippingAddress = it.address()?.addressLine1() ?: "", // TODO replace with formatted address from PPO response
                             showBadge = it.showBadge(),
                             onActionButtonClicked = { },
                             onSecondaryActionButtonClicked = {
@@ -195,7 +195,7 @@ enum class PledgedProjectsOverviewScreenTestTag {
 }
 
 // For preview purposes only, will remove once we have the PPO Card payload model from graph
-//data class PPOCardDataMock(
+// data class PPOCardDataMock(
 //    val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
 //    val projectName: String = "This is a project name",
 //    val projectSlug: String = "",
@@ -207,4 +207,4 @@ enum class PledgedProjectsOverviewScreenTestTag {
 //    val showBadge: Boolean = true,
 //    val timeNumberForAction: Int = 25,
 //    val backingDetailsUrl: String = "https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion"
-//)
+// )

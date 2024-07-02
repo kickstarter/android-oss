@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.utils.TransitionUtils
@@ -75,6 +76,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         totalAlerts = totalAlerts.value,
                         onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
                         onCardClick = { },
+                        onPrimaryActionClicked = { card -> handlePrimaryClickAction(card) },
                         onProjectPledgeSummaryClick = { url -> openBackingDetailsWebView(url) },
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) }
                     )
@@ -99,6 +101,20 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         this@PledgedProjectsOverviewActivity.transition(TransitionUtils.slideInFromLeft())
                     }
                 })
+            }
+        }
+    }
+
+    private fun handlePrimaryClickAction(card: PPOCard) {
+        when(card.viewType()) {
+            PPOCardViewType.CONFIRM_ADDRESS -> {
+                openBackingDetailsWebView(card.backingDetailsUrl() ?: "")
+            }
+
+            // Add other cards here
+
+            else -> {
+
             }
         }
     }

@@ -59,6 +59,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onBackPressed = {},
                 onAddressConfirmed = {},
                 onCardClick = {},
+                onPrimaryActionClicked = {},
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState()
@@ -77,6 +78,7 @@ fun PledgedProjectsOverviewScreen(
     ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
     onCardClick: () -> Unit,
+    onPrimaryActionClicked: (cardForAction: PPOCard) -> Unit,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
     onSendMessageClick: (projectName: String) -> Unit
 ) {
@@ -144,7 +146,7 @@ fun PledgedProjectsOverviewScreen(
                             sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
                             shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
                             showBadge = it.showBadge(),
-                            onActionButtonClicked = { },
+                            onActionButtonClicked = { onPrimaryActionClicked.invoke(it) },
                             onSecondaryActionButtonClicked = {
                                 when (it.viewType()) {
                                     PPOCardViewType.CONFIRM_ADDRESS -> {

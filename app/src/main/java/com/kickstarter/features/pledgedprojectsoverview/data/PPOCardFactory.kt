@@ -1,7 +1,6 @@
 package com.kickstarter.features.pledgedprojectsoverview.data
 
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
-import com.kickstarter.mock.factories.AddressEnvelopeFactory
 import type.CurrencyCode
 
 class PPOCardFactory private constructor() {
@@ -9,7 +8,7 @@ class PPOCardFactory private constructor() {
 
         fun ppoCard(
             backingID: String?,
-            address: AddressEnvelope?,
+            address: String?,
             amount: String?,
             currencyCode: CurrencyCode?,
             currencySymbol: String?,
@@ -45,7 +44,7 @@ class PPOCardFactory private constructor() {
             return ppoCard(
                 backingID = "1234",
                 amount = "12.0",
-                address = AddressEnvelopeFactory.usaAddress(),
+                address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",

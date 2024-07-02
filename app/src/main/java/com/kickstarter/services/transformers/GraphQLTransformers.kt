@@ -7,7 +7,6 @@ import TriggerThirdPartyEventMutation
 import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
-import com.kickstarter.features.pledgedprojectsoverview.data.AddressEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
@@ -928,16 +927,6 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             .projectSlug(ppoBackingData?.project()?.slug())
             .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
             .creatorName(ppoBackingData?.project()?.creator()?.name())
-            .address(
-                AddressEnvelope.builder()
-                    .addressLine1(ppoBackingData?.deliveryAddress()?.addressLine1())
-                    .addressLine2(ppoBackingData?.deliveryAddress()?.addressLine2())
-                    .city(ppoBackingData?.deliveryAddress()?.city())
-                    .postalCode(ppoBackingData?.deliveryAddress()?.postalCode())
-                    .countryCode(ppoBackingData?.deliveryAddress()?.countryCode())
-                    .id(ppoBackingData?.deliveryAddress()?.id())
-                    .build()
-            )
             .build()
         // will add additional fields such as card type and badges once backend response is finished
     }

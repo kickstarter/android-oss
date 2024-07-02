@@ -31,7 +31,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
-import com.kickstarter.mock.factories.AddressEnvelopeFactory
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -82,7 +81,7 @@ fun PledgedProjectsOverviewScreen(
     onSendMessageClick: (projectName: String) -> Unit
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
-    var confirmedAddress by remember { mutableStateOf(AddressEnvelopeFactory.addressEnvelope()) } // TODO: This is either the original shipping address or the user-edited address
+    var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -143,13 +142,13 @@ fun PledgedProjectsOverviewScreen(
                             imageContentDescription = it.imageContentDescription(),
                             creatorName = it.creatorName(),
                             sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
-                            shippingAddress = it.address()?.addressLine1() ?: "", // TODO replace with formatted address from PPO response
+                            shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
                             showBadge = it.showBadge(),
                             onActionButtonClicked = { },
                             onSecondaryActionButtonClicked = {
                                 when (it.viewType()) {
                                     PPOCardViewType.CONFIRM_ADDRESS -> {
-                                        confirmedAddress = it.address() ?: AddressEnvelopeFactory.addressEnvelope()
+                                        confirmedAddress = it.address() ?: ""
                                         openConfirmAddressAlertDialog.value = true
                                     }
                                     else -> {}
@@ -172,7 +171,7 @@ fun PledgedProjectsOverviewScreen(
             KSAlertDialog(
                 setShowDialog = { openConfirmAddressAlertDialog.value = it },
                 headlineText = "Confirm your address",
-                bodyText = confirmedAddress.addressLine1() ?: "",
+                bodyText = confirmedAddress,
                 leftButtonText = stringResource(id = R.string.Cancel),
                 leftButtonAction = { openConfirmAddressAlertDialog.value = false },
                 rightButtonText = stringResource(id = R.string.Confirm),
@@ -193,18 +192,3 @@ fun PledgedProjectsOverviewScreen(
 enum class PledgedProjectsOverviewScreenTestTag {
     BACK_BUTTON,
 }
-
-// For preview purposes only, will remove once we have the PPO Card payload model from graph
-// data class PPOCardDataMock(
-//    val viewType: PPOCardViewType = PPOCardViewType.FIX_PAYMENT,
-//    val projectName: String = "This is a project name",
-//    val projectSlug: String = "",
-//    val pledgeAmount: String = "$14.00",
-//    val imageUrl: String = "",
-//    val imageContentDescription: String = "",
-//    val creatorName: String = "Creator Name",
-//    val shippingAddress: String = "",
-//    val showBadge: Boolean = true,
-//    val timeNumberForAction: Int = 25,
-//    val backingDetailsUrl: String = "https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion"
-// )

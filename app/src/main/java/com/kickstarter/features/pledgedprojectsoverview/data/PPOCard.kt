@@ -8,7 +8,7 @@ import type.CurrencyCode
 @Parcelize
 class PPOCard private constructor(
     val backingId: String?,
-    val address: AddressEnvelope?,
+    val address: String?,
     val amount: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
@@ -44,7 +44,7 @@ class PPOCard private constructor(
     @Parcelize
     data class Builder(
         var backingId: String? = null,
-        var address: AddressEnvelope? = null,
+        var address: String? = null,
         var amount: String? = null,
         var currencyCode: CurrencyCode? = null,
         var currencySymbol: String? = null,
@@ -61,7 +61,7 @@ class PPOCard private constructor(
     ) : Parcelable {
 
         fun backingId(backingId: String?) = apply { this.backingId = backingId }
-        fun address(address: AddressEnvelope?) = apply { this.address = address }
+        fun address(address: String?) = apply { this.address = address }
         fun amount(amount: String?) = apply { this.amount = amount }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }

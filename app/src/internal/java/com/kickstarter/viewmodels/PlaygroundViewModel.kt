@@ -69,10 +69,9 @@ class PlaygroundViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    class Factory(private val environment: Environment): ViewModelProvider.Factory {
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return PlaygroundViewModel(environment) as T
         }
     }
 }
-

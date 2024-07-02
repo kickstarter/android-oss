@@ -98,7 +98,6 @@
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <Button
-      android:visibility="invisible"
       android:id="@+id/start_activity"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

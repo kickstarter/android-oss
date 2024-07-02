@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.RefTag
@@ -17,19 +16,14 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.Project
-import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.ui.extensions.snackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import com.kickstarter.viewmodels.PlaygroundViewModel.Factory
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
 import com.stripe.android.Stripe
 import com.stripe.android.StripeIntentResult
-import com.stripe.android.confirmPaymentIntent
-import com.stripe.android.model.ConfirmPaymentIntentParams
 import com.stripe.android.paymentsheet.CreateIntentResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
@@ -78,12 +72,10 @@ class PlaygroundActivity : ComponentActivity() {
                     stripeSDK.handleNextActionForPayment(
                         this,
                         clientSecret = it.clientSecret,
-                        //   accountid = "acct_1Ir6hZ4NJG33TWAg"
                     )
                 }
             }
             .addToDisposable(compositeDisposable)
-
 
         flowController = createFlowController()
         configureFlowController()
@@ -95,7 +87,6 @@ class PlaygroundActivity : ComponentActivity() {
         this.binding.pledgeButton.setOnClickListener {
             flowController.confirm()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -105,8 +96,8 @@ class PlaygroundActivity : ComponentActivity() {
             object : ApiResultCallback<PaymentIntentResult> {
                 override fun onSuccess(result: PaymentIntentResult) {
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        if (result.intent.requiresAction() == false ) {
-                            Toast.makeText(this@PlaygroundActivity, " 3DS flow StripeIntentResult.Outcome = SUCCEEDED, PaymentIntent: ${result.intent.id} requiresAction: ${result.intent.requiresAction()}", Toast.LENGTH_LONG)
+                        if (result.intent.requiresAction() == false) {
+                            Toast.makeText(this@PlaygroundActivity, "PaymentIntent: ${result.intent.id} requiresAction: ${result.intent.requiresAction()} 3DS flow Outcome = SUCCEEDED", Toast.LENGTH_LONG)
                                 .show()
                         }
                     }
@@ -150,10 +141,9 @@ class PlaygroundActivity : ComponentActivity() {
         paymentOption?.let {
             val toast = Toast.makeText(this, "new payment added: ${paymentOption.label}", Toast.LENGTH_LONG) // in Activity
             toast.show()
-            Timber.d("paymentOption: $paymentOption" )
+            Timber.d("paymentOption: $paymentOption")
         }
     }
-
 
     private fun configureFlowController() {
         flowController.configureWithIntentConfiguration(
@@ -163,7 +153,7 @@ class PlaygroundActivity : ComponentActivity() {
                     currency = "usd",
                 ),
             ),
-            //onBehalfOf = "acct_1Ir6hZ4NJG33TWAg",
+            // onBehalfOf = "acct_1Ir6hZ4NJG33TWAg",
             configuration = this.getPaymentSheetConfiguration("arkariang@gmail.com"),
             callback = { success, error ->
             },
@@ -171,7 +161,7 @@ class PlaygroundActivity : ComponentActivity() {
     }
 
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-        when(paymentSheetResult) {
+        when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
                 // Customer canceled - you should probably do nothing.
             }

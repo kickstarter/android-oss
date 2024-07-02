@@ -550,5 +550,4 @@ open class MockApolloClient : ApolloClientType {
     override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.just(Pair(true, ""))
     }
-
 }

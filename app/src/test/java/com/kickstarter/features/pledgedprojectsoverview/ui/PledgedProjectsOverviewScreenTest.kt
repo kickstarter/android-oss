@@ -8,6 +8,7 @@ import androidx.compose.ui.test.performClick
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
@@ -21,17 +22,17 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
     fun testBackButtonClick() {
         var backClickedCount = 0
         composeTestRule.setContent {
-            val ppoCardList1 = (0..10).map {
-                PPOCardDataMock()
+            val ppoCardList = (0..10).map {
+                PPOCardFactory.confirmAddressCard()
             }
-            val ppoCardList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList)).collectAsLazyPagingItems()
 
             KSTheme {
                 PledgedProjectsOverviewScreen(
                     modifier = Modifier,
                     onBackPressed = { backClickedCount++ },
                     lazyColumnListState = rememberLazyListState(),
-                    ppoCards = ppoCardList,
+                    ppoCards = ppoCardPagingList,
                     errorSnackBarHostState = SnackbarHostState(),
                     onSendMessageClick = {},
                     onAddressConfirmed = {},

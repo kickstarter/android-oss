@@ -1,45 +1,42 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.os.Bundle
-import androidx.activity.addCallback
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.kickstarter.databinding.ActivityBackingDetailsBinding
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.ui.compose.WebViewScreen
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.BackingDetailsViewModel
-import kotlinx.coroutines.launch
 
 class BackingDetailsActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityBackingDetailsBinding
     private lateinit var viewModelFactory: BackingDetailsViewModel.Factory
     private val viewModel: BackingDetailsViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityBackingDetailsBinding.inflate(layoutInflater)
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = BackingDetailsViewModel.Factory(env, intent = intent)
-            env
-        }
-
-        setContentView(binding.root)
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.url.collect { url ->
-                    binding.webView.loadUrl(url)
+            setContent {
+                KickstarterApp(
+                    useDarkTheme = this.isDarkModeEnabled(env = env),
+                ) {
+                    val urlState by viewModel.url.collectAsStateWithLifecycle()
+                    WebViewScreen(
+                        onBackButtonClicked = { finishWithAnimation() },
+                        toolbarTitle = stringResource(id = R.string.backing_details_fpo),
+                        url = urlState
+                    )
                 }
             }
-        }
-
-        this.onBackPressedDispatcher.addCallback {
-            finishWithAnimation()
         }
     }
 }

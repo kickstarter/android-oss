@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,7 +26,7 @@ import kotlinx.coroutines.rx2.asFlow
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val ppoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
+    private val ppoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.from(listOf(PPOCard.builder().timeNumberForAction(10).projectName("This is a test").viewType(PPOCardViewType.CONFIRM_ADDRESS).backingDetailsUrl("https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion").build())))
     private val totalAlerts = MutableStateFlow<Int>(0)
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int) -> Unit = {}

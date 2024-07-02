@@ -46,7 +46,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                     ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                     ?: AppThemes.MATCH_SYSTEM.ordinal
 
-                val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
                 val snackbarHostState = remember { SnackbarHostState() }
 
@@ -54,17 +53,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle()
 
                 KickstarterApp(
-                    useDarkTheme =
-                    if (darkModeEnabled) {
-                        when (theme) {
-                            AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
-                            AppThemes.DARK.ordinal -> true
-                            AppThemes.LIGHT.ordinal -> false
-                            else -> false
-                        }
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        isSystemInDarkTheme()
-                    } else false
+                    useDarkTheme = this.isDarkModeEnabled(env = env)
                 ) {
                     PledgedProjectsOverviewScreen(
                         modifier = Modifier,

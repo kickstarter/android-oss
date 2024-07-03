@@ -11,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.ProfileActivity
@@ -77,7 +79,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         lazyColumnListState = lazyListState,
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
-                        totalAlerts = totalAlerts,
+                        totalAlerts = totalAlerts.value,
+                        onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
+                        onCardClick = { },
+                        onProjectPledgeSummaryClick = { url -> openBackingDetailsWebView(url) },
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         isLoading = isLoading,
                         isErrored = isErrored,
@@ -106,6 +111,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 })
             }
         }
+    }
+
+    private fun openBackingDetailsWebView(url: String) {
+        val intent = Intent(this, BackingDetailsActivity::class.java)
+            .putExtra(IntentKey.URL, url)
+        startActivity(intent)
     }
 
     fun startProfileActivity() {

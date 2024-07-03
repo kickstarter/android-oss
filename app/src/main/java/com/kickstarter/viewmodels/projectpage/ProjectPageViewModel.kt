@@ -963,7 +963,6 @@ interface ProjectPageViewModel {
                 .map {
                     it.hasVideo()
                 }
-                .distinctUntilChanged()
                 .subscribe { this.playButtonIsVisible.onNext(it) }
                 .addToDisposable(disposables)
 

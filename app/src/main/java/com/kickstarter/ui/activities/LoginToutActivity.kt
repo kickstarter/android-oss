@@ -12,12 +12,14 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.core.content.IntentCompat
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -26,6 +28,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.showAlertDialog
+import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.chrome.ChromeTabsHelper
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
@@ -300,6 +303,7 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun finishWithSuccessfulResult() {
         setResult(RESULT_OK)
+        goToSurveyIfSurveyPresent()
         finish()
     }
 
@@ -324,6 +328,21 @@ class LoginToutActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         viewModel.provideOnActivityResult(create(requestCode, resultCode, intent))
+    }
+
+    private fun goToSurveyIfSurveyPresent() {
+        val surveyResponse = IntentCompat.getParcelableExtra(intent, IntentKey.SURVEY_RESPONSE, SurveyResponse::class.java)
+        surveyResponse?.let {
+            startSurveyResponseActivity(surveyResponse)
+        }
+    }
+
+    private fun startSurveyResponseActivity(surveyResponse: SurveyResponse) {
+        ApplicationUtils.startNewDiscoveryActivity(this)
+        val intent = Intent(this, SurveyResponseActivity::class.java)
+            .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse)
+        startActivity(intent)
+        finish()
     }
 }
 

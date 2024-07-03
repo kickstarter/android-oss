@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectSaveUri
+import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
@@ -75,6 +76,8 @@ interface DeepLinkViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
         fun startProjectActivityToSave(): Observable<Uri>
 
+        fun startProjectSurvey(): Observable<Pair<Uri, Boolean>>
+
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
     }
@@ -90,6 +93,7 @@ interface DeepLinkViewModel {
         private val startProjectActivityForCommentToUpdate = BehaviorSubject.create<Uri>()
         private val startProjectActivityWithCheckout = BehaviorSubject.create<Uri>()
         private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
+        private val startProjectSurvey = BehaviorSubject.create<Pair<Uri, Boolean>>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Unit>()
         private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -249,6 +253,16 @@ interface DeepLinkViewModel {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)
 
+            uriFromIntent
+                .filter { it.isProjectSurveyUri(webEndpoint) }
+                .map { appendRefTagIfNone(it) }
+                .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
+                    return@withLatestFrom Pair(url, isLoggedIn)
+                }
+                .subscribe {
+                    startProjectSurvey.onNext(it)
+                }.addToDisposable(disposables)
+
             currentUser.observable()
                 .filter { it.isPresent() }
                 .map { it.getValue() }
@@ -302,6 +316,7 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectUri(webEndpoint) }
                 .filter { !it.isRewardFulfilledDl() }
                 .filter { !it.isEmailDomain() }
+                .filter { !it.isProjectSurveyUri(webEndpoint) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
@@ -381,6 +396,8 @@ interface DeepLinkViewModel {
         override fun finishDeeplinkActivity(): Observable<Unit> = finishDeeplinkActivity
 
         override fun startProjectActivityToSave(): Observable<Uri> = startProjectActivityToSave
+
+        override fun startProjectSurvey(): Observable<Pair<Uri, Boolean>> = startProjectSurvey
 
         override fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>> = startPreLaunchProjectActivity
     }

@@ -71,4 +71,18 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 R.string.Something_went_wrong_please_try_again
             )
         }
+
+    @Test
+    fun `emits_snackbar_when_confirms_address`() =
+        runTest {
+            var snackbarAction = 0
+            viewModel.provideSnackbarMessage { snackbarAction = it }
+            viewModel.showSnackbarAndRefreshCardsList()
+
+            // Should equal address confirmed string id
+            assertEquals(
+                snackbarAction,
+                R.string.address_confirmed_snackbar_text_fpo
+            )
+        }
 }

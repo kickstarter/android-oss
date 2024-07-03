@@ -49,9 +49,6 @@ class RewardsFragmentViewModel {
         /** Emits the current [ProjectData]. */
         fun projectData(): Observable<ProjectData>
 
-        /** Emits the count of the current project's rewards. */
-        fun rewardsCount(): Observable<Int>
-
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
 
@@ -71,7 +68,6 @@ class RewardsFragmentViewModel {
 
         private val backedRewardPosition = PublishSubject.create<Int>()
         private val projectData = BehaviorSubject.create<ProjectData>()
-        private val rewardsCount = BehaviorSubject.create<Int>()
         private val pledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
@@ -91,14 +87,6 @@ class RewardsFragmentViewModel {
 
         private val disposables = CompositeDisposable()
 
-        /***
-         * setState method brought from BaseFragment.java
-         */
-        fun setState(state: Boolean?) {
-            state?.let {
-                this.isExpanded.onNext(it)
-            }
-        }
         init {
 
             this.isExpanded
@@ -224,11 +212,6 @@ class RewardsFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            project
-                .map { it.rewards()?.size ?: 0 }
-                .subscribe { this.rewardsCount.onNext(it) }
-                .addToDisposable(disposables)
-
             this.showAlert
                 .compose<Pair<PledgeData, PledgeReason>>(takeWhenV2(alertButtonPressed))
                 .subscribe {
@@ -320,8 +303,6 @@ class RewardsFragmentViewModel {
         override fun backedRewardPosition(): Observable<Int> = this.backedRewardPosition
 
         override fun projectData(): Observable<ProjectData> = this.projectData
-
-        override fun rewardsCount(): Observable<Int> = this.rewardsCount
 
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
 

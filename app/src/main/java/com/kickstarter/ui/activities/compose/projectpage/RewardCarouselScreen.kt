@@ -34,6 +34,7 @@ import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.mock.factories.RewardsItemFactory
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.KSRewardCard
@@ -90,11 +91,12 @@ fun RewardCarouselScreenPreview() {
 
 @Composable
 fun RewardCarouselScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     lazyRowState: LazyListState,
     environment: Environment,
     rewards: List<Reward>,
     project: Project,
+    backing: Backing? = null,
     isLoading: Boolean = false,
     onRewardSelected: (reward: Reward) -> Unit
 ) {
@@ -145,18 +147,17 @@ fun RewardCarouselScreen(
 
                 val ctaButtonEnabled = when {
                     RewardUtils.isNoReward(reward) && (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false) -> true
-                    !reward.hasAddons() && project.backing()?.isBacked(reward) != true -> true
-                    project.backing()?.rewardId() != reward.id() && RewardUtils.isAvailable(
+                    !reward.hasAddons() && backing?.isBacked(reward) != true -> true
+                    backing?.rewardId() != reward.id() && RewardUtils.isAvailable(
                         project,
                         reward
                     ) && reward.isAvailable() -> true
 
-                    reward.hasAddons() && project.backing()
-                        ?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) && reward.isAvailable() -> true
+                    reward.hasAddons() && backing?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) && reward.isAvailable() -> true
 
                     else -> false
                 }
-                val isBacked = project.backing()?.isBacked(reward) ?: false
+                val isBacked = backing?.isBacked(reward) ?: false
 
                 val ctaButtonText = when {
                     ctaButtonEnabled -> R.string.Select

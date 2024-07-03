@@ -7,6 +7,12 @@
   android:orientation="vertical"
   android:paddingTop="?android:attr/actionBarSize">
 
+  <androidx.compose.ui.platform.ComposeView
+      android:id="@+id/compose_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+  </androidx.compose.ui.platform.ComposeView>
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rewards_recycler"
     android:layout_width="match_parent"

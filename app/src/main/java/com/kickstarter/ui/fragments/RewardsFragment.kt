@@ -33,6 +33,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -70,6 +71,9 @@ class RewardsFragment : Fragment() {
                         val project = projectData.value.project()
                         val rewards = project.rewards() ?: emptyList()
 
+                        val shippingRulesState = viewModel.outputs.shippingRulesState().subscribeAsState(initial = ShippingRulesState())
+                        val rules = shippingRulesState.value.shippingRules
+
                         val listState = rememberLazyListState()
 
                         RewardCarouselScreen(
@@ -82,11 +86,7 @@ class RewardsFragment : Fragment() {
                             onRewardSelected = {
                                 viewModel.inputs.rewardClicked(it)
                             },
-                            countryList = listOf(
-                                ShippingRuleFactory.usShippingRule(),
-                                ShippingRuleFactory.germanyShippingRule(),
-                                ShippingRuleFactory.mexicoShippingRule()
-                            ),
+                            countryList = rules,
                             onShippingRuleSelected = {},
                             currentShippingRule = ShippingRuleFactory.usShippingRule()
                         )

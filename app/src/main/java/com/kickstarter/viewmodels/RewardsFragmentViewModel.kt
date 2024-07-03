@@ -4,6 +4,7 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -21,11 +22,14 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.rx2.asObservable
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -57,6 +61,8 @@ class RewardsFragmentViewModel {
 
         /** Emits if we have to show the alert in case any AddOns selection could be lost. */
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
+
+        fun shippingRulesState(): Observable<ShippingRulesState>
     }
 
     class RewardsFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -72,12 +78,14 @@ class RewardsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val shippingRulesState = PublishSubject.create<ShippingRulesState>()
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val analyticEvents = requireNotNull(environment.analytics())
+        private val config = requireNotNull(environment.currentConfigV2()?.observable())
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
@@ -227,6 +235,17 @@ class RewardsFragmentViewModel {
                     this.showPledgeFragment.onNext(it)
                 }
                 .addToDisposable(disposables)
+
+            Observable.combineLatest(currentUser.observable(), config, project) { user, config, project ->
+                val shippingRules = GetShippingRulesUseCase(apolloClient, project.rewards() ?: emptyList(), requireNotNull(user.getValue()), config)
+                shippingRules.invoke(viewModelScope)
+                return@combineLatest shippingRules.shippingRulesState.asObservable()
+            }.switchMap {
+                it
+            }.subscribe {
+                shippingRulesState.onNext(it)
+            }
+                .addToDisposable(disposables)
         }
 
         private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
@@ -309,6 +328,8 @@ class RewardsFragmentViewModel {
         override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment
 
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
+
+        override fun shippingRulesState(): Observable<ShippingRulesState> = this.shippingRulesState
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

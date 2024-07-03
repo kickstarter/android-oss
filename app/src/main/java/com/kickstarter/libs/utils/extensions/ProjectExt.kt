@@ -52,7 +52,7 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
         .build()
 }
 
-fun Project.showLatePledgeFlow() = true // this.isInPostCampaignPledgingPhase() ?: false && this.postCampaignPledgingEnabled() ?: false && !this.isBacking()
+fun Project.showLatePledgeFlow() = this.isInPostCampaignPledgingPhase() ?: false && this.postCampaignPledgingEnabled() ?: false && !this.isBacking()
 
 /**
  * Checks if the given card type is listed in the available card types

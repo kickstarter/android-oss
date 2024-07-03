@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -80,7 +81,14 @@ class RewardsFragment : Fragment() {
                             backing = backing,
                             onRewardSelected = {
                                 viewModel.inputs.rewardClicked(it)
-                            }
+                            },
+                            countryList = listOf(
+                                ShippingRuleFactory.usShippingRule(),
+                                ShippingRuleFactory.germanyShippingRule(),
+                                ShippingRuleFactory.mexicoShippingRule()
+                            ),
+                            onShippingRuleSelected = {},
+                            currentShippingRule = ShippingRuleFactory.usShippingRule()
                         )
 
                         ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)

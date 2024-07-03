@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities.compose.projectpage
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,12 +36,17 @@ import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.mock.factories.RewardsItemFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.KSRewardCard
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.views.compose.ShippingSelector
 import org.joda.time.DateTime
 import java.math.RoundingMode
 
@@ -83,7 +90,10 @@ fun RewardCarouselScreenPreview() {
                     .currentCurrency("USD")
                     .state(Project.STATE_LIVE)
                     .build(),
-                onRewardSelected = {}
+                onRewardSelected = {},
+                currentShippingRule = ShippingRuleFactory.usShippingRule(),
+                countryList = listOf(ShippingRuleFactory.usShippingRule(), ShippingRuleFactory.germanyShippingRule()),
+                onShippingRuleSelected = {}
             )
         }
     }
@@ -98,9 +108,15 @@ fun RewardCarouselScreen(
     project: Project,
     backing: Backing? = null,
     isLoading: Boolean = false,
-    onRewardSelected: (reward: Reward) -> Unit
+    onRewardSelected: (reward: Reward) -> Unit,
+    countryList: List<ShippingRule> = emptyList<ShippingRule>(),
+    onShippingRuleSelected: (ShippingRule) -> Unit = {},
+    currentShippingRule: ShippingRule = ShippingRule.builder().build()
 ) {
     val context = LocalContext.current
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
 
     Scaffold(
         modifier = modifier,
@@ -126,170 +142,185 @@ fun RewardCarouselScreen(
             }
         }
     ) { padding ->
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(paddingValues = padding),
-            state = lazyRowState,
-            contentPadding =
-            PaddingValues(
-                start = KSTheme.dimensions.paddingMedium,
-                end = KSTheme.dimensions.paddingMedium,
-                top = KSTheme.dimensions.paddingMedium
-            ),
-            horizontalArrangement = Arrangement.spacedBy(KSTheme.dimensions.paddingMediumLarge)
-        ) {
+        Column {
+            ShippingSelector(
+                modifier = Modifier
+                    .padding(KSTheme.dimensions.paddingMedium),
+                interactionSource = interactionSource,
+                currentShippingRule = currentShippingRule,
+                countryList = countryList,
+                onShippingRuleSelected = onShippingRuleSelected
+            )
 
-            items(
-                items = rewards,
-            ) { reward ->
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(paddingValues = padding),
+                state = lazyRowState,
+                contentPadding =
+                PaddingValues(
+                    start = KSTheme.dimensions.paddingMedium,
+                    end = KSTheme.dimensions.paddingMedium,
+                    top = KSTheme.dimensions.paddingMedium
+                ),
+                horizontalArrangement = Arrangement.spacedBy(KSTheme.dimensions.paddingMediumLarge)
+            ) {
 
-                val ctaButtonEnabled = when {
-                    RewardUtils.isNoReward(reward) && (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false) -> true
-                    !reward.hasAddons() && backing?.isBacked(reward) != true -> true
-                    backing?.rewardId() != reward.id() && RewardUtils.isAvailable(
-                        project,
-                        reward
-                    ) && reward.isAvailable() -> true
+                items(
+                    items = rewards,
+                ) { reward ->
 
-                    reward.hasAddons() && backing?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) && reward.isAvailable() -> true
+                    val ctaButtonEnabled = when {
+                        RewardUtils.isNoReward(reward) && (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false) -> true
+                        !reward.hasAddons() && backing?.isBacked(reward) != true -> true
+                        backing?.rewardId() != reward.id() && RewardUtils.isAvailable(
+                            project,
+                            reward
+                        ) && reward.isAvailable() -> true
 
-                    else -> false
-                }
-                val isBacked = backing?.isBacked(reward) ?: false
+                        reward.hasAddons() && backing?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) && reward.isAvailable() -> true
 
-                val ctaButtonText = when {
-                    ctaButtonEnabled -> R.string.Select
-                    else -> R.string.No_longer_available
-                }
+                        else -> false
+                    }
+                    val isBacked = backing?.isBacked(reward) ?: false
 
-                val remaining = reward.remaining() ?: -1
+                    val ctaButtonText = when {
+                        ctaButtonEnabled -> R.string.Select
+                        else -> R.string.No_longer_available
+                    }
 
-                if (RewardUtils.isNoReward(reward)) {
-                    KSRewardCard(
-                        isCTAButtonEnabled = ctaButtonEnabled,
-                        ctaButtonText = stringResource(id = ctaButtonText),
-                        title = if (isBacked) stringResource(id = R.string.You_pledged_without_a_reward) else stringResource(
-                            id = R.string.Pledge_without_a_reward
-                        ),
-                        description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(
-                            id = R.string.Back_it_because_you_believe_in_it
-                        ),
-                        onRewardSelectClicked = { onRewardSelected(reward) }
-                    )
-                } else {
-                    KSRewardCard(
-                        onRewardSelectClicked = { onRewardSelected(reward) },
-                        amount = environment.ksCurrency()?.let {
-                            RewardViewUtils.styleCurrency(
-                                reward.minimum(),
-                                project,
-                                it
-                            ).toString()
-                        },
-                        conversion = if (project.currentCurrency() == project.currency()) "" else {
-                            val conversionAmount = environment.ksCurrency()?.format(
-                                reward.convertedMinimum(),
-                                project,
-                                true,
-                                RoundingMode.HALF_UP,
-                                true
-                            )
-                            environment.ksString()?.format(stringResource(id = R.string.About_reward_amount), "reward_amount", conversionAmount)
-                        },
-                        description = reward.description(),
-                        title = reward.title(),
-                        backerCountBadgeText =
-                        if (reward.backersCount().isNullOrZero()) ""
-                        else {
-                            environment.ksString()?.let {
-                                it.format(
-                                    "rewards_info_backer_count_backers",
-                                    requireNotNull(reward.backersCount()),
-                                    "backer_count",
-                                    NumberUtils.format(requireNotNull(reward.backersCount()))
+                    val remaining = reward.remaining() ?: -1
+
+                    if (RewardUtils.isNoReward(reward)) {
+                        KSRewardCard(
+                            isCTAButtonEnabled = ctaButtonEnabled,
+                            ctaButtonText = stringResource(id = ctaButtonText),
+                            title = if (isBacked) stringResource(id = R.string.You_pledged_without_a_reward) else stringResource(
+                                id = R.string.Pledge_without_a_reward
+                            ),
+                            description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(
+                                id = R.string.Back_it_because_you_believe_in_it
+                            ),
+                            onRewardSelectClicked = { onRewardSelected(reward) }
+                        )
+                    } else {
+                        KSRewardCard(
+                            onRewardSelectClicked = { onRewardSelected(reward) },
+                            amount = environment.ksCurrency()?.let {
+                                RewardViewUtils.styleCurrency(
+                                    reward.minimum(),
+                                    project,
+                                    it
+                                ).toString()
+                            },
+                            conversion = if (project.currentCurrency() == project.currency()) "" else {
+                                val conversionAmount = environment.ksCurrency()?.format(
+                                    reward.convertedMinimum(),
+                                    project,
+                                    true,
+                                    RoundingMode.HALF_UP,
+                                    true
                                 )
-                            }
-                        },
-                        isCTAButtonEnabled = ctaButtonEnabled,
-                        includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
-                            .isNullOrEmpty() && environment.ksString().isNotNull()
-                        ) {
-                            reward.rewardsItems()?.map { rewardItems ->
                                 environment.ksString()?.format(
-                                    "rewards_info_item_quantity_title", rewardItems.quantity(),
-                                    "quantity", rewardItems.quantity().toString(),
-                                    "title", rewardItems.item().name()
-                                ) ?: ""
-                            } ?: emptyList()
-                        } else {
-                            emptyList()
-                        },
-
-                        estimatedDelivery = if (reward.estimatedDeliveryOn().isNotNull()) {
-                            DateTimeUtils.estimatedDeliveryOn(requireNotNull(reward.estimatedDeliveryOn()))
-                        } else "",
-                        yourSelectionIsVisible = project.backing()?.isBacked(reward) ?: false,
-                        localPickup = if (RewardUtils.isLocalPickup(reward) && !RewardUtils.isShippable(
-                                reward
-                            )
-                        ) {
-                            reward.localReceiptLocation()?.displayableName() ?: ""
-                        } else {
-                            ""
-                        },
-                        ctaButtonText = stringResource(id = ctaButtonText),
-                        expirationDateText =
-                        environment.ksString()?.let {
-                            if (RewardUtils.deadlineCountdownValue(reward) <= 0) ""
-                            else "" + RewardUtils.deadlineCountdownValue(reward) + " " + RewardUtils.deadlineCountdownDetail(
-                                reward,
-                                context,
-                                it
-                            )
-                        },
-                        shippingSummaryText =
-                        environment.ksString()?.let { ksString ->
-                            if (RewardUtils.isShippable(reward)) {
-                                RewardUtils.shippingSummary(reward)?.let {
-                                    RewardViewUtils.shippingSummary(
-                                        context = context,
-                                        ksString = ksString,
-                                        it
+                                    stringResource(id = R.string.About_reward_amount),
+                                    "reward_amount",
+                                    conversionAmount
+                                )
+                            },
+                            description = reward.description(),
+                            title = reward.title(),
+                            backerCountBadgeText =
+                            if (reward.backersCount().isNullOrZero()) ""
+                            else {
+                                environment.ksString()?.let {
+                                    it.format(
+                                        "rewards_info_backer_count_backers",
+                                        requireNotNull(reward.backersCount()),
+                                        "backer_count",
+                                        NumberUtils.format(requireNotNull(reward.backersCount()))
                                     )
                                 }
+                            },
+                            isCTAButtonEnabled = ctaButtonEnabled,
+                            includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
+                                .isNullOrEmpty() && environment.ksString().isNotNull()
+                            ) {
+                                reward.rewardsItems()?.map { rewardItems ->
+                                    environment.ksString()?.format(
+                                        "rewards_info_item_quantity_title", rewardItems.quantity(),
+                                        "quantity", rewardItems.quantity().toString(),
+                                        "title", rewardItems.item().name()
+                                    ) ?: ""
+                                } ?: emptyList()
+                            } else {
+                                emptyList()
+                            },
+
+                            estimatedDelivery = if (reward.estimatedDeliveryOn().isNotNull()) {
+                                DateTimeUtils.estimatedDeliveryOn(requireNotNull(reward.estimatedDeliveryOn()))
+                            } else "",
+                            yourSelectionIsVisible = project.backing()?.isBacked(reward) ?: false,
+                            localPickup = if (RewardUtils.isLocalPickup(reward) && !RewardUtils.isShippable(
+                                    reward
+                                )
+                            ) {
+                                reward.localReceiptLocation()?.displayableName() ?: ""
                             } else {
                                 ""
-                            }
-                        },
-                        remainingText =
-                        environment.ksString()?.let { ksString ->
-                            if (!reward.isLimited()) {
-                                if (remaining > 0) {
-                                    ksString.format(
-                                        stringResource(id = R.string.Left_count_left_few),
-                                        "left_count",
-                                        NumberUtils.format(remaining)
-                                    )
+                            },
+                            ctaButtonText = stringResource(id = ctaButtonText),
+                            expirationDateText =
+                            environment.ksString()?.let {
+                                if (RewardUtils.deadlineCountdownValue(reward) <= 0) ""
+                                else "" + RewardUtils.deadlineCountdownValue(reward) + " " + RewardUtils.deadlineCountdownDetail(
+                                    reward,
+                                    context,
+                                    it
+                                )
+                            },
+                            shippingSummaryText =
+                            environment.ksString()?.let { ksString ->
+                                if (RewardUtils.isShippable(reward)) {
+                                    RewardUtils.shippingSummary(reward)?.let {
+                                        RewardViewUtils.shippingSummary(
+                                            context = context,
+                                            ksString = ksString,
+                                            it
+                                        )
+                                    }
+                                } else {
+                                    ""
+                                }
+                            },
+                            remainingText =
+                            environment.ksString()?.let { ksString ->
+                                if (!reward.isLimited()) {
+                                    if (remaining > 0) {
+                                        ksString.format(
+                                            stringResource(id = R.string.Left_count_left_few),
+                                            "left_count",
+                                            NumberUtils.format(remaining)
+                                        )
+                                    } else ""
                                 } else ""
-                            } else ""
-                        },
-                        addonsPillVisible = reward.hasAddons()
-                    )
+                            },
+                            addonsPillVisible = reward.hasAddons()
+                        )
+                    }
                 }
             }
-        }
 
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                    .clickable(enabled = false) { },
-                contentAlignment = Alignment.Center
-            ) {
-                KSCircularProgressIndicator()
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                        .clickable(enabled = false) { },
+                    contentAlignment = Alignment.Center
+                ) {
+                    KSCircularProgressIndicator()
+                }
             }
         }
     }

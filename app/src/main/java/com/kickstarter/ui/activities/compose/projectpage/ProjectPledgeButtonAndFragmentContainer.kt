@@ -247,7 +247,10 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         rewards = rewardsList,
                                         project = project,
                                         onRewardSelected = onRewardSelected,
-                                        isLoading = isLoading
+                                        isLoading = isLoading,
+                                        countryList = shippingRules,
+                                        currentShippingRule = currentShippingRule,
+                                        onShippingRuleSelected = onShippingRuleSelected,
                                     )
                                 }
 

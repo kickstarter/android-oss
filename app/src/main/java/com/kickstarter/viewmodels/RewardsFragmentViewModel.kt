@@ -34,6 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.rx2.asObservable
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -65,6 +66,8 @@ class RewardsFragmentViewModel {
 
         /** Emits if we have to show the alert in case any AddOns selection could be lost. */
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
+
+        fun countrySelectorRules(): Observable<ShippingRulesState>
     }
 
     class RewardsFragmentViewModel(val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel(), Inputs, Outputs {
@@ -80,6 +83,7 @@ class RewardsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private var shippingRules: Observable<ShippingRulesState> = Observable.empty()
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
@@ -241,8 +245,11 @@ class RewardsFragmentViewModel {
 
             Observable.combineLatest(currentUser.observable(), configObservable, project) { user, config, project ->
                 shippingRulesUseCase = GetShippingRulesUseCase(apolloClient, project, user.getValue(), config)
-                return@combineLatest Observable.empty<Any>()
-            }.subscribe().addToDisposable(disposables)
+                return@combineLatest populateCountrySelector().asObservable()
+            }.subscribe {
+                this.shippingRules = it
+            }
+                .addToDisposable(disposables)
         }
 
         private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
@@ -325,6 +332,8 @@ class RewardsFragmentViewModel {
         override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment
 
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
+
+        override fun countrySelectorRules(): Observable<ShippingRulesState> = this.shippingRules
 
         fun populateCountrySelector(scope: CoroutineScope = viewModelScope, defaultDispatcher: CoroutineDispatcher = Dispatchers.IO): Flow<ShippingRulesState> {
             return shippingRulesUseCase?.let { useCase ->

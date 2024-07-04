@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -60,7 +61,8 @@ class GetShippingRulesUseCase(
     /**
      * Exposes result of this use case
      */
-    val shippingRulesState: Flow<ShippingRulesState> = _mutableShippingRules.asStateFlow()
+    val shippingRulesState: Flow<ShippingRulesState>
+        get() = _mutableShippingRules.asStateFlow()
 
     // - IO dispatcher for network operations to avoid blocking main thread
     operator fun invoke(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
@@ -94,8 +96,7 @@ class GetShippingRulesUseCase(
                                     error = throwable.message
                                 )
                             )
-                        }
-                        .collect()
+                        }.launchIn(scope)
                 }
             }
         }

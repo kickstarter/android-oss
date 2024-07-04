@@ -20,12 +20,16 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -49,55 +53,20 @@ class RewardsFragment : Fragment() {
         viewModelFactory
     }
 
+    private lateinit var environment: Environment
     private val disposables = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val env = this.context?.getEnvironment()?.let { env ->
+        this.context?.getEnvironment()?.let { env ->
             viewModelFactory = Factory(env)
-            env
+            environment = env
         }
 
-        return ComposeView(requireContext()).apply {
-            // Dispose of the Composition when the view's LifecycleOwner is destroyed
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            // Compose world
-            setContent {
-                KickstarterApp(
-                    useDarkTheme = true
-                ) {
-                    KSTheme {
-                        val projectData: State<ProjectData> = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build())
-                        val backing = projectData.value.backing() ?: projectData.value.project().backing()
-                        val project = projectData.value.project()
-                        val rewards = project.rewards() ?: emptyList()
-
-                        val rules by viewModel.populateCountrySelector().collectAsState(initial = ShippingRulesState())
-
-                        val listState = rememberLazyListState()
-
-                        RewardCarouselScreen(
-                            modifier = Modifier.padding(top = KSTheme.dimensions.paddingDoubleLarge),
-                            lazyRowState = listState,
-                            environment = requireNotNull(env),
-                            rewards = rewards,
-                            project = project,
-                            backing = backing,
-                            onRewardSelected = {
-                                viewModel.inputs.rewardClicked(it)
-                            },
-                            countryList = rules.shippingRules,
-                            onShippingRuleSelected = {},
-                            currentShippingRule = ShippingRuleFactory.usShippingRule(),
-                            isLoading = rules.loading
-                        )
-
-                        ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)
-                    }
-                }
-            }
-        }
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding = FragmentRewardsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     @Composable
@@ -114,6 +83,45 @@ class RewardsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         createDialog()
+
+        binding?.composeView?.apply {
+            // Dispose of the Composition when the view's LifecycleOwner is destroyed
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            // Compose world
+            setContent {
+                KickstarterApp(
+                    useDarkTheme = true
+                ) {
+                    KSTheme {
+
+                        val projectData: State<ProjectData> = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build())
+                        val backing = projectData.value.backing() ?: projectData.value.project().backing()
+                        val project = projectData.value.project()
+                        val rewards = project.rewards() ?: emptyList()
+
+                        val rules = viewModel.countrySelectorRules().subscribeAsState(initial = ShippingRulesState())
+                        val listState = rememberLazyListState()
+
+                        RewardCarouselScreen(
+                            lazyRowState = listState,
+                            environment = requireNotNull(environment),
+                            rewards = rewards,
+                            project = project,
+                            backing = backing,
+                            onRewardSelected = {
+                                viewModel.inputs.rewardClicked(it)
+                            },
+                            countryList = rules.value.shippingRules,
+                            onShippingRuleSelected = {},
+                            currentShippingRule = ShippingRuleFactory.usShippingRule(),
+                            isLoading = rules.value.loading
+                        )
+
+                        ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)
+                    }
+                }
+            }
+        }
 
         this.viewModel.outputs.showPledgeFragment()
             .observeOn(AndroidSchedulers.mainThread())
@@ -166,7 +174,6 @@ class RewardsFragment : Fragment() {
     override fun onDetach() {
         disposables.clear()
         super.onDetach()
-        binding?.rewardsRecycler?.adapter = null
     }
 
     fun configureWith(projectData: ProjectData) {

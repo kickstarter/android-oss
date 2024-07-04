@@ -13,23 +13,4 @@
       android:layout_height="wrap_content">
   </androidx.compose.ui.platform.ComposeView>
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rewards_recycler"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:overScrollMode="never"
-    android:scrollbars="horizontal"
-    tools:listitem="@layout/item_reward" />
-
-  <include layout="@layout/horizontal_line_1dp_view" />
-
-  <TextView
-    android:id="@+id/rewards_count"
-    style="@style/FootnoteSecondary"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_7"
-    android:gravity="center"
-    tools:text="24 rewards" />
-
 </LinearLayout>

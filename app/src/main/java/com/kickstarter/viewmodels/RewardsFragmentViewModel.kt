@@ -239,12 +239,8 @@ class RewardsFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            val projectRewards = project
-                .filter { it.rewards().isNullOrEmpty() }
-                .map { requireNotNull(it.rewards()) }
-
-            Observable.combineLatest(currentUser.observable(), configObservable, projectRewards) { user, config, rewards ->
-                shippingRulesUseCase = GetShippingRulesUseCase(apolloClient, rewards, user.getValue(), config)
+            Observable.combineLatest(currentUser.observable(), configObservable, project) { user, config, project ->
+                shippingRulesUseCase = GetShippingRulesUseCase(apolloClient, project, user.getValue(), config)
                 return@combineLatest Observable.empty<Any>()
             }.subscribe().addToDisposable(disposables)
         }
@@ -331,8 +327,10 @@ class RewardsFragmentViewModel {
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
 
         fun populateCountrySelector(scope: CoroutineScope = viewModelScope, defaultDispatcher: CoroutineDispatcher = Dispatchers.IO): Flow<ShippingRulesState> {
-            shippingRulesUseCase?.invoke(scope, defaultDispatcher)
-            return shippingRulesUseCase?.shippingRulesState ?: emptyFlow()
+            return shippingRulesUseCase?.let { useCase ->
+                useCase.invoke(scope, defaultDispatcher)
+                useCase.shippingRulesState
+            } ?: emptyFlow()
         }
     }
 

@@ -73,7 +73,7 @@ class RewardsFragment : Fragment() {
                         val project = projectData.value.project()
                         val rewards = project.rewards() ?: emptyList()
 
-                        val rules = viewModel.populateCountrySelector().collectAsState(initial = ShippingRulesState())
+                        val rules by viewModel.populateCountrySelector().collectAsState(initial = ShippingRulesState())
 
                         val listState = rememberLazyListState()
 
@@ -87,9 +87,10 @@ class RewardsFragment : Fragment() {
                             onRewardSelected = {
                                 viewModel.inputs.rewardClicked(it)
                             },
-                            countryList = rules.value.shippingRules,
+                            countryList = rules.shippingRules,
                             onShippingRuleSelected = {},
-                            currentShippingRule = ShippingRuleFactory.usShippingRule()
+                            currentShippingRule = ShippingRuleFactory.usShippingRule(),
+                            isLoading = rules.loading
                         )
 
                         ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)

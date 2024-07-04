@@ -66,6 +66,10 @@ object RewardUtils {
         return rewardsItems != null && rewardsItems.isNotEmpty()
     }
 
+    fun shipsWorldwide(reward: Reward): Boolean = reward.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED
+
+    fun shipsToRestrictedLocations(reward: Reward): Boolean = reward.shippingPreferenceType() == Reward.ShippingPreference.RESTRICTED
+
     /**
      * Returns `true` if the reward has a limit set, and the limit has not been reached, `false` otherwise.
      */

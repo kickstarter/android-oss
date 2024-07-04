@@ -29,7 +29,11 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -61,11 +65,9 @@ class RewardsFragmentViewModel {
 
         /** Emits if we have to show the alert in case any AddOns selection could be lost. */
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
-
-        fun shippingRulesState(): Observable<ShippingRulesState>
     }
 
-    class RewardsFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
+    class RewardsFragmentViewModel(val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel(), Inputs, Outputs {
 
         private val isExpanded = PublishSubject.create<Boolean>()
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
@@ -78,14 +80,13 @@ class RewardsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val shippingRulesState = PublishSubject.create<ShippingRulesState>()
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val analyticEvents = requireNotNull(environment.analytics())
-        private val config = requireNotNull(environment.currentConfigV2()?.observable())
+        private val configObservable = requireNotNull(environment.currentConfigV2()?.observable())
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
@@ -110,7 +111,9 @@ class RewardsFragmentViewModel {
             this.projectDataInput
                 .filter { sortAndFilterRewards(it).isNotNull() }
                 .map { sortAndFilterRewards(it) }
-                .subscribe { this.projectData.onNext(it) }
+                .subscribe {
+                    this.projectData.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             val project = this.projectData
@@ -236,16 +239,14 @@ class RewardsFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            Observable.combineLatest(currentUser.observable(), config, project) { user, config, project ->
-                val shippingRules = GetShippingRulesUseCase(apolloClient, project.rewards() ?: emptyList(), requireNotNull(user.getValue()), config)
-                shippingRules.invoke(viewModelScope)
-                return@combineLatest shippingRules.shippingRulesState.asObservable()
-            }.switchMap {
-                it
-            }.subscribe {
-                shippingRulesState.onNext(it)
-            }
-                .addToDisposable(disposables)
+            val projectRewards = project
+                .filter { it.rewards().isNullOrEmpty() }
+                .map { requireNotNull(it.rewards()) }
+
+            Observable.combineLatest(currentUser.observable(), configObservable, projectRewards) { user, config, rewards ->
+                shippingRulesUseCase = GetShippingRulesUseCase(apolloClient, rewards, user.getValue(), config)
+                return@combineLatest Observable.empty<Any>()
+            }.subscribe().addToDisposable(disposables)
         }
 
         private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
@@ -329,12 +330,15 @@ class RewardsFragmentViewModel {
 
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
 
-        override fun shippingRulesState(): Observable<ShippingRulesState> = this.shippingRulesState
+        fun populateCountrySelector(scope: CoroutineScope = viewModelScope, defaultDispatcher: CoroutineDispatcher = Dispatchers.IO): Flow<ShippingRulesState> {
+            shippingRulesUseCase?.invoke(scope, defaultDispatcher)
+            return shippingRulesUseCase?.shippingRulesState ?: emptyFlow()
+        }
     }
 
-    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RewardsFragmentViewModel(environment) as T
+            return RewardsFragmentViewModel(environment, shippingRulesUseCase) as T
         }
     }
 }

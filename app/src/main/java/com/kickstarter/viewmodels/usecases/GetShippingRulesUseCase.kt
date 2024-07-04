@@ -10,9 +10,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
 data class ShippingRulesState(
@@ -23,9 +26,8 @@ data class ShippingRulesState(
 class GetShippingRulesUseCase(
     private val apolloClient: ApolloClientTypeV2,
     private val rewardsList: List<Reward>,
-    private val user: User,
-    private val config: Config,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val user: User?,
+    private val config: Config?
 ) {
 
     // - Do not expose mutable states
@@ -35,15 +37,24 @@ class GetShippingRulesUseCase(
     /**
      * Exposes result of this use case
      */
-    val shippingRulesState: Flow<ShippingRulesState> = _mutableShippingRules
+    val shippingRulesState: Flow<ShippingRulesState> = _mutableShippingRules.asStateFlow()
 
-    operator fun invoke(viewModelScope: CoroutineScope) =
-        viewModelScope.launch(defaultDispatcher) {
-            // IO dispatcher for network operations to avoid blocking main thread
+    // - IO dispatcher for network operations to avoid blocking main thread
+    operator fun invoke(scope: CoroutineScope, defaultDispatcher: CoroutineDispatcher = Dispatchers.IO) {
+        if (rewardsList.isNotEmpty()) {
             apolloClient.getShippingRules(rewardsList.last())
                 .asFlow()
+                .flowOn(defaultDispatcher)
                 .onStart {
                     _mutableShippingRules.emit(ShippingRulesState(loading = true))
+                }
+                .map { rulesEnvelope ->
+                    _mutableShippingRules.emit(
+                        ShippingRulesState(
+                            shippingRules = rulesEnvelope.shippingRules(),
+                            loading = false
+                        )
+                    )
                 }
                 .catch { throwable ->
                     _mutableShippingRules.emit(
@@ -53,15 +64,9 @@ class GetShippingRulesUseCase(
                         )
                     )
                 }
-                .collect { envelope ->
-                    _mutableShippingRules.emit(
-                        ShippingRulesState(
-                            shippingRules = envelope.shippingRules(),
-                            loading = false
-                        )
-                    )
-                }
+                .launchIn(scope)
         }
+    }
 }
 // // On VM usage
 // val useCase = SavedPaymentMethodsUseCase(apolloClient, user)

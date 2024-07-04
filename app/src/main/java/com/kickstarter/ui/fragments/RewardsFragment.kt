@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -71,8 +73,7 @@ class RewardsFragment : Fragment() {
                         val project = projectData.value.project()
                         val rewards = project.rewards() ?: emptyList()
 
-                        val shippingRulesState = viewModel.outputs.shippingRulesState().subscribeAsState(initial = ShippingRulesState())
-                        val rules = shippingRulesState.value.shippingRules
+                        val rules = viewModel.populateCountrySelector().collectAsState(initial = ShippingRulesState())
 
                         val listState = rememberLazyListState()
 
@@ -86,7 +87,7 @@ class RewardsFragment : Fragment() {
                             onRewardSelected = {
                                 viewModel.inputs.rewardClicked(it)
                             },
-                            countryList = rules,
+                            countryList = rules.value.shippingRules,
                             onShippingRuleSelected = {},
                             currentShippingRule = ShippingRuleFactory.usShippingRule()
                         )

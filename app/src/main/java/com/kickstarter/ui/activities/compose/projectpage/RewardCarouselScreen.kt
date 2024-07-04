@@ -143,14 +143,16 @@ fun RewardCarouselScreen(
         }
     ) { padding ->
         Column {
-            ShippingSelector(
-                modifier = Modifier
-                    .padding(KSTheme.dimensions.paddingMedium),
-                interactionSource = interactionSource,
-                currentShippingRule = currentShippingRule,
-                countryList = countryList,
-                onShippingRuleSelected = onShippingRuleSelected
-            )
+            if (countryList.isNotEmpty()) {
+                ShippingSelector(
+                    modifier = Modifier
+                        .padding(KSTheme.dimensions.paddingMedium),
+                    interactionSource = interactionSource,
+                    currentShippingRule = currentShippingRule,
+                    countryList = countryList,
+                    onShippingRuleSelected = onShippingRuleSelected
+                )
+            }
 
             LazyRow(
                 modifier = Modifier

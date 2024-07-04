@@ -9,15 +9,19 @@ import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
@@ -25,10 +29,17 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
+import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Test
@@ -44,8 +55,11 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     private val showAlert = TestSubscriber<Pair<PledgeData, PledgeReason>>()
 
     private val disposables = CompositeDisposable()
-    private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = Factory(environment).create(RewardsFragmentViewModel::class.java)
+    private fun setUpEnvironment(
+        @NonNull environment: Environment,
+        useCase: GetShippingRulesUseCase? = null
+    ) {
+        this.vm = Factory(environment, useCase).create(RewardsFragmentViewModel::class.java)
         this.vm.outputs.backedRewardPosition().subscribe { this.backedRewardPosition.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.projectData().subscribe { this.projectData.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showPledgeFragment().subscribe { this.showPledgeFragment.onNext(it) }.addToDisposable(disposables)
@@ -331,13 +345,45 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testRewardsCount() {
-        val project = ProjectFactory.project()
-            .toBuilder()
-            .rewards(listOf(RewardFactory.noReward(), RewardFactory.reward()))
-            .build()
-        setUpEnvironment(environment())
+    fun `test populateCountrySelector() adding GetShippingRulesUseCase as dependency into ViewModel`() = runTest {
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+        val unlimitedReward = RewardFactory.rewardWithShipping()
+
+        val rewards = listOf<Reward>(
+            unlimitedReward
+        )
+        val project = ProjectFactory.project().toBuilder().rewards(rewards).build()
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+            }
+        }
+        val user = UserFactory.user()
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(user))
+            .apolloClientV2(apolloClient)
+            .currentConfig2(currentConfig)
+            .build()
+
+        val useCase = GetShippingRulesUseCase(apolloClient, rewards, user, config)
+        setUpEnvironment(env, useCase)
+
+        val state = mutableListOf<ShippingRulesState>()
+        vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            vm.populateCountrySelector(this, dispatcher).toList(state)
+        }
+
+        advanceUntilIdle() // wait until all state emisions take place
+
+        assertEquals(state.size, 3)
     }
 }

@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.preferences.StringPreferenceType
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.ShippingRule
 import org.json.JSONArray
 
@@ -109,6 +108,6 @@ fun Config.getDefaultLocationFrom(shippingRules: List<ShippingRule>): ShippingRu
         shippingRules.firstOrNull { it.location()?.country() == this.countryCode() }
             ?: shippingRules.first()
     } else {
-        ShippingRuleFactory.usShippingRule()
+        ShippingRule.builder().build()
     }
 }

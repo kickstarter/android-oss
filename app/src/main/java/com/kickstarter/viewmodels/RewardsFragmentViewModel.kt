@@ -18,6 +18,7 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
@@ -46,6 +47,8 @@ class RewardsFragmentViewModel {
         fun alertButtonPressed()
 
         fun isExpanded(state: Boolean?)
+
+        fun selectedShippingRule(shippingRule: ShippingRule)
     }
 
     interface Outputs {
@@ -78,6 +81,7 @@ class RewardsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private var selectedShippingRule: ShippingRule? = null
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
@@ -159,7 +163,11 @@ class RewardsFragmentViewModel {
                     if (!rewardPair.second) {
                         return@combineLatest Unit
                     } else {
-                        return@combineLatest pledgeDataAndPledgeReason(projectData, rewardPair.first)
+                        return@combineLatest pledgeDataAndPledgeReason(
+                            projectData,
+                            rewardPair.first,
+                            selectedShippingRule
+                        )
                     }
                 }
                 .filter { it.isNotNull() && it is Pair<*, *> && it.first is PledgeData && it.second is PledgeReason }
@@ -187,11 +195,15 @@ class RewardsFragmentViewModel {
                     if (!rewardPair.second) {
                         return@combineLatest Unit
                     } else {
-                        return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first), backedReward)
+                        return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first, selectedShippingRule), backedReward)
                     }
                 }
-                .filter { it.isNotNull() && it is Pair<*, *> && it.first is Pair<*, *> && it.second is Reward } // todo extract to a function
-                .map { requireNotNull(it as Pair<Pair<PledgeData, PledgeReason>, Reward>) }
+                .filter {
+                    it.isNotNull() && it is Pair<*, *> && it.first is Pair<*, *> && it.second is Reward
+                } // todo extract to a function
+                .map {
+                    requireNotNull(it as Pair<Pair<PledgeData, PledgeReason>, Reward>)
+                }
                 .subscribe {
                     val pledgeAndData = it.first
                     val newRw = it.first.first.reward()
@@ -285,9 +297,13 @@ class RewardsFragmentViewModel {
             }
         }
 
-        private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
+        private fun pledgeDataAndPledgeReason(
+            projectData: ProjectData,
+            reward: Reward,
+            selectedShippingRule: ShippingRule?
+        ): Pair<PledgeData, PledgeReason> {
             val pledgeReason = if (projectData.project().isBacking()) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
-            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
+            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, shippingRule = selectedShippingRule)
             return Pair(pledgeData, pledgeReason)
         }
 
@@ -314,6 +330,10 @@ class RewardsFragmentViewModel {
 
         override fun rewardClicked(reward: Reward) {
             this.rewardClicked.onNext(Pair(reward, true))
+        }
+
+        override fun selectedShippingRule(shippingRule: ShippingRule) {
+            this.selectedShippingRule = shippingRule
         }
 
         override fun onCleared() {

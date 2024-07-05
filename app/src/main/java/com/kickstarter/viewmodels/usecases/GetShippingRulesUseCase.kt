@@ -39,12 +39,13 @@ class GetShippingRulesUseCase(
 
         // To avoid duplicates insert reward.id as key
         val rewardsToQuery = mutableMapOf<Long, Reward>()
-        // Filter rewards to check if the is any unrestricted shipping preference, when quering `getShippingRules` will return ALL available locations
+
+        // Get first reward with unrestricted shipping preference, when quering `getShippingRules` will return ALL available locations, no need to query more rewards locations
         project.rewards()?.filter { RewardUtils.shipsWorldwide(reward = it) }?.firstOrNull()?.let {
             rewardsToQuery.put(it.id(), it)
         }
 
-        // In case there is no worldwide preference need to get restricted and local rewards, to query their specific locations
+        // In case there is no unrestricted preference need to get restricted and local rewards, to query their specific locations
         if (rewardsToQuery.isEmpty()) {
             project.rewards()?.filter {
                 RewardUtils.shipsToRestrictedLocations(reward = it)
@@ -75,7 +76,6 @@ class GetShippingRulesUseCase(
                 rewardsToQuery.forEachIndexed { index, reward ->
                     apolloClient.getShippingRules(reward)
                         .asFlow()
-//                        .flowOn(defaultDispatcher)
                         .map { rulesEnvelope ->
                             rulesEnvelope.shippingRules()?.map { rule ->
                                 rule?.let { shippingRules.put(requireNotNull(it.location()?.id()), it) }
@@ -87,7 +87,7 @@ class GetShippingRulesUseCase(
                                     ShippingRulesState(
                                         shippingRules = shippingRules.values.toList(),
                                         loading = false,
-                                        defaultShippingRule = config?.getDefaultLocationFrom(shippingRules.values.toList()) ?: ShippingRuleFactory.usShippingRule()
+                                        defaultShippingRule = config?.getDefaultLocationFrom(shippingRules.values.toList()) ?: ShippingRule.builder().build()
                                     )
                                 )
                             }

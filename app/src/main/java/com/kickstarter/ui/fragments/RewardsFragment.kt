@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -97,6 +98,11 @@ class RewardsFragment : Fragment() {
                         ).value
                         val listState = rememberLazyListState()
 
+                        if (rules.defaultShippingRule != ShippingRuleFactory.emptyShippingRule()) {
+                            // - Indicate the VM which one is the default selected shipping Rule
+                            viewModel.inputs.selectedShippingRule(rules.defaultShippingRule)
+                        }
+
                         RewardCarouselScreen(
                             lazyRowState = listState,
                             environment = requireNotNull(environment),
@@ -107,7 +113,10 @@ class RewardsFragment : Fragment() {
                                 viewModel.inputs.rewardClicked(it)
                             },
                             countryList = rules.shippingRules,
-                            onShippingRuleSelected = {},
+                            onShippingRuleSelected = {
+                                // On future tickets will filter rewards by shipping rule selected available
+                                viewModel.inputs.selectedShippingRule(it)
+                            },
                             currentShippingRule = rules.defaultShippingRule,
                             isLoading = rules.loading
                         )

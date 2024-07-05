@@ -29,12 +29,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.rx2.asObservable
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -66,8 +63,6 @@ class RewardsFragmentViewModel {
 
         /** Emits if we have to show the alert in case any AddOns selection could be lost. */
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
-
-        fun countrySelectorRules(): Observable<ShippingRulesState>
     }
 
     class RewardsFragmentViewModel(val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel(), Inputs, Outputs {
@@ -83,7 +78,6 @@ class RewardsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private var shippingRules: Observable<ShippingRulesState> = Observable.empty()
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
@@ -243,13 +237,19 @@ class RewardsFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            Observable.combineLatest(currentUser.observable(), configObservable, project) { user, config, project ->
-                shippingRulesUseCase = GetShippingRulesUseCase(apolloClient, project, user.getValue(), config)
-                return@combineLatest populateCountrySelector().asObservable()
-            }.subscribe {
-                this.shippingRules = it
-            }
-                .addToDisposable(disposables)
+            Observable.combineLatest(configObservable, project) { config, project ->
+                if (shippingRulesUseCase == null) {
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        apolloClient,
+                        project,
+                        config,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
+                }
+                shippingRulesUseCase?.invoke()
+                return@combineLatest Observable.empty<Any>()
+            }.subscribe().addToDisposable(disposables)
         }
 
         private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
@@ -333,13 +333,11 @@ class RewardsFragmentViewModel {
 
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
 
-        override fun countrySelectorRules(): Observable<ShippingRulesState> = this.shippingRules
-
-        fun populateCountrySelector(scope: CoroutineScope = viewModelScope, defaultDispatcher: CoroutineDispatcher = Dispatchers.IO): Flow<ShippingRulesState> {
-            return shippingRulesUseCase?.let { useCase ->
-                useCase.invoke(scope, defaultDispatcher)
+        fun countrySelectorRules(): Flow<ShippingRulesState> {
+            val state = shippingRulesUseCase?.let { useCase ->
                 useCase.shippingRulesState
             } ?: emptyFlow()
+            return state
         }
     }
 

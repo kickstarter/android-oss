@@ -159,9 +159,15 @@ object RewardFactory {
 
     fun rewardWithShipping(): Reward {
         return reward().toBuilder()
-            .shippingPreference("unrestricted")
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
             .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
             .estimatedDeliveryOn(ESTIMATED_DELIVERY)
+            .build()
+    }
+
+    fun rewardRestrictedShipping(): Reward {
+        return reward().toBuilder()
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
             .build()
     }
 

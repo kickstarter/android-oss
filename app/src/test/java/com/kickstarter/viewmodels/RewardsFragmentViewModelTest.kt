@@ -16,6 +16,7 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -345,7 +346,7 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test populateCountrySelector() adding GetShippingRulesUseCase as dependency into ViewModel`() = runTest {
+    fun `test countrySelectorRules state contains appropriate ShippingRules when reward shipping worldwide and default location Canada`() = runTest {
 
         val unlimitedReward = RewardFactory.rewardWithShipping()
 
@@ -354,15 +355,17 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
         )
         val project = ProjectFactory.project().toBuilder().rewards(rewards).build()
 
-        val config = ConfigFactory.configForUSUser()
+        val config = ConfigFactory.configForCA()
         val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
+        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
         val apolloClient = object : MockApolloClientV2() {
             override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                return Observable.just(testShippingRulesList)
             }
         }
+
         val user = UserFactory.user()
         val env = environment()
             .toBuilder()
@@ -371,19 +374,28 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
             .currentConfig2(currentConfig)
             .build()
 
-        val useCase = GetShippingRulesUseCase(apolloClient, rewards, user, config)
-        setUpEnvironment(env, useCase)
-
         val state = mutableListOf<ShippingRulesState>()
-        vm.inputs.configureWith(ProjectDataFactory.project(project))
-
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         backgroundScope.launch(dispatcher) {
-            vm.populateCountrySelector(this, dispatcher).toList(state)
+            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            setUpEnvironment(env, useCase)
+
+            vm.inputs.configureWith(ProjectDataFactory.project(project))
+            vm.countrySelectorRules().toList(state)
         }
 
-        advanceUntilIdle() // wait until all state emisions take place
+        advanceUntilIdle() // wait until all state emissions completed
 
         assertEquals(state.size, 3)
+        assertEquals(state[0], ShippingRulesState()) // Initialization
+        assertEquals(state[1], ShippingRulesState(loading = true)) // starts loading
+        assertEquals(
+            state[2],
+            ShippingRulesState(
+                loading = false,
+                defaultShippingRule = ShippingRuleFactory.canadaShippingRule(),
+                shippingRules = testShippingRulesList.shippingRules()
+            )
+        ) // completed requests
     }
 }

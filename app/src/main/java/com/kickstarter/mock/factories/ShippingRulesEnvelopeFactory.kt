@@ -10,7 +10,8 @@ object ShippingRulesEnvelopeFactory {
                 listOf(
                     ShippingRuleFactory.usShippingRule(),
                     ShippingRuleFactory.germanyShippingRule(),
-                    ShippingRuleFactory.mexicoShippingRule()
+                    ShippingRuleFactory.mexicoShippingRule(),
+                    ShippingRuleFactory.canadaShippingRule()
                 )
             )
             .build()

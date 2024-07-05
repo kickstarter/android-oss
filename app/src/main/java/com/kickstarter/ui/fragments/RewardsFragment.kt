@@ -6,17 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,9 +24,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.mock.factories.ProjectDataFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -99,7 +92,9 @@ class RewardsFragment : Fragment() {
                         val project = projectData.value.project()
                         val rewards = project.rewards() ?: emptyList()
 
-                        val rules = viewModel.countrySelectorRules().subscribeAsState(initial = ShippingRulesState())
+                        val rules = viewModel.countrySelectorRules().collectAsStateWithLifecycle(
+                            initialValue = ShippingRulesState()
+                        ).value
                         val listState = rememberLazyListState()
 
                         RewardCarouselScreen(
@@ -111,10 +106,10 @@ class RewardsFragment : Fragment() {
                             onRewardSelected = {
                                 viewModel.inputs.rewardClicked(it)
                             },
-                            countryList = rules.value.shippingRules,
+                            countryList = rules.shippingRules,
                             onShippingRuleSelected = {},
-                            currentShippingRule = ShippingRuleFactory.usShippingRule(),
-                            isLoading = rules.value.loading
+                            currentShippingRule = rules.defaultShippingRule,
+                            isLoading = rules.loading
                         )
 
                         ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)

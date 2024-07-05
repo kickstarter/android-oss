@@ -2,10 +2,11 @@ package com.kickstarter.viewmodels.usecases
 
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientTypeV2
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -23,16 +23,18 @@ import kotlinx.coroutines.rx2.asFlow
 data class ShippingRulesState(
     val shippingRules: List<ShippingRule> = emptyList(),
     val loading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val defaultShippingRule: ShippingRule = ShippingRuleFactory.usShippingRule()
 )
 class GetShippingRulesUseCase(
     private val apolloClient: ApolloClientTypeV2,
     private val project: Project,
-    private val user: User?,
-    private val config: Config?
+    private val config: Config?,
+    private val scope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    private lateinit var rewardsToQuery: List<Reward>
+    private var rewardsToQuery: List<Reward>
     init {
 
         // To avoid duplicates insert reward.id as key
@@ -65,7 +67,7 @@ class GetShippingRulesUseCase(
         get() = _mutableShippingRules.asStateFlow()
 
     // - IO dispatcher for network operations to avoid blocking main thread
-    operator fun invoke(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO) {
+    operator fun invoke() {
         if (rewardsToQuery.isNotEmpty()) {
             val shippingRules = mutableMapOf<Long, ShippingRule>()
             scope.launch(dispatcher) {
@@ -73,7 +75,7 @@ class GetShippingRulesUseCase(
                 rewardsToQuery.forEachIndexed { index, reward ->
                     apolloClient.getShippingRules(reward)
                         .asFlow()
-                        // .flowOn(defaultDispatcher)
+//                        .flowOn(defaultDispatcher)
                         .map { rulesEnvelope ->
                             rulesEnvelope.shippingRules()?.map { rule ->
                                 rule?.let { shippingRules.put(requireNotNull(it.location()?.id()), it) }
@@ -84,7 +86,8 @@ class GetShippingRulesUseCase(
                                 _mutableShippingRules.emit(
                                     ShippingRulesState(
                                         shippingRules = shippingRules.values.toList(),
-                                        loading = false
+                                        loading = false,
+                                        defaultShippingRule = config?.getDefaultLocationFrom(shippingRules.values.toList()) ?: ShippingRuleFactory.usShippingRule()
                                     )
                                 )
                             }
@@ -96,7 +99,7 @@ class GetShippingRulesUseCase(
                                     error = throwable.message
                                 )
                             )
-                        }.launchIn(scope)
+                        }.collect()
                 }
             }
         }

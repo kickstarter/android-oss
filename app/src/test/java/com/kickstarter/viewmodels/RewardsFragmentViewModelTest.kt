@@ -398,4 +398,66 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
             )
         ) // completed requests
     }
+
+    @Test
+    fun `test DefaultShipping Rule is sent to PledgeFragment`() {
+        val project = ProjectFactory.backedProject()
+        val reward = RewardFactory.reward()
+        val selectedShippingRule = ShippingRuleFactory.usShippingRule()
+
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(ProjectDataFactory.project(project))
+        vm.inputs.selectedShippingRule(selectedShippingRule)
+        vm.inputs.rewardClicked(reward)
+
+        showPledgeFragment.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                    .reward(reward)
+                    .projectData(ProjectDataFactory.project(project))
+                    .shippingRule(selectedShippingRule)
+                    .build(),
+                PledgeReason.UPDATE_REWARD
+            )
+        )
+        this.showAddOnsFragment.assertNoValues()
+    }
+
+    @Test
+    fun `test DefaultShipping Rule is sent to AddOnsFragment`() {
+        val reward = RewardFactory.rewardWithShipping().toBuilder().hasAddons(true).build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(
+                BackingFactory.backing()
+                    .toBuilder()
+                    .reward(reward)
+                    .rewardId(reward.id())
+                    .build()
+            )
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
+        val selectedShippingRule = ShippingRuleFactory.usShippingRule()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+        this.vm.inputs.selectedShippingRule(selectedShippingRule)
+        this.vm.inputs.rewardClicked(reward)
+
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                    .reward(reward)
+                    .projectData(ProjectDataFactory.project(backedProject))
+                    .shippingRule(selectedShippingRule)
+                    .build(),
+                PledgeReason.UPDATE_REWARD
+            )
+        )
+        this.showAlert.assertNoValues()
+    }
 }

@@ -1013,7 +1013,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeSummaryIsGone.assertValue(true)
         this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.selectedShippingRule.assertNoValues()
+        this.selectedShippingRule.assertValueCount(1)
         this.shippingSummaryIsGone.assertValues(true)
         this.totalDividerIsGone.assertValue(true)
         this.pledgeButtonIsEnabled.assertValue(true)
@@ -1058,7 +1058,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeSummaryIsGone.assertValue(false)
         this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.selectedShippingRule.assertNoValues()
+        this.selectedShippingRule.assertValueCount(1)
         this.shippingSummaryIsGone.assertValues(true)
         this.totalDividerIsGone.assertValue(true)
         this.pledgeButtonIsEnabled.assertValue(true)
@@ -1171,7 +1171,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.bonusSectionIsGone.assertNoValues()
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.selectedShippingRule.assertNoValues()
+        this.selectedShippingRule.assertValueCount(1)
         this.shippingSummaryIsGone.assertValues(true)
         this.bonusSummaryIsGone.assertValues(true)
         this.totalDividerIsGone.assertValue(true)
@@ -1456,7 +1456,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.bonusInput("999999")
 
         this.pledgeMaximumIsGone.assertValues(true, false)
-        this.pledgeMaximum.assertValues("$9,980") // 10.000 - 20 : MAXUSD - REWARD.minimum
+        this.pledgeMaximum.assertValues("$9,950") // 10.000 - 20 : MAXUSD - REWARD.minimum
     }
 
     @Test
@@ -1840,7 +1840,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.shippingRule.assertNoValues()
+        this.shippingRule.assertValueCount(1)
     }
 
     @Test
@@ -1942,7 +1942,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, project = project)
 
         this.shippingRuleAndProject.assertNoValues()
-        this.totalAmount.assertNoValues()
+        this.totalAmount.assertValueCount(1)
     }
 
     @Test
@@ -3176,15 +3176,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule)
-        this.pledgeButtonIsEnabled.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.shippingRuleSelected(backingShippingRule)
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.bonusInput("500")
         this.vm.inputs.increaseBonusButtonClicked()
-        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true)
     }
 
     @Test

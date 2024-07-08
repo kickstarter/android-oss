@@ -65,7 +65,6 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
-                onCardClick = {},
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
@@ -84,9 +83,8 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
-    onCardClick: () -> Unit,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
-    onSendMessageClick: (projectName: String) -> Unit
+    onSendMessageClick: (projectName: String) -> Unit,
     onSeeAllBackedProjectsClick : () -> Unit,
     isLoading: Boolean = false,
     isErrored: Boolean = false,

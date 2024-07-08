@@ -79,9 +79,8 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         lazyColumnListState = lazyListState,
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
-                        totalAlerts = totalAlerts.value,
+                        totalAlerts = totalAlerts,
                         onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
-                        onCardClick = { },
                         onProjectPledgeSummaryClick = { url -> openBackingDetailsWebView(url) },
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         isLoading = isLoading,
@@ -93,7 +92,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 LaunchedEffect(Unit) {
                     viewModel.projectFlow
                         .collect {
-                            startCreatorMessageActivity(it, previousScreen = MessagePreviousScreenType.PLEDGED_PROJECTS_OVERVIEW)
+                            startCreatorMessageActivity(project = it, previousScreen = MessagePreviousScreenType.PLEDGED_PROJECTS_OVERVIEW)
                         }
                 }
 

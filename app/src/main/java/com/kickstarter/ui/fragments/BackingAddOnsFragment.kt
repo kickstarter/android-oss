@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,23 +16,20 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.BackingAddOnsAdapter
-import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
-class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
+class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
     private var binding: FragmentBackingAddonsBinding? = null
 
     private lateinit var viewModelFactory: BackingAddOnsFragmentViewModel.Factory
@@ -48,12 +44,10 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
     }
 
     private val backingAddonsAdapter = BackingAddOnsAdapter(this)
-    private lateinit var shippingRulesAdapter: ShippingRulesAdapter
     private lateinit var errorDialog: AlertDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpShippingAdapter()
         setupRecyclerView()
         setupErrorDialog()
 
@@ -80,33 +74,15 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
             .subscribe { showEmptyState(it) }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.selectedShippingRule()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.fragmentBackingAddonsShippingRules?.setText(it.toString()) }
-            .addToDisposable(disposables)
-
         this.viewModel.outputs.showErrorDialog()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showErrorDialog() }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.shippingRulesAndProject()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { displayShippingRules(it.first, it.second) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.totalSelectedAddOns()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { total ->
                 binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total, requireNotNull(env?.ksString()))
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.shippingSelectorIsGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.fragmentBackingAddonsShippingRules?.isGone = it
-                binding?.fragmentBackingAddonsCallOut?.isGone = it
             }
             .addToDisposable(disposables)
 
@@ -162,13 +138,6 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
         binding?.fragmentSelectAddonsRecycler?.adapter = backingAddonsAdapter
     }
 
-    private fun setUpShippingAdapter() {
-        activity?.let {
-            shippingRulesAdapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
-            binding?.fragmentBackingAddonsShippingRules?.setAdapter(shippingRulesAdapter)
-        }
-    }
-
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
         val fragment = this.selectPledgeFragment(pledgeData, pledgeReason)
         parentFragmentManager
@@ -192,11 +161,6 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
         }
     }
 
-    private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
-        binding?.fragmentBackingAddonsShippingRules?.isEnabled = true
-        shippingRulesAdapter.populateShippingRules(shippingRules, project)
-    }
-
     companion object {
         fun newInstance(pledgeDataAndReason: Pair<PledgeData, PledgeReason>): BackingAddOnsFragment {
             val fragment = BackingAddOnsFragment()
@@ -206,12 +170,6 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
             fragment.arguments = argument
             return fragment
         }
-    }
-
-    override fun ruleSelected(rule: ShippingRule) {
-        this.viewModel.inputs.shippingRuleSelected(rule)
-        activity?.hideKeyboard()
-        binding?.fragmentBackingAddonsShippingRules?.clearFocus()
     }
 
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {

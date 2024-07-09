@@ -29,7 +29,7 @@ import kotlinx.coroutines.rx2.asFlow
 data class PledgedProjectsOverviewUIState(
     var totalAlerts: Int = 0,
     val isLoading: Boolean = false,
-    val isErrored: Boolean = true,
+    val isErrored: Boolean = false,
 )
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {

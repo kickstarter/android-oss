@@ -160,7 +160,8 @@ fun PledgedProjectsOverviewScreen(
         pullRefreshCallback,
     )
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .pullRefresh(pullRefreshState),
         contentAlignment = Alignment.Center
     ) {
@@ -296,7 +297,8 @@ fun PPOScreenEmptyState(
                 start = dimensions.paddingMedium,
                 end = dimensions.paddingMedium,
                 top = dimensions.paddingMedium
-            ).verticalScroll(rememberScrollState()),
+            )
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -349,7 +351,7 @@ fun PPOScreenErrorState() {
 
         Text(
             color = colors.textPrimary,
-            text = ("Something went wrong - Pull to refresh"),
+            text = (stringResource(id = R.string.something_went_wrong_pull_to_refresh_fpo)),
             style = typography.body,
             textAlign = TextAlign.Center
         )

@@ -14,7 +14,6 @@ import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.LocationFactory
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
@@ -79,7 +78,6 @@ class BackingAddOnsFragmentViewModel {
         val inputs = this
         val outputs = this
 
-        private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
         private val addOnsFromGraph = BehaviorSubject.create<List<Reward>>()
         private var pledgeDataAndReason = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
@@ -170,20 +168,6 @@ class BackingAddOnsFragmentViewModel {
             projectAndReward = project
                 .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
-            // - If changing rewards do not emmit the backing information
-            val backingShippingRule = backing
-                .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
-                .filter { it.second }
-                .map { it.first }
-                .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
-                .map {
-                    it.second.first { rule ->
-                        rule.location()?.id() == it.first.locationId()
-                    }
-                }
-                .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
-
             val addOnsFromBacking = backing
                 .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
                 .filter { it.second }
@@ -200,11 +184,6 @@ class BackingAddOnsFragmentViewModel {
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
                 .map { filterOutUnAvailableOrEndedExceptIfBacked(it) }
                 .distinctUntilChanged()
-
-            shippingRules
-                .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
-                .subscribe { this.shippingRulesAndProject.onNext(it) }
-                .addToDisposable(disposables)
 
             val location = shippingRule
                 .map { it.location() }
@@ -259,7 +238,7 @@ class BackingAddOnsFragmentViewModel {
 
             // - .startWith(ShippingRuleFactory.emptyShippingRule()) because we need to trigger this validation every time the AddOns selection changes for digital rewards as well
             val isButtonEnabled = Observable.combineLatest(
-                backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                shippingRule,
                 addOnsFromBacking,
                 shippingRule,
                 this.currentSelection.take(1),
@@ -318,38 +297,6 @@ class BackingAddOnsFragmentViewModel {
                 Pair(projectSlug, shipRuleLocation)
             } else Pair("", LocationFactory.empty()) // - In case some combination fails return empty slug and location
         }
-
-        /**
-         * Observable containing the correct shippingRule to each case
-         */
-        private fun getSelectedShippingRule(
-            defaultShippingRule: Observable<ShippingRule>,
-            isSameReward: Observable<Boolean>,
-            backingShippingRule: Observable<ShippingRule>,
-            reward: Observable<Reward>
-        ): Observable<ShippingRule> {
-            return Observable.combineLatest(
-                defaultShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
-                isSameReward.startWith(false),
-                backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
-                reward
-            ) { defaultShipping, sameRw, backingRule, rw ->
-                return@combineLatest chooseShippingRule(defaultShipping, backingRule, sameRw, rw)
-            }
-        }
-
-        /**
-         * The use cases for populating the shipping rule selector:
-         * - First pledge or choosing another reward, we load in the shipping selector the default shipping rule
-         * - Digital or not shippable we return empty shippingRule to unify flow for all rewards types
-         * - Choosing to update same reward use the backing shippingRule
-         */
-        private fun chooseShippingRule(defaultShipping: ShippingRule, backingShippingRule: ShippingRule, sameReward: Boolean, rw: Reward): ShippingRule =
-            when {
-                isDigital(rw) || !isShippable(rw) || isLocalPickup(rw) -> ShippingRuleFactory.emptyShippingRule()
-                sameReward -> backingShippingRule
-                else -> defaultShipping
-            }
 
         /**
          * Updates the pledgeData object if necessary. This observable should
@@ -528,15 +475,6 @@ class BackingAddOnsFragmentViewModel {
                 .subscribe { selection ->
                     selection[updated.second] = updated.first
                 }
-
-        private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
-            return this.currentConfig.observable()
-                .map { it.countryCode() }
-                .map { countryCode ->
-                    shippingRules.firstOrNull { it.location()?.country() == countryCode }
-                        ?: shippingRules.first()
-                }
-        }
 
         // - This will disappear when the query is ready in the backend [CT-649]
         private fun filterByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {

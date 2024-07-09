@@ -63,7 +63,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
             backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
             val ppoCardList1 = (0..10).map {
-                PPOCardFactory.confirmAddressCard()
+                PPOCardFactory.fixPaymentCard()
             }
             val ppoCardPagingList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
             PledgedProjectsOverviewScreen(
@@ -129,8 +129,9 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onAddressConfirmed = {},
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
+                errorSnackBarHostState = SnackbarHostState(),
+                onFixPaymentClick = {}
                 onSeeAllBackedProjectsClick = {},
-                errorSnackBarHostState = SnackbarHostState()
             )
         }
     }
@@ -152,6 +153,7 @@ fun PledgedProjectsOverviewScreen(
     isLoading: Boolean = false,
     isErrored: Boolean = false,
     pullRefreshCallback: () -> Unit = {}
+    onFixPaymentClick: (projectSlug: String) -> Unit,
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
@@ -227,7 +229,14 @@ fun PledgedProjectsOverviewScreen(
                                 sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
                                 shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
                                 showBadge = it.showBadge(),
-                                onActionButtonClicked = { },
+                                onActionButtonClicked = {
+                                    when (it.viewType()) {
+                                        PPOCardViewType.FIX_PAYMENT -> {
+                                            onFixPaymentClick(it.projectSlug() ?: "")
+                                        }
+                                        else -> {}
+                                    }
+                                },
                                 onSecondaryActionButtonClicked = {
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {

@@ -17,16 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.ProfileActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
 import kotlinx.coroutines.launch
@@ -88,6 +92,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         pullRefreshCallback = {
                             // TODO call viewmodel.getPledgedProjects() here
                         }
+                        onFixPaymentClick = { projectSlug -> openManagePledgeActivity(projectSlug) }
                     )
                 }
 
@@ -129,3 +134,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         }
     }
 }
+
+    private fun openManagePledgeActivity(projectSlug: String) {
+            val intent = Intent().getProjectIntent(this)
+                .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
+                .putExtra(IntentKey.REF_TAG, RefTag.activity())
+            startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        }
+    }

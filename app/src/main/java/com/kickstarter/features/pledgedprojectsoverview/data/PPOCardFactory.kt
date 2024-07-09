@@ -68,7 +68,7 @@ class PPOCardFactory private constructor() {
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",
                 projectId = "123456",
-                projectSlug = "hello/hello",
+                projectSlug = "richardamorgan/blam-and-glam-comic-issue-1-8-and-toy-figure",
                 imageUrl = "image/url",
                 creatorName = "creatorName",
                 backingDetailsUrl = "backing/details/url",

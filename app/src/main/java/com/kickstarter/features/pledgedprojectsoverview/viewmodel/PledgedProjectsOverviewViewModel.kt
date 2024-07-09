@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import kotlinx.coroutines.flow.MutableSharedFlow

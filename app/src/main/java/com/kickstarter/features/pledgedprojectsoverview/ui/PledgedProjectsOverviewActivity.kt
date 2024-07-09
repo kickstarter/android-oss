@@ -87,9 +87,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         isErrored = isErrored,
                         onSeeAllBackedProjectsClick = { startProfileActivity() },
                         pullRefreshCallback = {
-                            viewModel.getPledgedProjects(
-                                PledgedProjectsOverviewQueryData(10, null, null, null)
-                            )
+                            //TODO call viewmodel.getPledgedProjects() here
                         }
                     )
                 }

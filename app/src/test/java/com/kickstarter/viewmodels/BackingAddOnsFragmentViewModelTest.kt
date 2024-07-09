@@ -48,6 +48,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     fun cleanUp() {
         disposables.clear()
     }
+
     private fun setUpEnvironment(@NonNull environment: Environment, bundle: Bundle? = null) {
         this.vm = BackingAddOnsFragmentViewModel(environment, bundle)
         this.vm.outputs.addOnsList().subscribe { this.addOnsList.onNext(it) }.addToDisposable(disposables)
@@ -76,7 +77,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
         setUpEnvironment(buildEnvironmentWith(emptyList(), currentConfig), bundle)
@@ -456,7 +457,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-        val pledgeData = PledgeData.with(pledgeReason, projectData, rw)
+        val pledgeData = PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule())
 
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
@@ -503,10 +504,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-        val pledgeData = PledgeData.with(pledgeReason, projectData, rw)
+        val pledgeData = PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first())
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
@@ -588,7 +589,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.usShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
@@ -646,7 +647,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
@@ -723,7 +724,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
@@ -787,7 +788,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
@@ -827,7 +828,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
@@ -863,7 +864,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
@@ -886,12 +887,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
+        val rule = ShippingRuleFactory.usShippingRule()
+
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = rule))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         setUpEnvironment(buildEnvironmentWithError(currentConfig), bundle)
 
-        // Two values -> two failed network calls
         this.showErrorDialog.assertValue(true)
     }
 

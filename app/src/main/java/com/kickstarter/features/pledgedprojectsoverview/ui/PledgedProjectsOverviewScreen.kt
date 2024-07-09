@@ -1,6 +1,7 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +43,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
@@ -75,6 +83,61 @@ private fun PledgedProjectsOverviewScreenPreview() {
 }
 
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun PledgedProjectsOverviewScreenErrorPreview() {
+    KSTheme {
+        Scaffold(
+            backgroundColor = colors.backgroundSurfacePrimary
+        ) { padding ->
+            val ppoCardList1 = (0..10).map {
+                PPOCardFactory.confirmAddressCard()
+            }
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
+            PledgedProjectsOverviewScreen(
+                modifier = Modifier.padding(padding),
+                lazyColumnListState = rememberLazyListState(),
+                ppoCards = ppoCardPagingList,
+                totalAlerts = 10,
+                onBackPressed = {},
+                onAddressConfirmed = {},
+                onProjectPledgeSummaryClick = {},
+                onSendMessageClick = {},
+                onSeeAllBackedProjectsClick = {},
+                isErrored = true,
+                errorSnackBarHostState = SnackbarHostState()
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun PledgedProjectsOverviewScreenEmptyPreview() {
+    KSTheme {
+        Scaffold(
+            backgroundColor = colors.backgroundSurfacePrimary
+        ) { padding ->
+            val ppoCardPagingList = flowOf(PagingData.from(listOf<PPOCard>())).collectAsLazyPagingItems()
+            PledgedProjectsOverviewScreen(
+                modifier = Modifier.padding(padding),
+                lazyColumnListState = rememberLazyListState(),
+                ppoCards = ppoCardPagingList,
+                totalAlerts = 0,
+                onBackPressed = {},
+                onAddressConfirmed = {},
+                onProjectPledgeSummaryClick = {},
+                onSendMessageClick = {},
+                onSeeAllBackedProjectsClick = {},
+                errorSnackBarHostState = SnackbarHostState()
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
     onBackPressed: () -> Unit,
@@ -88,12 +151,17 @@ fun PledgedProjectsOverviewScreen(
     onSeeAllBackedProjectsClick : () -> Unit,
     isLoading: Boolean = false,
     isErrored: Boolean = false,
+    pullRefreshCallback: () -> Unit = {}
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
-
+    val pullRefreshState = rememberPullRefreshState(
+        isLoading,
+        pullRefreshCallback,
+    )
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .pullRefresh(pullRefreshState),
         contentAlignment = Alignment.Center
     ) {
         Scaffold(
@@ -116,9 +184,9 @@ fun PledgedProjectsOverviewScreen(
             backgroundColor = colors.backgroundSurfacePrimary
         ) { padding ->
             if (isErrored) {
-                //show errored screen
+                PPOScreenErrorState()
             }
-            else if (totalAlerts == 0) {
+            else if (totalAlerts == 0 || ppoCards.itemCount.isNullOrZero()) {
                 PPOScreenEmptyState(onSeeAllBackedProjectsClick)
             } else {
                 LazyColumn(
@@ -130,7 +198,7 @@ fun PledgedProjectsOverviewScreen(
                             end = dimensions.paddingMedium,
                             top = dimensions.paddingMedium
                         )
-                        .padding(paddingValues = padding),
+                        .padding(paddingValues = padding)          ,
                     state = lazyColumnListState
                 ) {
                     item {
@@ -179,18 +247,6 @@ fun PledgedProjectsOverviewScreen(
                     }
                 }
             }
-
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                        .clickable(enabled = false) { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    KSCircularProgressIndicator()
-                }
-            }
         }
     }
 
@@ -215,6 +271,18 @@ fun PledgedProjectsOverviewScreen(
             )
         }
     }
+
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                .clickable(enabled = false) { },
+            contentAlignment = Alignment.Center
+        ) {
+            KSCircularProgressIndicator()
+        }
+    }
 }
 
 @Composable
@@ -229,7 +297,7 @@ fun PPOScreenEmptyState(
                 start = dimensions.paddingMedium,
                 end = dimensions.paddingMedium,
                 top = dimensions.paddingMedium
-            ),
+            ).verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally ,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -253,7 +321,40 @@ fun PPOScreenEmptyState(
             modifier = Modifier,
             onClickAction = { onSeeAllBackedProjectsClick.invoke() },
             text = stringResource(id = R.string.see_all_backed__projects_fpo),
-            isEnabled = true)
+            isEnabled = true
+        )
+    }
+}
+
+@Composable
+fun PPOScreenErrorState() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(
+                start = dimensions.paddingMedium,
+                end = dimensions.paddingMedium,
+                top = dimensions.paddingMedium
+            )
+            .verticalScroll(rememberScrollState())
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally ,
+        verticalArrangement = Arrangement.Center,
+    ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_refresh_arrow),
+            contentDescription = null,
+        )
+        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+
+        Text(
+            color = colors.textPrimary,
+            text = ("Something went wrong - Pull to refresh"),
+            style = typography.body,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

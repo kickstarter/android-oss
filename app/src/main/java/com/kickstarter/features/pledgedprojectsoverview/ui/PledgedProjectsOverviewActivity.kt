@@ -13,11 +13,11 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.utils.TransitionUtils
@@ -49,7 +49,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                     ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                     ?: AppThemes.MATCH_SYSTEM.ordinal
 
-                val ppoUIState by viewModel.pledgedProjectsOverviewUIState.collectAsStateWithLifecycle()
+                val ppoUIState by viewModel.ppoUIState.collectAsStateWithLifecycle()
 
                 val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
@@ -85,7 +85,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         isLoading = isLoading,
                         isErrored = isErrored,
-                        onSeeAllBackedProjectsClick = { startProfileActivity() }
+                        onSeeAllBackedProjectsClick = { startProfileActivity() },
+                        pullRefreshCallback = { viewModel.getPledgedProjects(
+                            PledgedProjectsOverviewQueryData(10, null, null, null)
+                        )}
                     )
                 }
 

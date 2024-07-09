@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.utils.TransitionUtils
@@ -87,7 +86,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         isErrored = isErrored,
                         onSeeAllBackedProjectsClick = { startProfileActivity() },
                         pullRefreshCallback = {
-                            //TODO call viewmodel.getPledgedProjects() here
+                            // TODO call viewmodel.getPledgedProjects() here
                         }
                     )
                 }

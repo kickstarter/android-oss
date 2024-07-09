@@ -6,32 +6,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isGone
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
-import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.RewardDecoration
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.models.Reward
-import com.kickstarter.ui.adapters.RewardsAdapter
+import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
+class RewardsFragment : Fragment() {
 
-    private var rewardsAdapter = RewardsAdapter(this)
     private lateinit var dialog: AlertDialog
     private var binding: FragmentRewardsBinding? = null
 
@@ -40,33 +47,85 @@ class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
         viewModelFactory
     }
 
+    private lateinit var environment: Environment
     private val disposables = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
+
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = Factory(env)
+            environment = env
+        }
+
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentRewardsBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
+    @Composable
+    private fun ScrollToPosition(
+        scrollToPosition: State<Int>,
+        listState: LazyListState
+    ) {
+        LaunchedEffect(scrollToPosition) {
+            // Animate scroll to the scrollToPosition item
+            listState.animateScrollToItem(index = scrollToPosition.value)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = Factory(env)
-        }
-
-        setupRecyclerView()
         createDialog()
 
-        this.viewModel.outputs.projectData()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { rewardsAdapter.populateRewards(it) }
-            .addToDisposable(disposables)
+        binding?.composeView?.apply {
+            // Dispose of the Composition when the view's LifecycleOwner is destroyed
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            // Compose world
+            setContent {
+                KickstarterApp(
+                    useDarkTheme = true
+                ) {
+                    KSTheme {
 
-        this.viewModel.outputs.backedRewardPosition()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { scrollToReward(it) }
-            .addToDisposable(disposables)
+                        val projectData: State<ProjectData> = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build())
+                        val backing = projectData.value.backing() ?: projectData.value.project().backing()
+                        val project = projectData.value.project()
+                        val rewards = project.rewards() ?: emptyList()
+
+                        val rules = viewModel.countrySelectorRules().collectAsStateWithLifecycle(
+                            initialValue = ShippingRulesState()
+                        ).value
+                        val listState = rememberLazyListState()
+
+                        if (rules.defaultShippingRule != ShippingRuleFactory.emptyShippingRule()) {
+                            // - Indicate the VM which one is the default selected shipping Rule
+                            viewModel.inputs.selectedShippingRule(rules.defaultShippingRule)
+                        }
+
+                        RewardCarouselScreen(
+                            lazyRowState = listState,
+                            environment = requireNotNull(environment),
+                            rewards = rewards,
+                            project = project,
+                            backing = backing,
+                            onRewardSelected = {
+                                viewModel.inputs.rewardClicked(it)
+                            },
+                            countryList = rules.shippingRules,
+                            onShippingRuleSelected = {
+                                // On future tickets will filter rewards by shipping rule selected available
+                                viewModel.inputs.selectedShippingRule(it)
+                            },
+                            currentShippingRule = rules.defaultShippingRule,
+                            isLoading = rules.loading
+                        )
+
+                        ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)
+                    }
+                }
+            }
+        }
 
         this.viewModel.outputs.showPledgeFragment()
             .observeOn(AndroidSchedulers.mainThread())
@@ -84,22 +143,14 @@ class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
             }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.rewardsCount()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { setRewardsCount(it) }
-            .addToDisposable(disposables)
-
         this.viewModel.outputs.showAlert()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 showAlert()
             }
             .addToDisposable(disposables)
-
-        context?.apply {
-            binding?.rewardsCount?.isGone = ViewUtils.isLandscape(this)
-        }
     }
+
     fun setState(state: Boolean?) {
         state?.let {
             viewModel.isExpanded(state)
@@ -124,48 +175,13 @@ class RewardsFragment : Fragment(), RewardsAdapter.Delegate {
             dialog.show()
     }
 
-    private fun scrollToReward(position: Int) {
-        if (position != 0) {
-            val recyclerWidth = (binding?.rewardsRecycler?.width ?: 0)
-            val linearLayoutManager = binding?.rewardsRecycler?.layoutManager as LinearLayoutManager
-            val rewardWidth = resources.getDimensionPixelSize(R.dimen.item_reward_width)
-            val rewardMargin = resources.getDimensionPixelSize(R.dimen.reward_margin)
-            val center = (recyclerWidth - rewardWidth - rewardMargin) / 2
-            linearLayoutManager.scrollToPositionWithOffset(position, center)
-        }
-    }
-
-    private fun setRewardsCount(count: Int) {
-        val rewardsCountString = requireNotNull(this.viewModel.environment.ksString()).format(
-            "Rewards_count_rewards", count,
-            "rewards_count", NumberUtils.format(count)
-        )
-        binding?.rewardsCount?.text = rewardsCountString
-    }
-
     override fun onDetach() {
         disposables.clear()
         super.onDetach()
-        binding?.rewardsRecycler?.adapter = null
-    }
-
-    override fun rewardClicked(reward: Reward) {
-        this.viewModel.inputs.rewardClicked(reward)
     }
 
     fun configureWith(projectData: ProjectData) {
         this.viewModel.inputs.configureWith(projectData)
-    }
-
-    private fun addItemDecorator() {
-        val margin = resources.getDimension(R.dimen.reward_margin).toInt()
-        binding?.rewardsRecycler?.addItemDecoration(RewardDecoration(margin))
-    }
-
-    private fun setupRecyclerView() {
-        binding?.rewardsRecycler?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding?.rewardsRecycler?.adapter = rewardsAdapter
-        addItemDecorator()
     }
 
     private fun showPledgeFragment(

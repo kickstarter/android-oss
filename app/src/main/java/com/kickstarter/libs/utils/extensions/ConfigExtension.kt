@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.preferences.StringPreferenceType
+import com.kickstarter.models.ShippingRule
 import org.json.JSONArray
 
 /**
@@ -71,7 +72,6 @@ fun Config.syncUserFeatureFlagsFromPref(featuresFlagPreference: StringPreference
 /**
  * set the saved feature flags in to config feature object
  */
-
 fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
     featuresFlagPreference: StringPreferenceType?,
     featureName: String,
@@ -95,4 +95,19 @@ fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
             set(featureName, isEnabled)
         }?.toMap()
     ).build()
+}
+
+/**
+ * From a selected list of shipping rules, select the one that matches the config location
+ * if none matches return the first one.
+ * Config countryCode is based on IP location,
+ * example: if your network is within Canada, it will return Canada
+ */
+fun Config.getDefaultLocationFrom(shippingRules: List<ShippingRule>): ShippingRule {
+    return if (shippingRules.isNotEmpty()) {
+        shippingRules.firstOrNull { it.location()?.country() == this.countryCode() }
+            ?: shippingRules.first()
+    } else {
+        ShippingRule.builder().build()
+    }
 }

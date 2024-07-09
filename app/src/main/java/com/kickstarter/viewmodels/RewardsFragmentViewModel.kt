@@ -4,6 +4,7 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -17,15 +18,21 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -40,6 +47,8 @@ class RewardsFragmentViewModel {
         fun alertButtonPressed()
 
         fun isExpanded(state: Boolean?)
+
+        fun selectedShippingRule(shippingRule: ShippingRule)
     }
 
     interface Outputs {
@@ -48,9 +57,6 @@ class RewardsFragmentViewModel {
 
         /** Emits the current [ProjectData]. */
         fun projectData(): Observable<ProjectData>
-
-        /** Emits the count of the current project's rewards. */
-        fun rewardsCount(): Observable<Int>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
@@ -62,7 +68,7 @@ class RewardsFragmentViewModel {
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
-    class RewardsFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
+    class RewardsFragmentViewModel(val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel(), Inputs, Outputs {
 
         private val isExpanded = PublishSubject.create<Boolean>()
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
@@ -71,17 +77,18 @@ class RewardsFragmentViewModel {
 
         private val backedRewardPosition = PublishSubject.create<Int>()
         private val projectData = BehaviorSubject.create<ProjectData>()
-        private val rewardsCount = BehaviorSubject.create<Int>()
         private val pledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private var selectedShippingRule: ShippingRule? = null
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val analyticEvents = requireNotNull(environment.analytics())
+        private val configObservable = requireNotNull(environment.currentConfigV2()?.observable())
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
@@ -91,14 +98,6 @@ class RewardsFragmentViewModel {
 
         private val disposables = CompositeDisposable()
 
-        /***
-         * setState method brought from BaseFragment.java
-         */
-        fun setState(state: Boolean?) {
-            state?.let {
-                this.isExpanded.onNext(it)
-            }
-        }
         init {
 
             this.isExpanded
@@ -114,7 +113,9 @@ class RewardsFragmentViewModel {
             this.projectDataInput
                 .filter { sortAndFilterRewards(it).isNotNull() }
                 .map { sortAndFilterRewards(it) }
-                .subscribe { this.projectData.onNext(it) }
+                .subscribe {
+                    this.projectData.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             val project = this.projectData
@@ -162,7 +163,11 @@ class RewardsFragmentViewModel {
                     if (!rewardPair.second) {
                         return@combineLatest Unit
                     } else {
-                        return@combineLatest pledgeDataAndPledgeReason(projectData, rewardPair.first)
+                        return@combineLatest pledgeDataAndPledgeReason(
+                            projectData,
+                            rewardPair.first,
+                            selectedShippingRule
+                        )
                     }
                 }
                 .filter { it.isNotNull() && it is Pair<*, *> && it.first is PledgeData && it.second is PledgeReason }
@@ -190,11 +195,15 @@ class RewardsFragmentViewModel {
                     if (!rewardPair.second) {
                         return@combineLatest Unit
                     } else {
-                        return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first), backedReward)
+                        return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first, selectedShippingRule), backedReward)
                     }
                 }
-                .filter { it.isNotNull() && it is Pair<*, *> && it.first is Pair<*, *> && it.second is Reward } // todo extract to a function
-                .map { requireNotNull(it as Pair<Pair<PledgeData, PledgeReason>, Reward>) }
+                .filter {
+                    it.isNotNull() && it is Pair<*, *> && it.first is Pair<*, *> && it.second is Reward
+                } // todo extract to a function
+                .map {
+                    requireNotNull(it as Pair<Pair<PledgeData, PledgeReason>, Reward>)
+                }
                 .subscribe {
                     val pledgeAndData = it.first
                     val newRw = it.first.first.reward()
@@ -224,11 +233,6 @@ class RewardsFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            project
-                .map { it.rewards()?.size ?: 0 }
-                .subscribe { this.rewardsCount.onNext(it) }
-                .addToDisposable(disposables)
-
             this.showAlert
                 .compose<Pair<PledgeData, PledgeReason>>(takeWhenV2(alertButtonPressed))
                 .subscribe {
@@ -244,6 +248,20 @@ class RewardsFragmentViewModel {
                     this.showPledgeFragment.onNext(it)
                 }
                 .addToDisposable(disposables)
+
+            Observable.combineLatest(configObservable, project) { config, project ->
+                if (shippingRulesUseCase == null) {
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        apolloClient,
+                        project,
+                        config,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
+                }
+                shippingRulesUseCase?.invoke()
+                return@combineLatest Observable.empty<Any>()
+            }.subscribe().addToDisposable(disposables)
         }
 
         private fun sortAndFilterRewards(pData: ProjectData): ProjectData {
@@ -279,9 +297,13 @@ class RewardsFragmentViewModel {
             }
         }
 
-        private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
+        private fun pledgeDataAndPledgeReason(
+            projectData: ProjectData,
+            reward: Reward,
+            selectedShippingRule: ShippingRule?
+        ): Pair<PledgeData, PledgeReason> {
             val pledgeReason = if (projectData.project().isBacking()) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
-            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
+            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, shippingRule = selectedShippingRule)
             return Pair(pledgeData, pledgeReason)
         }
 
@@ -310,6 +332,10 @@ class RewardsFragmentViewModel {
             this.rewardClicked.onNext(Pair(reward, true))
         }
 
+        override fun selectedShippingRule(shippingRule: ShippingRule) {
+            this.selectedShippingRule = shippingRule
+        }
+
         override fun onCleared() {
             disposables.clear()
             super.onCleared()
@@ -321,18 +347,23 @@ class RewardsFragmentViewModel {
 
         override fun projectData(): Observable<ProjectData> = this.projectData
 
-        override fun rewardsCount(): Observable<Int> = this.rewardsCount
-
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
 
         override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment
 
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
+
+        fun countrySelectorRules(): Flow<ShippingRulesState> {
+            val state = shippingRulesUseCase?.let { useCase ->
+                useCase.shippingRulesState
+            } ?: emptyFlow()
+            return state
+        }
     }
 
-    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RewardsFragmentViewModel(environment) as T
+            return RewardsFragmentViewModel(environment, shippingRulesUseCase) as T
         }
     }
 }

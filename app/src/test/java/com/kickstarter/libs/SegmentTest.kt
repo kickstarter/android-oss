@@ -1640,7 +1640,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(10.0, expectedProperties["checkout_reward_minimum"])
         assertEquals(10.0, expectedProperties["checkout_reward_minimum_usd"])
         assertEquals(true, expectedProperties["checkout_reward_shipping_enabled"])
-        assertEquals("unrestricted", expectedProperties["checkout_reward_shipping_preference"])
+        assertEquals("UNRESTRICTED", expectedProperties["checkout_reward_shipping_preference"])
         assertEquals(6, expectedProperties["checkout_add_ons_count_total"])
         assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
         assertEquals(110.71, expectedProperties["checkout_add_ons_minimum_usd"])

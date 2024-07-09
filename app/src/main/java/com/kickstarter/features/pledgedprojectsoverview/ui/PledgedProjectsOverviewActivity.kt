@@ -11,8 +11,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -86,9 +86,11 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         isLoading = isLoading,
                         isErrored = isErrored,
                         onSeeAllBackedProjectsClick = { startProfileActivity() },
-                        pullRefreshCallback = { viewModel.getPledgedProjects(
-                            PledgedProjectsOverviewQueryData(10, null, null, null)
-                        )}
+                        pullRefreshCallback = {
+                            viewModel.getPledgedProjects(
+                                PledgedProjectsOverviewQueryData(10, null, null, null)
+                            )
+                        }
                     )
                 }
 

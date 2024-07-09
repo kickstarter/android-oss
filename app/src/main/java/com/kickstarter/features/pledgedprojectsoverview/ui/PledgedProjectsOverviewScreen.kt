@@ -148,7 +148,7 @@ fun PledgedProjectsOverviewScreen(
     totalAlerts: Int = 0,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
     onSendMessageClick: (projectName: String) -> Unit,
-    onSeeAllBackedProjectsClick : () -> Unit,
+    onSeeAllBackedProjectsClick: () -> Unit,
     isLoading: Boolean = false,
     isErrored: Boolean = false,
     pullRefreshCallback: () -> Unit = {}
@@ -185,8 +185,7 @@ fun PledgedProjectsOverviewScreen(
         ) { padding ->
             if (isErrored) {
                 PPOScreenErrorState()
-            }
-            else if (totalAlerts == 0 || ppoCards.itemCount.isNullOrZero()) {
+            } else if (totalAlerts == 0 || ppoCards.itemCount.isNullOrZero()) {
                 PPOScreenEmptyState(onSeeAllBackedProjectsClick)
             } else {
                 LazyColumn(
@@ -198,7 +197,7 @@ fun PledgedProjectsOverviewScreen(
                             end = dimensions.paddingMedium,
                             top = dimensions.paddingMedium
                         )
-                        .padding(paddingValues = padding)          ,
+                        .padding(paddingValues = padding),
                     state = lazyColumnListState
                 ) {
                     item {
@@ -214,33 +213,33 @@ fun PledgedProjectsOverviewScreen(
                     ) { index ->
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                    ppoCards[index]?.let {
-                        PPOCardView(
-                            viewType = it.viewType() ?: PPOCardViewType.UNKNOWN,
-                            onCardClick = { },
-                            onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
-                            projectName = it.projectName(),
-                            pledgeAmount = it.amount(),
-                            imageUrl = it.imageUrl(),
-                            imageContentDescription = it.imageContentDescription(),
-                            creatorName = it.creatorName(),
-                            sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
-                            shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
-                            showBadge = it.showBadge(),
-                            onActionButtonClicked = { },
-                            onSecondaryActionButtonClicked = {
-                                when (it.viewType()) {
-                                    PPOCardViewType.CONFIRM_ADDRESS -> {
-                                        confirmedAddress = it.address() ?: ""
-                                        openConfirmAddressAlertDialog.value = true
+                        ppoCards[index]?.let {
+                            PPOCardView(
+                                viewType = it.viewType() ?: PPOCardViewType.UNKNOWN,
+                                onCardClick = { },
+                                onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
+                                projectName = it.projectName(),
+                                pledgeAmount = it.amount(),
+                                imageUrl = it.imageUrl(),
+                                imageContentDescription = it.imageContentDescription(),
+                                creatorName = it.creatorName(),
+                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
+                                shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
+                                showBadge = it.showBadge(),
+                                onActionButtonClicked = { },
+                                onSecondaryActionButtonClicked = {
+                                    when (it.viewType()) {
+                                        PPOCardViewType.CONFIRM_ADDRESS -> {
+                                            confirmedAddress = it.address() ?: ""
+                                            openConfirmAddressAlertDialog.value = true
+                                        }
+                                        else -> {}
                                     }
-                                    else -> {}
-                                }
-                            },
-                            timeNumberForAction = it.timeNumberForAction()
-                        )
+                                },
+                                timeNumberForAction = it.timeNumberForAction()
+                            )
+                        }
                     }
-                }
 
                     item {
                         Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
@@ -287,7 +286,7 @@ fun PledgedProjectsOverviewScreen(
 
 @Composable
 fun PPOScreenEmptyState(
-    onSeeAllBackedProjectsClick : () -> Unit
+    onSeeAllBackedProjectsClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -298,7 +297,7 @@ fun PPOScreenEmptyState(
                 end = dimensions.paddingMedium,
                 top = dimensions.paddingMedium
             ).verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally ,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
@@ -337,9 +336,8 @@ fun PPOScreenErrorState() {
                 end = dimensions.paddingMedium,
                 top = dimensions.paddingMedium
             )
-            .verticalScroll(rememberScrollState())
-        ,
-        horizontalAlignment = Alignment.CenterHorizontally ,
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
 

@@ -2,15 +2,12 @@ package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
-import com.kickstarter.viewmodels.UpdatePasswordUIState
-import com.kickstarter.viewmodels.projectpage.AddOnsUIState
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -111,7 +108,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 viewModel.ppoUIState.toList(uiState)
             }
 
-            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10,null,null,null))
+            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
 
             assertEquals(
                 uiState,
@@ -142,7 +139,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 viewModel.ppoUIState.toList(uiState)
             }
 
-            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10,null,null,null))
+            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
 
             assertEquals(
                 uiState,
@@ -173,7 +170,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 viewModel.ppoUIState.toList(uiState)
             }
 
-            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10,null,null,null))
+            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
 
             assertEquals(
                 uiState,

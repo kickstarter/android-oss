@@ -96,9 +96,9 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun getPledgedProjects(inputData : PledgedProjectsOverviewQueryData) {
+    fun getPledgedProjects(inputData: PledgedProjectsOverviewQueryData) {
         viewModelScope.launch {
-            //TODO how we are fetching the data will be modified once the pagination piece in MBL-1473 is finished
+            // TODO how we are fetching the data will be modified once the pagination piece in MBL-1473 is finished
             apolloClient.getPledgedProjectsOverviewPledges(
                 inputData = inputData,
             )
@@ -106,7 +106,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 .onStart {
                     emitCurrentState(isLoading = true)
                 }.map { ppoEnvelope ->
-                    //update  paginated ppo card list here
+                    // update  paginated ppo card list here
                     totalAlerts = ppoEnvelope.totalCount() ?: 0
                     emitCurrentState()
                 }.catch {

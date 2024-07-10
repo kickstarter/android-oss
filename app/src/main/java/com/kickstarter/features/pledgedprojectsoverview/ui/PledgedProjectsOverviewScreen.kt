@@ -44,7 +44,6 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.utils.extensions.isNullOrZero
-import com.kickstarter.libs.Environment
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
@@ -77,7 +76,8 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
-                errorSnackBarHostState = SnackbarHostState()
+                errorSnackBarHostState = SnackbarHostState(),
+                onFixPaymentClick = {}
             )
         }
     }
@@ -106,7 +106,8 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
-                errorSnackBarHostState = SnackbarHostState()
+                errorSnackBarHostState = SnackbarHostState(),
+                onFixPaymentClick = {}
             )
         }
     }
@@ -132,7 +133,6 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
                 onFixPaymentClick = {},
-                environment = Environment.builder().build(),
                 onSeeAllBackedProjectsClick = {},
             )
         }
@@ -142,7 +142,6 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PledgedProjectsOverviewScreen(
-    environment: Environment,
     modifier: Modifier,
     onBackPressed: () -> Unit,
     onAddressConfirmed: () -> Unit,

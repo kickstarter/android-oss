@@ -91,8 +91,8 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSeeAllBackedProjectsClick = { startProfileActivity() },
                         pullRefreshCallback = {
                             // TODO call viewmodel.getPledgedProjects() here
-                        }
-                        onFixPaymentClick = { projectSlug -> openManagePledgeActivity(projectSlug) }
+                        },
+                        onFixPaymentClick = { projectSlug -> openManagePledge(projectSlug) }
                     )
                 }
 
@@ -133,13 +133,13 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }
     }
-}
 
-    private fun openManagePledgeActivity(projectSlug: String) {
+
+    private fun openManagePledge(projectSlug: String) {
             val intent = Intent().getProjectIntent(this)
                 .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
                 .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
                 .putExtra(IntentKey.REF_TAG, RefTag.activity())
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-        }
     }
+}

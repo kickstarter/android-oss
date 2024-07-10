@@ -62,17 +62,17 @@ class PPOCardFactory private constructor() {
         fun fixPaymentCard(): PPOCard {
             return ppoCard(
                 backingID = "1234",
-                amount = "12.0",
+                amount = "$12.00",
                 address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
-                projectName = "Super Duper Project",
-                projectId = "123456",
+                projectName = "Quiet, Brain! Heartfelt Activities for Mental Health",
+                projectId = "UHJvamVjdC0xOTY1MjA4NTUx",
                 projectSlug = "theawkwardyeti/quiet-brain-heartfelt-activities-for-mental-health",
                 imageUrl = "https://i-dev.kickstarter.com/assets/043/304/083/e027563139c4f494a87cb2b38b04096e_original.jpeg?anim=false&fit=cover&gravity=auto&height=576&origin=ugc-qa&q=92&width=1024&sig=om2pKNBJ3o802YChBvd%2B%2FQoCq177%2BhnWlv5H%2BTdYm74%3D",
-                creatorName = "creatorName",
+                creatorName = "Nick Seluk",
                 backingDetailsUrl = "backing/details/url",
-                timeNumberForAction = 10,
+                timeNumberForAction = 7,
                 showBadge = false,
                 viewType = PPOCardViewType.FIX_PAYMENT
             )

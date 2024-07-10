@@ -55,4 +55,5 @@ object IntentKey {
     const val FLAGGINGKIND = "com.kickstarter.kickstarter.intent_report_project"
     const val PREVIOUS_SCREEN = "com.kickstarter.kickstarter.previous_screen"
     const val OAUTH_REDIRECT_URL = "com.kickstarter.kickstarter.oauth_redirect_url"
+    const val FIX_PAYMENT_SUCCESS = "com.kickstarter.kickstarter.fix_payment_success"
 }

@@ -134,12 +134,11 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         }
     }
 
-
     private fun openManagePledge(projectSlug: String) {
-            val intent = Intent().getProjectIntent(this)
-                .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
-                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
-                .putExtra(IntentKey.REF_TAG, RefTag.activity())
-            startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        val intent = Intent().getProjectIntent(this)
+            .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+            .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
+            .putExtra(IntentKey.REF_TAG, RefTag.activity())
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

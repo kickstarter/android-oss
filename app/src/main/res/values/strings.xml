@@ -88,10 +88,14 @@
   <!-- TODO: Get translations for this and put it in i18n, then remove  -->
   <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
 
-  <!-- PPO Mock Strings -->
+  <!-- PPO Strings -->
+  <string name="see_all_backed__projects_fpo">See all backed projects</string>
+  <string name="youre_all_caught_up_fpo">You\'re all caught up!</string>
+  <string name="when_projects_youve_backed_need_your_attention_youll_see_them_here_fpo">When projects you\'ve backed need your attention, you\'ll see them here.</string>
   <string name="project_alerts_fpo">Project Alerts</string>
   <string name="alerts_fpo">Alerts (%1$s)</string>
   <string name="address_confirmed_snackbar_text_fpo">Address confirmed! Need to change your address before it locks? Visit your backing details on our website.</string>
   <string name="backing_details_fpo">Backing details</string>
+  <string name="something_went_wrong_pull_to_refresh_fpo">Something went wrong - Pull to refresh</string>
 
 </resources>

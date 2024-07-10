@@ -503,10 +503,14 @@ class ProjectPageActivity :
                     val currentPage = flowUIState.currentPage
 
                     val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+                    val shippingRulesState by rewardsSelectionViewModel.shippingRulesState.collectAsStateWithLifecycle()
+
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val selectedReward = rewardSelectionUIState.selectedReward
+                    val currentUserShippingRule = shippingRulesState.defaultShippingRule
+                    val shippingRules = shippingRulesState.shippingRules
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                     LaunchedEffect(Unit) {
@@ -518,10 +522,8 @@ class ProjectPageActivity :
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
 
                     val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
-                    val currentUserShippingRule = addOnsUIState.currentShippingRule
                     val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
                     val addOns = addOnsUIState.addOns
-                    val shippingRules = addOnsUIState.shippingRules
                     val addOnsIsLoading = addOnsUIState.isLoading
 
                     LaunchedEffect(currentUserShippingRule) {

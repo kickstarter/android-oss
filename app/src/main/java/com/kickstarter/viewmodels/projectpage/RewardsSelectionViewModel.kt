@@ -13,6 +13,9 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,8 +23,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 
 data class RewardSelectionUIState(
     val rewardList: List<Reward> = listOf(),
@@ -30,7 +35,7 @@ data class RewardSelectionUIState(
     val project: ProjectData = ProjectData.builder().build(),
 )
 
-class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
+class RewardsSelectionViewModel(private val environment: Environment) : ViewModel() {
 
     private val analytics = requireNotNull(environment.analytics())
     private lateinit var currentProjectData: ProjectData
@@ -38,6 +43,8 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
     private var previouslyBackedReward: Reward? = null
     private var indexOfBackedReward = 0
     private var newUserReward: Reward = Reward.builder().build()
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private var shippingRulesUseCase: GetShippingRulesUseCase? = null
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -49,6 +56,14 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
                 initialValue = RewardSelectionUIState(),
             )
 
+    val shippingRulesState: StateFlow<ShippingRulesState>
+        get() = shippingRulesUseCase?.shippingRulesState
+            ?.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = ShippingRulesState(),
+            ) ?: MutableStateFlow(ShippingRulesState()).asStateFlow()
+
     private val mutableFlowUIRequest = MutableSharedFlow<FlowUIState>()
     val flowUIRequest: SharedFlow<FlowUIState>
         get() = mutableFlowUIRequest
@@ -59,8 +74,18 @@ class RewardsSelectionViewModel(environment: Environment) : ViewModel() {
         previousUserBacking = projectData.backing()
         previouslyBackedReward = getReward(previousUserBacking)
         indexOfBackedReward = indexOfBackedReward(project = projectData.project())
+
         viewModelScope.launch {
             emitCurrentState()
+            environment.currentConfigV2()?.observable()?.asFlow()?.collectLatest {
+                shippingRulesUseCase = GetShippingRulesUseCase(
+                    apolloClient,
+                    projectData.project(),
+                    it,
+                    viewModelScope,
+                    Dispatchers.IO
+                ).apply { this.invoke() }
+            }
         }
     }
 

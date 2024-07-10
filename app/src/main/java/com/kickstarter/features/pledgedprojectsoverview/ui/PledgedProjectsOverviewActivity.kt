@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
@@ -34,7 +33,6 @@ import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.ProfileActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
 import kotlinx.coroutines.launch
@@ -49,7 +47,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
             val data = result.data?.getBooleanExtra(IntentKey.FIX_PAYMENT_SUCCESS, false)
             data?.let {
                 if (it.isTrue()) {
-
                 }
             }
         }
@@ -149,10 +146,11 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
     }
 
     private fun openManagePledge(projectSlug: String, resultLauncher: ActivityResultLauncher<Intent>) {
-        resultLauncher.launch(Intent().getProjectIntent(this)
-            .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
-            .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
-            .putExtra(IntentKey.REF_TAG, RefTag.activity())
+        resultLauncher.launch(
+            Intent().getProjectIntent(this)
+                .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
+                .putExtra(IntentKey.REF_TAG, RefTag.activity())
         )
         this.let {
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())

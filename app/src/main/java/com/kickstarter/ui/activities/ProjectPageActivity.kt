@@ -503,14 +503,13 @@ class ProjectPageActivity :
                     val currentPage = flowUIState.currentPage
 
                     val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
-                    val shippingRulesState by rewardsSelectionViewModel.shippingRulesState.collectAsStateWithLifecycle()
 
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val selectedReward = rewardSelectionUIState.selectedReward
-                    val currentUserShippingRule = shippingRulesState.defaultShippingRule
-                    val shippingRules = shippingRulesState.shippingRules
+                    val currentUserShippingRule = rewardSelectionUIState.selectedShippingRule
+                    val shippingRules = rewardSelectionUIState.shippingRules
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                     LaunchedEffect(Unit) {
@@ -657,7 +656,7 @@ class ProjectPageActivity :
                         maxPledgeAmount = maxPledgeAmount,
                         minStepAmount = minStepAmount,
                         onShippingRuleSelected = { shippingRule ->
-                            addOnsViewModel.onShippingLocationChanged(shippingRule)
+                            rewardsSelectionViewModel.selectedShippingRule(shippingRule)
                         },
                         shippingAmount = shippingAmount,
                         onConfirmDetailsContinueClicked = {

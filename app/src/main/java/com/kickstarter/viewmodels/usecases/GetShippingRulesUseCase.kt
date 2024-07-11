@@ -4,6 +4,7 @@ import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -87,7 +88,7 @@ class GetShippingRulesUseCase(
                                     ShippingRulesState(
                                         shippingRules = shippingRules.values.toList(),
                                         loading = false,
-                                        defaultShippingRule = config?.getDefaultLocationFrom(shippingRules.values.toList()) ?: ShippingRule.builder().build()
+                                        defaultShippingRule = getDefaultShippingRule(shippingRules, project)
                                     )
                                 )
                             }
@@ -104,4 +105,23 @@ class GetShippingRulesUseCase(
             }
         }
     }
+
+    /**
+     * In case the project is backing, return the backed shippingRule
+     * otherwise return the config default shippingRule
+     */
+    private fun getDefaultShippingRule(
+        shippingRules: MutableMap<Long, ShippingRule>,
+        project: Project
+    ): ShippingRule =
+        if (project.isBacking()) ShippingRule.builder()
+            .apply {
+                val locationId = project.backing()?.locationId() ?: 0L
+                val locationName = project.backing()?.locationName() ?: ""
+
+                this.location(Location.Builder().id(locationId).name(locationName).displayableName(locationName).build())
+            }
+            .build()
+        else config?.getDefaultLocationFrom(shippingRules.values.toList()) ?: ShippingRule.builder()
+            .build()
 }

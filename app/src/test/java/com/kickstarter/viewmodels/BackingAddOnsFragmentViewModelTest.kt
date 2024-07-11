@@ -31,36 +31,32 @@ import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel.BackingAddOnsFr
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
-import junit.framework.TestCase
 import org.junit.After
 import org.junit.Test
 
 class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: BackingAddOnsFragmentViewModel
-    private val shippingSelectorIsGone = TestSubscriber.create<Boolean>()
     private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
     private val showPledgeFragment = TestSubscriber.create<Pair<PledgeData, PledgeReason>>()
     private val isEnabledButton = TestSubscriber.create<Boolean>()
     private val totalSelectedAddOns = TestSubscriber.create<Int>()
     private val isEmptyState = TestSubscriber.create<Boolean>()
     private val showErrorDialog = TestSubscriber.create<Boolean>()
-    private val selectedShippingRule = TestSubscriber.create<ShippingRule>()
     private val disposables = CompositeDisposable()
 
     @After
     fun cleanUp() {
         disposables.clear()
     }
+
     private fun setUpEnvironment(@NonNull environment: Environment, bundle: Bundle? = null) {
         this.vm = BackingAddOnsFragmentViewModel(environment, bundle)
         this.vm.outputs.addOnsList().subscribe { this.addOnsList.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.shippingSelectorIsGone().subscribe { this.shippingSelectorIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showPledgeFragment().subscribe { this.showPledgeFragment.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.isEnabledCTAButton().subscribe { this.isEnabledButton.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.totalSelectedAddOns().subscribe { this.totalSelectedAddOns.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.isEmptyState().subscribe { this.isEmptyState.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showErrorDialog().subscribe { this.showErrorDialog.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.selectedShippingRule().subscribe { this.selectedShippingRule.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -81,10 +77,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(emptyList(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), ShippingRuleFactory.emptyShippingRule()))
         this.isEmptyState.assertValue(true)
@@ -106,10 +102,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -117,10 +113,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -140,10 +136,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -151,9 +147,9 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
@@ -167,7 +163,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val addOn = RewardFactory.addOn().toBuilder()
             .shippingRules(listOf(shippingRuleAddOn, shippingRuleAddOn, shippingRuleAddOn))
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
             .build()
         val listAddons = listOf(addOn, addOn, addOn)
@@ -179,7 +175,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingRules(listOf(shippingRuleRw))
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 check this field
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase()) // - Reward from V1 check this field
             .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS) // - Reward from V1 to check is digital use this field
             .build()
 
@@ -188,10 +184,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
 
@@ -213,10 +209,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .shippingRules(listOf(shippingRuleRw))
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -224,10 +220,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
 
@@ -253,13 +249,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .shippingRules(listOf(shippingRuleRw))
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -267,9 +263,9 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.vm.outputs.addOnsList().subscribe {
             assertEquals(it.second.size, 1)
@@ -277,46 +273,6 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             assertEquals(filteredAddOn, addOn2)
         }
             .addToDisposable(disposables)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun addOnsForRestricted_NoDigitalAddOn_ChangeSelectedShippingRule() {
-        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
-        val addOn = RewardFactory.addOn().toBuilder()
-            .shippingRules(listOf(shippingRuleRw))
-            .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
-            .build()
-        val listAddons = listOf(addOn, addOn, addOn)
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfigV2()
-        currentConfig.config(config)
-
-        val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
-            .shippingRules(listOf(shippingRuleRw))
-            .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
-            .build()
-
-        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
-        val projectData = ProjectDataFactory.project(project, null, null)
-        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-
-        val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
-        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
-
-        this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
-
-        val shippingRuleAddOn = ShippingRuleFactory.germanyShippingRule()
-        this.vm.inputs.shippingRuleSelected(shippingRuleAddOn)
-
-        this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRuleRw), Triple(projectData, emptyList(), shippingRuleAddOn))
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -337,7 +293,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         // - Digital Reward
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.NOSHIPPING.name.lowercase())
             .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING) // - Reward from V1 use this field
             .build()
@@ -347,10 +303,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
 
@@ -374,7 +330,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // - LocalReceipt Reward
         val rw = RewardFactory.localReceiptLocation().toBuilder()
             .hasAddons(true)
-            .shippingType(Reward.ShippingPreference.LOCAL.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.LOCAL.name.lowercase())
             .shippingPreferenceType(Reward.ShippingPreference.LOCAL) // - Reward from GraphQL use this field
             .shippingType(Reward.SHIPPING_TYPE_LOCAL_PICKUP) // - Reward from V1 use this field
             .build()
@@ -384,12 +340,11 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
-        this.shippingSelectorIsGone.assertValues(true)
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -420,19 +375,18 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig))
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
-        this.shippingSelectorIsGone.assertValues(true)
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -471,89 +425,18 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig))
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
-        this.shippingSelectorIsGone.assertValues(true)
         this.addOnsList.assertValue(Triple(projectData, outputTestList, ShippingRuleFactory.emptyShippingRule()))
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testShippingSelectorGone_WhenNoAddOns_Shippable() {
-        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
-        val addOn = RewardFactory.addOn().toBuilder()
-            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
-            .shippingPreferenceType(Reward.ShippingPreference.NOSHIPPING) // - Reward from GraphQL use this field
-            .build()
-        val listAddons = listOf(addOn, addOn, addOn)
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfigV2()
-        currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
-
-        val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
-            .shippingRules(listOf(shippingRuleRw))
-            .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase()) // - Reward from V1 use this field
-            .build()
-
-        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
-        val projectData = ProjectDataFactory.project(project, null, null)
-        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-
-        val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
-        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
-
-        this.shippingSelectorIsGone.assertValues(true)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testShippingSelectorGoneWhenBaseRewardIsNotShippable() {
-        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
-        val addOn = RewardFactory.addOn().toBuilder()
-            .build()
-        val listAddons = listOf(addOn, addOn, addOn)
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfigV2()
-        currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
-
-        val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
-            .shippingRules(listOf(shippingRuleRw))
-            .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase()) // - Reward from V1 use this field
-            .build()
-
-        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
-        val projectData = ProjectDataFactory.project(project, null, null)
-        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-
-        val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
-        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
-
-        this.shippingSelectorIsGone.assertValues(true)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -574,12 +457,12 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-        val pledgeData = PledgeData.with(pledgeReason, projectData, rw)
+        val pledgeData = PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.emptyShippingRule())
 
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(emptyList(), currentConfig), bundle)
 
         val quantityPerId = Pair(0, rw.id())
         this.vm.inputs.quantityPerId(quantityPerId)
@@ -612,21 +495,21 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-        val pledgeData = PledgeData.with(pledgeReason, projectData, rw)
+        val pledgeData = PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first())
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
@@ -683,10 +566,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -706,10 +589,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = ShippingRuleFactory.usShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
         // - input from ViewHolder when building the item with the backed info
         this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
         this.vm.inputs.quantityPerId(Pair(1, addOn3.id()))
@@ -740,10 +623,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field.
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase()) // - Reward from V1 use this field.
             .shippingType(Reward.SHIPPING_TYPE_ANYWHERE) // - Reward from V1 use this field to check if is Digital
             .build()
         val project = ProjectFactory.project()
@@ -764,10 +647,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
         this.vm.inputs.quantityPerId(Pair(7, addOn3.id()))
         this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
 
@@ -781,7 +664,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showPledgeFragment()
             .subscribe {
                 val updateList = listOf(addOn, addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(7).build())
-                TestCase.assertEquals(it.first.addOns(), updateList)
+                assertEquals(it.first.addOns(), updateList)
             }
             .addToDisposable(disposables)
 
@@ -807,16 +690,16 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val backedRw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field.
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase()) // - Reward from V1 use this field.
             .shippingType(Reward.SHIPPING_TYPE_ANYWHERE) // - Reward from V1 use this field to check if is Digital
             .build()
 
         // - Digital Reward
         val newRw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.NOSHIPPING.name.lowercase())
             .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING) // - Reward from V1 use this field
             .shippingRules(emptyList())
@@ -841,13 +724,11 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw, shippingRule = ShippingRuleFactory.emptyShippingRule()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
-        this.shippingSelectorIsGone.assertValue(true)
-        this.selectedShippingRule.assertValue(ShippingRuleFactory.emptyShippingRule())
         this.addOnsList.assertValues(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
 
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
@@ -875,16 +756,16 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val newRw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field.
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase()) // - Reward from V1 use this field.
             .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS) // - Reward from V1 use this field to check if is Digital
             .build()
 
         // - Digital Reward
         val backedRw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.NOSHIPPING.name.lowercase())
             .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING) // - Reward from V1 use this field
             .build()
@@ -907,93 +788,17 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw, shippingRule = shippingRule.shippingRules().first()))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
-        this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValues(shippingRule.shippingRules().first())
         this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
         this.totalSelectedAddOns.assertValues(0)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun givenBackedAddOns_whenUpdatingSameReward_ChangeShippingRule() {
-        val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
-
-        val addOn = RewardFactory.addOn().toBuilder()
-            .shippingRules(shippingRule.shippingRules())
-            .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .build()
-        val addOn2 = addOn.toBuilder().id(8).build()
-        val addOn3 = addOn.toBuilder().id(99).build()
-
-        val listAddons = listOf(addOn, addOn2, addOn3)
-        val listAddonsBacked = listOf(addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfigV2()
-        currentConfig.config(config)
-
-        // - Backed Reward
-        val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
-            .shippingRules(shippingRule.shippingRules())
-            .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field.
-            .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS) // - Reward from V1 use this field to check if is Digital
-            .build()
-
-        val project = ProjectFactory.project()
-
-        // -Build the backing with location and list of AddOns
-        val backing = BackingFactory.backing(project, UserFactory.user(), rw)
-            .toBuilder()
-            .locationId(ShippingRuleFactory.usShippingRule().location()?.id())
-            .location(ShippingRuleFactory.usShippingRule().location())
-            .addOns(listAddonsBacked)
-            .build()
-
-        val backedProject = project.toBuilder()
-            .rewards(listOf(rw))
-            .backing(backing)
-            .build()
-
-        val projectData = ProjectDataFactory.project(backedProject, null, null)
-        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
-
-        val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
-        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
-
-        this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValues(shippingRule.shippingRules().first())
-
-        // - Change shippingRule
-        this.vm.inputs.shippingRuleSelected(ShippingRuleFactory.mexicoShippingRule())
-
-        // - Test asserts
-        this.selectedShippingRule.assertValues(
-            shippingRule.shippingRules().first(),
-            ShippingRuleFactory.mexicoShippingRule()
-        )
-
-        this.vm.inputs.continueButtonPressed()
-
-        this.vm.outputs.showPledgeFragment().subscribe {
-            val shippingRuleSendToPledge = it.first.shippingRule()
-            TestCase.assertEquals(shippingRuleSendToPledge, ShippingRuleFactory.mexicoShippingRule())
-        }
-            .addToDisposable(disposables)
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1012,10 +817,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .shippingRules(listOf(shippingRuleRw))
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -1023,9 +828,9 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
         this.isEmptyState.assertValue(true)
@@ -1048,10 +853,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .shippingRules(listOf(shippingRuleRw))
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.lowercase())
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -1059,9 +864,9 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = shippingRuleRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
         this.isEmptyState.assertValue(false)
@@ -1070,7 +875,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun errorState_whenErrorReturned_shouldShowErrorAlertDialogAndHideShippingSelector() {
+    fun errorState_whenErrorReturned_shouldShowErrorAlertDialog() {
         val config = ConfigFactory.configForUSUser()
         val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
@@ -1082,14 +887,14 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project, null, null)
         val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
 
+        val rule = ShippingRuleFactory.usShippingRule()
+
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw, shippingRule = rule))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         setUpEnvironment(buildEnvironmentWithError(currentConfig), bundle)
 
-        // Two values -> two failed network calls
         this.showErrorDialog.assertValue(true)
-        this.shippingSelectorIsGone.assertValues(true)
     }
 
     fun addOnsList_whenUnavailable_FilteredOut() {
@@ -1107,10 +912,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+            .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.lowercase())
             .shippingRules(shippingRule.shippingRules())
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.lowercase()) // - Reward from V1 use this field
             .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -1120,7 +925,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
+        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig))
 
         val filteredList = listOf(addOn, addOn)
         this.addOnsList.assertValue(Triple(projectData, filteredList, shippingRule.shippingRules().first()))
@@ -1142,16 +947,12 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
     }
 
-    private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfigV2): Environment {
+    private fun buildEnvironmentWith(addOns: List<Reward>, currentConfig: MockCurrentConfigV2): Environment {
         return environment()
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                     return Observable.just(addOns)
-                }
-
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(shippingRule)
                 }
             })
             .currentConfig2(currentConfig)

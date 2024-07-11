@@ -76,7 +76,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
-                val totalAlerts = ppoUIState.totalAlerts
+                val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
                 val isLoading = ppoUIState.isLoading || !ppoCardPagingSource.loadState.isIdle
                 val isErrored = ppoUIState.isErrored || ppoCardPagingSource.loadState.hasError
 

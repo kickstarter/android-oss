@@ -503,13 +503,14 @@ class ProjectPageActivity :
                     val currentPage = flowUIState.currentPage
 
                     val rewardSelectionUIState by rewardsSelectionViewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+                    val shippingUIState by rewardsSelectionViewModel.shippingUIState.collectAsStateWithLifecycle()
 
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val selectedReward = rewardSelectionUIState.selectedReward
-                    val currentUserShippingRule = rewardSelectionUIState.selectedShippingRule
-                    val shippingRules = rewardSelectionUIState.shippingRules
+                    val currentUserShippingRule = shippingUIState.selectedShippingRule
+                    val shippingRules = shippingUIState.shippingRules
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                     LaunchedEffect(Unit) {

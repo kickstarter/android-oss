@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -25,7 +24,7 @@ data class ShippingRulesState(
     val shippingRules: List<ShippingRule> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null,
-    val defaultShippingRule: ShippingRule = ShippingRuleFactory.usShippingRule()
+    val selectedShippingRule: ShippingRule = ShippingRuleFactory.usShippingRule()
 )
 class GetShippingRulesUseCase(
     private val apolloClient: ApolloClientTypeV2,
@@ -66,7 +65,7 @@ class GetShippingRulesUseCase(
      * Exposes result of this use case
      */
     val shippingRulesState: Flow<ShippingRulesState>
-        get() = _mutableShippingRules.asStateFlow()
+        get() = _mutableShippingRules
 
     // - IO dispatcher for network operations to avoid blocking main thread
     operator fun invoke() {
@@ -88,7 +87,7 @@ class GetShippingRulesUseCase(
                                     ShippingRulesState(
                                         shippingRules = shippingRules.values.toList(),
                                         loading = false,
-                                        defaultShippingRule = getDefaultShippingRule(shippingRules, project)
+                                        selectedShippingRule = getDefaultShippingRule(shippingRules, project)
                                     )
                                 )
                             }

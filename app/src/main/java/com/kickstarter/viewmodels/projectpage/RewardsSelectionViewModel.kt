@@ -16,6 +16,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,11 +35,9 @@ data class RewardSelectionUIState(
     val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
     val project: ProjectData = ProjectData.builder().build(),
-    val selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule(),
-    val shippingRules: List<ShippingRule> = listOf()
 )
 
-class RewardsSelectionViewModel(private val environment: Environment) : ViewModel() {
+class RewardsSelectionViewModel(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel() {
 
     private val analytics = requireNotNull(environment.analytics())
     private lateinit var currentProjectData: ProjectData
@@ -50,7 +49,6 @@ class RewardsSelectionViewModel(private val environment: Environment) : ViewMode
     private var selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule()
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
-    private var shippingRulesUseCase: GetShippingRulesUseCase? = null
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -60,6 +58,16 @@ class RewardsSelectionViewModel(private val environment: Environment) : ViewMode
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = RewardSelectionUIState(),
+            )
+
+    private val mutableShippingUIState = MutableStateFlow(ShippingRulesState())
+    val shippingUIState: StateFlow<ShippingRulesState>
+        get() = mutableShippingUIState
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = ShippingRulesState(),
             )
 
     private val mutableFlowUIRequest = MutableSharedFlow<FlowUIState>()
@@ -76,19 +84,22 @@ class RewardsSelectionViewModel(private val environment: Environment) : ViewMode
         viewModelScope.launch {
             emitCurrentState()
             environment.currentConfigV2()?.observable()?.asFlow()?.collectLatest {
-                shippingRulesUseCase = GetShippingRulesUseCase(
-                    apolloClient,
-                    projectData.project(),
-                    it,
-                    viewModelScope,
-                    Dispatchers.IO
-                ).apply { this.invoke() }
+                if (shippingRulesUseCase == null) {
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        apolloClient,
+                        projectData.project(),
+                        it,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
+                }
+                shippingRulesUseCase?.invoke()
 
                 // - collect useCaseState and update UIState
                 shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
                     availableShippingRules = shippingUseCase.shippingRules
-                    selectedShippingRule = shippingUseCase.defaultShippingRule
-                    emitCurrentState()
+                    selectedShippingRule = shippingUseCase.selectedShippingRule
+                    emitShippingUIState()
                 }
             }
         }
@@ -137,6 +148,15 @@ class RewardsSelectionViewModel(private val environment: Environment) : ViewMode
         }
     }
 
+    private suspend fun emitShippingUIState() {
+        mutableShippingUIState.emit(
+            ShippingRulesState(
+                shippingRules = availableShippingRules,
+                selectedShippingRule = selectedShippingRule
+            )
+        )
+    }
+
     private suspend fun emitCurrentState() {
         val filteredRewards = currentProjectData.project().rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
         mutableRewardSelectionUIState.emit(
@@ -145,8 +165,6 @@ class RewardsSelectionViewModel(private val environment: Environment) : ViewMode
                 initialRewardIndex = indexOfBackedReward,
                 project = currentProjectData,
                 selectedReward = newUserReward,
-                selectedShippingRule = selectedShippingRule,
-                shippingRules = availableShippingRules
             )
         )
     }
@@ -154,14 +172,14 @@ class RewardsSelectionViewModel(private val environment: Environment) : ViewMode
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
             selectedShippingRule = shippingRule
-            emitCurrentState()
+            emitShippingUIState()
         }
     }
 
-    class Factory(private val environment: Environment) :
+    class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RewardsSelectionViewModel(environment = environment) as T
+            return RewardsSelectionViewModel(environment = environment, shippingRulesUseCase) as T
         }
     }
 }

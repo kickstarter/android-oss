@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -98,9 +97,9 @@ class RewardsFragment : Fragment() {
                         ).value
                         val listState = rememberLazyListState()
 
-                        if (rules.defaultShippingRule != ShippingRuleFactory.emptyShippingRule()) {
+                        if (rules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
                             // - Indicate the VM which one is the default selected shipping Rule
-                            viewModel.inputs.selectedShippingRule(rules.defaultShippingRule)
+                            viewModel.inputs.selectedShippingRule(rules.selectedShippingRule)
                         }
 
                         RewardCarouselScreen(
@@ -117,7 +116,7 @@ class RewardsFragment : Fragment() {
                                 // On future tickets will filter rewards by shipping rule selected available
                                 viewModel.inputs.selectedShippingRule(it)
                             },
-                            currentShippingRule = rules.defaultShippingRule,
+                            currentShippingRule = rules.selectedShippingRule,
                             isLoading = rules.loading
                         )
 

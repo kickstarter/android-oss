@@ -40,6 +40,8 @@ data class RewardSelectionUIState(
 class RewardsSelectionViewModel(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel() {
 
     private val analytics = requireNotNull(environment.analytics())
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
+
     private lateinit var currentProjectData: ProjectData
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
@@ -47,8 +49,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private var newUserReward: Reward = Reward.builder().build()
     private var availableShippingRules: List<ShippingRule> = listOf()
     private var selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule()
-
-    private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -95,7 +95,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                 }
                 shippingRulesUseCase?.invoke()
 
-                // - collect useCaseState and update UIState
+                // - collect useCase flow and update shippingUIState
                 shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
                     availableShippingRules = shippingUseCase.shippingRules
                     selectedShippingRule = shippingUseCase.selectedShippingRule
@@ -169,6 +169,10 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         )
     }
 
+    /**
+     * The user has change the shipping location on the UI
+     * @param shippingRule is the new selected location
+     */
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
             selectedShippingRule = shippingRule

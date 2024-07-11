@@ -2,6 +2,9 @@ package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -83,6 +86,99 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             assertEquals(
                 snackbarAction,
                 R.string.address_confirmed_snackbar_text_fpo
+            )
+        }
+
+    @Test
+    fun `emits_error_state_when_errored`() =
+        runTest {
+            val mockApolloClientV2 = object : MockApolloClientV2() {
+
+                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
+                    return Observable.error(Throwable())
+                }
+            }
+
+            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build())
+                .create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
+
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false, totalAlerts = 0),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = true, totalAlerts = 0)
+                )
+            )
+        }
+
+    @Test
+    fun `emits_empty_state_when_no_pledges`() =
+        runTest {
+            val mockApolloClientV2 = object : MockApolloClientV2() {
+
+                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
+                    return Observable.just(PledgedProjectsOverviewEnvelope.builder().totalCount(0).build())
+                }
+            }
+
+            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build())
+                .create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
+
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false, totalAlerts = 0),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0)
+                )
+            )
+        }
+
+    @Test
+    fun `emits_loading_then_success_state_when_successful`() =
+        runTest {
+            val mockApolloClientV2 = object : MockApolloClientV2() {
+
+                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
+                    return Observable.just(PledgedProjectsOverviewEnvelope.builder().totalCount(10).pledges(listOf(PPOCardFactory.confirmAddressCard())).build())
+                }
+            }
+
+            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build())
+                .create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
+
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false, totalAlerts = 0),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 10)
+                )
             )
         }
 }

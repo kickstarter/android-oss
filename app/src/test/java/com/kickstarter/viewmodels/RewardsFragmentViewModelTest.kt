@@ -393,7 +393,7 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
             state[2],
             ShippingRulesState(
                 loading = false,
-                defaultShippingRule = ShippingRuleFactory.canadaShippingRule(),
+                selectedShippingRule = ShippingRuleFactory.canadaShippingRule(),
                 shippingRules = testShippingRulesList.shippingRules()
             )
         ) // completed requests

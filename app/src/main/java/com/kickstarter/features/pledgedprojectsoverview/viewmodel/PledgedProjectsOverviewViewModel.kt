@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
-import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
@@ -28,14 +27,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
 data class PledgedProjectsOverviewUIState(
-    var totalAlerts: Int = 1,
+    var totalAlerts: Int = 0,
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
 )
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
-    private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.from(listOf(PPOCardFactory.fixPaymentCard())))
+    private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int) -> Unit = {}
     private var totalAlerts = 0

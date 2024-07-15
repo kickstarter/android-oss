@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
@@ -47,6 +49,11 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
             val data = result.data?.getBooleanExtra(IntentKey.FIX_PAYMENT_SUCCESS, false)
             data?.let {
                 if (it.isTrue()) {
+                    viewModel.getPledgedProjects(
+                        PledgedProjectsOverviewQueryData(
+                            25, null, null, null
+                        )
+                    )
                 }
             }
         }

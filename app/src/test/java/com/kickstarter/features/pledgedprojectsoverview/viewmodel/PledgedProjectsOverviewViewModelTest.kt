@@ -9,6 +9,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import io.reactivex.Observable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -16,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: PledgedProjectsOverviewViewModel
@@ -27,7 +29,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `emits_project_when_message_creator_called`() =
+    fun `emits project when message creator called`() =
         runTest {
             val projectState = mutableListOf<Project>()
 
@@ -53,7 +55,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
-    fun `emits_error_when_message_creator_called`() =
+    fun `emits error when message creator called`() =
         runTest {
             var snackbarAction = 0
             viewModel = PledgedProjectsOverviewViewModel.Factory(
@@ -76,7 +78,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
-    fun `emits_snackbar_when_confirms_address`() =
+    fun `emits snackbar when confirms address`() =
         runTest {
             var snackbarAction = 0
             viewModel.provideSnackbarMessage { snackbarAction = it }
@@ -90,7 +92,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
-    fun `emits_error_state_when_errored`() =
+    fun `emits error state when errored`() =
         runTest {
             val mockApolloClientV2 = object : MockApolloClientV2() {
 
@@ -121,7 +123,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
-    fun `emits_empty_state_when_no_pledges`() =
+    fun `emits empty state when no pledges`() =
         runTest {
             val mockApolloClientV2 = object : MockApolloClientV2() {
 
@@ -152,7 +154,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
-    fun `emits_loading_then_success_state_when_successful`() =
+    fun `emits loading then success state when successful`() =
         runTest {
             val mockApolloClientV2 = object : MockApolloClientV2() {
 

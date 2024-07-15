@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
 data class PledgedProjectsOverviewUIState(
-    var totalAlerts: Int = 0,
+    var totalAlerts: Int = 1,
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
 )

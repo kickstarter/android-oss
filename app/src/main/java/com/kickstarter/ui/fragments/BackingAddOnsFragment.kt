@@ -9,22 +9,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.compose.projectpage.AddOnsScreen
-import com.kickstarter.ui.activities.compose.projectpage.AddOnsScreen2
 import com.kickstarter.ui.adapters.BackingAddOnsAdapter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -53,7 +49,7 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
         binding?.composeView?.apply {
             val env = this?.context?.getEnvironment()?.let { env ->
                 viewModelFactoryC = AddOnsViewModel.Factory(env, bundle = arguments)
-                //viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
+                // viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
                 viewModelC.provideBundle(arguments)
                 env
             }
@@ -64,28 +60,31 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
                 KickstarterApp(
                     useDarkTheme = true
                 ) {
-                       val addOnsUIState by viewModelC.addOnsUIState.collectAsState()
+                    val addOnsUIState by viewModelC.addOnsUIState.collectAsState()
 
-                        val addOns = addOnsUIState.addOns
-                        val totalCount = addOnsUIState.totalCount
-                        val addOnsIsLoading = addOnsUIState.isLoading
-//                        val project = viewModelC.project
-//                        val pledgeFlowContext = viewModelC.pledgeflowcontext
+                    val addOns = addOnsUIState.addOns
+                    val totalCount = addOnsUIState.totalCount
+                    val addOnsIsLoading = addOnsUIState.isLoading
+                    val project = viewModelC.getProject()
 
-                        KSTheme {
-                            AddOnsScreen2(
-                                environment = requireNotNull(env),
-                                lazyColumnListState = rememberLazyListState(),
-                                rewardItems = addOns,
-                                project = Project.builder().build(),
-                                onItemAddedOrRemoved = { quantity, rewardId ->
-                                    viewModelC.updateSelection(rewardId, quantity)
-                                },
-                                isLoading = addOnsIsLoading,
-                                onContinueClicked = {},
-                                addOnCount = totalCount
-                            )
-                        }
+                    KSTheme {
+                        AddOnsScreen(
+                            environment = requireNotNull(env),
+                            lazyColumnListState = rememberLazyListState(),
+                            rewardItems = addOns,
+                            project = project,
+                            onItemAddedOrRemoved = { quantity, rewardId ->
+                                viewModelC.updateSelection(rewardId, quantity)
+                            },
+                            isLoading = addOnsIsLoading,
+                            onContinueClicked = {
+                                viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
+                                    showPledgeFragment(pledgeData = pDataAndReason.first, pledgeReason = pDataAndReason.second)
+                                }
+                            },
+                            addOnCount = totalCount
+                        )
+                    }
                 }
             }
         }
@@ -98,7 +97,6 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
 
     private val backingAddonsAdapter = BackingAddOnsAdapter(this)
     private lateinit var errorDialog: AlertDialog
-
 
     private fun selectProperString(totalSelected: Int, ksString: KSString): String {
         return when {
@@ -135,7 +133,6 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
         backingAddonsAdapter.showEmptyState(isEmptyState)
     }
 
-
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
         val fragment = this.selectPledgeFragment(pledgeData, pledgeReason)
         parentFragmentManager
@@ -171,7 +168,7 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
     }
 
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
-        //this.viewModel.inputs.quantityPerId(quantityPerId)
+        // this.viewModel.inputs.quantityPerId(quantityPerId)
     }
 
     override fun onDestroyView() {

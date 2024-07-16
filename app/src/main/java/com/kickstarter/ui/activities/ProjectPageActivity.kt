@@ -60,7 +60,6 @@ import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
@@ -521,9 +520,9 @@ class ProjectPageActivity :
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
 
-                    //val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsViewModel.currentAddOnsSelections
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
+                    val addOnCount = addOnsUIState.totalCount
 
                     LaunchedEffect(currentUserShippingRule) {
                         confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
@@ -645,13 +644,10 @@ class ProjectPageActivity :
                             confirmDetailsViewModel.onUserSelectedReward(reward)
                             latePledgeCheckoutViewModel.userRewardSelection(reward)
                         },
-                        onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
-//                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
-//                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-//                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
-//
-//                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
+                        onAddOnAddedOrRemoved = { quantityForId, rewardId ->
+                            addOnsViewModel.updateSelection(rewardId, quantityForId)
                         },
+                        totalSelectedAddOn = addOnCount,
                         selectedReward = selectedReward,
                         totalAmount = totalAmount,
                         selectedRewardAndAddOnList = rewardsAndAddOns,
@@ -677,7 +673,6 @@ class ProjectPageActivity :
                         onBonusSupportInputted = { input ->
                             confirmDetailsViewModel.inputBonusSupport(input)
                         },
-                        selectedAddOnsMap = mapOf(),
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {
                                 latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)

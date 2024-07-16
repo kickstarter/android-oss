@@ -19,7 +19,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
-import com.kickstarter.ui.activities.compose.projectpage.AddOnsContainer2
+import com.kickstarter.ui.activities.compose.projectpage.AddOnsContainer
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
@@ -56,7 +56,7 @@ class PlaygroundActivity : ComponentActivity() {
         view = binding.root
         setContent { // In here, we can call composables!
             KSTheme {
-                AddOnsContainer2(
+                AddOnsContainer(
                     title = "This Is A Test",
                     amount = "$500",
                     shippingAmount = "$5 shipping each",
@@ -77,7 +77,6 @@ class PlaygroundActivity : ComponentActivity() {
             viewModelFactory = Factory(env)
             stripeSDK = requireNotNull(env.stripe())
         }
-
 
         viewModel.payloadUIState.asObservable()
             .observeOn(AndroidSchedulers.mainThread())

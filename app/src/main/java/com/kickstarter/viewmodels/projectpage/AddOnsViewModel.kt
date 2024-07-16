@@ -5,14 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,15 +42,20 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private var currentUserReward: Reward = Reward.builder().build()
-    var project: Project = Project.builder().build()
-    var shippingRule: ShippingRule = ShippingRule.builder().build()
-    var pledgeflowcontext: PledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
+    private var projectData: ProjectData? = null
+    private var project: Project = Project.builder().build()
+    private var shippingRule: ShippingRule = ShippingRule.builder().build()
+    private var pledgeflowcontext: PledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
+    private var pReason: PledgeReason = PledgeReason.PLEDGE
 
     private var addOns: List<Reward> = listOf()
     private var errorAction: (message: String?) -> Unit = {}
-    val totalCount = mutableMapOf<Long, Int>()
+    private val currentSelection = mutableMapOf<Long, Int>()
 
     private var backedAddOns = emptyList<Reward>()
+
+    private var scope: CoroutineScope = viewModelScope
+    private var dispatcher: CoroutineDispatcher = Dispatchers.IO
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
     val addOnsUIState: StateFlow<AddOnsUIState>
@@ -60,11 +71,34 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         this.errorAction = errorAction
     }
 
+    /**
+     * By default run in
+     * scope: viewModelScope
+     * dispatcher: Dispatchers.IO
+     */
+    fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
+        this.scope = scope
+        this.dispatcher = dispatcher
+    }
+
+    /**
+     * Used in Crowdfund checkout
+     */
     fun provideBundle(bundle: Bundle?) {
         bundle?.let {
             val pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
+            pReason = it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
 
-            pledgeData?.projectData()?.project()?.let {
+            pledgeData?.projectData()?.let {
+                projectData = it
+            }
+
+            // New pledge, selected reward
+            pledgeData?.reward()?.let {
+                currentUserReward = it
+            }
+
+            projectData?.project()?.let {
                 project = it
             }
 
@@ -79,30 +113,51 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
             val backing = pledgeData?.projectData()?.backing() ?: project.backing()
 
+            // - User backed a reward no reward
+            if (backing != null && backing.reward() == null && backing.amount().isNotNull()) {
+                currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(backing.amount()).build()
+            }
+
+            // - User is backing
+            backing?.reward()?.let {
+                currentUserReward = it
+            }
+
             backing?.addOns()?.let {
                 backedAddOns = it
             }
         }
     }
 
+    /**
+     * Used in late pledges, does requires calling afterwards
+     *  `provideSelectedShippingRule`
+     */
     fun provideProjectData(projectData: ProjectData) {
-        projectData.project()?.let {
+        this.projectData = projectData
+        this.projectData?.project()?.let {
             project = it
         }
     }
 
+    /**
+     * Used in late pledges
+     */
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
         getAddOns(selectedShippingRule = shippingRule)
     }
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
-        viewModelScope.launch {
+        scope.launch(dispatcher) {
             apolloClient
                 .getProjectAddOns(
                     slug = project?.slug() ?: "",
                     locationId = selectedShippingRule.location() ?: LocationFactory.empty()
                 )
                 .asFlow()
+                .onStart {
+                    emitCurrentState(isLoading = true)
+                }
                 .map { addOns ->
                     if (!addOns.isNullOrEmpty()) {
                         this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
@@ -116,7 +171,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     /**
-     * List of available addOns, but updated for those backed addOns with the Backed information
+     * List of available addOns, updated for those backed addOns with the Backed information
      * such as quantity backed.
      */
     private fun getUpdatedList(addOns: List<Reward>, backedAddOns: List<Reward>): List<Reward> {
@@ -129,7 +184,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         // Take the backed AddOns, update with the backed AddOn information which will contain the backed quantity
         backedAddOns.map {
             holder[it.id()] = it
-            totalCount[it.id()] = it.quantity() ?: 0
+            currentSelection[it.id()] = it.quantity() ?: 0
         }
 
         return holder.values.toList()
@@ -138,8 +193,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     // UI events
     fun userRewardSelection(reward: Reward) {
         currentUserReward = reward
+        currentSelection.clear()
 
-        viewModelScope.launch {
+        scope.launch {
             emitCurrentState()
         }
     }
@@ -149,21 +205,46 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             AddOnsUIState(
                 addOns = addOns,
                 isLoading = isLoading,
-                totalCount = totalCount.values.sum()
+                totalCount = currentSelection.values.sum()
             )
         )
     }
 
-    fun start() {
+    /**
+     * Used in crowdfund
+     */
+    fun load() {
         getAddOns(this.shippingRule)
     }
 
+    /**
+     * Callback to update the selected addOns quantity
+     */
     fun updateSelection(rewardId: Long, quantity: Int) {
-        viewModelScope.launch {
-            totalCount[rewardId] = quantity
+        scope.launch {
+            currentSelection[rewardId] = quantity
             emitCurrentState(isLoading = false)
         }
     }
+
+    fun getPledgeDataAndReason(): Pair<PledgeData, PledgeReason>? {
+        val selectedAddOns = mutableListOf<Reward>()
+        addOns.forEach {
+            val amount = currentSelection[it.id()]
+            if (amount != null) {
+                selectedAddOns.add(it.toBuilder().quantity(amount).build())
+            }
+        }
+
+        return projectData?.let {
+            Pair(
+                PledgeData.with(pledgeflowcontext, it, currentUserReward, selectedAddOns.toList(), shippingRule),
+                pReason
+            )
+        }
+    }
+
+    fun getProject() = this.project
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :
         ViewModelProvider.Factory {

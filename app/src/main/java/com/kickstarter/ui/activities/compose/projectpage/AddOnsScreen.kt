@@ -19,8 +19,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -54,6 +52,7 @@ private fun AddOnsScreenPreview() {
                         .title("Item Number $it")
                         .description("This is a description for item $it")
                         .id(it.toLong())
+                        .quantity(3)
                         .convertedMinimum((100 * (it + 1)).toDouble())
                         .isAvailable(it != 0)
                         .limit(if (it == 0) 1 else 10)
@@ -64,9 +63,9 @@ private fun AddOnsScreenPreview() {
                     .currency("USD")
                     .currentCurrency("USD")
                     .build(),
-                onItemAddedOrRemoved = {},
-                selectedAddOnsMap = mutableMapOf(),
-                onContinueClicked = {}
+                onItemAddedOrRemoved = { q, l -> },
+                onContinueClicked = {},
+                addOnCount = 6
             )
         }
     }
@@ -79,12 +78,11 @@ fun AddOnsScreen(
     lazyColumnListState: LazyListState,
     rewardItems: List<Reward>,
     project: Project,
-    onItemAddedOrRemoved: (Map<Reward, Int>) -> Unit,
-    selectedAddOnsMap: Map<Reward, Int>,
+    onItemAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
     isLoading: Boolean = false,
-    onContinueClicked: () -> Unit
+    onContinueClicked: () -> Unit,
+    addOnCount: Int = 0
 ) {
-    val addOnCount = getAddOnCount(selectedAddOnsMap)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -112,7 +110,8 @@ fun AddOnsScreen(
                             KSPrimaryGreenButton(
                                 onClickAction = onContinueClicked,
                                 text =
-                                if (addOnCount == 0) stringResource(id = R.string.Skip_add_ons)
+                                if (addOnCount == 0)
+                                    stringResource(id = R.string.Skip_add_ons)
                                 else {
                                     when {
                                         addOnCount == 1 -> environment.ksString()?.format(
@@ -161,9 +160,11 @@ fun AddOnsScreen(
                 items(
                     items = rewardItems
                 ) { reward ->
+
                     Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                     AddOnsContainer(
+                        rewardId = reward.id(),
                         title = reward.title() ?: "",
                         amount = environment.ksCurrency()?.format(
                             reward.minimum(),
@@ -190,11 +191,9 @@ fun AddOnsScreen(
                         buttonEnabled = reward.isAvailable(),
                         buttonText = stringResource(id = R.string.Add),
                         limit = reward.limit() ?: -1,
-                        onItemAddedOrRemoved = { count ->
-                            val rewardSelections = mutableMapOf<Reward, Int>()
-                            rewardSelections[reward] = count
+                        onItemAddedOrRemoved = { quantityForId, rwId ->
 
-                            onItemAddedOrRemoved(rewardSelections)
+                            onItemAddedOrRemoved(quantityForId, rwId)
                         },
                         environment = environment,
                         includesList = reward.addOnsItems()?.map {
@@ -204,7 +203,7 @@ fun AddOnsScreen(
                                 "title", it.item().name()
                             ) ?: ""
                         } ?: listOf(),
-                        itemAddOnCount = selectedAddOnsMap[reward] ?: 0
+                        quantity = reward.quantity() ?: 0
                     )
                 }
 
@@ -225,12 +224,4 @@ fun AddOnsScreen(
             }
         }
     }
-}
-
-private fun getAddOnCount(selectedAddOnsMap: Map<Reward, Int>): Int {
-    var totalAddOnsCount = 0
-    selectedAddOnsMap.forEach {
-        totalAddOnsCount += it.value
-    }
-    return totalAddOnsCount
 }

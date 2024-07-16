@@ -58,5 +58,24 @@ class PPOCardFactory private constructor() {
                 viewType = PPOCardViewType.CONFIRM_ADDRESS
             )
         }
+
+        fun fixPaymentCard(): PPOCard {
+            return ppoCard(
+                backingID = "1234",
+                amount = "$12.00",
+                address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+                currencySymbol = "$",
+                currencyCode = CurrencyCode.USD,
+                projectName = "Super Duper Project",
+                projectId = "12345",
+                projectSlug = "project/slug",
+                imageUrl = "image/url",
+                creatorName = "Creator Name",
+                backingDetailsUrl = "backing/details/url",
+                timeNumberForAction = 7,
+                showBadge = false,
+                viewType = PPOCardViewType.FIX_PAYMENT
+            )
+        }
     }
 }

@@ -91,38 +91,22 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
         viewModelScope.launch {
-           val newList = (1..10).map {
-                Reward.builder()
-                    .title("Item Number $it")
-                    .description("This is a description for item $it")
-                    .id((1..100).random().toLong())
-                    .quantity(0)
-                    .convertedMinimum((100 * (it + 1)).toDouble())
-                    .isAvailable(it != 0)
-                    .limit(if (it == 0) 1 else 10)
-                    .build()
-            }
-
-            addOns = getUpdatedList(newList, listOf(newList.first().toBuilder().quantity(5).build()))
-            emitCurrentState()
+            apolloClient
+                .getProjectAddOns(
+                    slug = project?.slug() ?: "",
+                    locationId = selectedShippingRule.location() ?: LocationFactory.empty()
+                )
+                .asFlow()
+                .map { addOns ->
+                    if (!addOns.isNullOrEmpty()) {
+                        this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
+                    }
+                }.onCompletion {
+                    emitCurrentState()
+                }.catch {
+                    errorAction.invoke(null)
+                }.collect()
         }
-//        viewModelScope.launch {
-//            apolloClient
-//                .getProjectAddOns(
-//                    slug = project?.slug() ?: "",
-//                    locationId = selectedShippingRule.location() ?: LocationFactory.empty()
-//                )
-//                .asFlow()
-//                .map { addOns ->
-//                    if (!addOns.isNullOrEmpty()) {
-//                        this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
-//                    }
-//                }.onCompletion {
-//                    emitCurrentState()
-//                }.catch {
-//                    errorAction.invoke(null)
-//                }.collect()
-//        }
     }
 
     /**
@@ -147,15 +131,11 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     // UI events
     fun userRewardSelection(reward: Reward) {
-//
-//        currentUserReward = reward
-//
-//        viewModelScope.launch {
-//            emitCurrentState()
-//        }
-    }
+        currentUserReward = reward
 
-    fun onAddOnsAddedOrRemoved(currentAddOnsSelections: MutableMap<Reward, Int>) {
+        viewModelScope.launch {
+            emitCurrentState()
+        }
     }
 
     private suspend fun emitCurrentState(isLoading: Boolean = false) {

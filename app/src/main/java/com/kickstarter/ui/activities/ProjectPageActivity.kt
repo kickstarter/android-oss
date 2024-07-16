@@ -521,7 +521,7 @@ class ProjectPageActivity :
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
 
-                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsViewModel.currentAddOnsSelections
+                    //val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsViewModel.currentAddOnsSelections
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
 
@@ -646,11 +646,11 @@ class ProjectPageActivity :
                             latePledgeCheckoutViewModel.userRewardSelection(reward)
                         },
                         onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
-                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
-                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
-
-                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
+//                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
+//                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
+//                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
+//
+//                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
                         },
                         selectedReward = selectedReward,
                         totalAmount = totalAmount,
@@ -677,7 +677,7 @@ class ProjectPageActivity :
                         onBonusSupportInputted = { input ->
                             confirmDetailsViewModel.inputBonusSupport(input)
                         },
-                        selectedAddOnsMap = selectedAddOnsMap,
+                        selectedAddOnsMap = mapOf(),
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {
                                 latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)

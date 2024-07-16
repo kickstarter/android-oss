@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
@@ -26,21 +27,24 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
 data class AddOnsUIState(
-    val addOns: List<Reward> = listOf(),
-    val isLoading: Boolean = false
+    val addOns: List<Reward> = emptyList(),
+    val totalCount: Int = 0,
+    val isLoading: Boolean = true
 )
 
 class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
-    private var addOns: List<Reward> = listOf()
     private var currentUserReward: Reward = Reward.builder().build()
-    var currentAddOnsSelections: MutableMap<Reward, Int> = mutableMapOf()
-    private var projectData: ProjectData? = null
+    var project: Project = Project.builder().build()
+    var shippingRule: ShippingRule = ShippingRule.builder().build()
+    var pledgeflowcontext: PledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
+
+    private var addOns: List<Reward> = listOf()
     private var errorAction: (message: String?) -> Unit = {}
+    val totalCount = mutableMapOf<Long, Int>()
 
     private var backedAddOns = emptyList<Reward>()
-    var pledgeflowcontext: PledgeFlowContext? = null
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
     val addOnsUIState: StateFlow<AddOnsUIState>
@@ -60,12 +64,13 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         bundle?.let {
             val pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
 
-            pledgeData?.projectData()?.let { pData ->
-                provideProjectData(pData)
+            pledgeData?.projectData()?.project()?.let {
+                project
             }
 
-            pledgeData?.shippingRule()?.let { rule ->
-                provideSelectedShippingRule(rule)
+            pledgeData?.shippingRule()?.let {
+                shippingRule = it
+                provideSelectedShippingRule(it)
             }
 
             pledgeData?.pledgeFlowContext()?.let { pFContext ->
@@ -73,8 +78,11 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
         }
     }
+
     fun provideProjectData(projectData: ProjectData) {
-        this.projectData = projectData
+        projectData.project()?.let {
+            project = it
+        }
     }
 
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
@@ -83,30 +91,38 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
         viewModelScope.launch {
-            apolloClient
-                .getProjectAddOns(
-                    slug = projectData?.project()?.slug() ?: "",
-                    locationId = selectedShippingRule.location() ?: LocationFactory.empty()
-                ).asFlow()
-                .onStart {
-                    emitCurrentState(isLoading = true)
-                }.map { addOns ->
-                    if (!addOns.isNullOrEmpty()) {
-                        backedAddOns.map {
-                            currentAddOnsSelections[it] = it.quantity() ?: 0
-                        }
-                        this@AddOnsViewModel.addOns = addOns
-                    }
-                }.onCompletion {
-                    emitCurrentState()
-                }.catch {
-                    errorAction.invoke(null)
-                }.collect()
+           val newList = (1..10).map {
+                Reward.builder()
+                    .title("Item Number $it")
+                    .description("This is a description for item $it")
+                    .id((1..100).random().toLong())
+                    .quantity(0)
+                    .convertedMinimum((100 * (it + 1)).toDouble())
+                    .isAvailable(it != 0)
+                    .limit(if (it == 0) 1 else 10)
+                    .build()
+            }
+
+            addOns = getUpdatedList(newList, listOf(newList.first().toBuilder().quantity(5).build()))
+            emitCurrentState()
         }
-    }
-
-    private fun updateSelectionMap(backedAddOns: List<Reward>) {
-
+//        viewModelScope.launch {
+//            apolloClient
+//                .getProjectAddOns(
+//                    slug = project?.slug() ?: "",
+//                    locationId = selectedShippingRule.location() ?: LocationFactory.empty()
+//                )
+//                .asFlow()
+//                .map { addOns ->
+//                    if (!addOns.isNullOrEmpty()) {
+//                        this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
+//                    }
+//                }.onCompletion {
+//                    emitCurrentState()
+//                }.catch {
+//                    errorAction.invoke(null)
+//                }.collect()
+//        }
     }
 
     /**
@@ -115,7 +131,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      */
     private fun getUpdatedList(addOns: List<Reward>, backedAddOns: List<Reward>): List<Reward> {
         val holder = mutableMapOf<Long, Reward>()
-
         // First Store all addOns, Key should be the addOns ID
         addOns.map {
             holder[it.id()] = it
@@ -124,6 +139,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         // Take the backed AddOns, update with the backed AddOn information which will contain the backed quantity
         backedAddOns.map {
             holder[it.id()] = it
+            totalCount[it.id()] = it.quantity() ?: 0
         }
 
         return holder.values.toList()
@@ -131,28 +147,36 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     // UI events
     fun userRewardSelection(reward: Reward) {
-
-        currentUserReward = reward
-
-        viewModelScope.launch {
-            emitCurrentState()
-        }
+//
+//        currentUserReward = reward
+//
+//        viewModelScope.launch {
+//            emitCurrentState()
+//        }
     }
 
     fun onAddOnsAddedOrRemoved(currentAddOnsSelections: MutableMap<Reward, Int>) {
-        this.currentAddOnsSelections = currentAddOnsSelections
-        viewModelScope.launch {
-            emitCurrentState()
-        }
     }
 
     private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableAddOnsUIState.emit(
             AddOnsUIState(
                 addOns = addOns,
-                isLoading = isLoading
+                isLoading = isLoading,
+                totalCount = totalCount.values.sum()
             )
         )
+    }
+
+    fun start() {
+        getAddOns(this.shippingRule)
+    }
+
+    fun updateSelection(rewardId: Long, quantity: Int) {
+        viewModelScope.launch {
+            totalCount[rewardId] = quantity
+            emitCurrentState(isLoading = false)
+        }
     }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :

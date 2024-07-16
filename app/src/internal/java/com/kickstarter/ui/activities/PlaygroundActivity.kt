@@ -7,16 +7,20 @@ import android.util.Pair
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
+import com.kickstarter.ui.activities.compose.projectpage.AddOnsContainer2
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import com.kickstarter.viewmodels.PlaygroundViewModel.Factory
@@ -50,12 +54,30 @@ class PlaygroundActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         binding = PlaygroundLayoutBinding.inflate(layoutInflater)
         view = binding.root
-        setContentView(view)
+        setContent { // In here, we can call composables!
+            KSTheme {
+                AddOnsContainer2(
+                    title = "This Is A Test",
+                    amount = "$500",
+                    shippingAmount = "$5 shipping each",
+                    conversionAmount = "About $500",
+                    description = "This is just a test, don't worry about it, This is just a test, don't worry about it, This is just a test, don't worry about it, This is just a test, don't worry about it",
+                    includesList = listOf("this is item 1", "this is item 2", "this is item 3"),
+                    limit = 10,
+                    buttonEnabled = true,
+                    buttonText = "Add",
+                    environment = Environment.builder().build(),
+                    onItemAddedOrRemoved = { count, id -> },
+                    quantity = 0
+                )
+            }
+        }
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = Factory(env)
             stripeSDK = requireNotNull(env.stripe())
         }
+
 
         viewModel.payloadUIState.asObservable()
             .observeOn(AndroidSchedulers.mainThread())

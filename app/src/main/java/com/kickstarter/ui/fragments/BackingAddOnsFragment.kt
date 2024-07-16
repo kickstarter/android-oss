@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -23,6 +24,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.compose.projectpage.AddOnsScreen
+import com.kickstarter.ui.activities.compose.projectpage.AddOnsScreen2
 import com.kickstarter.ui.adapters.BackingAddOnsAdapter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -52,7 +54,7 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
             val env = this?.context?.getEnvironment()?.let { env ->
                 viewModelFactoryC = AddOnsViewModel.Factory(env, bundle = arguments)
                 //viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
-                //viewModelC.provideBundle(arguments)
+                viewModelC.provideBundle(arguments)
                 env
             }
             // Dispose of the Composition when the view's LifecycleOwner
@@ -62,45 +64,36 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
                 KickstarterApp(
                     useDarkTheme = true
                 ) {
-                    arguments?.let {
-                        val pledgeData =
-                            it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
-                        val projectData = pledgeData?.projectData()
-
-                        val addOnsUIState by viewModelC.addOnsUIState.collectAsStateWithLifecycle()
-
-                        val selectedAddOnsMap = remember {
-                            viewModelC.currentAddOnsSelections
-                        }
+                       val addOnsUIState by viewModelC.addOnsUIState.collectAsState()
 
                         val addOns = addOnsUIState.addOns
+                        val totalCount = addOnsUIState.totalCount
                         val addOnsIsLoading = addOnsUIState.isLoading
-                        val project = projectData?.project() ?: Project.builder().build()
-                        val pledgeFlowContext = viewModelC.pledgeflowcontext
+//                        val project = viewModelC.project
+//                        val pledgeFlowContext = viewModelC.pledgeflowcontext
 
                         KSTheme {
-                            AddOnsScreen(
+                            AddOnsScreen2(
                                 environment = requireNotNull(env),
                                 lazyColumnListState = rememberLazyListState(),
                                 rewardItems = addOns,
-                                project = project,
-                                selectedAddOnsMap = selectedAddOnsMap,
-                                onItemAddedOrRemoved = { updateAddOnRewardCount ->
-                                    viewModelC.onAddOnsAddedOrRemoved(selectedAddOnsMap)
+                                project = Project.builder().build(),
+                                onItemAddedOrRemoved = { quantity, rewardId ->
+                                    viewModelC.updateSelection(rewardId, quantity)
                                 },
                                 isLoading = addOnsIsLoading,
-                                onContinueClicked = {}
+                                onContinueClicked = {},
+                                addOnCount = totalCount
                             )
                         }
-
-                        projectData?.let {
-                            viewModelC.provideBundle(arguments)
-                        }
-                    }
                 }
             }
         }
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private val backingAddonsAdapter = BackingAddOnsAdapter(this)

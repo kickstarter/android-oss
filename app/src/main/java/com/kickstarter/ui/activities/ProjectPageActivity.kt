@@ -521,7 +521,7 @@ class ProjectPageActivity :
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
 
-                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
+                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsViewModel.currentAddOnsSelections
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
 

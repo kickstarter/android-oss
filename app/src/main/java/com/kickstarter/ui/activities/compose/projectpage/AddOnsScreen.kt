@@ -74,7 +74,7 @@ private fun AddOnsScreenPreview() {
 
 @Composable
 fun AddOnsScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     environment: Environment,
     lazyColumnListState: LazyListState,
     rewardItems: List<Reward>,

@@ -8,52 +8,9 @@
     android:background="@color/kds_support_100"
     android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/kds_support_100"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_container"
-        android:paddingTop="?android:attr/actionBarSize">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/fragment_backing_addons_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/grid_3"
-            android:layout_marginStart="@dimen/grid_3"
-            android:layout_marginTop="@dimen/grid_2"
-            android:text="@string/Customize_your_reward_with_optional_addons"
-            style="@style/Headline"
-            android:textSize="@dimen/title_2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Customize your reward with optional add-ons.">
-        </androidx.appcompat.widget.AppCompatTextView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_select_addons_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_2"
-            android:layout_marginStart="@dimen/grid_3"
-            android:layout_marginEnd="@dimen/grid_3"
-            android:layout_marginBottom="@dimen/grid_17"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_title"
-            tools:itemCount="2"
-            tools:listitem="@layout/add_on_card" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-    <include
-        android:id="@+id/fragment_backing_addons_section_footer_layout"
-        layout="@layout/fragment_backing_addons_section_footer" />
+        android:layout_height="wrap_content">
+    </androidx.compose.ui.platform.ComposeView>
 </FrameLayout>

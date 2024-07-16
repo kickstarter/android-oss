@@ -27,7 +27,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     private fun createViewModel(environment: Environment) {
         viewModel =
-            AddOnsViewModel.Factory(environment).create(AddOnsViewModel::class.java)
+            AddOnsViewModel.Factory(environment, arguments).create(AddOnsViewModel::class.java)
     }
 
     fun setup(environment: Environment = environment()) {

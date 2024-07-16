@@ -65,7 +65,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             val pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
 
             pledgeData?.projectData()?.project()?.let {
-                project
+                project = it
             }
 
             pledgeData?.shippingRule()?.let {
@@ -75,6 +75,12 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
             pledgeData?.pledgeFlowContext()?.let { pFContext ->
                 pledgeflowcontext = pFContext
+            }
+
+            val backing = pledgeData?.projectData()?.backing() ?: project.backing()
+
+            backing?.addOns()?.let {
+                backedAddOns = it
             }
         }
     }

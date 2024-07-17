@@ -106,7 +106,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import type.CreditCardPaymentType
 
 class ProjectPageActivity :

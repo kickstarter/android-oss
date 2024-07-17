@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,21 +20,39 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
+
+data class PledgedProjectsOverviewUIState(
+    var totalAlerts: Int = 0,
+    val isLoading: Boolean = false,
+    val isErrored: Boolean = false,
+)
 
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
     private val ppoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.from(listOf(PPOCard.builder().timeNumberForAction(10).projectName("This is a test").viewType(PPOCardViewType.CONFIRM_ADDRESS).backingDetailsUrl("https://www.kickstarter.com/projects/thehoneycouple/the-honey-couples-building-expansion").build())))
-    private val totalAlerts = MutableStateFlow<Int>(0)
+    private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int) -> Unit = {}
-
+    private var totalAlerts = 0
     private val apolloClient = requireNotNull(environment.apolloClientV2())
-    val ppoCardsState: StateFlow<PagingData<PPOCard>> = ppoCards.asStateFlow()
-    val totalAlertsState: StateFlow<Int> = totalAlerts.asStateFlow()
+
+    private val mutablePPOUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
+    val ppoCardsState: StateFlow<PagingData<PPOCard>> = mutablePpoCards.asStateFlow()
+
+    val ppoUIState: StateFlow<PledgedProjectsOverviewUIState>
+        get() = mutablePPOUIState
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = PledgedProjectsOverviewUIState()
+            )
 
     fun showSnackbarAndRefreshCardsList() {
         snackbarMessage.invoke(R.string.address_confirmed_snackbar_text_fpo)
@@ -67,12 +86,43 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
             )
                 .asFlow()
                 .onStart {
-                    // TODO emit loading ui state
+                    emitCurrentState(isLoading = true)
                 }.map { project ->
                     mutableProjectFlow.emit(project)
                 }.catch {
                     snackbarMessage.invoke(R.string.Something_went_wrong_please_try_again)
+                }.onCompletion {
+                    emitCurrentState()
                 }.collect()
         }
+    }
+
+    fun getPledgedProjects(inputData: PledgedProjectsOverviewQueryData) {
+        viewModelScope.launch {
+            // TODO how we are fetching the data will be modified once the pagination piece in MBL-1473 is finished
+            apolloClient.getPledgedProjectsOverviewPledges(
+                inputData = inputData,
+            )
+                .asFlow()
+                .onStart {
+                    emitCurrentState(isLoading = true)
+                }.map { ppoEnvelope ->
+                    // update  paginated ppo card list here
+                    totalAlerts = ppoEnvelope.totalCount() ?: 0
+                    emitCurrentState()
+                }.catch {
+                    emitCurrentState(isErrored = true)
+                }.collect()
+        }
+    }
+
+    private suspend fun emitCurrentState(isLoading: Boolean = false, isErrored: Boolean = false) {
+        mutablePPOUIState.emit(
+            PledgedProjectsOverviewUIState(
+                isLoading = isLoading,
+                isErrored = isErrored,
+                totalAlerts = totalAlerts
+            )
+        )
     }
 }

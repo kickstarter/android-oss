@@ -36,8 +36,9 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     errorSnackBarHostState = SnackbarHostState(),
                     onSendMessageClick = {},
                     onAddressConfirmed = {},
-                    onCardClick = {},
-                    onProjectPledgeSummaryClick = {}
+                    onProjectPledgeSummaryClick = {},
+                    onSeeAllBackedProjectsClick = {},
+                    onFixPaymentClick = {}
                 )
             }
         }

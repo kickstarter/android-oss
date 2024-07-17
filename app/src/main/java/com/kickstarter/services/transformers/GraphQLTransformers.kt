@@ -949,6 +949,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
     }
 
     return PledgedProjectsOverviewEnvelope.builder()
+        .totalCount(ppoResponse.pledges()?.totalCount())
         .pledges(ppoCards)
         .categories(categories)
         .pageInfoEnvelope(pageInfoEnvelope)

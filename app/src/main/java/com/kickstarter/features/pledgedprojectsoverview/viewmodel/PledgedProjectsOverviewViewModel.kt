@@ -1,5 +1,6 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -34,10 +35,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
+private val PAGE_LIMIT = 3
 class PledgedProjectsPagingSource(
     private val apolloClient: ApolloClientTypeV2,
-    private val inputData: PledgedProjectsOverviewQueryData,
+    private val limit: Int = PAGE_LIMIT,
     private var totalCount: MutableStateFlow<Int>
+
 ) : PagingSource<String, PPOCard>() {
     override fun getRefreshKey(state: PagingState<String, PPOCard>): String {
         return "" // - Default first page is empty string when paginating with graphQL
@@ -47,22 +50,29 @@ class PledgedProjectsPagingSource(
         return try {
             var ppoCardsList = emptyList<PPOCard>()
             var nextPageEnvelope: PageInfoEnvelope? = null
+            var inputData = PledgedProjectsOverviewQueryData(limit, params.key ?: "")
+            var result : LoadResult<String, PPOCard> = LoadResult.Error(Throwable())
 
             apolloClient.getPledgedProjectsOverviewPledges(
                 inputData = inputData
             )
                 .asFlow()
+                .catch {
+//                    Log.d("leigh", "load: error omg")
+                    result = LoadResult.Error(it)
+                }
                 .collect { envelope ->
                     totalCount.emit(envelope.totalCount ?: 0)
                     ppoCardsList = envelope.pledges() ?: emptyList()
                     nextPageEnvelope = if (envelope.pageInfoEnvelope?.hasNextPage == true) envelope.pageInfoEnvelope else null
+                    result = LoadResult.Page(
+                        data = ppoCardsList,
+                        prevKey = null,
+                        nextKey = nextPageEnvelope?.endCursor
+                    )
                 }
+            return result
 
-            return LoadResult.Page(
-                data = ppoCardsList,
-                prevKey = null,
-                nextKey = nextPageEnvelope?.startCursor
-            )
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
@@ -82,6 +92,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
     val totalAlertsState = mutableTotalAlerts.asStateFlow()
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    var pagingSource = PledgedProjectsPagingSource(apolloClient, PAGE_LIMIT, mutableTotalAlerts)
 
     private val mutablePPOUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
     val ppoCardsState: StateFlow<PagingData<PPOCard>> = mutablePpoCards.asStateFlow()
@@ -110,27 +121,20 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
             )
 
     init {
-        val queryData = PledgedProjectsOverviewQueryData(
-            first = 25,
-            after = null,
-            last = null,
-            before = null
-        )
-        loadPPOCardsList(queryData)
+        getPledgedProjects()
     }
 
-    private fun loadPPOCardsList(queryData: PledgedProjectsOverviewQueryData) {
+    fun getPledgedProjects() {
         viewModelScope.launch(Dispatchers.IO) {
-            val limit = 25
             try {
                 Pager(
                     PagingConfig(
-                        pageSize = limit,
-                        prefetchDistance = 3,
+                        pageSize = PAGE_LIMIT,
+                        prefetchDistance = 1,
                         enablePlaceholders = true,
                     )
                 ) {
-                    PledgedProjectsPagingSource(apolloClient, queryData, mutableTotalAlerts)
+                    pagingSource
                 }
                     .flow
                     .onStart {

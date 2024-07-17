@@ -1,7 +1,9 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
+import androidx.paging.PagingSource
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
@@ -9,6 +11,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -101,23 +104,29 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
-            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build())
+            val environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build()
+
+            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment)
                 .create(PledgedProjectsOverviewViewModel::class.java)
 
             val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
 
+            val mutableTotalAlerts = MutableStateFlow<Int>(0)
+
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.ppoUIState.toList(uiState)
+                viewModel.pagingSource = PledgedProjectsPagingSource(requireNotNull(environment.apolloClientV2()), 25, mutableTotalAlerts)
+                viewModel.getPledgedProjects()
+                var result = viewModel.pagingSource.load(PagingSource.LoadParams.Refresh("", 0, false))
+                assert(result is PagingSource.LoadResult.Error<String, PPOCard>)
             }
-
-            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
 
             assertEquals(
                 uiState,
                 listOf(
-                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0),
-                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false, totalAlerts = 0),
-                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = true, totalAlerts = 0)
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = true)
                 )
             )
         }
@@ -141,14 +150,14 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 viewModel.ppoUIState.toList(uiState)
             }
 
-            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
+            viewModel.getPledgedProjects()
 
             assertEquals(
                 uiState,
                 listOf(
-                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0),
-                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false, totalAlerts = 0),
-                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0)
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false)
                 )
             )
         }
@@ -163,23 +172,29 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
-            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build())
+            val environment = environment().toBuilder().apolloClientV2(mockApolloClientV2).build()
+
+            viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment)
                 .create(PledgedProjectsOverviewViewModel::class.java)
 
             val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
 
+            val mutableTotalAlerts = MutableStateFlow<Int>(0)
+            viewModel.pagingSource = PledgedProjectsPagingSource(requireNotNull(environment.apolloClientV2()), 25, mutableTotalAlerts)
+            viewModel.getPledgedProjects()
+
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.ppoUIState.toList(uiState)
+                var result = viewModel.pagingSource.load(PagingSource.LoadParams.Refresh("", 0, false))
+//                assert(result is PagingSource.LoadResult.Error<String, PPOCard>)
             }
-
-            viewModel.getPledgedProjects(PledgedProjectsOverviewQueryData(10, null, null, null))
 
             assertEquals(
                 uiState,
                 listOf(
-                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 0),
-                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false, totalAlerts = 0),
-                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 10)
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false)
                 )
             )
         }

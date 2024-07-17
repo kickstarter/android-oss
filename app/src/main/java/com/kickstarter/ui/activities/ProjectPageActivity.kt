@@ -106,6 +106,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import type.CreditCardPaymentType
 
 class ProjectPageActivity :
@@ -549,7 +550,9 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
                         }
-                        latePledgeCheckoutViewModel.provideCheckoutId(checkoutPayment.id)
+                        checkoutPayment.backing?.let {
+                            latePledgeCheckoutViewModel.provideCheckoutIdAndBacking(checkoutPayment.id, it)
+                        }
                     }
 
                     confirmDetailsViewModel.provideErrorAction { message ->

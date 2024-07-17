@@ -323,7 +323,7 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
             errorActionCount++
         }
 
-        viewModel.provideCheckoutId(100L)
+        viewModel.provideCheckoutIdAndBacking(100L, checkoutPayment.backingId)
 
         viewModel.onPledgeButtonClicked(cardList.first(), ProjectFactory.project(), 100.0)
 

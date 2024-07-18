@@ -1,20 +1,23 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.AddOnsUIState
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
+import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -22,15 +25,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: AddOnsViewModel
 
-    private fun createViewModel() {
-        val env = environment().toBuilder().build()
+    private fun createViewModel(environment: Environment) {
         viewModel =
-            AddOnsViewModel.Factory(env).create(AddOnsViewModel::class.java)
+            AddOnsViewModel.Factory(environment).create(AddOnsViewModel::class.java)
     }
 
-    @Before
-    fun setup() {
-        createViewModel()
+    fun setup(environment: Environment = environment()) {
+        createViewModel(environment)
 
         val testRewards = (0..5).map { Reward.builder().title("$it").id(it.toLong()).build() }
         val testBacking =
@@ -39,75 +40,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val testProjectData = ProjectData.builder().project(testProject).build()
 
         viewModel.provideProjectData(testProjectData)
-    }
-
-    // Tests for UI events
-    @Test
-    fun `test_hide_location_selection_on_reward_not_shippable`() = runTest {
-        val reward = RewardFactory
-            .rewardHasAddOns()
-            .toBuilder()
-            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
-            .build()
-
-        val uiState = mutableListOf<AddOnsUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.addOnsUIState.toList(uiState)
-        }
-
-        viewModel.userRewardSelection(reward)
-
-        assertEquals(
-            uiState.last().shippingSelectorIsGone,
-            true
-        )
-    }
-
-    @Test
-    fun `test_show_location_selection_on_reward_is_shippable`() = runTest {
-        val reward = RewardFactory
-            .rewardHasAddOns()
-            .toBuilder()
-            .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
-            .build()
-
-        val uiState = mutableListOf<AddOnsUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.addOnsUIState.toList(uiState)
-        }
-
-        viewModel.userRewardSelection(reward)
-
-        assertEquals(
-            uiState.last(),
-            AddOnsUIState(
-                shippingSelectorIsGone = false
-            )
-        )
-    }
-
-    @Test
-    fun `test_on_shipping_location_changed`() = runTest {
-        val newShippingRule = ShippingRuleFactory.germanyShippingRule()
-
-        val uiState = mutableListOf<AddOnsUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.addOnsUIState.toList(uiState)
-        }
-
-        viewModel.onShippingLocationChanged(newShippingRule)
-
-        assertEquals(
-            uiState.last(),
-            AddOnsUIState(
-                currentShippingRule = newShippingRule,
-                shippingSelectorIsGone = false
-            )
-        )
+        viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
     }
 
     @Test
     fun `test_on_addons_added_or_removed`() = runTest {
+        setup()
+
         val addOnReward = RewardFactory.addOn()
         val aDifferentAddOnReward = RewardFactory.addOnSingle()
         val currentAddOnsSelections = mutableMapOf(
@@ -140,5 +79,34 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 currentAddOnsSelection = currentAddOnsSelections
             )
         )
+    }
+
+    @Test
+    fun `Test show AddOns Available for selected shipping Rule`() = runTest {
+
+        val addOnReward = RewardFactory.addOn()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle()
+        val addOnsList = listOf(addOnReward, aDifferentAddOnReward, addOnReward, aDifferentAddOnReward)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getProjectAddOns(
+                slug: String,
+                locationId: Location
+            ): Observable<List<Reward>> {
+                return Observable.just(addOnsList)
+            }
+        }
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+
+        setup(environment = env)
+
+        val uiState = mutableListOf<AddOnsUIState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.addOnsUIState.toList(uiState)
+        }
+
+        assertEquals(uiState.last().addOns, addOnsList)
     }
 }

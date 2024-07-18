@@ -12,6 +12,7 @@ import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.Backing
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
@@ -323,7 +324,7 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
             errorActionCount++
         }
 
-        viewModel.provideCheckoutId(100L)
+        viewModel.provideCheckoutIdAndBacking(100L, Backing.builder().id(101L).build())
 
         viewModel.onPledgeButtonClicked(cardList.first(), ProjectFactory.project(), 100.0)
 

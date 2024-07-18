@@ -12,8 +12,8 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import io.reactivex.Observable
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -95,7 +95,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             )
         }
 
-//TODO will add tests back after spike MBL-1638 completed
+// TODO will add tests back after spike MBL-1638 completed
 //    @Test
 //    fun `emits_error_state_when_errored`() =
 //        runTest {

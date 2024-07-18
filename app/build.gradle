@@ -77,7 +77,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("debug.keystore")
+            storeFile file(System.env.HOME + '/.android/debug.keystore')
         }
         release {
             storeFile file(project.signing.storeFilePath)

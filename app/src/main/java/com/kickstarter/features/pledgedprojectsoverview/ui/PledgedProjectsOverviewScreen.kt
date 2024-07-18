@@ -154,6 +154,7 @@ fun PledgedProjectsOverviewScreen(
     onSeeAllBackedProjectsClick: () -> Unit,
     isLoading: Boolean = false,
     isErrored: Boolean = false,
+    showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
     onFixPaymentClick: (projectSlug: String) -> Unit,
 ) {
@@ -190,7 +191,7 @@ fun PledgedProjectsOverviewScreen(
         ) { padding ->
             if (isErrored) {
                 PPOScreenErrorState()
-            } else if (totalAlerts == 0 || ppoCards.itemCount.isNullOrZero()) {
+            } else if (showEmptyState) {
                 PPOScreenEmptyState(onSeeAllBackedProjectsClick)
             } else {
                 LazyColumn(

@@ -95,6 +95,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             )
         }
 
+//TODO will add tests back after spike MBL-1638 completed
 //    @Test
 //    fun `emits_error_state_when_errored`() =
 //        runTest {

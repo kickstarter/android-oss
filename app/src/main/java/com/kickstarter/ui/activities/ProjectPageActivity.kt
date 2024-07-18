@@ -549,7 +549,9 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
                         }
-                        latePledgeCheckoutViewModel.provideCheckoutId(checkoutPayment.id)
+                        checkoutPayment.backing?.let {
+                            latePledgeCheckoutViewModel.provideCheckoutIdAndBacking(checkoutPayment.id, it)
+                        }
                     }
 
                     confirmDetailsViewModel.provideErrorAction { message ->

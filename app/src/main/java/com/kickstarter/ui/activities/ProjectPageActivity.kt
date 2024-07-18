@@ -521,7 +521,6 @@ class ProjectPageActivity :
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
 
-                    val shippingSelectorIsGone = addOnsUIState.shippingSelectorIsGone
                     val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
@@ -613,6 +612,11 @@ class ProjectPageActivity :
                                     totalBonusSupportAmount
                                 )
                             }
+
+                            if (currentPage == 1) {
+                                // Load addOns only when the user navigates to AddOns Screen, avoid loading while the user selects location
+                                addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
+                            }
                         }
                     }
 
@@ -628,7 +632,6 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
                         currentShippingRule = currentUserShippingRule,
-                        shippingSelectorIsGone = shippingSelectorIsGone,
                         shippingRules = shippingRules,
                         environment = getEnvironment(),
                         initialRewardCarouselPosition = indexOfBackedReward,

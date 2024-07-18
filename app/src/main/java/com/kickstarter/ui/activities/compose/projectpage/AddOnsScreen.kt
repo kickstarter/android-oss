@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities.compose.projectpage
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +20,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,19 +27,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import com.kickstarter.ui.views.compose.ShippingSelector
 import java.math.RoundingMode
 
 @Composable
@@ -56,23 +49,6 @@ private fun AddOnsScreenPreview() {
                 modifier = Modifier.padding(padding),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
-                countryList = listOf(
-                    ShippingRule.builder()
-                        .location(Location.builder().displayableName("United States").build())
-                        .build(),
-                    ShippingRule.builder()
-                        .location(Location.builder().displayableName("Japan").build())
-                        .build(),
-                    ShippingRule.builder()
-                        .location(Location.builder().displayableName("Korea").build())
-                        .build(),
-                    ShippingRule.builder()
-                        .location(Location.builder().displayableName("United States").build())
-                        .build()
-                ),
-                shippingSelectorIsGone = false,
-                onShippingRuleSelected = {},
-                currentShippingRule = ShippingRule.builder().build(),
                 rewardItems = (0..10).map {
                     Reward.builder()
                         .title("Item Number $it")
@@ -101,10 +77,6 @@ fun AddOnsScreen(
     modifier: Modifier,
     environment: Environment,
     lazyColumnListState: LazyListState,
-    shippingSelectorIsGone: Boolean,
-    currentShippingRule: ShippingRule,
-    countryList: List<ShippingRule>,
-    onShippingRuleSelected: (ShippingRule) -> Unit,
     rewardItems: List<Reward>,
     project: Project,
     onItemAddedOrRemoved: (Map<Reward, Int>) -> Unit,
@@ -112,9 +84,6 @@ fun AddOnsScreen(
     isLoading: Boolean = false,
     onContinueClicked: () -> Unit
 ) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
     val addOnCount = getAddOnCount(selectedAddOnsMap)
 
     Box(
@@ -187,15 +156,6 @@ fun AddOnsScreen(
                         style = typography.title3Bold,
                         color = colors.textPrimary
                     )
-
-                    if (!shippingSelectorIsGone) {
-                        ShippingSelector(
-                            interactionSource = interactionSource,
-                            currentShippingRule = currentShippingRule,
-                            countryList = countryList,
-                            onShippingRuleSelected = onShippingRuleSelected
-                        )
-                    }
                 }
 
                 items(
@@ -224,13 +184,7 @@ fun AddOnsScreen(
                             )
                         },
                         shippingAmount = environment.ksCurrency()?.let {
-                            getShippingCost(
-                                reward = reward,
-                                ksCurrency = it,
-                                shippingRules = reward.shippingRules(),
-                                selectedShippingRule = currentShippingRule,
-                                project = project
-                            )
+                            it.format(0.0, project)
                         },
                         description = reward.description() ?: "",
                         buttonEnabled = reward.isAvailable(),
@@ -279,26 +233,4 @@ private fun getAddOnCount(selectedAddOnsMap: Map<Reward, Int>): Int {
         totalAddOnsCount += it.value
     }
     return totalAddOnsCount
-}
-private fun getShippingCost(
-    reward: Reward,
-    ksCurrency: KSCurrency,
-    shippingRules: List<ShippingRule>?,
-    project: Project,
-    selectedShippingRule: ShippingRule
-): String {
-    return if (shippingRules.isNullOrEmpty()) {
-        ""
-    } else if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
-        var cost = 0.0
-        shippingRules.filter {
-            it.location()?.id() == selectedShippingRule.location()?.id()
-        }.map {
-            cost += it.cost()
-        }
-        if (cost > 0) ksCurrency.format(cost, project)
-        else ""
-    } else {
-        ""
-    }
 }

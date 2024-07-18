@@ -58,7 +58,6 @@ class SurveyResponseActivity : AppCompatActivity() {
                         onBackButtonClicked = { finishWithAnimation() },
                         toolbarTitle = stringResource(id = R.string.Survey),
                         url = urlState,
-                        isInDarkTheme = this.isDarkModeEnabled(env = env),
                         requestHandlers = listOf(
                             RequestHandler(
                                 { uri: Uri, webEndpoint: String ->

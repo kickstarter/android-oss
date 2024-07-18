@@ -2,7 +2,6 @@ package com.kickstarter.ui.compose
 
 import android.content.res.Configuration
 import android.view.ViewGroup
-import android.webkit.WebView
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kickstarter.R
+import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.activities.compose.login.LoginToutTestTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.toolbars.compose.TopToolBar
@@ -54,6 +54,8 @@ fun WebViewScreen(
     onBackButtonClicked: () -> Unit = {},
     toolbarTitle: String = "",
     url: String? = null,
+    requestHandlers: List<RequestHandler> = listOf(),
+    delegate: KSWebView.Delegate? = null,
     right: @Composable () -> Unit = {},
 ) {
     Scaffold(
@@ -79,20 +81,18 @@ fun WebViewScreen(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
-                    this.setDelegate(object : KSWebView.Delegate {
-                        override fun externalLinkActivated(url: String) {
-                        }
-
-                        override fun pageIntercepted(url: String) {
-                            if (url.contains("authenticate")) {
-                                onBackButtonClicked.invoke()
-                            }
-                        }
-
-                        override fun onReceivedError(url: String) {
-                        }
-                    })
-                    this.client
+                    delegate?.let { del ->
+                        this.setDelegate(del)
+                    }
+                    this.registerRequestHandlers(requestHandlers)
+//                    if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING) && isInDarkTheme) {
+//                        if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+//                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(this.getSettings(), true)
+//                        } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+//                            @Suppress("DEPRECATION")
+//                            WebSettingsCompat.setForceDark(this.getSettings(), WebSettingsCompat.FORCE_DARK_ON)
+//                        }
+//                    }
                 }
             },
             modifier = Modifier

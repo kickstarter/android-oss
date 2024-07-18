@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.FrameLayout
 import com.kickstarter.KSApplication
@@ -65,6 +66,10 @@ class KSWebView@JvmOverloads constructor(
                 binding.webViewError.root.visibility = View.GONE
             }
         }
+    }
+
+    fun getSettings(): WebSettings {
+        return binding.internalWebView.settings
     }
 
     override fun externalLinkActivated(url: String) {

@@ -57,6 +57,7 @@ class WebRequestInterceptor(
                 requestBuilder.addHeader("Authorization", it)
         }
 
+        // This blocks auto login on staging (authorization gets overwritten)
         if (isStaging(initialRequest)) {
             requestBuilder.header(
                 name = "Authorization",

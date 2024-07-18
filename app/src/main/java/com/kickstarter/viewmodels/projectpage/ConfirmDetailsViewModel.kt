@@ -66,14 +66,14 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
             )
 
     private val mutableCheckoutPayment =
-        MutableStateFlow(CheckoutPayment(id = 0L, paymentUrl = null))
+        MutableStateFlow(CheckoutPayment(id = 0L, paymentUrl = null, backing = null))
     val checkoutPayment: StateFlow<CheckoutPayment>
         get() = mutableCheckoutPayment
             .asStateFlow()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = CheckoutPayment(id = 0L, paymentUrl = null)
+                initialValue = CheckoutPayment(id = 0L, paymentUrl = null, null)
             )
 
     fun provideProjectData(projectData: ProjectData) {

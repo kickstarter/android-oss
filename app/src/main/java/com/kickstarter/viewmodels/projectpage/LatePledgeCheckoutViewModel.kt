@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
@@ -50,6 +51,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var storedCards: List<StoredCard> = listOf()
     private var userEmail: String = ""
     private var checkoutId: String? = null
+    private var backing: Backing? = null
 
     private var stripe: Stripe = requireNotNull(environment.stripe())
 
@@ -113,8 +115,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun provideCheckoutId(checkoutId: Long) {
+    fun provideCheckoutIdAndBacking(checkoutId: Long, backing: Backing) {
         this.checkoutId = checkoutId.toString()
+        this.backing = backing
     }
 
     fun onAddNewCardClicked(project: Project) {
@@ -185,31 +188,37 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         totalAmount: Double
     ) {
         viewModelScope.launch {
-            checkoutId?.let {
-                apolloClient.createPaymentIntent(
-                    CreatePaymentIntentInput(
-                        project = project,
-                        amount = totalAmount.toString(),
-                        checkoutId = it
-                    )
-                ).asFlow().onStart {
-                    emitCurrentState(isLoading = true)
-                }.map { clientSecret ->
-                    selectedCard?.let {
-                        checkoutId?.let {
-                            validateCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
+            checkoutId?.let { cId ->
+                backing?.let { b ->
+                    apolloClient.createPaymentIntent(
+                        CreatePaymentIntentInput(
+                            project = project,
+                            amount = totalAmount.toString(),
+                            checkoutId = cId,
+                            backing = b
+                        )
+                    ).asFlow().onStart {
+                        emitCurrentState(isLoading = true)
+                    }.map { clientSecret ->
+                        selectedCard?.let {
+                            checkoutId?.let {
+                                validateCheckout(
+                                    clientSecret = clientSecret,
+                                    selectedCard = selectedCard
+                                )
+                            } ?: run {
+                                emitCurrentState()
+                                errorAction.invoke(null)
+                            }
                         } ?: run {
                             emitCurrentState()
                             errorAction.invoke(null)
                         }
-                    } ?: run {
+                    }.catch {
                         emitCurrentState()
                         errorAction.invoke(null)
-                    }
-                }.catch {
-                    emitCurrentState()
-                    errorAction.invoke(null)
-                }.collect()
+                    }.collect()
+                }
             } ?: run {
                 emitCurrentState()
                 errorAction.invoke(null)

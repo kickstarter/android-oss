@@ -1,6 +1,5 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -35,13 +34,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
-private val PAGE_LIMIT = 3
+private val PAGE_LIMIT = 25
 class PledgedProjectsPagingSource(
     private val apolloClient: ApolloClientTypeV2,
+    private var totalAlerts: MutableStateFlow<Int>,
     private val limit: Int = PAGE_LIMIT,
-    private var totalCount: MutableStateFlow<Int>
 
-) : PagingSource<String, PPOCard>() {
+    ) : PagingSource<String, PPOCard>() {
     override fun getRefreshKey(state: PagingState<String, PPOCard>): String {
         return "" // - Default first page is empty string when paginating with graphQL
     }
@@ -58,11 +57,10 @@ class PledgedProjectsPagingSource(
             )
                 .asFlow()
                 .catch {
-//                    Log.d("leigh", "load: error omg")
                     result = LoadResult.Error(it)
                 }
                 .collect { envelope ->
-                    totalCount.emit(envelope.totalCount ?: 0)
+                    totalAlerts.emit(envelope.totalCount ?: 0)
                     ppoCardsList = envelope.pledges() ?: emptyList()
                     nextPageEnvelope = if (envelope.pageInfoEnvelope?.hasNextPage == true) envelope.pageInfoEnvelope else null
                     result = LoadResult.Page(
@@ -83,19 +81,20 @@ data class PledgedProjectsOverviewUIState(
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
 )
-
 class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int) -> Unit = {}
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
+
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
     val totalAlertsState = mutableTotalAlerts.asStateFlow()
-    private val apolloClient = requireNotNull(environment.apolloClientV2())
-    var pagingSource = PledgedProjectsPagingSource(apolloClient, PAGE_LIMIT, mutableTotalAlerts)
 
     private val mutablePPOUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
     val ppoCardsState: StateFlow<PagingData<PPOCard>> = mutablePpoCards.asStateFlow()
+
+    private var pagingSource = PledgedProjectsPagingSource(apolloClient, mutableTotalAlerts, PAGE_LIMIT)
 
     val ppoUIState: StateFlow<PledgedProjectsOverviewUIState>
         get() = mutablePPOUIState
@@ -108,7 +107,6 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
     fun showSnackbarAndRefreshCardsList() {
         snackbarMessage.invoke(R.string.address_confirmed_snackbar_text_fpo)
-
         // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
     }
 
@@ -130,7 +128,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 Pager(
                     PagingConfig(
                         pageSize = PAGE_LIMIT,
-                        prefetchDistance = 1,
+                        prefetchDistance = 3,
                         enablePlaceholders = true,
                     )
                 ) {
@@ -148,13 +146,6 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
             } catch (e: Exception) {
                 emitCurrentState(isErrored = true)
             }
-        }
-    }
-
-    class Factory(private val environment: Environment) :
-        ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PledgedProjectsOverviewViewModel(environment) as T
         }
     }
 
@@ -187,5 +178,12 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 isErrored = isErrored,
             )
         )
+    }
+
+    class Factory(private val environment: Environment) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return PledgedProjectsOverviewViewModel(environment) as T
+        }
     }
 }

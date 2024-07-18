@@ -63,10 +63,8 @@ fun WebViewScreen(
             TopToolBar(
                 title = toolbarTitle,
                 titleColor = KSTheme.colors.textPrimary,
-                titleModifier = Modifier.testTag(LoginToutTestTag.PAGE_TITLE.name),
                 leftOnClickAction = onBackButtonClicked,
                 leftIconColor = KSTheme.colors.icon,
-                leftIconModifier = Modifier.testTag(LoginToutTestTag.BACK_BUTTON.name),
                 backgroundColor = KSTheme.colors.backgroundSurfacePrimary,
                 right = right
             )

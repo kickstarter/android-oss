@@ -549,7 +549,9 @@ class ProjectPageActivity :
                         if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
                             startLoginToutActivity()
                         }
-                        latePledgeCheckoutViewModel.provideCheckoutId(checkoutPayment.id)
+                        checkoutPayment.backing?.let {
+                            latePledgeCheckoutViewModel.provideCheckoutIdAndBacking(checkoutPayment.id, it)
+                        }
                     }
 
                     confirmDetailsViewModel.provideErrorAction { message ->
@@ -1120,6 +1122,9 @@ class ProjectPageActivity :
     private fun showUpdatePledgeSuccess() {
         clearFragmentBackStack()
         backingFragment()?.pledgeSuccessfullyUpdated()
+        val intent = Intent()
+            .putExtra(IntentKey.FIX_PAYMENT_SUCCESS, true)
+        setResult(Activity.RESULT_OK, intent)
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

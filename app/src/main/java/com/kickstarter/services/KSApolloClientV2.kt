@@ -1489,10 +1489,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     } else {
                         response.data?.let { data ->
                             data.createCheckout()?.checkout()?.let { checkoutObj ->
+                                val backingId = decodeRelayId(checkoutObj.id()) ?: 0L
+                                val backing = Backing.builder().id(backingId).build()
                                 decodeRelayId(checkoutObj.id())?.let { id ->
                                     val checkout = CheckoutPayment(
                                         id,
-                                        checkoutObj.paymentUrl()
+                                        checkoutObj.paymentUrl(),
+                                        backing = backing
                                     )
                                     ps.onNext(checkout)
                                 } ?: ps.onError(Exception("CreateCheckout could not decode ID"))
@@ -1511,12 +1514,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<String>()
 
             val checkoutId = createPaymentIntentInput.checkoutId
+            val backingId = encodeRelayId(createPaymentIntentInput.backing)
             this.service.mutate(
                 CreatePaymentIntentMutation.builder()
                     .projectId(encodeRelayId(createPaymentIntentInput.project))
                     .amount(createPaymentIntentInput.amount)
                     .paymentIntentContext(StripeIntentContextTypes.POST_CAMPAIGN_CHECKOUT)
                     .checkoutId(Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())))
+                    .backingId(backingId)
                     .build()
             ).enqueue(object : ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
                 override fun onFailure(e: ApolloException) {

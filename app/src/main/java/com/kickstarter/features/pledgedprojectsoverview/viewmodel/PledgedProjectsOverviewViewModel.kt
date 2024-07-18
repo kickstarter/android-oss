@@ -40,7 +40,7 @@ class PledgedProjectsPagingSource(
     private var totalAlerts: MutableStateFlow<Int>,
     private val limit: Int = PAGE_LIMIT,
 
-    ) : PagingSource<String, PPOCard>() {
+) : PagingSource<String, PPOCard>() {
     override fun getRefreshKey(state: PagingState<String, PPOCard>): String {
         return "" // - Default first page is empty string when paginating with graphQL
     }
@@ -50,7 +50,7 @@ class PledgedProjectsPagingSource(
             var ppoCardsList = emptyList<PPOCard>()
             var nextPageEnvelope: PageInfoEnvelope? = null
             var inputData = PledgedProjectsOverviewQueryData(limit, params.key ?: "")
-            var result : LoadResult<String, PPOCard> = LoadResult.Error(Throwable())
+            var result: LoadResult<String, PPOCard> = LoadResult.Error(Throwable())
 
             apolloClient.getPledgedProjectsOverviewPledges(
                 inputData = inputData
@@ -70,7 +70,6 @@ class PledgedProjectsPagingSource(
                     )
                 }
             return result
-
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

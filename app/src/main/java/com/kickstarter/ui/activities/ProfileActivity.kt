@@ -2,29 +2,37 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ProfileLayoutBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.RecyclerViewPaginator
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
 import com.kickstarter.ui.extensions.loadCircleImage
+import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.viewmodels.ProfileViewModel
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(ProfileViewModel.ViewModel::class)
-class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
+class ProfileActivity : ComponentActivity() {
     private lateinit var adapter: ProfileAdapter
-    private lateinit var paginator: RecyclerViewPaginator
+    private lateinit var paginator: RecyclerViewPaginatorV2
     private lateinit var binding: ProfileLayoutBinding
+
+    private lateinit var profileViewModelFactory: ProfileViewModel.Factory
+    private val viewModel: ProfileViewModel.ProfileViewModel by viewModels { profileViewModelFactory }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,96 +40,100 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
         setContentView(binding.root)
 
+        getEnvironment()?.let { env ->
+            profileViewModelFactory = ProfileViewModel.Factory(env)
+        }
+
         this.adapter = ProfileAdapter(this.viewModel)
         val spanCount = if (ViewUtils.isLandscape(this)) 3 else 2
         binding.recyclerView.layoutManager = GridLayoutManager(this, spanCount)
         binding.recyclerView.adapter = this.adapter
 
-        this.paginator = RecyclerViewPaginator(
+        this.paginator = RecyclerViewPaginatorV2(
             binding.recyclerView, { this.viewModel.inputs.nextPage() },
             this.viewModel.outputs.isFetchingProjects()
         )
 
         this.viewModel.outputs.avatarImageViewUrl()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { url -> binding.avatarImageView.loadCircleImage(url) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backedCountTextViewHidden()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.backedCountTextView.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backedCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.backedCountTextView.text = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backedTextViewHidden()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.backedTextView.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.createdCountTextViewHidden()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.createdCountTextView.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.createdCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.createdCountTextView.text = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.createdTextViewHidden()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.createdTextView.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.dividerViewHidden()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 binding.dividerView.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectList()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 this.loadProjects(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.resumeDiscoveryActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { resumeDiscoveryActivity() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startMessageThreadsActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { this.startMessageThreadsActivity() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startProjectActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { this.startProjectActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.userNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { binding.userNameTextView.text = it }
+            .addToDisposable(disposables)
 
         binding.profileActivityToolbar.messagesButton.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
     }

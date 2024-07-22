@@ -5,9 +5,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
@@ -50,7 +52,15 @@ fun Activity.startActivityWithTransition(
     @AnimRes exitAnim: Int
 ) {
     startActivity(intent)
-    overridePendingTransition(enterAnim, exitAnim)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        overrideActivityTransition(
+            ComponentActivity.OVERRIDE_TRANSITION_OPEN,
+            enterAnim,
+            exitAnim
+        )
+    } else {
+        overridePendingTransition(enterAnim, exitAnim)
+    }
 }
 
 fun Activity.hideKeyboard() {

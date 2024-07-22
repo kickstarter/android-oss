@@ -5,20 +5,22 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class ProfileViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ProfileViewModel.ViewModel
+    private lateinit var vm: ProfileViewModel.ProfileViewModel
     private val avatarImageViewUrl = TestSubscriber<String>()
     private val backedCountTextViewHidden = TestSubscriber<Boolean>()
     private val backedCountTextViewText = TestSubscriber<String>()
@@ -28,27 +30,47 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     private val createdTextViewHidden = TestSubscriber<Boolean>()
     private val dividerViewHidden = TestSubscriber<Boolean>()
     private val projectList = TestSubscriber<List<Project>>()
-    private val resumeDiscoveryActivity = TestSubscriber<Void>()
-    private val startMessageThreadsActivity = TestSubscriber<Void>()
+    private val resumeDiscoveryActivity = TestSubscriber<Unit>()
+    private val startMessageThreadsActivity = TestSubscriber<Unit>()
     private val startProjectActivity = TestSubscriber<Project>()
     private val userNameTextViewText = TestSubscriber<String>()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = ProfileViewModel.ViewModel(environment)
+    private val disposables = CompositeDisposable()
 
-        this.vm.outputs.avatarImageViewUrl().subscribe(this.avatarImageViewUrl)
-        this.vm.outputs.backedCountTextViewHidden().subscribe(this.backedCountTextViewHidden)
-        this.vm.outputs.backedCountTextViewText().subscribe(this.backedCountTextViewText)
-        this.vm.outputs.backedTextViewHidden().subscribe(this.backedTextViewHidden)
-        this.vm.outputs.createdCountTextViewHidden().subscribe(this.createdCountTextViewHidden)
-        this.vm.outputs.createdCountTextViewText().subscribe(this.createdCountTextViewText)
-        this.vm.outputs.createdTextViewHidden().subscribe(this.createdTextViewHidden)
-        this.vm.outputs.dividerViewHidden().subscribe(this.dividerViewHidden)
-        this.vm.outputs.projectList().subscribe(this.projectList)
-        this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity)
-        this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity)
-        this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity)
-        this.vm.outputs.userNameTextViewText().subscribe(this.userNameTextViewText)
+    private fun setUpEnvironment(environment: Environment) {
+        this.vm = ProfileViewModel.ProfileViewModel(environment)
+
+        this.vm.outputs.avatarImageViewUrl().subscribe { this.avatarImageViewUrl.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.backedCountTextViewHidden()
+            .subscribe { this.backedCountTextViewHidden.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.backedCountTextViewText()
+            .subscribe { this.backedCountTextViewText.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.backedTextViewHidden().subscribe { this.backedTextViewHidden.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.createdCountTextViewHidden()
+            .subscribe { this.createdCountTextViewHidden.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.createdCountTextViewText()
+            .subscribe { this.createdCountTextViewText.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.createdTextViewHidden().subscribe { this.createdTextViewHidden.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.dividerViewHidden().subscribe { this.dividerViewHidden.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.projectList().subscribe { this.projectList.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.resumeDiscoveryActivity()
+            .subscribe { this.resumeDiscoveryActivity.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.startMessageThreadsActivity()
+            .subscribe { this.startMessageThreadsActivity.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.startProjectActivity().subscribe { this.startProjectActivity.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.userNameTextViewText().subscribe { this.userNameTextViewText.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -58,22 +80,22 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
             .createdProjectsCount(2)
             .build()
 
-        val apiClient = object : MockApiClient() {
+        val apiClient = object : MockApiClientV2() {
             override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        setUpEnvironment(environment().toBuilder().apiClientV2(apiClient).build())
 
         // Backed text views are displayed.
         this.backedCountTextViewHidden.assertValues(false)
-        this.backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()!!))
+        this.backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()))
         this.backedTextViewHidden.assertValues(false)
 
         // Created text views are displayed.
         this.createdCountTextViewHidden.assertValues(false)
-        this.createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()!!))
+        this.createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()))
         this.createdTextViewHidden.assertValues(false)
 
         // Divider view is displayed.
@@ -87,17 +109,17 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
             .createdProjectsCount(0)
             .build()
 
-        val apiClient = object : MockApiClient() {
+        val apiClient = object : MockApiClientV2() {
             override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        setUpEnvironment(environment().toBuilder().apiClientV2(apiClient).build())
 
         // Backed text views are displayed.
         this.backedCountTextViewHidden.assertValues(false)
-        this.backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()!!))
+        this.backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()))
         this.backedTextViewHidden.assertValues(false)
 
         // Created text views are hidden.
@@ -116,13 +138,13 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
             .createdProjectsCount(2)
             .build()
 
-        val apiClient = object : MockApiClient() {
+        val apiClient = object : MockApiClientV2() {
             override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        setUpEnvironment(environment().toBuilder().apiClientV2(apiClient).build())
 
         // Backed text views are hidden.
         this.backedCountTextViewHidden.assertValues(true)
@@ -131,7 +153,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
         // Created text views are displayed.
         this.createdCountTextViewHidden.assertValues(false)
-        this.createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()!!))
+        this.createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()))
         this.createdTextViewHidden.assertValues(false)
 
         // Divider view is hidden.
@@ -140,7 +162,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProfileViewModel_EmitsProjects() {
-        val apiClient = object : MockApiClient() {
+        val apiClient = object : MockApiClientV2() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
                 return Observable.just(
                     DiscoverEnvelopeFactory.discoverEnvelope(listOf(ProjectFactory.project()))
@@ -148,7 +170,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        setUpEnvironment(environment().toBuilder().apiClientV2(apiClient).build())
 
         this.projectList.assertValueCount(1)
     }
@@ -156,13 +178,13 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProfileViewModel_EmitsUserNameAndAvatar() {
         val user = UserFactory.user()
-        val apiClient = object : MockApiClient() {
+        val apiClient = object : MockApiClientV2() {
             override fun fetchCurrentUser(): Observable<User> {
                 return Observable.just(user)
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        setUpEnvironment(environment().toBuilder().apiClientV2(apiClient).build())
 
         this.avatarImageViewUrl.assertValues(user.avatar().medium())
         this.userNameTextViewText.assertValues(user.name())
@@ -191,7 +213,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         this.vm.inputs.projectCardClicked(project)
         this.startProjectActivity.assertValueCount(1)
-        assertEquals(this.startProjectActivity.onNextEvents[0], project)
+        assertEquals(this.startProjectActivity.values().first(), project)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 
@@ -208,7 +230,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         this.vm.inputs.projectCardClicked(project)
         this.startProjectActivity.assertValueCount(1)
-        assertEquals(this.startProjectActivity.onNextEvents[0], project)
+        assertEquals(this.startProjectActivity.values().first(), project)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 }

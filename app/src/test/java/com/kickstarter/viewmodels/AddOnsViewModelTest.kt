@@ -106,8 +106,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `test backed addOns total amount on start and update total amount`() = runTest {
 
-        val addOnReward = RewardFactory.addOn()
-        val aDifferentAddOnReward = RewardFactory.addOnSingle()
+        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {

@@ -466,6 +466,16 @@ class ProjectPageActivity :
                 }
             }.addToDisposable(disposables)
 
+        viewModel.outputs.showPledgeRedemptionScreen()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.pledgeRedemptionAlpha.visibility = View.VISIBLE
+            }.addToDisposable(disposables)
+
+        binding.pledgeRedemptionAlpha.setOnClickListener {
+            // open new PledgeRedemption Screen
+        }
+
         binding.backIcon.setOnClickListener {
             if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
                 onBackPressedDispatcher.onBackPressed()

@@ -915,8 +915,9 @@ fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
+
     val ppoCards = ppoResponse.pledges()?.edges()?.map {
-        val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
+        val ppoBackingData = it.node().backing().fragments()?.ppoCard()
         PPOCard.builder()
             .backingId(ppoBackingData?.id())
             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
@@ -927,15 +928,6 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             .projectSlug(ppoBackingData?.project()?.slug())
             .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
             .creatorName(ppoBackingData?.project()?.creator()?.name())
-            .build()
-        // will add additional fields such as card type and badges once backend response is finished
-    }
-
-    val categories = ppoResponse.categories()?.map {
-        com.kickstarter.features.pledgedprojectsoverview.data.Category.builder()
-            .title(it.title())
-            .count(it.count())
-            .slug(it.slug())
             .build()
     }
 
@@ -950,8 +942,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
 
     return PledgedProjectsOverviewEnvelope.builder()
         .totalCount(ppoResponse.pledges()?.totalCount())
-        .pledges(ppoCards)
-        .categories(categories)
+//        .pledges(ppoCards)
         .pageInfoEnvelope(pageInfoEnvelope)
         .build()
 }

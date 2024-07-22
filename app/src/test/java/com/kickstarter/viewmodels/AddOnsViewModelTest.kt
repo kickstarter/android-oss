@@ -24,6 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -143,6 +144,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.addOnsUIState.toList(uiState)
         }
+
+        advanceUntilIdle()
 
         // - Initial state queried for addOns and updated with backed information
         assertEquals(uiState.last().addOns.size, 2)

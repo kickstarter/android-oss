@@ -83,14 +83,6 @@ fun WebViewScreen(
                         this.setDelegate(del)
                     }
                     this.registerRequestHandlers(requestHandlers)
-//                    if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING) && isInDarkTheme) {
-//                        if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
-//                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(this.getSettings(), true)
-//                        } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-//                            @Suppress("DEPRECATION")
-//                            WebSettingsCompat.setForceDark(this.getSettings(), WebSettingsCompat.FORCE_DARK_ON)
-//                        }
-//                    }
                 }
             },
             modifier = Modifier

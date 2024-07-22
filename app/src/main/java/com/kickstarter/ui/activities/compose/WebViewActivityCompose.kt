@@ -9,6 +9,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.compose.WebViewScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.ui.views.KSWebView
 
 class WebViewActivityCompose : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,20 @@ class WebViewActivityCompose : ComponentActivity() {
                     WebViewScreen(
                         onBackButtonClicked = { finishWithAnimation() },
                         toolbarTitle = toolbarTitle ?: "",
-                        url = url
+                        url = url,
+                        delegate = object : KSWebView.Delegate {
+                            override fun externalLinkActivated(url: String) {
+                            }
+
+                            override fun pageIntercepted(url: String) {
+                                if (url.contains("authenticate")) {
+                                    finish()
+                                }
+                            }
+
+                            override fun onReceivedError(url: String) {
+                            }
+                        }
                     )
                 }
             }

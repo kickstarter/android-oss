@@ -915,9 +915,9 @@ fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
-
     val ppoCards = ppoResponse.pledges()?.edges()?.map {
-        val ppoBackingData = it.node().backing().fragments()?.ppoCard()
+        val ppoCardType = it.node() as? PledgedProjectsOverviewQuery.AsTier1PaymentFailed
+        val ppoBackingData = ppoCardType?.backing()?.fragments()?.ppoCard()
         PPOCard.builder()
             .backingId(ppoBackingData?.id())
             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
@@ -942,7 +942,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
 
     return PledgedProjectsOverviewEnvelope.builder()
         .totalCount(ppoResponse.pledges()?.totalCount())
-//        .pledges(ppoCards)
+        .pledges(ppoCards)
         .pageInfoEnvelope(pageInfoEnvelope)
         .build()
 }

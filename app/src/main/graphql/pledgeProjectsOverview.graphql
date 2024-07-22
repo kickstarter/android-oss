@@ -44,7 +44,3 @@ query PledgedProjectsOverview($first: Int, $after: String, $last: Int, $before: 
         }
       }
     }
-
-fragment ppoCardTypes {
-
-}

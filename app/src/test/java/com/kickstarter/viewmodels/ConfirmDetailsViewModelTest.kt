@@ -124,7 +124,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(projectData1)
         viewModel.onUserSelectedReward(reward)
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 1)))
+        viewModel.onUserUpdatedAddOns(listOf(addOnQuantity_1))
 
         assertEquals(
             uiState.last(),
@@ -140,7 +140,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             )
         )
 
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 2)))
+        viewModel.onUserUpdatedAddOns(listOf(addOnQuantity_2))
 
         assertEquals(
             uiState.last(),
@@ -171,7 +171,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(projectData1)
         viewModel.onUserSelectedReward(reward)
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 1)))
+        viewModel.onUserUpdatedAddOns(listOf(addOn))
 
         viewModel.incrementBonusSupport()
 
@@ -254,7 +254,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(projectData1)
         viewModel.onUserSelectedReward(reward)
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 1)))
+        viewModel.onUserUpdatedAddOns(listOf(addOn))
         viewModel.provideCurrentShippingRule(shippingRule1)
 
         assertEquals(

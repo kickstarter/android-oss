@@ -806,6 +806,8 @@ interface ProjectPageViewModel {
                 Pair(backing, adminUser)
             }
                 .subscribe {
+                    // remove userId tracking when removing feature flag or giving access to all users
+                    this.environment.firebaseAnalyticsClient()?.sendUserId(it.second)
                     this.showPledgeRedemptionScreen.onNext(it)
                 }
                 .addToDisposable(disposables)

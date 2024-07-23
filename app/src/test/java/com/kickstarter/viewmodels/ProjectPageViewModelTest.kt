@@ -30,6 +30,7 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
+import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
@@ -99,6 +100,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
     private val postCampaignPledgingEnabled = TestSubscriber<Boolean>()
+    private val pledgeRedemptionIsVisible = TestSubscriber<Pair<Backing, User>>()
 
     private val disposables = CompositeDisposable()
 
@@ -152,6 +154,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.onOpenVideoInFullScreen().subscribe { this.onOpenVideoInFullScreen.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.updateVideoCloseSeekPosition().subscribe { this.updateVideoCloseSeekPosition.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showLatePledgeFlow().subscribe { this.postCampaignPledgingEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showPledgeRedemptionScreen().subscribe { this.pledgeRedemptionIsVisible.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -2212,6 +2215,33 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
+    }
+
+    @Test
+    fun `Test Pledge Redemption button is visible for admin users when the project is backed and feature flag active`() {
+        val user = UserFactory.user().toBuilder().isAdmin(true).build()
+        val project = ProjectFactory.backedProject()
+        val backing = project.backing()
+        val currentUserMock = MockCurrentUserV2(user)
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        setUpEnvironment(
+            environment().toBuilder()
+                .currentUserV2(currentUserMock)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+
+        pledgeRedemptionIsVisible.assertValueCount(2)
+        this.vm.outputs.showPledgeRedemptionScreen().subscribe {
+            assertEquals(it.first, backing)
+            assertEquals(it.second, user)
+        }.addToDisposable(disposables)
     }
 
     private fun deepLinkIntent(): Intent {

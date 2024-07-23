@@ -19,8 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
@@ -48,11 +48,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
             val data = result.data?.getBooleanExtra(IntentKey.FIX_PAYMENT_SUCCESS, false)
             data?.let {
                 if (it.isTrue()) {
-                    viewModel.getPledgedProjects(
-                        PledgedProjectsOverviewQueryData(
-                            25, null, null, null
-                        )
-                    )
+                    viewModel.getPledgedProjects()
                 }
             }
         }
@@ -74,11 +70,13 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
                 val snackbarHostState = remember { SnackbarHostState() }
+                val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
-                val totalAlerts = ppoUIState.totalAlerts
-                val isLoading = ppoUIState.isLoading || !ppoCardPagingSource.loadState.isIdle
+
+                val isLoading = ppoUIState.isLoading || ppoCardPagingSource.loadState.append is LoadState.Loading || ppoCardPagingSource.loadState.refresh is LoadState.Loading
                 val isErrored = ppoUIState.isErrored || ppoCardPagingSource.loadState.hasError
+                val showEmptyState = ppoCardPagingSource.loadState.refresh is LoadState.NotLoading && ppoCardPagingSource.itemCount == 0
 
                 KickstarterApp(
                     useDarkTheme =
@@ -105,6 +103,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         isLoading = isLoading,
                         isErrored = isErrored,
+                        showEmptyState = showEmptyState,
                         onSeeAllBackedProjectsClick = { startProfileActivity() },
                         pullRefreshCallback = {
                             // TODO call viewmodel.getPledgedProjects() here

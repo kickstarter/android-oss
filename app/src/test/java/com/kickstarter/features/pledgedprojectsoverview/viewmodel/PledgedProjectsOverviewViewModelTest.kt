@@ -71,7 +71,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     }).build()
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
-            viewModel.provideSnackbarMessage { snackbarAction = it }
+            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message  }
             viewModel.onMessageCreatorClicked("test_project_slug")
 
             // Should equal error string id
@@ -85,7 +85,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `emits snackbar when confirms address`() =
         runTest {
             var snackbarAction = 0
-            viewModel.provideSnackbarMessage { snackbarAction = it }
+            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message  }
             viewModel.showSnackbarAndRefreshCardsList()
 
             // Should equal address confirmed string id

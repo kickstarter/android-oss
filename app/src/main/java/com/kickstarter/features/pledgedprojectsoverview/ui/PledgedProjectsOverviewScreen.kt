@@ -45,7 +45,10 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
+import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
+import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -172,7 +175,16 @@ fun PledgedProjectsOverviewScreen(
         Scaffold(
             snackbarHost = {
                 SnackbarHost(
-                    hostState = errorSnackBarHostState
+                    hostState = errorSnackBarHostState,
+                    snackbar = { data ->
+                        // Action label is typically for the action on a snackbar, but we can
+                        // leverage it and show different visuals depending on what we pass in
+                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                            KSErrorSnackbar(text = data.message)
+                        } else {
+                            KSHeadsupSnackbar(text = data.message)
+                        }
+                    }
                 )
             },
             modifier = modifier,

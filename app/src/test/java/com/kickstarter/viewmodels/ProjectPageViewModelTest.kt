@@ -2218,7 +2218,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `Test Pledge Redemption button is visible for admin users when the project is backed and feature flag active`() {
+    fun `Test Pledge Redemption button is visible for admin users when the project is backed and feature flag enabled`() {
         val user = UserFactory.user().toBuilder().isAdmin(true).build()
         val project = ProjectFactory.backedProject()
         val backing = project.backing()
@@ -2242,6 +2242,50 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             assertEquals(it.first, backing)
             assertEquals(it.second, user)
         }.addToDisposable(disposables)
+    }
+
+    @Test
+    fun `Test Pledge Redemption button is NOT visible for admin users when the project is backed and feature flag disabled`() {
+        val user = UserFactory.user().toBuilder().isAdmin(true).build()
+        val project = ProjectFactory.backedProject()
+        val currentUserMock = MockCurrentUserV2(user)
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
+        setUpEnvironment(
+            environment().toBuilder()
+                .currentUserV2(currentUserMock)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+
+        pledgeRedemptionIsVisible.assertNoValues()
+    }
+
+    @Test
+    fun `Test Pledge Redemption button is NOT visible for users (not admin) when the project is backed and feature flag enabled`() {
+        val user = UserFactory.user().toBuilder().isAdmin(false).build()
+        val project = ProjectFactory.backedProject()
+        val currentUserMock = MockCurrentUserV2(user)
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        setUpEnvironment(
+            environment().toBuilder()
+                .currentUserV2(currentUserMock)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+
+        pledgeRedemptionIsVisible.assertNoValues()
     }
 
     private fun deepLinkIntent(): Intent {

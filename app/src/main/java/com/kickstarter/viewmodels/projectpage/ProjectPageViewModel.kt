@@ -268,6 +268,8 @@ interface ProjectPageViewModel {
         fun updateVideoCloseSeekPosition(): Observable<Long>
 
         fun showLatePledgeFlow(): Observable<Boolean>
+
+        fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -356,6 +358,7 @@ interface ProjectPageViewModel {
         private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
+        private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -789,9 +792,27 @@ interface ProjectPageViewModel {
             val backedProject = currentProject
                 .filter { it.isBacking() }
 
-            val backing = backedProject
+            val projectBacking = backedProject
                 .filter { it.backing().isNotNull() }
-                .map { requireNotNull(it.backing()) }
+                .map { requireNotNull(it) }
+
+            val backing = projectBacking.map { requireNotNull(it.backing()) }
+
+            val isAdmin = this.currentUser.observable()
+                .filter { it.isPresent() }
+                .map { requireNotNull(it.getValue()) }
+                .filter { it.isAdmin() && ffClient.getBoolean(FlagKey.ANDROID_PLEDGE_REDEMPTION) }
+                .map { it }
+
+            Observable.combineLatest(projectBacking, isAdmin) { pBacking, adminUser ->
+                Pair(pBacking, adminUser)
+            }
+                .subscribe {
+                    // remove userId tracking when removing feature flag or giving access to all users
+                    this.environment.firebaseAnalyticsClient()?.sendUserId(it.second)
+                    this.showPledgeRedemptionScreen.onNext(it)
+                }
+                .addToDisposable(disposables)
 
             // - Update fragments with the backing data
             currentProjectData
@@ -1271,6 +1292,8 @@ interface ProjectPageViewModel {
         override fun backingViewGroupIsVisible(): Observable<Boolean> = this.backingViewGroupIsVisible
 
         override fun showLatePledgeFlow(): Observable<Boolean> = this.showLatePledgeFlow
+
+        override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> = this.showPledgeRedemptionScreen
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

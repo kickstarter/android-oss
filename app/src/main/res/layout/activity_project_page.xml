@@ -196,4 +196,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/pledge_redemption_alpha"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right"
+        android:src="@drawable/ic_face"
+        android:contentDescription="@string/A_little_extra_to_help"
+        android:layout_margin="16dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

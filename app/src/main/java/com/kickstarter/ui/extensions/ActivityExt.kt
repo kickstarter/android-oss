@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
+import com.kickstarter.libs.utils.extensions.getPledgeRedemptionIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
@@ -140,6 +141,16 @@ fun Activity.showRatingDialogWidget() {
         } else {
             Timber.v("${this.localClassName} : showRatingDialogWidget request: ${request.isSuccessful} ")
         }
+    }
+}
+
+fun Activity.startPledgeRedemption(project: Project) {
+    startActivity(
+        Intent().getPledgeRedemptionIntent(this, project)
+    )
+
+    this.let {
+        TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
     }
 }
 

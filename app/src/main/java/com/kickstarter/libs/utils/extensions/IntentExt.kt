@@ -2,6 +2,7 @@ package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
 import android.content.Intent
+import com.kickstarter.features.pledgeredemption.ui.PledgeRedemptionActivity
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
@@ -41,6 +42,15 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
  */
 fun Intent.getPaymentMethodsIntent(context: Context): Intent {
     return this.setClass(context, PaymentMethodsSettingsActivity::class.java)
+}
+
+fun Intent.getPledgeRedemptionIntent(
+    context: Context,
+    project: Project
+): Intent {
+    this.setClass(context, PledgeRedemptionActivity::class.java)
+        .putExtra(IntentKey.PROJECT, project)
+    return this
 }
 
 fun Intent.getRootCommentsActivityIntent(

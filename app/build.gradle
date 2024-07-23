@@ -297,6 +297,7 @@ dependencies {
 
     // Paging 3 for compose dependency
     implementation "androidx.paging:paging-compose:3.3.0"
+    implementation "androidx.paging:paging-testing:3.3.0"
 
     // Testing
     testImplementation "junit:junit:4.13.2"

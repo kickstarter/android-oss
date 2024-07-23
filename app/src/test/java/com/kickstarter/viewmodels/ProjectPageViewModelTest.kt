@@ -100,7 +100,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
     private val postCampaignPledgingEnabled = TestSubscriber<Boolean>()
-    private val pledgeRedemptionIsVisible = TestSubscriber<Pair<Backing, User>>()
+    private val pledgeRedemptionIsVisible = TestSubscriber<Pair<Project, User>>()
 
     private val disposables = CompositeDisposable()
 
@@ -2221,7 +2221,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     fun `Test Pledge Redemption button is visible for admin users when the project is backed and feature flag enabled`() {
         val user = UserFactory.user().toBuilder().isAdmin(true).build()
         val project = ProjectFactory.backedProject()
-        val backing = project.backing()
         val currentUserMock = MockCurrentUserV2(user)
         val mockFeatureFlagClient = object : MockFeatureFlagClient() {
             override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -2239,7 +2238,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         pledgeRedemptionIsVisible.assertValueCount(2)
         this.vm.outputs.showPledgeRedemptionScreen().subscribe {
-            assertEquals(it.first, backing)
+            assertEquals(it.first, project)
             assertEquals(it.second, user)
         }.addToDisposable(disposables)
     }

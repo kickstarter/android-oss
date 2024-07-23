@@ -269,7 +269,7 @@ interface ProjectPageViewModel {
 
         fun showLatePledgeFlow(): Observable<Boolean>
 
-        fun showPledgeRedemptionScreen(): Observable<Pair<Backing, User>>
+        fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -358,7 +358,7 @@ interface ProjectPageViewModel {
         private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
-        private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Backing, User>>()
+        private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -792,9 +792,11 @@ interface ProjectPageViewModel {
             val backedProject = currentProject
                 .filter { it.isBacking() }
 
-            val backing = backedProject
+            val projectBacking = backedProject
                 .filter { it.backing().isNotNull() }
-                .map { requireNotNull(it.backing()) }
+                .map { requireNotNull(it) }
+
+            val backing = projectBacking.map { requireNotNull(it.backing()) }
 
             val isAdmin = this.currentUser.observable()
                 .filter { it.isPresent() }
@@ -802,8 +804,8 @@ interface ProjectPageViewModel {
                 .filter { it.isAdmin() && ffClient.getBoolean(FlagKey.ANDROID_PLEDGE_REDEMPTION) }
                 .map { it }
 
-            Observable.combineLatest(backing, isAdmin) { backing, adminUser ->
-                Pair(backing, adminUser)
+            Observable.combineLatest(projectBacking, isAdmin) { pBacking, adminUser ->
+                Pair(pBacking, adminUser)
             }
                 .subscribe {
                     // remove userId tracking when removing feature flag or giving access to all users
@@ -1291,7 +1293,7 @@ interface ProjectPageViewModel {
 
         override fun showLatePledgeFlow(): Observable<Boolean> = this.showLatePledgeFlow
 
-        override fun showPledgeRedemptionScreen(): Observable<Pair<Backing, User>> = this.showPledgeRedemptionScreen
+        override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> = this.showPledgeRedemptionScreen
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

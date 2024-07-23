@@ -17,6 +17,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class ProfileViewModelTest : KSRobolectricTestCase() {
@@ -232,5 +233,10 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         this.startProjectActivity.assertValueCount(1)
         assertEquals(this.startProjectActivity.values().first(), project)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

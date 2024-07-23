@@ -142,6 +142,7 @@ class ProfileActivity : ComponentActivity() {
         super.onDestroy()
         this.paginator.stop()
         binding.recyclerView.adapter = null
+        disposables.clear()
     }
 
     private fun loadProjects(projects: List<Project>) {

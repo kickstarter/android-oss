@@ -216,6 +216,11 @@ interface ProfileViewModel {
         override fun startMessageThreadsActivity() = this.startMessageThreadsActivity
 
         override fun userNameTextViewText() = this.userNameTextViewText
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 
     class Factory(private val environment: Environment) :

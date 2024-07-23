@@ -43,7 +43,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
-import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
@@ -154,6 +153,7 @@ fun PledgedProjectsOverviewScreen(
     onSeeAllBackedProjectsClick: () -> Unit,
     isLoading: Boolean = false,
     isErrored: Boolean = false,
+    showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
     onFixPaymentClick: (projectSlug: String) -> Unit,
 ) {
@@ -190,7 +190,7 @@ fun PledgedProjectsOverviewScreen(
         ) { padding ->
             if (isErrored) {
                 PPOScreenErrorState()
-            } else if (totalAlerts == 0 || ppoCards.itemCount.isNullOrZero()) {
+            } else if (showEmptyState) {
                 PPOScreenEmptyState(onSeeAllBackedProjectsClick)
             } else {
                 LazyColumn(

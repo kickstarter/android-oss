@@ -630,6 +630,8 @@ class ProjectPageActivity :
                         pagerState = pagerState,
                         isLoading = addOnsIsLoading || confirmDetailsIsLoading || checkoutLoading,
                         onAddOnsContinueClicked = {
+                            val selectedAddons = addOnsViewModel.getPledgeDataAndReason()?.first?.addOns() ?: emptyList()
+                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddons)
                             checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
                         currentShippingRule = currentUserShippingRule,

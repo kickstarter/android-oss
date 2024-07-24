@@ -1655,6 +1655,7 @@ interface PledgeFragmentViewModel {
                 PledgeReason.UPDATE_REWARD,
                 PledgeReason.PLEDGE,
                 PledgeReason.UPDATE_PAYMENT,
+                PledgeReason.LATE_PLEDGE,
                 PledgeReason.FIX_PLEDGE -> hasCards
                 PledgeReason.UPDATE_PLEDGE -> changedValues && hasCards
             }
@@ -1760,6 +1761,7 @@ interface PledgeFragmentViewModel {
                 PledgeReason.PLEDGE -> if (rw.hasAddons()) shippingCostForAddOns(listRw, rule) + rule.cost() else rule.cost()
                 PledgeReason.FIX_PLEDGE,
                 PledgeReason.UPDATE_PAYMENT,
+                PledgeReason.LATE_PLEDGE,
                 PledgeReason.UPDATE_PLEDGE -> bShippingAmount?.toDouble() ?: rule.cost()
             }
         }

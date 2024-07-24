@@ -42,6 +42,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private var currentUserReward: Reward = Reward.builder().build()
+    private var pledgeData: PledgeData? = null
     private var projectData: ProjectData? = null
     private var project: Project = Project.builder().build()
     private var shippingRule: ShippingRule = ShippingRule.builder().build()
@@ -86,7 +87,11 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      */
     fun provideBundle(bundle: Bundle?) {
         bundle?.let {
-            val pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
+            pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
+
+            // Send analytic event for crowdfund checkout
+            this.sendEvent()
+
             pReason = it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
 
             pledgeData?.projectData()?.let {
@@ -135,6 +140,11 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      */
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
+        this.pledgeData = PledgeData.with(
+            projectData = projectData,
+            pledgeFlowContext = PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE),
+            reward = currentUserReward
+        )
         this.projectData?.project()?.let {
             project = it
         }
@@ -245,6 +255,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     fun getProject() = this.project
+    fun sendEvent() = this.pledgeData?.let {
+        environment.analytics()?.trackAddOnsScreenViewed(it)
+    }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :
         ViewModelProvider.Factory {

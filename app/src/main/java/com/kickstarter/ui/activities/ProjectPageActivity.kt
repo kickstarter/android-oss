@@ -617,6 +617,9 @@ class ProjectPageActivity :
                             if (currentPage == 1) {
                                 // Load addOns only when the user navigates to AddOns Screen, avoid loading while the user selects location
                                 addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
+
+                                // Send pageViewed event when user navigates to AddOns Screen
+                                addOnsViewModel.sendEvent()
                             }
                         }
                     }

@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -49,6 +50,67 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(testProjectData)
         viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
+    }
+
+    @Test
+    fun `analytic event sent for crowdfund checkout, should be sent when calling provideBundle()`() {
+        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
+        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getProjectAddOns(
+                slug: String,
+                locationId: Location
+            ): Observable<List<Reward>> {
+                return Observable.just(addOnsList)
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+
+        val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
+        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+        val backedReward = RewardFactory.reward().toBuilder().hasAddons(true).build()
+        val backing = BackingFactory.backing(reward = backedReward).toBuilder().addOns(listOf(backedAddOnq)).build()
+        val testProject = ProjectFactory.project().toBuilder().rewards(listOf(backedReward)).backing(backing).build()
+        val testProjectData = ProjectData.builder().project(testProject).build()
+
+        createViewModel(env)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.CHANGE_REWARD, testProjectData, backedReward, shippingRule = shippingRule))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
+        viewModel.provideBundle(bundle)
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun `analytic event sent for late pledges, should be sent wen calling sendEvent()`() {
+        val addOnReward = RewardFactory.addOn()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle()
+        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getProjectAddOns(
+                slug: String,
+                locationId: Location
+            ): Observable<List<Reward>> {
+                return Observable.just(addOnsList)
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+
+        setup(env)
+
+        viewModel.sendEvent()
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

@@ -15,6 +15,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,7 +85,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
-    private var snackbarMessage: (stringID: Int) -> Unit = {}
+    private var snackbarMessage: (stringID: Int, type: String) -> Unit = { _, _ -> }
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
@@ -105,7 +106,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
             )
 
     fun showSnackbarAndRefreshCardsList() {
-        snackbarMessage.invoke(R.string.address_confirmed_snackbar_text_fpo)
+        showHeadsUpSnackbar(R.string.address_confirmed_snackbar_text_fpo)
         // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
     }
 
@@ -148,7 +149,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun provideSnackbarMessage(snackBarMessage: (Int) -> Unit) {
+    fun provideSnackbarMessage(snackBarMessage: (Int, String) -> Unit) {
         this.snackbarMessage = snackBarMessage
     }
 
@@ -163,7 +164,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 }.map { project ->
                     mutableProjectFlow.emit(project)
                 }.catch {
-                    snackbarMessage.invoke(R.string.Something_went_wrong_please_try_again)
+                    showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
                 }.onCompletion {
                     emitCurrentState()
                 }.collect()
@@ -177,6 +178,14 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 isErrored = isErrored,
             )
         )
+    }
+
+    private fun showHeadsUpSnackbar(messageId: Int) {
+        snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_HEADS_UP.name)
+    }
+
+    private fun showErrorSnackbar(messageId: Int) {
+        snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name)
     }
 
     class Factory(private val environment: Environment) :

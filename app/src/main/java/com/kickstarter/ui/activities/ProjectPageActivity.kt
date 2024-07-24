@@ -60,6 +60,7 @@ import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
+import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.projectpage.ProjectPledgeButtonAndFragmentContainer
@@ -79,6 +80,7 @@ import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
+import com.kickstarter.ui.extensions.startPledgeRedemption
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.extensions.startVideoActivity
@@ -465,6 +467,22 @@ class ProjectPageActivity :
                 }
             }.addToDisposable(disposables)
 
+        var pBacking: Project? = null
+        var user: User? = null
+        viewModel.outputs.showPledgeRedemptionScreen()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                pBacking = it.first
+                user = it.second
+                binding.pledgeRedemptionAlpha.visibility = View.VISIBLE
+            }.addToDisposable(disposables)
+
+        binding.pledgeRedemptionAlpha.setOnClickListener {
+            pBacking?.let {
+                startPledgeRedemption(it)
+            }
+        }
+
         binding.backIcon.setOnClickListener {
             if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
                 onBackPressedDispatcher.onBackPressed()
@@ -519,7 +537,6 @@ class ProjectPageActivity :
                     }
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
-
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
                     val addOnCount = addOnsUIState.totalCount

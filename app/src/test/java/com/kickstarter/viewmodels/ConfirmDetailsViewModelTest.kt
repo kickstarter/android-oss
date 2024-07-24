@@ -124,7 +124,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(projectData1)
         viewModel.onUserSelectedReward(reward)
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 1)))
+        viewModel.onUserUpdatedAddOns(listOf(addOnQuantity_1))
 
         assertEquals(
             uiState.last(),
@@ -140,7 +140,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
             )
         )
 
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 2)))
+        viewModel.onUserUpdatedAddOns(listOf(addOnQuantity_2))
 
         assertEquals(
             uiState.last(),
@@ -171,7 +171,7 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(projectData1)
         viewModel.onUserSelectedReward(reward)
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 1)))
+        viewModel.onUserUpdatedAddOns(listOf(addOnQuantity_1))
 
         viewModel.incrementBonusSupport()
 
@@ -254,38 +254,33 @@ class ConfirmDetailsViewModelTest : KSRobolectricTestCase() {
 
         viewModel.provideProjectData(projectData1)
         viewModel.onUserSelectedReward(reward)
-        viewModel.onUserUpdatedAddOns(mapOf(Pair(addOn, 1)))
+        viewModel.onUserUpdatedAddOns(listOf(addOn))
         viewModel.provideCurrentShippingRule(shippingRule1)
 
-        assertEquals(
-            uiState.last(),
-            ConfirmDetailsUIState(
-                rewardsAndAddOns = listOf(reward, addOnQuantity_1),
-                initialBonusSupportAmount = 0.0,
-                finalBonusSupportAmount = 0.0,
-                shippingAmount = 30.0,
-                totalAmount = 70.0,
-                minStepAmount = 1.0,
-                maxPledgeAmount = 10000.0,
-                isLoading = false
-            )
-        )
+        assertEquals(uiState.last().initialBonusSupportAmount, 0.0)
+        assertEquals(uiState.last().finalBonusSupportAmount, 0.0)
+        assertEquals(uiState.last().shippingAmount, 30.0)
+        assertEquals(uiState.last().totalAmount, 70.0)
+        assertEquals(uiState.last().minStepAmount, 1.0)
+        assertEquals(uiState.last().maxPledgeAmount, 10000.0)
+        assertEquals(uiState.last().isLoading, false)
+        assertEquals(uiState.last().rewardsAndAddOns.size, 2)
+        assertEquals(uiState.last().rewardsAndAddOns.first(), reward)
+        assertEquals(uiState.last().rewardsAndAddOns.last(), addOn)
 
         viewModel.provideCurrentShippingRule(shippingRule2)
+        viewModel.onUserUpdatedAddOns(listOf(addOnQuantity_1))
 
-        assertEquals(
-            uiState.last(),
-            ConfirmDetailsUIState(
-                rewardsAndAddOns = listOf(reward, addOnQuantity_1),
-                initialBonusSupportAmount = 0.0,
-                finalBonusSupportAmount = 0.0,
-                shippingAmount = 40.0,
-                totalAmount = 80.0,
-                minStepAmount = 1.0,
-                maxPledgeAmount = 10000.0,
-                isLoading = false
-            )
-        )
+        assertEquals(uiState.last().initialBonusSupportAmount, 0.0)
+        assertEquals(uiState.last().finalBonusSupportAmount, 0.0)
+        assertEquals(uiState.last().shippingAmount, 40.0)
+        assertEquals(uiState.last().totalAmount, 80.0)
+        assertEquals(uiState.last().minStepAmount, 1.0)
+        assertEquals(uiState.last().maxPledgeAmount, 10000.0)
+        assertEquals(uiState.last().isLoading, false)
+        assertEquals(uiState.last().rewardsAndAddOns.size, 2)
+        assertEquals(uiState.last().rewardsAndAddOns.first(), reward)
+        assertEquals(uiState.last().rewardsAndAddOns.last(), addOnQuantity_1)
     }
 
     @Test

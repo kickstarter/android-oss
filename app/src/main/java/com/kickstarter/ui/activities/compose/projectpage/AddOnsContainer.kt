@@ -18,6 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,14 +56,15 @@ private fun AddOnsContainerPreview() {
             buttonEnabled = true,
             buttonText = "Add",
             environment = Environment.builder().build(),
-            onItemAddedOrRemoved = { count -> },
-            itemAddOnCount = 1
+            onItemAddedOrRemoved = { count, id -> },
+            quantity = 1
         )
     }
 }
 
 @Composable
 fun AddOnsContainer(
+    rewardId: Long = 0,
     title: String,
     amount: String,
     shippingAmount: String? = null,
@@ -70,9 +75,12 @@ fun AddOnsContainer(
     buttonEnabled: Boolean,
     buttonText: String,
     environment: Environment,
-    onItemAddedOrRemoved: (count: Int) -> Unit,
-    itemAddOnCount: Int
+    onItemAddedOrRemoved: (count: Int, id: Long) -> Unit,
+    quantity: Int = 0
 ) {
+
+    var count by remember { mutableStateOf(quantity) }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = colors.kds_white,
@@ -160,11 +168,12 @@ fun AddOnsContainer(
 
             Spacer(Modifier.height(dimensions.paddingLarge))
 
-            when (itemAddOnCount) {
+            when (count) {
                 0 -> {
                     KSPrimaryBlackButton(
                         onClickAction = {
-                            onItemAddedOrRemoved(itemAddOnCount + 1)
+                            count++
+                            onItemAddedOrRemoved(count, rewardId)
                         },
                         text = buttonText,
                         isEnabled = buttonEnabled
@@ -179,11 +188,13 @@ fun AddOnsContainer(
                     ) {
                         KSStepper(
                             onPlusClicked = {
-                                onItemAddedOrRemoved(itemAddOnCount + 1)
+                                count++
+                                onItemAddedOrRemoved(count, rewardId)
                             },
-                            isPlusEnabled = itemAddOnCount < limit,
+                            isPlusEnabled = count < limit,
                             onMinusClicked = {
-                                onItemAddedOrRemoved(itemAddOnCount - 1)
+                                count--
+                                onItemAddedOrRemoved(count, rewardId)
                             },
                             isMinusEnabled = true
                         )
@@ -203,7 +214,7 @@ fun AddOnsContainer(
                                 )
                         ) {
                             Text(
-                                text = "$itemAddOnCount",
+                                text = "$count",
                                 style = typography.callout,
                                 color = colors.textPrimary
                             )

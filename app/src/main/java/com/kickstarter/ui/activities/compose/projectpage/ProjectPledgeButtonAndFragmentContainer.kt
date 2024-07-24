@@ -95,8 +95,8 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             addOns = listOf(),
             project = Project.builder().build(),
             onRewardSelected = {},
-            onAddOnAddedOrRemoved = {},
-            selectedAddOnsMap = mapOf(),
+            onAddOnAddedOrRemoved = { _, _ -> },
+            totalSelectedAddOn = 0,
             totalAmount = 0.0,
             currentShippingRule = ShippingRule.builder().build(),
             onShippingRuleSelected = {},
@@ -132,8 +132,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
     addOns: List<Reward>,
     project: Project,
     onRewardSelected: (reward: Reward) -> Unit,
-    onAddOnAddedOrRemoved: (Map<Reward, Int>) -> Unit,
-    selectedAddOnsMap: Map<Reward, Int>,
+    onAddOnAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
+    totalSelectedAddOn: Int,
     totalAmount: Double,
     selectedReward: Reward? = null,
     onShippingRuleSelected: (ShippingRule) -> Unit,
@@ -260,9 +260,9 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         rewardItems = addOns,
                                         project = project,
                                         onItemAddedOrRemoved = onAddOnAddedOrRemoved,
-                                        selectedAddOnsMap = selectedAddOnsMap,
                                         onContinueClicked = onAddOnsContinueClicked,
                                         isLoading = isLoading,
+                                        addOnCount = totalSelectedAddOn
                                     )
                                 }
 

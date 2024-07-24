@@ -5,137 +5,80 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
-import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.adapters.BackingAddOnsAdapter
+import com.kickstarter.ui.activities.compose.projectpage.AddOnsScreen
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
-import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import java.util.concurrent.TimeUnit
+import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 
-class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
+class BackingAddOnsFragment : Fragment() {
     private var binding: FragmentBackingAddonsBinding? = null
 
-    private lateinit var viewModelFactory: BackingAddOnsFragmentViewModel.Factory
-    private val viewModel: BackingAddOnsFragmentViewModel.BackingAddOnsFragmentViewModel by viewModels { viewModelFactory }
-
-    private var disposables = CompositeDisposable()
+    private lateinit var viewModelFactoryC: AddOnsViewModel.Factory
+    private val viewModelC: AddOnsViewModel by viewModels {
+        viewModelFactoryC
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+
         binding = FragmentBackingAddonsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
-
-    private val backingAddonsAdapter = BackingAddOnsAdapter(this)
-    private lateinit var errorDialog: AlertDialog
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        setupErrorDialog()
-
-        val env = this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
-            env
-        }
-
-        this.viewModel.outputs.showPledgeFragment()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showPledgeFragment(it.first, it.second) }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.addOnsList()
-            .throttleWithTimeout(50, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                populateAddOns(it)
+        val view = binding?.root
+        binding?.composeView?.apply {
+            val env = this?.context?.getEnvironment()?.let { env ->
+                viewModelFactoryC = AddOnsViewModel.Factory(env, bundle = arguments)
+                // viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
+                viewModelC.provideBundle(arguments)
+                env
             }
-            .addToDisposable(disposables)
+            // Dispose of the Composition when the view's LifecycleOwner
+            // is destroyed
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KickstarterApp(
+                    useDarkTheme = true
+                ) {
+                    val addOnsUIState by viewModelC.addOnsUIState.collectAsState()
 
-        this.viewModel.outputs.isEmptyState()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showEmptyState(it) }
-            .addToDisposable(disposables)
+                    val addOns = addOnsUIState.addOns
+                    val totalCount = addOnsUIState.totalCount
+                    val addOnsIsLoading = addOnsUIState.isLoading
+                    val project = viewModelC.getProject()
 
-        this.viewModel.outputs.showErrorDialog()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showErrorDialog() }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.totalSelectedAddOns()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { total ->
-                binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total, requireNotNull(env?.ksString()))
+                    KSTheme {
+                        AddOnsScreen(
+                            environment = requireNotNull(env),
+                            lazyColumnListState = rememberLazyListState(),
+                            rewardItems = addOns,
+                            project = project,
+                            onItemAddedOrRemoved = { quantity, rewardId ->
+                                viewModelC.updateSelection(rewardId, quantity)
+                            },
+                            isLoading = addOnsIsLoading,
+                            onContinueClicked = {
+                                viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
+                                    showPledgeFragment(pledgeData = pDataAndReason.first, pledgeReason = pDataAndReason.second)
+                                }
+                            },
+                            addOnCount = totalCount
+                        )
+                    }
+                }
             }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.isEnabledCTAButton()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.isEnabled = it
-            }
-            .addToDisposable(disposables)
-
-        binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.setOnClickListener {
-            this.viewModel.inputs.continueButtonPressed()
         }
-    }
-
-    private fun selectProperString(totalSelected: Int, ksString: KSString): String {
-        return when {
-            totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons), "", "")
-            totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_one), "quantity_count", totalSelected.toString())
-            totalSelected > 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_many), "quantity_count", totalSelected.toString())
-            else -> ""
-        }
-    }
-
-    private fun showErrorDialog() {
-        if (!errorDialog.isShowing) {
-            errorDialog.show()
-        }
-    }
-
-    private fun dismissErrorDialog() {
-        errorDialog.dismiss()
-    }
-
-    private fun populateAddOns(projectDataAndAddOnList: Triple<ProjectData, List<Reward>, ShippingRule>) {
-        val projectData = projectDataAndAddOnList.first
-        val selectedShippingRule = projectDataAndAddOnList.third
-        val list = projectDataAndAddOnList
-            .second
-            .map {
-                Triple(projectData, it, selectedShippingRule)
-            }.toList()
-
-        backingAddonsAdapter.populateDataForAddOns(list)
-    }
-
-    private fun showEmptyState(isEmptyState: Boolean) {
-        backingAddonsAdapter.showEmptyState(isEmptyState)
-    }
-
-    private fun setupRecyclerView() {
-        binding?.fragmentSelectAddonsRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        binding?.fragmentSelectAddonsRecycler?.adapter = backingAddonsAdapter
+        return view
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
@@ -148,19 +91,6 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
             .commit()
     }
 
-    private fun setupErrorDialog() {
-        context?.let { context ->
-            errorDialog = AlertDialog.Builder(context, R.style.AlertDialog)
-                .setCancelable(false)
-                .setTitle(getString(R.string.Something_went_wrong_please_try_again))
-                .setPositiveButton(getString(R.string.Retry)) { _, _ ->
-                    this.viewModel.inputs.retryButtonPressed()
-                }
-                .setNegativeButton(getString(R.string.general_navigation_buttons_close)) { _, _ -> dismissErrorDialog() }
-                .create()
-        }
-    }
-
     companion object {
         fun newInstance(pledgeDataAndReason: Pair<PledgeData, PledgeReason>): BackingAddOnsFragment {
             val fragment = BackingAddOnsFragment()
@@ -170,15 +100,5 @@ class BackingAddOnsFragment : Fragment(), BackingAddOnViewHolder.ViewListener {
             fragment.arguments = argument
             return fragment
         }
-    }
-
-    override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
-        this.viewModel.inputs.quantityPerId(quantityPerId)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding?.fragmentSelectAddonsRecycler?.adapter = null
-        disposables.clear()
     }
 }

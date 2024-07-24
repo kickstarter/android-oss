@@ -60,7 +60,6 @@ import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.IntentKey
@@ -538,10 +537,9 @@ class ProjectPageActivity :
                     }
 
                     val addOnsUIState by addOnsViewModel.addOnsUIState.collectAsStateWithLifecycle()
-
-                    val selectedAddOnsMap: MutableMap<Reward, Int> = addOnsUIState.currentAddOnsSelection
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
+                    val addOnCount = addOnsUIState.totalCount
 
                     LaunchedEffect(currentUserShippingRule) {
                         confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
@@ -636,6 +634,9 @@ class ProjectPageActivity :
                             if (currentPage == 1) {
                                 // Load addOns only when the user navigates to AddOns Screen, avoid loading while the user selects location
                                 addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
+
+                                // Send pageViewed event when user navigates to AddOns Screen
+                                addOnsViewModel.sendEvent()
                             }
                         }
                     }
@@ -649,6 +650,8 @@ class ProjectPageActivity :
                         pagerState = pagerState,
                         isLoading = addOnsIsLoading || confirmDetailsIsLoading || checkoutLoading,
                         onAddOnsContinueClicked = {
+                            val selectedAddons = addOnsViewModel.getPledgeDataAndReason()?.first?.addOns() ?: emptyList()
+                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddons)
                             checkoutFlowViewModel.onAddOnsContinueClicked()
                         },
                         currentShippingRule = currentUserShippingRule,
@@ -665,13 +668,10 @@ class ProjectPageActivity :
                             confirmDetailsViewModel.onUserSelectedReward(reward)
                             latePledgeCheckoutViewModel.userRewardSelection(reward)
                         },
-                        onAddOnAddedOrRemoved = { updateAddOnRewardCount ->
-                            selectedAddOnsMap[updateAddOnRewardCount.keys.first()] =
-                                updateAddOnRewardCount[updateAddOnRewardCount.keys.first()] ?: 0
-                            addOnsViewModel.onAddOnsAddedOrRemoved(selectedAddOnsMap)
-
-                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddOnsMap)
+                        onAddOnAddedOrRemoved = { quantityForId, rewardId ->
+                            addOnsViewModel.updateSelection(rewardId, quantityForId)
                         },
+                        totalSelectedAddOn = addOnCount,
                         selectedReward = selectedReward,
                         totalAmount = totalAmount,
                         selectedRewardAndAddOnList = rewardsAndAddOns,
@@ -697,7 +697,6 @@ class ProjectPageActivity :
                         onBonusSupportInputted = { input ->
                             confirmDetailsViewModel.inputBonusSupport(input)
                         },
-                        selectedAddOnsMap = selectedAddOnsMap,
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {
                                 latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)

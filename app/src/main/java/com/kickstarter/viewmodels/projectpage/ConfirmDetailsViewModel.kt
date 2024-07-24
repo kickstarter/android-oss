@@ -110,20 +110,12 @@ class ConfirmDetailsViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onUserUpdatedAddOns(addOns: Map<Reward, Int>) {
+    fun onUserUpdatedAddOns(addOns: List<Reward>) {
         val rewardsAndAddOns = mutableListOf<Reward>()
         if (::userSelectedReward.isInitialized && !RewardUtils.isNoReward(userSelectedReward)) {
             rewardsAndAddOns.add(userSelectedReward)
         }
-
-        addOns.forEach { rewardAndQuantity ->
-            if (rewardAndQuantity.value > 0) {
-                rewardsAndAddOns.add(
-                    rewardAndQuantity.key.toBuilder().quantity(rewardAndQuantity.value).build()
-                )
-            }
-        }
-
+        rewardsAndAddOns.addAll(addOns)
         rewardAndAddOns = rewardsAndAddOns
 
         updateShippingAmount()

@@ -5,34 +5,11 @@ query PledgedProjectsOverview($first: Int, $after: String, $last: Int, $before: 
           edges {
             cursor
             node {
-              ... on Tier1AddressLockingSoon {
-                backing{
-                ...ppoCard
-                }
-                tierType
-                tags
-              }
-    		  ... on Tier1PaymentFailed {
                 backing {
                 ...ppoCard
                 }
                 tierType
                 tags
-              }
-    		  ... on Tier1PaymentAuthenticationRequired {
-                backing {
-                ...ppoCard
-                }
-                tierType
-                tags
-              }
-    		  ... on Tier1OpenSurvey {
-                backing {
-                ...ppoCard
-                }
-                tierType
-                tags
-              }
             }
           }
           pageInfo {

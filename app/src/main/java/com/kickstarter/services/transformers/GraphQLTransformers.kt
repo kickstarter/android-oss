@@ -916,8 +916,7 @@ fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
     val ppoCards = ppoResponse.pledges()?.edges()?.map {
-        val ppoCardType = it.node() as? PledgedProjectsOverviewQuery.AsTier1PaymentFailed
-        val ppoBackingData = ppoCardType?.backing()?.fragments()?.ppoCard()
+        val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
         PPOCard.builder()
             .backingId(ppoBackingData?.id())
             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())

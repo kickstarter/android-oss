@@ -5,9 +5,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
@@ -22,6 +24,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
+import com.kickstarter.libs.utils.extensions.getPledgeRedemptionIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
@@ -50,7 +53,15 @@ fun Activity.startActivityWithTransition(
     @AnimRes exitAnim: Int
 ) {
     startActivity(intent)
-    overridePendingTransition(enterAnim, exitAnim)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        overrideActivityTransition(
+            ComponentActivity.OVERRIDE_TRANSITION_OPEN,
+            enterAnim,
+            exitAnim
+        )
+    } else {
+        overridePendingTransition(enterAnim, exitAnim)
+    }
 }
 
 fun Activity.hideKeyboard() {
@@ -130,6 +141,16 @@ fun Activity.showRatingDialogWidget() {
         } else {
             Timber.v("${this.localClassName} : showRatingDialogWidget request: ${request.isSuccessful} ")
         }
+    }
+}
+
+fun Activity.startPledgeRedemption(project: Project) {
+    startActivity(
+        Intent().getPledgeRedemptionIntent(this, project)
+    )
+
+    this.let {
+        TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
     }
 }
 

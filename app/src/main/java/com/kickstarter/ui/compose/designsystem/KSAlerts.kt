@@ -47,13 +47,19 @@ fun SnackbarsPreview() {
     }
 }
 
+enum class KSSnackbarTypes {
+    KS_ERROR,
+    KS_HEADS_UP,
+    KS_SUCCESS
+}
+
 @Composable
 fun KSErrorSnackbar(
     text: String,
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_alert,
+        backgroundColor = colors.backgroundDangerBold,
         content = {
             KSErrorRoundedText(text = text, padding = padding)
         }
@@ -66,7 +72,7 @@ fun KSHeadsupSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_support_700,
+        backgroundColor = colors.backgroundActionPressed,
         content = {
             KSHeadsUpRoundedText(text = text, padding = padding)
         }
@@ -79,7 +85,7 @@ fun KSSuccessSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.kds_create_300,
+        backgroundColor = colors.backgroundAccentGreenSubtle,
         content = {
             KSSuccessRoundedText(text = text, padding = padding)
         }
@@ -109,8 +115,8 @@ fun KSErrorRoundedText(
     padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
 ) {
     KSRoundedPaddedText(
-        background = colors.kds_alert,
-        textColor = colors.kds_white,
+        background = colors.backgroundDangerBold,
+        textColor = colors.textInversePrimary,
         text = text,
         padding = padding
     )
@@ -122,8 +128,8 @@ fun KSHeadsUpRoundedText(
     padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
 ) {
     KSRoundedPaddedText(
-        background = colors.kds_support_700,
-        textColor = colors.kds_white,
+        background = colors.backgroundActionPressed,
+        textColor = colors.textInversePrimary,
         text = text,
         padding = padding
     )
@@ -135,8 +141,8 @@ fun KSSuccessRoundedText(
     padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
 ) {
     KSRoundedPaddedText(
-        background = colors.kds_create_300,
-        textColor = colors.kds_support_700,
+        background = colors.backgroundAccentGreenSubtle,
+        textColor = colors.textPrimary,
         text = text,
         padding = padding
     )

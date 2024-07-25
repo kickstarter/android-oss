@@ -2,7 +2,6 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
@@ -10,7 +9,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
@@ -67,7 +65,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                 val ppoUIState by viewModel.ppoUIState.collectAsStateWithLifecycle()
 
-                val darkModeEnabled = this.isDarkModeEnabled(env = env)
                 val lazyListState = rememberLazyListState()
                 val snackbarHostState = remember { SnackbarHostState() }
                 val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
@@ -79,17 +76,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val showEmptyState = ppoCardPagingSource.loadState.refresh is LoadState.NotLoading && ppoCardPagingSource.itemCount == 0
 
                 KickstarterApp(
-                    useDarkTheme =
-                    if (darkModeEnabled) {
-                        when (theme) {
-                            AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
-                            AppThemes.DARK.ordinal -> true
-                            AppThemes.LIGHT.ordinal -> false
-                            else -> false
-                        }
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        isSystemInDarkTheme()
-                    } else false
+                    useDarkTheme = isDarkModeEnabled(env = env)
                 ) {
                     PledgedProjectsOverviewScreen(
                         modifier = Modifier,
@@ -119,9 +106,9 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         }
                 }
 
-                viewModel.provideSnackbarMessage {
+                viewModel.provideSnackbarMessage { stringId, type ->
                     lifecycleScope.launch {
-                        snackbarHostState.showSnackbar(getString(it))
+                        snackbarHostState.showSnackbar(message = getString(stringId), actionLabel = type)
                     }
                 }
 

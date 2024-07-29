@@ -4,23 +4,27 @@ import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import com.kickstarter.R
 import com.kickstarter.databinding.SurveyResponseLayoutBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.viewmodels.SurveyResponseViewModel
+import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
 import java.util.Arrays
 
-@RequiresActivityViewModel(SurveyResponseViewModel.ViewModel::class)
-class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>() {
+class SurveyResponseActivity : ComponentActivity() {
 
     private lateinit var binding: SurveyResponseLayoutBinding
+    private lateinit var factory: SurveyResponseViewModel.Factory
+    private val viewModel: SurveyResponseViewModel.ViewModel by viewModels { factory }
+    private val disposables = CompositeDisposable()
 
     private val confirmationDialog: AlertDialog by lazy {
         AlertDialog.Builder(this)
@@ -53,14 +57,14 @@ class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>()
         )
 
         viewModel.outputs.goBack()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { back() }
+            .compose(Transformers.observeForUIV2())
+            .subscribe { onBackPressedDispatcher.onBackPressed() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showConfirmationDialog()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { confirmationDialog.show() }
+            .addToDisposable(disposables)
     }
 
     private fun handleProjectUriRequest(request: Request, webView: WebView): Boolean {
@@ -77,8 +81,13 @@ class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>()
         super.onResume()
         viewModel.outputs.webViewUrl()
             .take(1)
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.surveyResponseWebView.loadUrl(it) }
+            .addToDisposable(disposables)
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 }

@@ -8,8 +8,11 @@ import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
@@ -915,9 +918,10 @@ fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
-    val ppoCards = ppoResponse.pledges()?.edges()?.map {
+    val ppoCards : ArrayList<PPOCard> = arrayListOf(PPOCardFactory.confirmAddressCard())
+    ppoResponse.pledges()?.edges()?.map {
         val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
-        PPOCard.builder()
+        ppoCards.add(PPOCard.builder()
             .backingId(ppoBackingData?.id())
             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
             .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
@@ -927,8 +931,12 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             .projectSlug(ppoBackingData?.project()?.slug())
             .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
             .creatorName(ppoBackingData?.project()?.creator()?.name())
+            .viewType(getTierType(it.node()?.tierType()))
             .build()
+        )
     }
+
+
 
     val pageInfoEnvelope = ppoResponse.pledges()?.pageInfo().let {
         PageInfoEnvelope.builder()
@@ -945,3 +953,12 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
         .pageInfoEnvelope(pageInfoEnvelope)
         .build()
 }
+
+fun getTierType(tierType : String?) =
+    when(tierType) {
+        PledgeTierType.FAILED_PAYMENT.tierType ->  PPOCardViewType.FIX_PAYMENT
+        PledgeTierType.SURVEY_OPEN.tierType -> PPOCardViewType.OPEN_SURVEY
+        PledgeTierType.ADDRESS_LOCK.tierType -> PPOCardViewType.CONFIRM_ADDRESS
+        PledgeTierType.PAYMENT_AUTHENTICATION.tierType -> PPOCardViewType.AUTHENTICATE_CARD
+        else -> PPOCardViewType.UNKNOWN
+    }

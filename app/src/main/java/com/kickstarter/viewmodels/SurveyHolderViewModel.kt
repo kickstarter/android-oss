@@ -1,15 +1,11 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
-import com.kickstarter.ui.viewholders.SurveyViewHolder
-import rx.Observable
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 interface SurveyHolderViewModel {
     interface Inputs {
@@ -34,12 +30,9 @@ interface SurveyHolderViewModel {
         fun startSurveyResponseActivity(): Observable<SurveyResponse>
     }
 
-    class ViewModel(@NonNull environment: Environment) :
-        ActivityViewModel<SurveyViewHolder>(environment),
-        Inputs,
-        Outputs {
+    class ViewModel : androidx.lifecycle.ViewModel(), Inputs, Outputs {
         private val surveyResponse = PublishSubject.create<SurveyResponse>()
-        private val surveyClicked = PublishSubject.create<Void?>()
+        private val surveyClicked = PublishSubject.create<Unit>()
         private val creatorAvatarImageUrl: Observable<String>
         private val creatorNameTextViewText: Observable<String>
         private val projectForSurveyDescription: Observable<Project>
@@ -52,20 +45,18 @@ interface SurveyHolderViewModel {
             creatorAvatarImageUrl = surveyResponse
                 .map { it.project() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.creator().avatar().small() }
 
             creatorNameTextViewText = surveyResponse
                 .map { it.project() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
                 .map { it.creator().name() }
 
             projectForSurveyDescription = surveyResponse
                 .map { it.project() }
 
             startSurveyResponseActivity = surveyResponse
-                .compose(Transformers.takeWhen(surveyClicked))
+                .compose(Transformers.takeWhenV2(surveyClicked))
         }
 
         override fun configureWith(surveyResponse: SurveyResponse) {
@@ -73,15 +64,17 @@ interface SurveyHolderViewModel {
         }
 
         override fun surveyClicked() {
-            surveyClicked.onNext(null)
+            surveyClicked.onNext(Unit)
         }
 
         override fun creatorAvatarImageUrl(): Observable<String> = creatorAvatarImageUrl
 
         override fun creatorNameTextViewText(): Observable<String> = creatorNameTextViewText
 
-        override fun projectForSurveyDescription(): Observable<Project> = projectForSurveyDescription
+        override fun projectForSurveyDescription(): Observable<Project> =
+            projectForSurveyDescription
 
-        override fun startSurveyResponseActivity(): Observable<SurveyResponse> = startSurveyResponseActivity
+        override fun startSurveyResponseActivity(): Observable<SurveyResponse> =
+            startSurveyResponseActivity
     }
 }

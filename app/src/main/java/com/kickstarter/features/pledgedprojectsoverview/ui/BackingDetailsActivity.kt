@@ -9,9 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.kickstarter.databinding.ActivityBackingDetailsBinding
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.BackingDetailsViewModel
 import kotlinx.coroutines.launch
+
+const val REFRESH = "refresh"
 
 class BackingDetailsActivity : AppCompatActivity() {
 
@@ -39,7 +42,7 @@ class BackingDetailsActivity : AppCompatActivity() {
         }
 
         this.onBackPressedDispatcher.addCallback {
-            finishWithAnimation()
+            finishWithAnimation(withResult = REFRESH, intentKey = IntentKey.REFRESH_PPO_LIST)
         }
     }
 }

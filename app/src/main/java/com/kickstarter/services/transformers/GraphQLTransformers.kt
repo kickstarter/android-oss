@@ -902,7 +902,7 @@ fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAdd
     val graphInput =
         CreateOrUpdateBackingAddressInput.builder()
             .addressId(eventInput.addressID)
-            .backingId(eventInput.backingId)
+            .backingId(eventInput.backingID)
             .build()
 
     return CreateOrUpdateBackingAddressMutation.builder().input(graphInput).build()
@@ -918,10 +918,9 @@ fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
-    val ppoCards : ArrayList<PPOCard> = arrayListOf(PPOCardFactory.confirmAddressCard())
-    ppoResponse.pledges()?.edges()?.map {
+    val ppoCards =  ppoResponse.pledges()?.edges()?.map {
         val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
-        ppoCards.add(PPOCard.builder()
+        PPOCard.builder()
             .backingId(ppoBackingData?.id())
             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
             .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
@@ -932,8 +931,8 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
             .creatorName(ppoBackingData?.project()?.creator()?.name())
             .viewType(getTierType(it.node()?.tierType()))
+            .addressID(ppoBackingData?.deliveryAddress()?.id())
             .build()
-        )
     }
 
 

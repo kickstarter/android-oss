@@ -85,7 +85,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts,
-                        onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
+                        onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onProjectPledgeSummaryClick = { url -> openBackingDetailsWebView(url) },
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         isLoading = isLoading,

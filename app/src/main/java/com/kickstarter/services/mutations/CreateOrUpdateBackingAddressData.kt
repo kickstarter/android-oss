@@ -5,7 +5,7 @@ package com.kickstarter.services.mutations
  * [CreateOrUpdateBackingAddressInput]
  */
 data class CreateOrUpdateBackingAddressData(
-    val backingId: String,
+    val backingID: String,
     val addressID: String,
     val clientMutationId: String? = null
 )

@@ -11,6 +11,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
+import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,13 +83,97 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
-    fun `emits snackbar when confirms address`() =
+    fun `emits error snackbar when confirms address errored`() =
         runTest {
             var snackbarAction = 0
-            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
-            viewModel.showSnackbarAndRefreshCardsList()
+            viewModel = PledgedProjectsOverviewViewModel.Factory(
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
+                            return Observable.error(Throwable("error"))
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
 
-            // Should equal address confirmed string id
+            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.confirmAddress("addressID", "backingID")
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            assertEquals(
+                snackbarAction,
+                R.string.Something_went_wrong_please_try_again
+            )
+
+            //although this is testing the error flow of confirm address, we show a snackbar and do not emit an error state,
+            //so the last emission should just confirm that the loading state has returned to false
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false)
+                )
+            )
+        }
+
+    @Test
+    fun `emits error snackbar when confirms address response is false`() =
+        runTest {
+            var snackbarAction = 0
+            viewModel = PledgedProjectsOverviewViewModel.Factory(
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
+                            return Observable.just(false)
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.confirmAddress("addressID", "backingID")
+
+            assertEquals(
+                snackbarAction,
+                R.string.Something_went_wrong_please_try_again
+            )
+
+            //although this is testing the error flow of confirm address, we show a snackbar and do not emit an error state,
+            //so the last emission should just confirm that the loading state has returned to false
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false)
+                )
+            )
+        }
+
+    @Test
+    fun `emits success snackbar when confirms address response is true`() =
+        runTest {
+            var snackbarAction = 0
+            viewModel = PledgedProjectsOverviewViewModel.Factory(
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
+                            return Observable.just(true)
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.confirmAddress("addressID", "backingID")
+
             assertEquals(
                 snackbarAction,
                 R.string.address_confirmed_snackbar_text_fpo

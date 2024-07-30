@@ -108,8 +108,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 R.string.Something_went_wrong_please_try_again
             )
 
-            //although this is testing the error flow of confirm address, we show a snackbar and do not emit an error state,
-            //so the last emission should just confirm that the loading state has returned to false
+            // although this is testing the error flow of confirm address, we show a snackbar and do not emit an error state,
+            // so the last emission should just confirm that the loading state has returned to false
             assertEquals(
                 uiState,
                 listOf(
@@ -146,8 +146,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 R.string.Something_went_wrong_please_try_again
             )
 
-            //although this is testing the error flow of confirm address, we show a snackbar and do not emit an error state,
-            //so the last emission should just confirm that the loading state has returned to false
+            // although this is testing the error flow of confirm address, we show a snackbar and do not emit an error state,
+            // so the last emission should just confirm that the loading state has returned to false
             assertEquals(
                 uiState,
                 listOf(

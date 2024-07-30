@@ -146,7 +146,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun confirmAddress(addressID : String, backingID: String) {
+    fun confirmAddress(addressID: String, backingID: String) {
         val input = CreateOrUpdateBackingAddressData(backingID = backingID, addressID = addressID)
         viewModelScope
             .launch {

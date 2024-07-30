@@ -35,7 +35,7 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     ppoCards = ppoCardPagingList,
                     errorSnackBarHostState = SnackbarHostState(),
                     onSendMessageClick = {},
-                    onAddressConfirmed = {backingID, addressID -> },
+                    onAddressConfirmed = { backingID, addressID -> },
                     onProjectPledgeSummaryClick = {},
                     onSeeAllBackedProjectsClick = {},
                     onFixPaymentClick = {}

@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.MotionDurationScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,7 +74,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 ppoCards = ppoCardPagingList,
                 totalAlerts = 10,
                 onBackPressed = {},
-                onAddressConfirmed = {backingID, addressID -> },
+                onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
@@ -104,7 +103,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 ppoCards = ppoCardPagingList,
                 totalAlerts = 10,
                 onBackPressed = {},
-                onAddressConfirmed = {backingID, addressID -> },
+                onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
@@ -131,7 +130,7 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 ppoCards = ppoCardPagingList,
                 totalAlerts = 0,
                 onBackPressed = {},
-                onAddressConfirmed = {backingID, addressID -> },
+                onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState(),

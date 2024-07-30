@@ -289,11 +289,6 @@ fun PledgedProjectsOverviewScreen(
                 rightButtonText = stringResource(id = R.string.Confirm),
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
-
-                    // Call confirm address API
-                    // TODO: MBL-1556 Add network call to confirm address
-
-                    // Show snackbar and refresh list
                     onAddressConfirmed(addressID, backingID)
                 }
             )

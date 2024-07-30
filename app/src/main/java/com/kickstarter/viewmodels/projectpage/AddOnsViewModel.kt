@@ -255,6 +255,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     fun getProject() = this.project
+    fun getSelectedReward() = this.currentUserReward
     fun sendEvent() = this.pledgeData?.let {
         environment.analytics()?.trackAddOnsScreenViewed(it)
     }

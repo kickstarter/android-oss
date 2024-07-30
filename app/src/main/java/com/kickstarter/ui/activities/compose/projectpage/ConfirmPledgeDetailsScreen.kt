@@ -5,18 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,35 +20,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
-import com.kickstarter.ui.compose.designsystem.KSStepper
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import com.kickstarter.ui.compose.designsystem.shapes
-import com.kickstarter.ui.views.compose.CountryInputWithDropdown
+import com.kickstarter.ui.views.compose.checkout.CountryInputWithDropdown
+import com.kickstarter.ui.views.compose.checkout.ItemizedRewardListContainer
 import java.math.RoundingMode
 
 @Composable
@@ -312,21 +298,6 @@ fun ConfirmPledgeDetailsScreen(
         ).toString()
     } ?: ""
 
-    // Currency symbol, which can be positioned at start or end of amount depending on country
-    val currencySymbolStartAndEnd = environment?.ksCurrency()?.let {
-        val symbolAndStart = ProjectViewUtils.currencySymbolAndPosition(
-            project,
-            it
-        )
-        val symbol = symbolAndStart.first
-        val symbolAtStart = symbolAndStart.second
-        if (symbolAtStart) {
-            Pair(symbol.toString(), null)
-        } else {
-            Pair(null, symbol.toString())
-        }
-    } ?: Pair(null, null)
-
     val deliveryDateString = if (selectedReward?.estimatedDeliveryOn().isNotNull()) {
         DateTimeUtils.estimatedDeliveryOn(
             requireNotNull(
@@ -334,8 +305,7 @@ fun ConfirmPledgeDetailsScreen(
             )
         )
     } else ""
-
-    val maxInputString = RewardViewUtils.getMaxInputString(LocalContext.current, selectedReward, maxPledgeAmount, totalAmount, totalBonusSupport, currencySymbolStartAndEnd, environment)
+    val currencySymbolStartAndEnd = Pair(null, null)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -424,32 +394,6 @@ fun ConfirmPledgeDetailsScreen(
                 }
 
                 item {
-                    BonusSupportContainer(
-                        isForNoRewardPledge = rewardsList.isEmpty(),
-                        initialBonusSupport = initialBonusSupport,
-                        totalBonusSupport = totalBonusSupport,
-                        currencySymbolAtStart = currencySymbolStartAndEnd.first,
-                        currencySymbolAtEnd = currencySymbolStartAndEnd.second,
-                        canAddMore = totalAmount + minPledgeStep <= maxPledgeAmount,
-                        onBonusSupportPlusClicked = onBonusSupportPlusClicked,
-                        onBonusSupportMinusClicked = onBonusSupportMinusClicked,
-                        onBonusSupportInputted = onBonusSupportInputted
-                    )
-
-                    if (totalAmount > maxPledgeAmount) {
-                        Text(
-                            text = maxInputString,
-                            textAlign = TextAlign.Right,
-                            style = typography.footnoteMedium,
-                            color = colors.textAccentRed,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    start = dimensions.paddingMedium,
-                                    end = dimensions.paddingMedium,
-                                )
-                        )
-                    }
                 }
 
                 if (rewardsList.isEmpty()) {
@@ -516,261 +460,6 @@ fun ConfirmPledgeDetailsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 KSCircularProgressIndicator()
-            }
-        }
-    }
-}
-
-@Composable
-fun BonusSupportContainer(
-    isForNoRewardPledge: Boolean,
-    initialBonusSupport: Double,
-    totalBonusSupport: Double,
-    currencySymbolAtStart: String?,
-    currencySymbolAtEnd: String?,
-    canAddMore: Boolean,
-    onBonusSupportPlusClicked: () -> Unit,
-    onBonusSupportMinusClicked: () -> Unit,
-    onBonusSupportInputted: (input: Double) -> Unit
-) {
-    val bonusAmountMaxDigits = integerResource(R.integer.max_length)
-
-    Column(
-        modifier = Modifier.padding(all = dimensions.paddingMedium)
-    ) {
-        Text(
-            text =
-            if (isForNoRewardPledge) stringResource(id = R.string.Your_pledge_amount)
-            else stringResource(id = R.string.Bonus_support),
-            style = typography.subheadlineMedium,
-            color = colors.textPrimary
-        )
-
-        Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-
-        if (!isForNoRewardPledge) {
-            Text(
-                text = stringResource(id = R.string.A_little_extra_to_help),
-                style = typography.body2,
-                color = colors.textSecondary
-            )
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            KSStepper(
-                onPlusClicked = onBonusSupportPlusClicked,
-                isPlusEnabled = canAddMore,
-                onMinusClicked = onBonusSupportMinusClicked,
-                isMinusEnabled = initialBonusSupport != totalBonusSupport,
-                enabledButtonBackgroundColor = colors.kds_white
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            if (!isForNoRewardPledge) {
-                Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
-
-                Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .background(
-                        color = colors.kds_white,
-                        shape = shapes.small
-                    )
-                    .padding(
-                        start = dimensions.paddingXSmall,
-                        top = dimensions.paddingXSmall,
-                        bottom = dimensions.paddingXSmall,
-                        end = dimensions.paddingXSmall
-                    ),
-
-            ) {
-                Text(
-                    text = currencySymbolAtStart ?: "",
-                    color = colors.textAccentGreen
-                )
-                BasicTextField(
-                    modifier = Modifier.width(IntrinsicSize.Min),
-                    value = if (totalBonusSupport % 1.0 == 0.0) totalBonusSupport.toInt().toString() else totalBonusSupport.toString(),
-                    onValueChange = {
-                        if (it.length <= bonusAmountMaxDigits) onBonusSupportInputted(it.parseToDouble())
-                    },
-                    textStyle = typography.title1.copy(color = colors.textAccentGreen),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    cursorBrush = SolidColor(colors.iconSubtle)
-
-                )
-                Text(
-                    text = currencySymbolAtEnd ?: "",
-                    color = colors.textAccentGreen
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ItemizedRewardListContainer(
-    ksString: KSString? = null,
-    rewardsList: List<Pair<String, String>> = listOf(),
-    shippingAmount: Double,
-    shippingAmountString: String = "",
-    initialShippingLocation: String = "",
-    totalAmount: String,
-    totalAmountCurrencyConverted: String = "",
-    initialBonusSupport: String,
-    totalBonusSupport: String,
-    deliveryDateString: String = "",
-    rewardsHaveShippables: Boolean = false
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colors.backgroundSurfacePrimary)
-            .padding(
-                start = dimensions.paddingMedium,
-                end = dimensions.paddingMedium,
-                bottom = dimensions.paddingLarge,
-                top = dimensions.paddingMediumLarge
-            )
-    ) {
-        Text(
-            text = stringResource(id = R.string.Your_pledge),
-            style = typography.headline,
-            color = colors.textPrimary
-        )
-
-        if (deliveryDateString.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
-            Text(
-                text = deliveryDateString,
-                style = typography.caption1,
-                color = colors.textSecondary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-        KSDividerLineGrey()
-
-        rewardsList.forEach {
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            Row {
-                Text(
-                    text = it.first,
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = it.second,
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            KSDividerLineGrey()
-        }
-
-        if (shippingAmount > 0 && initialShippingLocation.isNotEmpty() && rewardsHaveShippables) {
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            Row {
-                Text(
-                    text = ksString?.format(
-                        stringResource(id = R.string.Shipping_to_country),
-                        "country",
-                        initialShippingLocation
-                    ) ?: "Shipping: $initialShippingLocation",
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = shippingAmountString,
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            KSDividerLineGrey()
-        }
-
-        if (totalBonusSupport != initialBonusSupport) {
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            Row {
-                Text(
-                    text = stringResource(
-                        id =
-                        if (rewardsList.isNotEmpty()) R.string.Bonus_support
-                        else R.string.Pledge_without_a_reward
-                    ),
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = totalBonusSupport,
-                    style = typography.subheadlineMedium,
-                    color = colors.textSecondary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            KSDividerLineGrey()
-        }
-
-        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-        Row {
-            Text(
-                text = stringResource(id = R.string.Total_amount),
-                style = typography.calloutMedium,
-                color = colors.textPrimary
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = totalAmount,
-                    style = typography.subheadlineMedium,
-                    color = colors.textPrimary
-                )
-
-                if (totalAmountCurrencyConverted.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
-                    Text(
-                        text = totalAmountCurrencyConverted,
-                        style = typography.footnote,
-                        color = colors.textPrimary
-                    )
-                }
             }
         }
     }

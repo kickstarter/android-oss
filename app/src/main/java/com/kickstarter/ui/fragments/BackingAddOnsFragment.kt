@@ -5,9 +5,11 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +20,7 @@ import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.compose.projectpage.AddOnsScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -56,12 +59,15 @@ class BackingAddOnsFragment : Fragment() {
                     val totalCount = addOnsUIState.totalCount
                     val addOnsIsLoading = addOnsUIState.isLoading
                     val project = viewModelC.getProject()
+                    val selectedRw = viewModelC.getSelectedReward()
 
                     KSTheme {
                         AddOnsScreen(
+                            modifier = Modifier.padding(top = dimensions.paddingDoubleLarge),
                             environment = requireNotNull(env),
                             lazyColumnListState = rememberLazyListState(),
-                            rewardItems = addOns,
+                            selectedReward = selectedRw,
+                            addOns = addOns,
                             project = project,
                             onItemAddedOrRemoved = { quantity, rewardId ->
                                 viewModelC.updateSelection(rewardId, quantity)

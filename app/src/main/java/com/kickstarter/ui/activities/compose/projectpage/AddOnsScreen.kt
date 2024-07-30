@@ -25,6 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.getCurrencySymbols
+import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
@@ -33,6 +36,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.views.compose.checkout.BonusSupportContainer
 import java.math.RoundingMode
 
 @Composable
@@ -47,7 +51,8 @@ private fun AddOnsScreenPreview() {
                 modifier = Modifier.padding(padding),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
-                rewardItems = (0..10).map {
+                selectedReward = RewardFactory.reward(),
+                addOns = (0..10).map {
                     Reward.builder()
                         .title("Item Number $it")
                         .description("This is a description for item $it")
@@ -76,13 +81,15 @@ fun AddOnsScreen(
     modifier: Modifier = Modifier,
     environment: Environment,
     lazyColumnListState: LazyListState,
-    rewardItems: List<Reward>,
+    selectedReward: Reward,
+    addOns: List<Reward>,
     project: Project,
     onItemAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
     isLoading: Boolean = false,
     onContinueClicked: () -> Unit,
     addOnCount: Int = 0
 ) {
+    val currencySymbolStartAndEnd = environment.ksCurrency()?.getCurrencySymbols(project)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -137,6 +144,7 @@ fun AddOnsScreen(
             },
             backgroundColor = colors.backgroundAccentGraySubtle
         ) { padding ->
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,15 +158,29 @@ fun AddOnsScreen(
                 state = lazyColumnListState
             ) {
                 item {
-                    Text(
-                        text = stringResource(id = R.string.Customize_your_reward_with_optional_addons),
-                        style = typography.title3Bold,
-                        color = colors.textPrimary
+                    if (addOns.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.Customize_your_reward_with_optional_addons),
+                            style = typography.title3Bold,
+                            color = colors.textPrimary
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                    BonusSupportContainer(
+                        noAddOnsRw = addOns.isEmpty(),
+                        initialAmount = RewardUtils.minPledgeAmount(selectedReward, project),
+                        maxAmount = RewardUtils.maxPledgeAmount(selectedReward, project),
+                        currencySymbolAtStart = currencySymbolStartAndEnd?.first,
+                        currencySymbolAtEnd = currencySymbolStartAndEnd?.second,
+                        onBonusSupportPlusClicked = {},
+                        onBonusSupportMinusClicked = {},
+                        onBonusSupportInputted = {}
                     )
                 }
 
                 items(
-                    items = rewardItems
+                    items = addOns
                 ) { reward ->
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -212,16 +234,16 @@ fun AddOnsScreen(
                 }
             }
         }
+    }
 
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(colors.backgroundAccentGraySubtle.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                KSCircularProgressIndicator()
-            }
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colors.backgroundAccentGraySubtle.copy(alpha = 0.5f)),
+            contentAlignment = Alignment.Center
+        ) {
+            KSCircularProgressIndicator()
         }
     }
 }

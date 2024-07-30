@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -13,6 +14,10 @@ import kotlin.math.floor
 import kotlin.math.max
 
 object RewardUtils {
+
+    fun minPledgeAmount(reward: Reward, project: Project): Double = if (isNoReward(reward)) Country.findByCurrencyCode(project.currency())?.minPledge?.toDouble() ?: 0.0 else 0.0
+
+    fun maxPledgeAmount(reward: Reward, project: Project): Double = Country.findByCurrencyCode(project.currency())?.maxPledge?.toDouble() ?: 0.0
 
     /**
      * Returns `true` if the reward has backers, `false` otherwise.

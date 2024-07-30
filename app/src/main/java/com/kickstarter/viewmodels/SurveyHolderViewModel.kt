@@ -30,7 +30,7 @@ interface SurveyHolderViewModel {
         fun startSurveyResponseActivity(): Observable<SurveyResponse>
     }
 
-    class ViewModel : androidx.lifecycle.ViewModel(), Inputs, Outputs {
+    class ViewModel : Inputs, Outputs {
         private val surveyResponse = PublishSubject.create<SurveyResponse>()
         private val surveyClicked = PublishSubject.create<Unit>()
         private val creatorAvatarImageUrl: Observable<String>

@@ -11,6 +11,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.SurveyResponseLayoutBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.services.RequestHandler
@@ -37,6 +38,9 @@ class SurveyResponseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getEnvironment()?.let { env ->
+            factory = SurveyResponseViewModel.Factory(environment = env, intent = intent)
+        }
         binding = SurveyResponseLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

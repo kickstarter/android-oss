@@ -135,12 +135,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 else -> {
-
                                 }
                             }
                         },
                         onSecondaryActionButtonClicked = { PPOCard ->
-
                         },
                     )
                 }

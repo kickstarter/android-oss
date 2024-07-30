@@ -10,6 +10,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 
@@ -38,7 +39,8 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     onAddressConfirmed = {},
                     onProjectPledgeSummaryClick = {},
                     onSeeAllBackedProjectsClick = {},
-                    onFixPaymentClick = {}
+                    onPrimaryActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {}
                 )
             }
         }

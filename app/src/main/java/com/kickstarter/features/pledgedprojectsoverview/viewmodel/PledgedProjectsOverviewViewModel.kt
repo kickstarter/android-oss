@@ -84,7 +84,9 @@ data class PledgedProjectsOverviewUIState(
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
 )
-class PledgedProjectsOverviewViewModel(environment: Environment, private val ioDispatcher: CoroutineDispatcher
+class PledgedProjectsOverviewViewModel(
+    environment: Environment,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
@@ -211,7 +213,9 @@ class PledgedProjectsOverviewViewModel(environment: Environment, private val ioD
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name)
     }
 
-    class Factory(private val environment: Environment, private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    class Factory(
+        private val environment: Environment,
+        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

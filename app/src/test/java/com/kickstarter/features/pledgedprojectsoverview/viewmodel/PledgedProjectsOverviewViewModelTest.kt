@@ -31,6 +31,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
             val project = ProjectFactory.successfulProject()
             var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
                         override fun getProject(slug: String): Observable<Project> {
@@ -55,6 +56,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         runTest {
             var snackbarAction = 0
             var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
                         override fun getProject(slug: String): Observable<Project> {
@@ -78,6 +80,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         runTest {
             var snackbarAction = 0
             var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
                         override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
@@ -114,6 +117,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         runTest {
             var snackbarAction = 0
             var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
                         override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
@@ -148,9 +152,9 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `emits success snackbar when confirms address response is true`() =
         runTest {
-            //might not be emitting oncomplete because it's waiting for pledged projects query to finish
             var snackbarAction = 0
             var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
                         override fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean> {
@@ -173,6 +177,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             assertEquals(
                 uiState,
                 listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                    PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
                     PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
                     PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
                     PledgedProjectsOverviewUIState(isLoading = false, isErrored = false)
@@ -327,7 +333,10 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 mutableTotalAlerts
             )
 
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(environment = environment())
+            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment()
+            )
                 .create(PledgedProjectsOverviewViewModel::class.java)
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {

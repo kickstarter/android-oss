@@ -18,6 +18,7 @@ import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,7 +84,8 @@ data class PledgedProjectsOverviewUIState(
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
 )
-class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
+class PledgedProjectsOverviewViewModel(environment: Environment, private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
@@ -120,7 +122,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     }
 
     fun getPledgedProjects() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             try {
                 Pager(
                     PagingConfig(
@@ -149,7 +151,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     fun confirmAddress(addressID: String, backingID: String) {
         val input = CreateOrUpdateBackingAddressData(backingID = backingID, addressID = addressID)
         viewModelScope
-            .launch {
+            .launch(ioDispatcher) {
                 apolloClient
                     .createOrUpdateBackingAddress(input)
                     .asFlow()
@@ -171,7 +173,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     }
 
     fun onMessageCreatorClicked(projectName: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             apolloClient.getProject(
                 slug = projectName,
             )
@@ -209,10 +211,11 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name)
     }
 
-    class Factory(private val environment: Environment) :
+    class Factory(private val environment: Environment, private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PledgedProjectsOverviewViewModel(environment) as T
+            return PledgedProjectsOverviewViewModel(environment, ioDispatcher) as T
         }
     }
 }

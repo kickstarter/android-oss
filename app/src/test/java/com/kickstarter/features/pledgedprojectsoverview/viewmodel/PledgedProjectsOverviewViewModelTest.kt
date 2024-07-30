@@ -30,7 +30,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val projectState = mutableListOf<Project>()
 
             val project = ProjectFactory.successfulProject()
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
                 ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -55,7 +55,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `emits error when message creator called`() =
         runTest {
             var snackbarAction = 0
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
                 ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -79,7 +79,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `emits error snackbar when confirms address errored`() =
         runTest {
             var snackbarAction = 0
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
                 ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -116,7 +116,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `emits error snackbar when confirms address response is false`() =
         runTest {
             var snackbarAction = 0
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
                 ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -153,7 +153,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `emits success snackbar when confirms address response is true`() =
         runTest {
             var snackbarAction = 0
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
                 ioDispatcher = UnconfinedTestDispatcher(testScheduler),
                 environment = environment().toBuilder()
                     .apolloClientV2(object : MockApolloClientV2() {
@@ -185,6 +185,92 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 )
             )
         }
+
+    @Test
+    fun `pager result is errored when network response is errored`() {
+        runTest {
+            val mutableTotalAlerts = MutableStateFlow<Int>(0)
+
+            val mockApolloClientV2 = object : MockApolloClientV2() {
+
+                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
+                    return Observable.error(Throwable())
+                }
+            }
+            val pagingSource = PledgedProjectsPagingSource(
+                mockApolloClientV2,
+                mutableTotalAlerts
+            )
+
+            val pager = TestPager(
+                PagingConfig(
+                    pageSize = 3,
+                    prefetchDistance = 3,
+                    enablePlaceholders = true,
+                ),
+                pagingSource
+            )
+
+            val result = pager.refresh()
+            assertTrue(result is PagingSource.LoadResult.Error)
+
+            val page = pager.getLastLoadedPage()
+            assertNull(page)
+        }
+    }
+
+    @Test
+    fun `pager result returns list network call is successful`() {
+        runTest {
+            val mutableTotalAlerts = MutableStateFlow<Int>(0)
+            val totalAlertsList = mutableListOf<Int>()
+
+            val mockApolloClientV2 = object : MockApolloClientV2() {
+
+                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
+                    return Observable.just(
+                        PledgedProjectsOverviewEnvelope.builder().totalCount(10)
+                            .pledges(listOf(PPOCardFactory.confirmAddressCard())).build()
+                    )
+                }
+            }
+            val pagingSource = PledgedProjectsPagingSource(
+                mockApolloClientV2,
+                mutableTotalAlerts
+            )
+
+            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment()
+            )
+                .create(PledgedProjectsOverviewViewModel::class.java)
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                mutableTotalAlerts.toList(totalAlertsList)
+            }
+
+            val pager = TestPager(
+                PagingConfig(
+                    pageSize = 3,
+                    prefetchDistance = 3,
+                    enablePlaceholders = true,
+                ),
+                pagingSource
+            )
+            viewModel.getPledgedProjects()
+
+            val result = pager.refresh()
+            assertTrue(result is PagingSource.LoadResult.Page)
+
+            val page = pager.getLastLoadedPage()
+            assert(page?.data?.size == 1)
+
+            assertEquals(
+                totalAlertsList,
+                listOf(0, 10)
+            )
+        }
+    }
 
 // TODO will add tests back after spike MBL-1638 completed
 //    @Test
@@ -283,86 +369,4 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 //                )
 //            )
 //        }
-    @Test
-    fun `pager result is errored when network response is errored`() {
-        runTest {
-            val mutableTotalAlerts = MutableStateFlow<Int>(0)
-
-            val mockApolloClientV2 = object : MockApolloClientV2() {
-
-                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
-                    return Observable.error(Throwable())
-                }
-            }
-            val pagingSource = PledgedProjectsPagingSource(
-                mockApolloClientV2,
-                mutableTotalAlerts
-            )
-
-            val pager = TestPager(
-                PagingConfig(
-                    pageSize = 3,
-                    prefetchDistance = 3,
-                    enablePlaceholders = true,
-                ),
-                pagingSource
-            )
-
-            val result = pager.refresh()
-            assertTrue(result is PagingSource.LoadResult.Error)
-
-            val page = pager.getLastLoadedPage()
-            assertNull(page)
-        }
-    }
-
-    @Test
-    fun `pager result returns list network call is successful`() {
-        runTest {
-            val mutableTotalAlerts = MutableStateFlow<Int>(0)
-            val totalAlertsList = mutableListOf<Int>()
-
-            val mockApolloClientV2 = object : MockApolloClientV2() {
-
-                override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
-                    return Observable.just(PledgedProjectsOverviewEnvelope.builder().totalCount(10).pledges(listOf(PPOCardFactory.confirmAddressCard())).build())
-                }
-            }
-            val pagingSource = PledgedProjectsPagingSource(
-                mockApolloClientV2,
-                mutableTotalAlerts
-            )
-
-            var viewModel = PledgedProjectsOverviewViewModel.Factory(
-                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
-                environment = environment()
-            )
-                .create(PledgedProjectsOverviewViewModel::class.java)
-
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                mutableTotalAlerts.toList(totalAlertsList)
-            }
-
-            val pager = TestPager(
-                PagingConfig(
-                    pageSize = 3,
-                    prefetchDistance = 3,
-                    enablePlaceholders = true,
-                ),
-                pagingSource
-            )
-            viewModel.getPledgedProjects()
-
-            val result = pager.refresh()
-            assertTrue(result is PagingSource.LoadResult.Page)
-
-            val page = pager.getLastLoadedPage()
-            assert(page?.data?.size == 1)
-
-            assertEquals(
-                totalAlertsList,
-                listOf(0, 10)
-            )
-        }
-    }
 }

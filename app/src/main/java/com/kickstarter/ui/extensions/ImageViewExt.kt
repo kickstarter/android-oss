@@ -1,6 +1,7 @@
 package com.kickstarter.ui.extensions
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -11,6 +12,7 @@ import com.bumptech.glide.integration.webp.decoder.WebpDrawable
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
@@ -133,6 +135,8 @@ fun ImageView.loadWebp(url: String?, context: Context) {
             val roundedCorners = RoundedCorners(1)
             Glide.with(this)
                 .load(it)
+                .downsample(DownsampleStrategy.AT_LEAST)
+                .override(Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
                 .optionalTransform(roundedCorners)
                 .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(roundedCorners))
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
@@ -144,6 +148,7 @@ fun ImageView.loadWebp(url: String?, context: Context) {
         }
     }
 }
+
 fun ImageView.loadGifImage(url: String?, context: Context) {
     url?.let {
         if (context.applicationContext.isKSApplication()) {

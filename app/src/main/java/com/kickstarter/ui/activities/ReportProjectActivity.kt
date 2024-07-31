@@ -19,6 +19,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.FormularyScreen
 import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
@@ -102,7 +103,7 @@ class ReportProjectActivity : ComponentActivity() {
                                 outputs = viewModel.outputs,
                                 inputs = viewModel.inputs,
                                 callback = {
-                                    finishWithAnimation(finishResult)
+                                    finishWithAnimation(finishResult, IntentKey.FLAGGINGKIND)
                                 }
                             )
                         }

@@ -220,7 +220,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.14'
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
-    implementation 'com.google.android.play:core-ktx:1.8.1'
+    implementation("com.google.android.play:review-ktx:2.0.1")
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'

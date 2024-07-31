@@ -6,17 +6,20 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySurveyViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.SurveyResponseActivity
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.SurveyHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 
 class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
     KSViewHolder(binding.root) {
     private val ksString = requireNotNull(environment().ksString())
-    private val viewModel: SurveyHolderViewModel.ViewModel = SurveyHolderViewModel.ViewModel(environment())
+    private val viewModel: SurveyHolderViewModel.ViewModel = SurveyHolderViewModel.ViewModel()
+    private val disposables = CompositeDisposable()
 
     private fun setSurveyDescription(projectForSurveyDescription: Project) {
         binding.surveyText.text = Html.fromHtml(
@@ -50,20 +53,25 @@ class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
 
     init {
         viewModel.outputs.creatorAvatarImageUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setCreatorAvatarImage(it) }
+            .addToDisposable(disposables)
         viewModel.outputs.creatorNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.surveyTitle.text = it }
+            .addToDisposable(disposables)
         viewModel.outputs.projectForSurveyDescription()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setSurveyDescription(it) }
+            .addToDisposable(disposables)
         viewModel.outputs.startSurveyResponseActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startSurveyResponseActivity(it) }
+            .addToDisposable(disposables)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
     }
 }

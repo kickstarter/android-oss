@@ -58,6 +58,8 @@ class BackingAddOnsFragment : Fragment() {
                     val addOns = addOnsUIState.addOns
                     val totalCount = addOnsUIState.totalCount
                     val addOnsIsLoading = addOnsUIState.isLoading
+                    val totalPledgeAmount = addOnsUIState.totalPledgeAmount
+
                     val project = viewModelC.getProject()
                     val selectedRw = viewModelC.getSelectedReward()
 
@@ -78,7 +80,11 @@ class BackingAddOnsFragment : Fragment() {
                                     showPledgeFragment(pledgeData = pDataAndReason.first, pledgeReason = pDataAndReason.second)
                                 }
                             },
-                            addOnCount = totalCount
+                            bonusAmountChanged = { bonusAmount ->
+                                viewModelC.bonusAmountUpdated(bonusAmount)
+                            },
+                            addOnCount = totalCount,
+                            totalPledgeAmount = totalPledgeAmount
                         )
                     }
                 }

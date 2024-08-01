@@ -2,6 +2,25 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+
+fun PledgeData.pledgeAmountTotal(): Double {
+    var crowdFund = this.reward().pledgeAmount()
+    var latePledge = this.reward().latePledgeAmount()
+
+    if (this.pledgeFlowContext() != PledgeFlowContext.LATE_PLEDGES) {
+        this.addOns()?.map {
+            crowdFund += it.latePledgeAmount() * (it.quantity() ?: 0)
+        }
+        return crowdFund
+    } else {
+        this.addOns()?.map {
+            latePledge += it.pledgeAmount() * (it.quantity() ?: 0)
+        }
+
+        return latePledge
+    }
+}
 
 /**
  * Total count of selected add-ons (including multiple quantities of a single add-on)

@@ -48,8 +48,8 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             when (currentPage) {
                 // From Checkout Screen
                 3 -> {
-                    // To Confirm Details
-                    mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
+                    // To AddOns
+                    mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
                 }
 
                 // From Confirm Details Screen
@@ -85,7 +85,7 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onConfirmDetailsContinueClicked(logInCallback: () -> Unit) {
+    fun onContinueClicked(logInCallback: () -> Unit) {
         viewModelScope.launch {
             currentUser.isLoggedIn
                 .asFlow()
@@ -95,13 +95,6 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
                     // - Trigger LoginFlow callback
                     else logInCallback()
                 }
-        }
-    }
-
-    fun onAddOnsContinueClicked() {
-        viewModelScope.launch {
-            // Go to confirm page
-            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
         }
     }
 

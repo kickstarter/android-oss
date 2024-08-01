@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -69,8 +70,10 @@ private fun AddOnsScreenPreview() {
                     .currentCurrency("USD")
                     .build(),
                 onItemAddedOrRemoved = { q, l -> },
+                bonusAmountChanged = {},
                 onContinueClicked = {},
-                addOnCount = 6
+                addOnCount = 2,
+                totalPledgeAmount = 30.0
             )
         }
     }
@@ -85,9 +88,11 @@ fun AddOnsScreen(
     addOns: List<Reward>,
     project: Project,
     onItemAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
+    bonusAmountChanged: (amount: Double) -> Unit,
     isLoading: Boolean = false,
     onContinueClicked: () -> Unit,
-    addOnCount: Int = 0
+    addOnCount: Int = 0,
+    totalPledgeAmount: Double
 ) {
     val currencySymbolStartAndEnd = environment.ksCurrency()?.getCurrencySymbols(project)
 
@@ -114,30 +119,50 @@ fun AddOnsScreen(
                                 .fillMaxWidth()
                                 .padding(dimensions.paddingMediumLarge)
                         ) {
-                            KSPrimaryGreenButton(
-                                onClickAction = onContinueClicked,
-                                text =
-                                if (addOnCount == 0)
-                                    stringResource(id = R.string.Skip_add_ons)
-                                else {
-                                    when {
-                                        addOnCount == 1 -> environment.ksString()?.format(
-                                            stringResource(R.string.Continue_with_quantity_count_add_ons_one),
-                                            "quantity_count",
-                                            addOnCount.toString()
-                                        ) ?: ""
+                            Column {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = stringResource(id = R.string.Total_amount),
+                                        style = typography.subheadlineMedium,
+                                        color = colors.textPrimary
+                                    )
 
-                                        addOnCount > 1 -> environment.ksString()?.format(
-                                            stringResource(R.string.Continue_with_quantity_count_add_ons_many),
-                                            "quantity_count",
-                                            addOnCount.toString()
-                                        ) ?: ""
+                                    Spacer(modifier = Modifier.weight(1f))
 
-                                        else -> stringResource(id = R.string.Skip_add_ons)
-                                    }
-                                },
-                                isEnabled = true
-                            )
+                                    Text(
+                                        text = "${currencySymbolStartAndEnd?.first}${totalPledgeAmount}${currencySymbolStartAndEnd?.second}",
+                                        style = typography.subheadlineMedium,
+                                        color = colors.textPrimary
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                                KSPrimaryGreenButton(
+                                    onClickAction = onContinueClicked,
+                                    text =
+                                    if (addOnCount == 0)
+                                        stringResource(id = R.string.Skip_add_ons)
+                                    else {
+                                        when {
+                                            addOnCount == 1 -> environment.ksString()?.format(
+                                                stringResource(R.string.Continue_with_quantity_count_add_ons_one),
+                                                "quantity_count",
+                                                addOnCount.toString()
+                                            ) ?: ""
+
+                                            addOnCount > 1 -> environment.ksString()?.format(
+                                                stringResource(R.string.Continue_with_quantity_count_add_ons_many),
+                                                "quantity_count",
+                                                addOnCount.toString()
+                                            ) ?: ""
+
+                                            else -> stringResource(id = R.string.Skip_add_ons)
+                                        }
+                                    },
+                                    isEnabled = true
+                                )
+                            }
                         }
                     }
                 }
@@ -173,9 +198,9 @@ fun AddOnsScreen(
                         maxAmount = RewardUtils.maxPledgeAmount(selectedReward, project),
                         currencySymbolAtStart = currencySymbolStartAndEnd?.first,
                         currencySymbolAtEnd = currencySymbolStartAndEnd?.second,
-                        onBonusSupportPlusClicked = {},
-                        onBonusSupportMinusClicked = {},
-                        onBonusSupportInputted = {}
+                        onBonusSupportPlusClicked = bonusAmountChanged,
+                        onBonusSupportMinusClicked = bonusAmountChanged,
+                        onBonusSupportInputted = bonusAmountChanged
                     )
                 }
 

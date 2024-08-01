@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -35,7 +36,9 @@ import kotlinx.coroutines.rx2.asFlow
 data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
     val totalCount: Int = 0,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val totalPledgeAmount: Double = 0.0,
+    val totalBonusAmount: Double = 0.0
 )
 
 class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
@@ -47,6 +50,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private var project: Project = Project.builder().build()
     private var shippingRule: ShippingRule = ShippingRule.builder().build()
     private var pledgeflowcontext: PledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
+    private var bonusAmount: Double = 0.0
     private var pReason: PledgeReason = PledgeReason.PLEDGE
 
     private var addOns: List<Reward> = listOf()
@@ -99,8 +103,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
 
             // New pledge, selected reward
-            pledgeData?.reward()?.let {
-                currentUserReward = it
+            pledgeData?.reward()?.let { rw ->
+                currentUserReward = rw
+                bonusAmount = RewardUtils.minPledgeAmount(rw, project)
             }
 
             projectData?.project()?.let {
@@ -109,7 +114,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
             pledgeData?.shippingRule()?.let {
                 shippingRule = it
-                provideSelectedShippingRule(it)
             }
 
             pledgeData?.pledgeFlowContext()?.let { pFContext ->
@@ -131,6 +135,8 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             backing?.addOns()?.let {
                 backedAddOns = it
             }
+
+            getAddOns(shippingRule)
         }
     }
 
@@ -140,9 +146,10 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      */
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
+        val isLatePledge = projectData.project().postCampaignPledgingEnabled() == true && projectData.project().isInPostCampaignPledgingPhase() == true
         this.pledgeData = PledgeData.with(
             projectData = projectData,
-            pledgeFlowContext = PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE),
+            pledgeFlowContext = if (isLatePledge) PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE) else PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
             reward = currentUserReward
         )
         this.projectData?.project()?.let {
@@ -154,14 +161,17 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      * Used in late pledges
      */
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
-        getAddOns(selectedShippingRule = shippingRule)
+        if (this.shippingRule != shippingRule) {
+            this.shippingRule = shippingRule
+            getAddOns(selectedShippingRule = shippingRule)
+        }
     }
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
         scope.launch(dispatcher) {
             apolloClient
                 .getProjectAddOns(
-                    slug = project?.slug() ?: "",
+                    slug = project.slug() ?: "",
                     locationId = selectedShippingRule.location() ?: LocationFactory.empty()
                 )
                 .asFlow()
@@ -202,11 +212,13 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     // UI events
     fun userRewardSelection(reward: Reward) {
-        currentUserReward = reward
-        currentSelection.clear()
+        if (reward != currentUserReward) {
+            currentUserReward = reward
+            currentSelection.clear()
 
-        scope.launch {
-            emitCurrentState()
+            scope.launch {
+                emitCurrentState()
+            }
         }
     }
 
@@ -215,7 +227,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             AddOnsUIState(
                 addOns = addOns,
                 isLoading = isLoading,
-                totalCount = currentSelection.values.sum()
+                totalCount = currentSelection.values.sum(),
+                totalPledgeAmount = calculateTotalPledgeAmount(),
+                totalBonusAmount = bonusAmount
             )
         )
     }
@@ -248,7 +262,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
         return projectData?.let {
             Pair(
-                PledgeData.with(pledgeflowcontext, it, currentUserReward, selectedAddOns.toList(), shippingRule),
+                PledgeData.with(pledgeflowcontext, it, currentUserReward, selectedAddOns.toList(), shippingRule, bonusAmount = bonusAmount),
                 pReason
             )
         }
@@ -258,6 +272,28 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     fun getSelectedReward() = this.currentUserReward
     fun sendEvent() = this.pledgeData?.let {
         environment.analytics()?.trackAddOnsScreenViewed(it)
+    }
+
+    fun bonusAmountUpdated(bonusAmount: Double) {
+        this.bonusAmount = bonusAmount
+        scope.launch {
+            emitCurrentState(isLoading = false)
+        }
+    }
+
+    private fun calculateTotalPledgeAmount(): Double {
+        val rwAmount: Double = if (pledgeflowcontext != PledgeFlowContext.LATE_PLEDGES) {
+            currentUserReward.pledgeAmount()
+        } else currentUserReward.latePledgeAmount()
+
+        var addOnsAmount = 0.0
+        addOns.filter { this.currentSelection[it.id()].isNotNull() }.map {
+            addOnsAmount += if (pledgeflowcontext != PledgeFlowContext.LATE_PLEDGES) {
+                (it.pledgeAmount() * (this.currentSelection[it.id()] ?: 0))
+            } else (it.latePledgeAmount() * (this.currentSelection[it.id()] ?: 0))
+        }
+
+        return addOnsAmount + bonusAmount + rwAmount
     }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :

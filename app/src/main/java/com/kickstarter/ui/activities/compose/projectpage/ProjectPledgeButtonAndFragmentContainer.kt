@@ -97,14 +97,12 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             onRewardSelected = {},
             onAddOnAddedOrRemoved = { _, _ -> },
             totalSelectedAddOn = 0,
-            totalAmount = 0.0,
+            totalPledgeAmount = 0.0,
+            totalBonusAmount = 0.0,
+            bonusAmountChanged = { _ -> },
             currentShippingRule = ShippingRule.builder().build(),
             onShippingRuleSelected = {},
-            onConfirmDetailsContinueClicked = {},
             selectedRewardAndAddOnList = listOf(),
-            onBonusSupportMinusClicked = {},
-            onBonusSupportPlusClicked = {},
-            onBonusSupportInputted = {},
             storedCards = listOf(),
             userEmail = "test@test.test",
             onPledgeCtaClicked = {},
@@ -134,19 +132,12 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onRewardSelected: (reward: Reward) -> Unit,
     onAddOnAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
     totalSelectedAddOn: Int,
-    totalAmount: Double,
+    totalPledgeAmount: Double,
+    totalBonusAmount: Double,
+    bonusAmountChanged: (amount: Double) -> Unit,
     selectedReward: Reward? = null,
     onShippingRuleSelected: (ShippingRule) -> Unit,
-    initialBonusSupportAmount: Double = 0.0,
-    totalBonusSupportAmount: Double = 0.0,
-    maxPledgeAmount: Double = 0.0,
-    minStepAmount: Double = 0.0,
-    onConfirmDetailsContinueClicked: () -> Unit,
-    shippingAmount: Double = 0.0,
     selectedRewardAndAddOnList: List<Reward>,
-    onBonusSupportPlusClicked: () -> Unit,
-    onBonusSupportMinusClicked: () -> Unit,
-    onBonusSupportInputted: (input: Double) -> Unit,
     storedCards: List<StoredCard>,
     userEmail: String,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
@@ -263,37 +254,9 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         onItemAddedOrRemoved = onAddOnAddedOrRemoved,
                                         onContinueClicked = onAddOnsContinueClicked,
                                         isLoading = isLoading,
-                                        addOnCount = totalSelectedAddOn
-                                    )
-                                }
-
-                                2 -> {
-                                    ConfirmPledgeDetailsScreen(
-                                        modifier = Modifier,
-                                        environment = environment ?: Environment.builder().build(),
-                                        project = project,
-                                        selectedReward = selectedReward,
-                                        onContinueClicked = onConfirmDetailsContinueClicked,
-                                        onShippingRuleSelected = onShippingRuleSelected,
-                                        totalAmount = totalAmount,
-                                        shippingAmount = shippingAmount,
-                                        currentShippingRule = currentShippingRule,
-                                        countryList = shippingRules,
-                                        initialBonusSupport = initialBonusSupportAmount,
-                                        totalBonusSupport = totalBonusSupportAmount,
-                                        maxPledgeAmount = maxPledgeAmount,
-                                        minPledgeStep = minStepAmount,
-                                        rewardsList = getRewardListAndPrices(
-                                            selectedRewardAndAddOnList, environment, project
-                                        ),
-                                        rewardsContainAddOns = selectedRewardAndAddOnList.any { it.isAddOn() },
-                                        rewardsHaveShippables = selectedRewardAndAddOnList.any {
-                                            RewardUtils.isShippable(it)
-                                        },
-                                        onBonusSupportPlusClicked = onBonusSupportPlusClicked,
-                                        onBonusSupportMinusClicked = onBonusSupportMinusClicked,
-                                        onBonusSupportInputted = onBonusSupportInputted,
-                                        isLoading = isLoading,
+                                        addOnCount = totalSelectedAddOn,
+                                        bonusAmountChanged = bonusAmountChanged,
+                                        totalPledgeAmount = totalPledgeAmount
                                     )
                                 }
 
@@ -311,9 +274,9 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                             project
                                         ),
                                         pledgeReason = PledgeReason.PLEDGE,
-                                        shippingAmount = shippingAmount,
-                                        totalAmount = totalAmount,
-                                        totalBonusSupport = totalBonusSupportAmount,
+                                        shippingAmount = 0.0, // TODO delete
+                                        totalAmount = totalPledgeAmount,
+                                        totalBonusSupport = totalBonusAmount,
                                         currentShippingRule = currentShippingRule,
                                         rewardsHaveShippables = selectedRewardAndAddOnList.any {
                                             RewardUtils.isShippable(it)

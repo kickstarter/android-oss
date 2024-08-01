@@ -70,7 +70,6 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.finishWithAnimation
@@ -107,7 +106,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import type.CreditCardPaymentType
 
 class ProjectPageActivity :
     AppCompatActivity(),
@@ -540,6 +538,7 @@ class ProjectPageActivity :
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
                     val addOnCount = addOnsUIState.totalCount
+                    val totalPledgeAmount = addOnsUIState.totalPledgeAmount
 
                     LaunchedEffect(currentUserShippingRule) {
                         confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
@@ -549,31 +548,20 @@ class ProjectPageActivity :
                         showToastError(message)
                     }
 
-                    val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
+                    // val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
-                    val totalAmount: Double = confirmUiState.totalAmount
-                    val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
-                    val shippingAmount = confirmUiState.shippingAmount
-                    val initialBonusAmount = confirmUiState.initialBonusSupportAmount
-                    val totalBonusSupportAmount = confirmUiState.finalBonusSupportAmount
-                    val maxPledgeAmount = confirmUiState.maxPledgeAmount
-                    val minStepAmount = confirmUiState.minStepAmount
-                    val confirmDetailsIsLoading = confirmUiState.isLoading
+//                    LaunchedEffect(checkoutPayment.id) {
+//                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
+//                            startLoginToutActivity()
+//                        }
+//                        checkoutPayment.backing?.let {
+//                            latePledgeCheckoutViewModel.provideCheckoutIdAndBacking(checkoutPayment.id, it)
+//                        }
+//                    }
 
-                    val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
-
-                    LaunchedEffect(checkoutPayment.id) {
-                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
-                            startLoginToutActivity()
-                        }
-                        checkoutPayment.backing?.let {
-                            latePledgeCheckoutViewModel.provideCheckoutIdAndBacking(checkoutPayment.id, it)
-                        }
-                    }
-
-                    confirmDetailsViewModel.provideErrorAction { message ->
-                        showToastError(message)
-                    }
+//                    confirmDetailsViewModel.provideErrorAction { message ->
+//                        showToastError(message)
+//                    }
 
                     val latePledgeCheckoutUIState by latePledgeCheckoutViewModel.latePledgeCheckoutUIState.collectAsStateWithLifecycle()
 
@@ -621,20 +609,10 @@ class ProjectPageActivity :
                             )
 
                             if (currentPage == 3) {
-                                latePledgeCheckoutViewModel.sendPageViewedEvent(
-                                    projectData,
-                                    addOns,
-                                    currentUserShippingRule,
-                                    shippingAmount,
-                                    totalAmount,
-                                    totalBonusSupportAmount
-                                )
+                                latePledgeCheckoutViewModel.sendPageViewedEvent()
                             }
 
                             if (currentPage == 1) {
-                                // Load addOns only when the user navigates to AddOns Screen, avoid loading while the user selects location
-                                addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
-
                                 // Send pageViewed event when user navigates to AddOns Screen
                                 addOnsViewModel.sendEvent()
                             }
@@ -648,11 +626,16 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
-                        isLoading = addOnsIsLoading || confirmDetailsIsLoading || checkoutLoading,
+                        isLoading = addOnsIsLoading || checkoutLoading, // || confirmDetailsIsLoading
                         onAddOnsContinueClicked = {
-                            val selectedAddons = addOnsViewModel.getPledgeDataAndReason()?.first?.addOns() ?: emptyList()
-                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddons)
-                            checkoutFlowViewModel.onAddOnsContinueClicked()
+                            checkoutFlowViewModel.onContinueClicked {
+                                startLoginToutActivity()
+                            }
+
+                            val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
+                            dataAndReason?.first?.let { pData ->
+                                latePledgeCheckoutViewModel.providePledgeData(pData)
+                            }
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
@@ -664,6 +647,7 @@ class ProjectPageActivity :
                         onRewardSelected = { reward ->
                             checkoutFlowViewModel.userRewardSelection(reward)
                             addOnsViewModel.userRewardSelection(reward)
+                            addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
                             confirmDetailsViewModel.onUserSelectedReward(reward)
                             latePledgeCheckoutViewModel.userRewardSelection(reward)
@@ -673,34 +657,21 @@ class ProjectPageActivity :
                         },
                         totalSelectedAddOn = addOnCount,
                         selectedReward = selectedReward,
-                        totalAmount = totalAmount,
-                        selectedRewardAndAddOnList = rewardsAndAddOns,
-                        initialBonusSupportAmount = initialBonusAmount,
-                        totalBonusSupportAmount = totalBonusSupportAmount,
-                        maxPledgeAmount = maxPledgeAmount,
-                        minStepAmount = minStepAmount,
+                        totalPledgeAmount = totalPledgeAmount,
+                        totalBonusAmount = addOnsUIState.totalBonusAmount,
+                        bonusAmountChanged = { bonusAmount ->
+                            addOnsViewModel.bonusAmountUpdated(bonusAmount)
+                        },
+                        selectedRewardAndAddOnList = latePledgeCheckoutUIState.selectedRewards,
                         onShippingRuleSelected = { shippingRule ->
                             rewardsSelectionViewModel.selectedShippingRule(shippingRule)
                         },
-                        shippingAmount = shippingAmount,
-                        onConfirmDetailsContinueClicked = {
-                            confirmDetailsViewModel.onContinueClicked {
-                                checkoutFlowViewModel.onConfirmDetailsContinueClicked {
-                                    startLoginToutActivity()
-                                }
-                            }
-                        },
                         storedCards = userStoredCards,
                         userEmail = userEmail,
-                        onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
-                        onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
-                        onBonusSupportInputted = { input ->
-                            confirmDetailsViewModel.inputBonusSupport(input)
-                        },
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {
-                                latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)
-                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                                // latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)
+                                //                           //latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
                             }
                         },
                         onAddPaymentMethodClicked = {
@@ -722,21 +693,21 @@ class ProjectPageActivity :
 
                     LaunchedEffect(successfulPledge) {
                         if (successfulPledge) {
-                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
-                                val checkoutData = CheckoutData.builder()
-                                    .amount(totalAmount)
-                                    .id(checkoutPayment.id)
-                                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
-                                    .bonusAmount(totalBonusSupportAmount)
-                                    .shippingAmount(shippingAmount)
-                                    .build()
-                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
-                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData))
-                                checkoutFlowViewModel.onProjectSuccess()
-                                refreshProject()
-                                binding.pledgeContainerCompose.isGone = true
-                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
-                            }
+//                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
+//                                val checkoutData = CheckoutData.builder()
+//                                    .amount(totalAmount)
+//                                    .id(checkoutPayment.id)
+//                                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
+//                                    .bonusAmount(totalBonusSupportAmount)
+//                                    .shippingAmount(shippingAmount)
+//                                    .build()
+//                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
+//                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData))
+//                                checkoutFlowViewModel.onProjectSuccess()
+//                                refreshProject()
+//                                binding.pledgeContainerCompose.isGone = true
+//                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+//                            }
                         }
                     }
                 }

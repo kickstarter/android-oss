@@ -29,7 +29,7 @@ class CheckoutFlowViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // - Call onConfirmDetailsContinueClicked with a VM loaded with Environment without user
-        vm.onConfirmDetailsContinueClicked { callbackCalled++ }
+        vm.onContinueClicked { callbackCalled++ }
 
         // - Make sure the callback provided is called when no user present, `onConfirmDetailsContinueClicked` will produce states ONLY if user present
         assertTrue(callbackCalled == 1)
@@ -60,7 +60,7 @@ class CheckoutFlowViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         // - Call onConfirmDetailsContinueClicked with a VM loaded with Environment containing an user
-        vm.onConfirmDetailsContinueClicked { callbackCalled++ }
+        vm.onContinueClicked { callbackCalled++ }
 
         // - Make sure the callback is not called
         assertTrue(callbackCalled == 0)

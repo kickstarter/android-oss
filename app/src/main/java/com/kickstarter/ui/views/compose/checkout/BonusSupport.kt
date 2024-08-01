@@ -15,7 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,12 +56,12 @@ fun BonusSupportContainer(
     maxAmount: Double,
     currencySymbolAtStart: String?,
     currencySymbolAtEnd: String?,
-    onBonusSupportPlusClicked: () -> Unit,
-    onBonusSupportMinusClicked: () -> Unit,
-    onBonusSupportInputted: (input: Double) -> Unit
+    onBonusSupportPlusClicked: (amount: Double) -> Unit,
+    onBonusSupportMinusClicked: (amount: Double) -> Unit,
+    onBonusSupportInputted: (amount: Double) -> Unit
 ) {
     val bonusAmountMaxDigits = integerResource(R.integer.max_length)
-    var totalBonusSupport by remember { mutableDoubleStateOf(initialAmount) }
+    var totalBonusSupport by rememberSaveable { mutableDoubleStateOf(initialAmount) }
 
     Column {
         Text(
@@ -89,12 +89,12 @@ fun BonusSupportContainer(
             KSStepper(
                 onPlusClicked = {
                     totalBonusSupport++
-                    onBonusSupportPlusClicked()
+                    onBonusSupportPlusClicked(totalBonusSupport)
                 },
                 isPlusEnabled = totalBonusSupport != maxAmount,
                 onMinusClicked = {
                     totalBonusSupport--
-                    onBonusSupportMinusClicked()
+                    onBonusSupportMinusClicked(totalBonusSupport)
                 },
                 isMinusEnabled = initialAmount != totalBonusSupport,
                 enabledButtonBackgroundColor = colors.kds_white
@@ -132,6 +132,7 @@ fun BonusSupportContainer(
                     value = if (totalBonusSupport % 1.0 == 0.0) totalBonusSupport.toInt().toString() else totalBonusSupport.toString(),
                     onValueChange = {
                         if (it.length <= bonusAmountMaxDigits) totalBonusSupport = it.parseToDouble()
+                        onBonusSupportInputted(totalBonusSupport)
                     },
                     textStyle = typography.title1.copy(color = colors.textAccentGreen),
                     keyboardOptions = KeyboardOptions(

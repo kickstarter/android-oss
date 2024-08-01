@@ -55,7 +55,7 @@ class PPOCardFactory private constructor() {
                 projectSlug = "hello/hello",
                 imageUrl = "image/url",
                 creatorName = "creatorName",
-                backingDetailsUrl = "backing/details/url",
+                backingDetailsUrl = "/projects/grimacecards/monochrome-muse-playing-cards/backing/details",
                 timeNumberForAction = 10,
                 showBadge = false,
                 viewType = PPOCardViewType.CONFIRM_ADDRESS

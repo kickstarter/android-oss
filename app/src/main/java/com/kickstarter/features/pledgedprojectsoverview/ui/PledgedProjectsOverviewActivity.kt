@@ -25,9 +25,11 @@ import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProject
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
@@ -41,6 +43,7 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
 import com.stripe.android.Stripe
 import com.stripe.android.StripeIntentResult
+import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
 import kotlinx.coroutines.launch
 
 class PledgedProjectsOverviewActivity : AppCompatActivity() {
@@ -78,6 +81,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val ppoUIState by viewModel.ppoUIState.collectAsStateWithLifecycle()
 
                 val lazyListState = rememberLazyListState()
+                val snackbarHostState = remember { SnackbarHostState() }
                 val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
@@ -102,7 +106,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         onProjectPledgeSummaryClick = { url ->
                             openBackingDetailsWebView(
-                                url = url,
+                                url = env.webEndpoint() + url,
                                 resultLauncher = null
                             )
                         },
@@ -131,14 +135,14 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                                 PPOCardViewType.OPEN_SURVEY -> {
                                     openBackingDetailsWebView(
-                                        url = PPOCard.backingDetailsUrl ?: "",
+                                        url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
                                     )
                                 }
 
                                 PPOCardViewType.CONFIRM_ADDRESS -> {
                                     openBackingDetailsWebView(
-                                        url = PPOCard.backingDetailsUrl ?: "",
+                                        url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -185,14 +189,16 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         url: String,
         resultLauncher: ActivityResultLauncher<Intent>?
     ) {
-        resultLauncher?.launch(
-            Intent(this, BackingDetailsActivity::class.java)
-                .putExtra(IntentKey.URL, url)
-        ) ?: {
-            val intent = Intent(this, BackingDetailsActivity::class.java)
-                .putExtra(IntentKey.URL, url)
-            startActivity(intent)
+        if(resultLauncher.isNotNull()) {
+            resultLauncher?.launch(
+                Intent(this, BackingDetailsActivity::class.java)
+                    .putExtra(IntentKey.URL, url)
+            )
+        } else {
+            startActivity(Intent(this, BackingDetailsActivity::class.java)
+                .putExtra(IntentKey.URL, url))
         }
+
         this.let {
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }

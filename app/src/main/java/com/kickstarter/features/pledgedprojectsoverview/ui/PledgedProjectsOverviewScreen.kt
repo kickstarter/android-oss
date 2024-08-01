@@ -75,11 +75,12 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
+                onPrimaryActionButtonClicked = {},
+                onSecondaryActionButtonClicked = {},
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
-                onFixPaymentClick = {}
             )
         }
     }
@@ -104,12 +105,13 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 totalAlerts = 10,
                 onBackPressed = {},
                 onAddressConfirmed = {},
+                onPrimaryActionButtonClicked = {},
+                onSecondaryActionButtonClicked = {},
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
                 errorSnackBarHostState = SnackbarHostState(),
-                onFixPaymentClick = {}
             )
         }
     }
@@ -131,10 +133,11 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 totalAlerts = 0,
                 onBackPressed = {},
                 onAddressConfirmed = {},
+                onPrimaryActionButtonClicked = {},
+                onSecondaryActionButtonClicked = {},
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
-                onFixPaymentClick = {},
                 onSeeAllBackedProjectsClick = {},
             )
         }
@@ -154,11 +157,12 @@ fun PledgedProjectsOverviewScreen(
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
     onSendMessageClick: (projectName: String) -> Unit,
     onSeeAllBackedProjectsClick: () -> Unit,
+    onPrimaryActionButtonClicked: (PPOCard) -> Unit,
+    onSecondaryActionButtonClicked: (PPOCard) -> Unit,
     isLoading: Boolean = false,
     isErrored: Boolean = false,
     showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
-    onFixPaymentClick: (projectSlug: String) -> Unit,
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
@@ -244,12 +248,7 @@ fun PledgedProjectsOverviewScreen(
                                 shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
                                 showBadge = it.showBadge(),
                                 onActionButtonClicked = {
-                                    when (it.viewType()) {
-                                        PPOCardViewType.FIX_PAYMENT -> {
-                                            onFixPaymentClick(it.projectSlug() ?: "")
-                                        }
-                                        else -> {}
-                                    }
+                                    onPrimaryActionButtonClicked(it)
                                 },
                                 onSecondaryActionButtonClicked = {
                                     when (it.viewType()) {
@@ -257,7 +256,9 @@ fun PledgedProjectsOverviewScreen(
                                             confirmedAddress = it.address() ?: ""
                                             openConfirmAddressAlertDialog.value = true
                                         }
-                                        else -> {}
+                                        else -> {
+                                            onSecondaryActionButtonClicked(it)
+                                        }
                                     }
                                 },
                                 timeNumberForAction = it.timeNumberForAction()

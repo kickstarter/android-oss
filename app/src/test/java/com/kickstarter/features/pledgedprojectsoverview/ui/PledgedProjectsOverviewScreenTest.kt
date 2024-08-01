@@ -38,7 +38,8 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     onAddressConfirmed = {},
                     onProjectPledgeSummaryClick = {},
                     onSeeAllBackedProjectsClick = {},
-                    onFixPaymentClick = {}
+                    onPrimaryActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {}
                 )
             }
         }

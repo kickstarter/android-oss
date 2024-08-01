@@ -1,6 +1,7 @@
 @file:JvmName("PledgeDataExt")
 package com.kickstarter.libs.utils.extensions
 
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 
@@ -20,6 +21,15 @@ fun PledgeData.pledgeAmountTotal(): Double {
 
         return latePledge
     }
+}
+
+fun PledgeData.rewardsAndAddOnsList(): List<Reward> {
+    val list = mutableListOf<Reward>()
+
+    list.add(this.reward())
+    list.addAll(this.addOns() ?: emptyList())
+
+    return list
 }
 
 /**

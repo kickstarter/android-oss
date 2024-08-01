@@ -85,13 +85,17 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onContinueClicked(logInCallback: () -> Unit) {
+    fun onContinueClicked(logInCallback: () -> Unit, continueCallback: () -> Unit) {
         viewModelScope.launch {
             currentUser.isLoggedIn
                 .asFlow()
                 .collect { userLoggedIn ->
                     // - Show checkout page
-                    if (userLoggedIn) mutableFlowUIState.emit(FlowUIState(currentPage = 4, expanded = true))
+                    if (userLoggedIn) {
+                        mutableFlowUIState.emit(FlowUIState(currentPage = 4, expanded = true))
+                        // - In case after login some action is required
+                        continueCallback()
+                    }
                     // - Trigger LoginFlow callback
                     else logInCallback()
                 }
@@ -103,6 +107,9 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             // Open Flow
             mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = false))
         }
+    }
+
+    fun onContinueClicked(continueCallback: () -> Unit) {
     }
 
     class Factory(private val environment: Environment) :

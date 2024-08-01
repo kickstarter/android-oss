@@ -6,17 +6,18 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
+import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
@@ -42,7 +43,8 @@ data class LatePledgeCheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),
     val userEmail: String = "",
     val isLoading: Boolean = false,
-    val selectedRewards: List<Reward> = emptyList()
+    val selectedRewards: List<Reward> = emptyList(),
+    val isPledgeButtonEnabled: Boolean = true
 )
 
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
@@ -56,6 +58,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var checkoutId: String? = null
     private var backing: Backing? = null
     private val selectedRewards = mutableListOf<Reward>()
+    private var buttonEnabled = true
 
     private var stripe: Stripe = requireNotNull(environment.stripe())
 
@@ -86,6 +89,17 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = LatePledgeCheckoutUIState(isLoading = true)
+            )
+
+    private val mutableCheckoutPayment =
+        MutableStateFlow(CheckoutPayment(id = 0L, paymentUrl = null, backing = null))
+    val checkoutPayment: StateFlow<CheckoutPayment>
+        get() = mutableCheckoutPayment
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = CheckoutPayment(id = 0L, paymentUrl = null, null)
             )
 
     private var mutableClientSecretForNewPaymentMethod = MutableSharedFlow<String>()
@@ -178,8 +192,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.collect()
     }
 
-    fun onPledgeButtonClicked(selectedCard: StoredCard?, project: Project, totalAmount: Double) {
-        createPaymentIntentForCheckout(selectedCard, project, totalAmount)
+    fun onPledgeButtonClicked(selectedCard: StoredCard?) {
+        this.pledgeData?.let {
+            val project = it.projectData().project()
+            createPaymentIntentForCheckout(selectedCard, project, it.pledgeAmountTotal())
+        }
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
@@ -341,22 +358,14 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             .build()
     }
 
-    private fun createPledgeData(projectData: ProjectData, addOns: List<Reward>, shippingRule: ShippingRule, reward: Reward): PledgeData {
-        return PledgeData.builder()
-            .projectData(projectData)
-            .addOns(addOns)
-            .shippingRule(shippingRule)
-            .reward(reward)
-            .build()
-    }
-
     private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableLatePledgeCheckoutUIState.emit(
             LatePledgeCheckoutUIState(
                 storeCards = storedCards,
                 userEmail = userEmail,
                 isLoading = isLoading,
-                selectedRewards = selectedRewards.toList()
+                selectedRewards = selectedRewards.toList(),
+                isPledgeButtonEnabled = buttonEnabled,
             )
         )
     }
@@ -375,21 +384,12 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun sendSubmitCTAEvent(
-        projectData: ProjectData,
-        addOns: List<Reward>,
-        currentUserShippingRule: ShippingRule,
-        shippingAmount: Double,
-        totalAmount: Double,
-        totalBonusSupportAmount: Double
-    ) {
-        this.selectedReward?.let {
-            val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
-            val checkOutData =
-                createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
+    fun sendSubmitCTAEvent() {
+        this.pledgeData?.let {
+            val checkOutData = createCheckoutData(0.0, it.pledgeAmountTotal(), it.bonusAmount())
             this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
                 checkoutData = checkOutData,
-                pledgeData = pledgeData
+                pledgeData = it
             )
         }
     }
@@ -404,6 +404,46 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    private fun createCheckout() {
+        val totalAmount = this.pledgeData?.pledgeAmountTotal()
+        val locationId = this.pledgeData?.shippingRule()?.location()?.id()
+        val rewards = this.pledgeData?.rewardsAndAddOnsList() ?: emptyList()
+        val shippingAmount = this.pledgeData?.shippingRule()?.cost() ?: 0.0
+
+        this.pledgeData?.projectData()?.let { projectData ->
+            if (projectData.project().postCampaignPledgingEnabled() == true && projectData.project()
+                .isInPostCampaignPledgingPhase() == true
+            ) {
+                viewModelScope.launch {
+                    apolloClient.createCheckout(
+                        CreateCheckoutData(
+                            project = projectData.project(),
+                            amount = totalAmount.toString() + shippingAmount,
+                            locationId = locationId.toString(),
+                            rewardsIds = rewards,
+                            refTag = projectData.refTagFromIntent()
+                        )
+                    )
+                        .asFlow()
+                        .map { checkoutPayment ->
+                            buttonEnabled = true
+                            mutableCheckoutPayment.emit(checkoutPayment)
+                        }
+                        .catch {
+                            buttonEnabled = false
+                            errorAction.invoke(it.message)
+                        }
+                        .onCompletion {
+                            emitCurrentState(isLoading = false)
+                        }
+                        .collect()
+                }
+            } else {
+                errorAction.invoke(null)
+            }
+        }
+    }
+
     fun providePledgeData(pledgeData: PledgeData) {
         this.pledgeData = pledgeData
         viewModelScope.launch {
@@ -413,7 +453,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 selectedRewards.addAll(addOns)
             }
 
-            emitCurrentState(isLoading = false)
+            emitCurrentState(isLoading = true)
+            createCheckout()
         }
     }
 

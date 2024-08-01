@@ -45,14 +45,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project = project)
 
         viewModel.userRewardSelection(rw)
-        viewModel.sendPageViewedEvent(
-            projectData,
-            addOns,
-            rule,
-            shipAmount,
-            totalAmount,
-            bonusAmount
-        )
+        viewModel.sendPageViewedEvent()
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -71,14 +64,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project = project)
         viewModel.userRewardSelection(rw)
-        viewModel.sendSubmitCTAEvent(
-            projectData,
-            addOns,
-            rule,
-            shipAmount,
-            totalAmount,
-            bonusAmount
-        )
+        viewModel.sendSubmitCTAEvent()
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }

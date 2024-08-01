@@ -141,15 +141,16 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     /**
-     * Used in late pledges, does requires calling afterwards
-     *  `provideSelectedShippingRule`
+     * Used in late pledges
      */
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
         val isLatePledge = projectData.project().postCampaignPledgingEnabled() == true && projectData.project().isInPostCampaignPledgingPhase() == true
+        val flowContext = if (isLatePledge) PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE) else PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+        this.pledgeflowcontext = flowContext
         this.pledgeData = PledgeData.with(
             projectData = projectData,
-            pledgeFlowContext = if (isLatePledge) PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE) else PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            pledgeFlowContext = flowContext,
             reward = currentUserReward
         )
         this.projectData?.project()?.let {
@@ -210,7 +211,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         return holder.values.toList()
     }
 
-    // UI events
+    // - User has selected a different reward clear previous states
     fun userRewardSelection(reward: Reward) {
         if (reward != currentUserReward) {
             currentUserReward = reward

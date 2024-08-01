@@ -5,10 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.factories.ProjectDataFactory
-import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -252,7 +249,7 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
                 errorActionCount++
             }
 
-            viewModel.onPledgeButtonClicked(cardList.first(), ProjectFactory.project(), 100.0)
+            viewModel.onPledgeButtonClicked(cardList.first())
 
             assertEquals(
                 state.last(),
@@ -326,7 +323,7 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
 
         viewModel.provideCheckoutIdAndBacking(100L, Backing.builder().id(101L).build())
 
-        viewModel.onPledgeButtonClicked(cardList.first(), ProjectFactory.project(), 100.0)
+        viewModel.onPledgeButtonClicked(cardList.first())
 
         assertEquals(
             state.last(),
@@ -382,25 +379,11 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
     fun `test_when_no_reward_selected_then_no_analytics_sent`() = runTest {
         setUpWithEnvironment(environment())
 
-        viewModel.sendPageViewedEvent(
-            ProjectDataFactory.project(ProjectFactory.project()),
-            listOf(),
-            ShippingRuleFactory.usShippingRule(),
-            100.0,
-            1000.0,
-            100.0
-        )
+        viewModel.sendPageViewedEvent()
 
         this@LatePledgeCheckoutViewModelTests.segmentTrack.assertNoValues()
 
-        viewModel.sendSubmitCTAEvent(
-            ProjectDataFactory.project(ProjectFactory.project()),
-            listOf(),
-            ShippingRuleFactory.usShippingRule(),
-            100.0,
-            1000.0,
-            100.0
-        )
+        viewModel.sendSubmitCTAEvent()
 
         this@LatePledgeCheckoutViewModelTests.segmentTrack.assertNoValues()
     }
@@ -411,14 +394,7 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
 
         viewModel.userRewardSelection(RewardFactory.reward())
 
-        viewModel.sendPageViewedEvent(
-            ProjectDataFactory.project(ProjectFactory.project()),
-            listOf(),
-            ShippingRuleFactory.usShippingRule(),
-            100.0,
-            1000.0,
-            100.0
-        )
+        viewModel.sendPageViewedEvent()
 
         this@LatePledgeCheckoutViewModelTests.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -429,14 +405,7 @@ class LatePledgeCheckoutViewModelTests : KSRobolectricTestCase() {
 
         viewModel.userRewardSelection(RewardFactory.reward())
 
-        viewModel.sendSubmitCTAEvent(
-            ProjectDataFactory.project(ProjectFactory.project()),
-            listOf(),
-            ShippingRuleFactory.usShippingRule(),
-            100.0,
-            1000.0,
-            100.0
-        )
+        viewModel.sendSubmitCTAEvent()
 
         this@LatePledgeCheckoutViewModelTests.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }

@@ -44,12 +44,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
     private var startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.getBooleanExtra(IntentKey.FIX_PAYMENT_SUCCESS, false)
-                data?.let {
-                    if (it.isTrue()) {
-                        viewModel.getPledgedProjects()
-                    }
-                }
                 val refresh = result.data?.getStringExtra(IntentKey.REFRESH_PPO_LIST)
                 if (!refresh.isNullOrEmpty()) {
                     viewModel.getPledgedProjects()
@@ -116,7 +110,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     )
                                 }
 
-                                PPOCardViewType.TAKE_SURVEY -> {
+                                PPOCardViewType.OPEN_SURVEY -> {
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
                                         resultLauncher = startForResult

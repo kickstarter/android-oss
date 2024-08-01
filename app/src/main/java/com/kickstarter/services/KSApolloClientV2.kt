@@ -1724,6 +1724,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     }
 
                     override fun onResponse(response: Response<PledgedProjectsOverviewQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                        }
+
                         response.data?.let { data ->
                             Observable.just(data.pledgeProjectsOverview())
                                 .filter { it.pledges() != null }

@@ -231,10 +231,12 @@ fun Activity.startProjectUpdatesActivity(projectAndData: ProjectData) {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
-fun Activity.finishWithAnimation(withResult: String? = null) {
-    withResult?.let {
-        val intent = Intent().putExtra(IntentKey.FLAGGINGKIND, withResult)
-        setResult(Activity.RESULT_OK, intent)
+fun Activity.finishWithAnimation(withResult: String? = null, intentKey: String? = null) {
+    intentKey?.let { key ->
+        withResult?.let { result ->
+            val intent = Intent().putExtra(key, result)
+            setResult(Activity.RESULT_OK, intent)
+        }
     }
     finish()
     TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())

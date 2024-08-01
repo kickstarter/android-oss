@@ -156,6 +156,8 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
                 Glide.with(context)
                     .asGif()
                     .load(it)
+                    .downsample(DownsampleStrategy.AT_LEAST)
+                    .override(Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(this)
             } catch (e: Exception) {

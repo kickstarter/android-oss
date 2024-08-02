@@ -121,22 +121,20 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
 
             val backing = pledgeData?.projectData()?.backing() ?: project.backing()
-
-            // - User backed a reward no reward
-            if (backing != null && backing.reward() == null && backing.amount().isNotNull()) {
-                currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(backing.amount()).build()
+            if (backing != null) {
+                // - backed a reward no reward
+                if (backing.reward() == null && backing.amount().isNotNull()) {
+                    currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(backing.amount()).build()
+                    bonusAmount = backing.amount()
+                } else {
+                    currentUserReward = backing.reward() ?: currentUserReward
+                    bonusAmount = backing.bonusAmount()
+                    backedAddOns = backing.addOns() ?: emptyList()
+                }
             }
 
-            // - User is backing
-            backing?.reward()?.let {
-                currentUserReward = it
-            }
-
-            backing?.addOns()?.let {
-                backedAddOns = it
-            }
-
-            getAddOns(shippingRule)
+            if (currentUserReward.hasAddons())
+                getAddOns(shippingRule)
         }
     }
 

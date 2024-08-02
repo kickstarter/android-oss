@@ -130,7 +130,8 @@ class RewardsFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 dialog.dismiss()
-                showPledgeFragment(it.first, it.second)
+                // showPledgeFragment(it.first, it.second)
+                showAddonsFragment(Pair(it.first, it.second))
             }
             .addToDisposable(disposables)
 

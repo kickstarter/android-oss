@@ -192,9 +192,14 @@ fun AddOnsScreen(
                     }
                     Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
+                    val initAmount = if (project.isBacking())
+                        project.backing()?.bonusAmount() ?: 0.0
+                    else
+                        RewardUtils.minPledgeAmount(selectedReward, project)
+
                     BonusSupportContainer(
                         noAddOnsRw = addOns.isEmpty(),
-                        initialAmount = RewardUtils.minPledgeAmount(selectedReward, project),
+                        initialAmount = initAmount,
                         maxAmount = RewardUtils.maxPledgeAmount(selectedReward, project),
                         currencySymbolAtStart = currencySymbolStartAndEnd?.first,
                         currencySymbolAtEnd = currencySymbolStartAndEnd?.second,

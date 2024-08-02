@@ -5,21 +5,37 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 
-fun PledgeData.pledgeAmountTotal(): Double {
-    var crowdFund = this.reward().pledgeAmount()
-    var latePledge = this.reward().latePledgeAmount()
+/**
+ * Shipping cost associated to the selected shipping rule
+ */
+fun PledgeData.shippingCost(): Double = this.shippingRule()?.cost() ?: 0.0
 
-    if (this.pledgeFlowContext() != PledgeFlowContext.LATE_PLEDGES) {
+/**
+ * Total checkout Amount = Reward + AddOns( xQ) + Shipping
+ */
+fun PledgeData.checkoutTotalAmount(): Double = this.pledgeAmountTotal() + this.bonusAmount() + this.shippingCost()
+
+/**
+ * Total pledge Amount = Reward + AddOns( xQ)
+ */
+fun PledgeData.pledgeAmountTotal(): Double {
+    // - Avoid project miss configuration where the creator did not configured somehow the late pledge reward correctly
+    var latePledge = if (this.reward().latePledgeAmount() == 0.0) this.reward().minimum() else this.reward().latePledgeAmount()
+    var crowdfund = this.reward().latePledgeAmount()
+
+    if (this.pledgeFlowContext() == PledgeFlowContext.LATE_PLEDGES) {
         this.addOns()?.map {
-            crowdFund += it.latePledgeAmount() * (it.quantity() ?: 0)
+            // - Avoid project miss configuration where the creator did not configured somehow the late pledge reward correctly
+            val amount = if (it.latePledgeAmount() == 0.0) it.minimum() else it.latePledgeAmount()
+            latePledge += amount * (it.quantity() ?: 0)
         }
-        return crowdFund
+        return latePledge
     } else {
         this.addOns()?.map {
-            latePledge += it.pledgeAmount() * (it.quantity() ?: 0)
+            crowdfund += it.pledgeAmount() * (it.quantity() ?: 0)
         }
 
-        return latePledge
+        return crowdfund
     }
 }
 

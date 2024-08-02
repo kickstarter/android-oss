@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
+import com.kickstarter.libs.utils.extensions.shippingCost
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
@@ -50,6 +52,7 @@ data class LatePledgeCheckoutUIState(
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var pledgeData: PledgeData? = null
+    private var checkoutData: CheckoutData? = null
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analytics = requireNotNull(environment.analytics())
 
@@ -133,6 +136,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    fun getCheckoutData() = checkoutData
+    fun getPledgeData() = pledgeData
+
     fun provideCheckoutIdAndBacking(checkoutId: Long, backing: Backing) {
         this.checkoutId = checkoutId.toString()
         this.backing = backing
@@ -195,7 +201,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
         this.pledgeData?.let {
             val project = it.projectData().project()
-            createPaymentIntentForCheckout(selectedCard, project, it.pledgeAmountTotal())
+            createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
         }
     }
 
@@ -372,25 +378,25 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     fun sendPageViewedEvent() {
         this.pledgeData?.let { pData ->
-            this.selectedReward?.let {
-                val pledgeData = pData
-                val checkOutData =
-                    createCheckoutData(0.0, pData.pledgeAmountTotal(), pledgeData.bonusAmount())
-                this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(
-                    checkoutData = checkOutData,
-                    pledgeData = pData
-                )
+            this.checkoutData?.let { cData ->
+                this.selectedReward?.let {
+                    this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(
+                        checkoutData = cData,
+                        pledgeData = pData
+                    )
+                }
             }
         }
     }
 
     fun sendSubmitCTAEvent() {
-        this.pledgeData?.let {
-            val checkOutData = createCheckoutData(0.0, it.pledgeAmountTotal(), it.bonusAmount())
-            this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
-                checkoutData = checkOutData,
-                pledgeData = it
-            )
+        this.pledgeData?.let { pData ->
+            this.checkoutData?.let { cData ->
+                this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
+                    checkoutData = cData,
+                    pledgeData = pData
+                )
+            }
         }
     }
 
@@ -405,47 +411,50 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     private fun createCheckout() {
-        val totalAmount = this.pledgeData?.pledgeAmountTotal()
-        val locationId = this.pledgeData?.shippingRule()?.location()?.id()
-        val rewards = this.pledgeData?.rewardsAndAddOnsList() ?: emptyList()
-        val shippingAmount = this.pledgeData?.shippingRule()?.cost() ?: 0.0
+        this.pledgeData?.let { pData ->
+            val locationId = pData.shippingRule()?.location()?.id()
+            val rewards = pData.rewardsAndAddOnsList()
+            val totalPledge = pData.pledgeAmountTotal()
 
-        this.pledgeData?.projectData()?.let { projectData ->
-            if (projectData.project().postCampaignPledgingEnabled() == true && projectData.project()
-                .isInPostCampaignPledgingPhase() == true
-            ) {
-                viewModelScope.launch {
-                    apolloClient.createCheckout(
-                        CreateCheckoutData(
-                            project = projectData.project(),
-                            amount = totalAmount.toString() + shippingAmount,
-                            locationId = locationId.toString(),
-                            rewardsIds = rewards,
-                            refTag = projectData.refTagFromIntent()
+            this.pledgeData?.projectData()?.let { projectData ->
+                if (projectData.project()
+                    .postCampaignPledgingEnabled() == true && projectData.project()
+                        .isInPostCampaignPledgingPhase() == true
+                ) {
+                    viewModelScope.launch {
+                        apolloClient.createCheckout(
+                            CreateCheckoutData(
+                                project = projectData.project(),
+                                amount = totalPledge.toString(),
+                                locationId = locationId.toString(),
+                                rewardsIds = rewards,
+                                refTag = projectData.refTagFromIntent()
+                            )
                         )
-                    )
-                        .asFlow()
-                        .map { checkoutPayment ->
-                            buttonEnabled = true
-                            mutableCheckoutPayment.emit(checkoutPayment)
-                        }
-                        .catch {
-                            buttonEnabled = false
-                            errorAction.invoke(it.message)
-                        }
-                        .onCompletion {
-                            emitCurrentState(isLoading = false)
-                        }
-                        .collect()
+                            .asFlow()
+                            .map { checkoutPayment ->
+                                buttonEnabled = true
+                                mutableCheckoutPayment.emit(checkoutPayment)
+                            }
+                            .catch {
+                                buttonEnabled = false
+                                errorAction.invoke(it.message)
+                            }
+                            .onCompletion {
+                                emitCurrentState(isLoading = false)
+                            }
+                            .collect()
+                    }
+                } else {
+                    errorAction.invoke(null)
                 }
-            } else {
-                errorAction.invoke(null)
             }
         }
     }
 
     fun providePledgeData(pledgeData: PledgeData) {
         this.pledgeData = pledgeData
+        this.checkoutData = createCheckoutData(pledgeData.shippingCost(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())
         viewModelScope.launch {
             selectedRewards.clear()
             pledgeData.addOns()?.let { addOns ->

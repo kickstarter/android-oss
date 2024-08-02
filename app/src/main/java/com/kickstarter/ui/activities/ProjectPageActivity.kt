@@ -611,7 +611,7 @@ class ProjectPageActivity :
                         pagerState = pagerState,
                         isLoading = addOnsIsLoading || checkoutLoading, // || confirmDetailsIsLoading
                         onAddOnsContinueClicked = {
-                            // - if user not logged at this point, start login Flow
+                            // - if user not logged at this point, start login Flow, and provide after login completed callback
                             checkoutFlowViewModel.onContinueClicked(
                                 logInCallback = { startLoginToutActivity() },
                                 continueCallback = {
@@ -677,21 +677,20 @@ class ProjectPageActivity :
 
                     LaunchedEffect(successfulPledge) {
                         if (successfulPledge) {
-//                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
-//                                val checkoutData = CheckoutData.builder()
-//                                    .amount(totalAmount)
-//                                    .id(checkoutPayment.id)
-//                                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
-//                                    .bonusAmount(totalBonusSupportAmount)
-//                                    .shippingAmount(shippingAmount)
-//                                    .build()
-//                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
-//                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData))
-//                                checkoutFlowViewModel.onProjectSuccess()
-//                                refreshProject()
-//                                binding.pledgeContainerCompose.isGone = true
-//                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
-//                            }
+                            latePledgeCheckoutViewModel.onPledgeSuccess.collect {
+                                if (latePledgeCheckoutViewModel.getCheckoutData() != null && latePledgeCheckoutViewModel.getPledgeData() != null) {
+                                    showCreatePledgeSuccess(
+                                        Pair(
+                                            latePledgeCheckoutViewModel.getCheckoutData(),
+                                            latePledgeCheckoutViewModel.getPledgeData()
+                                        )
+                                    )
+                                }
+                                checkoutFlowViewModel.onProjectSuccess()
+                                refreshProject()
+                                binding.pledgeContainerCompose.isGone = true
+                                binding.pledgeContainerLayout.pledgeContainerRoot.isGone = false
+                            }
                         }
                     }
                 }

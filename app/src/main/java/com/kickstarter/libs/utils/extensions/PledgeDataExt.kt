@@ -1,19 +1,25 @@
 @file:JvmName("PledgeDataExt")
 package com.kickstarter.libs.utils.extensions
 
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 
 /**
- * Shipping cost associated to the selected shipping rule
+ * Shipping cost associated to the selected shipping rule if the
+ * selected reward
  */
-fun PledgeData.shippingCost(): Double = this.shippingRule()?.cost() ?: 0.0
+fun PledgeData.shippingCostIfShipping(): Double {
+    return if (RewardUtils.isShippable(this.reward()))
+        this.shippingRule()?.cost() ?: 0.0
+    else 0.0
+}
 
 /**
  * Total checkout Amount = Reward + AddOns( xQ) + Shipping
  */
-fun PledgeData.checkoutTotalAmount(): Double = this.pledgeAmountTotal() + this.bonusAmount() + this.shippingCost()
+fun PledgeData.checkoutTotalAmount(): Double = this.pledgeAmountTotal() + this.bonusAmount() + this.shippingCostIfShipping()
 
 /**
  * Total pledge Amount = Reward + AddOns( xQ)

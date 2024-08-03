@@ -6,6 +6,11 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 
+fun PledgeData.locationId(): Long {
+    return if (RewardUtils.isShippable(this.reward())) {
+        return this.shippingRule()?.location()?.id() ?: -1
+    } else -1
+}
 /**
  * Shipping cost associated to the selected shipping rule if the
  * selected reward

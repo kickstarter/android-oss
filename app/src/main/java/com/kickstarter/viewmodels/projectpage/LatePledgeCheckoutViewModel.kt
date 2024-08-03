@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.locationId
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
-import com.kickstarter.libs.utils.extensions.shippingCost
+import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
@@ -412,9 +413,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private fun createCheckout() {
         this.pledgeData?.let { pData ->
-            val locationId = pData.shippingRule()?.location()?.id()
+            val locationId = pData.locationId()
             val rewards = pData.rewardsAndAddOnsList()
-            val totalPledge = pData.pledgeAmountTotal()
+            val totalPledge = pData.checkoutTotalAmount()
 
             this.pledgeData?.projectData()?.let { projectData ->
                 if (projectData.project()
@@ -454,7 +455,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     fun providePledgeData(pledgeData: PledgeData) {
         this.pledgeData = pledgeData
-        this.checkoutData = createCheckoutData(pledgeData.shippingCost(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())
+        this.checkoutData = createCheckoutData(pledgeData.shippingCostIfShipping(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())
         viewModelScope.launch {
             selectedRewards.clear()
             pledgeData.addOns()?.let { addOns ->

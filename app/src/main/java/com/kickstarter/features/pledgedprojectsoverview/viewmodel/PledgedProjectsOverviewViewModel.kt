@@ -12,10 +12,13 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
+import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,7 +84,10 @@ data class PledgedProjectsOverviewUIState(
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
 )
-class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
+class PledgedProjectsOverviewViewModel(
+    environment: Environment,
+    private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
@@ -105,11 +111,6 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                 initialValue = PledgedProjectsOverviewUIState()
             )
 
-    fun showSnackbarAndRefreshCardsList() {
-        showHeadsUpSnackbar(R.string.address_confirmed_snackbar_text_fpo)
-        // TODO: MBL-1556 refresh the PPO list (i.e. requery the PPO list).
-    }
-
     val projectFlow: SharedFlow<Project>
         get() = mutableProjectFlow
             .asSharedFlow()
@@ -123,7 +124,7 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
     }
 
     fun getPledgedProjects() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             try {
                 Pager(
                     PagingConfig(
@@ -149,12 +150,32 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         }
     }
 
-    fun provideSnackbarMessage(snackBarMessage: (Int, String) -> Unit) {
-        this.snackbarMessage = snackBarMessage
+    fun confirmAddress(addressID: String, backingID: String) {
+        val input = CreateOrUpdateBackingAddressData(backingID = backingID, addressID = addressID)
+        viewModelScope
+            .launch(ioDispatcher) {
+                apolloClient
+                    .createOrUpdateBackingAddress(input)
+                    .asFlow()
+                    .onStart {
+                        emitCurrentState(isLoading = true)
+                    }.map {
+                        if (it.isTrue()) {
+                            showHeadsUpSnackbar(R.string.address_confirmed_snackbar_text_fpo)
+                            getPledgedProjects()
+                        } else {
+                            showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
+                        }
+                    }.catch {
+                        showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
+                    }.onCompletion {
+                        emitCurrentState()
+                    }.collect()
+            }
     }
 
     fun onMessageCreatorClicked(projectName: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             apolloClient.getProject(
                 slug = projectName,
             )
@@ -169,6 +190,10 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
                     emitCurrentState()
                 }.collect()
         }
+    }
+
+    fun provideSnackbarMessage(snackBarMessage: (Int, String) -> Unit) {
+        this.snackbarMessage = snackBarMessage
     }
 
     private suspend fun emitCurrentState(isLoading: Boolean = false, isErrored: Boolean = false) {
@@ -188,10 +213,13 @@ class PledgedProjectsOverviewViewModel(environment: Environment) : ViewModel() {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name)
     }
 
-    class Factory(private val environment: Environment) :
+    class Factory(
+        private val environment: Environment,
+        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PledgedProjectsOverviewViewModel(environment) as T
+            return PledgedProjectsOverviewViewModel(environment, ioDispatcher) as T
         }
     }
 }

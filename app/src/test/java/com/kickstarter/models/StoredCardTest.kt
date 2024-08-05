@@ -92,7 +92,7 @@ class StoredCardTest : TestCase() {
         assertEquals(StoredCard.issuer(CreditCardTypes.DISCOVER), CardBrand.Discover.code)
         assertEquals(StoredCard.issuer(CreditCardTypes.JCB), CardBrand.JCB.code)
         assertEquals(StoredCard.issuer(CreditCardTypes.MASTERCARD), CardBrand.MasterCard.code)
-        assertEquals(StoredCard.issuer(CreditCardTypes.UNION_PAY), CardBrand.UnionPay.code)
+        assertEquals(StoredCard.issuer(CreditCardTypes.UNIONPAY), CardBrand.UnionPay.code)
         assertEquals(StoredCard.issuer(CreditCardTypes.VISA), CardBrand.Visa.code)
         assertEquals(StoredCard.issuer(CreditCardTypes.`$UNKNOWN`), CardBrand.Unknown.code)
     }
@@ -104,7 +104,7 @@ class StoredCardTest : TestCase() {
         assertEquals(getCardTypeDrawable(CreditCardTypes.DISCOVER), R.drawable.discover_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.JCB), R.drawable.jcb_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.MASTERCARD), R.drawable.mastercard_md)
-        assertEquals(getCardTypeDrawable(CreditCardTypes.UNION_PAY), R.drawable.union_pay_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.UNIONPAY), R.drawable.union_pay_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
     }

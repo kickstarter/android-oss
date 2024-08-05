@@ -89,7 +89,7 @@ class StoredCard private constructor(
                 CreditCardTypes.DISCOVER -> CardBrand.Discover.code
                 CreditCardTypes.JCB -> CardBrand.JCB.code
                 CreditCardTypes.MASTERCARD -> CardBrand.MasterCard.code
-                CreditCardTypes.UNION_PAY -> CardBrand.UnionPay.code
+                CreditCardTypes.UNIONPAY -> CardBrand.UnionPay.code
                 CreditCardTypes.VISA -> CardBrand.Visa.code
                 else -> CardBrand.Unknown.code
             }

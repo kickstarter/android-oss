@@ -369,6 +369,9 @@ fragment ppoCard on Backing {
     amount {
         ...amount
     }
+    deliveryAddress {
+        id
+    }
     project {
         name
         id

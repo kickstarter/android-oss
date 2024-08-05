@@ -31,7 +31,7 @@ object ProjectFactory {
                     CreditCardTypes.DISCOVER.rawValue(),
                     CreditCardTypes.JCB.rawValue(),
                     CreditCardTypes.MASTERCARD.rawValue(),
-                    CreditCardTypes.UNION_PAY.rawValue(),
+                    CreditCardTypes.UNIONPAY.rawValue(),
                     CreditCardTypes.VISA.rawValue()
                 )
             )

@@ -22,9 +22,14 @@ fun PledgeData.shippingCostIfShipping(): Double {
 }
 
 /**
- * Total checkout Amount = Reward + AddOns( xQ) + Shipping
+ * Total checkout Amount = Reward + AddOns( xQ) + bonus + Shipping
  */
-fun PledgeData.checkoutTotalAmount(): Double = this.pledgeAmountTotal() + this.bonusAmount() + this.shippingCostIfShipping()
+fun PledgeData.checkoutTotalAmount(): Double = this.pledgeAmountTotalPlusBonus() + this.shippingCostIfShipping()
+
+/**
+ * Total checkout Amount = Reward + AddOns( xQ) + bonus
+ */
+fun PledgeData.pledgeAmountTotalPlusBonus(): Double = this.pledgeAmountTotal() + this.bonusAmount()
 
 /**
  * Total pledge Amount = Reward + AddOns( xQ)
@@ -32,7 +37,7 @@ fun PledgeData.checkoutTotalAmount(): Double = this.pledgeAmountTotal() + this.b
 fun PledgeData.pledgeAmountTotal(): Double {
     // - Avoid project miss configuration where the creator did not configured somehow the late pledge reward correctly
     var latePledge = if (this.reward().latePledgeAmount() == 0.0) this.reward().minimum() else this.reward().latePledgeAmount()
-    var crowdfund = this.reward().latePledgeAmount()
+    var crowdfund = this.reward().pledgeAmount()
 
     if (this.pledgeFlowContext() == PledgeFlowContext.LATE_PLEDGES) {
         this.addOns()?.map {

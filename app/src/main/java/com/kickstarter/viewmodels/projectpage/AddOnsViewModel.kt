@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -182,7 +183,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                         this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
                     }
                 }.onCompletion {
-                    emitCurrentState()
+                    emitCurrentState(isLoading = false)
                 }.catch {
                     errorAction.invoke(null)
                 }.collect()
@@ -234,13 +235,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     /**
-     * Used in crowdfund
-     */
-    fun load() {
-        getAddOns(this.shippingRule)
-    }
-
-    /**
      * Callback to update the selected addOns quantity
      */
     fun updateSelection(rewardId: Long, quantity: Int) {
@@ -273,26 +267,15 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         environment.analytics()?.trackAddOnsScreenViewed(it)
     }
 
-    fun bonusAmountUpdated(bonusAmount: Double) {
-        this.bonusAmount = bonusAmount
+    fun bonusAmountUpdated(bAmount: Double) {
         scope.launch {
+            bonusAmount = bAmount
             emitCurrentState(isLoading = false)
         }
     }
 
     private fun calculateTotalPledgeAmount(): Double {
-        val rwAmount: Double = if (pledgeflowcontext != PledgeFlowContext.LATE_PLEDGES) {
-            currentUserReward.pledgeAmount()
-        } else currentUserReward.latePledgeAmount()
-
-        var addOnsAmount = 0.0
-        addOns.filter { this.currentSelection[it.id()].isNotNull() }.map {
-            addOnsAmount += if (pledgeflowcontext != PledgeFlowContext.LATE_PLEDGES) {
-                (it.pledgeAmount() * (this.currentSelection[it.id()] ?: 0))
-            } else (it.latePledgeAmount() * (this.currentSelection[it.id()] ?: 0))
-        }
-
-        return addOnsAmount + bonusAmount + rwAmount
+        return getPledgeDataAndReason()?.first?.pledgeAmountTotalPlusBonus() ?: 0.0
     }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :

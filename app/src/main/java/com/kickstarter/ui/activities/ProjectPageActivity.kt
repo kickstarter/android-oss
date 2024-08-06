@@ -106,6 +106,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 
+const val REFRESH = "refresh"
+
 class ProjectPageActivity :
     AppCompatActivity(),
     CancelPledgeFragment.CancelPledgeDelegate,
@@ -1099,7 +1101,7 @@ class ProjectPageActivity :
         clearFragmentBackStack()
         backingFragment()?.pledgeSuccessfullyUpdated()
         val intent = Intent()
-            .putExtra(IntentKey.FIX_PAYMENT_SUCCESS, true)
+            .putExtra(IntentKey.REFRESH_PPO_LIST, REFRESH)
         setResult(Activity.RESULT_OK, intent)
     }
 

@@ -67,7 +67,7 @@ fun getCardTypeDrawable(cardType: CreditCardTypes): Int {
         CreditCardTypes.DISCOVER -> R.drawable.discover_md
         CreditCardTypes.JCB -> R.drawable.jcb_md
         CreditCardTypes.MASTERCARD -> R.drawable.mastercard_md
-        CreditCardTypes.UNION_PAY -> R.drawable.union_pay_md
+        CreditCardTypes.UNIONPAY -> R.drawable.union_pay_md
         CreditCardTypes.VISA -> R.drawable.visa_md
         else -> R.drawable.generic_bank_md
     }

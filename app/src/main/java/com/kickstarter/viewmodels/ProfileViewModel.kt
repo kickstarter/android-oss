@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
@@ -136,7 +137,8 @@ interface ProfileViewModel {
                 .build()
 
             paginator.isFetching
-                .subscribe(this.isFetchingProjects)
+                .subscribe { this.isFetchingProjects.onNext(it) }
+                .addToDisposable(disposables)
 
             val loggedInUser = this.currentUser.loggedInUser()
 
@@ -166,7 +168,7 @@ interface ProfileViewModel {
             ) { a, b -> Pair.create(a, b) }
                 .map { p -> p.first || p.second }
 
-            this.projectList = paginator.paginatedData()
+            this.projectList = paginator.paginatedData().filter { it.isNotNull() }
             this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked
 
             this.startMessageThreadsActivity = this.messagesButtonClicked

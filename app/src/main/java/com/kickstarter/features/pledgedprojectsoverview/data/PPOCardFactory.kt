@@ -8,6 +8,7 @@ class PPOCardFactory private constructor() {
 
         fun ppoCard(
             backingID: String?,
+            addressID: String?,
             address: String?,
             amount: String?,
             currencyCode: CurrencyCode?,
@@ -25,6 +26,7 @@ class PPOCardFactory private constructor() {
             return PPOCard.builder()
                 .backingId(backingID)
                 .address(address)
+                .addressID(addressID)
                 .amount(amount)
                 .currencySymbol(currencySymbol)
                 .currencyCode(currencyCode)
@@ -45,6 +47,7 @@ class PPOCardFactory private constructor() {
                 backingID = "1234",
                 amount = "12.0",
                 address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+                addressID = "12234",
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",
@@ -64,6 +67,7 @@ class PPOCardFactory private constructor() {
                 backingID = "1234",
                 amount = "$12.00",
                 address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+                addressID = "12234",
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",

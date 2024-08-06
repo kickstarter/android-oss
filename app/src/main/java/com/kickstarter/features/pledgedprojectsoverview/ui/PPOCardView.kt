@@ -148,7 +148,7 @@ fun PPOCardPreview() {
 
             item {
                 PPOCardView(
-                    viewType = PPOCardViewType.TAKE_SURVEY,
+                    viewType = PPOCardViewType.OPEN_SURVEY,
                     onCardClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$70.00",
@@ -192,7 +192,7 @@ enum class PPOCardViewType {
     PAYMENT_FIXED,
     AUTHENTICATE_CARD,
     CARD_AUTHENTICATED,
-    TAKE_SURVEY,
+    OPEN_SURVEY,
     SURVEY_SUBMITTED,
     UNKNOWN,
 }
@@ -217,7 +217,7 @@ fun PPOCardView(
     showBadge: Boolean = false,
     onActionButtonClicked: () -> Unit,
     onSecondaryActionButtonClicked: () -> Unit,
-    timeNumberForAction: Int = 0
+    timeNumberForAction: Int = 0,
 ) {
 
     BadgedBox(
@@ -241,7 +241,7 @@ fun PPOCardView(
                     PPOCardViewType.PAYMENT_FIXED -> {}
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardAlertsView(timeNumberForAction)
                     PPOCardViewType.CARD_AUTHENTICATED -> {}
-                    PPOCardViewType.TAKE_SURVEY -> TakeSurveyAlertsView(timeNumberForAction)
+                    PPOCardViewType.OPEN_SURVEY -> TakeSurveyAlertsView(timeNumberForAction)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedAlertsView(timeNumberForAction)
                     PPOCardViewType.UNKNOWN -> { }
                 }
@@ -277,7 +277,7 @@ fun PPOCardView(
                     PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView()
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
                     PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView()
-                    PPOCardViewType.TAKE_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
+                    PPOCardViewType.OPEN_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
                     PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
                     PPOCardViewType.UNKNOWN -> {}
                 }

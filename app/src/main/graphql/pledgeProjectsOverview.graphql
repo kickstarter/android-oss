@@ -1,31 +1,23 @@
 query PledgedProjectsOverview($first: Int, $after: String, $last: Int, $before: String) {
-  pledgeProjectsOverview {
-    categories {
-          count
-          slug
-          title
-        }
-    pledges(first : $first, after: $after, last : $last, before: $before) {
-          pageInfo {
-            endCursor
-            hasNextPage
-            hasPreviousPage
-            startCursor
-          }
+      pledgeProjectsOverview {
+        pledges(first : $first, after: $after, last : $last, before: $before) {
           totalCount
           edges {
-          cursor
+            cursor
             node {
-                  backing {
-                      ... ppoCard
-                  }
+                backing {
+                ...ppoCard
+                }
+                tierType
+                tags
             }
           }
-          nodes {
-               backing {
-                   ... ppoCard
-               }
+          pageInfo {
+          hasPreviousPage
+          hasNextPage
+            endCursor
+            startCursor
           }
         }
-  }
-}
+      }
+    }

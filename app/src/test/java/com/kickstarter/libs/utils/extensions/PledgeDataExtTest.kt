@@ -3,12 +3,154 @@ package com.kickstarter.libs.utils.extensions
 import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData.Companion.with
 import com.kickstarter.ui.data.PledgeFlowContext
 import junit.framework.TestCase
 
 class PledgeDataExtTest : TestCase() {
+
+    fun `test checkoutTotalAmount for reward shipping with AddOns and bonus support on late pledges`() {
+        val project = ProjectFactory.project()
+        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData1 = with(
+            PledgeFlowContext.LATE_PLEDGES,
+            project(project), rw, addOns, bonusAmount = 3.0, shippingRule = shippingRule
+        )
+
+        assertEquals(pledgeData1.checkoutTotalAmount(), 48.0)
+    }
+
+    fun `test checkoutTotalAmount for reward Not Shipping with AddOns and bonus support on crowdfund`() {
+        val project = ProjectFactory.project()
+        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+        val rw = RewardFactory.digitalReward().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData1 = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, bonusAmount = 4.0, shippingRule = shippingRule
+        )
+
+        assertEquals(pledgeData1.checkoutTotalAmount(), 19.0)
+    }
+
+    fun `test checkoutTotalAmount for reward shipping with AddOns and bonus support on crowdfund`() {
+        val project = ProjectFactory.project()
+        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData1 = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, bonusAmount = 4.0, shippingRule = shippingRule
+        )
+
+        assertEquals(pledgeData1.checkoutTotalAmount(), 29.0)
+    }
+
+    fun `test when the selected reward has shipping test shippingCostIfShipping`() {
+        val rw = RewardFactory.rewardWithShipping()
+        val project = ProjectFactory.project()
+        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, shippingRule = shippingRule
+        )
+
+        assertEquals(pledgeData.shippingCostIfShipping(), shippingRule.cost())
+    }
+
+    fun `test when digital reward test shippingCostIfShipping is 0`() {
+        val digital = RewardFactory.digitalReward()
+        val project = ProjectFactory.project()
+        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+
+        val pledgeData2 = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), digital, shippingRule = shippingRule
+        )
+        assertEquals(pledgeData2.shippingCostIfShipping(), 0.0)
+    }
+
+    fun `test pledgeTotalAmount with AddOns on late pledges`() {
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.reward().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData = with(
+            PledgeFlowContext.LATE_PLEDGES,
+            project(project), rw, addOns
+        )
+        assertEquals(pledgeData.pledgeAmountTotal(), 35.0)
+    }
+
+    fun `test pledgeTotalAmountPlusBonus with AddOns on late pledges`() {
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.reward().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData1 = with(
+            PledgeFlowContext.LATE_PLEDGES,
+            project(project), rw, addOns, bonusAmount = 0.0
+        )
+        assertEquals(pledgeData1.pledgeAmountTotalPlusBonus(), 35.0)
+
+        val pledgeData2 = with(
+            PledgeFlowContext.LATE_PLEDGES,
+            project(project), rw, addOns, bonusAmount = 7.0
+        )
+        assertEquals(pledgeData2.pledgeAmountTotalPlusBonus(), 42.0)
+    }
+
+    fun `test pledgeTotalAmountPlusBonus with AddOns on crowdfund`() {
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.reward().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData1 = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, bonusAmount = 0.0
+        )
+        assertEquals(pledgeData1.pledgeAmountTotalPlusBonus(), 15.0)
+
+        val pledgeData2 = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, bonusAmount = 7.0
+        )
+        assertEquals(pledgeData2.pledgeAmountTotalPlusBonus(), 22.0)
+    }
+
+    fun `test pledgeTotalAmount with AddOns on crowdfund`() {
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.reward().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
+        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+        val addOns = listOf(addOn1, addOn2)
+
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns
+        )
+        assertEquals(pledgeData.pledgeAmountTotal(), 15.0)
+    }
 
     fun testAddOnsCountTotalEmpty() {
         val project = ProjectFactory.project()

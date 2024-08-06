@@ -203,7 +203,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 PPOCardView(
-                    viewType = PPOCardViewType.TAKE_SURVEY,
+                    viewType = PPOCardViewType.OPEN_SURVEY,
                     onCardClick = {},
                     onProjectPledgeSummaryClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",

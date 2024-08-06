@@ -26,7 +26,6 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
-import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
@@ -44,12 +43,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
     private var startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.getBooleanExtra(IntentKey.FIX_PAYMENT_SUCCESS, false)
-                data?.let {
-                    if (it.isTrue()) {
-                        viewModel.getPledgedProjects()
-                    }
-                }
                 val refresh = result.data?.getStringExtra(IntentKey.REFRESH_PPO_LIST)
                 if (!refresh.isNullOrEmpty()) {
                     viewModel.getPledgedProjects()
@@ -92,16 +85,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts,
-                        onAddressConfirmed = { viewModel.showSnackbarAndRefreshCardsList() },
+                        onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
+                        onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         onProjectPledgeSummaryClick = { url ->
                             openBackingDetailsWebView(
                                 url = url,
                                 resultLauncher = null
-                            )
-                        },
-                        onSendMessageClick = { projectName ->
-                            viewModel.onMessageCreatorClicked(
-                                projectName
                             )
                         },
                         isLoading = isLoading,
@@ -120,7 +109,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     )
                                 }
 
-                                PPOCardViewType.TAKE_SURVEY -> {
+                                PPOCardViewType.OPEN_SURVEY -> {
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
                                         resultLauncher = startForResult

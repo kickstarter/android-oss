@@ -50,11 +50,13 @@ class ImageWithCaptionView @JvmOverloads constructor(
                     binding.imageView.visibility = VISIBLE
                     binding.composeViewImage.visibility = GONE
                 }
+
                 src.isGif() -> {
                     binding.imageView.visibility = VISIBLE
                     binding.imageView.loadGifImage(src, context)
                     binding.composeViewImage.visibility = GONE
                 }
+
                 else -> {
                     binding.composeViewImage.visibility = VISIBLE
                     binding.imageView.visibility = GONE

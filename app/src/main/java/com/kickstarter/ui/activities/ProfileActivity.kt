@@ -111,7 +111,9 @@ class ProfileActivity : ComponentActivity() {
         this.viewModel.outputs.projectList()
             .compose(observeForUIV2())
             .subscribe {
-                this.loadProjects(it)
+                runOnUiThread {
+                    this.loadProjects(it)
+                }
             }
             .addToDisposable(disposables)
 

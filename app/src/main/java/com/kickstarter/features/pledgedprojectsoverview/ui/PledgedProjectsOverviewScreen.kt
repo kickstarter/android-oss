@@ -74,9 +74,9 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 ppoCards = ppoCardPagingList,
                 totalAlerts = 10,
                 onBackPressed = {},
-                onAddressConfirmed = {},
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
+                onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
@@ -104,9 +104,9 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 ppoCards = ppoCardPagingList,
                 totalAlerts = 10,
                 onBackPressed = {},
-                onAddressConfirmed = {},
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
+                onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 onSeeAllBackedProjectsClick = {},
@@ -132,9 +132,9 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 ppoCards = ppoCardPagingList,
                 totalAlerts = 0,
                 onBackPressed = {},
-                onAddressConfirmed = {},
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
+                onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
@@ -149,7 +149,7 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
     onBackPressed: () -> Unit,
-    onAddressConfirmed: () -> Unit,
+    onAddressConfirmed: (addressID: String, backingID: String) -> Unit,
     lazyColumnListState: LazyListState,
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCard>,
@@ -166,6 +166,8 @@ fun PledgedProjectsOverviewScreen(
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
+    var addressID by remember { mutableStateOf("") }
+    var backingID by remember { mutableStateOf("") }
     val pullRefreshState = rememberPullRefreshState(
         isLoading,
         pullRefreshCallback,
@@ -179,6 +181,7 @@ fun PledgedProjectsOverviewScreen(
         Scaffold(
             snackbarHost = {
                 SnackbarHost(
+                    modifier = Modifier.padding(dimensions.paddingSmall),
                     hostState = errorSnackBarHostState,
                     snackbar = { data ->
                         // Action label is typically for the action on a snackbar, but we can
@@ -254,6 +257,8 @@ fun PledgedProjectsOverviewScreen(
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
                                             confirmedAddress = it.address() ?: ""
+                                            addressID = it.addressID ?: ""
+                                            backingID = it.backingId ?: ""
                                             openConfirmAddressAlertDialog.value = true
                                         }
                                         else -> {
@@ -285,12 +290,7 @@ fun PledgedProjectsOverviewScreen(
                 rightButtonText = stringResource(id = R.string.Confirm),
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
-
-                    // Call confirm address API
-                    // TODO: MBL-1556 Add network call to confirm address
-
-                    // Show snackbar and refresh list
-                    onAddressConfirmed()
+                    onAddressConfirmed(addressID, backingID)
                 }
             )
         }

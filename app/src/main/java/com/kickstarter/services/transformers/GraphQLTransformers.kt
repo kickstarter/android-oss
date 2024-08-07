@@ -797,14 +797,18 @@ fun videoTransformer(video: fragment.Video?): Video {
  * @return ShippingRule
  */
 fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
-    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
+    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDoubleOrNull() ?: 0.0
     val location = rule.location()?.let {
         locationTransformer(it.fragments().location())
     }
+    val estimatedMin = rule.estimatedMin()?.amount()?.toDoubleOrNull() ?: 0.0
+    val estimatedMax = rule.estimatedMax()?.amount()?.toDoubleOrNull() ?: 0.0
 
     return ShippingRule.builder()
         .cost(cost)
         .location(location)
+        .estimatedMin(estimatedMin)
+        .estimatedMax(estimatedMax)
         .build()
 }
 

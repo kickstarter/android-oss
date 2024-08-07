@@ -35,7 +35,8 @@ import kotlinx.coroutines.rx2.asFlow
 data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
     val totalCount: Int = 0,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val shippingRule: ShippingRule = ShippingRule.builder().build()
 )
 
 class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
@@ -215,7 +216,8 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             AddOnsUIState(
                 addOns = addOns,
                 isLoading = isLoading,
-                totalCount = currentSelection.values.sum()
+                totalCount = currentSelection.values.sum(),
+                shippingRule = shippingRule
             )
         )
     }

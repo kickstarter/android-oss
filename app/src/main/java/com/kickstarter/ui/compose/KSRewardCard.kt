@@ -54,6 +54,7 @@ fun KSRewardCardPreview() {
             shippingSummaryText = "Anywhere",
             addonsPillVisible = true,
             remainingText = "5 left",
+            estimatedShippingCost = "About $10-$15",
             onRewardSelectClicked = { }
         )
     }
@@ -78,6 +79,7 @@ fun KSRewardCard(
     shippingSummaryText: String? = null,
     addonsPillVisible: Boolean = false,
     remainingText: String? = null,
+    estimatedShippingCost: String? = null,
     onRewardSelectClicked: () -> Unit
 ) {
 
@@ -191,6 +193,24 @@ fun KSRewardCard(
                             Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                }
+
+                if (!estimatedShippingCost.isNullOrEmpty()) {
+                    Text(
+                        // TODO: Replace with defined string
+                        text = "Estimated Shipping",
+                        color = colors.kds_support_400,
+                        style = typography.calloutMedium
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(top = dimensions.radiusSmall),
+                        text = estimatedShippingCost,
+                        color = colors.kds_support_700,
+                        style = typography.body2
+                    )
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 }

@@ -262,6 +262,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         onItemAddedOrRemoved = onAddOnAddedOrRemoved,
                                         onContinueClicked = onAddOnsContinueClicked,
                                         isLoading = isLoading,
+                                        currentShippingRule = currentShippingRule,
                                         addOnCount = totalSelectedAddOn
                                     )
                                 }

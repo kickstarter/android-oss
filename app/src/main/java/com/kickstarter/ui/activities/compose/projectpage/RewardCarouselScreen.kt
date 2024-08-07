@@ -44,8 +44,6 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.KSRewardCard
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import com.kickstarter.ui.compose.designsystem.KSTheme.colors
-import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.views.compose.ShippingSelector
 import org.joda.time.DateTime
 import java.math.RoundingMode
@@ -92,7 +90,10 @@ fun RewardCarouselScreenPreview() {
                     .build(),
                 onRewardSelected = {},
                 currentShippingRule = ShippingRuleFactory.usShippingRule(),
-                countryList = listOf(ShippingRuleFactory.usShippingRule(), ShippingRuleFactory.germanyShippingRule()),
+                countryList = listOf(
+                    ShippingRuleFactory.usShippingRule(),
+                    ShippingRuleFactory.germanyShippingRule()
+                ),
                 onShippingRuleSelected = {}
             )
         }
@@ -307,6 +308,23 @@ fun RewardCarouselScreen(
                                     } else ""
                                 } else ""
                             },
+                            estimatedShippingCost =
+                            if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+                                environment.ksCurrency()?.let { ksCurrency ->
+                                    environment.ksString()?.let { ksString ->
+                                        RewardViewUtils.getEstimatedShippingCostString(
+                                            context,
+                                            ksCurrency,
+                                            ksString,
+                                            project,
+                                            currentShippingRule,
+                                            isAddOn = false,
+                                            multipleQuantitiesAllowed = false,
+                                            shippingRules = null
+                                        )
+                                    }
+                                }
+                            } else null,
                             addonsPillVisible = reward.hasAddons()
                         )
                     }

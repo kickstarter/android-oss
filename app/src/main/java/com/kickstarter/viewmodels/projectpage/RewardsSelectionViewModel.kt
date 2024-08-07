@@ -98,7 +98,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                 // - collect useCase flow and update shippingUIState
                 shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
                     availableShippingRules = shippingUseCase.shippingRules
-                    selectedShippingRule = shippingUseCase.selectedShippingRule
+                    selectedShippingRule = shippingUseCase.defaultShippingRule
                     emitShippingUIState()
                 }
             }
@@ -148,7 +148,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         mutableShippingUIState.emit(
             ShippingRulesState(
                 shippingRules = availableShippingRules,
-                selectedShippingRule = selectedShippingRule
+                defaultShippingRule = selectedShippingRule
             )
         )
     }

@@ -448,7 +448,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle() // wait until all state emissions completed
 
         assertEquals(shippingUiState.size, 2)
-        assertEquals(shippingUiState.last().selectedShippingRule.location()?.name(), testShippingRulesList.first().location()?.name())
+        assertEquals(shippingUiState.last().defaultShippingRule.location()?.name(), testShippingRulesList.first().location()?.name())
         assertNotSame(shippingUiState.last().shippingRules, testShippingRulesList)
         assertEquals(shippingUiState.last().shippingRules.size, 2) // the 3 available shipping rules
     }
@@ -496,7 +496,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle() // wait until all state emissions completed
 
         assertEquals(shippingUiState.size, 2)
-        assertEquals(shippingUiState.last().selectedShippingRule.location()?.name(), "Canada")
+        assertEquals(shippingUiState.last().defaultShippingRule.location()?.name(), "Canada")
         assertEquals(shippingUiState.last().shippingRules, testShippingRulesList.shippingRules())
     }
 }

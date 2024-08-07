@@ -24,7 +24,7 @@ data class ShippingRulesState(
     val shippingRules: List<ShippingRule> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null,
-    val selectedShippingRule: ShippingRule = ShippingRuleFactory.usShippingRule()
+    val defaultShippingRule: ShippingRule = ShippingRuleFactory.usShippingRule()
 )
 
 /**
@@ -87,6 +87,7 @@ class GetShippingRulesUseCase(
             scope.launch(dispatcher) {
                 _mutableShippingRules.emit(ShippingRulesState(loading = true))
                 rewardsToQuery.forEachIndexed { index, reward ->
+
                     apolloClient.getShippingRules(reward)
                         .asFlow()
                         .map { rulesEnvelope ->
@@ -100,7 +101,7 @@ class GetShippingRulesUseCase(
                                     ShippingRulesState(
                                         shippingRules = shippingRules.values.toList(),
                                         loading = false,
-                                        selectedShippingRule = getDefaultShippingRule(shippingRules, project)
+                                        defaultShippingRule = getDefaultShippingRule(shippingRules, project)
                                     )
                                 )
                             }

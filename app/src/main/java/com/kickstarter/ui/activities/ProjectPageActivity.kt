@@ -520,7 +520,7 @@ class ProjectPageActivity :
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                     val rewardsList = rewardSelectionUIState.rewardList
                     val selectedReward = rewardSelectionUIState.selectedReward
-                    val currentUserShippingRule = shippingUIState.selectedShippingRule
+                    val currentUserShippingRule = shippingUIState.defaultShippingRule
                     val shippingRules = shippingUIState.shippingRules
                     rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 

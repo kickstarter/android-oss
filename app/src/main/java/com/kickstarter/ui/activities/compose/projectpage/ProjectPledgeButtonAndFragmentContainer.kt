@@ -105,6 +105,8 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             selectedRewardAndAddOnList = listOf(),
             storedCards = listOf(),
             userEmail = "test@test.test",
+            shippingAmount = 0.0,
+            checkoutTotal = 20.0,
             onPledgeCtaClicked = {},
             onAddPaymentMethodClicked = {},
             onDisclaimerItemClicked = {},
@@ -140,6 +142,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
     selectedRewardAndAddOnList: List<Reward>,
     storedCards: List<StoredCard>,
     userEmail: String,
+    shippingAmount: Double,
+    checkoutTotal: Double,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
     onAddPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
@@ -274,8 +278,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                             project
                                         ),
                                         pledgeReason = PledgeReason.PLEDGE,
-                                        shippingAmount = 0.0, // TODO delete
-                                        totalAmount = totalPledgeAmount,
+                                        shippingAmount = shippingAmount,
+                                        totalAmount = checkoutTotal,
                                         totalBonusSupport = totalBonusAmount,
                                         currentShippingRule = currentShippingRule,
                                         rewardsHaveShippables = selectedRewardAndAddOnList.any {

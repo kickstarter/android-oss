@@ -15,8 +15,23 @@ class PledgeDataExtTest : TestCase() {
         val project = ProjectFactory.project()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
         val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
-        val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
-        val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
+
+        val addOn1 = RewardFactory.addOn().toBuilder()
+            .id(1L)
+            .quantity(3)
+            .latePledgeAmount(5.0)
+            .pledgeAmount(3.0)
+            .shippingRules(listOf(shippingRule))
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+            .build()
+        val addOn2 = RewardFactory.addOn().toBuilder()
+            .id(2L)
+            .quantity(2)
+            .latePledgeAmount(6.0)
+            .pledgeAmount(2.0)
+            .shippingRules(listOf(shippingRule))
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+            .build()
         val addOns = listOf(addOn1, addOn2)
 
         val pledgeData1 = with(
@@ -24,7 +39,7 @@ class PledgeDataExtTest : TestCase() {
             project(project), rw, addOns, bonusAmount = 3.0, shippingRule = shippingRule
         )
 
-        assertEquals(pledgeData1.checkoutTotalAmount(), 48.0)
+        assertEquals(pledgeData1.checkoutTotalAmount(), 98.0)
     }
 
     fun `test checkoutTotalAmount for reward Not Shipping with AddOns and bonus support on crowdfund`() {

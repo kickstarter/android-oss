@@ -553,6 +553,8 @@ class ProjectPageActivity :
                     val userStoredCards = latePledgeCheckoutUIState.storeCards
                     val userEmail = latePledgeCheckoutUIState.userEmail
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
+                    val shippingAmount = latePledgeCheckoutUIState.shippingAmount
+                    val checkoutTotal = latePledgeCheckoutUIState.checkoutTotal
 
                     latePledgeCheckoutViewModel.provideErrorAction { message ->
                         showToastError(message)
@@ -654,6 +656,8 @@ class ProjectPageActivity :
                         },
                         storedCards = userStoredCards,
                         userEmail = userEmail,
+                        shippingAmount = shippingAmount,
+                        checkoutTotal = checkoutTotal,
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {
                                 latePledgeCheckoutViewModel.sendSubmitCTAEvent()

@@ -13,12 +13,23 @@ fun PledgeData.locationId(): Long {
 }
 /**
  * Shipping cost associated to the selected shipping rule if the
- * selected reward
+ * selected reward:
+ * Amount = RWShipping + AddOnShipping.shipping( xQ)
+ *
  */
 fun PledgeData.shippingCostIfShipping(): Double {
-    return if (RewardUtils.isShippable(this.reward()))
+    val rwShippingCost = if (RewardUtils.isShippable(this.reward()))
         this.shippingRule()?.cost() ?: 0.0
     else 0.0
+
+    var addOnsShippingCost = 0.0
+    this.addOns()?.map {
+        if (RewardUtils.shipsWorldwide(it) || RewardUtils.shipsToRestrictedLocations(it)) {
+            addOnsShippingCost += (it.shippingRules()?.first()?.cost() ?: 0.0) * (it.quantity() ?: 0)
+        } else 0.0
+    }
+
+    return rwShippingCost + addOnsShippingCost
 }
 
 /**

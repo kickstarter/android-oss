@@ -47,6 +47,8 @@ data class LatePledgeCheckoutUIState(
     val userEmail: String = "",
     val isLoading: Boolean = false,
     val selectedRewards: List<Reward> = emptyList(),
+    val shippingAmount: Double = 0.0,
+    val checkoutTotal: Double = 0.0,
     val isPledgeButtonEnabled: Boolean = true
 )
 
@@ -372,6 +374,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 userEmail = userEmail,
                 isLoading = isLoading,
                 selectedRewards = selectedRewards.toList(),
+                shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
+                checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
                 isPledgeButtonEnabled = buttonEnabled,
             )
         )

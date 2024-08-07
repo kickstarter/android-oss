@@ -1,4 +1,4 @@
-package com.kickstarter.viewmodels.usecases
+package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment

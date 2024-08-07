@@ -14,6 +14,7 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.extensions.isBacked
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -184,5 +185,46 @@ object RewardViewUtils {
             "reward_amount",
             minToMaxString
         )
+    }
+
+    /**
+     * Returns a string for the shipping costs for add-on cards
+     *
+     * Ex. " + $5 each"
+     */
+    fun getAddOnShippingAmountString(
+        context: Context,
+        project: Project,
+        reward: Reward,
+        rewardShippingRules: List<ShippingRule>?,
+        ksCurrency: KSCurrency?,
+        ksString: KSString?,
+        selectedShippingRule: ShippingRule
+    ): String {
+        if (rewardShippingRules.isNullOrEmpty() || ksCurrency.isNull() || ksString.isNull()) return ""
+        val shippingAmount =
+            if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+                var cost = 0.0
+                rewardShippingRules.filter {
+                    it.location()?.id() == selectedShippingRule.location()?.id()
+                }.map {
+                    cost += it.cost()
+                }
+                if (cost > 0) ksCurrency?.format(cost, project)
+                else ""
+            } else {
+                ""
+            }
+        if (shippingAmount.isNullOrEmpty()) return ""
+        val rewardAndShippingString =
+            context.getString(R.string.reward_amount_plus_shipping_cost_each)
+        val stringSections = rewardAndShippingString.split("+")
+        val shippingString = " +" + stringSections[1]
+        val ammountAndShippingString = ksString?.format(
+            shippingString,
+            "shipping_cost",
+            shippingAmount
+        )
+        return ammountAndShippingString ?: ""
     }
 }

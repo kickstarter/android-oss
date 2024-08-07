@@ -190,6 +190,15 @@ fun AddOnsScreen(
                                 )
                             )
                         },
+                        shippingAmount = RewardViewUtils.getAddOnShippingAmountString(
+                            context = context,
+                            project = project,
+                            reward = reward,
+                            rewardShippingRules = reward.shippingRules(),
+                            ksCurrency = environment.ksCurrency(),
+                            ksString = environment.ksString(),
+                            selectedShippingRule = currentShippingRule
+                        ),
                         description = reward.description() ?: "",
                         includesList = reward.addOnsItems()?.map {
                             environment.ksString()?.format(

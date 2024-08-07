@@ -43,6 +43,7 @@ private fun AddOnsContainerPreview() {
             title = "This Is A Test",
             amount = "$500",
             conversionAmount = "About $500",
+            shippingAmount = " + $5 each",
             description = "This is just a test, don't worry about it, This is just a test, don't worry about it, This is just a test, don't worry about it, This is just a test, don't worry about it",
             includesList = listOf("this is item 1", "this is item 2", "this is item 3"),
             limit = 10,
@@ -61,6 +62,7 @@ fun AddOnsContainer(
     title: String,
     amount: String,
     conversionAmount: String? = null,
+    shippingAmount: String? = null,
     description: String,
     includesList: List<String> = listOf(),
     limit: Int = -1,
@@ -88,7 +90,17 @@ fun AddOnsContainer(
 
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
-            Text(text = amount, style = typography.callout, color = colors.textAccentGreen)
+            Row {
+                Text(text = amount, style = typography.callout, color = colors.textAccentGreen)
+
+                if (!shippingAmount.isNullOrEmpty()) {
+                    Text(
+                        text = shippingAmount,
+                        style = typography.callout,
+                        color = colors.textAccentGreen
+                    )
+                }
+            }
 
             if (!conversionAmount.isNullOrEmpty()) {
                 Text(

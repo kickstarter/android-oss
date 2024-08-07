@@ -15,7 +15,9 @@ import kotlin.math.max
 
 object RewardUtils {
 
-    fun minPledgeAmount(reward: Reward, project: Project): Double = if (isNoReward(reward)) Country.findByCurrencyCode(project.currency())?.minPledge?.toDouble() ?: 0.0 else 0.0
+    fun minPledgeAmount(reward: Reward, project: Project): Double {
+        return Country.findByCurrencyCode(project.currency())?.minPledge?.toDouble() ?: 0.0
+    }
 
     fun maxPledgeAmount(reward: Reward, project: Project): Double = Country.findByCurrencyCode(project.currency())?.maxPledge?.toDouble() ?: 0.0
 

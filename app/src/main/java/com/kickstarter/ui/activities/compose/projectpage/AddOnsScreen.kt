@@ -52,7 +52,7 @@ private fun AddOnsScreenPreview() {
                 modifier = Modifier.padding(padding),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
-                selectedReward = RewardFactory.reward(),
+                selectedReward = RewardFactory.reward().toBuilder().minimum(5.0).build(),
                 addOns = (0..10).map {
                     Reward.builder()
                         .title("Item Number $it")
@@ -201,6 +201,7 @@ fun AddOnsScreen(
                         noAddOnsRw = addOns.isEmpty(),
                         initialAmount = initAmount,
                         maxAmount = RewardUtils.maxPledgeAmount(selectedReward, project),
+                        minPledge = RewardUtils.minPledgeAmount(selectedReward, project),
                         currencySymbolAtStart = currencySymbolStartAndEnd?.first,
                         currencySymbolAtEnd = currencySymbolStartAndEnd?.second,
                         onBonusSupportPlusClicked = bonusAmountChanged,

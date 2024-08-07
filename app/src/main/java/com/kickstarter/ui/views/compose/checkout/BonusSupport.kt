@@ -41,6 +41,7 @@ fun BonusSupportContainerPreview() {
         noAddOnsRw = true,
         initialAmount = 5.0,
         maxAmount = 10.0,
+        minPledge = 5.0,
         currencySymbolAtStart = "CAD",
         currencySymbolAtEnd = "$",
         onBonusSupportPlusClicked = {},
@@ -56,10 +57,12 @@ fun BonusSupportContainer(
     maxAmount: Double,
     currencySymbolAtStart: String?,
     currencySymbolAtEnd: String?,
+    minPledge: Double,
     onBonusSupportPlusClicked: (amount: Double) -> Unit,
     onBonusSupportMinusClicked: (amount: Double) -> Unit,
     onBonusSupportInputted: (amount: Double) -> Unit
 ) {
+    val minStepAmount = minPledge
     val bonusAmountMaxDigits = integerResource(R.integer.max_length)
     var totalBonusSupport by rememberSaveable { mutableDoubleStateOf(initialAmount) }
 
@@ -88,12 +91,12 @@ fun BonusSupportContainer(
         ) {
             KSStepper(
                 onPlusClicked = {
-                    totalBonusSupport++
+                    totalBonusSupport += minStepAmount
                     onBonusSupportPlusClicked(totalBonusSupport)
                 },
                 isPlusEnabled = totalBonusSupport != maxAmount,
                 onMinusClicked = {
-                    totalBonusSupport--
+                    totalBonusSupport -= minStepAmount
                     onBonusSupportMinusClicked(totalBonusSupport)
                 },
                 isMinusEnabled = initialAmount != totalBonusSupport,

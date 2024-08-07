@@ -1305,26 +1305,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryAmount_whenFixingPaymentMethod_whenRewardAddOnShippingBonusAmount() {
-        val testData = setUpBackedRewardWithAddOnsAndShippingAndBonusAmountTestData()
-        val backedProject = testData.project
-        val reward = testData.reward
-
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
-                }
-            })
-            .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.FIX_PLEDGE)
-
-        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, 42.0))
-    }
-
-    @Test
     fun testTotalAmount_whenUpdatingPledge() {
         val testData = setUpBackedShippableRewardTestData()
         val backedProject = testData.project

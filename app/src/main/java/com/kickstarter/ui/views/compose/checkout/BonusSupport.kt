@@ -99,7 +99,7 @@ fun BonusSupportContainer(
                     totalBonusSupport -= minStepAmount
                     onBonusSupportMinusClicked(totalBonusSupport)
                 },
-                isMinusEnabled = initialAmount != totalBonusSupport,
+                isMinusEnabled = totalBonusSupport > 0,
                 enabledButtonBackgroundColor = colors.kds_white
             )
 

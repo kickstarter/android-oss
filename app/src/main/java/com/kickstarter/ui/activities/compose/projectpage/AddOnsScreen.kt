@@ -194,8 +194,7 @@ fun AddOnsScreen(
 
                     val initAmount = if (project.isBacking())
                         project.backing()?.bonusAmount() ?: 0.0
-                    else
-                        RewardUtils.minPledgeAmount(selectedReward, project)
+                    else 0.0
 
                     BonusSupportContainer(
                         noAddOnsRw = addOns.isEmpty(),

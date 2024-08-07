@@ -134,7 +134,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 }
             }
 
-            if (currentUserReward.hasAddons())
+            if (currentUserReward.hasAddons() || backing?.addOns().isNotNull())
                 getAddOns(shippingRule)
         }
     }

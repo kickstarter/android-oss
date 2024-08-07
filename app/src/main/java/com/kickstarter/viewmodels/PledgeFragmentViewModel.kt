@@ -101,9 +101,6 @@ interface PledgeFragmentViewModel {
         /** Call when the user updates the pledge amount. */
         fun pledgeInput(amount: String)
 
-        /** Call when the user updates the bonus amount. */
-        fun bonusInput(amount: String)
-
         /** Call when user clicks the pledge button. */
         fun pledgeButtonClicked()
 
@@ -364,7 +361,6 @@ interface PledgeFragmentViewModel {
         private val stripeSetupResultUnsuccessful = BehaviorSubject.create<Exception>()
         private val decreaseBonusButtonClicked = BehaviorSubject.create<Unit>()
         private val increaseBonusButtonClicked = BehaviorSubject.create<Unit>()
-        private val bonusInput = BehaviorSubject.create<String>()
         private val onRiskMessageDismissed = BehaviorSubject.create<Unit>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
@@ -496,6 +492,23 @@ interface PledgeFragmentViewModel {
             val project = projectData
                 .map { it.project() }
 
+            pledgeData
+                .map {
+                    it.bonusAmount()
+                }
+                .subscribe {
+                    this.bonusAmount.onNext(it.toString())
+                }.addToDisposable(disposables)
+
+            pledgeData
+                .filter { it.shippingRule().isNotNull() && it.shippingRule()?.location().isNotNull() }
+                .map {
+                    requireNotNull(it.shippingRule())
+                }
+                .subscribe {
+                    this.shippingRule.onNext(it)
+                }.addToDisposable(disposables)
+
             // Shipping rules section
             val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
             this.selectedReward
@@ -594,15 +607,6 @@ interface PledgeFragmentViewModel {
                     val updatedList = it.first.toMutableList()
                     updatedList.add(0, it.second)
                     this.rewardAndAddOns.onNext(updatedList.toList())
-                }
-                .addToDisposable(disposables)
-
-            backing
-                .filter { it.bonusAmount().isNotNull() }
-                .map { it.bonusAmount() }
-                .filter { it > 0 }
-                .subscribe {
-                    this.bonusInput.onNext(it.toString())
                 }
                 .addToDisposable(disposables)
 
@@ -798,51 +802,6 @@ interface PledgeFragmentViewModel {
                     formatter.format(it)
                 }
                 .subscribe { this.pledgeAmount.onNext(it) }
-                .addToDisposable(disposables)
-
-            // Bonus stepper action
-            val bonusMinimum = Observable.just(0.0)
-            val bonusStepAmount = Observable.just(1.0)
-
-            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it.parseToDouble() })
-
-            bonusMinimum
-                .map { NumberUtils.format(it.toInt()) }
-                .distinctUntilChanged()
-                .subscribe { this.bonusHint.onNext(it) }
-                .addToDisposable(disposables)
-
-            bonusInput
-                .compose<Double>(takeWhenV2(this.increaseBonusButtonClicked))
-                .compose<Pair<Double, Double>>(combineLatestPair(bonusStepAmount))
-                .map { it.first + it.second }
-                .map { it.toString() }
-                .subscribe { this.bonusInput.onNext(it) }
-                .addToDisposable(disposables)
-
-            bonusInput
-                .compose<Double>(takeWhenV2(this.decreaseBonusButtonClicked))
-                .compose<Pair<Double, Double>>(combineLatestPair(bonusStepAmount))
-                .map { it.first - it.second }
-                .map { it.toString() }
-                .subscribe { this.bonusInput.onNext(it) }
-                .addToDisposable(disposables)
-
-            bonusInput
-                .compose<Pair<Double, Double>>(combineLatestPair(bonusMinimum))
-                .map { max(it.first, it.second) > it.second }
-                .distinctUntilChanged()
-                .subscribe { this.decreaseBonusButtonIsEnabled.onNext(it) }
-                .addToDisposable(disposables)
-
-            bonusInput
-                .map {
-                    val formatter = NumberFormat.getNumberInstance()
-                    formatter.maximumFractionDigits = 2
-                    formatter.format(it)
-                }
-                .distinctUntilChanged()
-                .subscribe { this.bonusAmount.onNext(it) }
                 .addToDisposable(disposables)
 
             Observable.merge(this.decreaseBonusButtonClicked, this.decreasePledgeButtonClicked, this.increaseBonusButtonClicked, this.increasePledgeButtonClicked)
@@ -1918,8 +1877,6 @@ interface PledgeFragmentViewModel {
         override fun stripeSetupResultSuccessful(@StripeIntentResult.Outcome outcome: Int) = this.stripeSetupResultSuccessful.onNext(outcome)
 
         override fun stripeSetupResultUnsuccessful(exception: Exception) = this.stripeSetupResultUnsuccessful.onNext(exception)
-
-        override fun bonusInput(amount: String) = this.bonusInput.onNext(amount)
 
         override fun paymentSheetResult(paymentResult: PaymentSheetResult) = this.paymentSheetResult.onNext(
             paymentResult

@@ -276,6 +276,17 @@ fun PledgedProjectsOverviewScreen(
                     }
                 }
             }
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                        .clickable(enabled = false) { },
+                    contentAlignment = Alignment.Center
+                ) {
+                    KSCircularProgressIndicator()
+                }
+            }
         }
     }
 
@@ -293,18 +304,6 @@ fun PledgedProjectsOverviewScreen(
                     onAddressConfirmed(addressID, backingID)
                 }
             )
-        }
-    }
-
-    if (isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                .clickable(enabled = false) { },
-            contentAlignment = Alignment.Center
-        ) {
-            KSCircularProgressIndicator()
         }
     }
 }

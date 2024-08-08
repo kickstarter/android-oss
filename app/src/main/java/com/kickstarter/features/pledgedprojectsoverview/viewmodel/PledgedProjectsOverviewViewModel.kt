@@ -100,6 +100,10 @@ class PledgedProjectsOverviewViewModel(
     private val mutablePPOUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
     val ppoCardsState: StateFlow<PagingData<PPOCard>> = mutablePpoCards.asStateFlow()
 
+    private var mutablePaymentRequiresAction = MutableSharedFlow<String>()
+    val paymentRequiresAction: SharedFlow<String>
+        get() = mutablePaymentRequiresAction.asSharedFlow()
+
     private var pagingSource = PledgedProjectsPagingSource(apolloClient, mutableTotalAlerts, PAGE_LIMIT)
 
     val ppoUIState: StateFlow<PledgedProjectsOverviewUIState>
@@ -196,6 +200,10 @@ class PledgedProjectsOverviewViewModel(
         this.snackbarMessage = snackBarMessage
     }
 
+    suspend fun showLoadingState(isLoading: Boolean) {
+        emitCurrentState(isLoading = isLoading)
+    }
+
     private suspend fun emitCurrentState(isLoading: Boolean = false, isErrored: Boolean = false) {
         mutablePPOUIState.emit(
             PledgedProjectsOverviewUIState(
@@ -205,11 +213,11 @@ class PledgedProjectsOverviewViewModel(
         )
     }
 
-    private fun showHeadsUpSnackbar(messageId: Int) {
+    fun showHeadsUpSnackbar(messageId: Int) {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_HEADS_UP.name)
     }
 
-    private fun showErrorSnackbar(messageId: Int) {
+    fun showErrorSnackbar(messageId: Int) {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name)
     }
 

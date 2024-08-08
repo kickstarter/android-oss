@@ -372,6 +372,7 @@ fragment shippingRule on ShippingRule {
 
 fragment ppoCard on Backing {
     id
+    clientSecret
     amount {
         ...amount
     }

@@ -11,6 +11,7 @@ class PPOCard private constructor(
     val address: String?,
     val addressID: String?,
     val amount: String?,
+    val clientSecret: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
     val projectName: String?,
@@ -21,6 +22,7 @@ class PPOCard private constructor(
     val creatorName: String?,
     val backingDetailsUrl: String?,
     val showBadge: Boolean,
+    val stripeCardID: String?,
     val timeNumberForAction: Int,
     val viewType: PPOCardViewType?
 
@@ -30,6 +32,7 @@ class PPOCard private constructor(
     fun address() = this.address
     fun addressID() = this.addressID
     fun amount() = this.amount
+    fun clientSecret() = this.clientSecret
     fun currencyCode() = this.currencyCode
     fun currencySymbol() = this.currencySymbol
     fun projectName() = this.projectName
@@ -40,6 +43,7 @@ class PPOCard private constructor(
     fun creatorName() = this.creatorName
     fun backingDetailsUrl() = this.backingDetailsUrl
     fun showBadge() = this.showBadge
+    fun stripeCardID() = this.stripeCardID
     fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
 
@@ -49,6 +53,7 @@ class PPOCard private constructor(
         var address: String? = null,
         var addressID: String? = null,
         var amount: String? = null,
+        var clientSecret: String? = null,
         var currencyCode: CurrencyCode? = null,
         var currencySymbol: String? = null,
         var projectName: String? = null,
@@ -59,6 +64,7 @@ class PPOCard private constructor(
         var creatorName: String? = null,
         var backingDetailsUrl: String? = null,
         var showBadge: Boolean = false,
+        var stripeCardID: String? = null,
         var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
@@ -67,6 +73,7 @@ class PPOCard private constructor(
         fun address(address: String?) = apply { this.address = address }
         fun addressID(addressID: String?) = apply { this.addressID = addressID }
         fun amount(amount: String?) = apply { this.amount = amount }
+        fun clientSecret(clientSecret: String?) = apply { this.clientSecret = clientSecret }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }
         fun projectName(projectName: String?) = apply { this.projectName = projectName }
@@ -78,6 +85,7 @@ class PPOCard private constructor(
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
         fun showBadge(showBadge: Boolean) = apply { this.showBadge = showBadge }
+        fun stripeCardID(stripeCardID: String?) = apply { this.stripeCardID = stripeCardID }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
@@ -85,6 +93,7 @@ class PPOCard private constructor(
             address = address,
             addressID = addressID,
             amount = amount,
+            clientSecret = clientSecret,
             currencyCode = currencyCode,
             currencySymbol = currencySymbol,
             projectName = projectName,
@@ -95,6 +104,7 @@ class PPOCard private constructor(
             creatorName = creatorName,
             backingDetailsUrl = backingDetailsUrl,
             showBadge = showBadge,
+            stripeCardID = stripeCardID,
             timeNumberForAction = timeNumberForAction,
             viewType = viewType,
         )
@@ -105,6 +115,7 @@ class PPOCard private constructor(
         address = address,
         addressID = addressID,
         amount = amount,
+        clientSecret = clientSecret,
         currencyCode = currencyCode,
         currencySymbol = currencySymbol,
         projectName = projectName,
@@ -115,6 +126,7 @@ class PPOCard private constructor(
         creatorName = creatorName,
         backingDetailsUrl = backingDetailsUrl,
         showBadge = showBadge,
+        stripeCardID = stripeCardID,
         timeNumberForAction = timeNumberForAction,
         viewType = viewType,
     )
@@ -131,6 +143,7 @@ class PPOCard private constructor(
                 address() == other.address() &&
                 addressID() == other.addressID() &&
                 amount() == other.amount() &&
+                    clientSecret() == other.clientSecret() &&
                 currencyCode() == other.currencyCode() &&
                 currencySymbol() == other.currencySymbol() &&
                 projectName() == other.projectName() &&

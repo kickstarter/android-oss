@@ -19,6 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
@@ -26,18 +28,33 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.ProfileActivity
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
+import com.stripe.android.ApiResultCallback
+import com.stripe.android.PaymentIntentResult
+import com.stripe.android.Stripe
+import com.stripe.android.StripeIntentResult
+import com.stripe.android.confirmPaymentIntent
+import com.stripe.android.model.ConfirmPaymentIntentParams
 import kotlinx.coroutines.launch
 
 class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
     private lateinit var viewModelFactory: PledgedProjectsOverviewViewModel.Factory
+    private lateinit var snackbarHostState: SnackbarHostState
+    private lateinit var stripe: Stripe
     private val viewModel: PledgedProjectsOverviewViewModel by viewModels { viewModelFactory }
     private var theme = AppThemes.MATCH_SYSTEM.ordinal
     private var startForResult =
@@ -61,10 +78,13 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                     ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                     ?: AppThemes.MATCH_SYSTEM.ordinal
 
+                stripe = requireNotNull(env.stripe())
+                snackbarHostState = remember { SnackbarHostState() }
+                setUpConnectivityStatusCheck(lifecycle)
+
                 val ppoUIState by viewModel.ppoUIState.collectAsStateWithLifecycle()
 
                 val lazyListState = rememberLazyListState()
-                val snackbarHostState = remember { SnackbarHostState() }
                 val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
@@ -102,6 +122,13 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         },
                         onPrimaryActionButtonClicked = { PPOCard ->
                             when (PPOCard.viewType()) {
+                                PPOCardViewType.AUTHENTICATE_CARD -> {
+                                    lifecycleScope.launch {
+                                        viewModel.showLoadingState(true)
+                                    }
+                                    stripeNextAction(PPOCard.clientSecret() ?: "", stripe)
+                                }
+
                                 PPOCardViewType.FIX_PAYMENT -> {
                                     openManagePledge(
                                         PPOCard.projectSlug ?: "",
@@ -200,5 +227,46 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         this.let {
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }
+    }
+
+    private fun stripeNextAction(it: String, stripe: Stripe) {
+        try {
+            // - PaymentIntent format
+            if (it.contains("pi_")) {
+                stripe.handleNextActionForPayment(this, it)
+            } else {
+                // - SetupIntent format
+                stripe.handleNextActionForSetupIntent(this, it)
+            }
+        } catch (exception: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        stripe.onPaymentResult(
+            requestCode, intent,
+            object : ApiResultCallback<PaymentIntentResult> {
+                override fun onSuccess(result: PaymentIntentResult) {
+                    lifecycleScope.launch {
+                        viewModel.showLoadingState(false)
+                    }
+                    if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
+                        viewModel.showHeadsUpSnackbar(R.string.successful_validation_please_pull_to_refresh_fpo)
+                        viewModel.getPledgedProjects()
+                    } else if (result.outcome == StripeIntentResult.Outcome.FAILED
+                        || result.outcome == StripeIntentResult.Outcome.TIMEDOUT
+                        || result.outcome == StripeIntentResult.Outcome.UNKNOWN
+                        ) viewModel.showErrorSnackbar( R.string.general_error_something_wrong )
+                }
+                override fun onError(e: Exception) {
+                    lifecycleScope.launch {
+                        viewModel.showLoadingState(false)
+                    }
+                    viewModel.showErrorSnackbar( R.string.general_error_something_wrong )
+                }
+            }
+        )
     }
 }

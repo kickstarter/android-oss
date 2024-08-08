@@ -8,6 +8,7 @@ import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
@@ -43,6 +44,7 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
+import fragment.PpoCard.AsCreditCard
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -917,10 +919,13 @@ fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
-    val ppoCards = ppoResponse.pledges()?.edges()?.map {
-        val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
-        PPOCard.builder()
+    val ppoCards =
+        ppoResponse.pledges()?.edges()?.map {
+            val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
+            val cardData = ppoBackingData?.paymentSource() as? AsCreditCard
+            PPOCard.builder()
             .backingId(ppoBackingData?.id())
+            .clientSecret(ppoBackingData?.clientSecret())
             .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
             .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
             .currencySymbol(ppoBackingData?.amount()?.fragments()?.amount()?.symbol())
@@ -931,6 +936,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             .creatorName(ppoBackingData?.project()?.creator()?.name())
             .viewType(getTierType(it.node()?.tierType()))
             .addressID(ppoBackingData?.deliveryAddress()?.id())
+            .stripeCardID(cardData?.stripeCardId())
             .build()
     }
 

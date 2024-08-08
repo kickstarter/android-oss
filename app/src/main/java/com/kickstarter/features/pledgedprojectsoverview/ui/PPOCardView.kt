@@ -113,7 +113,7 @@ fun PPOCardPreview() {
             item {
                 PPOCardView(
                     viewType = PPOCardViewType.AUTHENTICATE_CARD,
-                    onCardClick = {},
+                    onCardClick = { },
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$60.00",
                     creatorName = "Some really really really really really really really long name",

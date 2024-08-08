@@ -366,6 +366,12 @@ fragment shippingRule on ShippingRule {
 
 fragment ppoCard on Backing {
     id
+    clientSecret
+    paymentSource {
+        ...on CreditCard {
+            stripeCardId
+        }
+    }
     amount {
         ...amount
     }

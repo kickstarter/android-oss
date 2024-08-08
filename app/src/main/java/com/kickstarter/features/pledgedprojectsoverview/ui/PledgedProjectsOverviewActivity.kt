@@ -185,14 +185,16 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         url: String,
         resultLauncher: ActivityResultLauncher<Intent>?
     ) {
-        if(resultLauncher.isNotNull()) {
+        if (resultLauncher.isNotNull()) {
             resultLauncher?.launch(
                 Intent(this, BackingDetailsActivity::class.java)
                     .putExtra(IntentKey.URL, url)
             )
         } else {
-            startActivity(Intent(this, BackingDetailsActivity::class.java)
-                .putExtra(IntentKey.URL, url))
+            startActivity(
+                Intent(this, BackingDetailsActivity::class.java)
+                    .putExtra(IntentKey.URL, url)
+            )
         }
 
         this.let {

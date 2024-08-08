@@ -226,7 +226,7 @@ fun PledgedProjectsOverviewScreen(
                     state = lazyColumnListState
                 ) {
                     item {
-                        if(!totalAlerts.isNullOrZero()) {
+                        if (!totalAlerts.isNullOrZero()) {
                             Text(
                                 text = stringResource(id = R.string.alerts_fpo, totalAlerts),
                                 style = typography.title3Bold,

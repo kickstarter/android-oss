@@ -456,7 +456,7 @@ fun ConfirmAddressAlertsView(hoursRemaining: Int = -1) {
     }
 }
 @Composable
-fun ConfirmAddressButtonsView(isConfirmButtonEnabled : Boolean, onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
+fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

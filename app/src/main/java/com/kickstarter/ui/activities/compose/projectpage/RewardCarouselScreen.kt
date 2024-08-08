@@ -134,8 +134,8 @@ fun RewardCarouselScreen(
                         ),
                     text = environment.ksString()?.let {
                         it.format(
-                            "Rewards_count_rewards", project.rewards()?.size ?: 0,
-                            "rewards_count", NumberUtils.format(project.rewards()?.size ?: 0)
+                            "Rewards_count_rewards", rewards.size,
+                            "rewards_count", NumberUtils.format(rewards.size)
                         )
                     } ?: "",
                     color = KSTheme.colors.kds_support_400,
@@ -145,6 +145,18 @@ fun RewardCarouselScreen(
         }
     ) { padding ->
         Column {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
+                        .clickable(enabled = false) { },
+                    contentAlignment = Alignment.Center
+                ) {
+                    KSCircularProgressIndicator()
+                }
+            }
+
             if (countryList.isNotEmpty()) {
                 ShippingSelector(
                     modifier = Modifier
@@ -329,18 +341,6 @@ fun RewardCarouselScreen(
                             addonsPillVisible = reward.hasAddons()
                         )
                     }
-                }
-            }
-
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                        .clickable(enabled = false) { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    KSCircularProgressIndicator()
                 }
             }
         }

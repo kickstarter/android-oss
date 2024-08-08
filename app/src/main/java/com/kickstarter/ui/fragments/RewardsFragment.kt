@@ -97,10 +97,10 @@ class RewardsFragment : Fragment() {
                         ).value
                         val listState = rememberLazyListState()
 
-                        if (rules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
-                            // - Indicate the VM which one is the default selected shipping Rule
-                            viewModel.inputs.selectedShippingRule(rules.selectedShippingRule)
-                        }
+//                        if (rules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
+//                            // - Indicate the VM which one is the default selected shipping Rule
+//                            viewModel.inputs.selectedShippingRule(rules.selectedShippingRule)
+//                        }
 
                         RewardCarouselScreen(
                             lazyRowState = listState,

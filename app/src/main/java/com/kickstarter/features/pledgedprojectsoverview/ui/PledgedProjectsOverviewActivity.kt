@@ -25,7 +25,6 @@ import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProject
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
@@ -36,14 +35,12 @@ import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.ProfileActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
 import com.stripe.android.Stripe
 import com.stripe.android.StripeIntentResult
-import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
 import kotlinx.coroutines.launch
 
 class PledgedProjectsOverviewActivity : AppCompatActivity() {
@@ -81,7 +78,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val ppoUIState by viewModel.ppoUIState.collectAsStateWithLifecycle()
 
                 val lazyListState = rememberLazyListState()
-                val snackbarHostState = remember { SnackbarHostState() }
                 val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()

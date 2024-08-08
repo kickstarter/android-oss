@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,8 +27,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.getCurrencySymbols
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -37,6 +40,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.views.compose.checkout.BonusSupportContainer
 import java.math.RoundingMode
 
 @Composable
@@ -51,7 +55,8 @@ private fun AddOnsScreenPreview() {
                 modifier = Modifier.padding(padding),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
-                rewardItems = (0..10).map {
+                selectedReward = RewardFactory.reward().toBuilder().minimum(5.0).build(),
+                addOns = (0..10).map {
                     Reward.builder()
                         .title("Item Number $it")
                         .description("This is a description for item $it")
@@ -68,8 +73,10 @@ private fun AddOnsScreenPreview() {
                     .currentCurrency("USD")
                     .build(),
                 onItemAddedOrRemoved = { q, l -> },
+                bonusAmountChanged = {},
                 onContinueClicked = {},
-                addOnCount = 6
+                addOnCount = 2,
+                totalPledgeAmount = 30.0
             )
         }
     }
@@ -80,15 +87,19 @@ fun AddOnsScreen(
     modifier: Modifier = Modifier,
     environment: Environment,
     lazyColumnListState: LazyListState,
-    rewardItems: List<Reward>,
+    selectedReward: Reward,
+    addOns: List<Reward>,
     project: Project,
     onItemAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
+    bonusAmountChanged: (amount: Double) -> Unit,
     isLoading: Boolean = false,
     currentShippingRule: ShippingRule = ShippingRule.builder().build(),
     onContinueClicked: () -> Unit,
-    addOnCount: Int = 0
+    addOnCount: Int = 0,
+    totalPledgeAmount: Double
 ) {
     val context = LocalContext.current
+    val currencySymbolStartAndEnd = environment.ksCurrency()?.getCurrencySymbols(project)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -113,36 +124,57 @@ fun AddOnsScreen(
                                 .fillMaxWidth()
                                 .padding(dimensions.paddingMediumLarge)
                         ) {
-                            KSPrimaryGreenButton(
-                                onClickAction = onContinueClicked,
-                                text =
-                                if (addOnCount == 0)
-                                    stringResource(id = R.string.Skip_add_ons)
-                                else {
-                                    when {
-                                        addOnCount == 1 -> environment.ksString()?.format(
-                                            stringResource(R.string.Continue_with_quantity_count_add_ons_one),
-                                            "quantity_count",
-                                            addOnCount.toString()
-                                        ) ?: ""
+                            Column {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = stringResource(id = R.string.Total_amount),
+                                        style = typography.subheadlineMedium,
+                                        color = colors.textPrimary
+                                    )
 
-                                        addOnCount > 1 -> environment.ksString()?.format(
-                                            stringResource(R.string.Continue_with_quantity_count_add_ons_many),
-                                            "quantity_count",
-                                            addOnCount.toString()
-                                        ) ?: ""
+                                    Spacer(modifier = Modifier.weight(1f))
 
-                                        else -> stringResource(id = R.string.Skip_add_ons)
-                                    }
-                                },
-                                isEnabled = true
-                            )
+                                    Text(
+                                        text = "${currencySymbolStartAndEnd?.first}${totalPledgeAmount}${currencySymbolStartAndEnd?.second}",
+                                        style = typography.subheadlineMedium,
+                                        color = colors.textPrimary
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                                KSPrimaryGreenButton(
+                                    onClickAction = onContinueClicked,
+                                    text =
+                                    if (addOnCount == 0)
+                                        stringResource(id = R.string.Skip_add_ons)
+                                    else {
+                                        when {
+                                            addOnCount == 1 -> environment.ksString()?.format(
+                                                stringResource(R.string.Continue_with_quantity_count_add_ons_one),
+                                                "quantity_count",
+                                                addOnCount.toString()
+                                            ) ?: ""
+
+                                            addOnCount > 1 -> environment.ksString()?.format(
+                                                stringResource(R.string.Continue_with_quantity_count_add_ons_many),
+                                                "quantity_count",
+                                                addOnCount.toString()
+                                            ) ?: ""
+
+                                            else -> stringResource(id = R.string.Skip_add_ons)
+                                        }
+                                    },
+                                    isEnabled = true
+                                )
+                            }
                         }
                     }
                 }
             },
             backgroundColor = colors.backgroundAccentGraySubtle
         ) { padding ->
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -156,15 +188,34 @@ fun AddOnsScreen(
                 state = lazyColumnListState
             ) {
                 item {
-                    Text(
-                        text = stringResource(id = R.string.Customize_your_reward_with_optional_addons),
-                        style = typography.title3Bold,
-                        color = colors.textPrimary
+                    if (addOns.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.Customize_your_reward_with_optional_addons),
+                            style = typography.title3Bold,
+                            color = colors.textPrimary
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                    val initAmount = if (project.isBacking())
+                        project.backing()?.bonusAmount() ?: 0.0
+                    else 0.0
+
+                    BonusSupportContainer(
+                        noAddOnsRw = addOns.isEmpty(),
+                        initialAmount = initAmount,
+                        maxAmount = RewardUtils.maxPledgeAmount(selectedReward, project),
+                        minPledge = RewardUtils.minPledgeAmount(selectedReward, project),
+                        currencySymbolAtStart = currencySymbolStartAndEnd?.first,
+                        currencySymbolAtEnd = currencySymbolStartAndEnd?.second,
+                        onBonusSupportPlusClicked = bonusAmountChanged,
+                        onBonusSupportMinusClicked = bonusAmountChanged,
+                        onBonusSupportInputted = bonusAmountChanged
                     )
                 }
 
                 items(
-                    items = rewardItems
+                    items = addOns
                 ) { reward ->
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -239,16 +290,16 @@ fun AddOnsScreen(
                 }
             }
         }
+    }
 
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(colors.backgroundAccentGraySubtle.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                KSCircularProgressIndicator()
-            }
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colors.backgroundAccentGraySubtle.copy(alpha = 0.5f)),
+            contentAlignment = Alignment.Center
+        ) {
+            KSCircularProgressIndicator()
         }
     }
 }

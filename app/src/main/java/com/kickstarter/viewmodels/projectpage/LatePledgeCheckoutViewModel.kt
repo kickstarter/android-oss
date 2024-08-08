@@ -4,18 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.locationId
+import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
+import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
+import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.CheckoutPayment
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
@@ -40,11 +45,17 @@ import type.CreditCardPaymentType
 data class LatePledgeCheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),
     val userEmail: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val selectedRewards: List<Reward> = emptyList(),
+    val shippingAmount: Double = 0.0,
+    val checkoutTotal: Double = 0.0,
+    val isPledgeButtonEnabled: Boolean = true
 )
 
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
+    private var pledgeData: PledgeData? = null
+    private var checkoutData: CheckoutData? = null
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analytics = requireNotNull(environment.analytics())
 
@@ -52,6 +63,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var userEmail: String = ""
     private var checkoutId: String? = null
     private var backing: Backing? = null
+    private val selectedRewards = mutableListOf<Reward>()
+    private var buttonEnabled = true
 
     private var stripe: Stripe = requireNotNull(environment.stripe())
 
@@ -84,6 +97,17 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 initialValue = LatePledgeCheckoutUIState(isLoading = true)
             )
 
+    private val mutableCheckoutPayment =
+        MutableStateFlow(CheckoutPayment(id = 0L, paymentUrl = null, backing = null))
+    val checkoutPayment: StateFlow<CheckoutPayment>
+        get() = mutableCheckoutPayment
+            .asStateFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = CheckoutPayment(id = 0L, paymentUrl = null, null)
+            )
+
     private var mutableClientSecretForNewPaymentMethod = MutableSharedFlow<String>()
     val clientSecretForNewPaymentMethod: SharedFlow<String>
         get() = mutableClientSecretForNewPaymentMethod.asSharedFlow()
@@ -114,6 +138,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }?.collect()
         }
     }
+
+    fun getCheckoutData() = checkoutData
+    fun getPledgeData() = pledgeData
 
     fun provideCheckoutIdAndBacking(checkoutId: Long, backing: Backing) {
         this.checkoutId = checkoutId.toString()
@@ -174,8 +201,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.collect()
     }
 
-    fun onPledgeButtonClicked(selectedCard: StoredCard?, project: Project, totalAmount: Double) {
-        createPaymentIntentForCheckout(selectedCard, project, totalAmount)
+    fun onPledgeButtonClicked(selectedCard: StoredCard?) {
+        this.pledgeData?.let {
+            val project = it.projectData().project()
+            createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
+        }
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
@@ -337,59 +367,41 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             .build()
     }
 
-    private fun createPledgeData(projectData: ProjectData, addOns: List<Reward>, shippingRule: ShippingRule, reward: Reward): PledgeData {
-        return PledgeData.builder()
-            .projectData(projectData)
-            .addOns(addOns)
-            .shippingRule(shippingRule)
-            .reward(reward)
-            .build()
-    }
-
     private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableLatePledgeCheckoutUIState.emit(
             LatePledgeCheckoutUIState(
                 storeCards = storedCards,
                 userEmail = userEmail,
-                isLoading = isLoading
+                isLoading = isLoading,
+                selectedRewards = selectedRewards.toList(),
+                shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
+                checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
+                isPledgeButtonEnabled = buttonEnabled,
             )
         )
     }
 
-    fun sendPageViewedEvent(
-        projectData: ProjectData,
-        addOns: List<Reward>,
-        currentUserShippingRule: ShippingRule,
-        shippingAmount: Double,
-        totalAmount: Double,
-        totalBonusSupportAmount: Double
-    ) {
-        this.selectedReward?.let {
-            val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
-            val checkOutData =
-                createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
-            this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(
-                checkoutData = checkOutData,
-                pledgeData = pledgeData
-            )
+    fun sendPageViewedEvent() {
+        this.pledgeData?.let { pData ->
+            this.checkoutData?.let { cData ->
+                this.selectedReward?.let {
+                    this@LatePledgeCheckoutViewModel.analytics.trackCheckoutScreenViewed(
+                        checkoutData = cData,
+                        pledgeData = pData
+                    )
+                }
+            }
         }
     }
-    fun sendSubmitCTAEvent(
-        projectData: ProjectData,
-        addOns: List<Reward>,
-        currentUserShippingRule: ShippingRule,
-        shippingAmount: Double,
-        totalAmount: Double,
-        totalBonusSupportAmount: Double
-    ) {
-        this.selectedReward?.let {
-            val pledgeData = createPledgeData(projectData, addOns, currentUserShippingRule, it)
-            val checkOutData =
-                createCheckoutData(shippingAmount, totalAmount, totalBonusSupportAmount)
-            this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
-                checkoutData = checkOutData,
-                pledgeData = pledgeData
-            )
+
+    fun sendSubmitCTAEvent() {
+        this.pledgeData?.let { pData ->
+            this.checkoutData?.let { cData ->
+                this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
+                    checkoutData = cData,
+                    pledgeData = pData
+                )
+            }
         }
     }
 
@@ -400,6 +412,63 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     fun loading() {
         viewModelScope.launch {
             emitCurrentState(isLoading = true)
+        }
+    }
+
+    private fun createCheckout() {
+        this.pledgeData?.let { pData ->
+            val locationId = pData.locationId()
+            val rewards = pData.rewardsAndAddOnsList()
+            val totalPledge = pData.checkoutTotalAmount()
+
+            this.pledgeData?.projectData()?.let { projectData ->
+                if (projectData.project()
+                    .postCampaignPledgingEnabled() == true && projectData.project()
+                        .isInPostCampaignPledgingPhase() == true
+                ) {
+                    viewModelScope.launch {
+                        apolloClient.createCheckout(
+                            CreateCheckoutData(
+                                project = projectData.project(),
+                                amount = totalPledge.toString(),
+                                locationId = locationId.toString(),
+                                rewardsIds = rewards,
+                                refTag = projectData.refTagFromIntent()
+                            )
+                        )
+                            .asFlow()
+                            .map { checkoutPayment ->
+                                buttonEnabled = true
+                                mutableCheckoutPayment.emit(checkoutPayment)
+                            }
+                            .catch {
+                                buttonEnabled = false
+                                errorAction.invoke(it.message)
+                            }
+                            .onCompletion {
+                                emitCurrentState(isLoading = false)
+                            }
+                            .collect()
+                    }
+                } else {
+                    errorAction.invoke(null)
+                }
+            }
+        }
+    }
+
+    fun providePledgeData(pledgeData: PledgeData) {
+        this.pledgeData = pledgeData
+        this.checkoutData = createCheckoutData(pledgeData.shippingCostIfShipping(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())
+        viewModelScope.launch {
+            selectedRewards.clear()
+            pledgeData.addOns()?.let { addOns ->
+                selectedRewards.add(pledgeData.reward())
+                selectedRewards.addAll(addOns)
+            }
+
+            emitCurrentState(isLoading = true)
+            createCheckout()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views.compose
+package com.kickstarter.ui.views.compose.checkout
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

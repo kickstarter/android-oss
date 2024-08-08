@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -155,12 +156,73 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         // Increment addOnReward to quantity 3
         viewModel.updateSelection(addOnsList.first().id(), 3)
 
+        val total = viewModel.getPledgeDataAndReason()?.first?.pledgeAmountTotal()?.toDouble() ?: 0.0
         assertEquals(
             uiState.last(),
             AddOnsUIState(
                 addOns = addOnsList,
                 totalCount = 3,
-                isLoading = false
+                isLoading = false,
+                totalPledgeAmount = total
+            )
+        )
+    }
+
+    @Test
+    fun `test add bonus Support without selecting addOns`() = runTest {
+        val addOnReward = RewardFactory.addOn()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle()
+        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getProjectAddOns(
+                slug: String,
+                locationId: Location
+            ): Observable<List<Reward>> {
+                return Observable.just(addOnsList)
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+
+        setup(env)
+        val rw = RewardFactory.reward().toBuilder().pledgeAmount(55.0).build()
+        viewModel.userRewardSelection(rw)
+
+        val uiState = mutableListOf<AddOnsUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.addOnsUIState.toList(uiState)
+        }
+
+        // - Initial state addOns freshly loaded,
+        assertEquals(
+            uiState.last(),
+            AddOnsUIState(
+                addOns = addOnsList,
+                totalCount = 0,
+                isLoading = false,
+                totalBonusAmount = 0.0,
+                totalPledgeAmount = rw.pledgeAmount()
+            )
+        )
+
+        // - bonus Amount has been added
+        viewModel.bonusAmountUpdated(3.0)
+
+        // - No addOns selected, but increase bonus amount,
+        assertEquals(
+            uiState.last(),
+            AddOnsUIState(
+                addOns = addOnsList,
+                totalCount = 0,
+                isLoading = false,
+                totalBonusAmount = 3.0,
+                totalPledgeAmount = rw.pledgeAmount() + 3.0
             )
         )
     }

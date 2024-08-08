@@ -1,4 +1,4 @@
-package com.kickstarter.viewmodels.usecases
+package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -23,33 +23,39 @@ class CheckoutFlowViewModelTest : KSRobolectricTestCase() {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testLaunchLogInCallBack_whenNoUser_loggedIn() = runTest {
-        var callbackCalled = 0
+        var logInCallback = 0
+        var continueCallback = 0
 
         // -  No user present on environment
         setUpEnvironment(environment())
 
-        // - Call onConfirmDetailsContinueClicked with a VM loaded with Environment without user
-        vm.onConfirmDetailsContinueClicked { callbackCalled++ }
-
-        // - Make sure the callback provided is called when no user present, `onConfirmDetailsContinueClicked` will produce states ONLY if user present
-        assertTrue(callbackCalled == 1)
+        assertTrue(logInCallback == 0)
+        assertTrue(continueCallback == 0)
 
         val state = mutableListOf<FlowUIState>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            // - Call onConfirmDetailsContinueClicked with a VM loaded with Environment without user
+            vm.onContinueClicked({ logInCallback++ }, { continueCallback++ })
+
             vm.flowUIState.toList(state)
         }
 
         // - make sure empty FlowUISate has been produced, `onConfirmDetailsContinueClicked` will produce states ONLY if user present
         assertEquals(state, listOf(FlowUIState()))
-        assertNotSame(state, listOf(FlowUIState(currentPage = 4, expanded = true)))
+        assertNotSame(state, listOf(FlowUIState(currentPage = 2, expanded = true)))
         assertNotSame(state, listOf(FlowUIState(currentPage = 3, expanded = true)))
         assert(state.size == 1)
+
+        // - Make sure the callback provided is called when no user present, `onConfirmDetailsContinueClicked` will produce states ONLY if user present
+        assertTrue(logInCallback == 1)
+        assertTrue(continueCallback == 0)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testProduceNextPageState_whenUser_LoggedIn() = runTest {
-        var callbackCalled = 0
+        var loginInCallback = 0
+        var continueCallback = 0
 
         // - Environment with user present
         val environment = environment()
@@ -57,21 +63,25 @@ class CheckoutFlowViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
 
-        setUpEnvironment(environment)
-
-        // - Call onConfirmDetailsContinueClicked with a VM loaded with Environment containing an user
-        vm.onConfirmDetailsContinueClicked { callbackCalled++ }
-
         // - Make sure the callback is not called
-        assertTrue(callbackCalled == 0)
+        assertTrue(loginInCallback == 0)
+        assertTrue(continueCallback == 0)
 
         val state = mutableListOf<FlowUIState>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+
+            setUpEnvironment(environment)
+
+            // - Call VM loaded with Environment containing an user, so continueCallback it's executed
+            vm.onContinueClicked({ loginInCallback++ }, continueCallback = { continueCallback++ })
+
             vm.flowUIState.toList(state)
         }
 
         // - make sure next page FlowUIState has been generated, not just the initial empty state
         assertEquals(state, listOf(FlowUIState(), FlowUIState(currentPage = 4, expanded = true)))
         assert(state.size == 2)
+        assertTrue(loginInCallback == 0)
+        assertTrue(continueCallback == 1)
     }
 }

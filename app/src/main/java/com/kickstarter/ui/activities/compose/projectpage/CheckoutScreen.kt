@@ -74,6 +74,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.views.compose.checkout.ItemizedRewardListContainer
 import type.CreditCardTypes
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
@@ -454,7 +455,6 @@ fun CheckoutScreen(
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                 if (rewardsList.isNotEmpty()) {
-
                     ItemizedRewardListContainer(
                         ksString = ksString,
                         rewardsList = rewardsList,

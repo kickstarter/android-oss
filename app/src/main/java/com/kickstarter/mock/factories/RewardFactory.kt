@@ -43,6 +43,13 @@ object RewardFactory {
             .build()
     }
 
+    fun digitalReward(): Reward {
+        return reward().toBuilder()
+            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
+            .shippingPreference("none")
+            .build()
+    }
+
     @JvmStatic
     fun reward(): Reward {
         val description = "A digital download of the album and documentary."

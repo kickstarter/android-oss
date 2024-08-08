@@ -3,10 +3,32 @@ package com.kickstarter.libs
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.Country.Companion.findByCurrencyCode
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
 import java.math.RoundingMode
 import kotlin.jvm.JvmOverloads
+
+/**
+ * Currency symbol, which can be positioned at start or end of amount depending on country
+ */
+fun KSCurrency?.getCurrencySymbols(project: Project): Pair<String, String> {
+    val currencySymbolStartAndEnd = this?.let {
+        val symbolAndStart = ProjectViewUtils.currencySymbolAndPosition(
+            project,
+            this
+        )
+        val symbol = symbolAndStart.first
+        val symbolAtStart = symbolAndStart.second
+        if (symbolAtStart) {
+            Pair(symbol.toString(), "")
+        } else {
+            Pair("", symbol.toString())
+        }
+    } ?: Pair("", "")
+
+    return currencySymbolStartAndEnd
+}
 
 class KSCurrency(private val currentConfig: CurrentConfigType) {
     /**

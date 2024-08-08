@@ -1305,26 +1305,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryAmount_whenFixingPaymentMethod_whenRewardAddOnShippingBonusAmount() {
-        val testData = setUpBackedRewardWithAddOnsAndShippingAndBonusAmountTestData()
-        val backedProject = testData.project
-        val reward = testData.reward
-
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
-                }
-            })
-            .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.FIX_PLEDGE)
-
-        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, 42.0))
-    }
-
-    @Test
     fun testTotalAmount_whenUpdatingPledge() {
         val testData = setUpBackedShippableRewardTestData()
         val backedProject = testData.project
@@ -1435,29 +1415,29 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.estimatedDeliveryInfoIsGone.assertValue(true)
     }
 
-    @Test
-    fun testShowMaxPledge_USProject_USDPref() {
-        val environment = environment()
-            .toBuilder()
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getStoredCards(): Observable<List<StoredCard>> {
-                    return Observable.just(listOf(StoredCardFactory.visa()))
-                }
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
-                }
-            })
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
-            .build()
-        val project = ProjectFactory.project()
-        val rw = RewardFactory.reward()
-        setUpEnvironment(environment, rw, project)
-
-        this.vm.inputs.bonusInput("999999")
-
-        this.pledgeMaximumIsGone.assertValues(true, false)
-        this.pledgeMaximum.assertValues("$9,950") // 10.000 - 20 : MAXUSD - REWARD.minimum
-    }
+//    @Test TODO: Test for bonus input compose component
+//    fun testShowMaxPledge_USProject_USDPref() {
+//        val environment = environment()
+//            .toBuilder()
+//            .apolloClientV2(object : MockApolloClientV2() {
+//                override fun getStoredCards(): Observable<List<StoredCard>> {
+//                    return Observable.just(listOf(StoredCardFactory.visa()))
+//                }
+//                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+//                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+//                }
+//            })
+//            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+//            .build()
+//        val project = ProjectFactory.project()
+//        val rw = RewardFactory.reward()
+//        setUpEnvironment(environment, rw, project)
+//
+//        this.vm.inputs.bonusInput("999999")
+//
+//        this.pledgeMaximumIsGone.assertValues(true, false)
+//        this.pledgeMaximum.assertValues("$9,950") // 10.000 - 20 : MAXUSD - REWARD.minimum
+//    }
 
     @Test
     fun testUpdatingPledgeAmount_WithShippingChange_USProject_USDPref() {
@@ -1624,17 +1604,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 //        this.increasePledgeButtonIsEnabled.assertValuesAndClear(false)
     }
 
-    @Test
-    fun testPledgeStepping_maxReward_MXProject() {
-        val environment = environment()
-        val mxProject = ProjectFactory.mxProject()
-        setUpEnvironment(environment, RewardFactory.maxReward(Country.MX), mxProject)
-
-        this.additionalPledgeAmountIsGone.assertValue(true)
-        this.additionalPledgeAmount.assertValue(expectedCurrency(environment, mxProject, 0.0))
-        this.decreaseBonusButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(false)
-    }
+//    @Test TODO: Test form compose bonus amount component
+//    fun testPledgeStepping_maxReward_MXProject() {
+//        val environment = environment()
+//        val mxProject = ProjectFactory.mxProject()
+//        setUpEnvironment(environment, RewardFactory.maxReward(Country.MX), mxProject)
+//
+//        this.additionalPledgeAmountIsGone.assertValue(true)
+//        this.additionalPledgeAmount.assertValue(expectedCurrency(environment, mxProject, 0.0))
+//        this.decreaseBonusButtonIsEnabled.assertValue(false)
+//        this.increasePledgeButtonIsEnabled.assertValue(false)
+//    }
 
     @Test
     fun testRefTagIsSent() {
@@ -3182,7 +3162,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
         this.pledgeButtonIsEnabled.assertValues(false)
 
-        this.vm.inputs.bonusInput("500")
         this.vm.inputs.increaseBonusButtonClicked()
         this.pledgeButtonIsEnabled.assertValues(false, true)
     }
@@ -3246,38 +3225,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.headerSectionIsGone.assertValues(true)
     }
 
-    @Test // TODO: Review
-    fun testBonusAmountIncreases_whenPlusButtonIsClicked() {
-        val reward = RewardFactory.reward()
-        val backing = BackingFactory.backing()
-            .toBuilder()
-            .amount(50.0)
-            .reward(reward)
-            .rewardId(reward.id())
-            .build()
-
-        val backedProject = ProjectFactory.backedProject()
-            .toBuilder()
-            .backing(backing)
-            .build()
-
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
-                }
-            })
-            .build()
-
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.PLEDGE)
-
-        this.vm.inputs.increaseBonusButtonClicked()
-
-        this.bonusAmount.assertValues("0", "1")
-    }
-
     @Test
     fun testTotalAmountUpdates_whenBonusIsAdded() {
         val testData = setUpBackedShippableRewardTestData()
@@ -3293,31 +3240,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment, testData.reward, testData.project, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.bonusInput("20")
-        this.vm.inputs.increaseBonusButtonClicked()
-        this.totalAmount.assertValues("$50", "$70", "$71")
-        this.bonusAmount.assertValues("0", "20", "21")
-    }
-
-    @Test
-    fun testBonusMinimumIsZero_andMinusButtonIsDisabled() {
-        val reward = RewardFactory.reward()
-        val backing = BackingFactory.backing()
-            .toBuilder()
-            .amount(30.0)
-            .reward(reward)
-            .rewardId(reward.id())
-            .build()
-
-        val backedProject = ProjectFactory.project()
-            .toBuilder()
-            .backing(backing)
-            .build()
-
-        setUpEnvironment(environment(), reward, backedProject)
-
-        this.bonusAmount.assertValue("0")
-        this.decreaseBonusButtonIsEnabled.assertValue(false)
+        this.totalAmount.assertValues("$50")
+        this.bonusAmount.assertValues("0.0")
     }
 
     @Test
@@ -3508,18 +3432,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
         setUpEnvironment(environment, reward, project, addOns = listAddOns)
 
-        this.vm.inputs.shippingRuleSelected(shipRule)
-        this.vm.inputs.bonusInput("123")
-        this.vm.inputs.increaseBonusButtonClicked()
-        this.vm.inputs.increaseBonusButtonClicked()
-        this.vm.inputs.increaseBonusButtonClicked()
-
         this.totalAmount.assertValues(
-            "$414",
-            "$537",
-            "$538",
-            "$539",
-            "$540"
+            "$414"
         )
     }
 

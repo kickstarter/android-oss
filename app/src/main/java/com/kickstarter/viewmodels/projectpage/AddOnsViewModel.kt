@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -36,7 +38,9 @@ data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
     val totalCount: Int = 0,
     val isLoading: Boolean = true,
-    val shippingRule: ShippingRule = ShippingRule.builder().build()
+    val shippingRule: ShippingRule = ShippingRule.builder().build(),
+    val totalPledgeAmount: Double = 0.0,
+    val totalBonusAmount: Double = 0.0
 )
 
 class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
@@ -48,6 +52,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private var project: Project = Project.builder().build()
     private var shippingRule: ShippingRule = ShippingRule.builder().build()
     private var pledgeflowcontext: PledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
+    private var bonusAmount: Double = 0.0
     private var pReason: PledgeReason = PledgeReason.PLEDGE
 
     private var addOns: List<Reward> = listOf()
@@ -100,8 +105,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
 
             // New pledge, selected reward
-            pledgeData?.reward()?.let {
-                currentUserReward = it
+            pledgeData?.reward()?.let { rw ->
+                currentUserReward = rw
+                bonusAmount = RewardUtils.minPledgeAmount(rw, project)
             }
 
             projectData?.project()?.let {
@@ -110,7 +116,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
             pledgeData?.shippingRule()?.let {
                 shippingRule = it
-                provideSelectedShippingRule(it)
             }
 
             pledgeData?.pledgeFlowContext()?.let { pFContext ->
@@ -118,32 +123,34 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
 
             val backing = pledgeData?.projectData()?.backing() ?: project.backing()
-
-            // - User backed a reward no reward
-            if (backing != null && backing.reward() == null && backing.amount().isNotNull()) {
-                currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(backing.amount()).build()
+            if (backing != null) {
+                // - backed a reward no reward
+                if (backing.reward() == null && backing.amount().isNotNull()) {
+                    currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(backing.amount()).build()
+                    bonusAmount = backing.amount()
+                } else {
+                    currentUserReward = backing.reward() ?: currentUserReward
+                    bonusAmount = backing.bonusAmount()
+                    backedAddOns = backing.addOns() ?: emptyList()
+                }
             }
 
-            // - User is backing
-            backing?.reward()?.let {
-                currentUserReward = it
-            }
-
-            backing?.addOns()?.let {
-                backedAddOns = it
-            }
+            if (currentUserReward.hasAddons() || backing?.addOns().isNotNull())
+                getAddOns(shippingRule)
         }
     }
 
     /**
-     * Used in late pledges, does requires calling afterwards
-     *  `provideSelectedShippingRule`
+     * Used in late pledges
      */
     fun provideProjectData(projectData: ProjectData) {
         this.projectData = projectData
+        val isLatePledge = projectData.project().postCampaignPledgingEnabled() == true && projectData.project().isInPostCampaignPledgingPhase() == true
+        val flowContext = if (isLatePledge) PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE) else PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+        this.pledgeflowcontext = flowContext
         this.pledgeData = PledgeData.with(
             projectData = projectData,
-            pledgeFlowContext = PledgeFlowContext.forPledgeReason(PledgeReason.LATE_PLEDGE),
+            pledgeFlowContext = flowContext,
             reward = currentUserReward
         )
         this.projectData?.project()?.let {
@@ -155,14 +162,17 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      * Used in late pledges
      */
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
-        getAddOns(selectedShippingRule = shippingRule)
+        if (this.shippingRule != shippingRule) {
+            this.shippingRule = shippingRule
+            getAddOns(selectedShippingRule = shippingRule)
+        }
     }
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
         scope.launch(dispatcher) {
             apolloClient
                 .getProjectAddOns(
-                    slug = project?.slug() ?: "",
+                    slug = project.slug() ?: "",
                     locationId = selectedShippingRule.location() ?: LocationFactory.empty()
                 )
                 .asFlow()
@@ -174,7 +184,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                         this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
                     }
                 }.onCompletion {
-                    emitCurrentState()
+                    emitCurrentState(isLoading = false)
                 }.catch {
                     errorAction.invoke(null)
                 }.collect()
@@ -201,13 +211,15 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         return holder.values.toList()
     }
 
-    // UI events
+    // - User has selected a different reward clear previous states
     fun userRewardSelection(reward: Reward) {
-        currentUserReward = reward
-        currentSelection.clear()
+        if (reward != currentUserReward) {
+            currentUserReward = reward
+            currentSelection.clear()
 
-        scope.launch {
-            emitCurrentState()
+            scope.launch {
+                emitCurrentState()
+            }
         }
     }
 
@@ -217,16 +229,11 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 addOns = addOns,
                 isLoading = isLoading,
                 totalCount = currentSelection.values.sum(),
-                shippingRule = shippingRule
+                shippingRule = shippingRule,
+                totalPledgeAmount = calculateTotalPledgeAmount(),
+                totalBonusAmount = bonusAmount
             )
         )
-    }
-
-    /**
-     * Used in crowdfund
-     */
-    fun load() {
-        getAddOns(this.shippingRule)
     }
 
     /**
@@ -250,15 +257,27 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
         return projectData?.let {
             Pair(
-                PledgeData.with(pledgeflowcontext, it, currentUserReward, selectedAddOns.toList(), shippingRule),
+                PledgeData.with(pledgeflowcontext, it, currentUserReward, selectedAddOns.toList(), shippingRule, bonusAmount = bonusAmount),
                 pReason
             )
         }
     }
 
     fun getProject() = this.project
+    fun getSelectedReward() = this.currentUserReward
     fun sendEvent() = this.pledgeData?.let {
         environment.analytics()?.trackAddOnsScreenViewed(it)
+    }
+
+    fun bonusAmountUpdated(bAmount: Double) {
+        scope.launch {
+            bonusAmount = bAmount
+            emitCurrentState(isLoading = false)
+        }
+    }
+
+    private fun calculateTotalPledgeAmount(): Double {
+        return getPledgeDataAndReason()?.first?.pledgeAmountTotalPlusBonus() ?: 0.0
     }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :

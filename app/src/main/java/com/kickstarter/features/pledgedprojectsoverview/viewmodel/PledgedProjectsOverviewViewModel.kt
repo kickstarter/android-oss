@@ -1,6 +1,5 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,15 +12,12 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
-import com.kickstarter.models.StoredCard
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
-import com.stripe.android.model.ConfirmPaymentIntentParams
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

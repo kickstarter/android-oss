@@ -83,7 +83,7 @@ class PPOCardFactory private constructor() {
         }
 
         fun authenticationRequiredCard(): PPOCard {
-            //3ds card
+            // 3ds card
             return ppoCard(
                 backingID = "1234",
                 amount = "$12.00",

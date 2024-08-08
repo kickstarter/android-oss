@@ -137,7 +137,7 @@ class PPOCard private constructor(
                 address() == other.address() &&
                 addressID() == other.addressID() &&
                 amount() == other.amount() &&
-                    clientSecret() == other.clientSecret() &&
+                clientSecret() == other.clientSecret() &&
                 currencyCode() == other.currencyCode() &&
                 currencySymbol() == other.currencySymbol() &&
                 projectName() == other.projectName() &&

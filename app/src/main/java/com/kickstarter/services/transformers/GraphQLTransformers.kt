@@ -8,7 +8,6 @@ import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
-import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
@@ -922,20 +921,20 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
         ppoResponse.pledges()?.edges()?.map {
             val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
             PPOCard.builder()
-            .backingId(ppoBackingData?.id())
-            .clientSecret(ppoBackingData?.clientSecret())
-            .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
-            .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
-            .currencySymbol(ppoBackingData?.amount()?.fragments()?.amount()?.symbol())
-            .projectName(ppoBackingData?.project()?.name())
-            .projectId(ppoBackingData?.project()?.id())
-            .projectSlug(ppoBackingData?.project()?.slug())
-            .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
-            .creatorName(ppoBackingData?.project()?.creator()?.name())
-            .viewType(getTierType(it.node()?.tierType()))
-            .addressID(ppoBackingData?.deliveryAddress()?.id())
-            .build()
-    }
+                .backingId(ppoBackingData?.id())
+                .clientSecret(ppoBackingData?.clientSecret())
+                .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
+                .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
+                .currencySymbol(ppoBackingData?.amount()?.fragments()?.amount()?.symbol())
+                .projectName(ppoBackingData?.project()?.name())
+                .projectId(ppoBackingData?.project()?.id())
+                .projectSlug(ppoBackingData?.project()?.slug())
+                .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
+                .creatorName(ppoBackingData?.project()?.creator()?.name())
+                .viewType(getTierType(it.node()?.tierType()))
+                .addressID(ppoBackingData?.deliveryAddress()?.id())
+                .build()
+        }
 
     val pageInfoEnvelope = ppoResponse.pledges()?.pageInfo().let {
         PageInfoEnvelope.builder()

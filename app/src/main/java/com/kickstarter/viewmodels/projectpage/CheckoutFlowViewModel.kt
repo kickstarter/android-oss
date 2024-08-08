@@ -48,8 +48,8 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             when (currentPage) {
                 // From Checkout Screen
                 3 -> {
-                    // To Confirm Details
-                    mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
+                    // To AddOns
+                    mutableFlowUIState.emit(FlowUIState(currentPage = 1, expanded = true))
                 }
 
                 // From Confirm Details Screen
@@ -85,23 +85,20 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onConfirmDetailsContinueClicked(logInCallback: () -> Unit) {
+    fun onContinueClicked(logInCallback: () -> Unit, continueCallback: () -> Unit) {
         viewModelScope.launch {
             currentUser.isLoggedIn
                 .asFlow()
                 .collect { userLoggedIn ->
                     // - Show checkout page
-                    if (userLoggedIn) mutableFlowUIState.emit(FlowUIState(currentPage = 4, expanded = true))
+                    if (userLoggedIn) {
+                        mutableFlowUIState.emit(FlowUIState(currentPage = 4, expanded = true))
+                        // - In case after login some action is required
+                        continueCallback()
+                    }
                     // - Trigger LoginFlow callback
                     else logInCallback()
                 }
-        }
-    }
-
-    fun onAddOnsContinueClicked() {
-        viewModelScope.launch {
-            // Go to confirm page
-            mutableFlowUIState.emit(FlowUIState(currentPage = 2, expanded = true))
         }
     }
 
@@ -110,6 +107,9 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
             // Open Flow
             mutableFlowUIState.emit(FlowUIState(currentPage = 0, expanded = false))
         }
+    }
+
+    fun onContinueClicked(continueCallback: () -> Unit) {
     }
 
     class Factory(private val environment: Environment) :

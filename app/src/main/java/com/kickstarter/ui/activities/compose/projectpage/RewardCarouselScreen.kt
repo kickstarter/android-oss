@@ -44,9 +44,8 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.KSRewardCard
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.views.compose.ShippingSelector
+import com.kickstarter.ui.views.compose.checkout.ShippingSelector
 import org.joda.time.DateTime
 import java.math.RoundingMode
 
@@ -146,7 +145,7 @@ fun RewardCarouselScreen(
             if (countryList.isNotEmpty()) {
                 ShippingSelector(
                     modifier = Modifier
-                        .padding(KSTheme.dimensions.paddingMedium),
+                        .padding(dimensions.paddingMedium),
                     interactionSource = interactionSource,
                     currentShippingRule = currentShippingRule,
                     countryList = countryList,

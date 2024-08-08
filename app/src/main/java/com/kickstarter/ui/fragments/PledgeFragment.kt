@@ -5,11 +5,9 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
-import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
@@ -53,8 +51,6 @@ import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.setTextAndSelection
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
@@ -118,57 +114,17 @@ class PledgeFragment :
         setUpShippingAdapter()
         setupRewardRecyclerView()
 
-        binding?.pledgeSectionPledgeAmount?.pledgeAmount?.onChange { this.viewModel.inputs.pledgeInput(it) }
-
-        binding?.pledgeSectionBonusSupport?.bonusAmount?.onChange { this.viewModel.inputs.bonusInput(it) }
-
         flowController = PaymentSheet.FlowController.create(
             fragment = this,
             paymentOptionCallback = ::onPaymentOption,
             paymentResultCallback = ::onPaymentSheetResult
         )
 
-        this.viewModel.outputs.additionalPledgeAmountIsGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.additionalPledgeAmountContainer?.isGone = it
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.pledgeSectionIsGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.pledgeContainer?.isGone = it
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.decreasePledgeButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.decreasePledge?.isEnabled = it
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.increasePledgeButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.pledgeSectionPledgeAmount?.increasePledge?.isEnabled = it }
-            .addToDisposable(disposables)
-
         this.viewModel.outputs.headerSectionIsGone()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.isGone = it
             }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.decreaseBonusButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.pledgeSectionBonusSupport?.decreaseBonus ?.isEnabled = it }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.increaseBonusButtonIsEnabled()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.pledgeSectionBonusSupport?.increaseBonus?.isEnabled = it }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.estimatedDelivery()
@@ -222,73 +178,6 @@ class PledgeFragment :
             }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.pledgeAmount()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.pledgeAmount?.setTextAndSelection(it)
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.bonusAmount()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionBonusSupport?.bonusAmount?.setTextAndSelection(it)
-                binding?.pledgeSectionSummaryBonus?.bonusSummaryAmount?.text = it
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.pledgeHint()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.pledgeSectionPledgeAmount?.pledgeAmount?.hint = it }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.bonusHint()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.pledgeSectionBonusSupport?.bonusAmount?.hint = it }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.pledgeMaximum()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                setPledgeMaximumText(it)
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.pledgeMaximumIsGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.pledgeMaximum?.isInvisible = it
-                binding?.pledgeSectionBonusSupport?.bonusMaximum?.isInvisible = it
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.pledgeMinimum()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { setPledgeMinimumText(it) }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.projectCurrencySymbol()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                setCurrencySymbols(it)
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.pledgeTextColor()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.pledgeAmount ?.let { pledgeAmount ->
-                    setTextColor(it, pledgeAmount)
-                }
-                binding?.pledgeSectionPledgeAmount?.pledgeSymbolStart ?.let { pledgeAmount ->
-                    setTextColor(it, pledgeAmount)
-                }
-                binding?.pledgeSectionPledgeAmount?.pledgeSymbolEnd ?.let { pledgeAmount ->
-                    setTextColor(it, pledgeAmount)
-                }
-            }
-            .addToDisposable(disposables)
-
         this.viewModel.outputs.cardsAndProject()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.takeCards(it.first, it.second) }
@@ -310,7 +199,6 @@ class PledgeFragment :
         this.viewModel.outputs.selectedShippingRule()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding?.pledgeSectionEditableShipping?.shippingRules?.setText(it.toString())
                 binding?.pledgeSectionShipping?.shippingRulesStatic ?.text = it.toString()
             }
             .addToDisposable(disposables)
@@ -318,12 +206,6 @@ class PledgeFragment :
         this.viewModel.outputs.shippingAmount()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding?.pledgeSectionEditableShipping?.shippingAmountLoadingView?.isGone = true
-                binding?.pledgeSectionEditableShipping?.shippingAmount?.let { shippingAmount ->
-                    setPlusTextView(
-                        shippingAmount, it
-                    )
-                }
                 binding?.pledgeSectionShipping?. shippingAmountStatic?.let { shippingAmountStatic ->
                     setPlusTextView(
                         shippingAmountStatic, it
@@ -353,13 +235,6 @@ class PledgeFragment :
             .filter { context.isNotNull() }
             .subscribe {
                 displayShippingRules(it.first, it.second)
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.shippingRulesSectionIsGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionEditableShipping?.editableShippingCl?.isGone = it
             }
             .addToDisposable(disposables)
 
@@ -537,21 +412,6 @@ class PledgeFragment :
             }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.isPledgeMinimumSubtitleGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionPledgeAmount?.pledgeMinimum ?.isGone = it
-            }
-            .addToDisposable(disposables)
-
-        this.viewModel.outputs.isBonusSupportSectionGone()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.pledgeSectionBonusSupport?.bonusContainer?.isGone = it
-                binding?.pledgeSectionPledgeAmount?.pledgeContainer?.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
-            }
-            .addToDisposable(disposables)
-
         this.viewModel.outputs.isNoReward()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -600,58 +460,9 @@ class PledgeFragment :
             }
             .addToDisposable(disposables)
 
-        binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->
-            binding?.pledgeSectionPledgeAmount?. pledgeAmount?.post {
-                binding?.pledgeRoot?.let { pledgeRoot ->
-                    binding?.pledgeSectionPledgeAmount?. pledgeAmountLabel?.let { pledgeAmountLabel ->
-                        pledgeRoot.smoothScrollTo(0, relativeTop(pledgeAmountLabel, pledgeRoot))
-                    }
-
-                    binding?.pledgeSectionPledgeAmount?. pledgeAmount?.requestFocus()
-                }
-            }
-            false
-        }
-
-        binding?.pledgeSectionBonusSupport?.bonusAmount ?.setOnTouchListener { _, _ ->
-            binding?.pledgeSectionBonusSupport?.bonusAmount ?.post {
-                binding?.pledgeRoot?.let { pledgeRoot ->
-                    binding?.pledgeSectionBonusSupport?.bonusSupportLabel ?.let {
-                        pledgeRoot.smoothScrollTo(0, relativeTop(it, pledgeRoot))
-                    }
-                    binding?.pledgeSectionBonusSupport?.bonusAmount ?.requestFocus()
-                }
-            }
-            false
-        }
-
-        binding?.pledgeSectionEditableShipping?.shippingRules?.setOnTouchListener { _, _ ->
-            binding?.pledgeSectionEditableShipping?.shippingRulesLabel?.post {
-                binding?.pledgeRoot?.let { pledgeRoot ->
-                    binding?.pledgeSectionEditableShipping?.shippingRulesLabel?.let { shippingRulesLabel ->
-                        pledgeRoot.smoothScrollTo(0, relativeTop(shippingRulesLabel, pledgeRoot))
-                    }
-                    binding?.pledgeSectionEditableShipping?.shippingRules?.requestFocus()
-                    binding?.pledgeSectionEditableShipping?.shippingRules?.showDropDown()
-                }
-            }
-            false
-        }
-
-        binding?.pledgeSectionPledgeAmount?. decreasePledge ?.setOnClickListener {
-            this.viewModel.inputs.decreasePledgeButtonClicked()
-        }
-
-        binding?.pledgeSectionPledgeAmount?. increasePledge ?.setOnClickListener {
-            this.viewModel.inputs.increasePledgeButtonClicked()
-        }
-
         binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.setOnClickListener {
             toggleAnimation(isExpanded)
         }
-        binding?.pledgeSectionBonusSupport?.decreaseBonus?.setOnClickListener { this.viewModel.inputs.decreaseBonusButtonClicked() }
-
-        binding?.pledgeSectionBonusSupport?.increaseBonus?.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
 
         binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.setOnClickListener {
             this.viewModel.inputs.pledgeButtonClicked()
@@ -826,7 +637,6 @@ class PledgeFragment :
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
-        binding?.pledgeSectionEditableShipping?.shippingRules?.clearFocus()
 
         if (binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled == false) {
             binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled = true
@@ -834,7 +644,6 @@ class PledgeFragment :
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
-        binding?.pledgeSectionEditableShipping?.shippingRules?.isEnabled = true
         adapter.populateShippingRules(shippingRules, project)
     }
 
@@ -844,24 +653,6 @@ class PledgeFragment :
         parent.offsetDescendantRectToMyCoords(view, offsetViewBounds)
 
         return offsetViewBounds.top - parent.paddingTop
-    }
-
-    private fun setCurrencySymbols(symbolAndStart: Pair<SpannableString, Boolean>) {
-        val symbol = symbolAndStart.first
-        val symbolAtStart = symbolAndStart.second
-        if (symbolAtStart) {
-            binding?.pledgeSectionPledgeAmount?. pledgeSymbolStart ?.text = symbol
-            binding?.pledgeSectionPledgeAmount?. pledgeSymbolEnd?.text = null
-
-            binding?.pledgeSectionBonusSupport?.bonusSymbolStart?.text = symbol
-            binding?.pledgeSectionBonusSupport?.bonusSymbolEnd?.text = null
-        } else {
-            binding?.pledgeSectionPledgeAmount?. pledgeSymbolStart ?.text = null
-            binding?.pledgeSectionPledgeAmount?. pledgeSymbolEnd?.text = symbol
-
-            binding?.pledgeSectionBonusSupport?.bonusSymbolStart?.text = null
-            binding?.pledgeSectionBonusSupport?.bonusSymbolEnd?.text = symbol
-        }
     }
 
     private fun setDeadlineWarning(totalAndDeadline: Pair<String, String>) {
@@ -879,15 +670,6 @@ class PledgeFragment :
         ViewUtils.addBoldSpan(spannableWarning, deadline)
 
         binding?.deadlineWarning?.text = spannableWarning
-    }
-
-    private fun setPledgeMaximumText(maximumAmount: String) {
-        binding?.pledgeSectionPledgeAmount?. pledgeMaximum ?.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
-        binding?.pledgeSectionBonusSupport?.bonusMaximum?.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
-    }
-
-    private fun setPledgeMinimumText(minimumAmount: String) {
-        binding?.pledgeSectionPledgeAmount?. pledgeMinimum ?.text = ksString.format(getString(R.string.The_minimum_pledge_is_min_pledge), "min_pledge", minimumAmount)
     }
 
     private fun setPlusTextView(textView: TextView, localizedAmount: CharSequence) {
@@ -913,23 +695,7 @@ class PledgeFragment :
     private fun setUpShippingAdapter() {
         context?.let {
             adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
-            binding?.pledgeSectionEditableShipping?.shippingRules?.setAdapter(adapter)
         }
-
-        binding?.pledgeSectionEditableShipping?.shippingRules?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-
-                if (s.toString().isNullOrBlank()) {
-                    binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled = false
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
     }
 
     private fun setupRewardRecyclerView() {

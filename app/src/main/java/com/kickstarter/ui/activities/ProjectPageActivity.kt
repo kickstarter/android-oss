@@ -70,7 +70,6 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.finishWithAnimation
@@ -90,7 +89,6 @@ import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
-import com.kickstarter.viewmodels.projectpage.ConfirmDetailsViewModel
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
@@ -107,7 +105,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
-import type.CreditCardPaymentType
 
 const val REFRESH = "refresh"
 
@@ -126,9 +123,6 @@ class ProjectPageActivity :
 
     private lateinit var rewardsSelectionViewModelFactory: RewardsSelectionViewModel.Factory
     private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
-
-    private lateinit var confirmDetailsViewModelFactory: ConfirmDetailsViewModel.Factory
-    private val confirmDetailsViewModel: ConfirmDetailsViewModel by viewModels { confirmDetailsViewModelFactory }
 
     private lateinit var latePledgeCheckoutViewModelFactory: LatePledgeCheckoutViewModel.Factory
     private val latePledgeCheckoutViewModel: LatePledgeCheckoutViewModel by viewModels { latePledgeCheckoutViewModelFactory }
@@ -175,7 +169,6 @@ class ProjectPageActivity :
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
             rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory(env)
-            confirmDetailsViewModelFactory = ConfirmDetailsViewModel.Factory(env)
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
             stripe = requireNotNull(env.stripe())
@@ -244,7 +237,6 @@ class ProjectPageActivity :
                 if (fFLatePledge && it.project().showLatePledgeFlow()) {
                     rewardsSelectionViewModel.provideProjectData(it)
                     addOnsViewModel.provideProjectData(it)
-                    confirmDetailsViewModel.provideProjectData(it)
                 }
             }.addToDisposable(disposables)
 
@@ -542,39 +534,18 @@ class ProjectPageActivity :
                     val addOns = addOnsUIState.addOns
                     val addOnsIsLoading = addOnsUIState.isLoading
                     val addOnCount = addOnsUIState.totalCount
-
-                    LaunchedEffect(currentUserShippingRule) {
-                        confirmDetailsViewModel.provideCurrentShippingRule(currentUserShippingRule)
-                    }
+                    val totalPledgeAmount = addOnsUIState.totalPledgeAmount
 
                     addOnsViewModel.provideErrorAction { message ->
                         showToastError(message)
                     }
 
-                    val confirmUiState by confirmDetailsViewModel.confirmDetailsUIState.collectAsStateWithLifecycle()
-
-                    val totalAmount: Double = confirmUiState.totalAmount
-                    val rewardsAndAddOns = confirmUiState.rewardsAndAddOns
-                    val shippingAmount = confirmUiState.shippingAmount
-                    val initialBonusAmount = confirmUiState.initialBonusSupportAmount
-                    val totalBonusSupportAmount = confirmUiState.finalBonusSupportAmount
-                    val maxPledgeAmount = confirmUiState.maxPledgeAmount
-                    val minStepAmount = confirmUiState.minStepAmount
-                    val confirmDetailsIsLoading = confirmUiState.isLoading
-
-                    val checkoutPayment by confirmDetailsViewModel.checkoutPayment.collectAsStateWithLifecycle()
+                    val checkoutPayment by latePledgeCheckoutViewModel.checkoutPayment.collectAsStateWithLifecycle()
 
                     LaunchedEffect(checkoutPayment.id) {
-                        if (checkoutPayment.id != 0L) checkoutFlowViewModel.onConfirmDetailsContinueClicked {
-                            startLoginToutActivity()
-                        }
                         checkoutPayment.backing?.let {
                             latePledgeCheckoutViewModel.provideCheckoutIdAndBacking(checkoutPayment.id, it)
                         }
-                    }
-
-                    confirmDetailsViewModel.provideErrorAction { message ->
-                        showToastError(message)
                     }
 
                     val latePledgeCheckoutUIState by latePledgeCheckoutViewModel.latePledgeCheckoutUIState.collectAsStateWithLifecycle()
@@ -582,6 +553,8 @@ class ProjectPageActivity :
                     val userStoredCards = latePledgeCheckoutUIState.storeCards
                     val userEmail = latePledgeCheckoutUIState.userEmail
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
+                    val shippingAmount = latePledgeCheckoutUIState.shippingAmount
+                    val checkoutTotal = latePledgeCheckoutUIState.checkoutTotal
 
                     latePledgeCheckoutViewModel.provideErrorAction { message ->
                         showToastError(message)
@@ -623,20 +596,10 @@ class ProjectPageActivity :
                             )
 
                             if (currentPage == 3) {
-                                latePledgeCheckoutViewModel.sendPageViewedEvent(
-                                    projectData,
-                                    addOns,
-                                    currentUserShippingRule,
-                                    shippingAmount,
-                                    totalAmount,
-                                    totalBonusSupportAmount
-                                )
+                                latePledgeCheckoutViewModel.sendPageViewedEvent()
                             }
 
                             if (currentPage == 1) {
-                                // Load addOns only when the user navigates to AddOns Screen, avoid loading while the user selects location
-                                addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
-
                                 // Send pageViewed event when user navigates to AddOns Screen
                                 addOnsViewModel.sendEvent()
                             }
@@ -650,11 +613,18 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
-                        isLoading = addOnsIsLoading || confirmDetailsIsLoading || checkoutLoading,
+                        isLoading = addOnsIsLoading || checkoutLoading, // || confirmDetailsIsLoading
                         onAddOnsContinueClicked = {
-                            val selectedAddons = addOnsViewModel.getPledgeDataAndReason()?.first?.addOns() ?: emptyList()
-                            confirmDetailsViewModel.onUserUpdatedAddOns(selectedAddons)
-                            checkoutFlowViewModel.onAddOnsContinueClicked()
+                            // - if user not logged at this point, start login Flow, and provide after login completed callback
+                            checkoutFlowViewModel.onContinueClicked(
+                                logInCallback = { startLoginToutActivity() },
+                                continueCallback = {
+                                    val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
+                                    dataAndReason?.let { pData ->
+                                        latePledgeCheckoutViewModel.providePledgeData(pData.first)
+                                    }
+                                }
+                            )
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
@@ -666,8 +636,8 @@ class ProjectPageActivity :
                         onRewardSelected = { reward ->
                             checkoutFlowViewModel.userRewardSelection(reward)
                             addOnsViewModel.userRewardSelection(reward)
+                            addOnsViewModel.provideSelectedShippingRule(currentUserShippingRule)
                             rewardsSelectionViewModel.onUserRewardSelection(reward)
-                            confirmDetailsViewModel.onUserSelectedReward(reward)
                             latePledgeCheckoutViewModel.userRewardSelection(reward)
                         },
                         onAddOnAddedOrRemoved = { quantityForId, rewardId ->
@@ -675,34 +645,23 @@ class ProjectPageActivity :
                         },
                         totalSelectedAddOn = addOnCount,
                         selectedReward = selectedReward,
-                        totalAmount = totalAmount,
-                        selectedRewardAndAddOnList = rewardsAndAddOns,
-                        initialBonusSupportAmount = initialBonusAmount,
-                        totalBonusSupportAmount = totalBonusSupportAmount,
-                        maxPledgeAmount = maxPledgeAmount,
-                        minStepAmount = minStepAmount,
+                        totalPledgeAmount = totalPledgeAmount,
+                        totalBonusAmount = addOnsUIState.totalBonusAmount,
+                        bonusAmountChanged = { bonusAmount ->
+                            addOnsViewModel.bonusAmountUpdated(bonusAmount)
+                        },
+                        selectedRewardAndAddOnList = latePledgeCheckoutUIState.selectedRewards,
                         onShippingRuleSelected = { shippingRule ->
                             rewardsSelectionViewModel.selectedShippingRule(shippingRule)
                         },
-                        shippingAmount = shippingAmount,
-                        onConfirmDetailsContinueClicked = {
-                            confirmDetailsViewModel.onContinueClicked {
-                                checkoutFlowViewModel.onConfirmDetailsContinueClicked {
-                                    startLoginToutActivity()
-                                }
-                            }
-                        },
                         storedCards = userStoredCards,
                         userEmail = userEmail,
-                        onBonusSupportMinusClicked = { confirmDetailsViewModel.decrementBonusSupport() },
-                        onBonusSupportPlusClicked = { confirmDetailsViewModel.incrementBonusSupport() },
-                        onBonusSupportInputted = { input ->
-                            confirmDetailsViewModel.inputBonusSupport(input)
-                        },
+                        shippingAmount = shippingAmount,
+                        checkoutTotal = checkoutTotal,
                         onPledgeCtaClicked = { selectedCard ->
                             selectedCard?.apply {
-                                latePledgeCheckoutViewModel.sendSubmitCTAEvent(projectData, addOns, currentUserShippingRule, shippingAmount, totalAmount, totalBonusSupportAmount)
-                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard, project = projectData.project(), totalAmount = totalAmount)
+                                latePledgeCheckoutViewModel.sendSubmitCTAEvent()
+                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard)
                             }
                         },
                         onAddPaymentMethodClicked = {
@@ -725,15 +684,14 @@ class ProjectPageActivity :
                     LaunchedEffect(successfulPledge) {
                         if (successfulPledge) {
                             latePledgeCheckoutViewModel.onPledgeSuccess.collect {
-                                val checkoutData = CheckoutData.builder()
-                                    .amount(totalAmount)
-                                    .id(checkoutPayment.id)
-                                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
-                                    .bonusAmount(totalBonusSupportAmount)
-                                    .shippingAmount(shippingAmount)
-                                    .build()
-                                val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE), projectData, selectedReward)
-                                showCreatePledgeSuccess(Pair(checkoutData, pledgeData))
+                                if (latePledgeCheckoutViewModel.getCheckoutData() != null && latePledgeCheckoutViewModel.getPledgeData() != null) {
+                                    showCreatePledgeSuccess(
+                                        Pair(
+                                            latePledgeCheckoutViewModel.getCheckoutData(),
+                                            latePledgeCheckoutViewModel.getPledgeData()
+                                        )
+                                    )
+                                }
                                 checkoutFlowViewModel.onProjectSuccess()
                                 refreshProject()
                                 binding.pledgeContainerCompose.isGone = true

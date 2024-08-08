@@ -113,12 +113,8 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             emitCurrentState()
             analytics.trackSelectRewardCTA(pledgeData)
 
-            if (newUserReward.hasAddons())
             // Show add-ons
-                mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
-            else
-            // Show confirm page
-                mutableFlowUIRequest.emit(FlowUIState(currentPage = 2, expanded = true))
+            mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
         }
     }
 

@@ -155,7 +155,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
-            FlowUIState(currentPage = 2, expanded = true)
+            FlowUIState(currentPage = 1, expanded = true)
         )
 
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
@@ -302,7 +302,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assert(flowState.size == 1)
         assertEquals(
             flowState.last(),
-            FlowUIState(currentPage = 2, expanded = true)
+            FlowUIState(currentPage = 1, expanded = true)
         )
 
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)

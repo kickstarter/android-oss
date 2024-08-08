@@ -87,7 +87,21 @@ class GetShippingRulesUseCase(
             scope.launch(dispatcher) {
                 _mutableShippingRules.emit(ShippingRulesState(loading = true))
                 rewardsToQuery.forEachIndexed { index, reward ->
-
+                    if (RewardUtils.shipsToRestrictedLocations(reward) ) {
+                        reward.shippingRules()?.map {
+                            shippingRules.put(requireNotNull(it.location()?.id()), it)
+                        }
+                        // - Emit ONLY if all the rewards shipping rules have been queried
+                        if (index == rewardsToQuery.size - 1) {
+                            _mutableShippingRules.emit(
+                                ShippingRulesState(
+                                    shippingRules = shippingRules.values.toList(),
+                                    loading = false,
+                                    defaultShippingRule = getDefaultShippingRule(shippingRules, project)
+                                )
+                            )
+                        }
+                    } else {
                     apolloClient.getShippingRules(reward)
                         .asFlow()
                         .map { rulesEnvelope ->
@@ -114,6 +128,7 @@ class GetShippingRulesUseCase(
                                 )
                             )
                         }.collect()
+                        }
                 }
             }
         }

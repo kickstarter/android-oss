@@ -158,8 +158,14 @@ fun rewardTransformer(
     val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     else rewardGr.limit()
 
-    val shippingRules = shippingRulesExpanded.map {
-        shippingRuleTransformer(it)
+    val shippingRules = if (shippingRulesExpanded.isNotEmpty()) {
+        shippingRulesExpanded.map {
+            shippingRuleTransformer(it)
+        }
+    } else {
+        rewardGr.shippingRules().map {
+            shippingRuleTransformer(it.fragments().shippingRule())
+        }
     }
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation()?.fragments()?.location())

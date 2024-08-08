@@ -22,7 +22,6 @@ class PPOCard private constructor(
     val creatorName: String?,
     val backingDetailsUrl: String?,
     val showBadge: Boolean,
-    val stripeCardID: String?,
     val timeNumberForAction: Int,
     val viewType: PPOCardViewType?
 
@@ -43,7 +42,6 @@ class PPOCard private constructor(
     fun creatorName() = this.creatorName
     fun backingDetailsUrl() = this.backingDetailsUrl
     fun showBadge() = this.showBadge
-    fun stripeCardID() = this.stripeCardID
     fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
 
@@ -64,7 +62,6 @@ class PPOCard private constructor(
         var creatorName: String? = null,
         var backingDetailsUrl: String? = null,
         var showBadge: Boolean = false,
-        var stripeCardID: String? = null,
         var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
@@ -85,7 +82,6 @@ class PPOCard private constructor(
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
         fun showBadge(showBadge: Boolean) = apply { this.showBadge = showBadge }
-        fun stripeCardID(stripeCardID: String?) = apply { this.stripeCardID = stripeCardID }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
@@ -104,7 +100,6 @@ class PPOCard private constructor(
             creatorName = creatorName,
             backingDetailsUrl = backingDetailsUrl,
             showBadge = showBadge,
-            stripeCardID = stripeCardID,
             timeNumberForAction = timeNumberForAction,
             viewType = viewType,
         )
@@ -126,7 +121,6 @@ class PPOCard private constructor(
         creatorName = creatorName,
         backingDetailsUrl = backingDetailsUrl,
         showBadge = showBadge,
-        stripeCardID = stripeCardID,
         timeNumberForAction = timeNumberForAction,
         viewType = viewType,
     )

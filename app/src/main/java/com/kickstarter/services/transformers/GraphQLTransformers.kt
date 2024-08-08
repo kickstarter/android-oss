@@ -44,7 +44,6 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
-import fragment.PpoCard.AsCreditCard
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -922,7 +921,6 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
     val ppoCards =
         ppoResponse.pledges()?.edges()?.map {
             val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
-            val cardData = ppoBackingData?.paymentSource() as? AsCreditCard
             PPOCard.builder()
             .backingId(ppoBackingData?.id())
             .clientSecret(ppoBackingData?.clientSecret())
@@ -936,7 +934,6 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             .creatorName(ppoBackingData?.project()?.creator()?.name())
             .viewType(getTierType(it.node()?.tierType()))
             .addressID(ppoBackingData?.deliveryAddress()?.id())
-            .stripeCardID(cardData?.stripeCardId())
             .build()
     }
 

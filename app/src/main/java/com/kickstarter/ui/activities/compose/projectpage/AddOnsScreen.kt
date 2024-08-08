@@ -22,15 +22,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.getCurrencySymbols
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -90,10 +93,12 @@ fun AddOnsScreen(
     onItemAddedOrRemoved: (quantityForId: Int, rewardId: Long) -> Unit,
     bonusAmountChanged: (amount: Double) -> Unit,
     isLoading: Boolean = false,
+    currentShippingRule: ShippingRule = ShippingRule.builder().build(),
     onContinueClicked: () -> Unit,
     addOnCount: Int = 0,
     totalPledgeAmount: Double
 ) {
+    val context = LocalContext.current
     val currencySymbolStartAndEnd = environment.ksCurrency()?.getCurrencySymbols(project)
 
     Box(
@@ -236,18 +241,16 @@ fun AddOnsScreen(
                                 )
                             )
                         },
-                        shippingAmount = environment.ksCurrency()?.let {
-                            it.format(0.0, project)
-                        },
+                        shippingAmount = RewardViewUtils.getAddOnShippingAmountString(
+                            context = context,
+                            project = project,
+                            reward = reward,
+                            rewardShippingRules = reward.shippingRules(),
+                            ksCurrency = environment.ksCurrency(),
+                            ksString = environment.ksString(),
+                            selectedShippingRule = currentShippingRule
+                        ),
                         description = reward.description() ?: "",
-                        buttonEnabled = reward.isAvailable(),
-                        buttonText = stringResource(id = R.string.Add),
-                        limit = reward.limit() ?: -1,
-                        onItemAddedOrRemoved = { quantityForId, rwId ->
-
-                            onItemAddedOrRemoved(quantityForId, rwId)
-                        },
-                        environment = environment,
                         includesList = reward.addOnsItems()?.map {
                             environment.ksString()?.format(
                                 "rewards_info_item_quantity_title", it.quantity(),
@@ -255,6 +258,29 @@ fun AddOnsScreen(
                                 "title", it.item().name()
                             ) ?: ""
                         } ?: listOf(),
+                        limit = reward.limit() ?: -1,
+                        buttonEnabled = reward.isAvailable(),
+                        buttonText = stringResource(id = R.string.Add),
+                        estimatedShippingCost =
+                        if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+                            environment.ksCurrency()?.let { ksCurrency ->
+                                environment.ksString()?.let { ksString ->
+                                    RewardViewUtils.getEstimatedShippingCostString(
+                                        context = context,
+                                        ksCurrency,
+                                        ksString,
+                                        project,
+                                        currentShippingRule,
+                                        isAddOn = true,
+                                        multipleQuantitiesAllowed = (reward.limit() ?: -1) > 1,
+                                        shippingRules = reward.shippingRules()
+                                    )
+                                }
+                            }
+                        } else null,
+                        onItemAddedOrRemoved = { quantityForId, rwId ->
+                            onItemAddedOrRemoved(quantityForId, rwId)
+                        },
                         quantity = reward.quantity() ?: 0
                     )
                 }

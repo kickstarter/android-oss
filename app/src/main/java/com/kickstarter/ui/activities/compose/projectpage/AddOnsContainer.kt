@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,12 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.kickstarter.R
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -48,14 +42,14 @@ private fun AddOnsContainerPreview() {
         AddOnsContainer(
             title = "This Is A Test",
             amount = "$500",
-            shippingAmount = "$5 shipping each",
             conversionAmount = "About $500",
+            shippingAmount = " + $5 each",
             description = "This is just a test, don't worry about it, This is just a test, don't worry about it, This is just a test, don't worry about it, This is just a test, don't worry about it",
             includesList = listOf("this is item 1", "this is item 2", "this is item 3"),
             limit = 10,
             buttonEnabled = true,
             buttonText = "Add",
-            environment = Environment.builder().build(),
+            estimatedShippingCost = "About $10-$15 each",
             onItemAddedOrRemoved = { count, id -> },
             quantity = 1
         )
@@ -67,14 +61,14 @@ fun AddOnsContainer(
     rewardId: Long = 0,
     title: String,
     amount: String,
-    shippingAmount: String? = null,
     conversionAmount: String? = null,
+    shippingAmount: String? = null,
     description: String,
     includesList: List<String> = listOf(),
     limit: Int = -1,
     buttonEnabled: Boolean,
     buttonText: String,
-    environment: Environment,
+    estimatedShippingCost: String? = null,
     onItemAddedOrRemoved: (count: Int, id: Long) -> Unit,
     quantity: Int = 0
 ) {
@@ -94,12 +88,14 @@ fun AddOnsContainer(
 
             Text(text = title, style = typography.title2Bold, color = colors.kds_black)
 
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
             Row {
                 Text(text = amount, style = typography.callout, color = colors.textAccentGreen)
 
                 if (!shippingAmount.isNullOrEmpty()) {
                     Text(
-                        text = getShippingString(LocalContext.current, environment.ksString(), shippingAmount) ?: "",
+                        text = shippingAmount,
                         style = typography.callout,
                         color = colors.textAccentGreen
                     )
@@ -158,6 +154,22 @@ fun AddOnsContainer(
 
                     if (index != includesList.lastIndex) KSDividerLineGrey()
                 }
+            }
+
+            if (!estimatedShippingCost.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                Text(
+                    text = "Estimated Shipping",
+                    color = colors.kds_support_400,
+                    style = typography.calloutMedium
+                )
+
+                Text(
+                    modifier = Modifier.padding(top = dimensions.radiusSmall),
+                    text = estimatedShippingCost,
+                    color = colors.kds_support_700,
+                    style = typography.body2
+                )
             }
 
             if (limit > 0) {
@@ -224,18 +236,4 @@ fun AddOnsContainer(
             }
         }
     }
-}
-
-fun getShippingString(context: Context, ksString: KSString?, shippingAmount: String?): String? {
-    if (shippingAmount.isNullOrEmpty() || ksString.isNull()) return ""
-    val rewardAndShippingString =
-        context.getString(R.string.reward_amount_plus_shipping_cost_each)
-    val stringSections = rewardAndShippingString.split("+")
-    val shippingString = " +" + stringSections[1]
-    val ammountAndShippingString = ksString?.format(
-        shippingString,
-        "shipping_cost",
-        shippingAmount
-    )
-    return ammountAndShippingString
 }

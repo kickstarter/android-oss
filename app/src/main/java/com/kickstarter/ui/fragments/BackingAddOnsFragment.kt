@@ -58,6 +58,7 @@ class BackingAddOnsFragment : Fragment() {
                     val addOns = addOnsUIState.addOns
                     val totalCount = addOnsUIState.totalCount
                     val addOnsIsLoading = addOnsUIState.isLoading
+                    val shippingRule = addOnsUIState.shippingRule
                     val totalPledgeAmount = addOnsUIState.totalPledgeAmount
 
                     val project = viewModelC.getProject()
@@ -75,6 +76,7 @@ class BackingAddOnsFragment : Fragment() {
                                 viewModelC.updateSelection(rewardId, quantity)
                             },
                             isLoading = addOnsIsLoading,
+                            currentShippingRule = shippingRule,
                             onContinueClicked = {
                                 viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
                                     showPledgeFragment(pledgeData = pDataAndReason.first, pledgeReason = pDataAndReason.second)

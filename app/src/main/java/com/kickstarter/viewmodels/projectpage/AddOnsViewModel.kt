@@ -38,6 +38,7 @@ data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
     val totalCount: Int = 0,
     val isLoading: Boolean = true,
+    val shippingRule: ShippingRule = ShippingRule.builder().build(),
     val totalPledgeAmount: Double = 0.0,
     val totalBonusAmount: Double = 0.0
 )
@@ -228,6 +229,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 addOns = addOns,
                 isLoading = isLoading,
                 totalCount = currentSelection.values.sum(),
+                shippingRule = shippingRule,
                 totalPledgeAmount = calculateTotalPledgeAmount(),
                 totalBonusAmount = bonusAmount
             )

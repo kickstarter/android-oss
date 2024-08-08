@@ -149,7 +149,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             AddOnsUIState(
                 addOns = addOnsList,
                 totalCount = 0,
-                isLoading = false
+                isLoading = false,
+                shippingRule = ShippingRuleFactory.canadaShippingRule()
             )
         )
 
@@ -163,6 +164,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 addOns = addOnsList,
                 totalCount = 3,
                 isLoading = false,
+                shippingRule = ShippingRuleFactory.canadaShippingRule(),
                 totalPledgeAmount = total
             )
         )
@@ -206,6 +208,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 addOns = addOnsList,
                 totalCount = 0,
                 isLoading = false,
+                shippingRule = ShippingRuleFactory.canadaShippingRule(),
                 totalBonusAmount = 0.0,
                 totalPledgeAmount = rw.pledgeAmount()
             )
@@ -221,6 +224,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 addOns = addOnsList,
                 totalCount = 0,
                 isLoading = false,
+                shippingRule = ShippingRuleFactory.canadaShippingRule(),
                 totalBonusAmount = 3.0,
                 totalPledgeAmount = rw.pledgeAmount() + 3.0
             )

@@ -14,9 +14,11 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.extensions.isBacked
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import java.math.RoundingMode
 
 object RewardViewUtils {
@@ -138,5 +140,91 @@ object RewardViewUtils {
             "max_pledge",
             maxInputAmountWithCurrency
         ) ?: ""
+    }
+
+    /**
+     * Return the string for the estimated shipping costs for a given shipping rule
+     *
+     * Ex. "About $10-$15" or "About $10-%15 each"
+     */
+    fun getEstimatedShippingCostString(
+        context: Context,
+        ksCurrency: KSCurrency,
+        ksString: KSString,
+        project: Project,
+        selectedShippingRule: ShippingRule,
+        isAddOn: Boolean,
+        multipleQuantitiesAllowed: Boolean,
+        shippingRules: List<ShippingRule>?,
+    ): String {
+        var min = ""
+        var max = ""
+        if (isAddOn) {
+            if (!shippingRules.isNullOrEmpty()) {
+                shippingRules.filter {
+                    it.location()?.id() == selectedShippingRule.location()?.id()
+                }.map {
+                    if (it.estimatedMin() <= 0 || it.estimatedMax() <= 0) return ""
+                    min = ksCurrency.format(it.estimatedMin(), project, RoundingMode.HALF_UP)
+                    max = ksCurrency.format(it.estimatedMax(), project, RoundingMode.HALF_UP)
+                }
+            } else return ""
+        } else {
+            if (selectedShippingRule.estimatedMin() <= 0 || selectedShippingRule.estimatedMax() <= 0) return ""
+            min = ksCurrency.format(selectedShippingRule.estimatedMin(), project, RoundingMode.HALF_UP)
+            max = ksCurrency.format(selectedShippingRule.estimatedMax(), project, RoundingMode.HALF_UP)
+        }
+
+        if (min.isEmpty() || max.isEmpty()) return ""
+
+        // TODO: Replace with defined string
+        val minToMaxString = if (multipleQuantitiesAllowed) "$min-$max each" else "$min-$max"
+
+        return ksString.format(
+            context.getString(R.string.About_reward_amount),
+            "reward_amount",
+            minToMaxString
+        )
+    }
+
+    /**
+     * Returns a string for the shipping costs for add-on cards
+     *
+     * Ex. " + $5 each"
+     */
+    fun getAddOnShippingAmountString(
+        context: Context,
+        project: Project,
+        reward: Reward,
+        rewardShippingRules: List<ShippingRule>?,
+        ksCurrency: KSCurrency?,
+        ksString: KSString?,
+        selectedShippingRule: ShippingRule
+    ): String {
+        if (rewardShippingRules.isNullOrEmpty() || ksCurrency.isNull() || ksString.isNull()) return ""
+        val shippingAmount =
+            if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+                var cost = 0.0
+                rewardShippingRules.filter {
+                    it.location()?.id() == selectedShippingRule.location()?.id()
+                }.map {
+                    cost += it.cost()
+                }
+                if (cost > 0) ksCurrency?.format(cost, project)
+                else ""
+            } else {
+                ""
+            }
+        if (shippingAmount.isNullOrEmpty()) return ""
+        val rewardAndShippingString =
+            context.getString(R.string.reward_amount_plus_shipping_cost_each)
+        val stringSections = rewardAndShippingString.split("+")
+        val shippingString = " +" + stringSections[1]
+        val ammountAndShippingString = ksString?.format(
+            shippingString,
+            "shipping_cost",
+            shippingAmount
+        )
+        return ammountAndShippingString ?: ""
     }
 }

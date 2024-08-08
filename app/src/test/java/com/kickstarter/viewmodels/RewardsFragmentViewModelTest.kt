@@ -30,7 +30,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
-import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesAndFilteredRewardsUseCase
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
@@ -58,7 +58,7 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
     private fun setUpEnvironment(
         @NonNull environment: Environment,
-        useCase: GetShippingRulesUseCase? = null
+        useCase: ShippingRulesAndFilteredRewardsUseCase? = null
     ) {
         this.vm = Factory(environment, useCase).create(RewardsFragmentViewModel::class.java)
         this.vm.outputs.backedRewardPosition().subscribe { this.backedRewardPosition.onNext(it) }.addToDisposable(disposables)
@@ -377,7 +377,7 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
         val state = mutableListOf<ShippingRulesState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            val useCase = ShippingRulesAndFilteredRewardsUseCase(apolloClient, project, config, this, dispatcher)
             setUpEnvironment(env, useCase)
 
             vm.inputs.configureWith(ProjectDataFactory.project(project))

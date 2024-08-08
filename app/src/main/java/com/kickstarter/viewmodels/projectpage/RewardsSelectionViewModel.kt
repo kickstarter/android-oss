@@ -15,7 +15,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesAndFilteredRewardsUseCase
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,7 +37,7 @@ data class RewardSelectionUIState(
     val project: ProjectData = ProjectData.builder().build(),
 )
 
-class RewardsSelectionViewModel(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel() {
+class RewardsSelectionViewModel(private val environment: Environment, private var shippingRulesUseCase: ShippingRulesAndFilteredRewardsUseCase? = null) : ViewModel() {
 
     private val analytics = requireNotNull(environment.analytics())
     private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -85,7 +85,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             emitCurrentState()
             environment.currentConfigV2()?.observable()?.asFlow()?.collectLatest {
                 if (shippingRulesUseCase == null) {
-                    shippingRulesUseCase = GetShippingRulesUseCase(
+                    shippingRulesUseCase = ShippingRulesAndFilteredRewardsUseCase(
                         apolloClient,
                         projectData.project(),
                         it,
@@ -176,7 +176,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         }
     }
 
-    class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :
+    class Factory(private val environment: Environment, private var shippingRulesUseCase: ShippingRulesAndFilteredRewardsUseCase? = null) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return RewardsSelectionViewModel(environment = environment, shippingRulesUseCase) as T

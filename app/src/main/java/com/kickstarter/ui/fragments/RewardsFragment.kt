@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -90,16 +91,19 @@ class RewardsFragment : Fragment() {
                         val projectData: State<ProjectData> = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build())
                         val backing = projectData.value.backing() ?: projectData.value.project().backing()
                         val project = projectData.value.project()
-                        val rewards = project.rewards() ?: emptyList()
 
-                        val rules = viewModel.countrySelectorRules().collectAsStateWithLifecycle(
+                        val dropDownShippingRules = viewModel.countrySelectorRulesAndFilteredRewards().collectAsStateWithLifecycle(
                             initialValue = ShippingRulesState()
                         ).value
+
+                        val rewards = viewModel.filteredRewardsByRule(dropDownShippingRules.selectedShippingRule).collectAsStateWithLifecycle(
+                            initialValue = emptyList<Reward>()
+                        ).value
+
                         val listState = rememberLazyListState()
 
-                        if (rules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
-                            // - Indicate the VM which one is the default selected shipping Rule
-                            viewModel.inputs.selectedShippingRule(rules.selectedShippingRule)
+                        if (dropDownShippingRules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
+                            viewModel.inputs.selectedShippingRule(dropDownShippingRules.selectedShippingRule)
                         }
 
                         RewardCarouselScreen(
@@ -111,13 +115,13 @@ class RewardsFragment : Fragment() {
                             onRewardSelected = {
                                 viewModel.inputs.rewardClicked(it)
                             },
-                            countryList = rules.shippingRules,
+                            countryList = dropDownShippingRules.shippingRules,
                             onShippingRuleSelected = {
                                 // On future tickets will filter rewards by shipping rule selected available
                                 viewModel.inputs.selectedShippingRule(it)
                             },
-                            currentShippingRule = rules.selectedShippingRule,
-                            isLoading = rules.loading
+                            currentShippingRule = dropDownShippingRules.selectedShippingRule,
+                            isLoading = dropDownShippingRules.loading
                         )
 
                         ScrollToPosition(viewModel.outputs.backedRewardPosition().subscribeAsState(initial = 0), listState)

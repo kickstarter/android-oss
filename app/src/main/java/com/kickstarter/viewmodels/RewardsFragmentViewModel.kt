@@ -23,7 +23,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesAndFilteredRewardsUseCase
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.Observable
@@ -68,7 +68,7 @@ class RewardsFragmentViewModel {
         fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
-    class RewardsFragmentViewModel(val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel(), Inputs, Outputs {
+    class RewardsFragmentViewModel(val environment: Environment, private var shippingRulesUseCase: ShippingRulesAndFilteredRewardsUseCase? = null) : ViewModel(), Inputs, Outputs {
 
         private val isExpanded = PublishSubject.create<Boolean>()
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
@@ -251,7 +251,7 @@ class RewardsFragmentViewModel {
 
             Observable.combineLatest(configObservable, project) { config, project ->
                 if (shippingRulesUseCase == null) {
-                    shippingRulesUseCase = GetShippingRulesUseCase(
+                    shippingRulesUseCase = ShippingRulesAndFilteredRewardsUseCase(
                         apolloClient,
                         project,
                         config,
@@ -333,6 +333,7 @@ class RewardsFragmentViewModel {
         }
 
         override fun selectedShippingRule(shippingRule: ShippingRule) {
+            this.shippingRulesUseCase?.filterRewardsByLocation(shippingRule)
             this.selectedShippingRule = shippingRule
         }
 
@@ -353,15 +354,23 @@ class RewardsFragmentViewModel {
 
         override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
 
-        fun countrySelectorRules(): Flow<ShippingRulesState> {
+        fun countrySelectorRulesAndFilteredRewards(): Flow<ShippingRulesState> {
             val state = shippingRulesUseCase?.let { useCase ->
                 useCase.shippingRulesState
             } ?: emptyFlow()
             return state
         }
+
+        fun filteredRewardsByRule(shippingRule: ShippingRule): Flow<List<Reward>> {
+            val rewards = shippingRulesUseCase?.let { useCase ->
+                useCase.filterRewardsByLocation(shippingRule)
+                useCase.filteredRewards
+            } ?: emptyFlow()
+            return rewards
+        }
     }
 
-    class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private var shippingRulesUseCase: ShippingRulesAndFilteredRewardsUseCase? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return RewardsFragmentViewModel(environment, shippingRulesUseCase) as T
         }

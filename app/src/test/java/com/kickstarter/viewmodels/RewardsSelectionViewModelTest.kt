@@ -21,7 +21,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.FlowUIState
 import com.kickstarter.viewmodels.projectpage.RewardSelectionUIState
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
-import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.ShippingRulesAndFilteredRewardsUseCase
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: RewardsSelectionViewModel
 
-    private fun createViewModel(environment: Environment = environment(), useCase: GetShippingRulesUseCase? = null) {
+    private fun createViewModel(environment: Environment = environment(), useCase: ShippingRulesAndFilteredRewardsUseCase? = null) {
         viewModel =
             RewardsSelectionViewModel.Factory(environment, useCase).create(RewardsSelectionViewModel::class.java)
     }
@@ -439,7 +439,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            val useCase = ShippingRulesAndFilteredRewardsUseCase(apolloClient, project, config, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(projectData)
             viewModel.shippingUIState.toList(shippingUiState)
@@ -487,7 +487,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            val useCase = ShippingRulesAndFilteredRewardsUseCase(apolloClient, project, config, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(projectData)
             viewModel.shippingUIState.toList(shippingUiState)

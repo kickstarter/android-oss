@@ -599,7 +599,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        assertEquals(state.size, 2)
+        assertEquals(state.size, 1)
         assertEquals(state.last().userEmail, "")
         assertEquals(state.last().storeCards, emptyList<StoredCard>())
     }

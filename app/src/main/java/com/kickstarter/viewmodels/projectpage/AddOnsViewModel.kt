@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -37,7 +38,7 @@ import kotlinx.coroutines.rx2.asFlow
 data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
     val totalCount: Int = 0,
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val shippingRule: ShippingRule = ShippingRule.builder().build(),
     val totalPledgeAmount: Double = 0.0,
     val totalBonusAmount: Double = 0.0
@@ -54,6 +55,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private var pledgeflowcontext: PledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
     private var bonusAmount: Double = 0.0
     private var pReason: PledgeReason = PledgeReason.PLEDGE
+    private var backing: Backing? = null
 
     private var addOns: List<Reward> = listOf()
     private var errorAction: (message: String?) -> Unit = {}
@@ -122,21 +124,20 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 pledgeflowcontext = pFContext
             }
 
-            val backing = pledgeData?.projectData()?.backing() ?: project.backing()
-            if (backing != null) {
+            backing = pledgeData?.projectData()?.backing() ?: project.backing()
+            backing?.let { b->
                 // - backed a reward no reward
-                if (backing.reward() == null && backing.amount().isNotNull()) {
-                    currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(backing.amount()).build()
-                    bonusAmount = backing.amount()
+                if (b.reward() == null && b.amount().isNotNull()) {
+                    currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(b.amount()).build()
+                    bonusAmount = b.amount()
                 } else {
-                    currentUserReward = backing.reward() ?: currentUserReward
-                    bonusAmount = backing.bonusAmount()
-                    backedAddOns = backing.addOns() ?: emptyList()
+                    currentUserReward = b.reward() ?: currentUserReward
+                    bonusAmount = b.bonusAmount()
+                    backedAddOns = b.addOns() ?: emptyList()
                 }
             }
 
-            if (currentUserReward.hasAddons() || backing?.addOns().isNotNull())
-                getAddOns(shippingRule)
+            getAddOns(shippingRule)
         }
     }
 
@@ -169,25 +170,32 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
-        scope.launch(dispatcher) {
-            apolloClient
-                .getProjectAddOns(
-                    slug = project.slug() ?: "",
-                    locationId = selectedShippingRule.location() ?: LocationFactory.empty()
-                )
-                .asFlow()
-                .onStart {
-                    emitCurrentState(isLoading = true)
-                }
-                .map { addOns ->
-                    if (!addOns.isNullOrEmpty()) {
-                        this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
+        // - Do not execute call unless reward has addOns
+        if (currentUserReward.hasAddons() || backing?.addOns().isNotNull()) {
+            scope.launch(dispatcher) {
+                apolloClient
+                    .getProjectAddOns(
+                        slug = project.slug() ?: "",
+                        locationId = selectedShippingRule.location() ?: LocationFactory.empty()
+                    )
+                    .asFlow()
+                    .onStart {
+                        emitCurrentState(isLoading = true)
                     }
-                }.onCompletion {
-                    emitCurrentState(isLoading = false)
-                }.catch {
-                    errorAction.invoke(null)
-                }.collect()
+                    .map { addOns ->
+                        if (!addOns.isNullOrEmpty()) {
+                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
+                        }
+                    }.onCompletion {
+                        emitCurrentState(isLoading = false)
+                    }.catch {
+                        errorAction.invoke(null)
+                    }.collect()
+            }
+        } else {
+            scope.launch {
+                emitCurrentState(isLoading = false)
+            }
         }
     }
 

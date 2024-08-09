@@ -94,7 +94,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = LatePledgeCheckoutUIState(isLoading = true)
+                initialValue = LatePledgeCheckoutUIState(isLoading = false)
             )
 
     private val mutableCheckoutPayment =

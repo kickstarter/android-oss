@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.preferences.StringPreferenceType
+import com.kickstarter.models.Location
 import com.kickstarter.models.ShippingRule
 import org.json.JSONArray
 
@@ -102,6 +103,8 @@ fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
  * if none matches return the first one.
  * Config countryCode is based on IP location,
  * example: if your network is within Canada, it will return Canada
+ * example: if your network is within Canada, but the given shipping Rules does not include
+ * Canada, it will return the first rule given in tha shipping rules list.
  */
 fun Config.getDefaultLocationFrom(shippingRules: List<ShippingRule>): ShippingRule {
     return if (shippingRules.isNotEmpty()) {
@@ -110,4 +113,14 @@ fun Config.getDefaultLocationFrom(shippingRules: List<ShippingRule>): ShippingRu
     } else {
         ShippingRule.builder().build()
     }
+//    val location = Location.builder()
+//        .id(23424814)
+//        .country("FK")
+//        .displayableName("Falkland Islands")
+//        .name("Falkland Islands")
+//        .build()
+//    return ShippingRule.builder()
+//        .id(23424814)
+//        .location(location)
+//        .build()
 }

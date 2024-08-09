@@ -10,6 +10,7 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -28,6 +29,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -58,8 +60,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.rewardSelectionUIState.toList(state)
         }
-
-        // TODO add reward check, now filtered rewards come from the use case
 
         // 1 from initialization, 1 from providing project data
         assert(state.size == 2)
@@ -305,43 +305,99 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `Test rewards list when given a list of rewards that contains unavailable rewards will produce a list of rewards with only rewards available`() = runTest {
-        createViewModel()
-        val testRewards = (0..8).map {
-            if (it % 2 == 0)
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2).shippingType("$it")
+    fun `Test rewards list filtered when given a Germany location and a Project with unavailable rewards and mixed types of shipping`() = runTest {
+        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
+        val testRewards: List<Reward> = (0..8).map {
+            if (it == 5)
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
+                    .pledgeAmount(3.0)
+                    .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
+                    .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                    .shippingRules((listOf(ShippingRuleFactory.mexicoShippingRule())))
+                    .build()
+            else if (it == 3)
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
+                    .pledgeAmount(3.0)
+                    .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
+                    .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                    .shippingRules((listOf(ShippingRuleFactory.germanyShippingRule())))
+                    .build()
+            else if (it == 0)
+                RewardFactory.noReward()
+            else if (it % 2 == 0)
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
+                    .pledgeAmount(3.0)
+                    .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+                    .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED)
                     .build()
             else
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(false).hasAddons(it != 2).shippingType("$it")
+                Reward.builder().title("$it").id(it.toLong()).isAvailable(false).hasAddons(it != 2)
+                    .pledgeAmount(3.0)
+                    .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
+                    .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                    .shippingRules((listOf(ShippingRuleFactory.mexicoShippingRule())))
                     .build()
         }
 
         val testProject = Project.builder().rewards(testRewards).build()
         val testProjectData = ProjectData.builder().project(testProject).build()
 
-        viewModel.provideProjectData(testProjectData)
+        val config = ConfigFactory.configForCA()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
 
-        val uiState = mutableListOf<RewardSelectionUIState>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.rewardSelectionUIState.toList(uiState)
+        val user = UserFactory.canadianUser()
+        val env = environment()
+            .toBuilder()
+            .currentConfig2(currentConfig)
+            .currentUserV2(MockCurrentUserV2(user))
+            .build()
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(testShippingRulesList)
+            }
         }
 
-        val filteredRewards = testRewards.filter { it.isAvailable() }
-        assertEquals(uiState.size, 2)
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val shippingUiState = mutableListOf<ShippingRulesState>()
 
-        // - make sure the uiState output reward list is filtered
-        assertEquals(
-            uiState.last(),
-            RewardSelectionUIState(
-                initialRewardIndex = 0,
-                project = testProjectData,
-            )
+        backgroundScope.launch(dispatcher) {
+            val useCase = GetShippingRulesUseCase(apolloClient, testProject, config, this, dispatcher)
+            createViewModel(env, useCase)
+            viewModel.provideProjectData(testProjectData)
+
+            viewModel.shippingUIState.toList(shippingUiState)
+        }
+        advanceUntilIdle() // wait until all state emissions completed
+        viewModel.selectedShippingRule(ShippingRuleFactory.germanyShippingRule())
+        advanceTimeBy(600) // account for de delay within GetShippingRulesUseCase.filterBySelectedRule
+
+        // - Available rewards should be those available AND able to ship to germany
+        val filteredRewards = mutableListOf(
+            testRewards[0],
+            testRewards[2],
+            testRewards[3],
+            testRewards[4],
+            testRewards[6],
+            testRewards[8]
         )
 
-        // TODO: filtered rewards, now on use case, add this filtering, not just by location
+        assertEquals(shippingUiState.size, 5)
+        assertEquals(shippingUiState[3].loading, true)
+        assertEquals(shippingUiState[4].loading, false)
 
-        // - make sure the uiState output reward list is not the same as the provided reward list
-        // assertNotSame(uiState.last().rewardList, testRewards.size)
+        // - make sure the uiState output reward list is filtered
+        assertEquals(shippingUiState.last().filteredRw.size, filteredRewards.size)
+
+        val obtained = shippingUiState.last().filteredRw
+        assertEquals(
+            obtained,
+            filteredRewards
+        )
+
+        assertEquals(obtained.first(), RewardFactory.noReward())
+        assertEquals(obtained[2].shippingRules()?.first(), ShippingRuleFactory.germanyShippingRule())
     }
 
     @Test

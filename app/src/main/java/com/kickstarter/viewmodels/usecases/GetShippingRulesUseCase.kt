@@ -53,6 +53,7 @@ class GetShippingRulesUseCase(
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
     private val allAvailableRulesForProject = mutableMapOf<Long, ShippingRule>()
+    private val projectRewards = project.rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
 
     init {
 
@@ -123,13 +124,13 @@ class GetShippingRulesUseCase(
                             avShipMap,
                             project
                         )
-                        filterRewardsByLocation(avShipMap, defaultShippingRule, project.rewards() ?: emptyList())
+                        filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
                     }
                 }
             } else {
                 // - All rewards are digital, all rewards must be available
                 filteredRewards.clear()
-                filteredRewards.addAll(project.rewards() ?: emptyList())
+                filteredRewards.addAll(projectRewards)
                 emitCurrentState(isLoading = false)
             }
         }
@@ -139,7 +140,7 @@ class GetShippingRulesUseCase(
         scope.launch(dispatcher) {
             emitCurrentState(isLoading = true)
             delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
-            filterRewardsByLocation(allAvailableRulesForProject, shippingRule, project.rewards() ?: emptyList())
+            filterRewardsByLocation(allAvailableRulesForProject, shippingRule, projectRewards)
         }
     }
 
@@ -194,7 +195,6 @@ class GetShippingRulesUseCase(
         val locationId = rule.location()?.id() ?: 0
         val isIsValidRule = allAvailableShippingRules[locationId]
 
-        // Rule is available
         rewards.map { rw ->
             if (RewardUtils.shipsWorldwide(rw)) {
                 filteredRewards.add(rw)

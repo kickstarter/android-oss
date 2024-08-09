@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels.usecases
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -12,6 +11,7 @@ import com.kickstarter.services.ApolloClientTypeV2
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -24,7 +24,8 @@ data class ShippingRulesState(
     val shippingRules: List<ShippingRule> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null,
-    val selectedShippingRule: ShippingRule = ShippingRuleFactory.usShippingRule()
+    val selectedShippingRule: ShippingRule = ShippingRule.builder().build(),
+    val filteredRw: List<Reward> = emptyList()
 )
 
 /**
@@ -47,7 +48,11 @@ class GetShippingRulesUseCase(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    private var rewardsToQuery: List<Reward>
+    private val filteredRewards = mutableListOf<Reward>()
+    private var defaultShippingRule = ShippingRule.builder().build()
+    private var rewardsByShippingType: List<Reward>
+    private val allAvailableRulesForProject = mutableMapOf<Long, ShippingRule>()
+
     init {
 
         // To avoid duplicates insert reward.id as key
@@ -63,11 +68,11 @@ class GetShippingRulesUseCase(
             project.rewards()?.filter {
                 RewardUtils.shipsToRestrictedLocations(reward = it)
             }?.forEach {
-                rewardsToQuery.put(it.id(), it)
+                rewardsToQuery[it.id()] = it
             }
         }
 
-        this.rewardsToQuery = rewardsToQuery.values.toList()
+        this.rewardsByShippingType = rewardsToQuery.values.toList()
     }
 
     // - Do not expose mutable states
@@ -82,40 +87,129 @@ class GetShippingRulesUseCase(
 
     // - IO dispatcher for network operations to avoid blocking main thread
     operator fun invoke() {
-        if (rewardsToQuery.isNotEmpty()) {
-            val shippingRules = mutableMapOf<Long, ShippingRule>()
-            scope.launch(dispatcher) {
-                _mutableShippingRules.emit(ShippingRulesState(loading = true))
-                rewardsToQuery.forEachIndexed { index, reward ->
-                    apolloClient.getShippingRules(reward)
-                        .asFlow()
-                        .map { rulesEnvelope ->
-                            rulesEnvelope.shippingRules()?.map { rule ->
-                                rule?.let { shippingRules.put(requireNotNull(it.location()?.id()), it) }
-                            }
+        scope.launch(dispatcher) {
+            emitCurrentState(isLoading = true)
 
-                            // - Emit ONLY if all the rewards shipping rules have been queried
-                            if (index == rewardsToQuery.size - 1) {
-                                _mutableShippingRules.emit(
-                                    ShippingRulesState(
-                                        shippingRules = shippingRules.values.toList(),
-                                        loading = false,
-                                        selectedShippingRule = getDefaultShippingRule(shippingRules, project)
-                                    )
-                                )
-                            }
-                        }
-                        .catch { throwable ->
-                            _mutableShippingRules.emit(
-                                ShippingRulesState(
-                                    loading = false,
-                                    error = throwable.message
-                                )
+            if (rewardsByShippingType.isNotEmpty()) {
+                rewardsByShippingType.forEachIndexed { index, reward ->
+
+                    if (RewardUtils.shipsToRestrictedLocations(reward)) {
+                        reward.shippingRules()?.map {
+                            allAvailableRulesForProject.put(
+                                requireNotNull(
+                                    it.location()?.id()
+                                ),
+                                it
                             )
-                        }.collect()
+                        }
+                    }
+                    if (RewardUtils.shipsWorldwide(reward)) {
+                        getGlobalShippingRulesForReward(reward, allAvailableRulesForProject)
+                    }
+
+                    // - Filter if all shipping rules for all rewards have been collected
+                    if (index == rewardsByShippingType.size - 1) {
+                        defaultShippingRule = getDefaultShippingRule(
+                            allAvailableRulesForProject,
+                            project
+                        )
+                        filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, project.rewards() ?: emptyList())
+                    }
+                }
+            } else {
+                // - All rewards are digital, all rewards must be available
+                filteredRewards.addAll(project.rewards() ?: emptyList())
+                emitCurrentState(isLoading = false)
+            }
+        }
+    }
+
+    fun filterBySelectedRule(shippingRule: ShippingRule) {
+        scope.launch(dispatcher) {
+            filteredRewards.clear()
+            emitCurrentState(isLoading = true)
+            delay(500) // Added delay due to the filtering happening too fast for the user to perceive
+            filterRewardsByLocation(allAvailableRulesForProject, shippingRule, project.rewards() ?: emptyList())
+        }
+    }
+
+    private suspend fun emitCurrentState(isLoading: Boolean, errorMessage: String? = null) {
+        _mutableShippingRules.emit(
+            ShippingRulesState(
+                shippingRules = allAvailableRulesForProject.values.toList(),
+                loading = isLoading,
+                selectedShippingRule = defaultShippingRule,
+                error = errorMessage,
+                filteredRw = filteredRewards
+            )
+        )
+    }
+
+    private suspend fun getGlobalShippingRulesForReward(
+        reward: Reward,
+        shippingRules: MutableMap<Long, ShippingRule>
+    ) {
+        apolloClient.getShippingRules(reward)
+            .asFlow()
+            .map { rulesEnvelope ->
+                rulesEnvelope.shippingRules()?.map { rule ->
+                    rule?.let {
+                        shippingRules.put(
+                            requireNotNull(
+                                it.location()?.id()
+                            ),
+                            it
+                        )
+                    }
+                }
+            }
+            .catch { throwable ->
+                emitCurrentState(isLoading = false, errorMessage = throwable?.message)
+            }.collect()
+    }
+
+    /**
+     * Check if the given @param rule is available in the list
+     * of @param allAvailableShippingRules for this project.
+     *
+     * In case it is available, return only those rewards able to ship to
+     * the selected rule
+     */
+    private suspend fun filterRewardsByLocation(
+        allAvailableShippingRules: MutableMap<Long, ShippingRule>,
+        rule: ShippingRule,
+        rewards: List<Reward>
+    ) {
+        val locationId = rule.location()?.id() ?: 0
+        val isIsValidRule = allAvailableShippingRules[locationId]
+
+        // Rule is available
+        rewards.map { rw ->
+            if (RewardUtils.shipsWorldwide(rw)) {
+                filteredRewards.add(rw)
+            }
+
+            if (RewardUtils.isNoReward(rw)) {
+                filteredRewards.add(rw)
+            }
+
+            if (RewardUtils.isLocalPickup(rw)) {
+                filteredRewards.add(rw)
+            }
+
+            // - If shipping is restricted, make sure the reward is able to ship to selected rule
+            if (RewardUtils.shipsToRestrictedLocations(rw)) {
+                if (isIsValidRule != null) {
+                    rw.shippingRules()?.map {
+                        if (it.location()?.id() == locationId) {
+                            filteredRewards.add(rw)
+                        }
+                    }
                 }
             }
         }
+
+        emitCurrentState(isLoading = false)
     }
 
     /**

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -154,10 +153,9 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     private suspend fun emitCurrentState() {
-        val filteredRewards = currentProjectData.project().rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
         mutableRewardSelectionUIState.emit(
             RewardSelectionUIState(
-                rewardList = filteredRewards,
+                rewardList = shippingUIState.value.filteredRw,
                 initialRewardIndex = indexOfBackedReward,
                 project = currentProjectData,
                 selectedReward = newUserReward,
@@ -171,6 +169,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
+            shippingRulesUseCase?.filterBySelectedRule(shippingRule)
             selectedShippingRule = shippingRule
             emitShippingUIState()
         }

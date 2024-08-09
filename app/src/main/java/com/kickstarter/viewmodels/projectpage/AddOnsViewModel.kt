@@ -125,7 +125,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
 
             backing = pledgeData?.projectData()?.backing() ?: project.backing()
-            backing?.let { b->
+            backing?.let { b ->
                 // - backed a reward no reward
                 if (b.reward() == null && b.amount().isNotNull()) {
                     currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(b.amount()).build()

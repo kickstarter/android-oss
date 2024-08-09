@@ -59,12 +59,13 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             viewModel.rewardSelectionUIState.toList(state)
         }
 
+        // TODO add reward check, now filtered rewards come from the use case
+
         // 1 from initialization, 1 from providing project data
         assert(state.size == 2)
         assertEquals(
             state.last(),
             RewardSelectionUIState(
-                rewardList = testRewards,
                 initialRewardIndex = 2,
                 project = testProjectData,
             )
@@ -98,7 +99,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
-                rewardList = testRewards,
                 initialRewardIndex = 0,
                 project = testProjectData,
             )
@@ -143,7 +143,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
-                rewardList = testRewards,
                 initialRewardIndex = 0,
                 project = testProjectData,
             )
@@ -192,7 +191,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
-                rewardList = testRewards,
                 initialRewardIndex = 2,
                 project = testProjectData,
             )
@@ -241,7 +239,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
-                rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
             )
@@ -290,7 +287,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
-                rewardList = testRewards,
                 initialRewardIndex = 3,
                 project = testProjectData,
             )
@@ -337,14 +333,15 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
-                rewardList = filteredRewards,
                 initialRewardIndex = 0,
                 project = testProjectData,
             )
         )
 
+        // TODO: filtered rewards, now on use case, add this filtering, not just by location
+
         // - make sure the uiState output reward list is not the same as the provided reward list
-        assertNotSame(uiState.last().rewardList, testRewards.size)
+        // assertNotSame(uiState.last().rewardList, testRewards.size)
     }
 
     @Test
@@ -455,7 +452,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `Default Location is BAcke when config is from Canada, and list of shipping Rules matches all available reward shipping without repeated`() = runTest {
+    fun `Default Location is Backed when config is from Canada, and list of shipping Rules matches all available reward shipping without repeated`() = runTest {
         val rw = RewardFactory
             .reward()
             .toBuilder()

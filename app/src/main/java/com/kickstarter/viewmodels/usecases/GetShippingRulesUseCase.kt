@@ -118,6 +118,7 @@ class GetShippingRulesUseCase(
                 }
             } else {
                 // - All rewards are digital, all rewards must be available
+                filteredRewards.clear()
                 filteredRewards.addAll(project.rewards() ?: emptyList())
                 emitCurrentState(isLoading = false)
             }
@@ -126,7 +127,6 @@ class GetShippingRulesUseCase(
 
     fun filterBySelectedRule(shippingRule: ShippingRule) {
         scope.launch(dispatcher) {
-            filteredRewards.clear()
             emitCurrentState(isLoading = true)
             delay(500) // Added delay due to the filtering happening too fast for the user to perceive
             filterRewardsByLocation(allAvailableRulesForProject, shippingRule, project.rewards() ?: emptyList())
@@ -180,6 +180,7 @@ class GetShippingRulesUseCase(
         rule: ShippingRule,
         rewards: List<Reward>
     ) {
+        filteredRewards.clear()
         val locationId = rule.location()?.id() ?: 0
         val isIsValidRule = allAvailableShippingRules[locationId]
 

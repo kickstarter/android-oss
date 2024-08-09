@@ -81,6 +81,7 @@ private fun ProjectPledgeButtonAndContainerPreview() {
                 }
             },
             isLoading = false,
+            isRewardsLoading = false,
             pagerState = pagerState,
             onAddOnsContinueClicked = {
                 coroutineScope.launch {
@@ -123,6 +124,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onBackClicked: () -> Unit,
     pagerState: PagerState,
     isLoading: Boolean,
+    isRewardsLoading: Boolean,
     onAddOnsContinueClicked: () -> Unit,
     shippingRules: List<ShippingRule> = listOf(),
     currentShippingRule: ShippingRule,
@@ -240,7 +242,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         rewards = rewardsList,
                                         project = project,
                                         onRewardSelected = onRewardSelected,
-                                        isLoading = isLoading,
+                                        isLoading = isRewardsLoading,
                                         countryList = shippingRules,
                                         currentShippingRule = currentShippingRule,
                                         onShippingRuleSelected = onShippingRuleSelected,

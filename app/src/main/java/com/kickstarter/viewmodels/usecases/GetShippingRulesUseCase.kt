@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.usecases
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -88,14 +89,23 @@ class GetShippingRulesUseCase(
     // - IO dispatcher for network operations to avoid blocking main thread
     operator fun invoke() {
         scope.launch(dispatcher) {
+            val avShipMap = allAvailableRulesForProject
             emitCurrentState(isLoading = true)
+
+            // - If project backing default shipping Rule is backed shipping rule
+            if (project.isBacking() && project?.backing()?.locationId().isNotNull()) {
+                defaultShippingRule = getDefaultShippingRule(
+                    avShipMap,
+                    project
+                )
+            }
 
             if (rewardsByShippingType.isNotEmpty()) {
                 rewardsByShippingType.forEachIndexed { index, reward ->
 
                     if (RewardUtils.shipsToRestrictedLocations(reward)) {
                         reward.shippingRules()?.map {
-                            allAvailableRulesForProject.put(
+                            avShipMap.put(
                                 requireNotNull(
                                     it.location()?.id()
                                 ),
@@ -104,16 +114,16 @@ class GetShippingRulesUseCase(
                         }
                     }
                     if (RewardUtils.shipsWorldwide(reward)) {
-                        getGlobalShippingRulesForReward(reward, allAvailableRulesForProject)
+                        getGlobalShippingRulesForReward(reward, avShipMap)
                     }
 
-                    // - Filter if all shipping rules for all rewards have been collected
+                    // - Filter rewards once all shipping rules have been collected
                     if (index == rewardsByShippingType.size - 1) {
                         defaultShippingRule = getDefaultShippingRule(
-                            allAvailableRulesForProject,
+                            avShipMap,
                             project
                         )
-                        filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, project.rewards() ?: emptyList())
+                        filterRewardsByLocation(avShipMap, defaultShippingRule, project.rewards() ?: emptyList())
                     }
                 }
             } else {
@@ -128,7 +138,7 @@ class GetShippingRulesUseCase(
     fun filterBySelectedRule(shippingRule: ShippingRule) {
         scope.launch(dispatcher) {
             emitCurrentState(isLoading = true)
-            delay(500) // Added delay due to the filtering happening too fast for the user to perceive
+            delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
             filterRewardsByLocation(allAvailableRulesForProject, shippingRule, project.rewards() ?: emptyList())
         }
     }

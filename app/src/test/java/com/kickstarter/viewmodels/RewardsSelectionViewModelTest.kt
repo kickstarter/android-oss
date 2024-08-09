@@ -369,13 +369,16 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `Default Location when Backing Project is backed location, and list of shipping rules for "restricted" is all places available for all restricted rewrads without duplicated`() = runTest {
+    fun `Default Location when Backing Project is backed location, and list of shipping rules for "restricted" is all places available for all restricted rewards without duplicated`() = runTest {
+        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+
         val rw1 = RewardFactory
             .reward()
             .toBuilder()
             .id(1)
             .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+            .shippingRules((listOf(testShippingRulesList.first())))
             .build()
 
         val rw2 = RewardFactory
@@ -384,6 +387,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             .id(2)
             .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+            .shippingRules((listOf(testShippingRulesList.first())))
             .build()
 
         val rw3 = RewardFactory
@@ -392,9 +396,9 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             .id(3)
             .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
             .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+            .shippingRules(listOf(testShippingRulesList[2]))
             .build()
 
-        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
         val user = UserFactory.user()
         val backing = BackingFactory.backing(rw1).toBuilder()
             .location(testShippingRulesList.first().location())
@@ -405,22 +409,10 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project().toBuilder()
             .rewards(listOf(rw1, rw2, rw3))
             .backing(backing)
+            .isBacking(true)
             .build()
 
         val projectData = ProjectDataFactory.project(project, null, null)
-
-        val apolloClient = object : MockApolloClientV2() {
-            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                if (reward.id() == 1L)
-                    return Observable.just(ShippingRulesEnvelope.builder().shippingRules(listOf(testShippingRulesList.first())).build())
-                if (reward.id() == 2L)
-                    return Observable.just(ShippingRulesEnvelope.builder().shippingRules(listOf(testShippingRulesList.first())).build())
-                if (reward.id() == 3L)
-                    return Observable.just(ShippingRulesEnvelope.builder().shippingRules(listOf(testShippingRulesList[2])).build())
-
-                return Observable.empty()
-            }
-        }
 
         val config = ConfigFactory.configForCA()
         val currentConfig = MockCurrentConfigV2()
@@ -429,9 +421,10 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val env = environment()
             .toBuilder()
             .currentConfig2(currentConfig)
-            .apolloClientV2(apolloClient)
             .currentUserV2(MockCurrentUserV2(user))
             .build()
+
+        val apolloClient = requireNotNull(env.apolloClientV2())
 
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
@@ -445,14 +438,14 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle() // wait until all state emissions completed
 
         assertEquals(shippingUiState.size, 2)
-        assertEquals(shippingUiState.last().selectedShippingRule.location()?.name(), testShippingRulesList.first().location()?.name())
+        assertEquals(shippingUiState.last().selectedShippingRule.location()?.id(), testShippingRulesList.first().location()?.id())
         assertNotSame(shippingUiState.last().shippingRules, testShippingRulesList)
         assertEquals(shippingUiState.last().shippingRules.size, 2) // the 3 available shipping rules
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `Default Location is Backed when config is from Canada, and list of shipping Rules matches all available reward shipping without repeated`() = runTest {
+    fun `config is from Canada and available rules are global so Default Shipping is Canada, and list of shipping Rules provided matches all available reward global shipping`() = runTest {
         val rw = RewardFactory
             .reward()
             .toBuilder()
@@ -492,7 +485,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         advanceUntilIdle() // wait until all state emissions completed
 
-        assertEquals(shippingUiState.size, 2)
+        assertEquals(shippingUiState.size, 3)
         assertEquals(shippingUiState.last().selectedShippingRule.location()?.name(), "Canada")
         assertEquals(shippingUiState.last().shippingRules, testShippingRulesList.shippingRules())
     }

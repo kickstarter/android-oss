@@ -333,6 +333,7 @@ class RewardsFragmentViewModel {
         }
 
         override fun selectedShippingRule(shippingRule: ShippingRule) {
+            this.shippingRulesUseCase?.filterBySelectedRule(shippingRule)
             this.selectedShippingRule = shippingRule
         }
 

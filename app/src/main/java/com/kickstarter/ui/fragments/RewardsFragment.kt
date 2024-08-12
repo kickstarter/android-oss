@@ -23,7 +23,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -90,17 +89,13 @@ class RewardsFragment : Fragment() {
                         val projectData: State<ProjectData> = viewModel.projectData().subscribeAsState(initial = ProjectData.builder().build())
                         val backing = projectData.value.backing() ?: projectData.value.project().backing()
                         val project = projectData.value.project()
-                        val rewards = project.rewards() ?: emptyList()
 
                         val rules = viewModel.countrySelectorRules().collectAsStateWithLifecycle(
                             initialValue = ShippingRulesState()
                         ).value
-                        val listState = rememberLazyListState()
 
-                        if (rules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
-                            // - Indicate the VM which one is the default selected shipping Rule
-                            viewModel.inputs.selectedShippingRule(rules.selectedShippingRule)
-                        }
+                        val rewards = rules.filteredRw
+                        val listState = rememberLazyListState()
 
                         RewardCarouselScreen(
                             lazyRowState = listState,
@@ -113,7 +108,6 @@ class RewardsFragment : Fragment() {
                             },
                             countryList = rules.shippingRules,
                             onShippingRuleSelected = {
-                                // On future tickets will filter rewards by shipping rule selected available
                                 viewModel.inputs.selectedShippingRule(it)
                             },
                             currentShippingRule = rules.selectedShippingRule,

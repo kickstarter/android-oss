@@ -518,7 +518,8 @@ class ProjectPageActivity :
 
                     val projectData = rewardSelectionUIState.project
                     val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
-                    val rewardsList = rewardSelectionUIState.rewardList
+                    val rewardsList = shippingUIState.filteredRw
+                    val rewardLoading = shippingUIState.loading
                     val selectedReward = rewardSelectionUIState.selectedReward
                     val currentUserShippingRule = shippingUIState.selectedShippingRule
                     val shippingRules = shippingUIState.shippingRules
@@ -613,7 +614,7 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
-                        isLoading = addOnsIsLoading || checkoutLoading, // || confirmDetailsIsLoading
+                        isLoading = addOnsIsLoading || checkoutLoading || rewardLoading,
                         onAddOnsContinueClicked = {
                             // - if user not logged at this point, start login Flow, and provide after login completed callback
                             checkoutFlowViewModel.onContinueClicked(

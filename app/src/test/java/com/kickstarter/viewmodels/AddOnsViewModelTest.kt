@@ -43,14 +43,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
     fun setup(environment: Environment = environment()) {
         createViewModel(environment)
 
-        val testRewards = (0..5).map { Reward.builder().title("$it").id(it.toLong()).build() }
+        val testRewards = (0..5).map { Reward.builder().hasAddons(true).title("$it").id(it.toLong()).build() }
         val testBacking =
             Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
         val testProject = Project.builder().rewards(testRewards).backing(testBacking).build()
         val testProjectData = ProjectData.builder().project(testProject).build()
 
         viewModel.provideProjectData(testProjectData)
-        viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
     }
 
     @Test
@@ -116,7 +115,6 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `test_on_addons_added_or_removed`() = runTest {
-
         val addOnReward = RewardFactory.addOn()
         val aDifferentAddOnReward = RewardFactory.addOnSingle()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
@@ -135,22 +133,28 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setup(env)
+        val rw = RewardFactory.reward().toBuilder().hasAddons(true).build()
+        viewModel.userRewardSelection(rw)
+        viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
         val uiState = mutableListOf<AddOnsUIState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
         backgroundScope.launch(dispatcher) {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.addOnsUIState.toList(uiState)
         }
 
-        // - Initial state addOns freshly loaded
+        // - Initial state addOns freshly loaded,
         assertEquals(
             uiState.last(),
             AddOnsUIState(
                 addOns = addOnsList,
                 totalCount = 0,
                 isLoading = false,
-                shippingRule = ShippingRuleFactory.canadaShippingRule()
+                shippingRule = ShippingRuleFactory.canadaShippingRule(),
+                totalBonusAmount = 0.0,
+                totalPledgeAmount = rw.pledgeAmount()
             )
         )
 
@@ -190,8 +194,9 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setup(env)
-        val rw = RewardFactory.reward().toBuilder().pledgeAmount(55.0).build()
+        val rw = RewardFactory.reward().toBuilder().hasAddons(true).pledgeAmount(55.0).build()
         viewModel.userRewardSelection(rw)
+        viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
         val uiState = mutableListOf<AddOnsUIState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)

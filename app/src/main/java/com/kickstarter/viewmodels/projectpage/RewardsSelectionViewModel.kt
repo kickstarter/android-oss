@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -31,7 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
 data class RewardSelectionUIState(
-    val rewardList: List<Reward> = listOf(),
     val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
     val project: ProjectData = ProjectData.builder().build(),
@@ -47,7 +45,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private var previouslyBackedReward: Reward? = null
     private var indexOfBackedReward = 0
     private var newUserReward: Reward = Reward.builder().build()
-    private var availableShippingRules: List<ShippingRule> = listOf()
     private var selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule()
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
@@ -95,12 +92,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                 }
                 shippingRulesUseCase?.invoke()
 
-                // - collect useCase flow and update shippingUIState
-                shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
-                    availableShippingRules = shippingUseCase.shippingRules
-                    selectedShippingRule = shippingUseCase.selectedShippingRule
-                    emitShippingUIState()
-                }
+                emitShippingUIState()
             }
         }
     }
@@ -145,19 +137,16 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     private suspend fun emitShippingUIState() {
-        mutableShippingUIState.emit(
-            ShippingRulesState(
-                shippingRules = availableShippingRules,
-                selectedShippingRule = selectedShippingRule
-            )
-        )
+        // - collect useCase flow and update shippingUIState
+        shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
+            selectedShippingRule = shippingUseCase.selectedShippingRule
+            mutableShippingUIState.emit(shippingUseCase)
+        }
     }
 
     private suspend fun emitCurrentState() {
-        val filteredRewards = currentProjectData.project().rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
         mutableRewardSelectionUIState.emit(
             RewardSelectionUIState(
-                rewardList = filteredRewards,
                 initialRewardIndex = indexOfBackedReward,
                 project = currentProjectData,
                 selectedReward = newUserReward,
@@ -171,6 +160,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
+            shippingRulesUseCase?.filterBySelectedRule(shippingRule)
             selectedShippingRule = shippingRule
             emitShippingUIState()
         }

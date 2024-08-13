@@ -224,6 +224,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         if (reward != currentUserReward) {
             currentUserReward = reward
             currentSelection.clear()
+            bonusAmount = 0.0
 
             scope.launch {
                 emitCurrentState()

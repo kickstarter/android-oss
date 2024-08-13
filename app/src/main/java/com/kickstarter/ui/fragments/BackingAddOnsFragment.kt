@@ -86,7 +86,8 @@ class BackingAddOnsFragment : Fragment() {
                                 viewModelC.bonusAmountUpdated(bonusAmount)
                             },
                             addOnCount = totalCount,
-                            totalPledgeAmount = totalPledgeAmount
+                            totalPledgeAmount = totalPledgeAmount,
+                            totalBonusSupport = addOnsUIState.totalBonusAmount
                         )
                     }
                 }

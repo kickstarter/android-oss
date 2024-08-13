@@ -20,6 +20,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +77,8 @@ private fun AddOnsScreenPreview() {
                 bonusAmountChanged = {},
                 onContinueClicked = {},
                 addOnCount = 2,
-                totalPledgeAmount = 30.0
+                totalPledgeAmount = 30.0,
+                totalBonusSupport = 5.0
             )
         }
     }
@@ -96,10 +98,18 @@ fun AddOnsScreen(
     currentShippingRule: ShippingRule = ShippingRule.builder().build(),
     onContinueClicked: () -> Unit,
     addOnCount: Int = 0,
-    totalPledgeAmount: Double
+    totalPledgeAmount: Double,
+    totalBonusSupport: Double
 ) {
     val context = LocalContext.current
     val currencySymbolStartAndEnd = environment.ksCurrency()?.getCurrencySymbols(project)
+    val totalAmountString = environment.ksCurrency()?.let {
+        RewardViewUtils.styleCurrency(
+            value = totalPledgeAmount,
+            project = project,
+            ksCurrency = it
+        ).toString()
+    } ?: ""
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -135,7 +145,7 @@ fun AddOnsScreen(
                                     Spacer(modifier = Modifier.weight(1f))
 
                                     Text(
-                                        text = "${currencySymbolStartAndEnd?.first}${totalPledgeAmount}${currencySymbolStartAndEnd?.second}",
+                                        text = totalAmountString,
                                         style = typography.subheadlineMedium,
                                         color = colors.textPrimary
                                     )
@@ -147,7 +157,7 @@ fun AddOnsScreen(
                                     onClickAction = onContinueClicked,
                                     text =
                                     if (addOnCount == 0)
-                                        stringResource(id = R.string.Skip_add_ons)
+                                        stringResource(id = R.string.Continue)
                                     else {
                                         when {
                                             addOnCount == 1 -> environment.ksString()?.format(
@@ -162,7 +172,7 @@ fun AddOnsScreen(
                                                 addOnCount.toString()
                                             ) ?: ""
 
-                                            else -> stringResource(id = R.string.Skip_add_ons)
+                                            else -> stringResource(id = R.string.Continue)
                                         }
                                     },
                                     isEnabled = true
@@ -199,18 +209,23 @@ fun AddOnsScreen(
 
                     val initAmount = if (project.isBacking())
                         project.backing()?.bonusAmount() ?: 0.0
+                    else if (RewardUtils.isNoReward(selectedReward))
+                        RewardUtils.minPledgeAmount(selectedReward, project)
                     else 0.0
 
                     BonusSupportContainer(
-                        noAddOnsRw = addOns.isEmpty(),
+                        selectedReward = selectedReward,
                         initialAmount = initAmount,
                         maxAmount = RewardUtils.maxPledgeAmount(selectedReward, project),
                         minPledge = RewardUtils.minPledgeAmount(selectedReward, project),
+                        totalAmount = totalPledgeAmount,
+                        totalBonusSupport = totalBonusSupport,
                         currencySymbolAtStart = currencySymbolStartAndEnd?.first,
                         currencySymbolAtEnd = currencySymbolStartAndEnd?.second,
                         onBonusSupportPlusClicked = bonusAmountChanged,
                         onBonusSupportMinusClicked = bonusAmountChanged,
-                        onBonusSupportInputted = bonusAmountChanged
+                        onBonusSupportInputted = bonusAmountChanged,
+                        environment = environment
                     )
                 }
 

@@ -337,6 +337,10 @@ class RewardsFragmentViewModel {
             this.selectedShippingRule = shippingRule
         }
 
+        fun setInitialShippingRule(rule: ShippingRule) {
+            this.selectedShippingRule = rule
+        }
+
         override fun onCleared() {
             disposables.clear()
             super.onCleared()

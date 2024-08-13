@@ -4,7 +4,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.isFromPaymentSheet
-import com.kickstarter.viewmodels.PledgeFragmentViewModel
 
 data class UpdateBackingData(
     val backing: Backing,

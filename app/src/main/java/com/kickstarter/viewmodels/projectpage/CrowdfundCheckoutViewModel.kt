@@ -7,27 +7,30 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getBackingData
-import com.kickstarter.services.mutations.CreateBackingData
-import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.mutations.getUpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.viewmodels.getUpdateBackingData
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -37,8 +40,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -53,7 +58,9 @@ data class CheckoutUIState(
     val shippingAmount: Double = 0.0,
     val checkoutTotal: Double = 0.0,
     val isPledgeButtonEnabled: Boolean = true,
-    val selectedPaymentMethod: StoredCard = StoredCard.builder().build()
+    val selectedPaymentMethod: StoredCard = StoredCard.builder().build(),
+    val bonusAmount: Double = 0.0,
+    val shippingRule: ShippingRule? = null
 )
 
 class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
@@ -62,17 +69,24 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     val currentUser = requireNotNull(environment.currentUserV2()?.loggedInUser()?.asFlow())
     val cookieManager = requireNotNull(environment.cookieManager())
     val sharedPreferences = requireNotNull(environment.sharedPreferences())
+    val ffClient = requireNotNull(environment.featureFlagClient())
 
     private var pledgeData: PledgeData? = null
     private var checkoutData: CheckoutData? = null // TOD potentially needs to change with user card input
     private var pledgeReason: PledgeReason? = null
     private var storedCards = emptyList<StoredCard>()
     private var project = Project.builder().build()
+    private var backing: Backing? = null
     private var user: User? = null
     private var selectedRewards = emptyList<Reward>()
     private var isPledgeButtonEnabled = false
     private var selectedPaymentMethod: StoredCard = StoredCard.builder().build()
+    private var shippingRule: ShippingRule? = null
     private var refTag: RefTag? = null
+    private var shippingAmount = 0.0
+    private var totalAmount = 0.0
+    private var bonusAmount = 0.0
+    private var thirdPartyEventSent = Pair(false, "")
 
     private var errorAction: (message: String?) -> Unit = {}
 
@@ -127,17 +141,76 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         pledgeReason = arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason?
 
         if (pData != null) {
-            selectedRewards = pData.rewardsAndAddOnsList()
             pledgeData = pData
             project = pData.projectData().project()
-            refTag = RefTagUtils.storedCookieRefTagForProject(project, cookieManager, sharedPreferences)
+            backing = project.backing()
+            refTag = RefTagUtils.storedCookieRefTagForProject(
+                project,
+                cookieManager,
+                sharedPreferences
+            )
 
-            checkoutData = CheckoutData.builder()
-                .amount(pData.pledgeAmountTotal())
-                .paymentType(CreditCardPaymentType.CREDIT_CARD)
-                .bonusAmount(pData.bonusAmount())
-                .shippingAmount(pData.shippingCostIfShipping())
-                .build()
+            if (backing == null) {
+                selectedRewards = pData.rewardsAndAddOnsList()
+                pledgeData = pData
+                refTag = RefTagUtils.storedCookieRefTagForProject(
+                    project,
+                    cookieManager,
+                    sharedPreferences
+                )
+
+                shippingRule = pData.shippingRule()
+                shippingAmount = pData.shippingCostIfShipping()
+                bonusAmount = pData.bonusAmount()
+                totalAmount = pData.checkoutTotalAmount()
+
+                checkoutData = CheckoutData.builder()
+                    .amount(pData.pledgeAmountTotal())
+                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                    .bonusAmount(bonusAmount)
+                    .shippingAmount(pData.shippingCostIfShipping())
+                    .build()
+            } else {
+                // TODO: explore make re-usable into a separate Utils/extension extracting function all information from backing code
+                val list = mutableListOf<Reward>()
+                backing?.reward()?.let {
+                    list.add(it)
+                }
+                backing?.addOns()?.let {
+                    list.addAll(it)
+                }
+                backing?.location()?.let {
+                    shippingRule = ShippingRule.builder()
+                        .location(it)
+                        .build()
+                }
+
+                if (backing?.location() == null && backing?.locationName() != null && backing?.locationId() != null) {
+                    val location = Location.builder()
+                        .name(backing?.locationName())
+                        .displayableName(backing?.locationName())
+                        .id(backing?.locationId())
+                        .build()
+                    shippingRule = ShippingRule.builder()
+                        .location(location)
+                        .build()
+                }
+
+                selectedRewards = list.toList()
+
+                shippingAmount = (backing?.shippingAmount() ?: 0.0).toDouble()
+
+                bonusAmount = (backing?.bonusAmount() ?: 0.0).toDouble()
+                val pAmount = (backing?.amount() ?: 0.0).toDouble()
+                totalAmount = pAmount + bonusAmount + shippingAmount
+
+                checkoutData = CheckoutData.builder()
+                    .amount(totalAmount)
+                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                    .bonusAmount(bonusAmount)
+                    .shippingAmount(shippingAmount)
+                    .build()
+            }
 
             collectUserInformation()
             sendPageViewedEvent()
@@ -159,7 +232,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     .build()
             }.combine(apolloClient.getStoredCards().asFlow()) { updatedUser, cards ->
                 user = updatedUser
-                selectedPaymentMethod = if (cards.isEmpty()) cards.first() else StoredCard.builder().build()
                 storedCards = cards
             }.catch {
                 errorAction.invoke(it.message)
@@ -172,7 +244,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     private fun sendPageViewedEvent() {
         if (checkoutData != null && pledgeData != null) {
-            analytics.trackCheckoutScreenViewed(checkoutData!!, pledgeData!!)
+            if (pledgeData?.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE)
+                analytics.trackCheckoutScreenViewed(requireNotNull(checkoutData), requireNotNull(pledgeData))
+            else analytics.trackUpdatePledgePageViewed(requireNotNull(checkoutData), requireNotNull(pledgeData))
         }
     }
 
@@ -183,10 +257,12 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 userEmail = user?.email() ?: "",
                 isLoading = isLoading,
                 selectedRewards = selectedRewards,
-                shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
-                checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
+                shippingAmount = shippingAmount,
+                checkoutTotal = totalAmount,
                 isPledgeButtonEnabled = isLoading,
-                selectedPaymentMethod = selectedPaymentMethod
+                selectedPaymentMethod = selectedPaymentMethod,
+                bonusAmount = bonusAmount,
+                shippingRule = shippingRule
             )
         )
     }
@@ -195,7 +271,24 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         paymentMethodSelected?.let {
             selectedPaymentMethod = it
         }
+
+        // - Send event on background thread
+        scope.launch(dispatcher) {
+            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+                .sendThirdPartyEvent(
+                    project = Observable.just(project),
+                    currentUser = requireNotNull(environment.currentUserV2()),
+                    apolloClient = apolloClient,
+                    draftPledge = Pair(pledgeData?.pledgeAmountTotal(), shippingAmount),
+                    checkoutAndPledgeData = Observable.just(Pair(checkoutData, pledgeData)),
+                    eventName = ThirdPartyEventValues.EventName.ADD_PAYMENT_INFO
+                ).asFlow().collect {
+                    thirdPartyEventSent = it
+                }
+        }
     }
+
+    fun isThirdPartyEventSent(): Pair<Boolean, String> = this.thirdPartyEventSent
 
     fun pledge() {
         scope.launch(dispatcher) {
@@ -212,6 +305,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     }
 
     private suspend fun createBacking() {
+        if (checkoutData != null && pledgeData != null) {
+            analytics.trackPledgeSubmitCTA(requireNotNull(checkoutData), requireNotNull(pledgeData))
+        }
+
         val backingData = selectedPaymentMethod.getBackingData(
             proj = project,
             amount = pledgeData?.checkoutTotalAmount().toString(),
@@ -230,6 +327,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 emitCurrentState(isLoading = false)
             }
             .collectLatest {
+                checkoutData = checkoutData?.toBuilder()?.id(it.id())?.build()
                 _checkoutResultState.emit(it)
                 emitCurrentState(isLoading = false)
             }
@@ -269,16 +367,15 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         errorAction.invoke(it.message)
                         isPledgeButtonEnabled = true
                         emitCurrentState(isLoading = false)
-                    }
-                    .collectLatest {
+                    }.onCompletion {
+                    }.collectLatest {
+                        checkoutData = checkoutData?.toBuilder()?.id(it.id())?.build()
                         _checkoutResultState.emit(it)
                         emitCurrentState(isLoading = false)
                     }
             }
-
         }
     }
-
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :
         ViewModelProvider.Factory {

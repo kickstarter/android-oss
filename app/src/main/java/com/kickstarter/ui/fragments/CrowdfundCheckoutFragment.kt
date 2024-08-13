@@ -4,20 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
-import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -27,7 +24,6 @@ import com.kickstarter.ui.fragments.PledgeFragment.PledgeDelegate
 import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel.Factory
-
 
 class CrowdfundCheckoutFragment : Fragment() {
 
@@ -72,14 +68,13 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val email = checkoutStates.userEmail
                     val storedCards = checkoutStates.storeCards
                     val isLoading = checkoutStates.isLoading
+                    val shippingAmount = checkoutStates.shippingAmount
+                    val totalAmount = checkoutStates.checkoutTotal
+                    val shippingRule = checkoutStates.shippingRule
+                    val bonus = checkoutStates.bonusAmount
 
-                    // TODO: all of this will come from Backing on Manage/Update
                     val pledgeData = viewModel.getPledgeData()
                     val pledgeReason = viewModel.getPledgeReason() ?: PledgeReason.PLEDGE
-                    val shippingRule = pledgeData?.shippingRule() ?: ShippingRule.builder().build()
-                    val shippingAmount = pledgeData?.shippingCostIfShipping() ?: 0.0
-                    val totalAmount = pledgeData?.pledgeAmountTotal() ?: 0.0
-                    val bonus = pledgeData?.bonusAmount() ?: 0.0
                     val project = pledgeData?.projectData()?.project() ?: Project.builder().build()
                     val selectedRw = pledgeData?.reward() ?: Reward.builder().build()
 
@@ -87,11 +82,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                         initialValue = Checkout.builder().build()
                     )
 
-                    if(resultCheckoutStates.value.backing().requiresAction()) {
+                    if (resultCheckoutStates.value.backing().requiresAction()) {
                         (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated()
                     }
 
                     KSTheme {
+                        // TODO: update to display local pickup
                         CheckoutScreen(
                             rewardsList = rwList.map { Pair(it.title() ?: "", it.pledgeAmount().toString()) },
                             environment = requireNotNull(environment),
@@ -104,7 +100,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                             project = project,
                             email = email,
                             pledgeReason = pledgeReason,
-                            rewardsHaveShippables = true, // TODO: pledeData extension for this
+                            rewardsHaveShippables = rwList.any {
+                                RewardUtils.isShippable(it)
+                            },
                             onPledgeCtaClicked = {
                                 viewModel.pledge()
                             },
@@ -112,8 +110,8 @@ class CrowdfundCheckoutFragment : Fragment() {
                             newPaymentMethodClicked = {},
                             onDisclaimerItemClicked = {},
                             onAccountabilityLinkClicked = {},
-                            onSelectedPaymentMethod = { paymentMethodSeelcted ->
-                                viewModel.userChangedPaymentMethodSelected(paymentMethodSeelcted)
+                            onChangedPaymentMethod = { paymentMethodSelected ->
+                                viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             }
                         )
                     }

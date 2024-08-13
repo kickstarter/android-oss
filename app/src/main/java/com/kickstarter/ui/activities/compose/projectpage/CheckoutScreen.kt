@@ -118,7 +118,7 @@ fun CheckoutScreenPreview() {
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
-            onSelectedPaymentMethod = {}
+            onChangedPaymentMethod = {}
         )
     }
 }
@@ -135,7 +135,7 @@ fun CheckoutScreen(
     shippingAmount: Double = 0.0,
     pledgeReason: PledgeReason,
     totalAmount: Double,
-    currentShippingRule: ShippingRule,
+    currentShippingRule: ShippingRule?,
     totalBonusSupport: Double = 0.0,
     rewardsHaveShippables: Boolean,
     isLoading: Boolean = false,
@@ -143,7 +143,7 @@ fun CheckoutScreen(
     newPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
-    onSelectedPaymentMethod: (StoredCard?) -> Unit = {}
+    onChangedPaymentMethod: (StoredCard?) -> Unit = {}
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -155,7 +155,7 @@ fun CheckoutScreen(
 
     val onOptionSelected: (StoredCard?) -> Unit = {
         selectedOption.value = it
-        onSelectedPaymentMethod.invoke(it)
+        onChangedPaymentMethod.invoke(it)
     }
 
     // - After adding new payment method, selected card should be updated to the newly added
@@ -288,7 +288,7 @@ fun CheckoutScreen(
                     totalAmountConvertedString
                 ) ?: "About $totalAmountConvertedString"
 
-            val shippingLocation = currentShippingRule.location()?.displayableName() ?: ""
+            val shippingLocation = currentShippingRule?.location()?.displayableName() ?: ""
 
             val deliveryDateString = if (selectedReward?.estimatedDeliveryOn().isNotNull()) {
                 stringResource(id = R.string.Estimated_delivery) + " " + DateTimeUtils.estimatedDeliveryOn(

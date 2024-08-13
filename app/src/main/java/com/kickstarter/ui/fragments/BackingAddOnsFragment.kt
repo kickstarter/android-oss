@@ -24,6 +24,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 
 class BackingAddOnsFragment : Fragment() {
@@ -46,6 +47,11 @@ class BackingAddOnsFragment : Fragment() {
                 viewModelC.provideBundle(arguments)
                 env
             }
+
+            viewModelC.provideErrorAction { message ->
+                showErrorToast(context, this, message ?: getString(R.string.general_error_something_wrong))
+            }
+
             // Dispose of the Composition when the view's LifecycleOwner
             // is destroyed
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

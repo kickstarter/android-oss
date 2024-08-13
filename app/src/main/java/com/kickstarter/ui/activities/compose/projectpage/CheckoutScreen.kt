@@ -117,7 +117,8 @@ fun CheckoutScreenPreview() {
             onPledgeCtaClicked = { },
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
-            onAccountabilityLinkClicked = {}
+            onAccountabilityLinkClicked = {},
+            onSelectedPaymentMethod = {}
         )
     }
 }
@@ -141,7 +142,8 @@ fun CheckoutScreen(
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
     newPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
-    onAccountabilityLinkClicked: () -> Unit
+    onAccountabilityLinkClicked: () -> Unit,
+    onSelectedPaymentMethod: (StoredCard?) -> Unit = {}
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -153,6 +155,7 @@ fun CheckoutScreen(
 
     val onOptionSelected: (StoredCard?) -> Unit = {
         selectedOption.value = it
+        onSelectedPaymentMethod.invoke(it)
     }
 
     // - After adding new payment method, selected card should be updated to the newly added

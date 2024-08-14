@@ -249,7 +249,6 @@ fun PledgedProjectsOverviewScreen(
                                 creatorName = it.creatorName(),
                                 sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
                                 shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
-                                showBadge = it.showBadge(),
                                 onActionButtonClicked = {
                                     onPrimaryActionButtonClicked(it)
                                 },

@@ -20,7 +20,6 @@ class PPOCardFactory private constructor() {
             creatorName: String?,
             backingDetailsUrl: String?,
             timeNumberForAction: Int,
-            showBadge: Boolean,
             viewType: PPOCardViewType?
         ): PPOCard {
             return PPOCard.builder()
@@ -38,7 +37,6 @@ class PPOCardFactory private constructor() {
                 .backingDetailsUrl(backingDetailsUrl)
                 .viewType(viewType)
                 .timeNumberForAction(timeNumberForAction)
-                .showBadge(showBadge)
                 .build()
         }
 
@@ -57,7 +55,6 @@ class PPOCardFactory private constructor() {
                 creatorName = "creatorName",
                 backingDetailsUrl = "backing/details/url",
                 timeNumberForAction = 10,
-                showBadge = false,
                 viewType = PPOCardViewType.CONFIRM_ADDRESS
             )
         }
@@ -77,7 +74,6 @@ class PPOCardFactory private constructor() {
                 creatorName = "Creator Name",
                 backingDetailsUrl = "backing/details/url",
                 timeNumberForAction = 7,
-                showBadge = false,
                 viewType = PPOCardViewType.FIX_PAYMENT
             )
         }
@@ -98,7 +94,6 @@ class PPOCardFactory private constructor() {
                 creatorName = "Creator Name",
                 backingDetailsUrl = "backing/details/url",
                 timeNumberForAction = 7,
-                showBadge = false,
                 viewType = PPOCardViewType.AUTHENTICATE_CARD
             )
         }

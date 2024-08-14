@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
@@ -360,7 +361,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             proj = project,
             amount = pledgeData?.checkoutTotalAmount().toString(),
             locationId = pledgeData?.shippingRule()?.location()?.id()?.toString(),
-            rewards = pledgeData?.rewardsAndAddOnsList() ?: emptyList<Reward>(),
+            rewards = RewardUtils.extendAddOns(pledgeData?.rewardsAndAddOnsList() ?: emptyList<Reward>()),
             cookieRefTag = refTag
         )
 

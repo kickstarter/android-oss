@@ -260,7 +260,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         isLoading = isLoading,
                                         addOnCount = totalSelectedAddOn,
                                         bonusAmountChanged = bonusAmountChanged,
-                                        totalPledgeAmount = totalPledgeAmount
+                                        totalPledgeAmount = totalPledgeAmount,
+                                        totalBonusSupport = totalBonusAmount
                                     )
                                 }
 

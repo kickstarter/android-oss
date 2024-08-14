@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
@@ -32,17 +33,21 @@ import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 import type.CreditCardPaymentType
+import com.stripe.android.paymentsheet.PaymentSheetResult
 
 data class CheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),
@@ -57,6 +62,7 @@ data class CheckoutUIState(
     val shippingRule: ShippingRule? = null
 )
 
+data class PaymentSheetPresenterInfo(val setupClientId: String, val userEmail: String)
 class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
     val analytics = requireNotNull(environment.analytics())
     val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -106,6 +112,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 initialValue = Pair<CheckoutData, PledgeData>(null, null)
             )
 
+    // - Stripe paymentSheet flow's
+    var paymentSheetPresentFlow: Flow<Boolean> = emptyFlow()
+    var presentPaymentSheet: Flow<PaymentSheetPresenterInfo> = emptyFlow()
+
     /**
      * By default run in
      * scope: viewModelScope
@@ -127,6 +137,15 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
      * constructor on the bundle object.
      */
     fun getPledgeReason() = this.pledgeReason
+
+    init {
+        scope.launch {
+            paymentSheetPresentFlow.collectLatest {
+                isPledgeButtonEnabled = false
+                emitCurrentState(isLoading = true)
+            }
+        }
+    }
 
     fun provideBundle(arguments: Bundle?) {
         val pData = arguments?.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
@@ -392,6 +411,33 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     }
             }
         }
+    }
+
+    fun paymentSheetPresented(success: Boolean) {
+        paymentSheetPresentFlow = flow { emit(success) }
+    }
+
+    fun presentPaymentSheet() {
+        scope.launch {
+            apolloClient.createSetupIntent(project).asFlow()
+                .collectLatest {
+                    presentPaymentSheet = flow { emit(PaymentSheetPresenterInfo(it, user?.email() ?: "")) }
+                }
+        }
+    }
+
+    fun paymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        // if error result reload cards on the UI removing the recently added one
+//        // - When setupIntent finishes with error reload the payment methods
+//        this.paymentSheetResult
+//            .filter {
+//                it != PaymentSheetResult.Completed
+//            }
+//            .withLatestFrom(cardsAndProject) { _, cardsAndProject ->
+//                return@withLatestFrom cardsAndProject
+//            }
+//            .subscribe { this.cardsAndProject.onNext(it) }
+//            .addToDisposable(disposables)
     }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :

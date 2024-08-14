@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views.compose.checkout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,30 +18,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
-@Preview
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun ItemizedRewardListContainerPreview() {
-    ItemizedRewardListContainer(
-        ksString = null,
-        rewardsList = emptyList<Pair<String, String>>(),
-        shippingAmount = 20.0,
-        shippingAmountString = "",
-        initialShippingLocation = "",
-        totalAmount = "50$",
-        totalAmountCurrencyConverted = "",
-        initialBonusSupport = "0",
-        totalBonusSupport = "0",
-        deliveryDateString = "",
-        rewardsHaveShippables = false
-    )
+    KSTheme {
+        Scaffold(
+            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+        ) { padding ->
+            ItemizedRewardListContainer(
+                modifier = Modifier
+                    .padding(paddingValues = padding),
+                ksString = null,
+                rewardsList = emptyList<Pair<String, String>>(),
+                shippingAmount = 20.0,
+                shippingAmountString = "",
+                initialShippingLocation = "",
+                totalAmount = "50$",
+                totalAmountCurrencyConverted = "",
+                initialBonusSupport = "0",
+                totalBonusSupport = "0",
+                deliveryDateString = "",
+                rewardsHaveShippables = false
+            )
+        }
+    }
 }
 
 @Composable
 fun ItemizedRewardListContainer(
+    modifier: Modifier = Modifier,
     ksString: KSString? = null,
     rewardsList: List<Pair<String, String>> = listOf(),
     shippingAmount: Double,

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views.compose.checkout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,32 +32,43 @@ import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.designsystem.KSStepper
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.shapes
 
-@Preview
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun BonusSupportContainerPreview() {
-    BonusSupportContainer(
-        selectedReward = Reward.builder().build(),
-        initialAmount = 5.0,
-        maxAmount = 10.0,
-        minPledge = 5.0,
-        currencySymbolAtStart = "CAD",
-        currencySymbolAtEnd = "$",
-        totalAmount = 100.0,
-        totalBonusSupport = 5.0,
-        onBonusSupportPlusClicked = {},
-        onBonusSupportMinusClicked = {},
-        onBonusSupportInputted = {},
-        environment = Environment.builder().build()
-    )
+    KSTheme {
+        Scaffold(
+            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+        ) { padding ->
+            BonusSupportContainer(
+                modifier = Modifier
+                    .padding(paddingValues = padding),
+                selectedReward = Reward.builder().build(),
+                initialAmount = 5.0,
+                maxAmount = 10.0,
+                minPledge = 5.0,
+                currencySymbolAtStart = "CAD",
+                currencySymbolAtEnd = "$",
+                totalAmount = 100.0,
+                totalBonusSupport = 5.0,
+                onBonusSupportPlusClicked = {},
+                onBonusSupportMinusClicked = {},
+                onBonusSupportInputted = {},
+                environment = Environment.builder().build()
+            )
+        }
+    }
 }
 
 @Composable
 fun BonusSupportContainer(
+    modifier: Modifier = Modifier,
     selectedReward: Reward,
     initialAmount: Double,
     maxAmount: Double,

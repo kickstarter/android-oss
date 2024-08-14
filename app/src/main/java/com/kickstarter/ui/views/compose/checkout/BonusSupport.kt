@@ -13,13 +13,10 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -27,7 +24,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.compose.designsystem.KSStepper
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -38,37 +39,55 @@ import com.kickstarter.ui.compose.designsystem.shapes
 @Composable
 fun BonusSupportContainerPreview() {
     BonusSupportContainer(
-        noAddOnsRw = true,
+        selectedReward = Reward.builder().build(),
         initialAmount = 5.0,
         maxAmount = 10.0,
         minPledge = 5.0,
         currencySymbolAtStart = "CAD",
         currencySymbolAtEnd = "$",
+        totalAmount = 100.0,
+        totalBonusSupport = 5.0,
         onBonusSupportPlusClicked = {},
         onBonusSupportMinusClicked = {},
-        onBonusSupportInputted = {}
+        onBonusSupportInputted = {},
+        environment = Environment.builder().build()
     )
 }
 
 @Composable
 fun BonusSupportContainer(
-    noAddOnsRw: Boolean,
+    selectedReward: Reward,
     initialAmount: Double,
     maxAmount: Double,
+    minPledge: Double,
     currencySymbolAtStart: String?,
     currencySymbolAtEnd: String?,
-    minPledge: Double,
+    totalAmount: Double,
+    totalBonusSupport: Double,
     onBonusSupportPlusClicked: (amount: Double) -> Unit,
     onBonusSupportMinusClicked: (amount: Double) -> Unit,
-    onBonusSupportInputted: (amount: Double) -> Unit
+    onBonusSupportInputted: (amount: Double) -> Unit,
+    environment: Environment
 ) {
-    val minStepAmount = minPledge
     val bonusAmountMaxDigits = integerResource(R.integer.max_length)
-    var totalBonusSupport by rememberSaveable { mutableDoubleStateOf(initialAmount) }
+    val isNoReward = RewardUtils.isNoReward(selectedReward)
+    val displayedTotalBonusAmount =
+        if (isNoReward) totalBonusSupport + minPledge else totalBonusSupport
 
     Column {
+        if (isNoReward) {
+            // TODO replace with translated string
+            Text(
+                text = "Customize your reward",
+                style = typography.title3Bold,
+                color = colors.textPrimary
+            )
+
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+        }
+
         Text(
-            text = if (noAddOnsRw) stringResource(id = R.string.Your_pledge_amount)
+            text = if (isNoReward) stringResource(id = R.string.Your_pledge_amount)
             else stringResource(id = R.string.Bonus_support),
             style = typography.subheadlineMedium,
             color = colors.textPrimary
@@ -76,7 +95,7 @@ fun BonusSupportContainer(
 
         Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
-        if (!noAddOnsRw) {
+        if (!isNoReward && !selectedReward.hasAddons()) {
             Text(
                 text = stringResource(id = R.string.A_little_extra_to_help),
                 style = typography.body2,
@@ -91,25 +110,21 @@ fun BonusSupportContainer(
         ) {
             KSStepper(
                 onPlusClicked = {
-                    totalBonusSupport += minStepAmount
-                    onBonusSupportPlusClicked(totalBonusSupport)
+                    onBonusSupportPlusClicked(totalBonusSupport + minPledge)
                 },
-                isPlusEnabled = totalBonusSupport != maxAmount,
+                isPlusEnabled = displayedTotalBonusAmount < maxAmount,
                 onMinusClicked = {
-                    totalBonusSupport -= minStepAmount
-                    onBonusSupportMinusClicked(totalBonusSupport)
+                    onBonusSupportMinusClicked(totalBonusSupport - minPledge)
                 },
-                isMinusEnabled = totalBonusSupport > 0,
+                isMinusEnabled = initialAmount < displayedTotalBonusAmount,
                 enabledButtonBackgroundColor = colors.kds_white
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (!noAddOnsRw) {
-                Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
+            Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
 
-                Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
-            }
+            Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -132,10 +147,11 @@ fun BonusSupportContainer(
                 )
                 BasicTextField(
                     modifier = Modifier.width(IntrinsicSize.Min),
-                    value = if (totalBonusSupport % 1.0 == 0.0) totalBonusSupport.toInt().toString() else totalBonusSupport.toString(),
+                    value =
+                    if (displayedTotalBonusAmount % 1.0 == 0.0) displayedTotalBonusAmount.toInt().toString()
+                    else displayedTotalBonusAmount.toString(),
                     onValueChange = {
-                        if (it.length <= bonusAmountMaxDigits) totalBonusSupport = it.parseToDouble()
-                        onBonusSupportInputted(totalBonusSupport)
+                        if (it.length <= bonusAmountMaxDigits) onBonusSupportInputted(it.parseToDouble())
                     },
                     textStyle = typography.title1.copy(color = colors.textAccentGreen),
                     keyboardOptions = KeyboardOptions(
@@ -143,7 +159,6 @@ fun BonusSupportContainer(
                         imeAction = ImeAction.Done
                     ),
                     cursorBrush = SolidColor(colors.iconSubtle)
-
                 )
                 Text(
                     text = currencySymbolAtEnd ?: "",
@@ -152,12 +167,19 @@ fun BonusSupportContainer(
             }
         }
 
-        if (totalBonusSupport > maxAmount) {
-            // TODO error message
-            // val maxInputString = RewardViewUtils.getMaxInputString(LocalContext.current, selectedReward = , maxPledgeAmount, totalAmount, totalBonusSupport, currencySymbolStartAndEnd, environment)
+        if (totalAmount > maxAmount) {
+            val maxInputString = RewardViewUtils.getMaxInputString(
+                context = LocalContext.current,
+                selectedReward = selectedReward,
+                maxPledgeAmount = maxAmount,
+                totalAmount = totalAmount,
+                totalBonusSupport = totalBonusSupport,
+                currencySymbolStartAndEnd = Pair(currencySymbolAtStart, currencySymbolAtEnd),
+                environment = environment
+            )
 
             Text(
-                text = "Enter amount less that $totalBonusSupport",
+                text = maxInputString,
                 textAlign = TextAlign.Right,
                 style = typography.footnoteMedium,
                 color = colors.textAccentRed,

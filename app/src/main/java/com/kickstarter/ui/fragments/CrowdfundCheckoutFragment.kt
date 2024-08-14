@@ -18,6 +18,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
+import com.kickstarter.ui.activities.compose.projectpage.getRewardListAndPrices
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeReason
@@ -115,7 +116,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                         // TODO: update to display local pickup
                         // TODO: hide bonus support if 0
                         CheckoutScreen(
-                            rewardsList = rwList.map { Pair(it.title() ?: "", it.pledgeAmount().toString()) },
+                            rewardsList = getRewardListAndPrices(rwList, environment, project),
                             environment = requireNotNull(environment),
                             shippingAmount = shippingAmount,
                             selectedReward = selectedRw,

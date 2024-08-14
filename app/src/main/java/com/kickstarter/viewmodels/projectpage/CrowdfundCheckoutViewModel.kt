@@ -9,7 +9,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
@@ -22,6 +21,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getBackingData
+import com.kickstarter.models.extensions.isFromPaymentSheet
 import com.kickstarter.services.mutations.getUpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CheckoutData
@@ -29,25 +29,22 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 import type.CreditCardPaymentType
-import com.stripe.android.paymentsheet.PaymentSheetResult
 
 data class CheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),
@@ -62,7 +59,7 @@ data class CheckoutUIState(
     val shippingRule: ShippingRule? = null
 )
 
-data class PaymentSheetPresenterInfo(val setupClientId: String, val userEmail: String)
+data class PaymentSheetPresenterState(val setupClientId: String = "")
 class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
     val analytics = requireNotNull(environment.analytics())
     val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -79,7 +76,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     private var backing: Backing? = null
     private var user: User? = null
     private var selectedRewards = emptyList<Reward>()
-    private var isPledgeButtonEnabled = false
     private var selectedPaymentMethod: StoredCard = StoredCard.builder().build()
     private var shippingRule: ShippingRule? = null
     private var refTag: RefTag? = null
@@ -93,6 +89,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     private var scope: CoroutineScope = viewModelScope
     private var dispatcher: CoroutineDispatcher = Dispatchers.IO
 
+    // - UI screen states
     private var _crowdfundCheckoutUIState = MutableStateFlow(CheckoutUIState())
     val crowdfundCheckoutUIState: StateFlow<CheckoutUIState>
         get() = _crowdfundCheckoutUIState
@@ -112,9 +109,15 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 initialValue = Pair<CheckoutData, PledgeData>(null, null)
             )
 
-    // - Stripe paymentSheet flow's
-    var paymentSheetPresentFlow: Flow<Boolean> = emptyFlow()
-    var presentPaymentSheet: Flow<PaymentSheetPresenterInfo> = emptyFlow()
+    // - PaymentSheet related states
+    private var _presentPaymentSheet = MutableStateFlow(PaymentSheetPresenterState())
+    val presentPaymentSheetStates
+        get() = _presentPaymentSheet
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = PaymentSheetPresenterState()
+            )
 
     /**
      * By default run in
@@ -137,15 +140,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
      * constructor on the bundle object.
      */
     fun getPledgeReason() = this.pledgeReason
-
-    init {
-        scope.launch {
-            paymentSheetPresentFlow.collectLatest {
-                isPledgeButtonEnabled = false
-                emitCurrentState(isLoading = true)
-            }
-        }
-    }
 
     fun provideBundle(arguments: Bundle?) {
         val pData = arguments?.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
@@ -284,12 +278,37 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 selectedRewards = selectedRewards,
                 shippingAmount = shippingAmount,
                 checkoutTotal = totalAmount,
-                isPledgeButtonEnabled = isLoading,
+                isPledgeButtonEnabled = !isLoading,
                 selectedPaymentMethod = selectedPaymentMethod,
                 bonusAmount = bonusAmount,
                 shippingRule = shippingRule
             )
         )
+    }
+
+    /**
+     * Should be called from PaymentSheet `PaymentOptionCallback`
+     * it will provide on @param paymentMethodSelected enough information
+     * to update the UI of available payment methods.
+     *
+     * The payment method will not be saved on the backend user profile
+     * until a successful pledge/update pledge is successfully performed
+     */
+    fun newlyAddedPaymentMethod(paymentMethodSelected: StoredCard?) {
+        paymentMethodSelected?.let {
+            selectedPaymentMethod = it
+
+            // - Update the list of available payment methods with the newly added one
+            if (paymentMethodSelected.isFromPaymentSheet()) {
+                val updatedCards = mutableListOf(paymentMethodSelected)
+                updatedCards.addAll(storedCards)
+                storedCards = updatedCards
+            }
+
+            scope.launch {
+                emitCurrentState(isLoading = true)
+            }
+        }
     }
 
     fun userChangedPaymentMethodSelected(paymentMethodSelected: StoredCard?) {
@@ -315,7 +334,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     fun isThirdPartyEventSent(): Pair<Boolean, String> = this.thirdPartyEventSent
 
-    fun pledge() {
+    /**
+     * Called when user hits pledge button
+     */
+    fun pledgeOrUpdatePledge() {
         scope.launch(dispatcher) {
             when (pledgeReason) {
                 PledgeReason.PLEDGE -> createBacking()
@@ -344,11 +366,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
         this.apolloClient.createBacking(backingData).asFlow()
             .onStart {
-                isPledgeButtonEnabled = false
                 emitCurrentState(isLoading = true)
             }.catch {
                 errorAction.invoke(it.message)
-                isPledgeButtonEnabled = true
                 emitCurrentState(isLoading = false)
             }
             .collectLatest {
@@ -398,11 +418,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             backingData?.let {
                 apolloClient.updateBacking(it).asFlow()
                     .onStart {
-                        isPledgeButtonEnabled = false
                         emitCurrentState(isLoading = true)
                     }.catch {
                         errorAction.invoke(it.message)
-                        isPledgeButtonEnabled = true
                         emitCurrentState(isLoading = false)
                     }.collectLatest {
                         checkoutData = checkoutData?.toBuilder()?.id(it.id())?.build()
@@ -413,31 +431,58 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         }
     }
 
-    fun paymentSheetPresented(success: Boolean) {
-        paymentSheetPresentFlow = flow { emit(success) }
+    /**
+     * PaymentSheet has been presented to the user, stop loading until
+     * a new payment method is received. Will cover as well the case of
+     * an user dismissing PaymentSheet without adding a payment method
+     */
+    fun paymentSheetPresented(state: Boolean) {
+        scope.launch {
+            emitCurrentState(isLoading = !state)
+        }
     }
 
-    fun presentPaymentSheet() {
-        scope.launch {
+    /**
+     * Required to present the Stripe PaymentSheet to the user
+     */
+    fun getSetupIntent() {
+        scope.launch(dispatcher) {
             apolloClient.createSetupIntent(project).asFlow()
+                .onStart { emitCurrentState(isLoading = true) }
+                .catch {
+                    emitCurrentState(isLoading = false)
+                    errorAction.invoke(it.message)
+                }
                 .collectLatest {
-                    presentPaymentSheet = flow { emit(PaymentSheetPresenterInfo(it, user?.email() ?: "")) }
+                    _presentPaymentSheet.emit(PaymentSheetPresenterState(it))
                 }
         }
     }
 
+    /**
+     * If @param = PaymentSheetResult.Failed or PaymentSheetResult.Canceled
+     * reload remove the payment methods added via payment sheet and keep only those
+     * obtained via `apolloClient.getStoredCards()`. PaymentSheetResult.Canceled will be produce
+     * by a failed/abandoned 3DS challenge
+     *
+     * If @PaymentSheetResult.Completed stop loading state
+     */
     fun paymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-        // if error result reload cards on the UI removing the recently added one
-//        // - When setupIntent finishes with error reload the payment methods
-//        this.paymentSheetResult
-//            .filter {
-//                it != PaymentSheetResult.Completed
-//            }
-//            .withLatestFrom(cardsAndProject) { _, cardsAndProject ->
-//                return@withLatestFrom cardsAndProject
-//            }
-//            .subscribe { this.cardsAndProject.onNext(it) }
-//            .addToDisposable(disposables)
+        when (paymentSheetResult) {
+            PaymentSheetResult.Canceled,
+            is PaymentSheetResult.Failed -> {
+                scope.launch {
+                    val updatedList = storedCards.filter { !it.isFromPaymentSheet() }
+                    storedCards = updatedList
+                    emitCurrentState(isLoading = false)
+                }
+            }
+            PaymentSheetResult.Completed -> {
+                scope.launch {
+                    emitCurrentState(isLoading = false)
+                }
+            }
+        }
     }
 
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) :

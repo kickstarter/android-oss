@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
 import com.kickstarter.libs.utils.RewardUtils
@@ -31,9 +30,6 @@ import com.stripe.android.paymentsheet.PaymentOptionCallback
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.PaymentSheetResultCallback
-import com.stripe.android.paymentsheet.model.PaymentOption
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class CrowdfundCheckoutFragment : Fragment() {
@@ -73,8 +69,6 @@ class CrowdfundCheckoutFragment : Fragment() {
                     useDarkTheme = true
                 ) {
 
-                    configurePaymentSheet()
-
                     val checkoutStates = viewModel.crowdfundCheckoutUIState.collectAsStateWithLifecycle(
                         initialValue = CheckoutUIState()
                     ).value
@@ -95,6 +89,16 @@ class CrowdfundCheckoutFragment : Fragment() {
 
                     val checkoutSuccess = viewModel.checkoutResultState.collectAsStateWithLifecycle().value
                     val id = checkoutSuccess.first?.id() ?: -1
+
+                    val paymentSheetPresenter = viewModel.presentPaymentSheetStates.collectAsStateWithLifecycle().value
+                    val setUpIntent = paymentSheetPresenter.setupClientId
+
+                    configurePaymentSheet(paymentSheetPresenter.setupClientId)
+                    LaunchedEffect(key1 = setUpIntent) {
+                        if (setUpIntent.isNotEmpty() && email.isNotEmpty()) {
+                            flowControllerPresentPaymentOption(setUpIntent, email)
+                        }
+                    }
 
                     LaunchedEffect(id) {
                         if (id > 0) {
@@ -126,11 +130,11 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 RewardUtils.isShippable(it)
                             },
                             onPledgeCtaClicked = {
-                                viewModel.pledge()
+                                viewModel.pledgeOrUpdatePledge()
                             },
                             isLoading = isLoading,
                             newPaymentMethodClicked = {
-                                viewModel.presentPaymentSheet()
+                                viewModel.getSetupIntent()
                             },
                             onDisclaimerItemClicked = {},
                             onAccountabilityLinkClicked = {},
@@ -168,15 +172,9 @@ class CrowdfundCheckoutFragment : Fragment() {
         this.viewModel.paymentSheetPresented(success)
     }
 
-    private fun configurePaymentSheet() {
-        var setupClientId = ""
-
-        lifecycleScope.launch {
-            viewModel.presentPaymentSheet.collectLatest {
-                setupClientId = it.setupClientId
-                flowControllerPresentPaymentOption(setupClientId, it.userEmail)
-            }
-        }
+    // TODO: explore this piece to be more generic/reusable between crowdfund/late pledges/pledge redemption,
+    // TODO: it does require specific VM callbacks
+    private fun configurePaymentSheet(setupClientId: String) {
 
         val paymentOptionCallback = PaymentOptionCallback { paymentOption ->
             paymentOption?.let {
@@ -185,7 +183,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                     resourceId = paymentOption.drawableResourceId,
                     clientSetupId = setupClientId
                 ).build()
-                this.viewModel.userChangedPaymentMethodSelected(storedCard)
+                this.viewModel.newlyAddedPaymentMethod(storedCard)
                 Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")
                 flowController.confirm()
             }

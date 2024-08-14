@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.android.material.badge.BadgeUtils
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
@@ -570,7 +572,7 @@ fun PledgeWillBeDroppedAlert(daysRemaining: Int = -1) {
     )
 }
 
-fun isTier1Alert(viewType: PPOCardViewType) : Boolean {
+fun isTier1Alert(viewType: PPOCardViewType): Boolean {
     return when (viewType) {
         PPOCardViewType.CONFIRM_ADDRESS, PPOCardViewType.AUTHENTICATE_CARD, PPOCardViewType.OPEN_SURVEY, PPOCardViewType.FIX_PAYMENT -> true
         else -> false

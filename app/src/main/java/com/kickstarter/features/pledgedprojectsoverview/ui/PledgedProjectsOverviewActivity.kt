@@ -250,7 +250,6 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         viewModel.showLoadingState(false)
                     }
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-
                         viewModel.showHeadsUpSnackbar(R.string.successful_validation_please_pull_to_refresh_fpo)
                         viewModel.getPledgedProjects()
                     } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||

@@ -271,7 +271,7 @@ fun PPOCardView(
                 }
 
                 when (viewType) {
-                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(onActionButtonClicked, onSecondaryActionButtonClicked)
+                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(!shippingAddress.isNullOrEmpty(), onActionButtonClicked, onSecondaryActionButtonClicked)
                     PPOCardViewType.ADDRESS_CONFIRMED -> AddressConfirmedButtonView()
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
                     PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView()
@@ -456,7 +456,7 @@ fun ConfirmAddressAlertsView(hoursRemaining: Int = -1) {
     }
 }
 @Composable
-fun ConfirmAddressButtonsView(onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
+fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -479,7 +479,7 @@ fun ConfirmAddressButtonsView(onEditAddressClicked: () -> Unit, onConfirmAddress
                 .weight(0.5f),
             onClickAction = { onConfirmAddressClicked.invoke() },
             text = "Confirm",
-            isEnabled = true,
+            isEnabled = isConfirmButtonEnabled,
             textStyle = typography.buttonText
         )
     }

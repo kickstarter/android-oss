@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,7 +13,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.models.Checkout
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
@@ -78,16 +78,23 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val project = pledgeData?.projectData()?.project() ?: Project.builder().build()
                     val selectedRw = pledgeData?.reward() ?: Reward.builder().build()
 
-                    val resultCheckoutStates = viewModel.checkoutResultState.collectAsStateWithLifecycle(
-                        initialValue = Checkout.builder().build()
-                    )
+                    val checkoutSuccess = viewModel.checkoutResultState.collectAsStateWithLifecycle().value
+                    val id = checkoutSuccess.first?.id() ?: -1
 
-                    if (resultCheckoutStates.value.backing().requiresAction()) {
-                        (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated()
+                    LaunchedEffect(id) {
+                        if (id > 0) {
+                            if (pledgeReason == PledgeReason.PLEDGE)
+                                (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(checkoutSuccess)
+                            if (pledgeReason == PledgeReason.UPDATE_PAYMENT)
+                                (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated()
+                            if (pledgeReason == PledgeReason.UPDATE_REWARD || pledgeReason == PledgeReason.UPDATE_PLEDGE)
+                                (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated()
+                        }
                     }
 
                     KSTheme {
                         // TODO: update to display local pickup
+                        // TODO: hide bonus support if 0
                         CheckoutScreen(
                             rewardsList = rwList.map { Pair(it.title() ?: "", it.pledgeAmount().toString()) },
                             environment = requireNotNull(environment),

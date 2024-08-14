@@ -8,14 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.models.Backing
-import com.kickstarter.models.Checkout
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -29,7 +27,6 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.viewmodels.getUpdateBackingData
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,12 +35,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -96,7 +90,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     private var _crowdfundCheckoutUIState = MutableStateFlow(CheckoutUIState())
     val crowdfundCheckoutUIState: StateFlow<CheckoutUIState>
         get() = _crowdfundCheckoutUIState
-            .asStateFlow()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
@@ -104,14 +97,13 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             )
 
     // - CreateBacking/UpdateBacking Result States
-    private var _checkoutResultState = MutableStateFlow(Checkout.builder().build())
-    val checkoutResultState: StateFlow<Checkout>
+    private var _checkoutResultState = MutableStateFlow<Pair<CheckoutData, PledgeData>>(Pair(null, null))
+    val checkoutResultState: StateFlow<Pair<CheckoutData, PledgeData>>
         get() = _checkoutResultState
-            .asStateFlow()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(),
-                initialValue = Checkout.builder().build()
+                initialValue = Pair<CheckoutData, PledgeData>(null, null)
             )
 
     /**
@@ -139,6 +131,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     fun provideBundle(arguments: Bundle?) {
         val pData = arguments?.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
         pledgeReason = arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason?
+        val flowContext = pledgeReason?.let { PledgeFlowContext.forPledgeReason(it) }
 
         if (pData != null) {
             pledgeData = pData
@@ -150,71 +143,84 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 sharedPreferences
             )
 
-            if (backing == null) {
-                selectedRewards = pData.rewardsAndAddOnsList()
-                pledgeData = pData
-                refTag = RefTagUtils.storedCookieRefTagForProject(
-                    project,
-                    cookieManager,
-                    sharedPreferences
-                )
-
-                shippingRule = pData.shippingRule()
-                shippingAmount = pData.shippingCostIfShipping()
-                bonusAmount = pData.bonusAmount()
-                totalAmount = pData.checkoutTotalAmount()
-
-                checkoutData = CheckoutData.builder()
-                    .amount(pData.pledgeAmountTotal())
-                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
-                    .bonusAmount(bonusAmount)
-                    .shippingAmount(pData.shippingCostIfShipping())
-                    .build()
-            } else {
-                // TODO: explore make re-usable into a separate Utils/extension extracting function all information from backing code
-                val list = mutableListOf<Reward>()
-                backing?.reward()?.let {
-                    list.add(it)
-                }
-                backing?.addOns()?.let {
-                    list.addAll(it)
-                }
-                backing?.location()?.let {
-                    shippingRule = ShippingRule.builder()
-                        .location(it)
-                        .build()
+            when (flowContext) {
+                PledgeFlowContext.NEW_PLEDGE,
+                PledgeFlowContext.CHANGE_REWARD -> getPledgeInfoFrom(pData)
+                PledgeFlowContext.MANAGE_REWARD -> {
+                    backing?.let { getPledgeInfoFrom(it) }
                 }
 
-                if (backing?.location() == null && backing?.locationName() != null && backing?.locationId() != null) {
-                    val location = Location.builder()
-                        .name(backing?.locationName())
-                        .displayableName(backing?.locationName())
-                        .id(backing?.locationId())
-                        .build()
-                    shippingRule = ShippingRule.builder()
-                        .location(location)
-                        .build()
+                else -> {
+                    errorAction.invoke(null)
                 }
-
-                selectedRewards = list.toList()
-
-                shippingAmount = (backing?.shippingAmount() ?: 0.0).toDouble()
-
-                bonusAmount = (backing?.bonusAmount() ?: 0.0).toDouble()
-                val pAmount = (backing?.amount() ?: 0.0).toDouble()
-                totalAmount = pAmount + bonusAmount + shippingAmount
-
-                checkoutData = CheckoutData.builder()
-                    .amount(totalAmount)
-                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
-                    .bonusAmount(bonusAmount)
-                    .shippingAmount(shippingAmount)
-                    .build()
             }
 
             collectUserInformation()
             sendPageViewedEvent()
         }
+    }
+
+    private fun getPledgeInfoFrom(backing: Backing) {
+        // TODO: explore make re-usable into a separate Utils/extension extracting function all information from backing code
+        val list = mutableListOf<Reward>()
+        backing.reward()?.let {
+            list.add(it)
+        }
+        backing.addOns()?.let {
+            list.addAll(it)
+        }
+        backing.location()?.let {
+            shippingRule = ShippingRule.builder()
+                .location(it)
+                .build()
+        }
+
+        if (backing.location() == null && backing.locationName() != null && backing.locationId() != null) {
+            val location = Location.builder()
+                .name(backing.locationName())
+                .displayableName(backing.locationName())
+                .id(backing.locationId())
+                .build()
+            shippingRule = ShippingRule.builder()
+                .location(location)
+                .build()
+        }
+
+        selectedRewards = list.toList()
+
+        shippingAmount = (backing.shippingAmount() ?: 0.0).toDouble()
+
+        bonusAmount = (backing.bonusAmount() ?: 0.0).toDouble()
+        totalAmount = (backing.amount() ?: 0.0).toDouble()
+
+        checkoutData = CheckoutData.builder()
+            .amount(totalAmount)
+            .paymentType(CreditCardPaymentType.CREDIT_CARD)
+            .bonusAmount(bonusAmount)
+            .shippingAmount(shippingAmount)
+            .build()
+    }
+
+    private fun getPledgeInfoFrom(pData: PledgeData) {
+        selectedRewards = pData.rewardsAndAddOnsList()
+        pledgeData = pData
+        refTag = RefTagUtils.storedCookieRefTagForProject(
+            project,
+            cookieManager,
+            sharedPreferences
+        )
+
+        shippingRule = pData.shippingRule()
+        shippingAmount = pData.shippingCostIfShipping()
+        bonusAmount = pData.bonusAmount()
+        totalAmount = pData.checkoutTotalAmount()
+
+        checkoutData = CheckoutData.builder()
+            .amount(pData.pledgeAmountTotal())
+            .paymentType(CreditCardPaymentType.CREDIT_CARD)
+            .bonusAmount(bonusAmount)
+            .shippingAmount(pData.shippingCostIfShipping())
+            .build()
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
@@ -328,38 +334,50 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             }
             .collectLatest {
                 checkoutData = checkoutData?.toBuilder()?.id(it.id())?.build()
-                _checkoutResultState.emit(it)
+                _checkoutResultState.emit(Pair(checkoutData, pledgeData))
                 emitCurrentState(isLoading = false)
             }
     }
 
     private suspend fun updateBacking() {
-        val locationId = pledgeData?.shippingRule()?.location()?.id()?.toString()
-        val amount = pledgeData?.checkoutTotalAmount().toString()
-        val extendedList =
-            RewardUtils.extendAddOns(pledgeData?.rewardsAndAddOnsList() ?: emptyList())
-        if (project.isBacking()) {
-            project.backing()?.let { backing ->
-                val backingData =
-                    if (backing.amount() == (pledgeData?.checkoutTotalAmount() ?: 0)) {
-                        getUpdateBackingData(
-                            backing,
-                            null,
-                            locationId,
-                            extendedList,
-                            selectedPaymentMethod
-                        )
-                    } else {
-                        getUpdateBackingData(
-                            backing,
-                            amount,
-                            locationId,
-                            extendedList,
-                            selectedPaymentMethod
-                        )
+        project.backing()?.let { backing ->
+            val backingData = when (pledgeReason) {
+                PledgeReason.UPDATE_PAYMENT -> {
+                    val locationId = backing.locationId() ?: 0
+                    val rwl = mutableListOf<Reward>()
+                    backing.reward()?.let {
+                        rwl.add(it)
+                    }
+                    backing.addOns()?.let {
+                        rwl.addAll(it)
                     }
 
-                apolloClient.updateBacking(backingData).asFlow()
+                    getUpdateBackingData(
+                        backing,
+                        null,
+                        locationId.toString(),
+                        rwl,
+                        selectedPaymentMethod
+                    )
+                }
+                PledgeReason.UPDATE_REWARD -> {
+                    getUpdateBackingData(
+                        backing,
+                        pledgeData?.checkoutTotalAmount().toString(),
+                        pledgeData?.shippingRule()?.location()?.id().toString(),
+                        pledgeData?.rewardsAndAddOnsList() ?: emptyList(),
+                        selectedPaymentMethod
+                    )
+                }
+                PledgeReason.FIX_PLEDGE, // Managed on PledgeFragment/ViewModel
+                PledgeReason.PLEDGE, // Error
+                PledgeReason.UPDATE_PLEDGE, // Error
+                PledgeReason.LATE_PLEDGE, // Error
+                null -> { null }
+            }
+
+            backingData?.let {
+                apolloClient.updateBacking(it).asFlow()
                     .onStart {
                         isPledgeButtonEnabled = false
                         emitCurrentState(isLoading = true)
@@ -367,10 +385,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         errorAction.invoke(it.message)
                         isPledgeButtonEnabled = true
                         emitCurrentState(isLoading = false)
-                    }.onCompletion {
                     }.collectLatest {
                         checkoutData = checkoutData?.toBuilder()?.id(it.id())?.build()
-                        _checkoutResultState.emit(it)
+                        _checkoutResultState.emit(Pair(checkoutData, pledgeData))
                         emitCurrentState(isLoading = false)
                     }
             }

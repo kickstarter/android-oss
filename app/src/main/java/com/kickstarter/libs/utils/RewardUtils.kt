@@ -232,4 +232,25 @@ object RewardUtils {
     fun getFinalBonusSupportAmount(addedBonusSupport: Double, initialBonusSupport: Double): Double {
         return if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport
     }
+
+    /** For the checkout we need to send a list repeating as much addOns items
+     * as the user has selected:
+     * User selection [R, 2xa, 3xb]
+     * Checkout data  [R, a, a, b, b, b]
+     */
+    fun extendAddOns(flattenedList: List<Reward>): List<Reward> {
+        val mutableList = mutableListOf<Reward>()
+
+        flattenedList.map {
+            if (!it.isAddOn()) mutableList.add(it)
+            else {
+                val q = it.quantity() ?: 1
+                for (i in 1..q) {
+                    mutableList.add(it)
+                }
+            }
+        }
+
+        return mutableList.toList()
+    }
 }

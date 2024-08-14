@@ -140,7 +140,7 @@ fun BonusSupportContainer(
                         end = dimensions.paddingXSmall
                     ),
 
-                ) {
+            ) {
                 Text(
                     text = currencySymbolAtStart ?: "",
                     color = colors.textAccentGreen

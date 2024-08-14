@@ -250,12 +250,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         viewModel.showLoadingState(false)
                     }
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        viewModel.showHeadsUpSnackbar(R.string.successful_validation_please_pull_to_refresh_fpo)
+                        viewModel.showHeadsUpSnackbar(R.string.youve_been_authenticated_successfully_pull_to_refresh_fpo)
                         viewModel.getPledgedProjects()
                     } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||
                         result.outcome == StripeIntentResult.Outcome.TIMEDOUT ||
                         result.outcome == StripeIntentResult.Outcome.UNKNOWN
-                    ) viewModel.showErrorSnackbar(R.string.general_error_something_wrong)
+                    ) viewModel.showErrorSnackbar(R.string.authentication_failed_please_try_again_fpo)
                 }
                 override fun onError(e: Exception) {
                     lifecycleScope.launch {

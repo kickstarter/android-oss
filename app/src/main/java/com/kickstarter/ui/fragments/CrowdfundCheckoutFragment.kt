@@ -13,9 +13,12 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
+import com.kickstarter.ui.activities.compose.projectpage.getRewardListAndPrices
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeReason
@@ -24,6 +27,11 @@ import com.kickstarter.ui.fragments.PledgeFragment.PledgeDelegate
 import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel.Factory
+import com.stripe.android.paymentsheet.PaymentOptionCallback
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.PaymentSheetResultCallback
+import timber.log.Timber
 
 class CrowdfundCheckoutFragment : Fragment() {
 
@@ -33,6 +41,8 @@ class CrowdfundCheckoutFragment : Fragment() {
     private val viewModel: CrowdfundCheckoutViewModel by viewModels {
         viewModelFactory
     }
+
+    private lateinit var flowController: PaymentSheet.FlowController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -81,6 +91,16 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val checkoutSuccess = viewModel.checkoutResultState.collectAsStateWithLifecycle().value
                     val id = checkoutSuccess.first?.id() ?: -1
 
+                    val paymentSheetPresenter = viewModel.presentPaymentSheetStates.collectAsStateWithLifecycle().value
+                    val setUpIntent = paymentSheetPresenter.setupClientId
+
+                    configurePaymentSheet(paymentSheetPresenter.setupClientId)
+                    LaunchedEffect(key1 = setUpIntent) {
+                        if (setUpIntent.isNotEmpty() && email.isNotEmpty()) {
+                            flowControllerPresentPaymentOption(setUpIntent, email)
+                        }
+                    }
+
                     LaunchedEffect(id) {
                         if (id > 0) {
                             if (pledgeReason == PledgeReason.PLEDGE)
@@ -96,7 +116,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                         // TODO: update to display local pickup
                         // TODO: hide bonus support if 0
                         CheckoutScreen(
-                            rewardsList = rwList.map { Pair(it.title() ?: "", it.pledgeAmount().toString()) },
+                            rewardsList = getRewardListAndPrices(rwList, environment, project),
                             environment = requireNotNull(environment),
                             shippingAmount = shippingAmount,
                             selectedReward = selectedRw,
@@ -111,10 +131,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 RewardUtils.isShippable(it)
                             },
                             onPledgeCtaClicked = {
-                                viewModel.pledge()
+                                viewModel.pledgeOrUpdatePledge()
                             },
                             isLoading = isLoading,
-                            newPaymentMethodClicked = {},
+                            newPaymentMethodClicked = {
+                                viewModel.getSetupIntent()
+                            },
                             onDisclaimerItemClicked = {},
                             onAccountabilityLinkClicked = {},
                             onChangedPaymentMethod = { paymentMethodSelected ->
@@ -126,5 +148,75 @@ class CrowdfundCheckoutFragment : Fragment() {
             }
         }
         return view
+    }
+
+    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
+        context?.let {
+            flowController.configureWithSetupIntent(
+                setupIntentClientSecret = clientSecret,
+                configuration = it.getPaymentSheetConfiguration(userEmail),
+                callback = ::onConfigured
+            )
+        }
+    }
+
+    private fun onConfigured(success: Boolean, error: Throwable?) {
+        if (success) {
+            flowController.presentPaymentOptions()
+        } else {
+            binding?.composeView?.let { view ->
+                context?.let {
+                    showErrorToast(it, view, error?.message ?: getString(R.string.general_error_something_wrong))
+                }
+            }
+        }
+        this.viewModel.paymentSheetPresented(success)
+    }
+
+    // TODO: explore this piece to be more generic/reusable between crowdfund/late pledges/pledge redemption,
+    // TODO: it does require specific VM callbacks
+    private fun configurePaymentSheet(setupClientId: String) {
+
+        val paymentOptionCallback = PaymentOptionCallback { paymentOption ->
+            paymentOption?.let {
+                val storedCard = StoredCard.Builder(
+                    lastFourDigits = paymentOption.label.takeLast(4),
+                    resourceId = paymentOption.drawableResourceId,
+                    clientSetupId = setupClientId
+                ).build()
+                this.viewModel.newlyAddedPaymentMethod(storedCard)
+                Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")
+                flowController.confirm()
+            }
+        }
+
+        val onPaymentSheetResult = PaymentSheetResultCallback { paymentSheetResult ->
+            this.viewModel.paymentSheetResult(paymentSheetResult)
+            when (paymentSheetResult) {
+                is PaymentSheetResult.Canceled -> {
+                    binding?.composeView?.let { view ->
+                        context?.let {
+                            showErrorToast(it, view, getString(R.string.general_error_oops))
+                        }
+                    }
+                }
+                is PaymentSheetResult.Failed -> {
+                    binding?.composeView?.let { view ->
+                        context?.let {
+                            val errorMessage = paymentSheetResult.error.localizedMessage ?: getString(R.string.general_error_something_wrong)
+                            showErrorToast(it, view, errorMessage)
+                        }
+                    }
+                }
+                is PaymentSheetResult.Completed -> {
+                }
+            }
+        }
+
+        flowController = PaymentSheet.FlowController.create(
+            fragment = this,
+            paymentOptionCallback = paymentOptionCallback,
+            paymentResultCallback = onPaymentSheetResult
+        )
     }
 }

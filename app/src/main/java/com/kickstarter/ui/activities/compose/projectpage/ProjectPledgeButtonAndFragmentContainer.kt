@@ -278,7 +278,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                             environment,
                                             project
                                         ),
-                                        pledgeReason = PledgeReason.PLEDGE,
+                                        pledgeReason = PledgeReason.LATE_PLEDGE,
                                         shippingAmount = shippingAmount,
                                         totalAmount = checkoutTotal,
                                         totalBonusSupport = totalBonusAmount,

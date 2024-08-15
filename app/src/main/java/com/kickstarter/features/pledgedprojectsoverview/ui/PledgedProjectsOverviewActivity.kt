@@ -28,13 +28,13 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
 import com.kickstarter.ui.activities.ProfileActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
 import com.kickstarter.ui.extensions.transition
 import com.stripe.android.ApiResultCallback
@@ -102,7 +102,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
                         onProjectPledgeSummaryClick = { url ->
                             openBackingDetailsWebView(
-                                url = url,
+                                url = env.webEndpoint() + url,
                                 resultLauncher = null
                             )
                         },
@@ -131,14 +131,14 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
                                 PPOCardViewType.OPEN_SURVEY -> {
                                     openBackingDetailsWebView(
-                                        url = PPOCard.backingDetailsUrl ?: "",
+                                        url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
                                     )
                                 }
 
                                 PPOCardViewType.CONFIRM_ADDRESS -> {
                                     openBackingDetailsWebView(
-                                        url = PPOCard.backingDetailsUrl ?: "",
+                                        url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -185,14 +185,18 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         url: String,
         resultLauncher: ActivityResultLauncher<Intent>?
     ) {
-        resultLauncher?.launch(
-            Intent(this, BackingDetailsActivity::class.java)
-                .putExtra(IntentKey.URL, url)
-        ) ?: {
-            val intent = Intent(this, BackingDetailsActivity::class.java)
-                .putExtra(IntentKey.URL, url)
-            startActivity(intent)
+        if (resultLauncher.isNotNull()) {
+            resultLauncher?.launch(
+                Intent(this, BackingDetailsActivity::class.java)
+                    .putExtra(IntentKey.URL, url)
+            )
+        } else {
+            startActivity(
+                Intent(this, BackingDetailsActivity::class.java)
+                    .putExtra(IntentKey.URL, url)
+            )
         }
+
         this.let {
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }
@@ -246,12 +250,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         viewModel.showLoadingState(false)
                     }
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        viewModel.showHeadsUpSnackbar(R.string.successful_validation_please_pull_to_refresh_fpo)
+                        viewModel.showHeadsUpSnackbar(R.string.youve_been_authenticated_successfully_pull_to_refresh_fpo)
                         viewModel.getPledgedProjects()
                     } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||
                         result.outcome == StripeIntentResult.Outcome.TIMEDOUT ||
                         result.outcome == StripeIntentResult.Outcome.UNKNOWN
-                    ) viewModel.showErrorSnackbar(R.string.general_error_something_wrong)
+                    ) viewModel.showErrorSnackbar(R.string.authentication_failed_please_try_again_fpo)
                 }
                 override fun onError(e: Exception) {
                     lifecycleScope.launch {

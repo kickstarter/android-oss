@@ -932,6 +932,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
             PPOCard.builder()
                 .backingId(ppoBackingData?.id())
+                .backingDetailsUrl(ppoBackingData?.backingDetailsPageUrl())
                 .clientSecret(ppoBackingData?.clientSecret())
                 .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
                 .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())

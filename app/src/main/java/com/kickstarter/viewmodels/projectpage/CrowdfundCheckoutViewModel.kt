@@ -239,7 +239,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             }
 
             if (isNoReward) {
-                totalAmount = selectedRewards.first().minimum()
+                totalAmount = selectedRewards.first().minimum() + bonusAmount
                 bonusAmount = 0.0
             }
 

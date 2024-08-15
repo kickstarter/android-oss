@@ -474,11 +474,12 @@ fun CheckoutScreen(
                         rewardsHaveShippables = rewardsHaveShippables
                     )
                 } else {
+                    // - For noReward, totalAmount = bonusAmount as there is no reward
                     ItemizedRewardListContainer(
                         totalAmount = totalAmountString,
                         totalAmountCurrencyConverted = aboutTotalString,
                         initialBonusSupport = initialBonusSupportString,
-                        totalBonusSupport = totalBonusSupportString,
+                        totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
                     )
                 }

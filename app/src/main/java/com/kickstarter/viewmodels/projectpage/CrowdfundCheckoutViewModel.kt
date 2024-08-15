@@ -207,6 +207,11 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         bonusAmount = (backing.bonusAmount() ?: 0.0).toDouble()
         totalAmount = (backing.amount() ?: 0.0).toDouble()
 
+        // - User was backing reward no reward
+        if (backing.reward() == null) {
+            bonusAmount = 0.0
+        }
+
         checkoutData = CheckoutData.builder()
             .amount(totalAmount)
             .paymentType(CreditCardPaymentType.CREDIT_CARD)
@@ -217,24 +222,34 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     private fun getPledgeInfoFrom(pData: PledgeData) {
         selectedRewards = pData.rewardsAndAddOnsList()
-        pledgeData = pData
-        refTag = RefTagUtils.storedCookieRefTagForProject(
-            project,
-            cookieManager,
-            sharedPreferences
-        )
+        if (selectedRewards.isNotEmpty()) {
+            val isNoReward = RewardUtils.isNoReward(selectedRewards.first())
+            pledgeData = pData
+            refTag = RefTagUtils.storedCookieRefTagForProject(
+                project,
+                cookieManager,
+                sharedPreferences
+            )
 
-        shippingRule = pData.shippingRule()
-        shippingAmount = pData.shippingCostIfShipping()
-        bonusAmount = pData.bonusAmount()
-        totalAmount = pData.checkoutTotalAmount()
+            if (!isNoReward) {
+                shippingRule = pData.shippingRule()
+                shippingAmount = pData.shippingCostIfShipping()
+                bonusAmount = pData.bonusAmount()
+                totalAmount = pData.checkoutTotalAmount()
+            }
 
-        checkoutData = CheckoutData.builder()
-            .amount(pData.pledgeAmountTotal())
-            .paymentType(CreditCardPaymentType.CREDIT_CARD)
-            .bonusAmount(bonusAmount)
-            .shippingAmount(pData.shippingCostIfShipping())
-            .build()
+            if (isNoReward) {
+                totalAmount = selectedRewards.first().minimum()
+                bonusAmount = 0.0
+            }
+
+            checkoutData = CheckoutData.builder()
+                .amount(pData.pledgeAmountTotal())
+                .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                .bonusAmount(bonusAmount)
+                .shippingAmount(pData.shippingCostIfShipping())
+                .build()
+        }
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {

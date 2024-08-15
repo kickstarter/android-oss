@@ -50,6 +50,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
@@ -457,7 +458,8 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                if (rewardsList.isNotEmpty()) {
+                val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
+                if (!isNoReward) {
                     ItemizedRewardListContainer(
                         ksString = ksString,
                         rewardsList = rewardsList,

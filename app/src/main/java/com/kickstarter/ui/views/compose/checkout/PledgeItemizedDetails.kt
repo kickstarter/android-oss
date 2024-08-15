@@ -23,6 +23,27 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun ItemizedContainerForNoRewardPreview() {
+    KSTheme {
+        Scaffold(
+            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+        ) { padding ->
+            ItemizedRewardListContainer(
+                modifier = Modifier.padding(paddingValues = padding),
+                totalAmount = "US$ 1",
+                totalAmountCurrencyConverted = "About CA$ 1.38",
+                initialBonusSupport = "US$ 0",
+                totalBonusSupport = "US$ 1",
+                shippingAmount = -1.0,
+            )
+        }
+    }
+}
+
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

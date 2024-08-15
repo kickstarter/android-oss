@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -138,7 +139,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
     private suspend fun emitShippingUIState() {
         // - collect useCase flow and update shippingUIState
-        shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
+        shippingRulesUseCase?.shippingRulesState?.distinctUntilChanged()?.collectLatest { shippingUseCase ->
             selectedShippingRule = shippingUseCase.selectedShippingRule
             mutableShippingUIState.emit(shippingUseCase)
         }
@@ -161,7 +162,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
             shippingRulesUseCase?.filterBySelectedRule(shippingRule)
-            selectedShippingRule = shippingRule
             emitShippingUIState()
         }
     }

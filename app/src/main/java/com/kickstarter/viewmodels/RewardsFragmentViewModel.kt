@@ -32,7 +32,10 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class RewardsFragmentViewModel {
@@ -259,7 +262,14 @@ class RewardsFragmentViewModel {
                         Dispatchers.IO
                     )
                 }
-                shippingRulesUseCase?.invoke()
+                shippingRulesUseCase?.let { useCaseState ->
+                    useCaseState.invoke()
+                    useCaseState.getScope().launch(useCaseState.getDispatcher()) {
+                        shippingRulesUseCase?.shippingRulesState?.distinctUntilChanged()?.collectLatest {
+                            selectedShippingRule = it.selectedShippingRule
+                        }
+                    }
+                }
                 return@combineLatest Observable.empty<Any>()
             }.subscribe().addToDisposable(disposables)
         }
@@ -334,11 +344,6 @@ class RewardsFragmentViewModel {
 
         override fun selectedShippingRule(shippingRule: ShippingRule) {
             this.shippingRulesUseCase?.filterBySelectedRule(shippingRule)
-            this.selectedShippingRule = shippingRule
-        }
-
-        fun setInitialShippingRule(rule: ShippingRule) {
-            this.selectedShippingRule = rule
         }
 
         override fun onCleared() {

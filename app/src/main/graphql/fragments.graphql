@@ -310,6 +310,11 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+    allowedAddons {
+        nodes {
+            id
+        }
+    }
     localReceiptLocation {
         ... location
     }

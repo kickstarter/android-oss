@@ -210,16 +210,12 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertNoValues()
-        this.showAddOnsFragment.assertValue(
-            Pair(
-                PledgeData.builder()
-                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                    .reward(reward)
-                    .projectData(ProjectDataFactory.project(backedProject))
-                    .build(),
-                PledgeReason.UPDATE_REWARD
-            )
-        )
+        this.vm.outputs.showAddOnsFragment().subscribe {
+            assertEquals(it.first.reward(), reward)
+            assertEquals(it.first.projectData(), ProjectDataFactory.project(backedProject))
+            assertEquals(it.second, PledgeReason.UPDATE_REWARD)
+        }.addToDisposable(disposables)
+
         this.showAlert.assertNoValues()
     }
 
@@ -268,27 +264,6 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
             )
         )
         this.showPledgeFragment.assertNoValues()
-    }
-
-    @Test
-    fun testShowPledgeFragment_whenManagingPledge() {
-        val project = ProjectFactory.backedProject()
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
-
-        val reward = RewardFactory.reward()
-        this.vm.inputs.rewardClicked(reward)
-        this.showPledgeFragment.assertValue(
-            Pair(
-                PledgeData.builder()
-                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                    .reward(reward)
-                    .projectData(ProjectDataFactory.project(project))
-                    .build(),
-                PledgeReason.UPDATE_REWARD
-            )
-        )
     }
 
     @Test
@@ -400,6 +375,70 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test call vm-selectedShippingRule() with location US, pledgeData-shipping should be US `() = runTest {
+
+        val unlimitedReward = RewardFactory.rewardWithShipping()
+
+        val rewards = listOf<Reward>(
+            unlimitedReward
+        )
+        val project = ProjectFactory.project().toBuilder().rewards(rewards).build()
+
+        val config = ConfigFactory.configForCA()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(testShippingRulesList)
+            }
+        }
+
+        val user = UserFactory.user()
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(user))
+            .apolloClientV2(apolloClient)
+            .currentConfig2(currentConfig)
+            .build()
+
+        val state = mutableListOf<ShippingRulesState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            setUpEnvironment(env, useCase)
+
+            vm.inputs.configureWith(ProjectDataFactory.project(project))
+            vm.countrySelectorRules().toList(state)
+        }
+
+        advanceUntilIdle() // wait until all state emissions completed
+
+        assertEquals(state.size, 3)
+        assertEquals(state[0], ShippingRulesState()) // Initialization
+        assertEquals(state[1], ShippingRulesState(loading = true)) // starts loading
+        assertEquals(
+            state[2],
+            ShippingRulesState(
+                loading = false,
+                selectedShippingRule = ShippingRuleFactory.canadaShippingRule(),
+                shippingRules = testShippingRulesList.shippingRules()
+            )
+        ) // completed requests
+
+        val usShippingRule = testShippingRulesList.shippingRules().first()
+        backgroundScope.launch(dispatcher) {
+            vm.inputs.configureWith(ProjectDataFactory.project(project))
+            vm.inputs.selectedShippingRule(usShippingRule)
+        }
+
+        vm.showAddOnsFragment().subscribe {
+            assertEquals(it.first.shippingRule()?.location(), usShippingRule.location())
+        }.addToDisposable(disposables)
+    }
+
+    @Test
     fun `test DefaultShipping Rule is sent to PledgeFragment`() {
         val project = ProjectFactory.backedProject()
         val reward = RewardFactory.reward()
@@ -410,17 +449,12 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.selectedShippingRule(selectedShippingRule)
         vm.inputs.rewardClicked(reward)
 
-        showPledgeFragment.assertValue(
-            Pair(
-                PledgeData.builder()
-                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                    .reward(reward)
-                    .projectData(ProjectDataFactory.project(project))
-                    .shippingRule(selectedShippingRule)
-                    .build(),
-                PledgeReason.UPDATE_REWARD
-            )
-        )
+        vm.outputs.showPledgeFragment().subscribe {
+            assertEquals(it.second, PledgeFlowContext.CHANGE_REWARD)
+            assertEquals(it.first.reward(), reward)
+            assertEquals(it.first.projectData(), ProjectDataFactory.project(project))
+            assertEquals(it.first.shippingRule(), selectedShippingRule)
+        }.addToDisposable(disposables)
         this.showAddOnsFragment.assertNoValues()
     }
 
@@ -447,17 +481,10 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.rewardClicked(reward)
 
         this.showPledgeFragment.assertNoValues()
-        this.showAddOnsFragment.assertValue(
-            Pair(
-                PledgeData.builder()
-                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                    .reward(reward)
-                    .projectData(ProjectDataFactory.project(backedProject))
-                    .shippingRule(selectedShippingRule)
-                    .build(),
-                PledgeReason.UPDATE_REWARD
-            )
-        )
+        this.vm.showAddOnsFragment().subscribe {
+            assertEquals(it.first.shippingRule(), selectedShippingRule)
+            assertEquals(it.first.reward(), reward)
+        }.addToDisposable(disposables)
         this.showAlert.assertNoValues()
     }
 }

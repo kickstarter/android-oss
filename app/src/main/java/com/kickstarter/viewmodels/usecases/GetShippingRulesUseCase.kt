@@ -136,8 +136,12 @@ class GetShippingRulesUseCase(
         }
     }
 
+    fun getScope() = this.scope
+    fun getDispatcher() = this.dispatcher
+
     fun filterBySelectedRule(shippingRule: ShippingRule) {
         scope.launch(dispatcher) {
+            defaultShippingRule = shippingRule
             emitCurrentState(isLoading = true)
             delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
             filterRewardsByLocation(allAvailableRulesForProject, shippingRule, projectRewards)
@@ -208,6 +212,10 @@ class GetShippingRulesUseCase(
                 filteredRewards.add(rw)
             }
 
+            if (RewardUtils.isDigital(rw)) {
+                filteredRewards.add(rw)
+            }
+
             // - If shipping is restricted, make sure the reward is able to ship to selected rule
             if (RewardUtils.shipsToRestrictedLocations(rw)) {
                 if (isIsValidRule != null) {
@@ -233,10 +241,23 @@ class GetShippingRulesUseCase(
     ): ShippingRule =
         if (project.isBacking()) ShippingRule.builder()
             .apply {
+                val backing = project.backing()
                 val locationId = project.backing()?.locationId() ?: 0L
-                val locationName = project.backing()?.locationName() ?: ""
-
-                this.location(Location.Builder().id(locationId).name(locationName).displayableName(locationName).build())
+                this.id(locationId)
+                val reward = backing?.reward()?.let {
+                    if (RewardUtils.shipsToRestrictedLocations(it)) {
+                        val rule = backing?.reward()?.shippingRules()
+                            ?.first { it.location()?.id() == locationId }
+                        this.location(rule?.location())
+                        this.id(rule?.id())
+                        this.cost(rule?.cost() ?: 0.0)
+                    }
+                    if (RewardUtils.shipsWorldwide(it)) {
+                        val locationName = project.backing()?.locationName() ?: ""
+                        this.location(Location.Builder().id(locationId).name(locationName).displayableName(locationName).build())
+                        this.cost(it.shippingRules()?.first()?.cost() ?: 0.0)
+                    }
+                }
             }
             .build()
         else config?.getDefaultLocationFrom(shippingRules.values.toList()) ?: ShippingRule.builder()

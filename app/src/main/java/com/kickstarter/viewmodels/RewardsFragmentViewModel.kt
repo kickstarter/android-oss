@@ -265,7 +265,7 @@ class RewardsFragmentViewModel {
                 shippingRulesUseCase?.let { useCaseState ->
                     useCaseState.invoke()
                     useCaseState.getScope().launch(useCaseState.getDispatcher()) {
-                        shippingRulesUseCase?.shippingRulesState?.distinctUntilChanged()?.collectLatest {
+                        shippingRulesUseCase?.shippingRulesState?.collectLatest {
                             selectedShippingRule = it.selectedShippingRule
                         }
                     }

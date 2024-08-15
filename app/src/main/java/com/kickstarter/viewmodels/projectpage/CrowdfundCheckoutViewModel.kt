@@ -230,16 +230,16 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 cookieManager,
                 sharedPreferences
             )
+            shippingRule = pData.shippingRule()
 
             if (!isNoReward) {
-                shippingRule = pData.shippingRule()
                 shippingAmount = pData.shippingCostIfShipping()
                 bonusAmount = pData.bonusAmount()
                 totalAmount = pData.checkoutTotalAmount()
             }
 
             if (isNoReward) {
-                totalAmount = selectedRewards.first().minimum() + bonusAmount
+                totalAmount = selectedRewards.first().pledgeAmount() + pData.bonusAmount()
                 bonusAmount = 0.0
             }
 
@@ -372,10 +372,15 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             analytics.trackPledgeSubmitCTA(requireNotNull(checkoutData), requireNotNull(pledgeData))
         }
 
+        val shouldNotSendId = pledgeData?.reward()?.let {
+            RewardUtils.isDigital(it) || RewardUtils.isNoReward(it) || RewardUtils.isLocalPickup(it)
+        } ?: true
+
+        val locationID = pledgeData?.shippingRule()?.location()?.id()?.toString()
         val backingData = selectedPaymentMethod.getBackingData(
             proj = project,
             amount = pledgeData?.checkoutTotalAmount().toString(),
-            locationId = pledgeData?.shippingRule()?.location()?.id()?.toString(),
+            locationId = if (shouldNotSendId) null else locationID,
             rewards = RewardUtils.extendAddOns(pledgeData?.rewardsAndAddOnsList() ?: emptyList<Reward>()),
             cookieRefTag = refTag
         )

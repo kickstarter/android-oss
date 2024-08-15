@@ -201,7 +201,7 @@ fun PPOCardView(
                 }
 
                 when (viewType) {
-                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(onActionButtonClicked, onSecondaryActionButtonClicked)
+                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(!shippingAddress.isNullOrEmpty(), onActionButtonClicked, onSecondaryActionButtonClicked)
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
                     PPOCardViewType.OPEN_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)

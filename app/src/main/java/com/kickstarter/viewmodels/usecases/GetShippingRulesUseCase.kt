@@ -93,14 +93,6 @@ class GetShippingRulesUseCase(
             val avShipMap = allAvailableRulesForProject
             emitCurrentState(isLoading = true)
 
-            // - If project backing default shipping Rule is backed shipping rule
-            if (project.isBacking() && project?.backing()?.locationId().isNotNull()) {
-                defaultShippingRule = getDefaultShippingRule(
-                    avShipMap,
-                    project
-                )
-            }
-
             if (rewardsByShippingType.isNotEmpty()) {
                 rewardsByShippingType.forEachIndexed { index, reward ->
 
@@ -239,7 +231,7 @@ class GetShippingRulesUseCase(
         shippingRules: MutableMap<Long, ShippingRule>,
         project: Project
     ): ShippingRule =
-        if (project.isBacking()) ShippingRule.builder()
+        if (project.isBacking() && project.backing()?.location().isNotNull()) ShippingRule.builder()
             .apply {
                 val backing = project.backing()
                 val locationId = project.backing()?.locationId() ?: 0L

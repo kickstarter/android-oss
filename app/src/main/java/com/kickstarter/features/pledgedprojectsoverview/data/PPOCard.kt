@@ -21,7 +21,6 @@ class PPOCard private constructor(
     val imageContentDescription: String?,
     val creatorName: String?,
     val backingDetailsUrl: String?,
-    val showBadge: Boolean,
     val timeNumberForAction: Int,
     val viewType: PPOCardViewType?
 
@@ -41,7 +40,6 @@ class PPOCard private constructor(
     fun imageContentDescription() = this.imageContentDescription
     fun creatorName() = this.creatorName
     fun backingDetailsUrl() = this.backingDetailsUrl
-    fun showBadge() = this.showBadge
     fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
 
@@ -61,7 +59,6 @@ class PPOCard private constructor(
         var imageContentDescription: String? = null,
         var creatorName: String? = null,
         var backingDetailsUrl: String? = null,
-        var showBadge: Boolean = false,
         var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
@@ -81,7 +78,6 @@ class PPOCard private constructor(
         fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
-        fun showBadge(showBadge: Boolean) = apply { this.showBadge = showBadge }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
@@ -99,7 +95,6 @@ class PPOCard private constructor(
             imageContentDescription = imageUrl,
             creatorName = creatorName,
             backingDetailsUrl = backingDetailsUrl,
-            showBadge = showBadge,
             timeNumberForAction = timeNumberForAction,
             viewType = viewType,
         )
@@ -120,7 +115,6 @@ class PPOCard private constructor(
         imageContentDescription = imageContentDescription,
         creatorName = creatorName,
         backingDetailsUrl = backingDetailsUrl,
-        showBadge = showBadge,
         timeNumberForAction = timeNumberForAction,
         viewType = viewType,
     )
@@ -147,7 +141,6 @@ class PPOCard private constructor(
                 imageUrl() == other.imageUrl() &&
                 imageContentDescription() == other.imageContentDescription() &&
                 backingDetailsUrl() == other.backingDetailsUrl() &&
-                showBadge() == other.showBadge() &&
                 timeNumberForAction() == other.timeNumberForAction() &&
                 viewType() == other.viewType()
         }

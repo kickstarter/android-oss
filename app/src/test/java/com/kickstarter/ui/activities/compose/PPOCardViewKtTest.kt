@@ -30,7 +30,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
                     shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
-                    showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     timeNumberForAction = timeNumberForAction
@@ -47,37 +46,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testAddressConfirmedView() {
-        val timeNumberForAction = 5
-        composeTestRule.setContent {
-            KSTheme {
-                PPOCardView(
-                    viewType = PPOCardViewType.ADDRESS_CONFIRMED,
-                    onCardClick = {},
-                    onProjectPledgeSummaryClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$50.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
-                    showBadge = true,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    timeNumberForAction = timeNumberForAction
-                )
-            }
-        }
-
-        // Alerts
-        // TODO: Replace with translated string
-        composeTestRule.onAllNodesWithText("Address locks in $timeNumberForAction hours")[0].assertIsDisplayed()
-        // Shipping address displayed
-        shippingAddressView.assertIsDisplayed()
-        // CTA
-        composeTestRule.onAllNodesWithText("Address Confirmed")[0].assertIsDisplayed()
-    }
-
-    @Test
     fun testFixPaymentView() {
         val timeNumberForAction = 6
         composeTestRule.setContent {
@@ -90,7 +58,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     timeNumberForAction = timeNumberForAction
@@ -109,35 +76,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPaymentFixedView() {
-        val timeNumberForAction = 6
-        composeTestRule.setContent {
-            KSTheme {
-                PPOCardView(
-                    viewType = PPOCardViewType.PAYMENT_FIXED,
-                    onCardClick = {},
-                    onProjectPledgeSummaryClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$50.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    showBadge = false,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    timeNumberForAction = timeNumberForAction
-                )
-            }
-        }
-
-        // No alerts
-        // Shipping address hidden
-        shippingAddressView.assertIsNotDisplayed()
-        // CTA
-        // TODO: Replace with translated strings
-        composeTestRule.onAllNodesWithText("Payment Fixed")[0].assertIsDisplayed()
-    }
-
-    @Test
     fun testAuthenticateCardView() {
         val timeNumberForAction = 7
         composeTestRule.setContent {
@@ -150,7 +88,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                     pledgeAmount = "$60.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     timeNumberForAction = timeNumberForAction
@@ -169,35 +106,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardAuthenticatedView() {
-        val timeNumberForAction = 7
-        composeTestRule.setContent {
-            KSTheme {
-                PPOCardView(
-                    viewType = PPOCardViewType.CARD_AUTHENTICATED,
-                    onCardClick = {},
-                    onProjectPledgeSummaryClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$60.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    showBadge = false,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    timeNumberForAction = timeNumberForAction
-                )
-            }
-        }
-
-        // No alerts
-        // Shipping address hidden
-        shippingAddressView.assertIsNotDisplayed()
-        // CTA
-        // TODO: Replace with translated strings
-        composeTestRule.onAllNodesWithText("Card Authenticated")[0].assertIsDisplayed()
-    }
-
-    @Test
     fun testTakeSurveyView() {
         val timeNumberForAction = 8
         composeTestRule.setContent {
@@ -210,7 +118,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                     pledgeAmount = "$70.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     timeNumberForAction = timeNumberForAction
@@ -225,35 +132,5 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         shippingAddressView.assertIsNotDisplayed()
         // CTA
         composeTestRule.onAllNodesWithText("Take Survey")[0].assertIsDisplayed()
-    }
-
-    @Test
-    fun testSurveySubmittedView() {
-        val timeNumberForAction = 8
-        composeTestRule.setContent {
-            KSTheme {
-                PPOCardView(
-                    viewType = PPOCardViewType.SURVEY_SUBMITTED,
-                    onCardClick = {},
-                    onProjectPledgeSummaryClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$70.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    showBadge = true,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    timeNumberForAction = timeNumberForAction
-                )
-            }
-        }
-
-        // Alerts
-        // TODO: Replace with translated strings
-        composeTestRule.onAllNodesWithText("Address locks in $timeNumberForAction hours")[0].assertIsDisplayed()
-        // Shipping address displayed
-        shippingAddressView.assertIsDisplayed()
-        // CTA
-        composeTestRule.onAllNodesWithText("Survey Submitted")[0].assertIsDisplayed()
     }
 }

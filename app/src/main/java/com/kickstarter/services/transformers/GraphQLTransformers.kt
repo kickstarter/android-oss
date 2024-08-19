@@ -13,6 +13,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
@@ -713,6 +714,7 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
         return@let rewardTransformer(
             reward,
+            allowedAddons = reward.allowedAddons().isNotNull(),
             rewardItems = complexRewardItemsTransformer(items?.fragments()?.rewardItems())
         )
     }

@@ -125,15 +125,22 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             }
 
             backing = pledgeData?.projectData()?.backing() ?: project.backing()
-            backing?.let { b ->
-                // - backed a reward no reward
-                if (b.reward() == null && b.amount().isNotNull()) {
-                    currentUserReward = RewardFactory.noReward().toBuilder().pledgeAmount(b.amount()).build()
-                    bonusAmount = b.amount()
-                } else {
-                    currentUserReward = b.reward() ?: currentUserReward
-                    bonusAmount = b.bonusAmount()
-                    backedAddOns = b.addOns() ?: emptyList()
+
+            if (pReason == PledgeReason.UPDATE_REWARD && backing?.reward()?.id() != currentUserReward.id()) {
+                // Do nothing, user is selecting a different reward/addOns ...
+            } else {
+                // User is selecting a same reward with AddOns, might just adding/deleting addOns, bonus support ...
+                backing?.let { b ->
+                    // - backed a reward no reward
+                    if (b.reward() == null && b.amount().isNotNull()) {
+                        currentUserReward =
+                            RewardFactory.noReward().toBuilder().pledgeAmount(b.amount()).build()
+                        bonusAmount = b.amount()
+                    } else {
+                        backedAddOns = b.addOns() ?: emptyList()
+                        currentUserReward = b.reward() ?: currentUserReward
+                        bonusAmount = b.bonusAmount()
+                    }
                 }
             }
 
@@ -171,7 +178,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
         // - Do not execute call unless reward has addOns
-        if (currentUserReward.hasAddons() || backing?.addOns().isNotNull()) {
+        if (currentUserReward.hasAddons()) {
             scope.launch(dispatcher) {
                 apolloClient
                     .getProjectAddOns(

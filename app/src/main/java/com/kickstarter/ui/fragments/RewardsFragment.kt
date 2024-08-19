@@ -23,7 +23,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
-import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.ui.activities.compose.projectpage.RewardCarouselScreen
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
@@ -94,10 +93,6 @@ class RewardsFragment : Fragment() {
                         val rules = viewModel.countrySelectorRules().collectAsStateWithLifecycle(
                             initialValue = ShippingRulesState()
                         ).value
-
-                        if (rules.selectedShippingRule != ShippingRuleFactory.emptyShippingRule()) {
-                            viewModel.setInitialShippingRule(rules.selectedShippingRule)
-                        }
 
                         val rewards = rules.filteredRw
                         val listState = rememberLazyListState()

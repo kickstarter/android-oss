@@ -161,7 +161,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
             shippingRulesUseCase?.filterBySelectedRule(shippingRule)
-            selectedShippingRule = shippingRule
             emitShippingUIState()
         }
     }

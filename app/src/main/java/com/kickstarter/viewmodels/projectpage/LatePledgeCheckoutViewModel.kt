@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.locationId
@@ -417,8 +418,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private fun createCheckout() {
         this.pledgeData?.let { pData ->
-            val locationId = pData.locationId()
-            val rewards = pData.rewardsAndAddOnsList()
+            val locationId = if (!RewardUtils.isNoReward(pData.reward())) pData.locationId() else null
+            val rewards = if (!RewardUtils.isNoReward(pData.reward())) pData.rewardsAndAddOnsList() else emptyList()
             val totalPledge = pData.checkoutTotalAmount()
 
             this.pledgeData?.projectData()?.let { projectData ->
@@ -431,7 +432,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             CreateCheckoutData(
                                 project = projectData.project(),
                                 amount = totalPledge.toString(),
-                                locationId = locationId.toString(),
+                                locationId = locationId?.toString(),
                                 rewardsIds = rewards,
                                 refTag = projectData.refTagFromIntent()
                             )

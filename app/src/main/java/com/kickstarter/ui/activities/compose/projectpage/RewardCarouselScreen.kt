@@ -188,7 +188,7 @@ fun RewardCarouselScreen(
                 ) { reward ->
 
                     val ctaButtonEnabled = when {
-                        RewardUtils.isNoReward(reward) && (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false) -> true
+                        RewardUtils.isNoReward(reward) -> true
                         !reward.hasAddons() && backing?.isBacked(reward) != true -> true
                         backing?.rewardId() != reward.id() && RewardUtils.isAvailable(
                             project,

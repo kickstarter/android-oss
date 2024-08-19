@@ -207,6 +207,11 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         bonusAmount = (backing.bonusAmount() ?: 0.0).toDouble()
         totalAmount = (backing.amount() ?: 0.0).toDouble()
 
+        // - User was backing reward no reward
+        if (backing.reward() == null) {
+            bonusAmount = 0.0
+        }
+
         checkoutData = CheckoutData.builder()
             .amount(totalAmount)
             .paymentType(CreditCardPaymentType.CREDIT_CARD)
@@ -217,24 +222,34 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     private fun getPledgeInfoFrom(pData: PledgeData) {
         selectedRewards = pData.rewardsAndAddOnsList()
-        pledgeData = pData
-        refTag = RefTagUtils.storedCookieRefTagForProject(
-            project,
-            cookieManager,
-            sharedPreferences
-        )
+        if (selectedRewards.isNotEmpty()) {
+            val isNoReward = RewardUtils.isNoReward(selectedRewards.first())
+            pledgeData = pData
+            refTag = RefTagUtils.storedCookieRefTagForProject(
+                project,
+                cookieManager,
+                sharedPreferences
+            )
+            shippingRule = pData.shippingRule()
 
-        shippingRule = pData.shippingRule()
-        shippingAmount = pData.shippingCostIfShipping()
-        bonusAmount = pData.bonusAmount()
-        totalAmount = pData.checkoutTotalAmount()
+            if (!isNoReward) {
+                shippingAmount = pData.shippingCostIfShipping()
+                bonusAmount = pData.bonusAmount()
+                totalAmount = pData.checkoutTotalAmount()
+            }
 
-        checkoutData = CheckoutData.builder()
-            .amount(pData.pledgeAmountTotal())
-            .paymentType(CreditCardPaymentType.CREDIT_CARD)
-            .bonusAmount(bonusAmount)
-            .shippingAmount(pData.shippingCostIfShipping())
-            .build()
+            if (isNoReward) {
+                totalAmount = selectedRewards.first().pledgeAmount() + pData.bonusAmount()
+                bonusAmount = 0.0
+            }
+
+            checkoutData = CheckoutData.builder()
+                .amount(pData.pledgeAmountTotal())
+                .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                .bonusAmount(bonusAmount)
+                .shippingAmount(pData.shippingCostIfShipping())
+                .build()
+        }
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
@@ -357,10 +372,15 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             analytics.trackPledgeSubmitCTA(requireNotNull(checkoutData), requireNotNull(pledgeData))
         }
 
+        val shouldNotSendId = pledgeData?.reward()?.let {
+            RewardUtils.isDigital(it) || RewardUtils.isNoReward(it) || RewardUtils.isLocalPickup(it)
+        } ?: true
+
+        val locationID = pledgeData?.shippingRule()?.location()?.id()?.toString()
         val backingData = selectedPaymentMethod.getBackingData(
             proj = project,
             amount = pledgeData?.checkoutTotalAmount().toString(),
-            locationId = pledgeData?.shippingRule()?.location()?.id()?.toString(),
+            locationId = if (shouldNotSendId) null else locationID,
             rewards = RewardUtils.extendAddOns(pledgeData?.rewardsAndAddOnsList() ?: emptyList<Reward>()),
             cookieRefTag = refTag
         )

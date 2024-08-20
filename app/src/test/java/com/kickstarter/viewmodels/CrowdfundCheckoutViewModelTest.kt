@@ -10,6 +10,7 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
+import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
@@ -24,6 +25,7 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -55,11 +57,9 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         )
     }
 
-    // Tests new pledge, with rw with shipping + addOns + bonus support, using saved payment methods
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test new pledge with rw with shipping + addOns + bonus support, selecting a saved payment method initial state`() = runTest {
-        // - The test reward with shipping
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
         val reward = RewardFactory.rewardWithShipping().toBuilder()
             .shippingRules(shippingRules = shippingRules)
@@ -75,7 +75,6 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             .shippingRules(shippingRules)
             .build()
 
-        // - AddOns shipping same as the reward
         val addOnsList = listOf(addOns1, addOn2)
 
         val project = ProjectFactory.project().toBuilder()
@@ -106,11 +105,16 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         )
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
 
-        // - Network mocks
         val environment = environment().toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(cards)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("", "hola@ksr.com", true, true, true, true, "USD")
+                    )
                 }
             })
             .currentUserV2(currentUserV2)
@@ -129,15 +133,17 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
         advanceUntilIdle()
-        // - Assert initial state of the screen before any user interaction
+
         assertEquals(uiState.size, 3)
 
-        // uiState.last().selectedRewards
         assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
         assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
         assertEquals(uiState.last().bonusAmount, 3.0)
         assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
         assertEquals(uiState.last().selectedPaymentMethod.id(), cards.first().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().userEmail, "hola@ksr.com")
+        assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -385,7 +391,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         // - Assert initial state of the screen before any user interaction
         assertEquals(uiState.size, 4)
 
-        // - Amounts and selection should be the backing info
+        // - Amounts and selection should be the obtained from backing
         assertEquals(uiState.last().shippingAmount, 33.0)
         assertEquals(uiState.last().checkoutTotal, 44.0)
         assertTrue(uiState.last().isPledgeButtonEnabled)
@@ -401,4 +407,16 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(checkout.size, 2)
         assertEquals(checkout.last().first.id(), 77L)
     }
+
+    // TODO: Test add new payment method integration with PaymentSheet
+    // TODO: Test error on networking call when adding a new PaymentMethod via PaymentSheet
+    // TODO: Test change reward flow
+    // TODO: Test Pledge to a reward no reward
+    // TODO: Test Pledge to a reward without addOns
+    // TODO: Test Pledge to a reward digital
+    // TODO: Test Pledge to a reward local pickup
+    // TODO: Test change payment method to reward no reward
+    // TODO: Test change reward from no reward to other reward
+    // TODO: Test change reward from reward to no reward
+    // TODO: Test error on networking calls
 }

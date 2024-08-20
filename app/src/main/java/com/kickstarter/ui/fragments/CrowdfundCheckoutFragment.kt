@@ -117,6 +117,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                         // TODO: hide bonus support if 0
                         CheckoutScreen(
                             rewardsList = getRewardListAndPrices(rwList, environment, project),
+                            selectedRewardsAndAddOns = rwList,
                             environment = requireNotNull(environment),
                             shippingAmount = shippingAmount,
                             selectedReward = selectedRw,

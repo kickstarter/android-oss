@@ -200,7 +200,7 @@ fun ItemizedRewardListContainer(
 
         Row {
             Text(
-                text = stringResource(id = R.string.Total_amount),
+                text = stringResource(id = R.string.Pledge_amount),
                 style = typography.calloutMedium,
                 color = colors.textPrimary
             )

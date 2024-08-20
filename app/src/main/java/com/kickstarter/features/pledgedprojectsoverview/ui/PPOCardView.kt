@@ -65,7 +65,6 @@ fun PPOCardPreview() {
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
                     shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
-                    showBadge = true,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
@@ -82,25 +81,6 @@ fun PPOCardPreview() {
                     pledgeAmount = "$50.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 6
-                )
-
-                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-            }
-
-            item {
-                PPOCardView(
-                    viewType = PPOCardViewType.PAYMENT_FIXED,
-                    onCardClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$50.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    showBadge = false,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
@@ -118,25 +98,6 @@ fun PPOCardPreview() {
                     pledgeAmount = "$60.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 7
-                )
-
-                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-            }
-
-            item {
-                PPOCardView(
-                    viewType = PPOCardViewType.CARD_AUTHENTICATED,
-                    onCardClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$60.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    showBadge = false,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
@@ -154,25 +115,6 @@ fun PPOCardPreview() {
                     pledgeAmount = "$70.00",
                     creatorName = "Some really really really really really really really long name",
                     sendAMessageClickAction = {},
-                    showBadge = true,
-                    onActionButtonClicked = {},
-                    onSecondaryActionButtonClicked = {},
-                    onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 8
-                )
-
-                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-            }
-
-            item {
-                PPOCardView(
-                    viewType = PPOCardViewType.SURVEY_SUBMITTED,
-                    onCardClick = {},
-                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
-                    pledgeAmount = "$70.00",
-                    creatorName = "Some really really really really really really really long name",
-                    sendAMessageClickAction = {},
-                    showBadge = false,
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
@@ -187,13 +129,9 @@ fun PPOCardPreview() {
 
 enum class PPOCardViewType {
     CONFIRM_ADDRESS,
-    ADDRESS_CONFIRMED,
     FIX_PAYMENT,
-    PAYMENT_FIXED,
     AUTHENTICATE_CARD,
-    CARD_AUTHENTICATED,
     OPEN_SURVEY,
-    SURVEY_SUBMITTED,
     UNKNOWN,
 }
 
@@ -214,14 +152,13 @@ fun PPOCardView(
     creatorName: String? = null,
     sendAMessageClickAction: () -> Unit,
     shippingAddress: String? = null,
-    showBadge: Boolean = false,
     onActionButtonClicked: () -> Unit,
     onSecondaryActionButtonClicked: () -> Unit,
     timeNumberForAction: Int = 0,
 ) {
 
     BadgedBox(
-        badge = { if (showBadge) Badge(backgroundColor = colors.textAccentGreen) }
+        badge = { if (isTier1Alert(viewType)) Badge(backgroundColor = colors.backgroundDangerBold) }
     ) {
         Card(
             modifier = Modifier
@@ -236,13 +173,9 @@ fun PPOCardView(
             ) {
                 when (viewType) {
                     PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressAlertsView(timeNumberForAction)
-                    PPOCardViewType.ADDRESS_CONFIRMED -> ConfirmAddressAlertsView(timeNumberForAction)
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentAlertsView(timeNumberForAction)
-                    PPOCardViewType.PAYMENT_FIXED -> {}
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardAlertsView(timeNumberForAction)
-                    PPOCardViewType.CARD_AUTHENTICATED -> {}
                     PPOCardViewType.OPEN_SURVEY -> TakeSurveyAlertsView(timeNumberForAction)
-                    PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedAlertsView(timeNumberForAction)
                     PPOCardViewType.UNKNOWN -> { }
                 }
 
@@ -259,10 +192,7 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
-                if (viewType == PPOCardViewType.CONFIRM_ADDRESS ||
-                    viewType == PPOCardViewType.ADDRESS_CONFIRMED ||
-                    viewType == PPOCardViewType.SURVEY_SUBMITTED
-                ) {
+                if (viewType == PPOCardViewType.CONFIRM_ADDRESS) {
                     Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
                     ShippingAddressView(
@@ -272,13 +202,9 @@ fun PPOCardView(
 
                 when (viewType) {
                     PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(!shippingAddress.isNullOrEmpty(), onActionButtonClicked, onSecondaryActionButtonClicked)
-                    PPOCardViewType.ADDRESS_CONFIRMED -> AddressConfirmedButtonView()
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
-                    PPOCardViewType.PAYMENT_FIXED -> PaymentFixedButtonView()
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
-                    PPOCardViewType.CARD_AUTHENTICATED -> CardAuthenticatedButtonView()
                     PPOCardViewType.OPEN_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
-                    PPOCardViewType.SURVEY_SUBMITTED -> SurveySubmittedButtonView()
                     PPOCardViewType.UNKNOWN -> {}
                 }
             }
@@ -484,27 +410,6 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
         )
     }
 }
-@Composable
-fun AddressConfirmedButtonView() {
-    // TODO: Replace with translated string
-    KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMedium),
-        leadingIcon = {
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.paddingMedium),
-                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
-                contentDescription = "Address Confirmed",
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
-            )
-        },
-        onClickAction = {},
-        text = "Address Confirmed",
-        isEnabled = false,
-        textStyle = typography.buttonText
-    )
-}
 
 @Composable
 fun FixPaymentAlertsView(daysRemaining: Int = -1) {
@@ -575,29 +480,6 @@ fun AuthenticateCardAlertsView(daysRemaining: Int = -1) {
         }
     }
 }
-
-@Composable
-fun PaymentFixedButtonView() {
-    // TODO: Replace with translated string
-    KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMediumSmall),
-        leadingIcon = {
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.paddingMedium),
-                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
-                contentDescription = "Payment Fixed",
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
-            )
-        },
-        onClickAction = { },
-        text = "Payment Fixed",
-        isEnabled = false,
-        textStyle = typography.buttonText
-    )
-}
-
 @Composable
 fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
     // TODO: Replace with translated string
@@ -606,28 +488,6 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = "Authenticate Card",
         isEnabled = true,
-        textStyle = typography.buttonText
-    )
-}
-
-@Composable
-fun CardAuthenticatedButtonView() {
-    // TODO: Replace with translated string
-    KSSecondaryRedButton(
-        modifier = Modifier.padding(dimensions.paddingMediumSmall),
-        leadingIcon = {
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.paddingMedium),
-                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
-                contentDescription = "Card Authenticated",
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
-            )
-        },
-        onClickAction = { },
-        text = "Card Authenticated",
-        isEnabled = false,
         textStyle = typography.buttonText
     )
 }
@@ -673,44 +533,6 @@ fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
 }
 
 @Composable
-fun SurveySubmittedAlertsView(hoursRemaining: Int = -1) {
-    if (hoursRemaining > 0) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
-        ) {
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-
-            AddressLocksAlertView(hoursRemaining)
-        }
-    }
-}
-
-@Composable
-fun SurveySubmittedButtonView() {
-    // TODO: Replace with translated string
-    KSPrimaryGreenButton(
-        modifier = Modifier
-            .padding(dimensions.paddingMediumSmall),
-        leadingIcon = {
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.paddingMedium),
-                imageVector = ImageVector.vectorResource(id = R.drawable.icon__check),
-                contentDescription = "x",
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
-            )
-        },
-        onClickAction = { },
-        text = "Survey Submitted",
-        isEnabled = false,
-        textStyle = typography.buttonText
-    )
-}
-
-@Composable
 fun AddressLocksAlertView(hoursRemaining: Int = -1) {
     KSCoralBadge(
         leadingIcon = {
@@ -746,4 +568,11 @@ fun PledgeWillBeDroppedAlert(daysRemaining: Int = -1) {
         text = "Pledge will be dropped in $daysRemaining days",
         textColor = colors.textAccentRedBold
     )
+}
+
+fun isTier1Alert(viewType: PPOCardViewType): Boolean {
+    return when (viewType) {
+        PPOCardViewType.CONFIRM_ADDRESS, PPOCardViewType.AUTHENTICATE_CARD, PPOCardViewType.OPEN_SURVEY, PPOCardViewType.FIX_PAYMENT -> true
+        else -> false
+    }
 }

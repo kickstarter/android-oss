@@ -326,14 +326,15 @@ fun RewardCarouselScreen(
                                 environment.ksCurrency()?.let { ksCurrency ->
                                     environment.ksString()?.let { ksString ->
                                         RewardViewUtils.getEstimatedShippingCostString(
-                                            context,
-                                            ksCurrency,
-                                            ksString,
-                                            project,
-                                            currentShippingRule,
-                                            isAddOn = false,
+                                            context = context,
+                                            ksCurrency = ksCurrency,
+                                            ksString = ksString,
+                                            project = project,
+                                            rewards = listOf(reward),
+                                            selectedShippingRule = currentShippingRule,
                                             multipleQuantitiesAllowed = false,
-                                            shippingRules = null
+                                            useUserPreference = false,
+                                            useAbout = true
                                         )
                                     }
                                 }

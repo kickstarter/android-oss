@@ -152,45 +152,37 @@ object RewardViewUtils {
         ksCurrency: KSCurrency,
         ksString: KSString,
         project: Project,
+        rewards: List<Reward> = listOf(),
         selectedShippingRule: ShippingRule,
-        isAddOn: Boolean,
         multipleQuantitiesAllowed: Boolean,
-        shippingRules: List<ShippingRule>?,
-        useUserPreference: Boolean = false,
-        useAbout: Boolean = true
+        useUserPreference: Boolean,
+        useAbout: Boolean
     ): String {
         var min = ""
         var max = ""
-        if (isAddOn) {
-            if (!shippingRules.isNullOrEmpty()) {
-                shippingRules.filter {
+        var minTotal = 0.0
+        var maxtotal = 0.0
+        rewards.forEach { reward ->
+            if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+                reward.shippingRules()?.filter {
                     it.location()?.id() == selectedShippingRule.location()?.id()
-                }.map {
-                    if (it.estimatedMin() <= 0 || it.estimatedMax() <= 0) return ""
-                    min = if (useUserPreference) {
-                        ksCurrency.formatWithUserPreference(it.estimatedMin(), project, RoundingMode.HALF_UP, precision = 2)
-                    } else {
-                        ksCurrency.format(it.estimatedMin(), project, RoundingMode.HALF_UP)
-                    }
-                    max = if (useUserPreference) {
-                        ksCurrency.formatWithUserPreference(it.estimatedMin(), project, RoundingMode.HALF_UP, precision = 2)
-                    } else {
-                        ksCurrency.format(it.estimatedMax(), project, RoundingMode.HALF_UP)
-                    }
+                }?.map {
+                    minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
+                    maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))
                 }
-            } else return ""
+            }
+        }
+        if (minTotal <= 0 || maxtotal <= 0) return ""
+
+        min = if (useUserPreference) {
+            ksCurrency.formatWithUserPreference(minTotal, project, RoundingMode.HALF_UP, precision = 2)
         } else {
-            if (selectedShippingRule.estimatedMin() <= 0 || selectedShippingRule.estimatedMax() <= 0) return ""
-            min = if (useUserPreference) {
-                ksCurrency.formatWithUserPreference(selectedShippingRule.estimatedMin(), project, RoundingMode.HALF_UP, precision = 2)
-            } else {
-                ksCurrency.format(selectedShippingRule.estimatedMin(), project, RoundingMode.HALF_UP)
-            }
-            max = if (useUserPreference) {
-                ksCurrency.formatWithUserPreference(selectedShippingRule.estimatedMax(), project, RoundingMode.HALF_UP, precision = 2)
-            } else {
-                ksCurrency.format(selectedShippingRule.estimatedMax(), project, RoundingMode.HALF_UP)
-            }
+            ksCurrency.format(minTotal, project, RoundingMode.HALF_UP)
+        }
+        max = if (useUserPreference) {
+            ksCurrency.formatWithUserPreference(maxtotal, project, RoundingMode.HALF_UP, precision = 2)
+        } else {
+            ksCurrency.format(maxtotal, project, RoundingMode.HALF_UP)
         }
 
         if (min.isEmpty() || max.isEmpty()) return ""
@@ -199,7 +191,11 @@ object RewardViewUtils {
         val minToMaxString = if (multipleQuantitiesAllowed) "$min-$max each" else "$min-$max"
 
         return if (useAbout) {
-            ksString.format(context.getString(R.string.About_reward_amount), "reward_amount", minToMaxString)
+            ksString.format(
+                context.getString(R.string.About_reward_amount),
+                "reward_amount",
+                minToMaxString
+            )
         } else {
             minToMaxString
         }

@@ -134,6 +134,7 @@ fun CheckoutScreen(
     project: Project,
     email: String?,
     ksString: KSString? = null,
+    selectedRewardsAndAddOns: List<Reward> = listOf(),
     rewardsList: List<Pair<String, String>> = listOf(),
     shippingAmount: Double = 0.0,
     pledgeReason: PledgeReason,
@@ -498,13 +499,12 @@ fun CheckoutScreen(
                     val estimatedShippingRangeString =
                         RewardViewUtils.getEstimatedShippingCostString(
                             context = LocalContext.current,
-                            environment.ksCurrency()!!,
-                            environment.ksString()!!,
-                            project,
-                            currentShippingRule!!,
-                            isAddOn = false,
+                            ksCurrency = environment.ksCurrency()!!,
+                            ksString = environment.ksString()!!,
+                            project = project,
+                            rewards = selectedRewardsAndAddOns,
+                            selectedShippingRule = currentShippingRule!!,
                             multipleQuantitiesAllowed = false,
-                            shippingRules = null,
                             useUserPreference = false,
                             useAbout = false
                         )
@@ -514,13 +514,12 @@ fun CheckoutScreen(
                         else {
                             RewardViewUtils.getEstimatedShippingCostString(
                                 context = LocalContext.current,
-                                environment.ksCurrency()!!,
-                                environment.ksString()!!,
-                                project,
-                                currentShippingRule,
-                                isAddOn = false,
+                                ksCurrency = environment.ksCurrency()!!,
+                                ksString = environment.ksString()!!,
+                                project = project,
+                                rewards = selectedRewardsAndAddOns,
+                                selectedShippingRule = currentShippingRule,
                                 multipleQuantitiesAllowed = false,
-                                shippingRules = null,
                                 useUserPreference = true,
                                 useAbout = true
                             )

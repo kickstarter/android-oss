@@ -273,6 +273,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         project = project,
                                         email = userEmail,
                                         selectedReward = selectedReward,
+                                        selectedRewardsAndAddOns = selectedRewardAndAddOnList,
                                         rewardsList = getRewardListAndPrices(
                                             selectedRewardAndAddOnList,
                                             environment,

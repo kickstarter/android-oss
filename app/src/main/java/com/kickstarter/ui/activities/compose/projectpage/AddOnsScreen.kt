@@ -281,13 +281,14 @@ fun AddOnsScreen(
                                 environment.ksString()?.let { ksString ->
                                     RewardViewUtils.getEstimatedShippingCostString(
                                         context = context,
-                                        ksCurrency,
-                                        ksString,
-                                        project,
-                                        currentShippingRule,
-                                        isAddOn = true,
+                                        ksCurrency = ksCurrency,
+                                        ksString = ksString,
+                                        project = project,
+                                        rewards = listOf(reward),
+                                        selectedShippingRule = currentShippingRule,
                                         multipleQuantitiesAllowed = (reward.limit() ?: -1) > 1,
-                                        shippingRules = reward.shippingRules()
+                                        useUserPreference = false,
+                                        useAbout = true
                                     )
                                 }
                             }

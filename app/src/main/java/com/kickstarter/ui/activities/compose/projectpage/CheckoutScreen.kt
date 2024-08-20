@@ -215,7 +215,7 @@ fun CheckoutScreen(
                                     .fillMaxWidth(),
                                 onClickAction = { onPledgeCtaClicked(selectedOption.value) },
                                 isEnabled = project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false,
-                                text = if (pledgeReason == PledgeReason.PLEDGE) stringResource(id = R.string.Pledge) + " $totalAmountString" else stringResource(
+                                text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(id = R.string.Pledge) + " $totalAmountString" else stringResource(
                                     id = R.string.Confirm
                                 )
                             )

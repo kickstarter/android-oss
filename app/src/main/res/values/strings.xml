@@ -99,6 +99,6 @@
   <string name="something_went_wrong_pull_to_refresh_fpo">Something went wrong - Pull to refresh</string>
   <string name="youve_been_authenticated_successfully_pull_to_refresh_fpo">You\'ve been authenticated successfully! Pull to refresh.</string>
   <string name="authentication_success_please_pull_to_refresh_fpo">Authentication success. Please pull to refresh.</string>
-  <string name="authentication_failed_please_try_again_fpo">"Authentication failed. Please try again."</string>
+  <string name="authentication_failed_please_try_again_fpo">Authentication failed. Please try again.</string>
 
 </resources>

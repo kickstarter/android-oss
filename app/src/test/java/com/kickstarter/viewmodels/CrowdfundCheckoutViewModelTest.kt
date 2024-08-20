@@ -48,6 +48,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import type.CreditCardPaymentType
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
     private lateinit var viewModel: CrowdfundCheckoutViewModel
 
@@ -57,7 +58,6 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test new pledge with rw with shipping + addOns + bonus support, selecting a saved payment method initial state`() = runTest {
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
@@ -148,7 +148,6 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test user hits pledges button with rw + addOns + bonus support with shipping`() = runTest {
         // - The test reward with shipping
@@ -249,7 +248,6 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test sendThirdPartyEvent when a payment method selected`() = runTest {
 
@@ -301,7 +299,6 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(viewModel.isThirdPartyEventSent().second, "cosa")
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test update payment method with rw with shipping + addOns + bonus support backed, selecting a different payment method`() = runTest {
         // - The test reward with shipping
@@ -411,10 +408,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
     // TODO: Test add new payment method integration with PaymentSheet
     // TODO: Test error on networking call when adding a new PaymentMethod via PaymentSheet
     // TODO: Test change reward flow
-    // TODO: Test Pledge to a reward no reward
-    // TODO: Test Pledge to a reward without addOns
-    // TODO: Test Pledge to a reward digital
-    // TODO: Test Pledge to a reward local pickup
+    // TODO: Test Pledge to a reward digital/non-shippable
     // TODO: Test change payment method to reward no reward
     // TODO: Test change reward from no reward to other reward
     // TODO: Test change reward from reward to no reward

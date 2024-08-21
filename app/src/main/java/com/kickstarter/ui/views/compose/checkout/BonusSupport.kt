@@ -89,9 +89,8 @@ fun BonusSupportContainer(
 
     Column {
         if (isNoReward) {
-            // TODO replace with translated string
             Text(
-                text = "Customize your reward",
+                text = stringResource(id = R.string.customize_your_reward_fpo),
                 style = typography.title3Bold,
                 color = colors.textPrimary
             )

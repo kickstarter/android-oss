@@ -199,8 +199,7 @@ fun KSRewardCard(
 
                 if (!estimatedShippingCost.isNullOrEmpty()) {
                     Text(
-                        // TODO: Replace with defined string
-                        text = "Estimated Shipping",
+                        text = stringResource(id = R.string.estimated_shipping_fpo),
                         color = colors.kds_support_400,
                         style = typography.calloutMedium
                     )
@@ -285,7 +284,11 @@ fun KSRewardCard(
             if (isCTAButtonVisible) {
                 KSPrimaryGreenButton(
                     modifier = Modifier
-                        .padding(bottom = dimensions.paddingMediumLarge, start = dimensions.paddingMediumLarge, end = dimensions.paddingMediumLarge)
+                        .padding(
+                            bottom = dimensions.paddingMediumLarge,
+                            start = dimensions.paddingMediumLarge,
+                            end = dimensions.paddingMediumLarge
+                        )
                         .fillMaxWidth(),
                     onClickAction = onRewardSelectClicked,
                     isEnabled = isCTAButtonEnabled,

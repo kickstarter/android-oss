@@ -125,7 +125,7 @@ fun AddOnsContainer(
 
             if (includesList.isNotEmpty()) {
                 Text(
-                    text = stringResource(id = R.string.includes_fpo),
+                    text = stringResource(id = R.string.project_view_pledge_includes),
                     style = typography.calloutMedium,
                     color = colors.textSecondary
                 )
@@ -161,7 +161,7 @@ fun AddOnsContainer(
             if (!estimatedShippingCost.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 Text(
-                    text = stringResource(id = R.string.includes_fpo),
+                    text = stringResource(id = R.string.project_view_pledge_includes),
                     color = colors.kds_support_400,
                     style = typography.calloutMedium
                 )
@@ -176,8 +176,7 @@ fun AddOnsContainer(
 
             if (limit > 0) {
                 Spacer(Modifier.height(dimensions.paddingMedium))
-
-                KSCoralBadge(text = "${stringResource(id = R.string.limit_fpo)} $limit")
+                KSCoralBadge(text = "Limit $limit")
             }
 
             Spacer(Modifier.height(dimensions.paddingLarge))

@@ -24,6 +24,7 @@ import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.UserPrivacy
@@ -37,7 +38,9 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
+import com.kickstarter.viewmodels.projectpage.PaymentSheetPresenterState
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -126,8 +129,12 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val uiState = mutableListOf<CheckoutUIState>()
 
+        var errorActionCount = 0
         backgroundScope.launch(dispatcher) {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideErrorAction {
+                errorActionCount++
+            }
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.first())
 
@@ -145,6 +152,8 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(uiState.last().storeCards, cards)
         assertEquals(uiState.last().userEmail, "hola@ksr.com")
         assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
+
+        assertEquals(errorActionCount, 0)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -638,7 +647,6 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(checkout.size, 2)
         assertEquals(checkout.last().first.id(), 22L)
-        // assertEquals(checkout.last().first.amount(), secondReward.pledgeAmount() + 7.0)
         assertEquals(checkout.last().first.shippingAmount(), 0.0)
         assertEquals(checkout.last().first.bonusAmount(), 7.0)
 
@@ -649,7 +657,228 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
-    // TODO: Test add new payment method integration with PaymentSheet
-    // TODO: Test error on networking call when adding a new PaymentMethod via PaymentSheet
-    // TODO: Test error on networking calls
+    @Test
+    fun `test adding new paymentMethod throw Stripe's paymentSheet`() = runTest {
+
+        val reward = RewardFactory.reward()
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward))
+            .build()
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("", "hola@ksr.com", true, true, true, true, "USD")
+                    )
+                }
+
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.just("SetupIntent")
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val paymentSheetState = mutableListOf<PaymentSheetPresenterState>()
+        val uiState = mutableListOf<CheckoutUIState>()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+            viewModel.getSetupIntent()
+            viewModel.presentPaymentSheetStates.toList(paymentSheetState)
+        }
+        advanceUntilIdle()
+
+        assertEquals(paymentSheetState.size, 2)
+        assertEquals(paymentSheetState.last().setupClientId, "SetupIntent")
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.paymentSheetPresented(true)
+            viewModel.newlyAddedPaymentMethod(StoredCardFactory.fromPaymentSheetCard())
+            viewModel.paymentSheetResult(PaymentSheetResult.Completed)
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+
+        assertEquals(uiState.last().storeCards.first(), StoredCardFactory.fromPaymentSheetCard())
+    }
+
+    @Test
+    fun `test adding new paymentMethod throw Stripe's paymentSheet, but result canceled or failed (3DS challenge failed)`() = runTest {
+
+        val reward = RewardFactory.reward()
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward))
+            .build()
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("", "hola@ksr.com", true, true, true, true, "USD")
+                    )
+                }
+
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.just("SetupIntent")
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val paymentSheetState = mutableListOf<PaymentSheetPresenterState>()
+        val uiState = mutableListOf<CheckoutUIState>()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+            viewModel.getSetupIntent()
+            viewModel.presentPaymentSheetStates.toList(paymentSheetState)
+        }
+        advanceUntilIdle()
+
+        assertEquals(paymentSheetState.size, 2)
+        assertEquals(paymentSheetState.last().setupClientId, "SetupIntent")
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.paymentSheetPresented(true)
+            viewModel.newlyAddedPaymentMethod(StoredCardFactory.fromPaymentSheetCard())
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.paymentSheetResult(PaymentSheetResult.Failed(Throwable()))
+        }
+
+        assertEquals(uiState.last().storeCards, cards)
+    }
+
+    @Test
+    fun `test some error occurred`() = runTest {
+        val projectData = ProjectDataFactory.project(ProjectFactory.project())
+        val reward = RewardFactory.reward()
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+        )
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.error(Throwable("Oh no, no more chocolate!"))
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.error(Throwable("Oh no, we are out of coffee!"))
+                }
+
+                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                    return Observable.error(Throwable("Oh no, the team rocket!"))
+                }
+
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.error(Throwable("Oh no, Godzilla!"))
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiState = mutableListOf<CheckoutUIState>()
+
+        val errorList = mutableListOf<String>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideErrorAction { message ->
+                message?.let { errorList.add(it) }
+            }
+            viewModel.provideBundle(bundle)
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+        backgroundScope.launch(dispatcher) {
+            viewModel.pledgeOrUpdatePledge()
+        }
+        advanceUntilIdle()
+        backgroundScope.launch(dispatcher) {
+            viewModel.getSetupIntent()
+        }
+
+        assertEquals(errorList.size, 4)
+        assertEquals(errorList.last(), "Oh no, Godzilla!")
+        assertEquals(errorList.first(), "Oh no, we are out of coffee!")
+        assertEquals(errorList[1], "Oh no, no more chocolate!")
+        assertEquals(errorList[2], "Oh no, the team rocket!")
+    }
 }

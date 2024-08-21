@@ -265,6 +265,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     .email(privacy.email)
                     .name(privacy.name)
                     .build()
+            }.catch {
+                errorAction.invoke(it.message)
+                emitCurrentState(isLoading = false)
             }.combine(apolloClient.getStoredCards().asFlow()) { updatedUser, cards ->
                 user = updatedUser
                 storedCards = cards

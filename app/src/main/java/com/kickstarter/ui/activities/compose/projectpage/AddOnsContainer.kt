@@ -23,7 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -123,7 +125,7 @@ fun AddOnsContainer(
 
             if (includesList.isNotEmpty()) {
                 Text(
-                    text = "Includes",
+                    text = stringResource(id = R.string.includes_fpo),
                     style = typography.calloutMedium,
                     color = colors.textSecondary
                 )
@@ -159,7 +161,7 @@ fun AddOnsContainer(
             if (!estimatedShippingCost.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 Text(
-                    text = "Estimated Shipping",
+                    text = stringResource(id = R.string.includes_fpo),
                     color = colors.kds_support_400,
                     style = typography.calloutMedium
                 )
@@ -175,7 +177,7 @@ fun AddOnsContainer(
             if (limit > 0) {
                 Spacer(Modifier.height(dimensions.paddingMedium))
 
-                KSCoralBadge(text = "Limit $limit")
+                KSCoralBadge(text = "${stringResource(id = R.string.limit_fpo)} $limit")
             }
 
             Spacer(Modifier.height(dimensions.paddingLarge))

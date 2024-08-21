@@ -834,7 +834,7 @@ fun KSEstimatedShippingCheckoutView(
                         start = dimensions.paddingLarge,
                         top = dimensions.paddingMedium
                     ),
-                    text = "Estimated Shipping",
+                    text = stringResource(id = R.string.estimated_shipping_fpo),
                     style = typography.calloutMedium,
                     color = colors.textPrimary
                 )
@@ -846,7 +846,7 @@ fun KSEstimatedShippingCheckoutView(
                         start = dimensions.paddingLarge,
                         bottom = dimensions.paddingMedium
                     ),
-                    text = "This is meant to give you an idea of what shipping might cost. Once the creator is ready to fulfill your reward, you’ll return to pay shipping and applicable taxes.",
+                    text = stringResource(id = R.string.this_is_meant_to_give_you_fpo),
                     style = typography.caption2,
                     color = colors.textSecondary
                 )

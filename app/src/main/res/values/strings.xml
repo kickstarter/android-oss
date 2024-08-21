@@ -101,4 +101,10 @@
   <string name="authentication_success_please_pull_to_refresh_fpo">Authentication success. Please pull to refresh.</string>
   <string name="authentication_failed_please_try_again_fpo">"Authentication failed. Please try again."</string>
 
+  <!-- Pledge Redemption Strings -->
+  <string name="estimated_shipping_fpo">Estimated Shipping</string>
+  <string name="this_is_meant_to_give_you_fpo">"This is meant to give you an idea of what shipping might cost. Once the creator is ready to fulfill your reward, you’ll return to pay shipping and applicable taxes."</string>
+  <string name="customize_your_reward_fpo">"Customize your reward"</string>
+  <string name="includes_fpo">Includes</string>
+  <string name="limit_fpo">Limit</string>
 </resources>

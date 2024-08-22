@@ -2,11 +2,7 @@ package com.kickstarter.ui.activities.compose
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onChild
-import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
@@ -146,7 +142,6 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         flagsListView.assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Address locks in 7 days")[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Open Survey")[0].assertIsDisplayed()
-
     }
 
     @Test
@@ -171,6 +166,5 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         flagsListView.assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Address locks in 7 days")[0].assertIsNotDisplayed()
         composeTestRule.onAllNodesWithText("Open Survey")[0].assertIsDisplayed()
-
     }
 }

@@ -144,7 +144,8 @@ enum class PPOCardViewType {
 
 enum class PPOCardViewTestTag {
     SHIPPING_ADDRESS_VIEW,
-    CONFIRM_ADDRESS_BUTTONS_VIEW
+    CONFIRM_ADDRESS_BUTTONS_VIEW,
+    FlAG_LIST_VIEW,
 }
 
 @Composable
@@ -378,6 +379,7 @@ fun AlertFlagsView(flags: List<Flag?>) {
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
+            .testTag(PPOCardViewTestTag.FlAG_LIST_VIEW.name)
             .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingMediumSmall),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),

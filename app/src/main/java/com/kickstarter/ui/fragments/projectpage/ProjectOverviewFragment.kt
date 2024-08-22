@@ -429,11 +429,8 @@ class ProjectOverviewFragment : Fragment(), Configure {
     }
 
     private fun setBlurbTextViews(blurb: String) {
-        val blurbHtml = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val blurbHtml =
             Html.fromHtml(TextUtils.htmlEncode(blurb), FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(TextUtils.htmlEncode(blurb))
-        }
         binding.blurb.text = blurbHtml
     }
 

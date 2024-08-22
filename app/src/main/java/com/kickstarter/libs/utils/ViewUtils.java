@@ -68,11 +68,7 @@ public final class ViewUtils {
    *
    */
   public static Spanned html(final @NonNull String htmlString) {
-    if (ApiCapabilities.needsLegacyHtml()) {
-      return Html.fromHtml(htmlString);
-    } else {
-      return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT);
-    }
+    return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT);
   }
 
   public static boolean isFontScaleLarge(final @NonNull Context context) {

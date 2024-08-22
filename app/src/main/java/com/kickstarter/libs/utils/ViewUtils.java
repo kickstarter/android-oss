@@ -27,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.ui.views.ConfirmDialog;
 
 import rx.functions.Action1;

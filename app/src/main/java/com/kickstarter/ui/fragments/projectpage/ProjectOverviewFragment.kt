@@ -2,7 +2,6 @@ package com.kickstarter.ui.fragments.projectpage
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY

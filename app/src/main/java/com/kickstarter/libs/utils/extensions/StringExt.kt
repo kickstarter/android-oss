@@ -2,7 +2,6 @@
 
 package com.kickstarter.libs.utils.extensions
 
-import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils

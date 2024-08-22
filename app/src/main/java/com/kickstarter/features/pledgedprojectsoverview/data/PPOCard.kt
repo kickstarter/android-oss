@@ -16,7 +16,7 @@ class PPOCard private constructor(
     val creatorName: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
-    val flags: List<Flag>?,
+    val flags: List<Flag?>?,
     val imageContentDescription: String?,
     val imageUrl: String?,
     val projectId: String?,
@@ -56,7 +56,7 @@ class PPOCard private constructor(
         var creatorName: String? = null,
         var currencyCode: CurrencyCode? = null,
         var currencySymbol: String? = null,
-        var flags: List<Flag>? = null,
+        var flags: List<Flag?>? = null,
         var imageContentDescription: String? = null,
         var imageUrl: String? = null,
         var projectId: String? = null,
@@ -75,7 +75,7 @@ class PPOCard private constructor(
         fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }
-        fun flags(flags: List<Flag>?) = apply { this.flags = flags }
+        fun flags(flags: List<Flag?>?) = apply { this.flags = flags }
         fun imageContentDescription(imageContentDescription: String?) = apply { this.imageContentDescription = imageContentDescription }
         fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
         fun projectId(projectId: String?) = apply { this.projectId = projectId }

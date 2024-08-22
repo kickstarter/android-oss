@@ -161,7 +161,7 @@ fun PPOCardView(
     shippingAddress: String? = null,
     onActionButtonClicked: () -> Unit,
     onSecondaryActionButtonClicked: () -> Unit,
-    flags: List<Flag>? = null,
+    flags: List<Flag?>? = null,
 ) {
 
     BadgedBox(
@@ -374,7 +374,7 @@ fun ShippingAddressView(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AlertFlagsView(flags: List<Flag>) {
+fun AlertFlagsView(flags: List<Flag?>) {
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -384,13 +384,13 @@ fun AlertFlagsView(flags: List<Flag>) {
     ) {
         flags.forEach {
             val icon =
-                when (it.icon) {
+                when (it?.icon) {
                     "alert" -> ImageVector.vectorResource(id = R.drawable.ic_alert)
                     "time" -> ImageVector.vectorResource(id = R.drawable.ic_clock)
                     else -> null
                 }
 
-            when (it.type) {
+            when (it?.type) {
                 "alert" -> KSAlertBadge(icon = icon, message = it.message)
                 "warning" -> KSWarningBadge(icon = icon, message = it.message)
                 else -> {}

@@ -229,7 +229,7 @@ fun PledgedProjectsOverviewScreen(
                     item {
                         if (!totalAlerts.isNullOrZero()) {
                             Text(
-                                text = stringResource(id = R.string.alerts_fpo).format("count", totalAlerts.toString()tg),
+                                text = stringResource(id = R.string.alerts_fpo).format("count", totalAlerts.toString()),
                                 style = typography.title3Bold,
                                 color = colors.textPrimary
                             )

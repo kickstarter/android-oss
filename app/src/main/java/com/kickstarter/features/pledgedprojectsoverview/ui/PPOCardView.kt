@@ -178,7 +178,7 @@ fun PPOCardView(
             Column(
                 Modifier.clickable { onCardClick.invoke() }
             ) {
-                if(!flags.isNullOrEmpty()) {
+                if (!flags.isNullOrEmpty()) {
                     AlertFlagsView(flags = flags)
                 }
 
@@ -377,8 +377,8 @@ fun ShippingAddressView(
 fun AlertFlagsView(flags: List<Flag>) {
     FlowRow(
         modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingMediumSmall),
+            .fillMaxWidth()
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingMediumSmall),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -390,7 +390,7 @@ fun AlertFlagsView(flags: List<Flag>) {
                     else -> null
                 }
 
-            when(it.type) {
+            when (it.type) {
                 "alert" -> KSAlertBadge(icon = icon, message = it.message)
                 "warning" -> KSWarningBadge(icon = icon, message = it.message)
                 else -> {}

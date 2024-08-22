@@ -19,9 +19,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.features.pledgedprojectsoverview.data.Flag
-import com.kickstarter.features.pledgedprojectsoverview.ui.PledgeWillBeDroppedAlert
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
@@ -49,13 +46,15 @@ fun KSBadgesPreview() {
 
             KSAlertBadge(
                 icon = ImageVector.vectorResource(id = R.drawable.ic_alert),
-                message = "Payment Failed")
+                message = "Payment Failed"
+            )
 
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSWarningBadge(
                 icon = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                message = "Address locks in 7 days")
+                message = "Address locks in 7 days"
+            )
         }
     }
 }
@@ -120,8 +119,8 @@ fun KSCoralBadge(
 
 @Composable
 fun KSAlertBadge(
-    icon : ImageVector?,
-    message : String?
+    icon: ImageVector?,
+    message: String?
 ) {
     if (!message.isNullOrEmpty()) {
         Row(
@@ -159,8 +158,8 @@ fun KSAlertBadge(
 
 @Composable
 fun KSWarningBadge(
-    icon : ImageVector?,
-    message : String?
+    icon: ImageVector?,
+    message: String?
 ) {
     if (!message.isNullOrEmpty()) {
         Row(

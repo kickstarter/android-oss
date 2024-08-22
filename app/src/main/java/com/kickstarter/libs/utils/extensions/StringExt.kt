@@ -244,7 +244,7 @@ fun String.format(key1: String, value1: String?): String {
     }
     return this.replace(substitutions)
 }
- fun String.replace(substitutions: Map<String, String?>): String {
+fun String.replace(substitutions: Map<String, String?>): String {
     val builder = StringBuilder()
     for (key in substitutions.keys) {
         if (builder.isNotEmpty()) {
@@ -272,4 +272,3 @@ fun String.format(key1: String, value1: String?): String {
 }
 
 private val NON_WORD_REGEXP = Pattern.compile("[^\\w]")
-

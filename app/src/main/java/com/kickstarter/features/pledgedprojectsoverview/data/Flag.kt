@@ -20,7 +20,7 @@ class Flag private constructor(
         var type: String? = null
     ) : Parcelable {
 
-        fun icon(icon: String?) = apply { this.icon = icon}
+        fun icon(icon: String?) = apply { this.icon = icon }
         fun message(message: String?) = apply { this.message = message }
         fun type(type: String?) = apply { this.type = type }
         fun build() = Flag(
@@ -44,8 +44,8 @@ class Flag private constructor(
         var equals = super.equals(other)
         if (other is Flag) {
             equals = icon() == other.icon() &&
-                    message() == other.message() &&
-                    type() == other.type()
+                message() == other.message() &&
+                type() == other.type()
         }
         return equals
     }

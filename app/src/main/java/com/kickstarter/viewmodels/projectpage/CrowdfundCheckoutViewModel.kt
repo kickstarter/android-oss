@@ -265,6 +265,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     .email(privacy.email)
                     .name(privacy.name)
                     .build()
+            }.catch {
+                errorAction.invoke(it.message)
+                emitCurrentState(isLoading = false)
             }.combine(apolloClient.getStoredCards().asFlow()) { updatedUser, cards ->
                 user = updatedUser
                 storedCards = cards
@@ -421,11 +424,19 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     )
                 }
                 PledgeReason.UPDATE_REWARD -> {
+                    val isShippable = pledgeData?.reward()?.let { RewardUtils.isShippable(it) } ?: false
+                    val locationIdOrNull =
+                        if (isShippable) pledgeData?.shippingRule()?.location()?.id().toString()
+                        else null
+                    val isNoRw = pledgeData?.reward()?.let { RewardUtils.isNoReward(it) } ?: false
+                    val rwListOrEmpty = if (isNoRw) emptyList<Reward>()
+                    else pledgeData?.rewardsAndAddOnsList() ?: emptyList()
+
                     getUpdateBackingData(
                         backing,
                         pledgeData?.checkoutTotalAmount().toString(),
-                        pledgeData?.shippingRule()?.location()?.id().toString(),
-                        pledgeData?.rewardsAndAddOnsList() ?: emptyList(),
+                        locationId = locationIdOrNull,
+                        rwListOrEmpty,
                         selectedPaymentMethod
                     )
                 }

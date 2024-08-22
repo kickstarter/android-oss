@@ -469,6 +469,12 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
+                val resourceString = stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline)
+                val disclaimerText = environment.ksString()?.format(
+                    resourceString,
+                    "total", totalAmountString,
+                    "project_deadline", project.deadline()?.let { DateTimeUtils.longDate(it) }
+                ) ?: ""
                 val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
                 if (!isNoReward) {
                     ItemizedRewardListContainer(
@@ -482,7 +488,8 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
-                        rewardsHaveShippables = rewardsHaveShippables
+                        rewardsHaveShippables = rewardsHaveShippables,
+                        disclaimerText = disclaimerText
                     )
                 } else {
                     // - For noReward, totalAmount = bonusAmount as there is no reward
@@ -492,6 +499,7 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
+                        disclaimerText = disclaimerText
                     )
                 }
 

@@ -60,11 +60,12 @@ fun ItemizedRewardListContainerPreview() {
                 shippingAmountString = "",
                 initialShippingLocation = "",
                 totalAmount = "50$",
-                totalAmountCurrencyConverted = "",
+                totalAmountCurrencyConverted = "About CA\$ 1.38",
                 initialBonusSupport = "0",
                 totalBonusSupport = "0",
                 deliveryDateString = "",
-                rewardsHaveShippables = false
+                rewardsHaveShippables = false,
+                disclaimerText = stringResource(id = R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline)
             )
         }
     }
@@ -83,7 +84,8 @@ fun ItemizedRewardListContainer(
     initialBonusSupport: String,
     totalBonusSupport: String,
     deliveryDateString: String = "",
-    rewardsHaveShippables: Boolean = false
+    rewardsHaveShippables: Boolean = false,
+    disclaimerText: String = ""
 ) {
     Column(
         modifier = Modifier
@@ -223,6 +225,17 @@ fun ItemizedRewardListContainer(
                         color = colors.textPrimary
                     )
                 }
+            }
+        }
+
+        if (disclaimerText.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            Row {
+                Text(
+                    text = disclaimerText,
+                    style = typography.footnote,
+                    color = colors.textPrimary
+                )
             }
         }
     }

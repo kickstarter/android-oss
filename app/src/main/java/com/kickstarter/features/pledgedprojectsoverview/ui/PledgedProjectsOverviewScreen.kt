@@ -43,6 +43,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
@@ -228,7 +229,7 @@ fun PledgedProjectsOverviewScreen(
                     item {
                         if (!totalAlerts.isNullOrZero()) {
                             Text(
-                                text = stringResource(id = R.string.alerts_fpo, totalAlerts),
+                                text = stringResource(id = R.string.alerts_fpo).format("count", totalAlerts.toString()),
                                 style = typography.title3Bold,
                                 color = colors.textPrimary
                             )
@@ -248,6 +249,7 @@ fun PledgedProjectsOverviewScreen(
                                 projectName = it.projectName(),
                                 pledgeAmount = it.amount(),
                                 imageUrl = it.imageUrl(),
+                                flags = it.flags,
                                 imageContentDescription = it.imageContentDescription(),
                                 creatorName = it.creatorName(),
                                 sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
@@ -268,7 +270,6 @@ fun PledgedProjectsOverviewScreen(
                                         }
                                     }
                                 },
-                                timeNumberForAction = it.timeNumberForAction()
                             )
                         }
                     }

@@ -549,6 +549,7 @@ enum Feature {
   address_collection_for_digital_rewards_2024
   prelaunch_story_editor
   prelaunch_story_exception
+  creator_nav_refresh
 }
 
 """
@@ -852,6 +853,10 @@ type Project implements Node & Commentable {
   """
   actions: ProjectActions!
   """
+  The active checkout_wave, if there is one
+  """
+  activeWave: CheckoutWave
+  """
   Backing Add-ons
   """
   addOns("""Returns the first _n_ elements from the list.""" first: Int, """Returns the elements in the list that come after the specified cursor.""" after: String, """Returns the last _n_ elements from the list.""" last: Int, """Returns the elements in the list that come before the specified cursor.""" before: String, """Filters available add ons by given location""" forLocation: ID, """Enables/disables add-ons sort by cost and title, with sorting enabled by default""" sort: Boolean): ProjectRewardConnection
@@ -904,10 +909,6 @@ type Project implements Node & Commentable {
   The current user's backing of this project.  Does not include inactive backings.
   """
   backing: Backing
-  """
-  Business addresses associated with the project - includes the main address and seconday addresses
-  """
-  businessAddresses("""Returns the first _n_ elements from the list.""" first: Int, """Returns the elements in the list that come after the specified cursor.""" after: String, """Returns the last _n_ elements from the list.""" last: Int, """Returns the elements in the list that come before the specified cursor.""" before: String): ProjectBusinessAddressConnection
   """
   True if the current user can comment (considers restrictions)
   """
@@ -1081,10 +1082,6 @@ type Project implements Node & Commentable {
   """
   googleAnalyticsTrackingId: String
   """
-  Whether or not the project has at least one item-level question or option
-  """
-  hasItemQuestionsOrOptions: Boolean!
-  """
   Does this project have any post-campaign config?
   """
   hasPostCampaignConfig: Boolean!
@@ -1100,10 +1097,6 @@ type Project implements Node & Commentable {
   Whether or not the project has supporting materials (Prototype Gallery)
   """
   hasSupportingMaterials: Boolean!
-  """
-  Whether or not the project has at least one item-level question, item-level option selection, or project-level question
-  """
-  hasSurveyQuestionsOrSelections: Boolean!
   id: ID!
   """
   The project's primary image.
@@ -1113,6 +1106,10 @@ type Project implements Node & Commentable {
   A read-only representation of the image (complete with fallback default image)
   """
   imageUrl("""Whether or not to blur the image.""" blur: Boolean, """The width of the image in pixels.""" width: Int!): String!
+  """
+  Is the project's submission state accepted.
+  """
+  isApproved: Boolean!
   """
   Has the current user disliked this project?
   """
@@ -1339,6 +1336,10 @@ type Project implements Node & Commentable {
   """
   statsInterval: Int
   """
+  Locations from which the project fulfills
+  """
+  stockLocations: [StockLocation!]!
+  """
   The story behind the project, parsed for presentation.
   """
   story("""The number of visible characters to fetch (does not include HTML markup).""" first: Int, """The width of embedded assets in pixels.""" assetWidth: Int): HTML!
@@ -1370,6 +1371,10 @@ type Project implements Node & Commentable {
   The time that the project's target launch date was updated
   """
   targetLaunchDateUpdatedAt: ISO8601DateTime
+  """
+  Tax categories configured for the project
+  """
+  taxCategories: [TaxCategory!]!
   """
   The timeline of project events, including updates and milestones.
   """
@@ -1608,6 +1613,10 @@ type Backing implements Node {
   URL for the backing details page
   """
   backingDetailsPageUrl: String!
+  """
+  The backing rewards on a backing
+  """
+  backingRewards: [BackingAddon!]
   """
   A link to the backing information
   """
@@ -2100,9 +2109,13 @@ A cart associated with a backing
 """
 type Cart {
   """
-  The answers to project-level survey questions
+  Answers associated with a cart's backing rewards
   """
-  answers: [Answer!]!
+  backingRewardAnswers: [Answer!]!
+  """
+  The answers to reward-level questions
+  """
+  baseRewardAnswers: [Answer!]!
   """
   When the cart was finalized (i.e., when the backer submitted responses)
   """
@@ -2112,6 +2125,10 @@ type Cart {
   The associated line items
   """
   lineItems: [LineItem!]!
+  """
+  The answers to project-level questions
+  """
+  projectAnswers: [Answer!]!
   """
   Whether or not this cart needs an address to be finalized
   """
@@ -2247,6 +2264,10 @@ type RewardItem implements Node {
   Tax related configuration
   """
   taxConfig: ItemTaxConfig
+  """
+  Whether the item is completely configured for tax purposes
+  """
+  taxConfigCompletionStatus: PrereqCompletionStatus!
 }
 
 """
@@ -2401,6 +2422,10 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   Shipping rates defined by the creator for this reward
   """
   shippingRates: [ShippingRate!]!
+  """
+  Whether the shipping rates are filled out and not missing fields
+  """
+  shippingRatesValid: PrereqCompletionStatus!
   """
   Shipping rules defined by the creator for this reward
   """
@@ -2582,6 +2607,10 @@ A project reward's shipping rule.
 """
 type ShippingRule implements Node {
   """
+  Number of backers for the Shipping Rule
+  """
+  backersCount: Int!
+  """
   The shipping cost for this location.
   """
   cost: Money
@@ -2675,6 +2704,24 @@ Types that can have shipping rates
 union Shippable = Reward | RewardItem
 
 """
+Completion status of objects necessary for pledge redemption
+"""
+enum PrereqCompletionStatus {
+  """
+  Prereq has not been started
+  """
+  not_started
+  """
+  Prereq has been started but is not complete
+  """
+  incomplete
+  """
+  Prereq is complete
+  """
+  complete
+}
+
+"""
 Whether a reward contains all physical goods, some, none, or belongs to a legacy project.
 """
 enum ContentsType {
@@ -2701,6 +2748,10 @@ type Question {
   Whether the question is optional
   """
   optional: Boolean!
+  """
+  Position of a question
+  """
+  position: Int!
   """
   The question prompt
   """
@@ -2734,116 +2785,25 @@ Tax configuration data related to an item
 type ItemTaxConfig {
   id: ID!
   """
-  The associated item
-  """
-  item: RewardItem
-  """
-  Item type, e.g. physical, digital, event, etc
-  """
-  itemType: ItemTypeEnum
-  """
-  Where will the item be picked up or where is the event?
-  """
-  localAddress: BusinessAddress
-  """
   Value of item pre any bundling discounts
   """
   marketValue: Money
-  """
-  Where will the item ship from?
-  """
-  shipFromAddress: BusinessAddress
-  """
-  Item shipping preference
-  """
-  shippingPreference: TaxConfigShippingPreference
+  taxCategory: TaxCategory
+}
+
+"""
+A project scoped tax category
+"""
+type TaxCategory {
+  id: ID!
   """
   Third party tax code
   """
-  taxCode: String
-}
-
-"""
-Item types related to tax concerns, e.g. is the item physical, tax-exempt, an event, etc
-"""
-enum ItemTypeEnum {
+  taxCode: String!
   """
-  digital
+  The user assigned label for the vendor tax code
   """
-  digital
-  """
-  physical
-  """
-  physical
-  """
-  experience_event_service
-  """
-  experience_event_service
-  """
-  tax_exempt
-  """
-  tax_exempt
-}
-
-"""
-Item level shipping preferences, e.g. shipping, local, shipping_and_local, none
-"""
-enum TaxConfigShippingPreference {
-  """
-  shipping
-  """
-  shipping
-  """
-  local
-  """
-  local
-  """
-  shipping_and_local
-  """
-  shipping_and_local
-  """
-  none
-  """
-  none
-}
-
-"""
-A business address.
-"""
-type BusinessAddress implements Node {
-  """
-  The first address line
-  """
-  addressLine1: String!
-  """
-  The second address line
-  """
-  addressLine2: String
-  """
-  The address city
-  """
-  city: String
-  """
-  The address contact name
-  """
-  contactName: String
-  """
-  The address country, e.g. US
-  """
-  country: String!
-  id: ID!
-  """
-  Items associated with the address.
-  """
-  items: [RewardItem!]
-  """
-  The address postal_code
-  """
-  postalCode: String!
-  """
-  The address region, e.g. North Dakota
-  """
-  region: String
+  userLabel: String!
 }
 
 """
@@ -2878,6 +2838,10 @@ type BackingAddon {
   Amount the add-on costs.
   """
   amount: Money!
+  """
+  The addon reward
+  """
+  backerReward: Reward!
   """
   The add-on description.
   """
@@ -3308,7 +3272,7 @@ type RichTextQuote {
 
 """
 A Photo asset
-e"""
+"""
 type RichTextPhoto {
   altText: String!
   asset: Photo
@@ -3778,6 +3742,10 @@ type Category implements Node {
   Parent id of the category.
   """
   parentId: ID
+  """
+  The translatable phrase (e.g. "An art project"))
+  """
+  projectPhrase: String
   """
   Projects in a category.
   """
@@ -5855,6 +5823,14 @@ type BackerSurvey {
   The number of backers who have not answered the survey
   """
   backersRemaining: Int!
+  """
+  Whether the survey has at least one question or option
+  """
+  hasBackerQuestionsOrItemOptions: Boolean!
+  """
+  Whether the survey has at least one item-level question or option
+  """
+  hasItemQuestionsOrOptions: Boolean!
   id: ID!
   """
   When the survey was sent
@@ -5867,40 +5843,35 @@ type BackerSurvey {
 }
 
 """
-The connection type for BusinessAddress.
+Location from which a project fulfills
 """
-type ProjectBusinessAddressConnection {
-  """
-  A list of edges.
-  """
-  edges: [BusinessAddressEdge]
-  """
-  A list of nodes.
-  """
-  nodes: [BusinessAddress]
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-  totalCount: Int!
+type StockLocation {
+  address: Address!
+  id: ID!
+  project: Project!
 }
 
 """
-An edge in a connection.
+Represents the window during which backers can redeem their backing
 """
-type BusinessAddressEdge {
+type CheckoutWave {
   """
-  A cursor for use in pagination.
+  Whether the wave is currently active
   """
-  cursor: String!
+  active: Boolean!
   """
-  Whether or not this is the main address for the project
+  The end date of the wave
   """
-  mainAddress: Boolean!
+  endsAt: DateTime!
+  id: ID!
   """
-  The item at the end of the edge.
+  The associated project
   """
-  node: BusinessAddress
+  project: Project!
+  """
+  The start date of the wave
+  """
+  startsAt: DateTime!
 }
 
 """
@@ -8125,11 +8096,29 @@ type PledgeProjectOverviewItem {
   """
   tags
   """
-  tags: [String!]
+  flags: [PledgedProjectsOverviewPledgeFlags!]
   """
   tier type
   """
   tierType: String
+}
+
+"""
+Flags for pledge in projects overview dashboard
+"""
+type PledgedProjectsOverviewPledgeFlags {
+  """
+  Flag icon type, e.g. time, alert, etc.
+  """
+  icon: String
+  """
+  Translated flag message
+  """
+  message: String
+  """
+  Flag type, e.g. warning, alert, etc.
+  """
+  type: String
 }
 
 """
@@ -8161,7 +8150,7 @@ type Mutation {
   """
   blockUser(input: BlockUserInput!): BlockUserPayload
   """
-  Bulk edits the entire set of questions for a questionable
+  Bulk edits the entire set of backer questions for a backer survey
   """
   bulkEditQuestions(input: BulkEditQuestionsInput!): BulkEditQuestionsPayload
   """
@@ -8190,7 +8179,7 @@ type Mutation {
   """
   copyRewardItems(input: CopyRewardItemsInput!): CopyRewardItemsPayload
   """
-  Save a new shipping address.
+  Save a new address.
   """
   createAddress(input: CreateAddressInput!): CreateAddressPayload
   """
@@ -8247,7 +8236,7 @@ type Mutation {
   createOption(input: CreateOptionInput!): CreateOptionPayload
   createOrUpdateBackingAddress(input: CreateOrUpdateBackingAddressInput!): CreateOrUpdateBackingAddressPayload
   """
-  Sets tax related info for an item
+  Creates/updates item tax config and creates/updates tax category for an item
   """
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
   """
@@ -8320,6 +8309,10 @@ type Mutation {
   Create a video track (caption) for a Project Video
   """
   createVideoTrack(input: CreateVideoTrackInput!): CreateVideoTrackPayload
+  """
+  Creates a checkout wave for a given project, assuming all pre-requisites are complete.
+  """
+  createWave(input: CreateWaveInput!): CreateWavePayload
   """
   Deactivates the prelaunch page for a project
   """
@@ -8506,6 +8499,10 @@ type Mutation {
   Updates the project status
   """
   setProjectStatus(input: SetProjectStatusInput!): SetProjectStatusPayload
+  """
+  Sets tax category for an item
+  """
+  setTaxCategory(input: SetTaxCategoryInput!): SetTaxCategoryPayload
   """
   Signs in or sign up a user via the Sign in With Apple service
   """
@@ -10270,6 +10267,10 @@ type CreateAddressPayload {
   """
   assignedToBacking: Boolean!
   """
+  Project was associated with address
+  """
+  assignedToProject: Boolean!
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -10308,6 +10309,7 @@ input CreateAddressInput {
   phoneNumber: String!
   primary: Boolean
   backingId: ID
+  projectId: ID
   """
   A unique identifier for the client performing the mutation.
   """
@@ -10359,6 +10361,7 @@ Autogenerated input type of AcceptOrRejectAddressSuggestion
 input AcceptOrRejectAddressSuggestionInput {
   fulfillmentAddressId: ID!
   suggestionAccepted: Boolean!
+  projectId: ID
   """
   A unique identifier for the client performing the mutation.
   """
@@ -12468,34 +12471,6 @@ input CreateAttributionEventInput {
 }
 
 """
-Autogenerated return type of CreateOrUpdateItemTaxConfig
-"""
-type CreateOrUpdateItemTaxConfigPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-  item: RewardItem!
-}
-
-"""
-Autogenerated input type of CreateOrUpdateItemTaxConfig
-"""
-input CreateOrUpdateItemTaxConfigInput {
-  itemId: String!
-  itemType: ItemTypeEnum
-  taxCode: String
-  marketValue: String
-  shippingPreference: TaxConfigShippingPreference
-  shipFromAddressId: String
-  localAddressId: String
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
 Autogenerated return type of UpdateOrderState
 """
 type UpdateOrderStatePayload {
@@ -12599,6 +12574,111 @@ input ConfirmOrderAddressInput {
   The address id
   """
   addressId: ID!
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateWave
+"""
+type CreateWavePayload {
+  checkoutWave: CheckoutWave!
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated input type of CreateWave
+"""
+input CreateWaveInput {
+  """
+  The project id
+  """
+  projectId: ID!
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of SetTaxCategory
+"""
+type SetTaxCategoryPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+  """
+  The updated item tax config
+  """
+  itemTaxConfig: ItemTaxConfig!
+}
+
+"""
+Autogenerated input type of SetTaxCategory
+"""
+input SetTaxCategoryInput {
+  """
+  The item id
+  """
+  itemId: ID!
+  """
+  The tax category id
+  """
+  taxCategoryId: ID
+  """
+  Input for creating or updating a tax category
+  """
+  taxCategoryInput: TaxCategoryInput
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Input to create or update a tax category
+"""
+input TaxCategoryInput {
+  userLabel: String!
+  taxCode: String!
+}
+
+"""
+Autogenerated return type of CreateOrUpdateItemTaxConfig
+"""
+type CreateOrUpdateItemTaxConfigPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+  """
+  The created or updated item tax config
+  """
+  itemTaxConfig: ItemTaxConfig!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateItemTaxConfig
+"""
+input CreateOrUpdateItemTaxConfigInput {
+  """
+  The item id
+  """
+  itemId: ID!
+  """
+  If the item is taxable
+  """
+  itemIsTaxExempt: Boolean!
+  """
+  The market value of the item
+  """
+  marketValue: Int
   """
   A unique identifier for the client performing the mutation.
   """
@@ -12778,21 +12858,20 @@ Autogenerated return type of BulkEditQuestions
 """
 type BulkEditQuestionsPayload {
   """
+  The updated backer survey.
+  """
+  backerSurvey: BackerSurvey
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-  """
-  The updated questionable.
-  """
-  questionable: Questionable
 }
 
 """
 Autogenerated input type of BulkEditQuestions
 """
 input BulkEditQuestionsInput {
-  questionableId: ID!
-  questionableType: QuestionableType!
+  projectId: ID!
   questions: [QuestionInput!]!
   """
   A unique identifier for the client performing the mutation.
@@ -12806,6 +12885,8 @@ Question associated with a particular questionable.
 input QuestionInput {
   type: QuestionType!
   prompt: String!
+  questionableId: String!
+  questionableType: QuestionableType!
   choices: [String!]
   choiceSelectionLimit: Int
   optional: Boolean!
@@ -12912,6 +12993,7 @@ Answer associated with a particular question and answerable.
 input AnswerInput {
   questionId: ID!
   response: [String!]
+  answerableId: ID
 }
 
 """

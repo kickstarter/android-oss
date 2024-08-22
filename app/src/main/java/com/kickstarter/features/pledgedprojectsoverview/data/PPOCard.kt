@@ -7,114 +7,120 @@ import type.CurrencyCode
 
 @Parcelize
 class PPOCard private constructor(
-    val backingId: String?,
     val address: String?,
     val addressID: String?,
     val amount: String?,
+    val backingId: String?,
+    val backingDetailsUrl: String?,
     val clientSecret: String?,
+    val creatorName: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
-    val projectName: String?,
-    val projectId: String?,
-    val projectSlug: String?,
-    val imageUrl: String?,
+    val flags: List<Flag>?,
     val imageContentDescription: String?,
-    val creatorName: String?,
-    val backingDetailsUrl: String?,
+    val imageUrl: String?,
+    val projectId: String?,
+    val projectName: String?,
+    val projectSlug: String?,
     val timeNumberForAction: Int,
     val viewType: PPOCardViewType?
 
 ) : Parcelable {
 
-    fun backingId() = this.backingId
     fun address() = this.address
     fun addressID() = this.addressID
     fun amount() = this.amount
+    fun backingDetailsUrl() = this.backingDetailsUrl
+    fun backingId() = this.backingId
     fun clientSecret() = this.clientSecret
+    fun creatorName() = this.creatorName
     fun currencyCode() = this.currencyCode
     fun currencySymbol() = this.currencySymbol
-    fun projectName() = this.projectName
-    fun projectId() = this.projectId
-    fun projectSlug() = this.projectSlug
-    fun imageUrl() = this.imageUrl
+    fun flags() = this.flags
     fun imageContentDescription() = this.imageContentDescription
-    fun creatorName() = this.creatorName
-    fun backingDetailsUrl() = this.backingDetailsUrl
+    fun imageUrl() = this.imageUrl
+    fun projectId() = this.projectId
+    fun projectName() = this.projectName
+    fun projectSlug() = this.projectSlug
     fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
 
     @Parcelize
     data class Builder(
-        var backingId: String? = null,
         var address: String? = null,
         var addressID: String? = null,
         var amount: String? = null,
+        var backingDetailsUrl: String? = null,
+        var backingId: String? = null,
         var clientSecret: String? = null,
+        var creatorName: String? = null,
         var currencyCode: CurrencyCode? = null,
         var currencySymbol: String? = null,
-        var projectName: String? = null,
-        var projectId: String? = null,
-        var projectSlug: String? = null,
-        var imageUrl: String? = null,
+        var flags: List<Flag>? = null,
         var imageContentDescription: String? = null,
-        var creatorName: String? = null,
-        var backingDetailsUrl: String? = null,
+        var imageUrl: String? = null,
+        var projectId: String? = null,
+        var projectName: String? = null,
+        var projectSlug: String? = null,
         var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
 
-        fun backingId(backingId: String?) = apply { this.backingId = backingId }
         fun address(address: String?) = apply { this.address = address }
         fun addressID(addressID: String?) = apply { this.addressID = addressID }
         fun amount(amount: String?) = apply { this.amount = amount }
+        fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
+        fun backingId(backingId: String?) = apply { this.backingId = backingId }
         fun clientSecret(clientSecret: String?) = apply { this.clientSecret = clientSecret }
+        fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }
-        fun projectName(projectName: String?) = apply { this.projectName = projectName }
-        fun projectId(projectId: String?) = apply { this.projectId = projectId }
-        fun projectSlug(projectSlug: String?) = apply { this.projectSlug = projectSlug }
-        fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
+        fun flags(flags: List<Flag>?) = apply { this.flags = flags }
         fun imageContentDescription(imageContentDescription: String?) = apply { this.imageContentDescription = imageContentDescription }
-        fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
-        fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
+        fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
+        fun projectId(projectId: String?) = apply { this.projectId = projectId }
+        fun projectName(projectName: String?) = apply { this.projectName = projectName }
+        fun projectSlug(projectSlug: String?) = apply { this.projectSlug = projectSlug }
         fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
-            backingId = backingId,
             address = address,
             addressID = addressID,
             amount = amount,
+            backingDetailsUrl = backingDetailsUrl,
+            backingId = backingId,
             clientSecret = clientSecret,
+            creatorName = creatorName,
             currencyCode = currencyCode,
             currencySymbol = currencySymbol,
-            projectName = projectName,
-            projectId = projectId,
-            projectSlug = projectSlug,
-            imageUrl = imageUrl,
+            flags = flags,
             imageContentDescription = imageUrl,
-            creatorName = creatorName,
-            backingDetailsUrl = backingDetailsUrl,
+            imageUrl = imageUrl,
+            projectId = projectId,
+            projectName = projectName,
+            projectSlug = projectSlug,
             timeNumberForAction = timeNumberForAction,
             viewType = viewType,
         )
     }
 
     fun toBuilder() = Builder(
-        backingId = backingId,
         address = address,
         addressID = addressID,
         amount = amount,
+        backingDetailsUrl = backingDetailsUrl,
+        backingId = backingId,
         clientSecret = clientSecret,
+        creatorName = creatorName,
         currencyCode = currencyCode,
         currencySymbol = currencySymbol,
-        projectName = projectName,
-        projectId = projectId,
-        projectSlug = projectSlug,
-        imageUrl = imageUrl,
+        flags = flags,
         imageContentDescription = imageContentDescription,
-        creatorName = creatorName,
-        backingDetailsUrl = backingDetailsUrl,
+        imageUrl = imageUrl,
+        projectId = projectId,
+        projectName = projectName,
+        projectSlug = projectSlug,
         timeNumberForAction = timeNumberForAction,
         viewType = viewType,
     )
@@ -134,6 +140,7 @@ class PPOCard private constructor(
                 clientSecret() == other.clientSecret() &&
                 currencyCode() == other.currencyCode() &&
                 currencySymbol() == other.currencySymbol() &&
+                flags() == other.flags() &&
                 projectName() == other.projectName() &&
                 projectId() == other.projectId() &&
                 projectSlug() == other.projectSlug() &&

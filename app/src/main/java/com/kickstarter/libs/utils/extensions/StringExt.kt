@@ -235,3 +235,41 @@ fun String?.toInteger(): Int? {
         }
     } else null
 }
+
+fun String.format(key1: String, value1: String?): String {
+    val substitutions: HashMap<String, String?> = object : HashMap<String, String?>() {
+        init {
+            put(key1, value1)
+        }
+    }
+    return this.replace(substitutions)
+}
+ fun String.replace(substitutions: Map<String, String?>): String {
+    val builder = StringBuilder()
+    for (key in substitutions.keys) {
+        if (builder.isNotEmpty()) {
+            builder.append("|")
+        }
+        builder
+            .append("(%\\{")
+            .append(key)
+            .append("\\})")
+    }
+
+    val pattern = Pattern.compile(builder.toString())
+    val matcher = pattern.matcher(this)
+    val buffer = StringBuffer()
+
+    while (matcher.find()) {
+        val key = NON_WORD_REGEXP.matcher(matcher.group()).replaceAll("")
+        val value = substitutions[key]
+        val replacement = Matcher.quoteReplacement(value ?: "")
+        matcher.appendReplacement(buffer, replacement)
+    }
+    matcher.appendTail(buffer)
+
+    return buffer.toString()
+}
+
+private val NON_WORD_REGEXP = Pattern.compile("[^\\w]")
+

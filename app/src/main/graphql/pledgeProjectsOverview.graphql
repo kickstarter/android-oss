@@ -9,6 +9,11 @@ query PledgedProjectsOverview($first: Int, $after: String, $last: Int, $before: 
                 ...ppoCard
                 }
                 tierType
+                flags {
+                    icon
+                    message
+                    type
+                }
             }
           }
           pageInfo {

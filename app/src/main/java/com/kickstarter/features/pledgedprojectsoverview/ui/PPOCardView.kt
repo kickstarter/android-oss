@@ -5,7 +5,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,9 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.data.Flag
+import com.kickstarter.ui.compose.designsystem.KSAlertBadge
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -44,6 +50,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSWarningBadge
 import com.kickstarter.ui.compose.designsystem.shapes
 
 @Composable
@@ -68,7 +75,7 @@ fun PPOCardPreview() {
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 5
+                    flags = listOf(Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address").type("warning").icon("time").build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -84,7 +91,7 @@ fun PPOCardPreview() {
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 6
+                    flags = listOf(Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address").type("warning").icon("time").build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -101,7 +108,7 @@ fun PPOCardPreview() {
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 7
+                    flags = listOf(Flag.builder().build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -118,7 +125,7 @@ fun PPOCardPreview() {
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
-                    timeNumberForAction = 8
+                    flags = listOf(Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address").type("warning").icon("time").build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -137,7 +144,8 @@ enum class PPOCardViewType {
 
 enum class PPOCardViewTestTag {
     SHIPPING_ADDRESS_VIEW,
-    CONFIRM_ADDRESS_BUTTONS_VIEW
+    CONFIRM_ADDRESS_BUTTONS_VIEW,
+    FlAG_LIST_VIEW,
 }
 
 @Composable
@@ -154,7 +162,7 @@ fun PPOCardView(
     shippingAddress: String? = null,
     onActionButtonClicked: () -> Unit,
     onSecondaryActionButtonClicked: () -> Unit,
-    timeNumberForAction: Int = 0,
+    flags: List<Flag?>? = null,
 ) {
 
     BadgedBox(
@@ -171,12 +179,8 @@ fun PPOCardView(
             Column(
                 Modifier.clickable { onCardClick.invoke() }
             ) {
-                when (viewType) {
-                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressAlertsView(timeNumberForAction)
-                    PPOCardViewType.FIX_PAYMENT -> FixPaymentAlertsView(timeNumberForAction)
-                    PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardAlertsView(timeNumberForAction)
-                    PPOCardViewType.OPEN_SURVEY -> TakeSurveyAlertsView(timeNumberForAction)
-                    PPOCardViewType.UNKNOWN -> { }
+                if (!flags.isNullOrEmpty()) {
+                    AlertFlagsView(flags = flags)
                 }
 
                 ProjectPledgeSummaryView(
@@ -369,18 +373,34 @@ fun ShippingAddressView(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ConfirmAddressAlertsView(hoursRemaining: Int = -1) {
-    Column(
+fun AlertFlagsView(flags: List<Flag?>) {
+    FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
+            .testTag(PPOCardViewTestTag.FlAG_LIST_VIEW.name)
+            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingMediumSmall),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        if (hoursRemaining > 0) {
-            AddressLocksAlertView(hoursRemaining)
+        flags.forEach {
+            val icon =
+                when (it?.icon) {
+                    "alert" -> ImageVector.vectorResource(id = R.drawable.ic_alert)
+                    "time" -> ImageVector.vectorResource(id = R.drawable.ic_clock)
+                    else -> null
+                }
+
+            when (it?.type) {
+                "alert" -> KSAlertBadge(icon = icon, message = it.message)
+                "warning" -> KSWarningBadge(icon = icon, message = it.message)
+                else -> {}
+            }
         }
     }
 }
+
 @Composable
 fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
     Row(
@@ -412,35 +432,6 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
 }
 
 @Composable
-fun FixPaymentAlertsView(daysRemaining: Int = -1) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
-    ) {
-        KSCoralBadge(
-            leadingIcon = {
-                // TODO: Replace with translated string
-                Image(
-                    modifier = Modifier.padding(end = dimensions.paddingXSmall),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_icon_alert),
-                    contentDescription = "Payment Failed",
-                    colorFilter = ColorFilter.tint(colors.textAccentRedBold)
-                )
-            },
-            // TODO: Replace with translated string
-            text = "Payment failed",
-            textColor = colors.textAccentRedBold
-        )
-
-        if (daysRemaining > 0) {
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-            PledgeWillBeDroppedAlert(daysRemaining)
-        }
-    }
-}
-
-@Composable
 fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
@@ -453,34 +444,6 @@ fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
 }
 
 @Composable
-fun AuthenticateCardAlertsView(daysRemaining: Int = -1) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
-    ) {
-        KSCoralBadge(
-            leadingIcon = {
-                // TODO: Replace with translated string
-                Image(
-                    modifier = Modifier.padding(end = dimensions.paddingXSmall),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_icon_alert),
-                    contentDescription = "Card needs authentication",
-                    colorFilter = ColorFilter.tint(colors.textAccentRedBold)
-                )
-            },
-            // TODO: Replace with translated string
-            text = "Card needs authentication",
-            textColor = colors.textAccentRedBold
-        )
-
-        if (daysRemaining > 0) {
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-            PledgeWillBeDroppedAlert(daysRemaining)
-        }
-    }
-}
-@Composable
 fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
     // TODO: Replace with translated string
     KSSecondaryRedButton(
@@ -490,34 +453,6 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
         isEnabled = true,
         textStyle = typography.buttonText
     )
-}
-
-@Composable
-fun TakeSurveyAlertsView(hoursRemaining: Int = -1) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall)
-    ) {
-        KSCoralBadge(
-            leadingIcon = {
-                // TODO: Replace with translated string
-                Image(
-                    modifier = Modifier.padding(end = dimensions.paddingXSmall),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_icon_alert),
-                    contentDescription = "Take Survey",
-                    colorFilter = ColorFilter.tint(colors.textSecondary)
-                )
-            },
-            // TODO: Replace with translated string
-            text = "Take Survey",
-        )
-
-        if (hoursRemaining > 0) {
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-            AddressLocksAlertView(hoursRemaining)
-        }
-    }
 }
 
 @Composable

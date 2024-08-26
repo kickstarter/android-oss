@@ -163,10 +163,17 @@ object RewardViewUtils {
         var minTotal = 0.0
         var maxtotal = 0.0
         rewards.forEach { reward ->
-            if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+            if (!RewardUtils.isDigital(reward) && RewardUtils.shipsToRestrictedLocations(reward) && !RewardUtils.isLocalPickup(reward)) {
                 reward.shippingRules()?.filter {
                     it.location()?.id() == selectedShippingRule.location()?.id()
                 }?.map {
+                    minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
+                    maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))
+                }
+            }
+
+            if (RewardUtils.shipsWorldwide(reward) && !reward.shippingRules().isNullOrEmpty()) {
+                reward.shippingRules()?.first()?.let {
                     minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
                     maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))
                 }

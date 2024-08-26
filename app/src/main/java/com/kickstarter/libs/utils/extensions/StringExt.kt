@@ -2,7 +2,6 @@
 
 package com.kickstarter.libs.utils.extensions
 
-import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
@@ -212,11 +211,7 @@ fun String.hrefUrlFromTranslation(): String {
  * Takes a String resource with HTMl Returns displayable styled text from the provided HTML string.
  */
 fun String.toHtml(): Spanned {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Html.fromHtml(TextUtils.htmlEncode(this), Html.FROM_HTML_MODE_LEGACY)
-    } else {
-        Html.fromHtml(TextUtils.htmlEncode(this))
-    }
+    return Html.fromHtml(TextUtils.htmlEncode(this), Html.FROM_HTML_MODE_LEGACY)
 }
 
 fun String.toHashedSHAEmail(): String {

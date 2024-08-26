@@ -54,7 +54,7 @@ android {
     defaultConfig {
         compileSdk 34
         applicationId "com.kickstarter"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 34
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"

@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.text.Html
 import android.util.Pair
 import com.facebook.share.model.ShareLinkContent
@@ -90,32 +89,18 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
     }
 
     private fun showPostCampaignPledgeText(pcptext: Pair<Double, Project>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.backedProject.text = Html.fromHtml(
-                ksString.format(
-                    context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
-                    "pledge_total",
-                    ksCurrency.format(
-                        initialValue = pcptext.first,
-                        project = pcptext.second,
-                        roundingMode = RoundingMode.HALF_UP
-                    )
-                ),
-                Html.FROM_HTML_MODE_LEGACY
-            )
-        } else {
-            binding.backedProject.text = Html.fromHtml(
-                ksString.format(
-                    context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
-                    "pledge_total",
-                    ksCurrency.format(
-                        initialValue = pcptext.first,
-                        project = pcptext.second,
-                        roundingMode = RoundingMode.HALF_UP
-                    )
-                ),
-            )
-        }
+        binding.backedProject.text = Html.fromHtml(
+            ksString.format(
+                context().getString(R.string.You_have_successfully_pledged_to_project_post_campaign_html_short),
+                "pledge_total",
+                ksCurrency.format(
+                    initialValue = pcptext.first,
+                    project = pcptext.second,
+                    roundingMode = RoundingMode.HALF_UP
+                )
+            ),
+            Html.FROM_HTML_MODE_LEGACY
+        )
     }
 
     private fun startShare(projectNameAndShareUrl: Pair<String, String>) {

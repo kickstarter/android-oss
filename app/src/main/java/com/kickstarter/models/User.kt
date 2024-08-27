@@ -50,6 +50,7 @@ class User private constructor(
     private val notifyOfMessages: Boolean,
     private val notifyOfUpdates: Boolean,
     private val optedOutOfRecommendations: Boolean,
+    private val ppoHasAction: Boolean?,
     private val promoNewsletter: Boolean,
     private val publishingNewsletter: Boolean,
     private val showPublicProfile: Boolean,
@@ -105,6 +106,7 @@ class User private constructor(
     fun notifyOfMessages() = this.notifyOfMessages
     fun notifyOfUpdates() = this.notifyOfUpdates
     fun optedOutOfRecommendations() = this.optedOutOfRecommendations
+    fun ppoHasAction() = this.ppoHasAction
     fun promoNewsletter() = this.promoNewsletter
     fun publishingNewsletter() = this.publishingNewsletter
     fun showPublicProfile() = this.showPublicProfile
@@ -161,6 +163,7 @@ class User private constructor(
         private var notifyOfUpdates: Boolean = false,
         private var optedOutOfRecommendations: Boolean = false,
         private var promoNewsletter: Boolean = false,
+        private var ppoHasAction: Boolean? = false,
         private var publishingNewsletter: Boolean = false,
         private var showPublicProfile: Boolean = false,
         private var needsPassword: Boolean? = false,
@@ -214,6 +217,7 @@ class User private constructor(
         fun notifyOfMessages(notifyOfMessages: Boolean?) = apply { this.notifyOfMessages = notifyOfMessages ?: false }
         fun notifyOfUpdates(notifyOfUpdates: Boolean?) = apply { this.notifyOfUpdates = notifyOfUpdates ?: false }
         fun optedOutOfRecommendations(optedOutOfRecommendations: Boolean?) = apply { this.optedOutOfRecommendations = optedOutOfRecommendations ?: false }
+        fun ppoHasAction(ppoHasAction: Boolean?) = apply { this.ppoHasAction = ppoHasAction ?: false }
         fun promoNewsletter(promoNewsletter: Boolean?) = apply { this.promoNewsletter = promoNewsletter ?: false }
         fun publishingNewsletter(publishingNewsletter: Boolean?) = apply { this.publishingNewsletter = publishingNewsletter ?: false }
         fun showPublicProfile(showPublicProfile: Boolean?) = apply { this.showPublicProfile = showPublicProfile ?: false }
@@ -268,6 +272,7 @@ class User private constructor(
             notifyOfMessages = notifyOfMessages,
             notifyOfUpdates = notifyOfUpdates,
             optedOutOfRecommendations = optedOutOfRecommendations,
+            ppoHasAction = ppoHasAction,
             promoNewsletter = promoNewsletter,
             publishingNewsletter = publishingNewsletter,
             showPublicProfile = showPublicProfile,
@@ -333,6 +338,7 @@ class User private constructor(
         notifyOfMessages = notifyOfMessages,
         notifyOfUpdates = notifyOfUpdates,
         optedOutOfRecommendations = optedOutOfRecommendations,
+        ppoHasAction = ppoHasAction,
         promoNewsletter = promoNewsletter,
         publishingNewsletter = publishingNewsletter,
         showPublicProfile = showPublicProfile,
@@ -403,6 +409,7 @@ class User private constructor(
                 notifyOfFriendActivity() == obj.notifyOfFriendActivity() &&
                 notifyOfMessages() == obj.notifyOfMessages() &&
                 optedOutOfRecommendations() == obj.optedOutOfRecommendations() &&
+                ppoHasAction() == obj.ppoHasAction() &&
                 promoNewsletter() == obj.promoNewsletter() &&
                 publishingNewsletter() == obj.publishingNewsletter() &&
                 showPublicProfile() == obj.showPublicProfile() &&

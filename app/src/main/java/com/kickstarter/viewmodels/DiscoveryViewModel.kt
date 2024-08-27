@@ -131,12 +131,18 @@ interface DiscoveryViewModel {
             val erroredBackingsCount = user?.erroredBackingsCount().intValueOrZero()
             val unreadMessagesCount = user?.unreadMessagesCount().intValueOrZero()
             val unseenActivityCount = user?.unseenActivityCount().intValueOrZero()
+
+            val ppoHasActions = when(user?.ppoHasAction()) {
+                true -> 1
+                false, null -> 0
+            }
+
             return when {
-                erroredBackingsCount.isNonZero() -> {
+                (erroredBackingsCount.isNonZero() || ppoHasActions.isNonZero()) -> {
                     if (isDarkTheme) R.drawable.ic_menu_error_indicator_dark else R.drawable.ic_menu_error_indicator
                 }
 
-                (unreadMessagesCount + unseenActivityCount + erroredBackingsCount).isNonZero() -> {
+                (unreadMessagesCount + unseenActivityCount + erroredBackingsCount + ppoHasActions).isNonZero() -> {
                     if (isDarkTheme) R.drawable.ic_menu_indicator_dark else R.drawable.ic_menu_indicator
                 }
 
@@ -179,6 +185,7 @@ interface DiscoveryViewModel {
         private val updateToolbarWithParams = BehaviorSubject.create<DiscoveryParams>()
         private val successMessage = PublishSubject.create<String>()
         private val messageError = PublishSubject.create<String?>()
+        private val isInDarkTheme = io.reactivex.subjects.BehaviorSubject.create<Boolean>()
         private var isDarkTheme = false
         private var isDarkThemeInitialized = false
 
@@ -408,7 +415,6 @@ interface DiscoveryViewModel {
             currentUser
                 .map { currentDrawerMenuIcon(it) }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe { if (isDarkThemeInitialized) drawerMenuIcon.onNext(it) }
         }
 
@@ -462,10 +468,12 @@ interface DiscoveryViewModel {
         override fun showErrorMessage(): Observable<String?> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Void?> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Void?> { return showConsentManagementDialog }
+        override fun isDarkTheme(): io.reactivex.Observable<Boolean> { return isInDarkTheme }
 
         fun setDarkTheme(isDarkTheme: Boolean) {
             this.isDarkTheme = isDarkTheme
             this.isDarkThemeInitialized = true
+            isInDarkTheme.onNext(isDarkTheme)
         }
     }
 }

@@ -1,18 +1,18 @@
 package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.MessageThread
 import com.kickstarter.ui.SharedPreferenceKey
-import com.kickstarter.ui.viewholders.MessageThreadViewHolder
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.Observable
-import rx.subjects.PublishSubject
 
 interface MessageThreadHolderViewModel {
     interface Inputs {
@@ -58,12 +58,11 @@ interface MessageThreadHolderViewModel {
         fun unreadCountTextViewText(): Observable<String>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<MessageThreadViewHolder?>(environment), Inputs, Outputs {
+    class ViewModel(val environment: Environment) : androidx.lifecycle.ViewModel(), Inputs, Outputs {
 
         private val sharedPreferences: SharedPreferences?
-        private val messageThread = PublishSubject.create<MessageThread?>()
-        private val messageThreadCardViewClicked = PublishSubject.create<Void?>()
+        private val messageThread = PublishSubject.create<MessageThread>()
+        private val messageThreadCardViewClicked = PublishSubject.create<Unit>()
         private val cardViewIsElevated: Observable<Boolean>
         private val dateDateTime: Observable<DateTime>
         private val dateTextViewIsBold: Observable<Boolean>
@@ -78,19 +77,21 @@ interface MessageThreadHolderViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+        val disposables = CompositeDisposable()
 
         init {
             sharedPreferences = requireNotNull(environment.sharedPreferences())
 
             // Store the correct initial hasUnreadMessages value.
             messageThread
-                .compose(Transformers.observeForUI())
+                .compose(Transformers.observeForUIV2())
+                .filter { it.isNotNull() }
                 .subscribe { thread: MessageThread ->
                     setHasUnreadMessagesPreference(
                         thread,
                         sharedPreferences
                     )
-                }
+                }.addToDisposable(disposables)
 
             val hasUnreadMessages = Observable.merge(
                 messageThread.map { thread: MessageThread ->
@@ -104,11 +105,11 @@ interface MessageThreadHolderViewModel {
 
             val lastMessage = messageThread.map { it.lastMessage() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .map { it }
 
             val participant = messageThread.map { it.participant() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .map { it }
 
             cardViewIsElevated = hasUnreadMessages
 
@@ -127,7 +128,7 @@ interface MessageThreadHolderViewModel {
             participantNameTextViewText = participant.map { it.name() }
 
             startMessagesActivity = messageThread.compose(
-                Transformers.takeWhen(
+                Transformers.takeWhenV2(
                     messageThreadCardViewClicked
                 )
             )
@@ -142,8 +143,9 @@ interface MessageThreadHolderViewModel {
                 }
 
             messageThread
-                .compose(Transformers.takeWhen(messageThreadCardViewClicked))
+                .compose(Transformers.takeWhenV2(messageThreadCardViewClicked))
                 .subscribe { markedAsRead(it, sharedPreferences) }
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(messageThread: MessageThread) {
@@ -151,7 +153,7 @@ interface MessageThreadHolderViewModel {
         }
 
         override fun messageThreadCardViewClicked() {
-            messageThreadCardViewClicked.onNext(null)
+            messageThreadCardViewClicked.onNext(Unit)
         }
 
         override fun cardViewIsElevated(): Observable<Boolean> = cardViewIsElevated
@@ -208,6 +210,11 @@ interface MessageThreadHolderViewModel {
                 editor.putBoolean(cacheKey(messageThread), messageThread.unreadMessagesCount() > 0)
                 editor.apply()
             }
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
     }
 }

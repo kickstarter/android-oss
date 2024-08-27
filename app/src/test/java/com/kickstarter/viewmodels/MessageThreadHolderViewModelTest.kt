@@ -3,11 +3,13 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
 import com.kickstarter.models.MessageThread
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class MessageThreadHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -24,20 +26,21 @@ class MessageThreadHolderViewModelTest : KSRobolectricTestCase() {
     private val startMessagesActivity = TestSubscriber<MessageThread>()
     private val unreadCountTextViewIsGone = TestSubscriber<Boolean>()
     private val unreadCountTextViewText = TestSubscriber<String>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(env: Environment) {
         vm = MessageThreadHolderViewModel.ViewModel(env)
-        vm.outputs.cardViewIsElevated().subscribe(cardViewIsElevated)
-        vm.outputs.dateDateTime().subscribe(dateDateTime)
-        vm.outputs.dateTextViewIsBold().subscribe(dateTextViewIsBold)
-        vm.outputs.messageBodyTextIsBold().subscribe(messageBodyTextIsBold)
-        vm.outputs.messageBodyTextViewText().subscribe(messageBodyTextViewText)
-        vm.outputs.participantAvatarUrl().subscribe(participantAvatarUrl)
-        vm.outputs.participantNameTextViewIsBold().subscribe(participantNameTextViewIsBold)
-        vm.outputs.participantNameTextViewText().subscribe(participantNameTextViewText)
-        vm.outputs.startMessagesActivity().subscribe(startMessagesActivity)
-        vm.outputs.unreadCountTextViewIsGone().subscribe(unreadCountTextViewIsGone)
-        vm.outputs.unreadCountTextViewText().subscribe(unreadCountTextViewText)
+        vm.outputs.cardViewIsElevated().subscribe { cardViewIsElevated.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.dateDateTime().subscribe { dateDateTime.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.dateTextViewIsBold().subscribe { dateTextViewIsBold.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageBodyTextIsBold().subscribe { messageBodyTextIsBold.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.messageBodyTextViewText().subscribe { messageBodyTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.participantAvatarUrl().subscribe { participantAvatarUrl.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.participantNameTextViewIsBold().subscribe { participantNameTextViewIsBold.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.participantNameTextViewText().subscribe { participantNameTextViewText.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startMessagesActivity().subscribe { startMessagesActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.unreadCountTextViewIsGone().subscribe { unreadCountTextViewIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.unreadCountTextViewText().subscribe { unreadCountTextViewText.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test

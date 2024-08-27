@@ -27,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.ui.views.ConfirmDialog;
 
 import rx.functions.Action1;
@@ -68,11 +67,7 @@ public final class ViewUtils {
    *
    */
   public static Spanned html(final @NonNull String htmlString) {
-    if (ApiCapabilities.needsLegacyHtml()) {
-      return Html.fromHtml(htmlString);
-    } else {
-      return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT);
-    }
+    return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT);
   }
 
   public static boolean isFontScaleLarge(final @NonNull Context context) {

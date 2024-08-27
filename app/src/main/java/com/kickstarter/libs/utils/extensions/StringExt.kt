@@ -2,7 +2,6 @@
 
 package com.kickstarter.libs.utils.extensions
 
-import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
@@ -212,11 +211,7 @@ fun String.hrefUrlFromTranslation(): String {
  * Takes a String resource with HTMl Returns displayable styled text from the provided HTML string.
  */
 fun String.toHtml(): Spanned {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Html.fromHtml(TextUtils.htmlEncode(this), Html.FROM_HTML_MODE_LEGACY)
-    } else {
-        Html.fromHtml(TextUtils.htmlEncode(this))
-    }
+    return Html.fromHtml(TextUtils.htmlEncode(this), Html.FROM_HTML_MODE_LEGACY)
 }
 
 fun String.toHashedSHAEmail(): String {
@@ -235,3 +230,40 @@ fun String?.toInteger(): Int? {
         }
     } else null
 }
+
+fun String.format(key1: String, value1: String?): String {
+    val substitutions: HashMap<String, String?> = object : HashMap<String, String?>() {
+        init {
+            put(key1, value1)
+        }
+    }
+    return this.replace(substitutions)
+}
+fun String.replace(substitutions: Map<String, String?>): String {
+    val builder = StringBuilder()
+    for (key in substitutions.keys) {
+        if (builder.isNotEmpty()) {
+            builder.append("|")
+        }
+        builder
+            .append("(%\\{")
+            .append(key)
+            .append("\\})")
+    }
+
+    val pattern = Pattern.compile(builder.toString())
+    val matcher = pattern.matcher(this)
+    val buffer = StringBuffer()
+
+    while (matcher.find()) {
+        val key = NON_WORD_REGEXP.matcher(matcher.group()).replaceAll("")
+        val value = substitutions[key]
+        val replacement = Matcher.quoteReplacement(value ?: "")
+        matcher.appendReplacement(buffer, replacement)
+    }
+    matcher.appendTail(buffer)
+
+    return buffer.toString()
+}
+
+private val NON_WORD_REGEXP = Pattern.compile("[^\\w]")

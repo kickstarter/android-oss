@@ -2,25 +2,27 @@ package com.kickstarter.ui.viewholders
 
 import android.content.Intent
 import android.graphics.Typeface
+import android.view.View
 import android.widget.TextView
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.MessageThreadViewBinding
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.wrapInParentheses
 import com.kickstarter.models.MessageThread
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessagesActivity
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.MessageThreadHolderViewModel
+import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 
 class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : KSViewHolder(binding.root) {
     private val viewModel = MessageThreadHolderViewModel.ViewModel(environment())
     private val ksString = requireNotNull(environment().ksString())
+    private val disposables = CompositeDisposable()
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
@@ -54,49 +56,53 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
     }
 
     init {
-        RxView.clicks(binding.messageThreadContainer)
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { viewModel.inputs.messageThreadCardViewClicked() }
+        binding.messageThreadContainer.setOnClickListener {
+            viewModel.inputs.messageThreadCardViewClicked()
+        }
         viewModel.outputs.dateDateTime()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setDateTextView(it) }
+            .addToDisposable(disposables)
         viewModel.outputs.dateTextViewIsBold()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setTypeface(binding.messageThreadDateTextView, it) }
+            .addToDisposable(disposables)
         viewModel.outputs.messageBodyTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.messageThreadBodyTextView.text = it }
+            .addToDisposable(disposables)
         viewModel.outputs.messageBodyTextIsBold()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setTypeface(binding.messageThreadBodyTextView, it) }
+            .addToDisposable(disposables)
         viewModel.outputs.participantAvatarUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setParticipantAvatarImageView(it) }
+            .addToDisposable(disposables)
         viewModel.outputs.participantNameTextViewIsBold()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setTypeface(binding.participantNameTextView, it) }
+            .addToDisposable(disposables)
         viewModel.outputs.participantNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.participantNameTextView.text = it }
+            .addToDisposable(disposables)
         viewModel.outputs.startMessagesActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startMessagesActivity(it) }
+            .addToDisposable(disposables)
         viewModel.outputs.unreadCountTextViewIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.messageThreadUnreadCountTextView))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.messageThreadUnreadCountTextView.visibility = View.GONE }
+            .addToDisposable(disposables)
         viewModel.outputs.unreadCountTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { setUnreadCountTextView(it) }
+            .addToDisposable(disposables)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
     }
 }

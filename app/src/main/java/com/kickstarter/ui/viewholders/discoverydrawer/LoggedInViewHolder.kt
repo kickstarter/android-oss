@@ -34,7 +34,6 @@ class LoggedInViewHolder(
         fun loggedInViewHolderSettingsClick(viewHolder: LoggedInViewHolder, user: User)
         fun loggedInViewHolderPledgedProjectsClick(viewHolder: LoggedInViewHolder)
         fun darkThemeEnabled(): Observable<Boolean>
-
     }
 
     init {
@@ -100,7 +99,7 @@ class LoggedInViewHolder(
         binding.internalTools.internalTools.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
     }
 
-    private fun selectProjectAlertIndicatorColor(isDarkMode: Boolean) : Drawable? {
+    private fun selectProjectAlertIndicatorColor(isDarkMode: Boolean): Drawable? {
         return if (isDarkMode) AppCompatResources.getDrawable(context(), R.drawable.circle_red_05) else AppCompatResources.getDrawable(context(), R.drawable.circle_red_06)
     }
 

@@ -132,7 +132,7 @@ interface DiscoveryViewModel {
             val unreadMessagesCount = user?.unreadMessagesCount().intValueOrZero()
             val unseenActivityCount = user?.unseenActivityCount().intValueOrZero()
 
-            val ppoHasActions = when(user?.ppoHasAction()) {
+            val ppoHasActions = when (user?.ppoHasAction()) {
                 true -> 1
                 false, null -> 0
             }

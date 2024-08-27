@@ -33,7 +33,7 @@ class LoggedInViewHolder(
         fun loggedInViewHolderProfileClick(viewHolder: LoggedInViewHolder, user: User)
         fun loggedInViewHolderSettingsClick(viewHolder: LoggedInViewHolder, user: User)
         fun loggedInViewHolderPledgedProjectsClick(viewHolder: LoggedInViewHolder)
-        fun isDarkTheme(): Observable<Boolean>
+        fun darkThemeEnabled(): Observable<Boolean>
 
     }
 
@@ -74,7 +74,7 @@ class LoggedInViewHolder(
             .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgedProjectsIndicatorIsVisible()
-            .compose<Pair<Boolean, Boolean>>(combineLatestPair(delegate.isDarkTheme()))
+            .compose<Pair<Boolean, Boolean>>(combineLatestPair(delegate.darkThemeEnabled()))
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.projectAlertsIndicator.setImageDrawable(selectProjectAlertIndicatorColor(it.second))

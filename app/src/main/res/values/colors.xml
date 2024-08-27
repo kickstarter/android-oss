@@ -11,7 +11,6 @@
 
   <!-- KDS  -->
   <color name="kds_alert">#A12027</color>
-  <color name="red_05">#F39C95</color>
   <color name="kds_black">@android:color/black</color>
   <color name="kds_celebrate_100">#FFF2EC</color>
   <color name="kds_celebrate_300">#FECCB3</color>

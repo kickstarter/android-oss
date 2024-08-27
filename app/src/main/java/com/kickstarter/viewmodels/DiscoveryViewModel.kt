@@ -185,7 +185,7 @@ interface DiscoveryViewModel {
         private val updateToolbarWithParams = BehaviorSubject.create<DiscoveryParams>()
         private val successMessage = PublishSubject.create<String>()
         private val messageError = PublishSubject.create<String?>()
-        private val isInDarkTheme = io.reactivex.subjects.BehaviorSubject.create<Boolean>()
+        private val darkThemeEnabled = io.reactivex.subjects.BehaviorSubject.create<Boolean>()
         private var isDarkTheme = false
         private var isDarkThemeInitialized = false
 
@@ -468,12 +468,12 @@ interface DiscoveryViewModel {
         override fun showErrorMessage(): Observable<String?> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Void?> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Void?> { return showConsentManagementDialog }
-        override fun isDarkTheme(): io.reactivex.Observable<Boolean> { return isInDarkTheme }
+        override fun darkThemeEnabled(): io.reactivex.Observable<Boolean> { return darkThemeEnabled }
 
         fun setDarkTheme(isDarkTheme: Boolean) {
             this.isDarkTheme = isDarkTheme
             this.isDarkThemeInitialized = true
-            isInDarkTheme.onNext(isDarkTheme)
+            darkThemeEnabled.onNext(isDarkTheme)
         }
     }
 }

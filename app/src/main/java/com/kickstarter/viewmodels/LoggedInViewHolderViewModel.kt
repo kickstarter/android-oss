@@ -107,7 +107,6 @@ interface LoggedInViewHolderViewModel {
                 .addToDisposable(disposables)
 
             this.user
-                .map { it.toBuilder().ppoHasAction(true).build() }
                 .map { it.ppoHasAction().isTrue() }
                 .subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }
                 .addToDisposable(disposables)

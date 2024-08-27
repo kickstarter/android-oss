@@ -7,6 +7,7 @@ import TriggerThirdPartyEventMutation
 import UserPrivacyQuery
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
@@ -932,6 +933,9 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
     val ppoCards =
         ppoResponse.pledges()?.edges()?.map {
             val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
+            val flags = it.node()?.flags()?.map { flag ->
+                Flag.builder().message(flag.message()).icon(flag.icon()).type(flag.type()).build()
+            }
             PPOCard.builder()
                 .backingId(ppoBackingData?.id())
                 .backingDetailsUrl(ppoBackingData?.backingDetailsPageUrl())
@@ -945,6 +949,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
                 .creatorName(ppoBackingData?.project()?.creator()?.name())
                 .viewType(getTierType(it.node()?.tierType()))
+                .flags(flags)
                 .addressID(ppoBackingData?.deliveryAddress()?.id())
                 .build()
         }

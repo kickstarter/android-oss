@@ -161,7 +161,7 @@ fun AddOnsContainer(
             if (!estimatedShippingCost.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 Text(
-                    text = stringResource(id = R.string.project_view_pledge_includes),
+                    text = stringResource(id = R.string.estimated_shipping_fpo),
                     color = colors.kds_support_400,
                     style = typography.calloutMedium
                 )

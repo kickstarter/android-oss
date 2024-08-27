@@ -1,13 +1,16 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.ProjectNotification
-import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ProjectNotificationViewModel {
     interface Inputs {
@@ -26,28 +29,27 @@ interface ProjectNotificationViewModel {
         fun projectName(): Observable<String>
 
         /**  Show an error indicating the notification cannot be saved.  */
-        fun showUnableToSaveProjectNotificationError(): Observable<Void>
+        fun showUnableToSaveProjectNotificationError(): Observable<Unit>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<ProjectNotificationViewHolder?>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) : androidx.lifecycle.ViewModel(), Inputs, Outputs {
 
         private val enabledSwitchClick = PublishSubject.create<Boolean>()
         private val projectNotification = PublishSubject.create<ProjectNotification>()
         private val projectName = BehaviorSubject.create<String>()
         private val enabledSwitch = BehaviorSubject.create<Boolean>()
-        private val showUnableToSaveProjectNotificationError = PublishSubject.create<Void>()
+        private val showUnableToSaveProjectNotificationError = PublishSubject.create<Unit>()
+        private val client = requireNotNull(environment.apiClientV2())
+        private val disposables = CompositeDisposable()
 
         var inputs: Inputs = this
         var outputs: Outputs = this
 
         init {
-            val client = requireNotNull(environment.apiClient())
-
             // When the enable switch is clicked, update the project notification.
             val updateNotification = projectNotification
-                .compose(Transformers.takePairWhen(enabledSwitchClick))
-                .switchMap {
+                .compose(Transformers.takePairWhenV2(enabledSwitchClick))
+                .concatMap {
                     client
                         .updateProjectNotifications(it.first, it.second)
                         .materialize()
@@ -55,26 +57,28 @@ interface ProjectNotificationViewModel {
                 .share()
 
             updateNotification
-                .compose(Transformers.values())
-                .compose(bindToLifecycle())
+                .compose(valuesV2())
+                .filter { it.isNotNull() }
                 .subscribe { projectNotification.onNext(it) }
+                .addToDisposable(disposables)
 
             updateNotification
-                .compose(Transformers.errors())
-                .compose(bindToLifecycle())
-                .subscribe { showUnableToSaveProjectNotificationError.onNext(null) }
+                .compose(errorsV2())
+                .subscribe { showUnableToSaveProjectNotificationError.onNext(Unit) }
+                .addToDisposable(disposables)
 
             // Update the project name when a project notification emits.
             projectNotification
+                .filter { it.project().isNotNull() && it.project().name().isNotNull() }
                 .map { it.project().name() }
-                .compose(bindToLifecycle())
                 .subscribe { projectName.onNext(it) }
+                .addToDisposable(disposables)
 
             // Update the enabled switch when a project notification emits.
             projectNotification
                 .map { it.email() && it.mobile() }
-                .compose(bindToLifecycle())
                 .subscribe { enabledSwitch.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         override fun enabledSwitchClick(enabled: Boolean) {
@@ -89,6 +93,11 @@ interface ProjectNotificationViewModel {
 
         override fun enabledSwitch(): Observable<Boolean> = enabledSwitch
 
-        override fun showUnableToSaveProjectNotificationError(): Observable<Void> = showUnableToSaveProjectNotificationError
+        override fun showUnableToSaveProjectNotificationError(): Observable<Unit> = showUnableToSaveProjectNotificationError
+
+        override fun onCleared() {
+            super.onCleared()
+            disposables.clear()
+        }
     }
 }

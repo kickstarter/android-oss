@@ -1,28 +1,34 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ProjectNotificationFactory.disabled
 import com.kickstarter.mock.factories.ProjectNotificationFactory.enabled
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.ProjectNotification
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectNotificationViewModel.ViewModel
 
     private val enabledSwitchTest = TestSubscriber<Boolean>()
     private val projectNameTest = TestSubscriber<String>()
-    private val showUnableToSaveNotificationErrorTest = TestSubscriber<Void>()
+    private val showUnableToSaveNotificationErrorTest = TestSubscriber<Unit>()
+    private val disposables = CompositeDisposable()
 
     @Test
     fun testNotificationsEmitProjectNameAndEnabledSwitch() {
         vm = ProjectNotificationViewModel.ViewModel(environment())
-        vm.outputs.projectName().subscribe(projectNameTest)
-        vm.outputs.enabledSwitch().subscribe(enabledSwitchTest)
+        vm.outputs.projectName().subscribe { projectNameTest.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.enabledSwitch().subscribe { enabledSwitchTest.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start with an enabled notification.
         val enabledNotification = enabled()
@@ -47,7 +53,8 @@ class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSwitchClickEmitsEnabledSwitch() {
         vm = ProjectNotificationViewModel.ViewModel(environment())
-        vm.outputs.enabledSwitch().subscribe(enabledSwitchTest)
+        vm.outputs.enabledSwitch().subscribe { enabledSwitchTest.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start with a disabled notification.
         val disabledNotification = disabled()
@@ -65,7 +72,7 @@ class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUnableToSaveNotificationError() {
-        val client: ApiClientType = object : MockApiClient() {
+        val client: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun updateProjectNotifications(
                 projectNotification: ProjectNotification,
                 checked: Boolean
@@ -75,14 +82,15 @@ class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
         }
 
         val environment = environment().toBuilder()
-            .apiClient(client)
+            .apiClientV2(client)
             .build()
         vm = ProjectNotificationViewModel.ViewModel(environment)
 
-        vm.outputs.showUnableToSaveProjectNotificationError().subscribe(
-            showUnableToSaveNotificationErrorTest
-        )
-        vm.outputs.enabledSwitch().subscribe(enabledSwitchTest)
+        vm.outputs.showUnableToSaveProjectNotificationError().subscribe {
+            showUnableToSaveNotificationErrorTest.onNext(it)
+        }.addToDisposable(disposables)
+        vm.outputs.enabledSwitch().subscribe { enabledSwitchTest.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start with a disabled notification.
         val projectNotification = disabled()
@@ -95,5 +103,10 @@ class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
         vm.enabledSwitchClick(true)
         showUnableToSaveNotificationErrorTest.assertValueCount(1)
         enabledSwitchTest.assertValue(false)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

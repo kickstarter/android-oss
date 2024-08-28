@@ -300,6 +300,9 @@ fragment reward on Reward {
     convertedAmount{
         ... amount
     }
+    shippingRules {
+        ... shippingRule
+    }
     shippingPreference
     remainingQuantity
     limit
@@ -307,6 +310,11 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+    allowedAddons {
+        nodes {
+            id
+        }
+    }
     localReceiptLocation {
         ... location
     }
@@ -359,6 +367,12 @@ fragment shippingRule on ShippingRule {
     }
     location {
         ... location
+    }
+    estimatedMin {
+        amount
+    }
+    estimatedMax {
+        amount
     }
 }
 

@@ -30,6 +30,14 @@ object ShippingRuleFactory {
             .build()
     }
 
+    fun canadaShippingRule(): ShippingRule {
+        return ShippingRule.builder()
+            .id(4L)
+            .cost(10.0)
+            .location(LocationFactory.canada())
+            .build()
+    }
+
     @JvmStatic
     fun emptyShippingRule(): ShippingRule {
         return ShippingRule.builder()

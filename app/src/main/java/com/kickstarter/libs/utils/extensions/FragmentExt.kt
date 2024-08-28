@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.fragments.CrowdfundCheckoutFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 
 fun Fragment.selectPledgeFragment(
     pledgeData: PledgeData,
     pledgeReason: PledgeReason
 ): Fragment {
-    return PledgeFragment().withData(pledgeData, pledgeReason)
+    val fragment = if (pledgeReason == PledgeReason.FIX_PLEDGE) {
+        PledgeFragment()
+    } else CrowdfundCheckoutFragment()
+    return fragment.withData(pledgeData, pledgeReason)
 }
 
 fun Fragment.withData(pledgeData: PledgeData?, pledgeReason: PledgeReason?): Fragment {

@@ -23,6 +23,8 @@ import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedStart
 import com.kickstarter.libs.utils.RewardUtils.isValidTimeRange
 import com.kickstarter.libs.utils.RewardUtils.shippingSummary
+import com.kickstarter.libs.utils.RewardUtils.shipsToRestrictedLocations
+import com.kickstarter.libs.utils.RewardUtils.shipsWorldwide
 import com.kickstarter.libs.utils.RewardUtils.timeInSecondsUntilDeadline
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -473,6 +475,20 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun `test when user inputs some extra bonus amount that the final bonus support amount is whatever the user inputted`() {
         assertEquals(5.0, RewardUtils.getFinalBonusSupportAmount(5.0, 1.0))
+    }
+
+    @Test
+    fun `test is a reward ships globally`() {
+        val reward = RewardFactory.rewardWithShipping()
+        assertTrue(shipsWorldwide(reward))
+        assertFalse(shipsToRestrictedLocations(reward))
+    }
+
+    @Test
+    fun `test is a reward does not ships globally`() {
+        val reward = RewardFactory.rewardRestrictedShipping()
+        assertTrue(shipsToRestrictedLocations(reward))
+        assertFalse(shipsWorldwide(reward))
     }
 
     companion object {

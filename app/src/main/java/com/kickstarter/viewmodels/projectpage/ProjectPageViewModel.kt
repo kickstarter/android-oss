@@ -128,9 +128,6 @@ interface ProjectPageViewModel {
         /** Call when the update payment option is clicked.  */
         fun updatePaymentClicked()
 
-        /** Call when the update pledge option is clicked.  */
-        fun updatePledgeClicked()
-
         /** Call when the updates button is clicked.  */
         fun updatesTextViewClicked()
 
@@ -309,7 +306,6 @@ interface ProjectPageViewModel {
         private val reloadProjectContainerClicked = PublishSubject.create<Unit>()
         private val shareButtonClicked = PublishSubject.create<Unit>()
         private val updatePaymentClicked = PublishSubject.create<Unit>()
-        private val updatePledgeClicked = PublishSubject.create<Unit>()
         private val updatesTextViewClicked = PublishSubject.create<Unit>()
         private val viewRewardsClicked = PublishSubject.create<Unit>()
         private val onVideoPlayButtonClicked = PublishSubject.create<Unit>()
@@ -870,12 +866,6 @@ interface ProjectPageViewModel {
                     this.analyticEvents.trackChangePaymentMethod(it.first)
                 }.addToDisposable(disposables)
 
-            projectDataAndBackedReward
-                .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.updatePledgeClicked))
-                .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
-                .subscribe { this.updatePledgeData.onNext(it) }
-                .addToDisposable(disposables)
-
             this.viewRewardsClicked
                 .subscribe { this.revealRewardsFragment.onNext(it) }
                 .addToDisposable(disposables)
@@ -1182,10 +1172,6 @@ interface ProjectPageViewModel {
 
         override fun updatePaymentClicked() {
             this.updatePaymentClicked.onNext(Unit)
-        }
-
-        override fun updatePledgeClicked() {
-            this.updatePledgeClicked.onNext(Unit)
         }
 
         override fun updatesTextViewClicked() {

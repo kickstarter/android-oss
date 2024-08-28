@@ -50,18 +50,6 @@
                     layout="@layout/fragment_pledge_section_shipping" />
 
                 <include
-                    android:id="@+id/pledge_section_editable_shipping"
-                    layout="@layout/fragment_pledge_section_editable_shipping" />
-
-                <include
-                    android:id="@+id/pledge_section_pledge_amount"
-                    layout="@layout/fragment_pledge_section_pledge_amount" />
-
-                <include
-                    android:id="@+id/pledge_section_bonus_support"
-                    layout="@layout/fragment_pledge_section_bonus_support" />
-
-                <include
                     android:id="@+id/pledge_section_summary_pledge"
                     layout="@layout/fragment_pledge_section_summary_pledge" />
 

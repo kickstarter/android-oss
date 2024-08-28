@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -13,6 +14,12 @@ import kotlin.math.floor
 import kotlin.math.max
 
 object RewardUtils {
+
+    fun minPledgeAmount(reward: Reward, project: Project): Double {
+        return Country.findByCurrencyCode(project.currency())?.minPledge?.toDouble() ?: 0.0
+    }
+
+    fun maxPledgeAmount(reward: Reward, project: Project): Double = Country.findByCurrencyCode(project.currency())?.maxPledge?.toDouble() ?: 0.0
 
     /**
      * Returns `true` if the reward has backers, `false` otherwise.
@@ -65,6 +72,10 @@ object RewardUtils {
         val rewardsItems = if (reward.isAddOn()) reward.addOnsItems() else reward.rewardsItems()
         return rewardsItems != null && rewardsItems.isNotEmpty()
     }
+
+    fun shipsWorldwide(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.UNRESTRICTED.name, ignoreCase = true)
+
+    fun shipsToRestrictedLocations(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.RESTRICTED.name, ignoreCase = true)
 
     /**
      * Returns `true` if the reward has a limit set, and the limit has not been reached, `false` otherwise.
@@ -220,5 +231,26 @@ object RewardUtils {
      */
     fun getFinalBonusSupportAmount(addedBonusSupport: Double, initialBonusSupport: Double): Double {
         return if (addedBonusSupport > 0) addedBonusSupport else initialBonusSupport
+    }
+
+    /** For the checkout we need to send a list repeating as much addOns items
+     * as the user has selected:
+     * User selection [R, 2xa, 3xb]
+     * Checkout data  [R, a, a, b, b, b]
+     */
+    fun extendAddOns(flattenedList: List<Reward>): List<Reward> {
+        val mutableList = mutableListOf<Reward>()
+
+        flattenedList.map {
+            if (!it.isAddOn()) mutableList.add(it)
+            else {
+                val q = it.quantity() ?: 1
+                for (i in 1..q) {
+                    mutableList.add(it)
+                }
+            }
+        }
+
+        return mutableList.toList()
     }
 }

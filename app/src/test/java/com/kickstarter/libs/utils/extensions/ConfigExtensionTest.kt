@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils.extensions
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import org.json.JSONArray
 import org.junit.Test
 import java.util.Collections
@@ -108,6 +109,24 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
             },
             configEnableFeatureFlag.enabledFeatureFlags()
         )
+    }
+
+    @Test
+    fun `test getDefaultLocation when given a list of ShippingRules and config country code location is within shipping rules`() {
+        val config = ConfigFactory.configForCA()
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules()
+        val defaultLocation = config.getDefaultLocationFrom(shippingRules.shippingRules())
+
+        assertEquals(defaultLocation.location()?.country(), "CA")
+    }
+
+    @Test
+    fun `test getDefaultLocation when given a list of ShippingRules and config country code location is not within shipping rules default is US`() {
+        val config = ConfigFactory.configForITUser()
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules()
+        val defaultLocation = config.getDefaultLocationFrom(shippingRules.shippingRules())
+
+        assertEquals(defaultLocation.location()?.country(), "US")
     }
 
     @Test

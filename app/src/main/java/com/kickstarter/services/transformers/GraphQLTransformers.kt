@@ -14,6 +14,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
@@ -159,8 +160,14 @@ fun rewardTransformer(
     val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     else rewardGr.limit()
 
-    val shippingRules = shippingRulesExpanded.map {
-        shippingRuleTransformer(it)
+    val shippingRules = if (shippingRulesExpanded.isNotEmpty()) {
+        shippingRulesExpanded.map {
+            shippingRuleTransformer(it)
+        }
+    } else {
+        rewardGr.shippingRules().map {
+            shippingRuleTransformer(it.fragments().shippingRule())
+        }
     }
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation()?.fragments()?.location())
@@ -708,6 +715,7 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
         return@let rewardTransformer(
             reward,
+            allowedAddons = reward.allowedAddons().isNotNull(),
             rewardItems = complexRewardItemsTransformer(items?.fragments()?.rewardItems())
         )
     }
@@ -798,14 +806,18 @@ fun videoTransformer(video: fragment.Video?): Video {
  * @return ShippingRule
  */
 fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
-    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
+    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDoubleOrNull() ?: 0.0
     val location = rule.location()?.let {
         locationTransformer(it.fragments().location())
     }
+    val estimatedMin = rule.estimatedMin()?.amount()?.toDoubleOrNull() ?: 0.0
+    val estimatedMax = rule.estimatedMax()?.amount()?.toDoubleOrNull() ?: 0.0
 
     return ShippingRule.builder()
         .cost(cost)
         .location(location)
+        .estimatedMin(estimatedMin)
+        .estimatedMax(estimatedMax)
         .build()
 }
 

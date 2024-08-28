@@ -143,6 +143,14 @@ fun Project.deadlineCountdownValue(): Int {
 }
 
 /**
+ * The project is able to collect pledges during crowdfund or late pledges
+ * and it is not backed already by the current user
+ */
+fun Project.isAllowedToPledge(): Boolean {
+    return (!this.isCompleted() || this.showLatePledgeFlow())
+}
+
+/**
  * Returns `true` if the project is no longer live, `false` otherwise.
  */
 fun Project.isCompleted(): Boolean =

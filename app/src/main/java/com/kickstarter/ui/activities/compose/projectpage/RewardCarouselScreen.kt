@@ -32,9 +32,12 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.libs.utils.extensions.isAllowedToPledge
 import com.kickstarter.libs.utils.extensions.isBacked
+import com.kickstarter.libs.utils.extensions.isCompleted
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNullOrZero
+import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
@@ -218,7 +221,8 @@ fun RewardCarouselScreen(
                             description = if (isBacked) stringResource(id = R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality) else stringResource(
                                 id = R.string.Back_it_because_you_believe_in_it
                             ),
-                            onRewardSelectClicked = { onRewardSelected(reward) }
+                            onRewardSelectClicked = { onRewardSelected(reward) },
+                            isCTAButtonVisible = project.isAllowedToPledge()
                         )
                     } else {
                         KSRewardCard(
@@ -339,7 +343,8 @@ fun RewardCarouselScreen(
                                     }
                                 }
                             } else null,
-                            addonsPillVisible = reward.hasAddons()
+                            addonsPillVisible = reward.hasAddons(),
+                            isCTAButtonVisible = project.isAllowedToPledge()
                         )
                     }
                 }

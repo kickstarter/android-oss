@@ -49,11 +49,10 @@ interface ProjectNotificationViewModel {
             // When the enable switch is clicked, update the project notification.
             val updateNotification = projectNotification
                 .compose(Transformers.takePairWhenV2(enabledSwitchClick))
-                .concatMap {
-                    client
-                        .updateProjectNotifications(it.first, it.second)
-                        .materialize()
+                .switchMap {
+                    client.updateProjectNotifications(it.first, it.second)
                 }
+                .materialize()
                 .share()
 
             updateNotification

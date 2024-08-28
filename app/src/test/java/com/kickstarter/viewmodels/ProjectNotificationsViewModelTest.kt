@@ -52,7 +52,15 @@ class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSwitchClickEmitsEnabledSwitch() {
-        vm = ProjectNotificationViewModel.ViewModel(environment())
+        val client: ApiClientTypeV2 = object : MockApiClientV2() {
+            override fun updateProjectNotifications(
+                projectNotification: ProjectNotification,
+                checked: Boolean
+            ): Observable<ProjectNotification> {
+                return Observable.just(projectNotification.toBuilder().email(checked).mobile(checked).build())
+            }
+        }
+        vm = ProjectNotificationViewModel.ViewModel(environment().toBuilder().apiClientV2(client).build())
         vm.outputs.enabledSwitch().subscribe { enabledSwitchTest.onNext(it) }
             .addToDisposable(disposables)
 

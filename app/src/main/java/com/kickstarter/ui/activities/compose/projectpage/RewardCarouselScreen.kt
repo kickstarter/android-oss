@@ -34,10 +34,8 @@ import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isAllowedToPledge
 import com.kickstarter.libs.utils.extensions.isBacked
-import com.kickstarter.libs.utils.extensions.isCompleted
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNullOrZero
-import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing

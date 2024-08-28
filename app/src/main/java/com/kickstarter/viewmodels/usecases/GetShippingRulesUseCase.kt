@@ -4,7 +4,6 @@ import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
 import com.kickstarter.libs.utils.extensions.isAllowedToPledge
-import com.kickstarter.libs.utils.extensions.isCompleted
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project

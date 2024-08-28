@@ -418,4 +418,52 @@ class ProjectExtTest : KSRobolectricTestCase() {
         assertEquals(reducedProject.projectFaqs(), emptyList<ProjectFaq>()) // Default builder value
         assertEquals(reducedProject.story(), "") // Default builder value
     }
+
+    @Test
+    fun `test if a project is not allowed to collect pledges when has been funded and no late pledges`() {
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(false)
+            .build()
+
+        assertFalse(project.isAllowedToPledge())
+    }
+
+    @Test
+    fun `test if a project is allowed to collect pledges when campaign is still ongoing`() {
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_LIVE)
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(false)
+            .build()
+
+        assertTrue(project.isAllowedToPledge())
+    }
+
+    @Test
+    fun `test if a project is allowed to collect pledges when has been funded but has late pledges enabled and it is collecting`() {
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        assertTrue(project.isAllowedToPledge())
+    }
+
+    @Test
+    fun `test if a project is not allowed to collect pledges when has been funded but has late pledges enabled but not collecting`() {
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        assertFalse(project.isAllowedToPledge())
+    }
 }

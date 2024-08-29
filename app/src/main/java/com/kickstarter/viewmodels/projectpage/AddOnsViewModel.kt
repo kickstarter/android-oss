@@ -94,7 +94,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     init {
-        scope.launch(dispatcher) {
+        scope.launch {
             currentUser.observable().asFlow()
                 .collectLatest {
                     isUserLoggedIn = it.isPresent()

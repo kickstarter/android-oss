@@ -842,7 +842,7 @@ fun KSEstimatedShippingCheckoutView(
                         start = dimensions.paddingLarge,
                         top = dimensions.paddingMedium
                     ),
-                    text = stringResource(id = R.string.estimated_shipping_fpo),
+                    text = stringResource(id = R.string.Estimated_Shipping),
                     style = typography.calloutMedium,
                     color = colors.textPrimary
                 )
@@ -854,7 +854,7 @@ fun KSEstimatedShippingCheckoutView(
                         start = dimensions.paddingLarge,
                         bottom = dimensions.paddingMedium
                     ),
-                    text = stringResource(id = R.string.this_is_meant_to_give_you_fpo),
+                    text = stringResource(id = R.string.This_is_meant_to_give_you),
                     style = typography.caption2,
                     color = colors.textSecondary
                 )

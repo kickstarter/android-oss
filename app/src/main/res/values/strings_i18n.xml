@@ -16,8 +16,10 @@
   <string name="Add_new_card" formatted="false">Add new card</string>
   <string name="Add_ons" formatted="false">Add-ons</string>
   <string name="Add_ons_unavailable" formatted="false">Add-ons unavailable</string>
+  <string name="Address_confirmed_need_to_change_your_address_before_it_locks" formatted="false">Address confirmed! Need to change your address before it locks? Visit your backing details on our website.</string>
   <string name="After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website" formatted="false">After September 5, 2023, this Dashboard feature will only be available on our website.</string>
   <string name="Alert" formatted="false">Alert</string>
+  <string name="Alerts_count" formatted="false">Alerts (%{count})</string>
   <string name="All_Art_Projects" formatted="false">All Art Projects</string>
   <string name="All_Comics_Projects" formatted="false">All Comics Projects</string>
   <string name="All_Crafts_Projects" formatted="false">All Crafts Projects</string>
@@ -54,6 +56,8 @@
   <string name="Ask_a_question" formatted="false">Ask a question</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Ask_the_project_creator_directly" formatted="false">Ask the project creator directly.</string>
+  <string name="Authentication_failed_please_try_again" formatted="false">Authentication failed. Please try again.</string>
+  <string name="Authentication_success_please_pull_to_refresh" formatted="false">Authentication success. Please pull to refresh.</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Back it because you believe in it.</string>
@@ -76,6 +80,7 @@ backers</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 backers</string>
   <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Backers have signed up to help Kickstarter creators bring their ideas to life.</string>
+  <string name="Backing_details" formatted="false">Backing details</string>
   <string name="Backing_means_supporting" formatted="false">Backing means supporting a creative project, regardless of the outcome.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Become a backer to leave a comment.</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Big Kickstarter news and events near you, delivered just a few times a year.</string>
@@ -192,6 +197,7 @@ Tap to retry</string>
   <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
   <string name="Current_email" formatted="false">Current email</string>
   <string name="Current_password" formatted="false">Current password</string>
+  <string name="Customize_your_reward" formatted="false">Customize your reward</string>
   <string name="Customize_your_reward_with_optional_addons" formatted="false">Customize your reward with optional add-ons.</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Daily_summary" formatted="false">Daily summary</string>
@@ -226,6 +232,7 @@ Tap to retry</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Enter an amount less than %{max_pledge}.</string>
   <string name="Environmental_commitments" formatted="false">Environmental commitments</string>
   <string name="Environmentally_friendly_factories" formatted="false">Environmentally friendly factories</string>
+  <string name="Estimated_Shipping" formatted="false">Estimated Shipping</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="Estimated_delivery_colon" formatted="false">Estimated delivery:</string>
   <string name="Estimated_delivery_of" formatted="false">Estimated delivery of</string>
@@ -508,6 +515,7 @@ from friends yet.</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_activity" formatted="false">Project activity</string>
+  <string name="Project_alerts" formatted="false">Project Alerts</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
   <string name="Project_creators_and_their" formatted="false">Project creators and their collaborators cannot misrepresent themselves, the involvement of third parties, or their project’s level of support.</string>
   <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
@@ -597,6 +605,7 @@ daring ideas.</string>
   <string name="Saves_project" formatted="false">Saves project.</string>
   <string name="Say_something_kind" formatted="false">Say something kind...</string>
   <string name="Security_code" formatted="false">Security code</string>
+  <string name="See_all_backed__projects" formatted="false">See all backed projects</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
   <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_rewards" formatted="false">See rewards</string>
@@ -653,6 +662,7 @@ catch your eye?</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Something went wrong and we were unable to remove your payment method, please try again.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Something went wrong—pull to refresh.</string>
+  <string name="Something_went_wrong_pull_to_refresh_no_period" formatted="false">Something went wrong - Pull to refresh</string>
   <string name="Spam" formatted="false">Spam</string>
   <string name="Start_the_request" formatted="false">Start the request</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
@@ -706,6 +716,7 @@ catch your eye?</string>
   <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">This comment is under review for potentially violating &lt;a href="%{community_guidelines}">Kickstarter’s Community Guidelines.&lt;/a></string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
+  <string name="This_is_meant_to_give_you" formatted="false">This is meant to give you an idea of what shipping might cost. Once the creator is ready to fulfill your reward, you’ll return to pay shipping and applicable taxes.</string>
   <string name="This_person_canceled_their_pledge" formatted="false">This person has canceled their pledge.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
   <string name="This_post_is_for_backers_only" formatted="false">This post is for backers only</string>
@@ -796,6 +807,7 @@ Please try again later.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
   <string name="What_parts_of_your_project_will_use_AI_generated_content" formatted="false">What parts of your project will use AI-generated content? Please be as specific as possible.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
+  <string name="When_projects_youve_backed_need_your_attention_youll_see_them_here" formatted="false">When projects you’ve backed need your attention, you’ll see them here.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="Which_categories_interest_you" formatted="false">Which categories interest you?</string>
   <string name="Working_on_it" formatted="false">Working on it</string>
@@ -850,9 +862,11 @@ Please try again later.</string>
   <string name="Your_shipping_location" formatted="false">Your shipping location</string>
   <string name="Youre_a_backer" formatted="false">You’re a backer!</string>
   <string name="Youre_a_backer_no_punctuation" formatted="false">You\'re a backer</string>
+  <string name="Youre_all_caught_up" formatted="false">You’re all caught up!</string>
   <string name="Youre_all_set" formatted="false">You’re all set</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
+  <string name="Youve_been_authenticated_successfully_pull_to_refresh" formatted="false">You’ve been authenticated successfully! Pull to refresh.</string>
   <string name="Youve_canceled_your_pledge" formatted="false">You\'ve canceled your pledge.</string>
   <string name="Youve_canceled_your_pledge_of_pledge_amount_for_project_name" formatted="false">You’ve canceled your pledge of &lt;b>%{pledge_amount}&lt;/b> for &lt;b>%{project_name}&lt;/b>.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">You’ve pledged to support this project and it’s currently still funding.</string>

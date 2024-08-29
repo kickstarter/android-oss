@@ -90,7 +90,7 @@ fun BonusSupportContainer(
     Column {
         if (isNoReward) {
             Text(
-                text = stringResource(id = R.string.customize_your_reward_fpo),
+                text = stringResource(id = R.string.Customize_your_reward),
                 style = typography.title3Bold,
                 color = colors.textPrimary
             )

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -46,6 +47,8 @@ data class AddOnsUIState(
 
 class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val currentUser = requireNotNull(environment.currentUserV2())
+    private var isUserLoggedIn = false
 
     private var currentUserReward: Reward = Reward.builder().build()
     private var pledgeData: PledgeData? = null
@@ -88,6 +91,15 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
         this.scope = scope
         this.dispatcher = dispatcher
+    }
+
+    init {
+        scope.launch(dispatcher) {
+            currentUser.observable().asFlow()
+                .collectLatest {
+                    isUserLoggedIn = it.isPresent()
+                }
+        }
     }
 
     /**
@@ -279,6 +291,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         }
     }
 
+    fun isUserLoggedIn(): Boolean = isUserLoggedIn
     fun getProject() = this.project
     fun getSelectedReward() = this.currentUserReward
     fun sendEvent() = this.pledgeData?.let {

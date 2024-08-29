@@ -25,6 +25,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.extensions.showErrorToast
+import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 
 class BackingAddOnsFragment : Fragment() {
@@ -84,8 +85,15 @@ class BackingAddOnsFragment : Fragment() {
                             isLoading = addOnsIsLoading,
                             currentShippingRule = shippingRule,
                             onContinueClicked = {
-                                viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
-                                    showPledgeFragment(pledgeData = pDataAndReason.first, pledgeReason = pDataAndReason.second)
+                                if (viewModelC.isUserLoggedIn()) {
+                                    viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
+                                        showPledgeFragment(
+                                            pledgeData = pDataAndReason.first,
+                                            pledgeReason = pDataAndReason.second
+                                        )
+                                    }
+                                } else {
+                                    activity?.startLoginActivity()
                                 }
                             },
                             bonusAmountChanged = { bonusAmount ->

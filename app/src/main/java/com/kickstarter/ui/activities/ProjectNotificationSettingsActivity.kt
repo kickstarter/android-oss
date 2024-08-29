@@ -1,22 +1,33 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectNotificationSettingsLayoutBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(ProjectNotificationSettingsViewModel.ViewModel::class)
-class ProjectNotificationSettingsActivity : BaseActivity<ProjectNotificationSettingsViewModel.ViewModel>() {
+class ProjectNotificationSettingsActivity : ComponentActivity() {
     private lateinit var binding: ProjectNotificationSettingsLayoutBinding
+    private lateinit var viewModelFactory: ProjectNotificationSettingsViewModel.Factory
+    private val viewModel: ProjectNotificationSettingsViewModel.ProjectNotificationSettingsViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getEnvironment()?.let { env ->
+            viewModelFactory = ProjectNotificationSettingsViewModel.Factory(env)
+        }
         binding = ProjectNotificationSettingsLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -26,12 +37,11 @@ class ProjectNotificationSettingsActivity : BaseActivity<ProjectNotificationSett
         binding.projectNotificationSettingsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         viewModel.outputs.projectNotifications()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter.projectNotifications(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.unableToFetchProjectNotificationsError()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 showSnackbar(
@@ -39,10 +49,12 @@ class ProjectNotificationSettingsActivity : BaseActivity<ProjectNotificationSett
                     getString(R.string.general_error_something_wrong)
                 )
             }
+            .addToDisposable(disposables)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        disposables.clear()
         binding.projectNotificationSettingsRecyclerView.adapter = null
     }
 }

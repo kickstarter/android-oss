@@ -129,9 +129,8 @@ class GetShippingRulesUseCase(
                 emitCurrentState(isLoading = false)
             }
 
-            // - Just displaying all rewards, project no collecting any longer
+            // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
-                // - All rewards are digital, all rewards must be available
                 filteredRewards.clear()
                 filteredRewards.addAll(project.rewards() ?: emptyList())
                 emitCurrentState(isLoading = false)

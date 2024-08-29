@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.usecases
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
+import com.kickstarter.libs.utils.extensions.isAllowedToPledge
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
@@ -93,7 +94,7 @@ class GetShippingRulesUseCase(
             val avShipMap = allAvailableRulesForProject
             emitCurrentState(isLoading = true)
 
-            if (rewardsByShippingType.isNotEmpty()) {
+            if (rewardsByShippingType.isNotEmpty() && project.isAllowedToPledge()) {
                 rewardsByShippingType.forEachIndexed { index, reward ->
 
                     if (RewardUtils.shipsToRestrictedLocations(reward)) {
@@ -119,10 +120,19 @@ class GetShippingRulesUseCase(
                         filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
                     }
                 }
-            } else {
+            }
+            // - all rewards digital
+            if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
                 // - All rewards are digital, all rewards must be available
                 filteredRewards.clear()
                 filteredRewards.addAll(projectRewards)
+                emitCurrentState(isLoading = false)
+            }
+
+            // - Just displaying all rewards available or not, project no collecting any longer
+            if (!project.isAllowedToPledge()) {
+                filteredRewards.clear()
+                filteredRewards.addAll(project.rewards() ?: emptyList())
                 emitCurrentState(isLoading = false)
             }
         }

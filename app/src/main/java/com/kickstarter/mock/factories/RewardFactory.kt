@@ -175,7 +175,6 @@ object RewardFactory {
     fun rewardRestrictedShipping(): Reward {
         return reward().toBuilder()
             .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
-            .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
             .build()
     }
 

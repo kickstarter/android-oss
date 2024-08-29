@@ -1,5 +1,6 @@
 package com.kickstarter.libs
 
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
@@ -20,6 +21,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT_ALERTS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
@@ -255,6 +257,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
         props[DISCOVER_SORT.contextName] = discoveryParams.sort()?.name?.lowercase(Locale.ROOT) ?: ""
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when pledged project overview screen is viewed
+     *
+     * @param ppoCards: The list of alerts.
+     * @param totalCount: The total number of alerts.
+     */
+    fun trackPledgedProjectsOverviewPageViewed(ppoCards: List<PPOCard>, totalCount : Int) {
+        val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
+        props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
         client.track(PAGE_VIEWED.eventName, props)
     }
 

@@ -83,6 +83,7 @@ class EventContextValues {
         UPDATE_PLEDGE("update_pledge"),
         LOGIN("log_in"),
         MANAGE_PLEDGE("manage_pledge"),
+        PROJECT_ALERTS("project_alerts"),
         TWO_FACTOR_AUTH("two_factor_auth")
     }
 

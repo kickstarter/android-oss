@@ -57,10 +57,10 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
         val user = UserFactory.user()
 
         val env = environment().toBuilder().apiClientV2(object : MockApiClientV2() {
-                override fun updateUserSettings(user: User): Observable<User> {
-                    return Observable.just(user)
-                }
-            }).build()
+            override fun updateUserSettings(user: User): Observable<User> {
+                return Observable.just(user)
+            }
+        }).build()
 
         setUpEnvironment(user, env)
 

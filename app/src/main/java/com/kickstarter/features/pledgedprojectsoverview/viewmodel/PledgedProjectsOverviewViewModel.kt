@@ -11,6 +11,7 @@ import androidx.paging.PagingState
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
@@ -38,13 +39,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
-private val PAGE_LIMIT = 25
+private val PAGE_LIMIT = 4
 class PledgedProjectsPagingSource(
     private val apolloClient: ApolloClientTypeV2,
+    private val analyticEvents: AnalyticEvents,
     private var totalAlerts: MutableStateFlow<Int>,
     private val limit: Int = PAGE_LIMIT,
 
 ) : PagingSource<String, PPOCard>() {
+    val pageNumber = 0
     override fun getRefreshKey(state: PagingState<String, PPOCard>): String {
         return "" // - Default first page is empty string when paginating with graphQL
     }
@@ -65,6 +68,7 @@ class PledgedProjectsPagingSource(
                 }
                 .collect { envelope ->
                     totalAlerts.emit(envelope.totalCount ?: 0)
+                    analyticEvents.trackPledgedProjectsOverviewPageViewed(envelope.pledges() ?: emptyList(), envelope.totalCount() ?: 0)
                     ppoCardsList = envelope.pledges() ?: emptyList()
                     nextPageEnvelope = if (envelope.pageInfoEnvelope?.hasNextPage == true) envelope.pageInfoEnvelope else null
                     result = LoadResult.Page(
@@ -93,6 +97,7 @@ class PledgedProjectsOverviewViewModel(
     private var mutableProjectFlow = MutableSharedFlow<Project>()
     private var snackbarMessage: (stringID: Int, type: String) -> Unit = { _, _ -> }
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val analyticEvents = requireNotNull(environment.analytics())
 
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
     val totalAlertsState = mutableTotalAlerts.asStateFlow()
@@ -104,7 +109,7 @@ class PledgedProjectsOverviewViewModel(
     val paymentRequiresAction: SharedFlow<String>
         get() = mutablePaymentRequiresAction.asSharedFlow()
 
-    private var pagingSource = PledgedProjectsPagingSource(apolloClient, mutableTotalAlerts, PAGE_LIMIT)
+    private var pagingSource = PledgedProjectsPagingSource(apolloClient = apolloClient, analyticEvents = analyticEvents, totalAlerts = mutableTotalAlerts, limit = PAGE_LIMIT)
 
     val ppoUIState: StateFlow<PledgedProjectsOverviewUIState>
         get() = mutablePPOUIState
@@ -133,7 +138,7 @@ class PledgedProjectsOverviewViewModel(
                 Pager(
                     PagingConfig(
                         pageSize = PAGE_LIMIT,
-                        prefetchDistance = 3,
+                        prefetchDistance = 1,
                         enablePlaceholders = true,
                     )
                 ) {
@@ -178,8 +183,9 @@ class PledgedProjectsOverviewViewModel(
             }
     }
 
-    fun onMessageCreatorClicked(projectName: String) {
+    fun onMessageCreatorClicked(projectName: String, projectId: String, creatorID: String, ppoCards : List<PPOCard?>, totalAlerts: Int) {
         viewModelScope.launch(ioDispatcher) {
+            analyticEvents.trackPPOMessageCreatorCTAClicked(projectID = projectId, ppoCards = ppoCards, totalCount = totalAlerts, creatorID = creatorID)
             apolloClient.getProject(
                 slug = projectName,
             )

@@ -80,7 +80,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
             )
@@ -110,7 +110,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
                 errorSnackBarHostState = SnackbarHostState(),
@@ -138,7 +138,7 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 errorSnackBarHostState = SnackbarHostState(),
                 onSeeAllBackedProjectsClick = {},
             )
@@ -157,7 +157,7 @@ fun PledgedProjectsOverviewScreen(
     ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
-    onSendMessageClick: (projectName: String) -> Unit,
+    onSendMessageClick: (projectName: String, projectID: String, ppoCards: List<PPOCard?>, totalAlerts: Int, creatorID: String) -> Unit,
     onSeeAllBackedProjectsClick: () -> Unit,
     onPrimaryActionButtonClicked: (PPOCard) -> Unit,
     onSecondaryActionButtonClicked: (PPOCard) -> Unit,
@@ -252,7 +252,7 @@ fun PledgedProjectsOverviewScreen(
                                 flags = it.flags,
                                 imageContentDescription = it.imageContentDescription(),
                                 creatorName = it.creatorName(),
-                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
+                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
                                 shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
                                 onActionButtonClicked = {
                                     onPrimaryActionButtonClicked(it)

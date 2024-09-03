@@ -326,7 +326,7 @@ object AnalyticEventsUtils {
     }
 
     @JvmOverloads
-    fun notificationProperties(ppoCards: List<PPOCard>, totalCount : Int, prefix: String = "notification_count_"): Map<String, Any> {
+    fun notificationProperties(ppoCards: List<PPOCard?>, totalCount : Int, prefix: String = "notification_count_"): Map<String, Any> {
         val props = HashMap<String, Int>().apply {
             put("address_locks_soon", 0)
             put("survey_available", 0)
@@ -336,7 +336,7 @@ object AnalyticEventsUtils {
         }
 
         for(card in ppoCards) {
-            when (card.viewType()) {
+            when (card?.viewType()) {
                PPOCardViewType.FIX_PAYMENT -> props["payment_failed"] = (props["payment_failed"] ?: 0).plus(1)
                PPOCardViewType.AUTHENTICATE_CARD -> props["card_auth_required"] = (props["card_auth_required"] ?: 0).plus(1)
                PPOCardViewType.OPEN_SURVEY -> props["survey_available"] = (props["survey_available"] ?: 0).plus(1)

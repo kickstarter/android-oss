@@ -381,6 +381,7 @@ fragment ppoCard on Backing {
         ...full
         creator {
             name
+            id
         }
     }
 }

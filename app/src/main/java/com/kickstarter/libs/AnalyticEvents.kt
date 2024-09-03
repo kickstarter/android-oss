@@ -50,6 +50,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
@@ -270,6 +271,22 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
         client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when pledged project overview screen is viewed
+     *
+     * @param projectID: The id of the project.
+     * @param ppoCards: The list of alerts.
+     * @param totalCount: The total number of alerts.
+     */
+    fun trackPPOMessageCreatorCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int, creatorID: String) {
+        val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
+        props["interaction_target_id"] = creatorID
+        props["project_pid"] = projectID
+        props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
+        props[CONTEXT_CTA.contextName] = MESSAGE_CREATOR_INITIATE.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     /**

@@ -936,6 +936,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .projectSlug(ppoBackingData?.project()?.slug())
                 .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
                 .creatorName(ppoBackingData?.project()?.creator()?.name())
+                .creatorID(ppoBackingData?.project()?.creator()?.id())
                 .viewType(getTierType(it.node()?.tierType()))
                 .flags(flags)
                 .addressID(ppoBackingData?.deliveryAddress()?.id())

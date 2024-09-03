@@ -99,7 +99,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
-                        onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
+                        onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
                         onProjectPledgeSummaryClick = { url ->
                             openBackingDetailsWebView(
                                 url = env.webEndpoint() + url,

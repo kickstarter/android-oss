@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
@@ -40,6 +41,10 @@ class PrivacyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPrivacyBinding.inflate(layoutInflater)
+
+        getEnvironment()?.let { env ->
+            viewModelFactory = PrivacyViewModel.Factory(env)
+        }
 
         setContentView(binding.root)
 

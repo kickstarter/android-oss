@@ -1,7 +1,12 @@
 package com.kickstarter.ui.viewholders.discoverydrawer
 
+import android.graphics.drawable.Drawable
+import android.util.Pair
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNullOrZero
@@ -10,6 +15,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.LoggedInViewHolderViewModel
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -27,6 +33,7 @@ class LoggedInViewHolder(
         fun loggedInViewHolderProfileClick(viewHolder: LoggedInViewHolder, user: User)
         fun loggedInViewHolderSettingsClick(viewHolder: LoggedInViewHolder, user: User)
         fun loggedInViewHolderPledgedProjectsClick(viewHolder: LoggedInViewHolder)
+        fun darkThemeEnabled(): Observable<Boolean>
     }
 
     init {
@@ -62,7 +69,16 @@ class LoggedInViewHolder(
 
         this.viewModel.outputs.pledgedProjectsIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgedProjectsOverview.visibility = it.toVisibility() }
+            .subscribe { binding.drawerProjectAlerts.visibility = it.toVisibility() }
+            .addToDisposable(disposables)
+
+        this.viewModel.outputs.pledgedProjectsIndicatorIsVisible()
+            .compose<Pair<Boolean, Boolean>>(combineLatestPair(delegate.darkThemeEnabled()))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.projectAlertsIndicator.setImageDrawable(selectProjectAlertIndicatorColor(it.second))
+                binding.projectAlertsIndicator.visibility = it.first.toVisibility()
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.activityCountTextColor()
@@ -75,12 +91,16 @@ class LoggedInViewHolder(
                 binding.drawerSettings.setOnClickListener { this.delegate.loggedInViewHolderSettingsClick(this, user) }
                 binding.drawerProfile.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
                 binding.userContainer.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
-                binding.pledgedProjectsOverview.setOnClickListener { this.delegate.loggedInViewHolderPledgedProjectsClick(this) }
+                binding.drawerProjectAlerts.setOnClickListener { this.delegate.loggedInViewHolderPledgedProjectsClick(this) }
             }.addToDisposable(disposables)
 
         binding.drawerActivity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }
         binding.drawerMessages.setOnClickListener { this.delegate.loggedInViewHolderMessagesClick(this) }
         binding.internalTools.internalTools.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
+    }
+
+    private fun selectProjectAlertIndicatorColor(isDarkMode: Boolean): Drawable? {
+        return if (isDarkMode) AppCompatResources.getDrawable(context(), R.drawable.circle_red_05) else AppCompatResources.getDrawable(context(), R.drawable.circle_red_06)
     }
 
     @Throws(Exception::class)

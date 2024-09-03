@@ -84,8 +84,8 @@ interface PrivacyViewModel {
             currentUser
                 .take(1)
                 .filter { it.isNotNull() && it.getValue().isNotNull() }
-                .map { it.getValue() }
-                .subscribe { this.userOutput.onNext(it!!) }
+                .map { requireNotNull(it.getValue()) }
+                .subscribe { this.userOutput.onNext(it) }
                 .addToDisposable(disposables)
 
             currentUser
@@ -105,7 +105,8 @@ interface PrivacyViewModel {
             updateSettingsNotification
                 .compose(errorsV2())
                 .filter { it.isNotNull() }
-                .subscribe { this.unableToSavePreferenceError.onNext(it!!) }
+                .map { it }
+                .subscribe { this.unableToSavePreferenceError.onNext(it) }
                 .addToDisposable(disposables)
 
             this.userInput
@@ -124,7 +125,8 @@ interface PrivacyViewModel {
             this.optIntoFollowing
                 .filter { checked -> checked }
                 .filter { this.userOutput.value.isNotNull() }
-                .subscribe { _ -> this.userInput.onNext(this.userOutput.value!!.toBuilder().social(true).build()) }
+                .map { requireNotNull(this.userOutput.value) }
+                .subscribe { this.userInput.onNext(it.toBuilder().social(true).build()) }
                 .addToDisposable(disposables)
 
             this.optIntoFollowing
@@ -135,7 +137,8 @@ interface PrivacyViewModel {
             this.optOutOfFollowing
                 .filter { optOut -> optOut }
                 .filter { this.userOutput.value.isNotNull() }
-                .subscribe { _ -> this.userInput.onNext(this.userOutput.value!!.toBuilder().social(false).build()) }
+                .map { requireNotNull(this.userOutput.value) }
+                .subscribe { this.userInput.onNext(it.toBuilder().social(false).build()) }
                 .addToDisposable(disposables)
 
             this.optOutOfFollowing

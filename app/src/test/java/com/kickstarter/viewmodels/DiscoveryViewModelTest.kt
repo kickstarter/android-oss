@@ -11,6 +11,7 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
@@ -31,6 +32,8 @@ import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
+import io.reactivex.disposables.CompositeDisposable
+import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
 import rx.Observable
@@ -64,9 +67,40 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val showErrorMessage = TestSubscriber<String>()
     private val showNotifPermissionRequest = TestSubscriber<Void>()
     private val showConsentManagementDialog = TestSubscriber<Void>()
-
+    private val darkThemeEnabled = io.reactivex.subscribers.TestSubscriber<Boolean>()
+    private val disposables = CompositeDisposable()
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryViewModel.ViewModel(environment)
+    }
+
+    @Test
+    fun `test Dark Mode disabled`() {
+        val currentUser = MockCurrentUser()
+        val env = environment().toBuilder().currentUser(currentUser).build()
+        setUpEnvironment(env)
+
+        vm.intent(Intent(Intent.ACTION_MAIN))
+
+        vm.outputs.darkThemeEnabled().subscribe { darkThemeEnabled.onNext(it) }.addToDisposable(disposables)
+
+        vm.setDarkTheme(isDarkTheme = false)
+
+        darkThemeEnabled.assertValues(false)
+    }
+
+    @Test
+    fun `test Dark Mode enabled`() {
+        val currentUser = MockCurrentUser()
+        val env = environment().toBuilder().currentUser(currentUser).build()
+        setUpEnvironment(env)
+
+        vm.intent(Intent(Intent.ACTION_MAIN))
+
+        vm.outputs.darkThemeEnabled().subscribe { darkThemeEnabled.onNext(it) }.addToDisposable(disposables)
+
+        vm.setDarkTheme(isDarkTheme = true)
+
+        darkThemeEnabled.assertValues(true)
     }
 
     @Test
@@ -807,5 +841,10 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             ),
             0
         )
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 }

@@ -3,12 +3,14 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Location
@@ -344,5 +346,25 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         assertEquals(pledgeDataAndReason?.first?.addOns()?.first()?.id(), addOnReward.id())
         assertEquals(pledgeDataAndReason?.first?.addOns()?.first()?.quantity(), 3)
         assertEquals(pledgeDataAndReason?.first?.addOns()?.last(), backedAddOnq)
+    }
+
+    @Test
+    fun `test if the VM has being reached by a loggedOut user`() = runTest {
+        val env = environment().toBuilder()
+            .currentUserV2(MockCurrentUserV2()) // empty user
+            .build()
+
+        createViewModel(env)
+        assertFalse(viewModel.isUserLoggedIn())
+    }
+
+    @Test
+    fun `test if the VM has being reached by a loggedIn user`() = runTest {
+        val env = environment().toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user())) // empty user
+            .build()
+
+        createViewModel(env)
+        assertTrue(viewModel.isUserLoggedIn())
     }
 }

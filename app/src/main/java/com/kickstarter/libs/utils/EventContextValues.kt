@@ -37,6 +37,10 @@ class EventContextValues {
         WATCH_PROJECT("watch_project"),
         LOGIN_INITIATE("log_in_initiate"),
         MESSAGE_CREATOR_INITIATE("message_creator_initiate"),
+        FIX_PLEDGE_INITIATE("fix_pledge_initiate"),
+        SURVEY_RESPONSE_INITIATE("survey_response_initiate"),
+        CONFIRM_INITIATE("confirm_initiate"),
+        CONFIRM_SUBMIT("confirm_submit"),
         CAMPAIGN_DETAILS("campaign_details"),
         CREATOR_DETAILS("creator_details"),
         LOGIN_OR_SIGN_UP("log_in_or_sign_up"),
@@ -46,6 +50,7 @@ class EventContextValues {
         COMMENT_POST("comment_post"),
         PROJECT_SELECT("project_select"),
         LATE_PLEDGE("late_pledge"),
+        EDIT("edit"),
     }
 
     /**
@@ -172,7 +177,8 @@ class EventContextValues {
         FACEBOOK("facebook"),
         RESULTS("results"),
         ROOT("root"),
-        REPLY("reply")
+        REPLY("reply"),
+        ADDRESS("address")
     }
 
     /**

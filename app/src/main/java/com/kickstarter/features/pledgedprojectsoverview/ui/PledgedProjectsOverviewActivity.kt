@@ -123,6 +123,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.FIX_PAYMENT -> {
+                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openManagePledge(
                                         PPOCard.projectSlug ?: "",
                                         resultLauncher = startForResult
@@ -130,6 +131,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.OPEN_SURVEY -> {
+                                    env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts, PPOCard.surveyID ?: "")
                                     openBackingDetailsWebView(
                                         url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
@@ -137,6 +139,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.CONFIRM_ADDRESS -> {
+                                    env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
@@ -147,8 +150,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
                             }
                         },
-                        onSecondaryActionButtonClicked = { PPOCard ->
-                        },
+                        onSecondaryActionButtonClicked = { PPOCard -> },
                     )
                 }
 

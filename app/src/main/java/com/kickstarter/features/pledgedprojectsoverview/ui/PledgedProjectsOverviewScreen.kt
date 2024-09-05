@@ -43,6 +43,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -110,7 +111,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
                 errorSnackBarHostState = SnackbarHostState(),
@@ -138,9 +139,9 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 errorSnackBarHostState = SnackbarHostState(),
-                onSeeAllBackedProjectsClick = {},
+                onSeeAllBackedProjectsClick = {}
             )
         }
     }
@@ -165,11 +166,13 @@ fun PledgedProjectsOverviewScreen(
     isErrored: Boolean = false,
     showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
+    analyticEvents: AnalyticEvents? = null,
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
+    var projectID by remember { mutableStateOf("") }
     val pullRefreshState = rememberPullRefreshState(
         isLoading,
         pullRefreshCallback,
@@ -260,9 +263,11 @@ fun PledgedProjectsOverviewScreen(
                                 onSecondaryActionButtonClicked = {
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
+                                            analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
                                             confirmedAddress = it.address() ?: ""
                                             addressID = it.addressID ?: ""
                                             backingID = it.backingId ?: ""
+                                            projectID = it.projectId ?: ""
                                             openConfirmAddressAlertDialog.value = true
                                         }
                                         else -> {
@@ -304,6 +309,7 @@ fun PledgedProjectsOverviewScreen(
                 rightButtonText = stringResource(id = R.string.Confirm),
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
+                    analyticEvents?.trackPPOConfirmAddressSubmitCTAClicked(ppoCards = ppoCards.itemSnapshotList.items, projectID = projectID, totalCount = totalAlerts)
                     onAddressConfirmed(addressID, backingID)
                 }
             )

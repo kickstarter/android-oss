@@ -28,7 +28,7 @@
         <TextView
           android:id="@+id/title_text_view"
           style="@style/ToolbarTitle"
-          android:text="@string/backing_details_fpo" />
+          android:text="@string/Backing_details" />
 
       </RelativeLayout>
 

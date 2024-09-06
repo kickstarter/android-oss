@@ -183,7 +183,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
             assertEquals(
                 snackbarAction,
-                R.string.address_confirmed_snackbar_text_fpo
+                R.string.Address_confirmed_need_to_change_your_address_before_it_locks
             )
 
             assertEquals(

@@ -169,7 +169,7 @@ class PledgedProjectsOverviewViewModel(
                         emitCurrentState(isLoading = true)
                     }.map {
                         if (it.isTrue()) {
-                            showHeadsUpSnackbar(R.string.address_confirmed_snackbar_text_fpo)
+                            showHeadsUpSnackbar(R.string.Address_confirmed_need_to_change_your_address_before_it_locks)
                             getPledgedProjects()
                         } else {
                             showErrorSnackbar(R.string.Something_went_wrong_please_try_again)

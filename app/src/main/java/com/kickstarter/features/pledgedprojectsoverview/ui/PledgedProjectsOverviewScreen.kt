@@ -202,7 +202,7 @@ fun PledgedProjectsOverviewScreen(
             modifier = modifier,
             topBar = {
                 TopToolBar(
-                    title = stringResource(id = R.string.project_alerts_fpo),
+                    title = stringResource(id = R.string.Project_alerts),
                     titleColor = colors.textPrimary,
                     leftOnClickAction = onBackPressed,
                     leftIconColor = colors.icon,
@@ -232,7 +232,7 @@ fun PledgedProjectsOverviewScreen(
                     item {
                         if (!totalAlerts.isNullOrZero()) {
                             Text(
-                                text = stringResource(id = R.string.alerts_fpo).format("count", totalAlerts.toString()),
+                                text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
                                 style = typography.title3Bold,
                                 color = colors.textPrimary
                             )
@@ -336,7 +336,7 @@ fun PPOScreenEmptyState(
     ) {
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.youre_all_caught_up_fpo),
+            text = stringResource(id = R.string.Youre_all_caught_up),
             style = typography.title3Bold,
         )
 
@@ -344,7 +344,7 @@ fun PPOScreenEmptyState(
 
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.when_projects_youve_backed_need_your_attention_youll_see_them_here_fpo),
+            text = stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
             style = typography.body,
             textAlign = TextAlign.Center
         )
@@ -353,7 +353,7 @@ fun PPOScreenEmptyState(
         KSPrimaryGreenButton(
             modifier = Modifier,
             onClickAction = { onSeeAllBackedProjectsClick.invoke() },
-            text = stringResource(id = R.string.see_all_backed__projects_fpo),
+            text = stringResource(id = R.string.See_all_backed__projects),
             isEnabled = true
         )
     }
@@ -383,7 +383,7 @@ fun PPOScreenErrorState() {
 
         Text(
             color = colors.textPrimary,
-            text = (stringResource(id = R.string.something_went_wrong_pull_to_refresh_fpo)),
+            text = (stringResource(id = R.string.Something_went_wrong_pull_to_refresh_no_period)),
             style = typography.body,
             textAlign = TextAlign.Center
         )

@@ -42,7 +42,6 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
-import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton

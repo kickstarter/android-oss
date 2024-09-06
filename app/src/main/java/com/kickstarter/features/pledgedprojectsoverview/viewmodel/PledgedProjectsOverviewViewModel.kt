@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
-private val PAGE_LIMIT = 4
+private val PAGE_LIMIT = 25
 class PledgedProjectsPagingSource(
     private val apolloClient: ApolloClientTypeV2,
     private val analyticEvents: AnalyticEvents,
@@ -137,7 +137,7 @@ class PledgedProjectsOverviewViewModel(
                 Pager(
                     PagingConfig(
                         pageSize = PAGE_LIMIT,
-                        prefetchDistance = 1,
+                        prefetchDistance = 3,
                         enablePlaceholders = true,
                     )
                 ) {

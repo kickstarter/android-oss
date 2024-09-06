@@ -320,6 +320,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         val addOns1 = RewardFactory.rewardWithShipping()
             .toBuilder()
             .isAddOn(true)
+            .quantity(2)
             .shippingRules(shippingRules)
             .build()
 
@@ -371,6 +372,8 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
 
                 override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                     data = updateBackingData
+                    // reward + add on with quantity 2
+                    assert(updateBackingData.rewardsIds?.size == 3)
                     val checkout = Checkout.builder().id(77L).backing(Checkout.Backing.builder().requiresAction(false).clientSecret("client").build()).build()
                     return Observable.just(checkout)
                 }
@@ -653,6 +656,131 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(data.rewardsIds?.size, 1)
         assertEquals(data.rewardsIds?.first(), secondReward)
         assertEquals(data.amount, (secondReward.pledgeAmount() + 7.0).toString())
+
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun `test change reward from(rw with shipping + addOns + bonus support) to same reward + more add ons + bonus`() = runTest {
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        val rewardBacked = RewardFactory.rewardWithShipping().toBuilder()
+            .shippingRules(shippingRules = shippingRules)
+            .build()
+
+        val addOns1Backed = RewardFactory.rewardWithShipping()
+            .toBuilder()
+            .isAddOn(true)
+            .shippingRules(shippingRules)
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val backing = BackingFactory.backing(rewardBacked)
+            .toBuilder()
+            .addOns(listOf(addOns1Backed))
+            .location(shippingRules.first().location())
+            .locationId(shippingRules.first().location()?.id())
+            .bonusAmount(5.0)
+            .amount(44.0)
+            .shippingAmount(33f)
+            .paymentSource(PaymentSourceFactory.visa())
+            .build()
+
+        val project = ProjectFactory.project().toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .rewards(listOf(rewardBacked))
+            .build()
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val secondReward = RewardFactory.rewardWithShipping()
+
+        // On pledge data add the newly selected secondReward, bonus, plus Reason = UPDATE_REWARD
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD),
+            projectData,
+            secondReward,
+            bonusAmount = 7.0,
+            addOns = listOf(addOns1Backed.toBuilder().quantity(5).build())
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
+
+        lateinit var data: UpdateBackingData
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("", "hola@ksr.com", true, true, true, true, "USD")
+                    )
+                }
+
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                    data = updateBackingData
+                    val checkout = Checkout.builder().id(22L).backing(Checkout.Backing.builder().requiresAction(false).clientSecret("client").build()).build()
+                    return Observable.just(checkout)
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiState = mutableListOf<CheckoutUIState>()
+        val checkout = mutableListOf<Pair<CheckoutData, PledgeData>>()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+            viewModel.userChangedPaymentMethodSelected(cards.first())
+            viewModel.pledgeOrUpdatePledge()
+
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.checkoutResultState.toList(checkout)
+        }
+
+        assertEquals(uiState.size, 4)
+
+        // add-ons shipping was 30/each * 5
+        assertEquals(uiState.last().shippingAmount, 150.0)
+        // total = reward + add-ons * quantity + bonus amount + shipping
+        assertEquals(uiState.last().checkoutTotal, secondReward.pledgeAmount() + (addOns1Backed.pledgeAmount() * 5) + 7.0 + 150)
+        assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
+        assertEquals(uiState.last().bonusAmount, 7.0)
+        assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
+        assertEquals(uiState.last().selectedPaymentMethod.id(), cards.first().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().userEmail, "hola@ksr.com")
+        assertEquals(uiState.last().selectedRewards, listOf(secondReward, addOns1Backed.toBuilder().quantity(5).build()))
+
+        assertEquals(checkout.size, 2)
+        assertEquals(checkout.last().first.id(), 22L)
+        assertEquals(checkout.last().first.shippingAmount(), 150.0)
+        assertEquals(checkout.last().first.bonusAmount(), 7.0)
+
+        // 1 reward + 5 add-ons flattened
+        assertEquals(data.rewardsIds?.size, 6)
+        assertEquals(data.rewardsIds?.first(), secondReward)
+        assertEquals(data.amount, (secondReward.pledgeAmount() + (addOns1Backed.pledgeAmount() * 5) + 7.0 + 150).toString())
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }

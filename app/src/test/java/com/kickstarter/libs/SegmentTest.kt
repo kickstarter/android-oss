@@ -3,7 +3,6 @@ package com.kickstarter.libs
 import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
@@ -24,11 +23,19 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT_ALERTS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.EDIT
+import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
@@ -1533,7 +1540,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
@@ -1563,8 +1570,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(MESSAGE_CREATOR_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
         assertEquals("123123", expectedProperties["project_pid"])
         assertEquals("09231", expectedProperties["interaction_target_id"])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
@@ -1596,8 +1603,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(FIX_PLEDGE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
         assertEquals("123123", expectedProperties["project_pid"])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
@@ -1628,8 +1635,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(SURVEY_RESPONSE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
         assertEquals("123123", expectedProperties["project_pid"])
         assertEquals("9023234", expectedProperties["survey_id"])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
@@ -1661,9 +1668,9 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.CONFIRM_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.ContextTypeName.ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(CONFIRM_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
         assertEquals("123123", expectedProperties["project_pid"])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
@@ -1694,9 +1701,9 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.CONFIRM_SUBMIT.contextName, properties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.ContextTypeName.ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(CONFIRM_SUBMIT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
         assertEquals("123123", expectedProperties["project_pid"])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
@@ -1727,9 +1734,9 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.EDIT.contextName, properties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.ContextTypeName.ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EDIT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
         assertEquals("123123", expectedProperties["project_pid"])
         assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
         assertEquals(1, expectedProperties["notification_count_payment_failed"])

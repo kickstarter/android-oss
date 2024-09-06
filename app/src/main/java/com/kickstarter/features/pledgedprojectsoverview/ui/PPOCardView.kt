@@ -196,7 +196,7 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
-                if (viewType == PPOCardViewType.CONFIRM_ADDRESS) {
+                if (viewType == PPOCardViewType.CONFIRM_ADDRESS && !shippingAddress.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
                     ShippingAddressView(
@@ -319,7 +319,6 @@ fun CreatorNameSendMessageView(
                 )
                 .clickable { sendAMessageClickAction.invoke() }
         ) {
-            // TODO: Replace with translated string
             Text(
                 text = stringResource(id = R.string.send_a_message_fpo),
                 color = colors.textAccentGreen,
@@ -413,7 +412,6 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             .padding(dimensions.paddingSmall)
             .testTag(PPOCardViewTestTag.CONFIRM_ADDRESS_BUTTONS_VIEW.name)
     ) {
-        // TODO: Replace with translated strings
         KSPrimaryBlackButton(
             modifier = Modifier
                 .weight(0.5f),
@@ -437,7 +435,6 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
 
 @Composable
 fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
-    // TODO: Replace with translated string
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onFixPaymentClicked.invoke() },
@@ -449,7 +446,6 @@ fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
 
 @Composable
 fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
-    // TODO: Replace with translated string
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
@@ -461,7 +457,6 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
 
 @Composable
 fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
-    // TODO: Replace with translated string
     KSPrimaryGreenButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },

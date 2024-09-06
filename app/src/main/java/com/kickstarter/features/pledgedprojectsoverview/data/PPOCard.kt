@@ -7,8 +7,7 @@ import type.CurrencyCode
 
 @Parcelize
 class PPOCard private constructor(
-    val address: String?,
-    val addressID: String?,
+    val deliveryAddress: DeliveryAddress?,
     val amount: String?,
     val backingId: String?,
     val backingDetailsUrl: String?,
@@ -27,8 +26,7 @@ class PPOCard private constructor(
 
 ) : Parcelable {
 
-    fun address() = this.address
-    fun addressID() = this.addressID
+    fun deliveryAddress() = this.deliveryAddress
     fun amount() = this.amount
     fun backingDetailsUrl() = this.backingDetailsUrl
     fun backingId() = this.backingId
@@ -47,8 +45,7 @@ class PPOCard private constructor(
 
     @Parcelize
     data class Builder(
-        var address: String? = null,
-        var addressID: String? = null,
+        var deliveryAddress: DeliveryAddress? = null,
         var amount: String? = null,
         var backingDetailsUrl: String? = null,
         var backingId: String? = null,
@@ -66,8 +63,7 @@ class PPOCard private constructor(
         var viewType: PPOCardViewType? = null,
     ) : Parcelable {
 
-        fun address(address: String?) = apply { this.address = address }
-        fun addressID(addressID: String?) = apply { this.addressID = addressID }
+        fun deliveryAddress(deliveryAddress: DeliveryAddress?) = apply { this.deliveryAddress = deliveryAddress }
         fun amount(amount: String?) = apply { this.amount = amount }
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun backingId(backingId: String?) = apply { this.backingId = backingId }
@@ -85,8 +81,7 @@ class PPOCard private constructor(
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
 
         fun build() = PPOCard(
-            address = address,
-            addressID = addressID,
+            deliveryAddress = deliveryAddress,
             amount = amount,
             backingDetailsUrl = backingDetailsUrl,
             backingId = backingId,
@@ -106,8 +101,7 @@ class PPOCard private constructor(
     }
 
     fun toBuilder() = Builder(
-        address = address,
-        addressID = addressID,
+        deliveryAddress = deliveryAddress,
         amount = amount,
         backingDetailsUrl = backingDetailsUrl,
         backingId = backingId,
@@ -134,8 +128,7 @@ class PPOCard private constructor(
         var equals = super.equals(other)
         if (other is PPOCard) {
             equals = backingId() == other.backingId() &&
-                address() == other.address() &&
-                addressID() == other.addressID() &&
+                deliveryAddress() == other.deliveryAddress() &&
                 amount() == other.amount() &&
                 clientSecret() == other.clientSecret() &&
                 currencyCode() == other.currencyCode() &&

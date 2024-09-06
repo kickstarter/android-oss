@@ -75,6 +75,27 @@ fun PledgeData.rewardsAndAddOnsList(): List<Reward> {
     return list
 }
 
+fun PledgeData.expandedRewardsAndAddOnsList(): List<Reward> {
+    val list = mutableListOf<Reward>()
+
+    list.add(this.reward())
+    val mutableAddOnsList = mutableListOf<Reward>()
+
+    this.addOns()?.map {
+        if (!it.isAddOn()) mutableAddOnsList.add(it)
+        else {
+            val q = it.quantity() ?: 1
+            for (i in 1..q) {
+                mutableAddOnsList.add(it)
+            }
+        }
+    }
+
+    if (mutableAddOnsList.isNotEmpty()) list.addAll(mutableAddOnsList)
+
+    return list
+}
+
 /**
  * Total count of selected add-ons (including multiple quantities of a single add-on)
  *

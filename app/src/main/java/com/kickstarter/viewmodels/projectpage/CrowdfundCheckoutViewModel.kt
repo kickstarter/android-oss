@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
+import com.kickstarter.libs.utils.extensions.expandedRewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
@@ -412,7 +413,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         rwl.add(it)
                     }
                     backing.addOns()?.let {
-                        rwl.addAll(it)
+                        rwl.addAll(RewardUtils.extendAddOns(it))
                     }
 
                     getUpdateBackingData(
@@ -430,7 +431,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         else null
                     val isNoRw = pledgeData?.reward()?.let { RewardUtils.isNoReward(it) } ?: false
                     val rwListOrEmpty = if (isNoRw) emptyList<Reward>()
-                    else pledgeData?.rewardsAndAddOnsList() ?: emptyList()
+                    else pledgeData?.expandedRewardsAndAddOnsList() ?: emptyList()
 
                     getUpdateBackingData(
                         backing,

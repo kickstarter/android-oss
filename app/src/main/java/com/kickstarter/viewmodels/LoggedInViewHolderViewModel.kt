@@ -45,6 +45,7 @@ interface LoggedInViewHolderViewModel {
         /** Emits the user to pass to delegate. */
         fun user(): Observable<User>
         fun pledgedProjectsIsVisible(): Observable<Boolean>
+        fun pledgedProjectsIndicatorIsVisible(): Observable<Boolean>
     }
 
     class ViewModel(val environment: Environment) : Inputs, Outputs {
@@ -59,6 +60,7 @@ interface LoggedInViewHolderViewModel {
         private val unreadMessagesCount = BehaviorSubject.create<Int>()
         private val userOutput = BehaviorSubject.create<User>()
         private val pledgedProjectsIsVisible = BehaviorSubject.create<Boolean>()
+        private val pledgedProjectsIndicatorIsVisible = BehaviorSubject.create<Boolean>()
 
         private val disposables = CompositeDisposable()
         val inputs: Inputs = this
@@ -104,6 +106,11 @@ interface LoggedInViewHolderViewModel {
                 .subscribe { this.dashboardRowIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
+            this.user
+                .map { it.ppoHasAction().isTrue() }
+                .subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }
+                .addToDisposable(disposables)
+
             Observable.just(
                 environment.featureFlagClient()
                     ?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
@@ -135,5 +142,6 @@ interface LoggedInViewHolderViewModel {
         override fun user(): Observable<User> = this.userOutput
 
         override fun pledgedProjectsIsVisible(): Observable<Boolean> = this.pledgedProjectsIsVisible
+        override fun pledgedProjectsIndicatorIsVisible(): Observable<Boolean> = this.pledgedProjectsIndicatorIsVisible
     }
 }

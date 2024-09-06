@@ -64,6 +64,17 @@ object LocationFactory {
             .build()
     }
 
+    @JvmStatic
+    fun canada(): Location {
+        return builder()
+            .id(6L)
+            .displayableName("Canada")
+            .name("Canada")
+            .country("CA")
+            .expandedCountry("Canada")
+            .build()
+    }
+
     fun empty(): Location {
         return builder()
             .id(-1L)

@@ -23,6 +23,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private val unreadMessagesCount = TestSubscriber<Int>()
     private val user = TestSubscriber<User>()
     private val pledgedProjectsIsVisible = TestSubscriber<Boolean>()
+    private val pledgedProjectsIndicatorIsVisible = TestSubscriber<Boolean>()
     private val disposables = CompositeDisposable()
 
     fun setUpEnvironment(environment: Environment) {
@@ -35,6 +36,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.unreadMessagesCount().subscribe { this.unreadMessagesCount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.user().subscribe { this.user.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgedProjectsIsVisible().subscribe { this.pledgedProjectsIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgedProjectsIndicatorIsVisible().subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -186,6 +188,24 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         val user = UserFactory.user()
 
         this.pledgedProjectsIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun `when user has project alerts, should emit true`() {
+        setUpEnvironment(environment())
+        val user = UserFactory.user().toBuilder().ppoHasAction(true).build()
+        this.vm.inputs.configureWith(user)
+
+        this.pledgedProjectsIndicatorIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun `when user doesnt have project alerts, should emit false`() {
+        setUpEnvironment(environment())
+        val user = UserFactory.user().toBuilder().ppoHasAction(false).build()
+        this.vm.inputs.configureWith(user)
+
+        this.pledgedProjectsIndicatorIsVisible.assertValue(false)
     }
 
     @After

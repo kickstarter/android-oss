@@ -10,7 +10,6 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.EventName
@@ -21,7 +20,6 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
-import com.stripe.android.core.networking.AnalyticsEvent
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

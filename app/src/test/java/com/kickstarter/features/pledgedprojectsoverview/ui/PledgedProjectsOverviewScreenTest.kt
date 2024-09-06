@@ -8,7 +8,6 @@ import androidx.compose.ui.test.performClick
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.flow.flowOf

@@ -182,7 +182,7 @@ class PledgedProjectsOverviewViewModel(
             }
     }
 
-    fun onMessageCreatorClicked(projectName: String, projectId: String, creatorID: String, ppoCards : List<PPOCard?>, totalAlerts: Int) {
+    fun onMessageCreatorClicked(projectName: String, projectId: String, creatorID: String, ppoCards: List<PPOCard?>, totalAlerts: Int) {
         viewModelScope.launch(ioDispatcher) {
             analyticEvents.trackPPOMessageCreatorCTAClicked(projectID = projectId, ppoCards = ppoCards, totalCount = totalAlerts, creatorID = creatorID)
             apolloClient.getProject(

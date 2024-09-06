@@ -36,14 +36,18 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.EDIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_CONFIRM
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
@@ -51,12 +55,8 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTI
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
@@ -273,7 +273,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
      */
-    fun trackPledgedProjectsOverviewPageViewed(ppoCards: List<PPOCard>, totalCount : Int) {
+    fun trackPledgedProjectsOverviewPageViewed(ppoCards: List<PPOCard>, totalCount: Int) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
         client.track(PAGE_VIEWED.eventName, props)
@@ -287,7 +287,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
      */
-    fun trackPPOMessageCreatorCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int, creatorID: String) {
+    fun trackPPOMessageCreatorCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int, creatorID: String) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["interaction_target_id"] = creatorID
         props["project_pid"] = projectID
@@ -303,7 +303,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
      */
-    fun trackPPOFixPaymentCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int) {
+    fun trackPPOFixPaymentCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["project_pid"] = projectID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
@@ -319,7 +319,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param totalCount: The total number of alerts.
      * @param surveyID: The id of the survey.
      */
-    fun trackPPOOpenSurveyCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int, surveyID: String) {
+    fun trackPPOOpenSurveyCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int, surveyID: String) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["project_pid"] = projectID
         props["survey_id"] = surveyID
@@ -335,7 +335,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
      */
-    fun trackPPOConfirmAddressInitiateCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int) {
+    fun trackPPOConfirmAddressInitiateCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["project_pid"] = projectID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
@@ -351,7 +351,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
      */
-    fun trackPPOConfirmAddressSubmitCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int) {
+    fun trackPPOConfirmAddressSubmitCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["project_pid"] = projectID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
@@ -367,7 +367,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
      */
-    fun trackPPOConfirmAddressEditCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int) {
+    fun trackPPOConfirmAddressEditCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["project_pid"] = projectID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName

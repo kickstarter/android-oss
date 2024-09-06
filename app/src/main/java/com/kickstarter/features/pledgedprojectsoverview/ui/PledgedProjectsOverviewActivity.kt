@@ -116,6 +116,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onPrimaryActionButtonClicked = { PPOCard ->
                             when (PPOCard.viewType()) {
                                 PPOCardViewType.AUTHENTICATE_CARD -> {
+                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     lifecycleScope.launch {
                                         viewModel.showLoadingState(true)
                                     }

@@ -56,6 +56,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREA
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
@@ -279,7 +280,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when pledged project overview screen is viewed
+     * Sends data to the client when message creator is tapped on a ppo card
      *
      * @param projectID: The id of the project.
      * @param creatorID: The id of the creator.
@@ -296,7 +297,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when pledged project overview screen is viewed
+     * Sends data to the client when fix payment is tapped on a fix payment ppo card
      *
      * @param projectID: The id of the project.
      * @param ppoCards: The list of alerts.
@@ -311,11 +312,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when pledged project overview screen is viewed
+     * Sends data to the client when open survey is tapped on open survey ppo card
      *
      * @param projectID: The id of the project.
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
+     * @param surveyID: The id of the survey.
      */
     fun trackPPOOpenSurveyCTAClicked(projectID : String, ppoCards: List<PPOCard?>, totalCount : Int, surveyID: String) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
@@ -327,7 +329,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when pledged project overview screen is viewed
+     * Sends data to the client when confirm address is initiated on a confirm address ppo card
      *
      * @param projectID: The id of the project.
      * @param ppoCards: The list of alerts.
@@ -343,7 +345,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when pledged project overview screen is viewed
+     * Sends data to the client when confirm address is submitted on a confirm address ppo card dialog box
      *
      * @param projectID: The id of the project.
      * @param ppoCards: The list of alerts.
@@ -353,13 +355,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
         props["project_pid"] = projectID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
-        props[CONTEXT_CTA.contextName] = CONFIRM_INITIATE.contextName
+        props[CONTEXT_CTA.contextName] = CONFIRM_SUBMIT.contextName
         props[CONTEXT_TYPE.contextName] = ADDRESS.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
 
     /**
-     * Sends data to the client when pledged project overview screen is viewed
+     * Sends data to the client when edit on confirm address card is tapped
      *
      * @param projectID: The id of the project.
      * @param ppoCards: The list of alerts.

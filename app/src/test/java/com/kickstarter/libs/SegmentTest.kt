@@ -3,6 +3,8 @@ package com.kickstarter.libs
 import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ContextPropertyKeyName
@@ -1510,6 +1512,233 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test ppo page viewed event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPledgedProjectsOverviewPageViewed(ppoCards, 10)
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(10, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo message creator click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOMessageCreatorCTAClicked("123123", ppoCards, 11, "09231")
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals("09231", expectedProperties["interaction_target_id"])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo fix payment click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOFixPaymentCTAClicked("123123", ppoCards, 11)
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo open survey click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOOpenSurveyCTAClicked("123123", ppoCards, 11, "9023234")
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals("9023234", expectedProperties["survey_id"])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo confirm address initiate click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOConfirmAddressInitiateCTAClicked("123123", ppoCards, 11)
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.CONFIRM_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.ContextTypeName.ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo confirm address submit click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOConfirmAddressSubmitCTAClicked("123123", ppoCards, 11)
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.CONFIRM_SUBMIT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.ContextTypeName.ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo confirm address edit click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOConfirmAddressEditCTAClicked("123123", ppoCards, 11)
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.EDIT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.ContextTypeName.ADDRESS.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals(2, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
     fun trackDiscoverFilterCTA_whenFilterPresent_returnsCorrectFilter() {
         val user = user()
         val client = client(user)
@@ -1644,6 +1873,11 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(6, expectedProperties["checkout_add_ons_count_total"])
         assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
         assertEquals(110.71, expectedProperties["checkout_add_ons_minimum_usd"])
+    }
+
+    private fun assertNotificationProperties() {
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(1, expectedProperties["notification_count_address_locks_soon"])
     }
 
     private fun assertProjectProperties(project: Project) {

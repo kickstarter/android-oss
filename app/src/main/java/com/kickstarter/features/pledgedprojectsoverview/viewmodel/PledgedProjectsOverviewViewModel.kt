@@ -47,7 +47,6 @@ class PledgedProjectsPagingSource(
     private val limit: Int = PAGE_LIMIT,
 
 ) : PagingSource<String, PPOCard>() {
-    val pageNumber = 0
     override fun getRefreshKey(state: PagingState<String, PPOCard>): String {
         return "" // - Default first page is empty string when paginating with graphQL
     }

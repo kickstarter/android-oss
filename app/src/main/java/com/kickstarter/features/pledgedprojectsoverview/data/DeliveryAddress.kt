@@ -83,14 +83,14 @@ class DeliveryAddress private constructor(
         var equals = super.equals(other)
         if (other is DeliveryAddress) {
             equals = addressId() == other.addressId() &&
-                    addressLine1() == other.addressLine1() &&
-                    addressLine2() == other.addressLine2() &&
-                    city() == other.city() &&
-                    region() == other.region() &&
-                    postalCode() == other.postalCode() &&
-                    countryCode() == other.countryCode() &&
-                    phoneNumber() == other.phoneNumber() &&
-                    recipientName() == other.recipientName()
+                addressLine1() == other.addressLine1() &&
+                addressLine2() == other.addressLine2() &&
+                city() == other.city() &&
+                region() == other.region() &&
+                postalCode() == other.postalCode() &&
+                countryCode() == other.countryCode() &&
+                phoneNumber() == other.phoneNumber() &&
+                recipientName() == other.recipientName()
         }
         return equals
     }
@@ -104,6 +104,6 @@ class DeliveryAddress private constructor(
         phoneNumber (optional)
      */
     fun getFormattedAddress(): String {
-        return "${recipientName ?: ""}\n${addressLine1 ?: ""}\n" + if (!addressLine2.isNullOrEmpty()) "${addressLine2}\n" else "" + "${city ?: ""}, ${region ?: ""} ${postalCode ?: ""}\n" + if(!countryCode.isNullOrEmpty()) "${countryCode}\n" else "" + if (!phoneNumber.isNullOrEmpty()) "$phoneNumber" else ""
+        return "${recipientName ?: ""}\n${addressLine1 ?: ""}\n" + if (!addressLine2.isNullOrEmpty()) "${addressLine2}\n" else "" + "${city ?: ""}, ${region ?: ""} ${postalCode ?: ""}\n" + if (!countryCode.isNullOrEmpty()) "${countryCode}\n" else "" + if (!phoneNumber.isNullOrEmpty()) "$phoneNumber" else ""
     }
 }

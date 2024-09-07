@@ -43,6 +43,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -80,7 +81,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
             )
@@ -110,7 +111,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
                 errorSnackBarHostState = SnackbarHostState(),
@@ -138,9 +139,9 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 errorSnackBarHostState = SnackbarHostState(),
-                onSeeAllBackedProjectsClick = {},
+                onSeeAllBackedProjectsClick = {}
             )
         }
     }
@@ -157,7 +158,7 @@ fun PledgedProjectsOverviewScreen(
     ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
-    onSendMessageClick: (projectName: String) -> Unit,
+    onSendMessageClick: (projectName: String, projectID: String, ppoCards: List<PPOCard?>, totalAlerts: Int, creatorID: String) -> Unit,
     onSeeAllBackedProjectsClick: () -> Unit,
     onPrimaryActionButtonClicked: (PPOCard) -> Unit,
     onSecondaryActionButtonClicked: (PPOCard) -> Unit,
@@ -165,11 +166,13 @@ fun PledgedProjectsOverviewScreen(
     isErrored: Boolean = false,
     showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
+    analyticEvents: AnalyticEvents? = null,
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
+    var projectID by remember { mutableStateOf("") }
     val pullRefreshState = rememberPullRefreshState(
         isLoading,
         pullRefreshCallback,
@@ -199,7 +202,7 @@ fun PledgedProjectsOverviewScreen(
             modifier = modifier,
             topBar = {
                 TopToolBar(
-                    title = stringResource(id = R.string.project_alerts_fpo),
+                    title = stringResource(id = R.string.Project_alerts),
                     titleColor = colors.textPrimary,
                     leftOnClickAction = onBackPressed,
                     leftIconColor = colors.icon,
@@ -229,7 +232,7 @@ fun PledgedProjectsOverviewScreen(
                     item {
                         if (!totalAlerts.isNullOrZero()) {
                             Text(
-                                text = stringResource(id = R.string.alerts_fpo).format("count", totalAlerts.toString()),
+                                text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
                                 style = typography.title3Bold,
                                 color = colors.textPrimary
                             )
@@ -252,7 +255,7 @@ fun PledgedProjectsOverviewScreen(
                                 flags = it.flags,
                                 imageContentDescription = it.imageContentDescription(),
                                 creatorName = it.creatorName(),
-                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
+                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
                                 shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
                                 onActionButtonClicked = {
                                     onPrimaryActionButtonClicked(it)
@@ -260,9 +263,11 @@ fun PledgedProjectsOverviewScreen(
                                 onSecondaryActionButtonClicked = {
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
+                                            analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
                                             confirmedAddress = it.address() ?: ""
                                             addressID = it.addressID ?: ""
                                             backingID = it.backingId ?: ""
+                                            projectID = it.projectId ?: ""
                                             openConfirmAddressAlertDialog.value = true
                                         }
                                         else -> {
@@ -304,6 +309,7 @@ fun PledgedProjectsOverviewScreen(
                 rightButtonText = stringResource(id = R.string.Confirm),
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
+                    analyticEvents?.trackPPOConfirmAddressSubmitCTAClicked(ppoCards = ppoCards.itemSnapshotList.items, projectID = projectID, totalCount = totalAlerts)
                     onAddressConfirmed(addressID, backingID)
                 }
             )
@@ -330,7 +336,7 @@ fun PPOScreenEmptyState(
     ) {
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.youre_all_caught_up_fpo),
+            text = stringResource(id = R.string.Youre_all_caught_up),
             style = typography.title3Bold,
         )
 
@@ -338,7 +344,7 @@ fun PPOScreenEmptyState(
 
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.when_projects_youve_backed_need_your_attention_youll_see_them_here_fpo),
+            text = stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
             style = typography.body,
             textAlign = TextAlign.Center
         )
@@ -347,7 +353,7 @@ fun PPOScreenEmptyState(
         KSPrimaryGreenButton(
             modifier = Modifier,
             onClickAction = { onSeeAllBackedProjectsClick.invoke() },
-            text = stringResource(id = R.string.see_all_backed__projects_fpo),
+            text = stringResource(id = R.string.See_all_backed__projects),
             isEnabled = true
         )
     }
@@ -377,7 +383,7 @@ fun PPOScreenErrorState() {
 
         Text(
             color = colors.textPrimary,
-            text = (stringResource(id = R.string.something_went_wrong_pull_to_refresh_fpo)),
+            text = (stringResource(id = R.string.Something_went_wrong_pull_to_refresh_no_period)),
             style = typography.body,
             textAlign = TextAlign.Center
         )

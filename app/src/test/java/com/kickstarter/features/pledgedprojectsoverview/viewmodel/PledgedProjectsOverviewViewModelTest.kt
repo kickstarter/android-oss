@@ -8,7 +8,15 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockTrackingClient
+import com.kickstarter.libs.TrackingClientType
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
@@ -20,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import rx.observers.TestSubscriber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
@@ -28,7 +37,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `emits project when message creator called`() =
         runTest {
             val projectState = mutableListOf<Project>()
-
             val project = ProjectFactory.successfulProject()
             val viewModel = PledgedProjectsOverviewViewModel.Factory(
                 ioDispatcher = UnconfinedTestDispatcher(testScheduler),
@@ -37,18 +45,22 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                         override fun getProject(slug: String): Observable<Project> {
                             return Observable.just(project)
                         }
-                    }).build()
+                    })
+                    .build()
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.projectFlow.toList(projectState)
             }
-            viewModel.onMessageCreatorClicked("test_project_slug")
+
+            viewModel.onMessageCreatorClicked("test_project_slug", "projectID", "creatorID", listOf(PPOCardFactory.confirmAddressCard()), 10)
 
             assertEquals(
                 projectState.last(),
                 project
             )
+
+            segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
         }
 
     @Test
@@ -66,7 +78,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
             viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
-            viewModel.onMessageCreatorClicked("test_project_slug")
+            viewModel.onMessageCreatorClicked("test_project_slug", "projectID", "creatorID", listOf(PPOCardFactory.confirmAddressCard()), 10)
 
             // Should equal error string id
             assertEquals(
@@ -171,7 +183,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
             assertEquals(
                 snackbarAction,
-                R.string.address_confirmed_snackbar_text_fpo
+                R.string.Address_confirmed_need_to_change_your_address_before_it_locks
             )
 
             assertEquals(
@@ -190,6 +202,13 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     fun `pager result is errored when network response is errored`() {
         runTest {
             val mutableTotalAlerts = MutableStateFlow<Int>(0)
+            val user = UserFactory.user()
+            val trackingClient = MockTrackingClient(
+                MockCurrentUser(user),
+                MockCurrentConfig(),
+                TrackingClientType.Type.SEGMENT,
+                MockFeatureFlagClient()
+            )
 
             val mockApolloClientV2 = object : MockApolloClientV2() {
 
@@ -199,6 +218,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             }
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,
+                AnalyticEvents(listOf(trackingClient)),
                 mutableTotalAlerts
             )
 
@@ -224,7 +244,13 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         runTest {
             val mutableTotalAlerts = MutableStateFlow<Int>(0)
             val totalAlertsList = mutableListOf<Int>()
-
+            val user = UserFactory.user()
+            val trackingClient = MockTrackingClient(
+                MockCurrentUser(user),
+                MockCurrentConfig(),
+                TrackingClientType.Type.SEGMENT,
+                MockFeatureFlagClient()
+            )
             val mockApolloClientV2 = object : MockApolloClientV2() {
 
                 override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope> {
@@ -234,9 +260,14 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     )
                 }
             }
+
+            val segmentTrack: TestSubscriber<String> = TestSubscriber()
+            trackingClient.eventNames.subscribe(segmentTrack)
+
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,
-                mutableTotalAlerts
+                AnalyticEvents(listOf(trackingClient)),
+                mutableTotalAlerts,
             )
 
             var viewModel = PledgedProjectsOverviewViewModel.Factory(
@@ -269,6 +300,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 totalAlertsList,
                 listOf(0, 10)
             )
+
+            segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
         }
     }
 

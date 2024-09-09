@@ -8,8 +8,7 @@ class PPOCardFactory private constructor() {
 
         fun ppoCard(
             backingID: String?,
-            addressID: String?,
-            address: String?,
+            deliveryAddress: DeliveryAddress?,
             amount: String?,
             currencyCode: CurrencyCode?,
             currencySymbol: String?,
@@ -24,8 +23,7 @@ class PPOCardFactory private constructor() {
         ): PPOCard {
             return PPOCard.builder()
                 .backingId(backingID)
-                .address(address)
-                .addressID(addressID)
+                .deliveryAddress(deliveryAddress)
                 .amount(amount)
                 .currencySymbol(currencySymbol)
                 .currencyCode(currencyCode)
@@ -40,12 +38,45 @@ class PPOCardFactory private constructor() {
                 .build()
         }
 
+        fun deliveryAddress(
+            addressID: String?,
+            addressLine1: String?,
+            addressLine2: String?,
+            city: String?,
+            region: String?,
+            postalCode: String?,
+            countryCode: String?,
+            phoneNumber: String?,
+            recipientName: String?
+        ): DeliveryAddress {
+            return DeliveryAddress.builder()
+                .addressId(addressID)
+                .addressLine1(addressLine1)
+                .addressLine2(addressLine2)
+                .city(city)
+                .region(region)
+                .postalCode(postalCode)
+                .countryCode(countryCode)
+                .phoneNumber(phoneNumber)
+                .recipientName(recipientName)
+                .build()
+        }
+
         fun confirmAddressCard(): PPOCard {
             return ppoCard(
                 backingID = "1234",
                 amount = "12.0",
-                address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
-                addressID = "12234",
+                deliveryAddress = deliveryAddress(
+                    addressID = "12234",
+                    addressLine1 = "123 First Street, Apt #5678",
+                    addressLine2 = null,
+                    city = "Los Angeles",
+                    region = "CA",
+                    postalCode = "90025-1234",
+                    countryCode = "United States",
+                    phoneNumber = "(555) 555-5555",
+                    recipientName = "Firsty Lasty"
+                ),
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",
@@ -63,8 +94,17 @@ class PPOCardFactory private constructor() {
             return ppoCard(
                 backingID = "1234",
                 amount = "$12.00",
-                address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
-                addressID = "12234",
+                deliveryAddress = deliveryAddress(
+                    addressID = "12234",
+                    addressLine1 = "123 First Street, Apt #5678",
+                    addressLine2 = null,
+                    city = "Los Angeles",
+                    region = "CA",
+                    postalCode = "90025-1234",
+                    countryCode = "United States",
+                    phoneNumber = "(555) 555-5555",
+                    recipientName = "Firsty Lasty"
+                ),
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",
@@ -83,8 +123,17 @@ class PPOCardFactory private constructor() {
             return ppoCard(
                 backingID = "1234",
                 amount = "$12.00",
-                address = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
-                addressID = "12234",
+                deliveryAddress = deliveryAddress(
+                    addressID = "12234",
+                    addressLine1 = "123 First Street, Apt #5678",
+                    addressLine2 = null,
+                    city = "Los Angeles",
+                    region = "CA",
+                    postalCode = "90025-1234",
+                    countryCode = "United States",
+                    phoneNumber = "(555) 555-5555",
+                    recipientName = "Firsty Lasty"
+                ),
                 currencySymbol = "$",
                 currencyCode = CurrencyCode.USD,
                 projectName = "Super Duper Project",

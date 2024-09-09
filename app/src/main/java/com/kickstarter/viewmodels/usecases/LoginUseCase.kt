@@ -3,12 +3,14 @@ package com.kickstarter.viewmodels.usecases
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.User
+import com.stripe.android.core.utils.urlEncode
 
 class LoginUseCase(environment: Environment) {
     private val currentUser = requireNotNull(environment.currentUser())
     private val currentUserV2 = requireNotNull(environment.currentUserV2())
     private val apolloClient = requireNotNull(environment.apolloClient())
     private val apolloClientV2 = requireNotNull(environment.apolloClientV2())
+    private val firebaseAnalyticsClient = requireNotNull(environment.firebaseAnalyticsClient())
 
     fun logout() {
         currentUser.logout()
@@ -23,6 +25,7 @@ class LoginUseCase(environment: Environment) {
     fun setUser(user: User) {
         currentUser.login(user)
         currentUserV2.login(user)
+        firebaseAnalyticsClient.sendUserId(user)
     }
 
     fun loginAndUpdateUserPrivacy(newUser: User, accessToken: String): io.reactivex.Observable<User> {
@@ -39,6 +42,7 @@ class LoginUseCase(environment: Environment) {
                     .hasPassword(it.hasPassword).build()
                 currentUserV2.login(updated)
                 currentUser.login(updated)
+                firebaseAnalyticsClient.sendUserId(updated)
                 return@map updated
             }
     }

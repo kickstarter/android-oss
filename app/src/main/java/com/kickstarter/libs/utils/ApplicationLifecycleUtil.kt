@@ -138,6 +138,7 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
                     .compose(Transformers.neverErrorV2())
                     .subscribe { user ->
                         currentUser.refresh(user)
+                        firebaseAnalyticsClient.sendUserId(user)
                     }.addToDisposable(disposables)
             }
         }

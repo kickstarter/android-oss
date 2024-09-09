@@ -99,7 +99,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         ppoCards = ppoCardPagingSource,
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
-                        onSendMessageClick = { projectName -> viewModel.onMessageCreatorClicked(projectName) },
+                        onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
                         onProjectPledgeSummaryClick = { url ->
                             openBackingDetailsWebView(
                                 url = env.webEndpoint() + url,
@@ -116,6 +116,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onPrimaryActionButtonClicked = { PPOCard ->
                             when (PPOCard.viewType()) {
                                 PPOCardViewType.AUTHENTICATE_CARD -> {
+                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     lifecycleScope.launch {
                                         viewModel.showLoadingState(true)
                                     }
@@ -123,6 +124,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.FIX_PAYMENT -> {
+                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openManagePledge(
                                         PPOCard.projectSlug ?: "",
                                         resultLauncher = startForResult
@@ -130,6 +132,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.OPEN_SURVEY -> {
+                                    env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts, PPOCard.surveyID ?: "")
                                     openBackingDetailsWebView(
                                         url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
@@ -137,6 +140,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.CONFIRM_ADDRESS -> {
+                                    env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
                                         resultLauncher = startForResult
@@ -147,8 +151,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
                             }
                         },
-                        onSecondaryActionButtonClicked = { PPOCard ->
-                        },
+                        onSecondaryActionButtonClicked = { PPOCard -> },
                     )
                 }
 
@@ -250,12 +253,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         viewModel.showLoadingState(false)
                     }
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        viewModel.showHeadsUpSnackbar(R.string.youve_been_authenticated_successfully_pull_to_refresh_fpo)
+                        viewModel.showHeadsUpSnackbar(R.string.Youve_been_authenticated_successfully_pull_to_refresh)
                         viewModel.getPledgedProjects()
                     } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||
                         result.outcome == StripeIntentResult.Outcome.TIMEDOUT ||
                         result.outcome == StripeIntentResult.Outcome.UNKNOWN
-                    ) viewModel.showErrorSnackbar(R.string.authentication_failed_please_try_again_fpo)
+                    ) viewModel.showErrorSnackbar(R.string.Authentication_failed_please_try_again)
                 }
                 override fun onError(e: Exception) {
                     lifecycleScope.launch {

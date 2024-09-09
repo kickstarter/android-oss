@@ -400,9 +400,13 @@ fragment ppoCard on Backing {
         name
         id
         slug
+        backerSurvey {
+            id
+        }
         ...full
         creator {
             name
+            id
         }
     }
 }

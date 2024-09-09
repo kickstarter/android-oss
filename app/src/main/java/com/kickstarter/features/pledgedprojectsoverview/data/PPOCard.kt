@@ -12,6 +12,7 @@ class PPOCard private constructor(
     val backingId: String?,
     val backingDetailsUrl: String?,
     val clientSecret: String?,
+    val creatorID: String?,
     val creatorName: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
@@ -22,6 +23,7 @@ class PPOCard private constructor(
     val projectName: String?,
     val projectSlug: String?,
     val timeNumberForAction: Int,
+    val surveyID: String?,
     val viewType: PPOCardViewType?
 
 ) : Parcelable {
@@ -31,6 +33,8 @@ class PPOCard private constructor(
     fun backingDetailsUrl() = this.backingDetailsUrl
     fun backingId() = this.backingId
     fun clientSecret() = this.clientSecret
+    fun creatorID() = this.creatorID
+    fun surveyID() = this.surveyID
     fun creatorName() = this.creatorName
     fun currencyCode() = this.currencyCode
     fun currencySymbol() = this.currencySymbol
@@ -50,6 +54,8 @@ class PPOCard private constructor(
         var backingDetailsUrl: String? = null,
         var backingId: String? = null,
         var clientSecret: String? = null,
+        var creatorID: String? = null,
+        var surveyID: String? = null,
         var creatorName: String? = null,
         var currencyCode: CurrencyCode? = null,
         var currencySymbol: String? = null,
@@ -68,6 +74,8 @@ class PPOCard private constructor(
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun backingId(backingId: String?) = apply { this.backingId = backingId }
         fun clientSecret(clientSecret: String?) = apply { this.clientSecret = clientSecret }
+        fun creatorID(creatorName: String?) = apply { this.creatorID = creatorID }
+        fun surveyID(surveyID: String?) = apply { this.surveyID = surveyID }
         fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }
@@ -86,6 +94,8 @@ class PPOCard private constructor(
             backingDetailsUrl = backingDetailsUrl,
             backingId = backingId,
             clientSecret = clientSecret,
+            creatorID = creatorID,
+            surveyID = surveyID,
             creatorName = creatorName,
             currencyCode = currencyCode,
             currencySymbol = currencySymbol,
@@ -106,6 +116,8 @@ class PPOCard private constructor(
         backingDetailsUrl = backingDetailsUrl,
         backingId = backingId,
         clientSecret = clientSecret,
+        creatorID = creatorID,
+        surveyID = surveyID,
         creatorName = creatorName,
         currencyCode = currencyCode,
         currencySymbol = currencySymbol,
@@ -137,6 +149,8 @@ class PPOCard private constructor(
                 projectName() == other.projectName() &&
                 projectId() == other.projectId() &&
                 projectSlug() == other.projectSlug() &&
+                creatorID() == other.creatorID() &&
+                surveyID() == other.surveyID() &&
                 creatorName() == other.creatorName() &&
                 imageUrl() == other.imageUrl() &&
                 imageContentDescription() == other.imageContentDescription() &&

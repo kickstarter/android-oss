@@ -34,7 +34,7 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
                     lazyColumnListState = rememberLazyListState(),
                     ppoCards = ppoCardPagingList,
                     errorSnackBarHostState = SnackbarHostState(),
-                    onSendMessageClick = {},
+                    onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                     onAddressConfirmed = { backingID, addressID -> },
                     onProjectPledgeSummaryClick = {},
                     onSeeAllBackedProjectsClick = {},

@@ -11,6 +11,8 @@ import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.CurrentUserTypeV2
+import com.kickstarter.libs.FirebaseAnalyticsClient
+import com.kickstarter.libs.FirebaseAnalyticsClientType
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -43,6 +45,9 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
     @Inject
     lateinit var build: Build
 
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClientType
+
     @JvmField
     @Inject
     var featuresFlagPreference: StringPreferenceType? = null
@@ -52,7 +57,14 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
 
     init {
         application.component().inject(this)
-        currentUser.observable().filter { it.isPresent() }.subscribe { isLoggedIn = true }.addToDisposable(disposables)
+        currentUser.observable().filter {
+            it.isPresent()
+        }.subscribe {
+            isLoggedIn = true
+            it.getValue()?.let { user ->
+                firebaseAnalyticsClient.sendUserId(user)
+            }
+        }.addToDisposable(disposables)
     }
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}

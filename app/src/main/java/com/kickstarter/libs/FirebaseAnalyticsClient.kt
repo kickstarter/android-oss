@@ -16,7 +16,7 @@ interface FirebaseAnalyticsClientType {
     fun sendUserId(user: User)
 }
 
-open class FirebaseAnalyticsClient(
+class FirebaseAnalyticsClient(
     private var ffClient: FeatureFlagClientType,
     private var preference: SharedPreferences,
     private val firebaseAnalytics: FirebaseAnalytics?,
@@ -34,9 +34,7 @@ open class FirebaseAnalyticsClient(
 
     override fun sendUserId(user: User) {
         firebaseAnalytics?.let {
-            if (isEnabled()) {
-                firebaseAnalytics.setUserId(user.id().toString())
-            }
+            firebaseAnalytics.setUserId(user.id().toString())
         }
     }
 }

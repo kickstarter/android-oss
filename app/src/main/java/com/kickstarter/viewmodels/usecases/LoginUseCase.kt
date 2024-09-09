@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels.usecases
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.User
-import com.stripe.android.core.utils.urlEncode
 
 class LoginUseCase(environment: Environment) {
     private val currentUser = requireNotNull(environment.currentUser())

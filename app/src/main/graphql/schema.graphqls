@@ -240,7 +240,8 @@ type User implements Node {
   """
   following("""Returns the first _n_ elements from the list.""" first: Int, """Returns the elements in the list that come after the specified cursor.""" after: String, """Returns the last _n_ elements from the list.""" last: Int, """Returns the elements in the list that come before the specified cursor.""" before: String): UserFollowingConnection
   """
-  Projects a user has launched that are successful, but have not completed fulfillment
+  Projects a user has launched that are successful,
+          but have not completed fulfillment
   """
   fulfillingProjects: [Project!]!
   """
@@ -395,7 +396,7 @@ type User implements Node {
   """
   Projects a user has saved.
   """
-  savedProjects("""Returns the first _n_ elements from the list.""" first: Int, """Returns the elements in the list that come after the specified cursor.""" after: String, """Returns the last _n_ elements from the list.""" last: Int, """Returns the elements in the list that come before the specified cursor.""" before: String, """Filter projects by publically accessible state.""" state: PublicProjectState, """Get saved projects with deadlines after this date""" deadlineAfter: DateTime, """Get saved projects with deadlines before this date""" deadlineBefore: DateTime): UserSavedProjectsConnection
+  savedProjects("""Returns the first _n_ elements from the list.""" first: Int, """Returns the elements in the list that come after the specified cursor.""" after: String, """Returns the last _n_ elements from the list.""" last: Int, """Returns the elements in the list that come before the specified cursor.""" before: String, """Filter projects by publically accessible state.""" state: PublicProjectState, """Get saved projects with deadlines after this date""" deadlineAfter: DateTime, """Get saved projects with deadlines before this date""" deadlineBefore: DateTime, """Get saved projects that are upcoming""" upcoming: Boolean): UserSavedProjectsConnection
   """
   Is the user's profile public
   """
@@ -552,7 +553,10 @@ enum Feature {
   prelaunch_story_editor
   prelaunch_story_exception
   creator_nav_refresh
+  sku_editing_2024
   pledge_redemption_cross_sells
+  superbacker_progress
+  backers_can_choose_plot_v1
 }
 
 """
@@ -1166,6 +1170,10 @@ type Project implements Node & Commentable {
   """
   lastUploadedVideo: Video
   """
+  The last checkout_wave, if there is one
+  """
+  lastWave: CheckoutWave
+  """
   Total backers for the project during late pledge phase
   """
   latePledgeBackersCount: Int!
@@ -1613,9 +1621,9 @@ type Backing implements Node {
   """
   backerNote: String
   """
-  URL for the backing details page
+  URL/path for the backing details page
   """
-  backingDetailsPageUrl: String!
+  backingDetailsPageRoute(type: Route!, tab: BackingDetailsPageTab): String!
   """
   The backing rewards on a backing
   """
@@ -1623,7 +1631,7 @@ type Backing implements Node {
   """
   A link to the backing information
   """
-  backingUrl: String
+  backingUrl: String!
   """
   Extra amount the backer pledged on top of the minimum.
   """
@@ -1678,6 +1686,10 @@ type Backing implements Node {
   """
   location: Location
   """
+  The order associated with the backing
+  """
+  order: Order
+  """
   Payment source used on a backing.
   """
   paymentSource: PaymentSource
@@ -1693,6 +1705,10 @@ type Backing implements Node {
   The project
   """
   project: Project
+  """
+  URL for redeeming the backing
+  """
+  redemptionPageUrl: String!
   """
   If the backing was refunded
   """
@@ -1742,6 +1758,36 @@ type Backing implements Node {
   All of the backer's saved addresses that match the backing country
   """
   usableBackerAddresses: [Address!]
+}
+
+enum Route {
+  """
+  Just the path (does not include the domain)
+  """
+  path
+  """
+  The entire URL (include the domain)
+  """
+  url
+}
+
+enum BackingDetailsPageTab {
+  """
+  Details
+  """
+  details
+  """
+  Survey responses
+  """
+  survey_responses
+  """
+  Messages
+  """
+  messages
+  """
+  Pledge redemption
+  """
+  pledge_redemption
 }
 
 """
@@ -2163,6 +2209,10 @@ A unique item variant aka SKU
 type ItemVariant {
   id: ID!
   """
+  The name (e.g. 'Hoodie Small Blue Checkered')
+  """
+  name: String!
+  """
   The option values associated with this variant
   """
   optionValues: [OptionValue!]
@@ -2312,19 +2362,27 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   """
   backersCount("""Filters out backings in an inactive state""" excludeInactive: Boolean): Int
   """
-  The type of the reward content - physical, non-physical, both, or legacy (for projects launched before rollout of this feature).
+  The type of the reward content - physical, non-physical, both, or
+                                                   legacy (for projects launched before rollout of this feature).
   """
   contentsType: ContentsType
   """
-  Amount for claiming this reward, in the current user's chosen currency
+  Amount for claiming this reward, in the current user's chosen
+                                                     currency
   """
   convertedAmount: Money!
+  """
+  What state is cross sell configuration in for this
+                                                                      reward (complete, incomplete, or not_started)?
+  """
+  crossSellsCompletion: PrereqCompletionStatus!
   """
   A reward description.
   """
   description: String!
   """
-  A reward's title plus the amount, or a default title (the reward amount) if it doesn't have a title.
+  A reward's title plus the amount, or a default title (the reward amount) if it doesn't
+                                 have a title.
   """
   displayName: String!
   """
@@ -2333,7 +2391,8 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   """
   displayableAddons("""Returns the first _n_ elements from the list.""" first: Int, """Returns the elements in the list that come after the specified cursor.""" after: String, """Returns the last _n_ elements from the list.""" last: Int, """Returns the elements in the list that come before the specified cursor.""" before: String): RewardConnection!
   """
-  For post-campaign enabled rewards, the conditions under which to stop offering the reward.
+  For post-campaign enabled rewards, the conditions under which to
+                                   stop offering the reward.
   """
   endCondition: Int
   """
@@ -2378,17 +2437,23 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   """
   limitPerBacker("""Returns system wide limit per backer if not set by creator.""" withFallback: Boolean): Int
   """
-  Where the reward can be locally received if local receipt is selected as the shipping preference
+  Where the reward can be locally received if local receipt
+                                                             is selected as the shipping preference
   """
   localReceiptLocation: Location
   """
-  The maximum amount of this add-on in a single pledge selected by any pledged backer.
+  The maximum amount of this add-on in a single pledge selected by any
+                                                   pledged backer.
   """
   maxPledgedInSingleBacking: Int!
   """
   A reward title.
   """
   name: String
+  """
+  Cross-Sells configuration for this Reward
+  """
+  orderableConfig: OrderableConfig
   """
   Amount for claiming this reward during the campaign.
   """
@@ -2426,11 +2491,13 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   """
   shippingRates: [ShippingRate!]!
   """
-  Whether the shipping rates are filled out and not missing fields
+  Whether the shipping rates are filled out and
+                                                                         not missing fields
   """
-  shippingRatesValid: PrereqCompletionStatus!
+  shippingRatesCompletion: PrereqCompletionStatus!
   """
-  Shipping rules defined by the creator for this reward
+  Shipping rules defined by the creator for
+                                                                           this reward
   """
   shippingRules: [ShippingRule]!
   """
@@ -2446,7 +2513,10 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   """
   shippingSummarySentence: String
   """
-  Simple shipping rules expanded as a faster alternative to shippingRulesExpanded since connection type is slow
+  Simple shipping rules
+                                                                                                 expanded as a faster alternative to
+                                                                                                 shippingRulesExpanded since connection
+                                                                                                 type is slow
   """
   simpleShippingRulesExpanded: [SimpleShippingRule]!
   """
@@ -2454,7 +2524,8 @@ Inclusion in this list does not necessarily indicate that the reward is availabl
   """
   soldOut: Boolean!
   """
-  For post-campaign enabled rewards, the conditions under which to start offering the reward.
+  For post-campaign enabled rewards, the conditions under which to
+                                     start offering the reward.
   """
   startCondition: Int
   """
@@ -2783,6 +2854,29 @@ enum QuestionType {
 }
 
 """
+Configuration for an Orderable for Cross-Sells.
+"""
+type OrderableConfig {
+  """
+  Is this orderable available for cross-sells in Pledge Redemption.
+  """
+  enabled: Boolean!
+  id: ID!
+  """
+  The total number of an orderable available to be purchased
+  """
+  limit: Int
+  """
+  The number of an orderable a backer is allowed to add to their order
+  """
+  limitPerOrder: Int
+  """
+  The price charged for an orderable
+  """
+  price: Money
+}
+
+"""
 Tax configuration data related to an item
 """
 type ItemTaxConfig {
@@ -2798,7 +2892,15 @@ type ItemTaxConfig {
 A project scoped tax category
 """
 type TaxCategory {
+  """
+  Whether or not the category is associated with multiple items
+  """
+  associatedWithMultipleItems: Boolean!
   id: ID!
+  """
+  Whether or not the category is nontaxable
+  """
+  nontaxable: Boolean!
   """
   Third party tax code
   """
@@ -2861,7 +2963,7 @@ type BackingAddon {
   """
   Amount for claiming this add-on during the campaign.
   """
-  pledgeAmount: Money
+  pledgeAmount: Money!
   """
   The quantity of the add-on included in a backing.
   """
@@ -3193,6 +3295,83 @@ type Message implements Node {
   The message is spam
   """
   spam: Boolean!
+}
+
+"""
+An order.
+"""
+type Order implements Node {
+  """
+  The delivery or home address associated with the order.
+  """
+  address: Address
+  """
+  The associated backer
+  """
+  backer: User!
+  """
+  The associated backing
+  """
+  backing: Backing!
+  """
+  The difference between the voucher amount and the total market value, if positive
+  """
+  bonusAmount: Int!
+  """
+  The currency of the order
+  """
+  currency: CurrencyCode!
+  id: ID!
+  """
+  The cost of tax on reward items
+  """
+  itemTax: Int
+  """
+  The project associated with the order
+  """
+  project: Project!
+  """
+  The cost of shipping
+  """
+  shippingAmount: Int
+  """
+  The cost of tax on shipping
+  """
+  shippingTax: Int
+  """
+  The order's state, e.g. draft, submitted, successful, errored, missed
+  """
+  state: OrderStateEnum!
+  """
+  The total cost for the order including taxes and shipping
+  """
+  total: Int
+  """
+  The total tax amount for the order
+  """
+  totalTax: Int
+  """
+  The amount pledged during the crowdfunding campaign
+  """
+  voucherAmount: Int!
+}
+
+"""
+The state of the order, e.g. draft, submitted, successful, errored, missed.
+"""
+enum OrderStateEnum {
+  """
+  draft
+  """
+  draft
+  """
+  successful
+  """
+  successful
+  """
+  dropped
+  """
+  dropped
 }
 
 """
@@ -5941,6 +6120,10 @@ type CreatorToolsPaths {
   """
   dashboardPath: String!
   """
+  The path to the disbursement page for a successful post-pledge redemption payout
+  """
+  disbursementPath: String
+  """
   The edit rewards project path
   """
   editRewardsProjectPath: String!
@@ -6579,91 +6762,6 @@ type LocationEdge {
   The item at the end of the edge.
   """
   node: Location
-}
-
-"""
-An order.
-"""
-type Order implements Node {
-  """
-  The delivery or home address associated with the order.
-  """
-  address: Address
-  """
-  The associated backer
-  """
-  backer: User!
-  """
-  The associated backing
-  """
-  backing: Backing!
-  """
-  The currency of the order
-  """
-  currency: CurrencyCode!
-  """
-  The funds capture key
-  """
-  fundsCaptureKey: String
-  id: ID!
-  """
-  The cost of tax on reward items
-  """
-  itemTax: Int
-  """
-  The project associated with the order
-  """
-  project: Project!
-  """
-  The cost of shipping
-  """
-  shippingAmount: Int
-  """
-  The cost of tax on shipping
-  """
-  shippingTax: Int
-  """
-  The order's state, e.g. draft, submitted, successful, errored, missed
-  """
-  state: OrderStateEnum!
-  """
-  The total cost for the order including taxes and shipping
-  """
-  total: Int
-  """
-  The total tax amount for the order
-  """
-  totalTax: Int
-  """
-  The amount pledged during the crowdfunding campaign
-  """
-  voucherAmount: Int!
-}
-
-"""
-The state of the order, e.g. draft, submitted, successful, errored, missed.
-"""
-enum OrderStateEnum {
-  """
-  draft
-  """
-  draft
-  """
-  submitted
-  """
-  submitted
-  """
-  successful
-  """
-  successful
-  """
-  errored
-  """
-  errored
-  """
-  missed
-  """
-  missed
 }
 
 """
@@ -8532,6 +8630,10 @@ type Mutation {
   """
   submitVatNumber(input: SubmitVatNumberInput!): SubmitVatNumberPayload
   """
+  Confirm payment and complete the order
+  """
+  succeedOrder(input: SucceedOrderInput!): SucceedOrderPayload
+  """
   Toggle whether a comment is pinned.
   """
   toggleCommentPin(input: ToggleCommentPinInput!): ToggleCommentPinPayload
@@ -8575,6 +8677,10 @@ type Mutation {
   Unpin a project update
   """
   unpinPost(input: UnpinPostInput!): UnpinPostPayload
+  """
+  Unpublish an Editorial Layout.
+  """
+  unpublishEditorialLayout(input: UnpublishEditorialLayoutTypeInput!): UnpublishEditorialLayoutTypePayload
   untagProject(input: UntagProjectInput!): UntagProjectPayload
   unwatchProject(input: UnwatchProjectInput!): UnwatchProjectPayload
   """
@@ -8606,13 +8712,17 @@ type Mutation {
   """
   updateFulfillmentStatus(input: UpdateFulfillmentStatusInput!): UpdateFulfillmentStatusPayload
   """
+  Updates an array of ItemVariant
+  """
+  updateItemVariants(input: UpdateItemVariantsInput!): UpdateItemVariantsPayload
+  """
   Updates an option type and values for an item
   """
   updateOption(input: UpdateOptionInput!): UpdateOptionPayload
   """
-  Update the state of an order, e.g. draft, submitted, successful, errored, missed.
+  Update OrderableConfig for an Orderable
   """
-  updateOrderState(input: UpdateOrderStateInput!): UpdateOrderStatePayload
+  updateOrderableConfig(input: UpdateOrderableConfigInput!): UpdateOrderableConfigPayload
   """
   Update a project post
   """
@@ -10274,17 +10384,13 @@ type CreateAddressPayload {
   """
   address: Address!
   """
-  Backing was associated with address
-  """
-  assignedToBacking: Boolean!
-  """
-  Project was associated with address
-  """
-  assignedToProject: Boolean!
-  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+  """
+  Order associated with the address if present
+  """
+  order: Order
   """
   Address suggestion
   """
@@ -10319,12 +10425,22 @@ input CreateAddressInput {
   countryCode: CountryCode!
   phoneNumber: String!
   primary: Boolean
-  backingId: ID
-  projectId: ID
+  associatedObjectId: ID
+  source: AddressCreationSource!
   """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+"""
+Source of address creation
+"""
+enum AddressCreationSource {
+  stock_location
+  user_settings
+  survey
+  pledge_redemption
 }
 
 """
@@ -10361,6 +10477,10 @@ type AcceptOrRejectAddressSuggestionPayload {
   """
   clientMutationId: String
   """
+  Order associated with the address if present
+  """
+  order: Order
+  """
   True if address was successfully updated
   """
   success: Boolean!
@@ -10372,7 +10492,8 @@ Autogenerated input type of AcceptOrRejectAddressSuggestion
 input AcceptOrRejectAddressSuggestionInput {
   fulfillmentAddressId: ID!
   suggestionAccepted: Boolean!
-  projectId: ID
+  associatedObjectId: ID
+  source: AddressCreationSource!
   """
   A unique identifier for the client performing the mutation.
   """
@@ -11659,6 +11780,10 @@ type Layout {
   """
   revision: String!
   """
+  The sequence number of the currently published revision of the editorial
+  """
+  sequence: Int
+  """
   The slug for the url of the editorial layout oage
   """
   slug: String!
@@ -11793,6 +11918,35 @@ type PublishEditorialLayoutTypePayload {
 Autogenerated input type of PublishEditorialLayoutType
 """
 input PublishEditorialLayoutTypeInput {
+  """
+  Slug for the Editorial Layout
+  """
+  slug: String!
+  """
+  Revision for the Editorial Layout
+  """
+  revision: String!
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UnpublishEditorialLayoutType
+"""
+type UnpublishEditorialLayoutTypePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+  layout: Layout
+}
+
+"""
+Autogenerated input type of UnpublishEditorialLayoutType
+"""
+input UnpublishEditorialLayoutTypeInput {
   """
   Slug for the Editorial Layout
   """
@@ -12482,35 +12636,6 @@ input CreateAttributionEventInput {
 }
 
 """
-Autogenerated return type of UpdateOrderState
-"""
-type UpdateOrderStatePayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-  order: Order!
-}
-
-"""
-Autogenerated input type of UpdateOrderState
-"""
-input UpdateOrderStateInput {
-  """
-  ID of the order being updated
-  """
-  id: ID!
-  """
-  New state of the order
-  """
-  state: OrderStateEnum!
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
 Autogenerated return type of CompleteOrder
 """
 type CompleteOrderPayload {
@@ -12556,6 +12681,34 @@ input CompleteOrderInput {
   List of accepted stripe payment method types
   """
   paymentMethodTypes: [String!]
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of SucceedOrder
+"""
+type SucceedOrderPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+  """
+  Whether the state transition succeeded
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of SucceedOrder
+"""
+input SucceedOrderInput {
+  """
+  The order id
+  """
+  orderId: ID!
   """
   A unique identifier for the client performing the mutation.
   """
@@ -12690,6 +12843,88 @@ input CreateOrUpdateItemTaxConfigInput {
   The market value of the item
   """
   marketValue: Int
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UpdateRewardShippingRates
+"""
+type UpdateRewardShippingRatesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+  """
+  The updated BackerReward
+  """
+  reward: Reward!
+}
+
+"""
+Autogenerated input type of UpdateRewardShippingRates
+"""
+input UpdateRewardShippingRatesInput {
+  """
+  Kickstarter BackerReward (base or addon) id
+  """
+  rewardId: ID!
+  shippingRates: [ShippingRateInput!]!
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Shipping rule for a reward
+"""
+input ShippingRateInput {
+  id: ID
+  cost: Int
+  locationId: String!
+}
+
+"""
+Autogenerated return type of UpdateOrderableConfig
+"""
+type UpdateOrderableConfigPayload {
+  """
+  The updated BackerReward
+  """
+  addOn: Reward!
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated input type of UpdateOrderableConfig
+"""
+input UpdateOrderableConfigInput {
+  """
+  Kickstarter BackerReward id (for now)
+  """
+  orderableId: ID!
+  """
+  Available for cross-sells or not
+  """
+  enabled: Boolean!
+  """
+  Price for cross-sells
+  """
+  crossSellPrice: Int
+  """
+  How many are cross-sellable total
+  """
+  limit: Int
+  """
+  How many a backer can add to their order
+  """
+  limitPerOrder: Int
   """
   A unique identifier for the client performing the mutation.
   """
@@ -12904,6 +13139,40 @@ input QuestionInput {
 }
 
 """
+Autogenerated return type of UpdateItemVariants
+"""
+type UpdateItemVariantsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+  """
+  The updated item variants
+  """
+  itemVariants: [ItemVariant!]
+}
+
+"""
+Autogenerated input type of UpdateItemVariants
+"""
+input UpdateItemVariantsInput {
+  projectId: ID!
+  itemVariants: [ItemVariantInput!]
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Input for updating an Item Variant
+"""
+input ItemVariantInput {
+  id: ID!
+  name: String!
+}
+
+"""
 Autogenerated return type of DeleteBackerSurvey
 """
 type DeleteBackerSurveyPayload {
@@ -13111,44 +13380,6 @@ input SendSurveyInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-}
-
-"""
-Autogenerated return type of UpdateRewardShippingRates
-"""
-type UpdateRewardShippingRatesPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-  """
-  The updated BackerReward
-  """
-  reward: Reward!
-}
-
-"""
-Autogenerated input type of UpdateRewardShippingRates
-"""
-input UpdateRewardShippingRatesInput {
-  """
-  Kickstarter BackerReward (base or addon) id
-  """
-  rewardId: ID!
-  shippingRates: [ShippingRateInput!]!
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Shipping rule for a reward
-"""
-input ShippingRateInput {
-  id: ID
-  cost: Int
-  locationId: String!
 }
 
 schema {

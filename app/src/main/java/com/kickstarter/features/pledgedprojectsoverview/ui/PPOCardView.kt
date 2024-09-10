@@ -262,7 +262,6 @@ fun ProjectPledgeSummaryView(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // TODO: Replace with translated string
             Text(
                 text = stringResource(id = R.string.pledge_amount_pledged_fpo).format("pledge_amount", pledgeAmount),
                 color = colors.textSecondary,

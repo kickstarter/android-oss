@@ -59,7 +59,8 @@ class User private constructor(
     private val starredProjectsCount: Int,
     private val unreadMessagesCount: Int,
     private val unseenActivityCount: Int,
-    private val weeklyNewsletter: Boolean
+    private val weeklyNewsletter: Boolean,
+    private val enabledFeatures: List<String>,
 ) : Parcelable, Relay {
 
     fun alumniNewsletter() = this.alumniNewsletter
@@ -116,6 +117,7 @@ class User private constructor(
     fun unreadMessagesCount() = this.unreadMessagesCount
     fun unseenActivityCount() = this.unseenActivityCount
     fun weeklyNewsletter() = this.weeklyNewsletter
+    fun enabledFeatures() = this.enabledFeatures
 
     @Parcelize
     data class Builder(
@@ -171,7 +173,8 @@ class User private constructor(
         private var starredProjectsCount: Int = 0,
         private var unreadMessagesCount: Int = 0,
         private var unseenActivityCount: Int = 0,
-        private var weeklyNewsletter: Boolean = false
+        private var weeklyNewsletter: Boolean = false,
+        private var enabledFeatures: List<String> = emptyList()
     ) : Parcelable {
 
         fun alumniNewsletter(alN: Boolean?) = apply { this.alumniNewsletter = alN ?: false }
@@ -227,6 +230,7 @@ class User private constructor(
         fun unseenActivityCount(unseenActivityCount: Int?) = apply { this.unseenActivityCount = unseenActivityCount ?: 0 }
         fun weeklyNewsletter(weeklyNewsletter: Boolean?) = apply { this.weeklyNewsletter = weeklyNewsletter ?: false }
         fun needsPassword(needsPassword: Boolean?) = apply { this.needsPassword = needsPassword ?: false }
+        fun enabledFeatures(features: List<String>?) = apply { this.enabledFeatures = features ?: emptyList() }
 
         fun build() = User(
             alumniNewsletter = alumniNewsletter,
@@ -281,7 +285,8 @@ class User private constructor(
             unreadMessagesCount = unreadMessagesCount,
             unseenActivityCount = unseenActivityCount,
             weeklyNewsletter = weeklyNewsletter,
-            needsPassword = needsPassword
+            needsPassword = needsPassword,
+            enabledFeatures = enabledFeatures
         )
     }
 
@@ -347,7 +352,8 @@ class User private constructor(
         unreadMessagesCount = unreadMessagesCount,
         unseenActivityCount = unseenActivityCount,
         weeklyNewsletter = weeklyNewsletter,
-        needsPassword = needsPassword
+        needsPassword = needsPassword,
+        enabledFeatures = enabledFeatures
     )
 
     enum class EmailFrequency(private val stringResId: Int) {
@@ -423,7 +429,7 @@ class User private constructor(
                 hasPassword() == obj.hasPassword() &&
                 isCreator() == obj.isCreator() &&
                 isDeliverable() == obj.isDeliverable() &&
-                isDeliverable() == obj.isDeliverable()
+                enabledFeatures() == obj.enabledFeatures()
         }
         return equals
     }

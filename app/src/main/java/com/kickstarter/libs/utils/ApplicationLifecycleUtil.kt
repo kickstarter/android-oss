@@ -20,6 +20,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.syncUserFeatureFlagsFromPref
 import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.fromThrowable
 import io.reactivex.disposables.CompositeDisposable
@@ -46,6 +47,9 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
 
     @Inject
     lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClientType
+
+    @Inject
+    lateinit var apolloClient: ApolloClientTypeV2
 
     @JvmField
     @Inject
@@ -134,6 +138,12 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
         } else {
             if (accessToken.isNotNull() && accessToken.isNotEmpty()) {
                 client.fetchCurrentUser()
+                    .withLatestFrom(apolloClient.userPrivacy()) { user, userPrivacy ->
+                        return@withLatestFrom user.toBuilder()
+                            .email(userPrivacy.email)
+                            .enabledFeatures(userPrivacy.enabledFeatures)
+                            .build()
+                    }
                     .compose(Transformers.neverErrorV2())
                     .subscribe { user ->
                         currentUser.refresh(user)

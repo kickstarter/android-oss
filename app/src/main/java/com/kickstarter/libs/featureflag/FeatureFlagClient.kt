@@ -7,9 +7,14 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
+import com.kickstarter.models.User
 import timber.log.Timber
 
 interface FeatureFlagClientType {
+
+    fun setCurrentUser(currentUser: User)
+
+    fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean
 
     /**
      * Will received a callback, that callback will usually
@@ -52,6 +57,9 @@ interface FeatureFlagClientType {
      */
     fun getString(FlagKey: FlagKey): String
 }
+enum class FlipperFlagKey(val key: String) {
+    FLIPPER_PLEDGED_PROJECTS_OVERVIEW("pledge_projects_overview_2024")
+}
 
 enum class FlagKey(val key: String) {
     ANDROID_FACEBOOK_LOGIN_REMOVE("android_facebook_login_remove"),
@@ -78,6 +86,7 @@ class FeatureFlagClient(
 ) : FeatureFlagClientType {
 
     var remoteConfig: FirebaseRemoteConfig? = null
+    private var currentUser: User? = null
 
     override fun initialize(config: FirebaseRemoteConfig?) {
         remoteConfig = config
@@ -90,6 +99,10 @@ class FeatureFlagClient(
         remoteConfig?.setConfigSettingsAsync(configSettings)
 
         log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}, remoteConfig ${this.remoteConfig}")
+    }
+
+    override fun setCurrentUser(user: User) {
+        this.currentUser = user
     }
 
     override fun fetch(context: Activity) {
@@ -136,7 +149,18 @@ class FeatureFlagClient(
         return value
     }
 
+    /**
+     * Requires `setCurrentUser(user)`
+     * Backend list of features flags enabled for the user.enabledFeatures()
+     *
+     * Checks if the FlipperFlagKey.name is present withing user.enabledFeatures
+     */
+    override fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean {
+        return this.currentUser?.enabledFeatures()?.contains(key.name) ?: false
+    }
+
     override fun getString(key: FlagKey): String {
+
         val value = remoteConfig?.getString(key.key) ?: ""
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value

@@ -146,7 +146,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
                 true,
                 true,
                 true,
-                "USD"
+                "USD",
+                emptyList()
             )
         )
     }
@@ -547,7 +548,8 @@ open class MockApolloClient : ApolloClientType {
                     true,
                     true,
                     true,
-                    "USD"
+                    "USD",
+                    emptyList()
                 )
             )
         )

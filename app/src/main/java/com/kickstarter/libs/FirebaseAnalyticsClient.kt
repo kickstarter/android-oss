@@ -34,7 +34,7 @@ class FirebaseAnalyticsClient(
 
     override fun sendUserId(user: User) {
         firebaseAnalytics?.let {
-            firebaseAnalytics.setUserId(user.id().toString())
+            firebaseAnalytics.setUserProperty("ks_user_id", user.id().toString())
         }
     }
 }

@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.FlipperFlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -61,6 +62,7 @@ interface LoggedInViewHolderViewModel {
         private val userOutput = BehaviorSubject.create<User>()
         private val pledgedProjectsIsVisible = BehaviorSubject.create<Boolean>()
         private val pledgedProjectsIndicatorIsVisible = BehaviorSubject.create<Boolean>()
+        private val featureFlagClient = requireNotNull(environment.featureFlagClient())
 
         private val disposables = CompositeDisposable()
         val inputs: Inputs = this
@@ -74,7 +76,10 @@ interface LoggedInViewHolderViewModel {
                 .addToDisposable(disposables)
 
             this.user
-                .subscribe { this.userOutput.onNext(it) }
+                .subscribe {
+                    featureFlagClient.setCurrentUser(it)
+                    this.userOutput.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             this.user
@@ -112,8 +117,10 @@ interface LoggedInViewHolderViewModel {
                 .addToDisposable(disposables)
 
             Observable.just(
-                environment.featureFlagClient()
-                    ?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
+                featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) &&
+                    featureFlagClient.isBackendEnabledFlag(
+                        FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW
+                    )
             )
                 .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
                 .addToDisposable(disposables)

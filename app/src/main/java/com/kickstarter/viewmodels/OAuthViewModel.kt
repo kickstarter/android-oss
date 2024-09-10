@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.PKCE
@@ -19,8 +20,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -47,14 +48,18 @@ class OAuthViewModel(
     private val logcat = "Oauth :"
     private val hostEndpoint = environment.webEndpoint()
     private val sharedPreferences = environment.sharedPreferences()
-    private val loginUseCase = LoginUseCase(environment)
-    private val analyticEvents = requireNotNull(environment.analytics())
-    private val apiClient = requireNotNull(environment.apiClientV2())
     private val clientID = when (hostEndpoint) {
         WebEndpoint.PRODUCTION -> Secrets.Api.Client.PRODUCTION
         WebEndpoint.STAGING -> Secrets.Api.Client.STAGING
         else -> ""
     }
+
+    private val loginUseCase = LoginUseCase(environment)
+    private val analyticEvents = requireNotNull(environment.analytics())
+    private val apiClient = requireNotNull(environment.apiClientV2())
+    private val configObservable = requireNotNull(environment.currentConfigV2())
+
+    private lateinit var config: Config
 
     private var mutableUIState = MutableStateFlow(OAuthUiState())
     private var codeVerifier: String?
@@ -75,11 +80,21 @@ class OAuthViewModel(
                 initialValue = OAuthUiState()
             )
 
+    init {
+        viewModelScope.launch {
+            configObservable.observable().asFlow()
+                .collectLatest {
+                    config = it
+                }
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun produceState(intent: Intent, uri: Uri? = null) {
         viewModelScope.launch {
             uri?.let {
                 val code = uri.getQueryParameter("code")
+                var tmpToken = ""
                 if (isAfterRedirectionStep(uri)) {
                     Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
                     apiClient.loginWithCodes(
@@ -90,12 +105,9 @@ class OAuthViewModel(
                         .asFlow()
                         .flatMapLatest { token ->
                             Timber.d("$logcat About to persist token to currentUser: $token")
+                            tmpToken = token.accessToken()
                             loginUseCase.setToken(token.accessToken())
-                            apiClient.fetchCurrentUser()
-                                .asFlow()
-                                .map {
-                                    it
-                                }
+                            apiClient.fetchCurrentUser().asFlow()
                         }
                         .catch {
                             Timber.e(
@@ -116,7 +128,7 @@ class OAuthViewModel(
                         }
                         .collect { user ->
                             Timber.d("$logcat About to persist user to currentUser: $user")
-                            loginUseCase.setUser(user)
+                            loginUseCase.loginAndUpdateUserPrivacy(user, tmpToken)
                             mutableUIState.emit(
                                 OAuthUiState(
                                     user = user,

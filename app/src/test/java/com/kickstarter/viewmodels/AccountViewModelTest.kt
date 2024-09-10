@@ -48,7 +48,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacy("", "", true, true, true, true, "MXN")
+                        UserPrivacy("", "", true, true, true, true, "MXN", emptyList())
                     )
                 }
             }).build()

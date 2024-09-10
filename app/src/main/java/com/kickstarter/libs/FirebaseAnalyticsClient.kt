@@ -16,7 +16,7 @@ interface FirebaseAnalyticsClientType {
     fun sendUserId(user: User)
 }
 
-class FirebaseAnalyticsClient(
+open class FirebaseAnalyticsClient(
     private var ffClient: FeatureFlagClientType,
     private var preference: SharedPreferences,
     private val firebaseAnalytics: FirebaseAnalytics?,

@@ -102,7 +102,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
                         onProjectPledgeSummaryClick = { url ->
                             openBackingDetailsWebView(
-                                url = env.webEndpoint() + url,
+                                url = url,
                                 resultLauncher = null
                             )
                         },
@@ -134,7 +134,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 PPOCardViewType.OPEN_SURVEY -> {
                                     env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts, PPOCard.surveyID ?: "")
                                     openBackingDetailsWebView(
-                                        url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
+                                        url = PPOCard.backingDetailsUrl ?: "",
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -142,7 +142,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 PPOCardViewType.CONFIRM_ADDRESS -> {
                                     env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
-                                        url = env.webEndpoint() + (PPOCard.backingDetailsUrl ?: ""),
+                                        url = PPOCard.backingDetailsUrl ?: "",
                                         resultLauncher = startForResult
                                     )
                                 }

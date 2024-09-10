@@ -9,7 +9,6 @@ import android.text.style.RelativeSizeSpan
 import android.util.Pair
 import androidx.annotation.StringRes
 import com.kickstarter.R
-import com.kickstarter.libs.CurrencyOptions
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString

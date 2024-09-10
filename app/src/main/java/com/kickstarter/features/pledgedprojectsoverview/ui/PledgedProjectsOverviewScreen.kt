@@ -256,7 +256,7 @@ fun PledgedProjectsOverviewScreen(
                                 imageContentDescription = it.imageContentDescription(),
                                 creatorName = it.creatorName(),
                                 sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
-                                shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
+                                shippingAddress = it.deliveryAddress()?.getFormattedAddress() ?: "",
                                 onActionButtonClicked = {
                                     onPrimaryActionButtonClicked(it)
                                 },
@@ -264,8 +264,8 @@ fun PledgedProjectsOverviewScreen(
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
                                             analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
-                                            confirmedAddress = it.address() ?: ""
-                                            addressID = it.addressID ?: ""
+                                            confirmedAddress = it.deliveryAddress()?.getFormattedAddress() ?: ""
+                                            addressID = it.deliveryAddress()?.addressId() ?: ""
                                             backingID = it.backingId ?: ""
                                             projectID = it.projectId ?: ""
                                             openConfirmAddressAlertDialog.value = true

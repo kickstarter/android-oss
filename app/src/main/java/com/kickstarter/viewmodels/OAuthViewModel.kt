@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -79,15 +78,6 @@ class OAuthViewModel(
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = OAuthUiState()
             )
-
-    init {
-        viewModelScope.launch {
-            configObservable.observable().asFlow()
-                .collectLatest {
-                    config = it
-                }
-        }
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun produceState(intent: Intent, uri: Uri? = null) {

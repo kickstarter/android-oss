@@ -44,6 +44,7 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -250,7 +251,9 @@ fun PledgedProjectsOverviewScreen(
                                 onCardClick = { },
                                 onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
                                 projectName = it.projectName(),
-                                pledgeAmount = it.amount(),
+                                pledgeAmount = it.amount?.toDoubleOrNull()?.let { amount ->
+                                    RewardViewUtils.formatCurrency(amount, it.currencyCode?.rawValue(), it.currencySymbol)
+                                },
                                 imageUrl = it.imageUrl(),
                                 flags = it.flags,
                                 imageContentDescription = it.imageContentDescription(),

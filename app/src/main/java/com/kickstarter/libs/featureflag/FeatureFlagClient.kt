@@ -8,11 +8,12 @@ import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
 import timber.log.Timber
 
 interface FeatureFlagClientType {
 
-    fun setCurrentUser(currentUser: User)
+    fun setUserPrivacy(privacy: UserPrivacy)
 
     fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean
 
@@ -86,7 +87,7 @@ class FeatureFlagClient(
 ) : FeatureFlagClientType {
 
     var remoteConfig: FirebaseRemoteConfig? = null
-    private var currentUser: User? = null
+    private var userPrivacy: UserPrivacy? = null
 
     override fun initialize(config: FirebaseRemoteConfig?) {
         remoteConfig = config
@@ -101,8 +102,8 @@ class FeatureFlagClient(
         log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}, remoteConfig ${this.remoteConfig}")
     }
 
-    override fun setCurrentUser(user: User) {
-        this.currentUser = user
+    override fun setUserPrivacy(privacy: UserPrivacy) {
+        this.userPrivacy = privacy
     }
 
     override fun fetch(context: Activity) {
@@ -150,14 +151,13 @@ class FeatureFlagClient(
     }
 
     /**
-     * Requires `setCurrentUser(user)`
-     * Backend list of features flags enabled for the user.enabledFeatures()
+     * Requires `setUserPrivacy(privacy)`
+     * Backend list of features flags enabled for the `enabledFeatures` field
      *
-     * Checks if the FlipperFlagKey.name is present withing user.enabledFeatures
+     * Checks if the FlipperFlagKey.name is present within enabledFeatures
      */
     override fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean {
-        //return this.currentUser?.enabledFeatures()?.contains(key.name) ?: false
-        return false
+        return this.userPrivacy?.enabledFeatures?.contains(key.name) ?: false
     }
 
     override fun getString(key: FlagKey): String {

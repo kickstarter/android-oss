@@ -547,7 +547,8 @@ open class MockApolloClient : ApolloClientType {
                     true,
                     true,
                     true,
-                    "USD"
+                    "USD",
+                    emptyList()
                 )
             )
         )

@@ -940,7 +940,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             }
             PPOCard.builder()
                 .backingId(ppoBackingData?.id())
-                .backingDetailsUrl(ppoBackingData?.backingDetailsPageUrl())
+                .backingDetailsUrl(ppoBackingData?.backingDetailsPageRoute())
                 .clientSecret(ppoBackingData?.clientSecret())
                 .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
                 .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())

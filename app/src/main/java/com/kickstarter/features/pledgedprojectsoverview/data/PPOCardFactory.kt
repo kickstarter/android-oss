@@ -93,7 +93,7 @@ class PPOCardFactory private constructor() {
         fun fixPaymentCard(): PPOCard {
             return ppoCard(
                 backingID = "1234",
-                amount = "$12.00",
+                amount = "12.00",
                 deliveryAddress = deliveryAddress(
                     addressID = "12234",
                     addressLine1 = "123 First Street, Apt #5678",
@@ -122,7 +122,7 @@ class PPOCardFactory private constructor() {
             // 3ds card
             return ppoCard(
                 backingID = "1234",
-                amount = "$12.00",
+                amount = "12.00",
                 deliveryAddress = deliveryAddress(
                     addressID = "12234",
                     addressLine1 = "123 First Street, Apt #5678",

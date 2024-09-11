@@ -256,13 +256,12 @@ fun ProjectPledgeSummaryView(
                 color = colors.textPrimary,
                 style = typography.footnoteMedium,
                 overflow = TextOverflow.Ellipsis,
-                minLines = 2,
+                minLines = 1,
                 maxLines = 2
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
-            // TODO: Replace with translated string
             Text(
                 text = stringResource(id = R.string.pledge_amount_pledged_fpo).format("pledge_amount", pledgeAmount),
                 color = colors.textSecondary,

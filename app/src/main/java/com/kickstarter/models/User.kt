@@ -60,7 +60,7 @@ class User private constructor(
     private val unreadMessagesCount: Int,
     private val unseenActivityCount: Int,
     private val weeklyNewsletter: Boolean,
-    private val enabledFeatures: List<String>,
+    private val enabledFeatures: List<String>?,
 ) : Parcelable, Relay {
 
     fun alumniNewsletter() = this.alumniNewsletter
@@ -174,7 +174,7 @@ class User private constructor(
         private var unreadMessagesCount: Int = 0,
         private var unseenActivityCount: Int = 0,
         private var weeklyNewsletter: Boolean = false,
-        private var enabledFeatures: List<String> = emptyList()
+        private var enabledFeatures: List<String>? = emptyList()
     ) : Parcelable {
 
         fun alumniNewsletter(alN: Boolean?) = apply { this.alumniNewsletter = alN ?: false }

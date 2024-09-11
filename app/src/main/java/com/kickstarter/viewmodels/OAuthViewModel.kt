@@ -14,13 +14,21 @@ import com.kickstarter.libs.utils.Secrets.WebEndpoint
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiException
 import com.kickstarter.viewmodels.usecases.LoginUseCase
+import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -56,7 +64,7 @@ class OAuthViewModel(
     private val loginUseCase = LoginUseCase(environment)
     private val analyticEvents = requireNotNull(environment.analytics())
     private val apiClient = requireNotNull(environment.apiClientV2())
-    private val configObservable = requireNotNull(environment.currentConfigV2())
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private lateinit var config: Config
 
@@ -84,7 +92,6 @@ class OAuthViewModel(
         viewModelScope.launch {
             uri?.let {
                 val code = uri.getQueryParameter("code")
-                var tmpToken = ""
                 if (isAfterRedirectionStep(uri)) {
                     Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
                     apiClient.loginWithCodes(
@@ -95,9 +102,18 @@ class OAuthViewModel(
                         .asFlow()
                         .flatMapLatest { token ->
                             Timber.d("$logcat About to persist token to currentUser: $token")
-                            tmpToken = token.accessToken()
                             loginUseCase.setToken(token.accessToken())
-                            apiClient.fetchCurrentUser().asFlow()
+                            apiClient.fetchCurrentUser().asFlow().combine(apolloClient.userPrivacy().asFlow()) { user, userPrivacy ->
+                                val updated = user.toBuilder()
+                                    .email(userPrivacy.email)
+                                    .isCreator(userPrivacy.isCreator)
+                                    .isDeliverable(userPrivacy.isDeliverable)
+                                    .isEmailVerified(userPrivacy.isEmailVerified)
+                                    .hasPassword(userPrivacy.hasPassword)
+                                   .enabledFeatures(userPrivacy.enabledFeatures)
+                                    .build()
+                                return@combine updated
+                            }
                         }
                         .catch {
                             Timber.e(
@@ -116,17 +132,33 @@ class OAuthViewModel(
                             loginUseCase.logout()
                             codeVerifier = null
                         }
-                        .collect { user ->
+                        .map { user ->
                             Timber.d("$logcat About to persist user to currentUser: $user")
-                            loginUseCase.loginAndUpdateUserPrivacy(user, tmpToken)
+                            loginUseCase.setUser(user)
+
                             mutableUIState.emit(
                                 OAuthUiState(
                                     user = user,
                                 )
                             )
+
                             analyticEvents.trackLogInButtonCtaClicked()
                             codeVerifier = null
+                            return@map user
                         }
+                        .collect()
+//                        .flowOn(Dispatchers.IO)
+//                        .combine(apolloClient.userPrivacy().asFlow()) { user, userPrivacy ->
+//                            val updated = user.toBuilder()
+//                                .email(userPrivacy.email)
+//                                .isCreator(userPrivacy.isCreator)
+//                                .isDeliverable(userPrivacy.isDeliverable)
+//                                .isEmailVerified(userPrivacy.isEmailVerified)
+//                                .hasPassword(userPrivacy.hasPassword)
+//                                .enabledFeatures(userPrivacy.enabledFeatures)
+//                                .build()
+//                            loginUseCase.refresh(updated)
+//                        }.collect()
                 } else {
                     mutableUIState.emit(
                         OAuthUiState(

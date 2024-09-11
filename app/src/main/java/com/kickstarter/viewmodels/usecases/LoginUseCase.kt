@@ -27,9 +27,19 @@ class LoginUseCase(environment: Environment) {
         firebaseAnalyticsClient.sendUserId(user)
     }
 
+    fun refresh(user: User) {
+        currentUser.refresh(user)
+        currentUserV2.refresh(user)
+    }
+
     fun loginAndUpdateUserPrivacy(newUser: User, accessToken: String): io.reactivex.Observable<User> {
         currentUserV2.setToken(accessToken)
         currentUser.setToken(accessToken)
+
+        return loginAndUpdateUserPrivacy(newUser)
+    }
+
+    fun loginAndUpdateUserPrivacy(newUser: User): io.reactivex.Observable<User> {
         return GetUserPrivacyUseCaseV2(apolloClientV2).getUserPrivacy()
             .compose(Transformers.neverErrorV2())
             .map {

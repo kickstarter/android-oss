@@ -4,6 +4,21 @@ package com.kickstarter.models.extensions
 import android.content.SharedPreferences
 import com.kickstarter.libs.utils.I18nUtils
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
+
+/**
+ * Returns a new instance of this.user extended with userPrivacy fields
+ */
+fun User.extendWith(userPrivacy: UserPrivacy): User {
+    return this.toBuilder()
+        .email(userPrivacy.email)
+        .isCreator(userPrivacy.isCreator)
+        .isDeliverable(userPrivacy.isDeliverable)
+        .isEmailVerified(userPrivacy.isEmailVerified)
+        .hasPassword(userPrivacy.hasPassword)
+        .enabledFeatures(userPrivacy.enabledFeatures)
+        .build()
+}
 
 /**
  * Check if the user email has been verified

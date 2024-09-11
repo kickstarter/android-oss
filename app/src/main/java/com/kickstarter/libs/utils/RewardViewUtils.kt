@@ -12,6 +12,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNull
@@ -20,6 +21,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import java.math.RoundingMode
+import kotlin.math.floor
 
 object RewardViewUtils {
 
@@ -84,6 +86,39 @@ object RewardViewUtils {
         }
 
         return spannableString
+    }
+
+    /**
+     * Returns a String representing currency based on given currency code and symbol ex. $12 USD
+     */
+    fun formatCurrency(
+        initialValue: Double,
+        currencyCode: String? = null,
+        currencySymbol: String? = null,
+        roundingMode: RoundingMode = RoundingMode.DOWN,
+    ): String {
+        val roundedValue = getRoundedValue(initialValue, roundingMode)
+        val numberOptions = NumberOptions.builder()
+            .currencyCode(currencyCode)
+            .currencySymbol(currencySymbol)
+            .roundingMode(roundingMode)
+            .precision(NumberUtils.precision(initialValue, roundingMode))
+            .build()
+        return NumberUtils.format(roundedValue, numberOptions).trimAllWhitespace()
+    }
+
+    /**
+     * Returns a number rounded to the specification.
+     *
+     * @param initialValue Value to convert, local to the project's currency.
+     * @param roundingMode When this is DOWN, we get the floor of the initialValue.
+     */
+    private fun getRoundedValue(initialValue: Double, roundingMode: RoundingMode): Float {
+        return if (roundingMode == RoundingMode.DOWN) {
+            floor(initialValue).toFloat()
+        } else {
+            initialValue.toFloat()
+        }
     }
 
     /**

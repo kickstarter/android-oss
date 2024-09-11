@@ -2,8 +2,6 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +21,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -44,10 +43,10 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
-import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
@@ -177,41 +176,41 @@ fun PledgedProjectsOverviewScreen(
         isLoading,
         pullRefreshCallback,
     )
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState),
-        contentAlignment = Alignment.Center
-    ) {
-        Scaffold(
-            snackbarHost = {
-                SnackbarHost(
-                    modifier = Modifier.padding(dimensions.paddingSmall),
-                    hostState = errorSnackBarHostState,
-                    snackbar = { data ->
-                        // Action label is typically for the action on a snackbar, but we can
-                        // leverage it and show different visuals depending on what we pass in
-                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                            KSErrorSnackbar(text = data.message)
-                        } else {
-                            KSHeadsupSnackbar(text = data.message)
-                        }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.padding(dimensions.paddingSmall),
+                hostState = errorSnackBarHostState,
+                snackbar = { data ->
+                    // Action label is typically for the action on a snackbar, but we can
+                    // leverage it and show different visuals depending on what we pass in
+                    if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                        KSErrorSnackbar(text = data.message)
+                    } else {
+                        KSHeadsupSnackbar(text = data.message)
                     }
-                )
-            },
-            modifier = modifier,
-            topBar = {
-                TopToolBar(
-                    title = stringResource(id = R.string.Project_alerts),
-                    titleColor = colors.textPrimary,
-                    leftOnClickAction = onBackPressed,
-                    leftIconColor = colors.icon,
-                    leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
-                    backgroundColor = colors.backgroundSurfacePrimary,
-                )
-            },
-            backgroundColor = colors.backgroundSurfacePrimary
-        ) { padding ->
+                }
+            )
+        },
+        modifier = modifier,
+        topBar = {
+            TopToolBar(
+                title = stringResource(id = R.string.Project_alerts),
+                titleColor = colors.textPrimary,
+                leftOnClickAction = onBackPressed,
+                leftIconColor = colors.icon,
+                leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
+                backgroundColor = colors.backgroundSurfacePrimary,
+            )
+        },
+        backgroundColor = colors.backgroundSurfacePrimary
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState),
+            contentAlignment = Alignment.TopCenter
+        ) {
             if (isErrored) {
                 PPOScreenErrorState()
             } else if (showEmptyState) {
@@ -250,7 +249,9 @@ fun PledgedProjectsOverviewScreen(
                                 onCardClick = { },
                                 onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
                                 projectName = it.projectName(),
-                                pledgeAmount = it.amount(),
+                                pledgeAmount = it.amount?.toDoubleOrNull()?.let { amount ->
+                                    RewardViewUtils.formatCurrency(amount, it.currencyCode?.rawValue(), it.currencySymbol)
+                                },
                                 imageUrl = it.imageUrl(),
                                 flags = it.flags,
                                 imageContentDescription = it.imageContentDescription(),
@@ -284,17 +285,14 @@ fun PledgedProjectsOverviewScreen(
                     }
                 }
             }
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                        .clickable(enabled = false) { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    KSCircularProgressIndicator()
-                }
-            }
+
+            PullRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                refreshing = isLoading,
+                state = pullRefreshState,
+                backgroundColor = colors.backgroundAccentGraySubtle,
+                contentColor = colors.backgroundAccentGreenBold
+            )
         }
     }
 

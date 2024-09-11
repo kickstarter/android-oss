@@ -4,13 +4,11 @@ import android.net.Uri
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isHivequeenUri
 import com.kickstarter.libs.utils.extensions.isStagingUri
 import com.kickstarter.libs.utils.extensions.isWebUri
 import com.kickstarter.models.User
-import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Request
@@ -57,15 +55,15 @@ class WebRequestInterceptor(
                 requestBuilder.addHeader("Authorization", it)
         }
 
-        if (isStaging(initialRequest)) {
-            requestBuilder.header(
-                name = "Authorization",
-                Credentials.basic(
-                    Secrets.WebEndpoint.CredentialsStaging.USER,
-                    Secrets.WebEndpoint.CredentialsStaging.PASS
-                )
-            )
-        }
+//        if (isStaging(initialRequest)) {
+//            requestBuilder.header(
+//                name = "Authorization",
+//                Credentials.basic(
+//                    Secrets.WebEndpoint.CredentialsStaging.USER,
+//                    Secrets.WebEndpoint.CredentialsStaging.PASS
+//                )
+//            )
+//        }
 
         return requestBuilder.build()
     }

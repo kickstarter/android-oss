@@ -12,9 +12,9 @@ import com.kickstarter.libs.utils.PKCE
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.Secrets.WebEndpoint
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.extendWith
 import com.kickstarter.services.ApiException
 import com.kickstarter.viewmodels.usecases.LoginUseCase
-import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,11 +23,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -103,17 +101,7 @@ class OAuthViewModel(
                         .flatMapLatest { token ->
                             Timber.d("$logcat About to persist token to currentUser: $token")
                             loginUseCase.setToken(token.accessToken())
-                            apiClient.fetchCurrentUser().asFlow().combine(apolloClient.userPrivacy().asFlow()) { user, userPrivacy ->
-                                val updated = user.toBuilder()
-                                    .email(userPrivacy.email)
-                                    .isCreator(userPrivacy.isCreator)
-                                    .isDeliverable(userPrivacy.isDeliverable)
-                                    .isEmailVerified(userPrivacy.isEmailVerified)
-                                    .hasPassword(userPrivacy.hasPassword)
-                                   .enabledFeatures(userPrivacy.enabledFeatures)
-                                    .build()
-                                return@combine updated
-                            }
+                            apiClient.fetchCurrentUser().asFlow()
                         }
                         .catch {
                             Timber.e(
@@ -146,19 +134,10 @@ class OAuthViewModel(
                             codeVerifier = null
                             return@map user
                         }
-                        .collect()
-//                        .flowOn(Dispatchers.IO)
-//                        .combine(apolloClient.userPrivacy().asFlow()) { user, userPrivacy ->
-//                            val updated = user.toBuilder()
-//                                .email(userPrivacy.email)
-//                                .isCreator(userPrivacy.isCreator)
-//                                .isDeliverable(userPrivacy.isDeliverable)
-//                                .isEmailVerified(userPrivacy.isEmailVerified)
-//                                .hasPassword(userPrivacy.hasPassword)
-//                                .enabledFeatures(userPrivacy.enabledFeatures)
-//                                .build()
-//                            loginUseCase.refresh(updated)
-//                        }.collect()
+                        .flowOn(Dispatchers.IO)
+                        .combine(apolloClient.userPrivacy().asFlow()) { user, userPrivacy ->
+                            loginUseCase.refresh(user.extendWith(userPrivacy))
+                        }.collect()
                 } else {
                     mutableUIState.emit(
                         OAuthUiState(

@@ -503,7 +503,9 @@ fun userPrivacyTransformer(userPrivacy: UserPrivacyQuery.Me): UserPrivacy {
         isDeliverable = userPrivacy.isDeliverable ?: false,
         isEmailVerified = userPrivacy.isEmailVerified ?: false,
         chosenCurrency = userPrivacy.chosenCurrency() ?: defaultCurrency,
-        enabledFeatures = userPrivacy.enabledFeatures().map { it.name }
+        enabledFeatures = userPrivacy.enabledFeatures().map {
+            it.rawValue()
+        }
     )
 }
 

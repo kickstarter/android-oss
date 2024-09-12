@@ -115,22 +115,13 @@ interface LoggedInViewHolderViewModel {
                 .subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }
                 .addToDisposable(disposables)
 
-            this.apolloClient.userPrivacy()
+            featureFlagClient.isBackendEnabledFlag(this.apolloClient.userPrivacy(), FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW)
                 .compose(Transformers.neverErrorV2())
-                .map {
-                    featureFlagClient.setUserPrivacy(it)
+                .map { ffEnabledBackend ->
                     val ffEnabledMobile = featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW)
-                    val ffEnabledBackend = featureFlagClient.isBackendEnabledFlag(FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW)
+
                     return@map ffEnabledMobile && ffEnabledBackend
                 }
-                .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
-                .addToDisposable(disposables)
-
-
-            Observable.just(
-                environment.featureFlagClient()
-                    ?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
-            )
                 .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
                 .addToDisposable(disposables)
         }

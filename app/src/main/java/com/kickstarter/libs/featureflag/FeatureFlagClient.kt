@@ -7,15 +7,20 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
-import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
+import io.reactivex.Observable
 import timber.log.Timber
 
 interface FeatureFlagClientType {
 
-    fun setUserPrivacy(privacy: UserPrivacy)
-
-    fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean
+    /**
+     * Backend list of features flags enabled within `userPrivacy.enabledFeatures` field
+     *
+     * Checks if the FlipperFlagKey.name is present within enabledFeatures
+     */
+    fun isBackendEnabledFlag(privacy: Observable<UserPrivacy>, key: FlipperFlagKey): Observable<Boolean> {
+        return privacy.map { it.enabledFeatures.contains(key.key) }
+    }
 
     /**
      * Will received a callback, that callback will usually
@@ -87,7 +92,6 @@ class FeatureFlagClient(
 ) : FeatureFlagClientType {
 
     var remoteConfig: FirebaseRemoteConfig? = null
-    private var userPrivacy: UserPrivacy? = null
 
     override fun initialize(config: FirebaseRemoteConfig?) {
         remoteConfig = config
@@ -100,10 +104,6 @@ class FeatureFlagClient(
         remoteConfig?.setConfigSettingsAsync(configSettings)
 
         log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}, remoteConfig ${this.remoteConfig}")
-    }
-
-    override fun setUserPrivacy(privacy: UserPrivacy) {
-        this.userPrivacy = privacy
     }
 
     override fun fetch(context: Activity) {
@@ -148,16 +148,6 @@ class FeatureFlagClient(
         val value = remoteConfig?.getLong(key.key) ?: 0L
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value
-    }
-
-    /**
-     * Requires `setUserPrivacy(privacy)`
-     * Backend list of features flags enabled for the `enabledFeatures` field
-     *
-     * Checks if the FlipperFlagKey.name is present within enabledFeatures
-     */
-    override fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean {
-        return this.userPrivacy?.enabledFeatures?.contains(key.name) ?: false
     }
 
     override fun getString(key: FlagKey): String {

@@ -421,7 +421,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                             true,
                             false,
                             false,
-                            ""
+                            "",
+                            emptyList()
                         )
                     )
                 )

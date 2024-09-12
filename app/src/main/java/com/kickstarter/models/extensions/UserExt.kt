@@ -4,8 +4,6 @@ package com.kickstarter.models.extensions
 import android.content.SharedPreferences
 import com.kickstarter.libs.utils.I18nUtils
 import com.kickstarter.models.User
-import com.kickstarter.models.UserPrivacy
-
 
 /**
  * Check if the user email has been verified

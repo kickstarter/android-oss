@@ -4,9 +4,6 @@ import android.app.Activity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.featureflag.FlipperFlagKey
-import com.kickstarter.models.User
-import com.kickstarter.models.UserPrivacy
 
 open class MockFeatureFlagClient : FeatureFlagClientType {
     override fun initialize(config: FirebaseRemoteConfig?) {}
@@ -24,8 +21,4 @@ open class MockFeatureFlagClient : FeatureFlagClientType {
     override fun getLong(FlagKey: FlagKey) = 0L
 
     override fun getString(FlagKey: FlagKey) = ""
-
-    override fun setUserPrivacy(privacy: UserPrivacy) {}
-
-    override fun isBackendEnabledFlag(key: FlipperFlagKey): Boolean = false
 }

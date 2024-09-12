@@ -3,6 +3,8 @@ package com.kickstarter.viewmodels
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.FlipperFlagKey
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -50,8 +52,10 @@ interface LoggedInViewHolderViewModel {
 
     class ViewModel(val environment: Environment) : Inputs, Outputs {
 
-        private val user = PublishSubject.create<User>()
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val featureFlagClient = requireNotNull(environment.featureFlagClient())
 
+        private val user = PublishSubject.create<User>()
         private val activityCount = BehaviorSubject.create<Int>()
         private val activityCountTextColor = BehaviorSubject.create<Int>()
         private val avatarUrl = BehaviorSubject.create<String>()
@@ -111,10 +115,13 @@ interface LoggedInViewHolderViewModel {
                 .subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }
                 .addToDisposable(disposables)
 
-            Observable.just(
-                environment.featureFlagClient()
-                    ?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
-            )
+            featureFlagClient.isBackendEnabledFlag(this.apolloClient.userPrivacy(), FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW)
+                .compose(Transformers.neverErrorV2())
+                .map { ffEnabledBackend ->
+                    val ffEnabledMobile = featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW)
+
+                    return@map ffEnabledMobile && ffEnabledBackend
+                }
                 .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
                 .addToDisposable(disposables)
         }

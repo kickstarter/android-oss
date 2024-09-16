@@ -8,16 +8,25 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectNotificationSettingsViewModel.ViewModel::class)
-class ProjectNotificationSettingsActivity : BaseActivity<ProjectNotificationSettingsViewModel.ViewModel>() {
+class ProjectNotificationSettingsActivity :
+    BaseActivity<ProjectNotificationSettingsViewModel.ViewModel>() {
     private lateinit var binding: ProjectNotificationSettingsLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ProjectNotificationSettingsLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+            binding.projectNotificationSettingsMainLayout,
+            applyTopPadding = true,
+            applyBottomPadding = true
+        )
         setContentView(binding.root)
 
         val adapter = ProjectNotificationSettingsAdapter()

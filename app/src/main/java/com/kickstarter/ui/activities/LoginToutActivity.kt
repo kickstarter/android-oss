@@ -38,6 +38,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.LoginToutViewModel
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory

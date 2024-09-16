@@ -2,12 +2,14 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFeedLayoutBinding
+import com.kickstarter.databinding.ActivityFeedToolbarBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.RefTag
@@ -30,13 +32,13 @@ import com.kickstarter.viewmodels.ActivityFeedViewModel.ActivityFeedViewModel
 import com.kickstarter.viewmodels.ActivityFeedViewModel.Factory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import com.kickstarter.utils.WindowInsetsUtil
 
 class ActivityFeedActivity : AppCompatActivity() {
     private var adapter: ActivityFeedAdapter? = null
     private var currentUser: CurrentUserTypeV2? = null
     private var recyclerViewPaginator: RecyclerViewPaginatorV2? = null
     private lateinit var binding: ActivityFeedLayoutBinding
-
     private lateinit var viewModelFactory: Factory
     private val viewModel: ActivityFeedViewModel by viewModels {
         viewModelFactory
@@ -47,7 +49,13 @@ class ActivityFeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeedLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+            binding.activityFeedMainLayout,
+            true,
+            false
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)
@@ -65,7 +73,11 @@ class ActivityFeedActivity : AppCompatActivity() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
 
-        recyclerViewPaginator = RecyclerViewPaginatorV2(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities())
+        recyclerViewPaginator = RecyclerViewPaginatorV2(
+            binding.recyclerView,
+            { viewModel.inputs.nextPage() },
+            viewModel.outputs.isFetchingActivities()
+        )
 
         binding.activityFeedSwipeRefreshLayout.setOnRefreshListener {
             viewModel.outputs.isFetchingActivities()
@@ -194,4 +206,5 @@ class ActivityFeedActivity : AppCompatActivity() {
             .putExtra(IntentKey.UPDATE, activity.update())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
+
 }

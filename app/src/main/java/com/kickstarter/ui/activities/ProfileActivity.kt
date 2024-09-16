@@ -21,6 +21,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ProfileViewModel
 import io.reactivex.disposables.CompositeDisposable
 
@@ -37,7 +38,13 @@ class ProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ProfileLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+            binding.profileActivityMainLayout,
+            applyTopPadding = true,
+            applyBottomPadding = false
+        )
         setContentView(binding.root)
 
         getEnvironment()?.let { env ->
@@ -151,7 +158,10 @@ class ProfileActivity : ComponentActivity() {
         if (projects.isEmpty()) {
             binding.recyclerView.layoutManager = LinearLayoutManager(this)
             binding.recyclerView.setPadding(
-                0, binding.recyclerView.paddingTop, binding.recyclerView.paddingRight, binding.recyclerView.paddingBottom
+                0,
+                binding.recyclerView.paddingTop,
+                binding.recyclerView.paddingRight,
+                binding.recyclerView.paddingBottom
             )
 
             if (ViewUtils.isPortrait(this)) {

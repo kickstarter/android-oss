@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
+import com.kickstarter.utils.WindowInsetsUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -38,6 +39,12 @@ class HelpSettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHelpSettingsBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+            binding.toolbarLayout,
+            applyTopPadding = true,
+            applyBottomPadding = false)
         val view = binding.root
         setContentView(view)
 
@@ -120,6 +127,7 @@ class HelpSettingsActivity : AppCompatActivity() {
                     activity.startActivity(helpActivityIntent)
                 }
             }
+
             else -> null
         }
         ChromeTabsHelperActivity.openCustomTab(this, baseCustomTabsIntent(this), uri, fallback)

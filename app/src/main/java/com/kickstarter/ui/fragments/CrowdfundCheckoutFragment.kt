@@ -167,7 +167,13 @@ class CrowdfundCheckoutFragment : Fragment() {
         } else {
             binding?.composeView?.let { view ->
                 context?.let {
-                    showErrorToast(it, view, error?.message ?: getString(R.string.general_error_something_wrong))
+                    activity?.runOnUiThread {
+                        showErrorToast(
+                            it,
+                            view,
+                            error?.message ?: getString(R.string.general_error_something_wrong)
+                        )
+                    }
                 }
             }
         }
@@ -197,7 +203,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                 is PaymentSheetResult.Canceled -> {
                     binding?.composeView?.let { view ->
                         context?.let {
-                            showErrorToast(it, view, getString(R.string.general_error_oops))
+                            activity?.runOnUiThread {
+                                showErrorToast(it, view, getString(R.string.general_error_oops))
+                            }
                         }
                     }
                 }
@@ -205,7 +213,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                     binding?.composeView?.let { view ->
                         context?.let {
                             val errorMessage = paymentSheetResult.error.localizedMessage ?: getString(R.string.general_error_something_wrong)
-                            showErrorToast(it, view, errorMessage)
+                            activity?.runOnUiThread {
+                                showErrorToast(it, view, errorMessage)
+                            }
                         }
                     }
                 }

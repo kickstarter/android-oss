@@ -16,6 +16,7 @@ query UserPrivacy {
     isDeliverable
     isEmailVerified
     chosenCurrency
+    enabledFeatures
   }
 }
 

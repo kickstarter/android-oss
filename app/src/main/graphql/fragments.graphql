@@ -380,7 +380,7 @@ fragment shippingRule on ShippingRule {
 
 fragment ppoCard on Backing {
     id
-    backingDetailsPageRoute(type: url)
+    backingDetailsPageRoute(type: url, tab: survey_responses)
     clientSecret
     amount {
         ...amount

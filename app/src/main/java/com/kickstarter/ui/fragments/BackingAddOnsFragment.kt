@@ -50,7 +50,13 @@ class BackingAddOnsFragment : Fragment() {
             }
 
             viewModelC.provideErrorAction { message ->
-                showErrorToast(context, this, message ?: getString(R.string.general_error_something_wrong))
+                activity?.runOnUiThread {
+                    showErrorToast(
+                        context,
+                        this,
+                        message ?: getString(R.string.general_error_something_wrong)
+                    )
+                }
             }
 
             // Dispose of the Composition when the view's LifecycleOwner

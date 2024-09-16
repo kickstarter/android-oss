@@ -562,7 +562,7 @@ private fun UpdateSelectedCardIfNewCardAdded(
     storedCards: List<StoredCard>,
     onOptionSelected: (StoredCard?) -> Unit
 ) {
-    if (index.value != storedCards.size) {
+    if (index.value != storedCards.size && storedCards.isNotEmpty()) {
         onOptionSelected(storedCards.first())
         index.value = storedCards.size
     }

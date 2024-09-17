@@ -5,6 +5,7 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,6 +32,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.Factory
 import com.kickstarter.viewmodels.RewardsFragmentViewModel.RewardsFragmentViewModel
+import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -44,6 +46,8 @@ class RewardsFragment : Fragment() {
     private val viewModel: RewardsFragmentViewModel by viewModels {
         viewModelFactory
     }
+    private lateinit var rewardsSelectionViewModelFactory: RewardsSelectionViewModel.Factory
+    private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
 
     private lateinit var environment: Environment
     private val disposables = CompositeDisposable()
@@ -54,6 +58,7 @@ class RewardsFragment : Fragment() {
         this.context?.getEnvironment()?.let { env ->
             viewModelFactory = Factory(env)
             environment = env
+            rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory(env)
         }
 
         super.onCreateView(inflater, container, savedInstanceState)

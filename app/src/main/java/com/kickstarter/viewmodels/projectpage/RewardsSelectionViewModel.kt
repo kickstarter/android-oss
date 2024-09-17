@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -11,8 +12,10 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
@@ -71,6 +74,20 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     val flowUIRequest: SharedFlow<FlowUIState>
         get() = mutableFlowUIRequest
             .asSharedFlow()
+
+    /**
+     * Used in Crowdfund checkout
+     */
+    fun provideBundle(bundle: Bundle?) {
+        bundle?.let {
+            val pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
+            val pReason = it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
+
+            pledgeData?.projectData()?.let {
+                provideProjectData(it)
+            }
+        }
+    }
 
     fun provideProjectData(projectData: ProjectData) {
         currentProjectData = projectData

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -42,12 +43,8 @@ class RewardsFragment : Fragment() {
     private lateinit var dialog: AlertDialog
     private var binding: FragmentRewardsBinding? = null
 
-    private lateinit var viewModelFactory: Factory
-    private val viewModel: RewardsFragmentViewModel by viewModels {
-        viewModelFactory
-    }
     private lateinit var rewardsSelectionViewModelFactory: RewardsSelectionViewModel.Factory
-    private val rewardsSelectionViewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
+    private val viewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
 
     private lateinit var environment: Environment
     private val disposables = CompositeDisposable()
@@ -56,9 +53,9 @@ class RewardsFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = Factory(env)
             environment = env
             rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory(env)
+            viewModel.provideBundle(arguments)
         }
 
         super.onCreateView(inflater, container, savedInstanceState)
@@ -101,6 +98,19 @@ class RewardsFragment : Fragment() {
 
                         val rewards = rules.filteredRw
                         val listState = rememberLazyListState()
+
+                        ///// TODO 
+                        val rewardSelectionUIState by viewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
+                        val shippingUIState by viewModel.shippingUIState.collectAsStateWithLifecycle()
+
+                        val projectData = rewardSelectionUIState.project
+                        val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
+                        val rewardsList = shippingUIState.filteredRw
+                        val rewardLoading = shippingUIState.loading
+                        val selectedReward = rewardSelectionUIState.selectedReward
+                        val currentUserShippingRule = shippingUIState.selectedShippingRule
+                        val shippingRules = shippingUIState.shippingRules
+                        rewardsSelectionViewModel.sendEvent(expanded, currentPage, projectData)
 
                         RewardCarouselScreen(
                             lazyRowState = listState,

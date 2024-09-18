@@ -53,7 +53,7 @@ class RewardsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // createDialog()
+        createDialog()
 
         binding?.composeView?.apply {
             // Dispose of the Composition when the view's LifecycleOwner is destroyed
@@ -147,6 +147,11 @@ class RewardsFragment : Fragment() {
                     // this.viewModel.inputs.alertButtonPressed()
                 }.create()
         }
+    }
+
+    private fun showDialog() {
+        if (this.isVisible)
+            dialog.show()
     }
 
     private fun showAddonsFragment(pledgeDataAndReason: kotlin.Pair<PledgeData, PledgeReason>) {

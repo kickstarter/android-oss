@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,7 +11,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
@@ -44,6 +42,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private lateinit var currentProjectData: ProjectData
+    private var pReason: PledgeReason? = null
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
     private var indexOfBackedReward = 0
@@ -75,25 +74,17 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         get() = mutableFlowUIRequest
             .asSharedFlow()
 
-    /**
-     * Used in Crowdfund checkout
-     */
-    fun provideBundle(bundle: Bundle?) {
-        bundle?.let {
-            val pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
-            val pReason = it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
-
-            pledgeData?.projectData()?.let {
-                provideProjectData(it)
-            }
-        }
-    }
-
     fun provideProjectData(projectData: ProjectData) {
         currentProjectData = projectData
         previousUserBacking = projectData.backing()
         previouslyBackedReward = getReward(previousUserBacking)
         indexOfBackedReward = indexOfBackedReward(project = projectData.project())
+        pReason = when {
+            projectData.backing() == null && projectData.project().isInPostCampaignPledgingPhase() == true -> PledgeReason.LATE_PLEDGE
+            projectData.backing() != null -> PledgeReason.UPDATE_PLEDGE
+            projectData.backing() == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
+            else -> PledgeReason.PLEDGE
+        }
 
         viewModelScope.launch {
             emitCurrentState()
@@ -116,11 +107,16 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
     fun onUserRewardSelection(reward: Reward) {
         viewModelScope.launch {
-            val pledgeData =
-                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, currentProjectData, reward)
+            pReason?.let {
+                val pledgeData = PledgeData.with(
+                    PledgeFlowContext.forPledgeReason(it),
+                    currentProjectData,
+                    reward
+                )
+                analytics.trackSelectRewardCTA(pledgeData)
+            }
             newUserReward = reward
             emitCurrentState()
-            analytics.trackSelectRewardCTA(pledgeData)
 
             // Show add-ons
             mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
@@ -186,11 +182,13 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
     // TODO: get pledgeFlowContext and PledgeReason correctly
     fun getPledgeData(): Pair<PledgeData, PledgeReason>? {
-        return this.currentProjectData?.let {
-            Pair(
-                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it, reward = newUserReward, shippingRule = selectedShippingRule),
-                PledgeReason.PLEDGE
-            )
+        return this.currentProjectData?.let { pData ->
+            pReason?.let { pReason ->
+                Pair(
+                    PledgeData.with(PledgeFlowContext.forPledgeReason(pReason), pData, reward = newUserReward, shippingRule = selectedShippingRule),
+                    pReason
+                )
+            }
         }
     }
 

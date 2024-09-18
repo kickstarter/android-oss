@@ -147,9 +147,11 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         return 0
     }
 
-    fun sendEvent(expanded: Boolean, currentPage: Int, projectData: ProjectData) {
+    fun sendEvent(expanded: Boolean, currentPage: Int = 0, projectData: ProjectData? = null) {
         if (expanded && currentPage == 0) {
-            analytics.trackRewardsCarouselViewed(projectData = projectData)
+            projectData?.let {
+                analytics.trackRewardsCarouselViewed(projectData = projectData)
+            } ?: analytics.trackRewardsCarouselViewed(projectData = currentProjectData)
         }
     }
 
@@ -179,6 +181,16 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         viewModelScope.launch {
             shippingRulesUseCase?.filterBySelectedRule(shippingRule)
             emitShippingUIState()
+        }
+    }
+
+    // TODO: get pledgeFlowContext and PledgeReason correctly
+    fun getPledgeData(): Pair<PledgeData, PledgeReason>? {
+        return this.currentProjectData?.let {
+            Pair(
+                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it, reward = newUserReward, shippingRule = selectedShippingRule),
+                PledgeReason.PLEDGE
+            )
         }
     }
 

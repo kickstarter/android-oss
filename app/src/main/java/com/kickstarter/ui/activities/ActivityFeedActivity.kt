@@ -52,9 +52,6 @@ class ActivityFeedActivity : AppCompatActivity() {
         WindowInsetsUtil.manageEdgeToEdge(
             window,
             binding.root,
-            binding.activityFeedMainLayout,
-            true,
-            false
         )
         setContentView(binding.root)
 

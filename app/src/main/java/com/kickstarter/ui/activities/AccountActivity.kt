@@ -74,9 +74,6 @@ class AccountActivity : AppCompatActivity() {
         WindowInsetsUtil.manageEdgeToEdge(
             window,
             binding.root,
-            binding.accountAppbarLayout,
-            applyTopPadding = true,
-            applyBottomPadding = false
         )
         setContentView(binding.root)
 
@@ -173,17 +170,6 @@ class AccountActivity : AppCompatActivity() {
                 )
             )
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        WindowInsetsUtil.manageEdgeToEdge(
-            window,
-            binding.root,
-            binding.accountAppbarLayout,
-            applyTopPadding = true,
-            applyBottomPadding = false
-        )
     }
 
     override fun onDestroy() {

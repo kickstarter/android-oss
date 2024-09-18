@@ -3,9 +3,10 @@ package com.kickstarter.utils
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import androidx.core.view.WindowCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 object WindowInsetsUtil {
 
@@ -22,10 +23,7 @@ object WindowInsetsUtil {
      */
     fun manageEdgeToEdge(
         window: Window,
-        rootView: View,
-        mainLayout: ViewGroup,
-        applyTopPadding: Boolean = true,
-        applyBottomPadding: Boolean = true
+        rootView: View
     ) {
         // Set the window to allow drawing under the system bars (status, nav bars),
         // making them transparent, and enabling edge-to-edge display.
@@ -51,7 +49,6 @@ object WindowInsetsUtil {
             // should not be passed down to child views. If you want child views to handle insets,
             // you can return the windowInsets instead.
             WindowInsetsCompat.CONSUMED
-
         }
     }
 

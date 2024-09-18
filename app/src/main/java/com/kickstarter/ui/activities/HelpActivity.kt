@@ -68,9 +68,6 @@ open class HelpActivity : ComponentActivity() {
         WindowInsetsUtil.manageEdgeToEdge(
             window,
             binding.root,
-            binding.helpMainLayout,
-            applyTopPadding = true,
-            applyBottomPadding = false
         )
         setContentView(binding.root)
 

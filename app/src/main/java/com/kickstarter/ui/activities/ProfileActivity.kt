@@ -41,9 +41,6 @@ class ProfileActivity : ComponentActivity() {
         WindowInsetsUtil.manageEdgeToEdge(
             window,
             binding.root,
-            binding.profileActivityMainLayout,
-            applyTopPadding = true,
-            applyBottomPadding = false
         )
         setContentView(binding.root)
 

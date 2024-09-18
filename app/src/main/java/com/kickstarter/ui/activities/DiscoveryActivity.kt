@@ -37,7 +37,6 @@ import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
-import com.kickstarter.utils.LayoutPaddingConfig
 import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers

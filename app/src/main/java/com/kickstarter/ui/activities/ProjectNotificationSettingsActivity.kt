@@ -23,10 +23,8 @@ class ProjectNotificationSettingsActivity :
         WindowInsetsUtil.manageEdgeToEdge(
             window,
             binding.root,
-            binding.projectNotificationSettingsMainLayout,
-            applyTopPadding = true,
-            applyBottomPadding = true
-        )
+
+            )
         setContentView(binding.root)
 
         val adapter = ProjectNotificationSettingsAdapter()

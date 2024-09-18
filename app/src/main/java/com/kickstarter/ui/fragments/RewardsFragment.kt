@@ -100,8 +100,11 @@ class RewardsFragment : Fragment() {
                         LaunchedEffect(Unit) {
                             viewModel.flowUIRequest.collect {
                                 viewModel.getPledgeData()?.let {
-                                    // TODO: check if it is required to show the dialog
-                                    showAddonsFragment(it)
+                                    if (viewModel.shouldShowAlert()) {
+                                        showDialog()
+                                    } else {
+                                        showAddonsFragment(it)
+                                    }
                                 }
                             }
                         }
@@ -109,31 +112,6 @@ class RewardsFragment : Fragment() {
                 }
             }
         }
-
-        // TODO: Navigation
-//        this.viewModel.outputs.showPledgeFragment()
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe {
-//                dialog.dismiss()
-//                // showPledgeFragment(it.first, it.second)
-//                showAddonsFragment(Pair(it.first, it.second))
-//            }
-//            .addToDisposable(disposables)
-//
-//        this.viewModel.outputs.showAddOnsFragment()
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe {
-//                dialog.dismiss()
-//                showAddonsFragment(it)
-//            }
-//            .addToDisposable(disposables)
-//
-//        this.viewModel.outputs.showAlert()
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe {
-//                showAlert()
-//            }
-//            .addToDisposable(disposables)
     }
 
     private fun createDialog() {
@@ -144,7 +122,7 @@ class RewardsFragment : Fragment() {
                 .setMessage(getString(R.string.It_may_not_offer_some_or_all_of_your_add_ons))
                 .setNegativeButton(getString(R.string.No_go_back)) { _, _ -> {} }
                 .setPositiveButton(getString(R.string.Yes_continue)) { _, _ ->
-                    // this.viewModel.inputs.alertButtonPressed()
+                    viewModel.getPledgeData()?.let { showAddonsFragment(it) }
                 }.create()
         }
     }

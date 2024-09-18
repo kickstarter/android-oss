@@ -76,13 +76,15 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
     fun provideProjectData(projectData: ProjectData) {
         currentProjectData = projectData
-        previousUserBacking = projectData.backing()
+        previousUserBacking =
+            if (projectData.backing() != null) projectData.backing()
+            else projectData.project().backing()
         previouslyBackedReward = getReward(previousUserBacking)
         indexOfBackedReward = indexOfBackedReward(project = projectData.project())
         pReason = when {
-            projectData.backing() == null && projectData.project().isInPostCampaignPledgingPhase() == true -> PledgeReason.LATE_PLEDGE
-            projectData.backing() != null -> PledgeReason.UPDATE_PLEDGE
-            projectData.backing() == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
+            previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == true -> PledgeReason.LATE_PLEDGE
+            previousUserBacking != null -> PledgeReason.UPDATE_PLEDGE
+            previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
             else -> PledgeReason.PLEDGE
         }
 
@@ -190,6 +192,29 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                 )
             }
         }
+    }
+
+    fun shouldShowAlert(): Boolean {
+        val prevRw = previousUserBacking?.reward()
+        prevRw?.let {
+            if (pReason == PledgeReason.UPDATE_PLEDGE) {
+                if (prevRw.hasAddons() && !newUserReward.hasAddons())
+                    return true
+
+                if (!prevRw.hasAddons() && !newUserReward.hasAddons())
+                    return false
+
+                if (prevRw.id() == newUserReward.id()) {
+                    return false
+                }
+
+                if (prevRw.id() != newUserReward.id() && prevRw.hasAddons() && newUserReward.hasAddons()) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :

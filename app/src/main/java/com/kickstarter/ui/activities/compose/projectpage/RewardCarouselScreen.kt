@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -51,7 +52,9 @@ fun RewardCarouselScreenPreview() {
             backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             RewardCarouselScreen(
-                modifier = Modifier.padding(padding),
+                modifier = Modifier
+                    .padding(padding)
+                    .systemBarsPadding(),
                 lazyRowState = rememberLazyListState(),
                 environment = Environment.Builder().build(),
                 rewards = (0..10).map {
@@ -195,7 +198,11 @@ fun RewardCarouselScreen(
                                 RoundingMode.HALF_UP,
                                 true
                             )
-                            environment.ksString()?.format(stringResource(id = R.string.About_reward_amount), "reward_amount", conversionAmount)
+                            environment.ksString()?.format(
+                                stringResource(id = R.string.About_reward_amount),
+                                "reward_amount",
+                                conversionAmount
+                            )
                         },
                         description = reward.description(),
                         title = reward.title(),
@@ -213,7 +220,7 @@ fun RewardCarouselScreen(
                         },
                         isCTAButtonEnabled = ctaButtonEnabled,
                         includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
-                            .isNullOrEmpty() && environment.ksString().isNotNull()
+                                .isNullOrEmpty() && environment.ksString().isNotNull()
                         ) {
                             reward.rewardsItems()?.map { rewardItems ->
                                 environment.ksString()?.format(

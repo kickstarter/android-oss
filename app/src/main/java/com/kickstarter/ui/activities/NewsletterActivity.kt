@@ -14,7 +14,6 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
-import com.kickstarter.utils.LayoutPaddingConfig
 import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.NewsletterViewModel.Factory
 import com.kickstarter.viewmodels.NewsletterViewModel.NewsletterViewModel
@@ -40,21 +39,9 @@ class NewsletterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNewsletterBinding.inflate(layoutInflater)
-        WindowInsetsUtil.manageEdgeToEdgeOnMultipleLayouts(
-            window = window,
-            rootView = findViewById(android.R.id.content),
-            layoutConfigs = listOf(
-                LayoutPaddingConfig(
-                    layout = binding.newsletterLayout,
-                    applyTopPadding = false,
-                    applyBottomPadding = true
-                ),
-                LayoutPaddingConfig(
-                    layout = binding.newsletterAppbarLayout,
-                    applyTopPadding = true,
-                    applyBottomPadding = false
-                ),
-            )
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
         )
         setContentView(binding.root)
 

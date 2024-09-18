@@ -59,7 +59,10 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
         super.onCreate(savedInstanceState)
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
         environment()
 

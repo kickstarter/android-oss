@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -68,7 +69,9 @@ private fun AddOnsScreenPreview() {
             backgroundColor = colors.backgroundAccentGraySubtle
         ) { padding ->
             AddOnsScreen(
-                modifier = Modifier.padding(padding),
+                modifier = Modifier
+                    .padding(padding)
+                    .systemBarsPadding(),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
                 countryList = listOf(
@@ -305,6 +308,7 @@ private fun getAddOnCount(selectedAddOnsMap: Map<Reward, Int>): Int {
     }
     return totalAddOnsCount
 }
+
 private fun getShippingCost(
     reward: Reward,
     ksCurrency: KSCurrency,
@@ -314,7 +318,10 @@ private fun getShippingCost(
 ): String {
     return if (shippingRules.isNullOrEmpty()) {
         ""
-    } else if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+    } else if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(
+            reward
+        )
+    ) {
         var cost = 0.0
         shippingRules.filter {
             it.location()?.id() == selectedShippingRule.location()?.id()

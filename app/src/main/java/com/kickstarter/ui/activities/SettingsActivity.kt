@@ -56,13 +56,10 @@ class SettingsActivity : AppCompatActivity() {
             getString(R.string.dark)
         )
         binding = SettingsLayoutBinding.inflate(layoutInflater)
-//        WindowInsetsUtil.manageEdgeToEdge(
-//            window,
-//            binding.root,
-//            binding.toolBar,
-//            applyTopPadding = true,
-//            applyBottomPadding = false
-//        )
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         this.getEnvironment()?.let { env ->
             viewModelFactory = SettingsViewModel.Factory(env)
             sharedPrefs = env.sharedPreferences()

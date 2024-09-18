@@ -78,7 +78,6 @@ class AccountActivity : AppCompatActivity() {
             applyTopPadding = true,
             applyBottomPadding = false
         )
-
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)

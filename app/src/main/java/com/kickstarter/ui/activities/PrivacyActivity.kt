@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.PrivacyViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -32,7 +33,10 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPrivacyBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         this.viewModel.outputs.hideConfirmFollowingOptOutPrompt()

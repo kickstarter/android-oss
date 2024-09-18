@@ -148,6 +148,7 @@ class ProjectPageActivity :
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
 
+
     private var disposables = CompositeDisposable()
 
     private val pagerAdapterList = mutableListOf(
@@ -171,13 +172,10 @@ class ProjectPageActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
-//        WindowInsetsUtil.manageEdgeToEdge(
-//            window,
-//            binding.root,
-//            binding.snackbarAnchor,
-//            applyTopPadding = false,
-//            applyBottomPadding = true
-//        )
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
 

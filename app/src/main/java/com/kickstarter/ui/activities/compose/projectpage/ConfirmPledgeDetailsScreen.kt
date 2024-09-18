@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,7 +61,7 @@ import java.math.RoundingMode
 private fun ConfirmPledgeDetailsScreenPreviewNoRewards() {
     KSTheme {
         ConfirmPledgeDetailsScreen(
-            modifier = Modifier,
+            modifier = Modifier.systemBarsPadding(),
             environment = Environment.builder().build(),
             project = Project.builder().build(),
             selectedReward = null,

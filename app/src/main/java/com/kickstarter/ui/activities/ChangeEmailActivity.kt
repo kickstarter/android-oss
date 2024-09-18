@@ -42,13 +42,10 @@ class ChangeEmailActivity : AppCompatActivity() {
         }
 
         binding = ActivityChangeEmailBinding.inflate(layoutInflater)
-//        WindowInsetsUtil.manageEdgeToEdge(
-//            window,
-//            binding.root,
-//            binding.changeEmailLayout,
-//            true,
-//            false
-//        )
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
         setSupportActionBar(binding.changeEmailActivityToolbar.changeEmailToolbar)
 

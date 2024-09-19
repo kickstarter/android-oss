@@ -182,35 +182,32 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         }
     }
 
-    // TODO: get pledgeFlowContext and PledgeReason correctly
     fun getPledgeData(): Pair<PledgeData, PledgeReason>? {
-        return this.currentProjectData?.let { pData ->
+        return this.currentProjectData.run {
             pReason?.let { pReason ->
                 Pair(
-                    PledgeData.with(PledgeFlowContext.forPledgeReason(pReason), pData, reward = newUserReward, shippingRule = selectedShippingRule),
+                    PledgeData.with(
+                        pledgeFlowContext = PledgeFlowContext.forPledgeReason(pReason),
+                        projectData = this,
+                        reward = newUserReward,
+                        shippingRule = selectedShippingRule
+                    ),
                     pReason
                 )
             }
         }
     }
 
+    /**
+     * Used during Crowdfunding phase, while updating pledge
+     * if User changes reward and had addOns backed before
+     * display Alert
+     */
     fun shouldShowAlert(): Boolean {
         val prevRw = previousUserBacking?.reward()
         prevRw?.let {
             if (pReason == PledgeReason.UPDATE_PLEDGE) {
-                if (prevRw.hasAddons() && !newUserReward.hasAddons())
-                    return true
-
-                if (!prevRw.hasAddons() && !newUserReward.hasAddons())
-                    return false
-
-                if (prevRw.id() == newUserReward.id()) {
-                    return false
-                }
-
-                if (prevRw.id() != newUserReward.id() && prevRw.hasAddons() && newUserReward.hasAddons()) {
-                    return true
-                }
+                return prevRw.hasAddons() && prevRw.id() == newUserReward.id()
             }
         }
 

@@ -24,7 +24,7 @@ class ProjectNotificationSettingsActivity :
             window,
             binding.root,
 
-            )
+        )
         setContentView(binding.root)
 
         val adapter = ProjectNotificationSettingsAdapter()

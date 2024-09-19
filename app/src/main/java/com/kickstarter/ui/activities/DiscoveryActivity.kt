@@ -8,9 +8,6 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
@@ -136,7 +133,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .distinctUntilChanged()
             .filter {
                 android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
-                        this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                    this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
             }
             .delay(2000, TimeUnit.MILLISECONDS)
             .compose(bindToLifecycle())
@@ -319,7 +316,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         startActivity(intent)
         overridePendingTransition(0, 0)
     }
-
 
     override fun onDestroy() {
         viewModel = null

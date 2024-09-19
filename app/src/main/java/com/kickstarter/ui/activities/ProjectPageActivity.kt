@@ -148,7 +148,6 @@ class ProjectPageActivity :
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
 
-
     private var disposables = CompositeDisposable()
 
     private val pagerAdapterList = mutableListOf(
@@ -209,14 +208,14 @@ class ProjectPageActivity :
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    this@ProjectPageActivity.viewModel.inputs.onGlobalLayout()
-                    binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver.removeOnGlobalLayoutListener(
-                        this
-                    )
-                }
-            })
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        this@ProjectPageActivity.viewModel.inputs.onGlobalLayout()
+                        binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver.removeOnGlobalLayoutListener(
+                            this
+                        )
+                    }
+                })
         }
 
         this.supportFragmentManager.addOnBackStackChangedListener {
@@ -1198,8 +1197,10 @@ class ProjectPageActivity :
             getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES)
                 ?: false
 
-        if (clearFragmentBackStack() || (projectData.project()
-                .showLatePledgeFlow() && fFLatePledge)
+        if (clearFragmentBackStack() || (
+            projectData.project()
+                .showLatePledgeFlow() && fFLatePledge
+            )
         ) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)

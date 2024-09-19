@@ -2,14 +2,12 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFeedLayoutBinding
-import com.kickstarter.databinding.ActivityFeedToolbarBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.RefTag
@@ -28,11 +26,11 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ActivityFeedViewModel
 import com.kickstarter.viewmodels.ActivityFeedViewModel.Factory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import com.kickstarter.utils.WindowInsetsUtil
 
 class ActivityFeedActivity : AppCompatActivity() {
     private var adapter: ActivityFeedAdapter? = null
@@ -203,5 +201,4 @@ class ActivityFeedActivity : AppCompatActivity() {
             .putExtra(IntentKey.UPDATE, activity.update())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
-
 }

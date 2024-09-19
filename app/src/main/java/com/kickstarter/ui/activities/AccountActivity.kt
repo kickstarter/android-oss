@@ -1,9 +1,7 @@
 package com.kickstarter.ui.activities
 
-
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -23,7 +21,6 @@ import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.AccountViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
 import type.CurrencyCode
 
 class AccountActivity : AppCompatActivity() {

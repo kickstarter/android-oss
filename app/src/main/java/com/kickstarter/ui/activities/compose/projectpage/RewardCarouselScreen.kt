@@ -220,7 +220,7 @@ fun RewardCarouselScreen(
                         },
                         isCTAButtonEnabled = ctaButtonEnabled,
                         includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
-                                .isNullOrEmpty() && environment.ksString().isNotNull()
+                            .isNullOrEmpty() && environment.ksString().isNotNull()
                         ) {
                             reward.rewardsItems()?.map { rewardItems ->
                                 environment.ksString()?.format(

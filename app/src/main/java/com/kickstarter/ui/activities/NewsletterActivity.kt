@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.WindowInsets
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityNewsletterBinding
 import com.kickstarter.libs.KSString

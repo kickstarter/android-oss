@@ -51,5 +51,4 @@ object WindowInsetsUtil {
             WindowInsetsCompat.CONSUMED
         }
     }
-
 }

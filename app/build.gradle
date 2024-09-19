@@ -52,10 +52,10 @@ if (file('signing.gradle').exists()) {
 
 android {
     defaultConfig {
-        compileSdk 34
+        compileSdk = 35
         applicationId "com.kickstarter"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdk = 35
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
@@ -198,6 +198,7 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.annotation:annotation:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.cardview:cardview:1.0.0'

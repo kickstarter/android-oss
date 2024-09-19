@@ -207,7 +207,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         val prevRw = previousUserBacking?.reward()
         prevRw?.let {
             if (pReason == PledgeReason.UPDATE_PLEDGE) {
-                return prevRw.hasAddons() && prevRw.id() == newUserReward.id()
+                return prevRw.hasAddons() && prevRw.id() != newUserReward.id()
             }
         }
 

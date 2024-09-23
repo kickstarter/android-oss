@@ -25,7 +25,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
-import io.reactivex.disposables.CompositeDisposable
 
 class RewardsFragment : Fragment() {
 
@@ -36,7 +35,6 @@ class RewardsFragment : Fragment() {
     private val viewModel: RewardsSelectionViewModel by viewModels { rewardsSelectionViewModelFactory }
 
     private lateinit var environment: Environment
-    private val disposables = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -163,14 +161,8 @@ class RewardsFragment : Fragment() {
 
     fun setState(state: Boolean?) {
         state?.let {
-            // TODO: Check analytics events sent correctly
             viewModel.sendEvent(expanded = it)
         }
-    }
-
-    override fun onDetach() {
-        disposables.clear()
-        super.onDetach()
     }
 
     fun configureWith(projectData: ProjectData) {

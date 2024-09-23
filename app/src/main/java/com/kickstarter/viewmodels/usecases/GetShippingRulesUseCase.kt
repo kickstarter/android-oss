@@ -54,6 +54,7 @@ class GetShippingRulesUseCase(
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
     private val allAvailableRulesForProject = mutableMapOf<Long, ShippingRule>()
+    private val shippingRulesByRewardWithCost = mutableMapOf<Reward, List<ShippingRule>>()
     private val projectRewards = project.rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
 
     init {
@@ -62,7 +63,7 @@ class GetShippingRulesUseCase(
         val rewardsToQuery = mutableMapOf<Long, Reward>()
 
         // Get first reward with unrestricted shipping preference, when quering `getShippingRules` will return ALL available locations, no need to query more rewards locations
-        project.rewards()?.filter { RewardUtils.shipsWorldwide(reward = it) }?.firstOrNull()?.let {
+        project.rewards()?.filter { RewardUtils.shipsWorldwide(reward = it) }?.map {
             rewardsToQuery.put(it.id(), it)
         }
 
@@ -98,6 +99,7 @@ class GetShippingRulesUseCase(
                 rewardsByShippingType.forEachIndexed { index, reward ->
 
                     if (RewardUtils.shipsToRestrictedLocations(reward)) {
+                        shippingRulesByRewardWithCost[reward] = reward.shippingRules() ?: emptyList()
                         reward.shippingRules()?.map {
                             avShipMap.put(
                                 requireNotNull(
@@ -169,6 +171,7 @@ class GetShippingRulesUseCase(
         apolloClient.getShippingRules(reward)
             .asFlow()
             .map { rulesEnvelope ->
+                shippingRulesByRewardWithCost[reward] = rulesEnvelope.shippingRules()
                 rulesEnvelope.shippingRules()?.map { rule ->
                     rule?.let {
                         shippingRules.put(
@@ -202,28 +205,33 @@ class GetShippingRulesUseCase(
         val isIsValidRule = allAvailableShippingRules[locationId]
 
         rewards.map { rw ->
-            if (RewardUtils.shipsWorldwide(rw)) {
-                filteredRewards.add(rw)
+            val updatedRulesWithCost = shippingRulesByRewardWithCost[rw]
+            val updatedRw = rw.toBuilder()
+                .shippingRules(updatedRulesWithCost)
+                .build()
+
+            if (RewardUtils.shipsWorldwide(updatedRw)) {
+                filteredRewards.add(updatedRw)
             }
 
-            if (RewardUtils.isNoReward(rw)) {
-                filteredRewards.add(rw)
+            if (RewardUtils.isNoReward(updatedRw)) {
+                filteredRewards.add(updatedRw)
             }
 
-            if (RewardUtils.isLocalPickup(rw)) {
-                filteredRewards.add(rw)
+            if (RewardUtils.isLocalPickup(updatedRw)) {
+                filteredRewards.add(updatedRw)
             }
 
-            if (RewardUtils.isDigital(rw)) {
-                filteredRewards.add(rw)
+            if (RewardUtils.isDigital(updatedRw)) {
+                filteredRewards.add(updatedRw)
             }
 
             // - If shipping is restricted, make sure the reward is able to ship to selected rule
-            if (RewardUtils.shipsToRestrictedLocations(rw)) {
+            if (RewardUtils.shipsToRestrictedLocations(updatedRw)) {
                 if (isIsValidRule != null) {
                     rw.shippingRules()?.map {
                         if (it.location()?.id() == locationId) {
-                            filteredRewards.add(rw)
+                            filteredRewards.add(updatedRw)
                         }
                     }
                 }

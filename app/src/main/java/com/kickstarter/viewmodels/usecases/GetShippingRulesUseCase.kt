@@ -62,7 +62,6 @@ class GetShippingRulesUseCase(
         // To avoid duplicates insert reward.id as key
         val rewardsToQuery = mutableMapOf<Long, Reward>()
 
-        // Get first reward with unrestricted shipping preference, when quering `getShippingRules` will return ALL available locations, no need to query more rewards locations
         project.rewards()?.filter { RewardUtils.shipsWorldwide(reward = it) }?.map {
             rewardsToQuery.put(it.id(), it)
         }

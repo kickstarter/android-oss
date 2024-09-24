@@ -390,14 +390,14 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         // - make sure the uiState output reward list is filtered
         assertEquals(shippingUiState.last().filteredRw.size, filteredRewards.size)
 
-        val obtained = shippingUiState.last().filteredRw
+        val obtainedIDs = shippingUiState.last().filteredRw.map { it.id() }
         assertEquals(
-            obtained,
-            filteredRewards
+            obtainedIDs,
+            filteredRewards.map { it.id() }
         )
 
-        assertEquals(obtained.first(), RewardFactory.noReward())
-        assertEquals(obtained[2].shippingRules()?.first(), ShippingRuleFactory.germanyShippingRule())
+        assertEquals(shippingUiState.last().filteredRw.first(), RewardFactory.noReward())
+        assertEquals(shippingUiState.last().filteredRw[2].shippingRules()?.first(), ShippingRuleFactory.germanyShippingRule())
     }
 
     @Test

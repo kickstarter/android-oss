@@ -20,7 +20,7 @@ fun PledgeData.locationId(): Long {
 fun PledgeData.shippingCostIfShipping(): Double {
     val rwShippingCost = if (RewardUtils.isShippable(this.reward())) {
         val shippingRule = this.reward().shippingRules()?.find { it.location()?.id() == this.locationId() }
-        return shippingRule?.cost() ?: 0.0
+        shippingRule?.cost() ?: 0.0
     } else 0.0
 
     var addOnsShippingCost = 0.0

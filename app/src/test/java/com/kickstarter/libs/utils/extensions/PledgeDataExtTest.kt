@@ -14,7 +14,9 @@ class PledgeDataExtTest : TestCase() {
     fun `test checkoutTotalAmount for reward shipping with AddOns and bonus support on late pledges`() {
         val project = ProjectFactory.project()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
-        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val rw = RewardFactory.rewardWithShipping().toBuilder()
+            .shippingRules(listOf(shippingRule))
+            .latePledgeAmount(8.0).pledgeAmount(2.0).build()
 
         val addOn1 = RewardFactory.addOn().toBuilder()
             .id(1L)
@@ -45,7 +47,9 @@ class PledgeDataExtTest : TestCase() {
     fun `test checkoutTotalAmount for reward Not Shipping with AddOns and bonus support on crowdfund`() {
         val project = ProjectFactory.project()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
-        val rw = RewardFactory.digitalReward().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val rw = RewardFactory.digitalReward().toBuilder()
+            .shippingRules(listOf(ShippingRuleFactory.canadaShippingRule()))
+            .latePledgeAmount(8.0).pledgeAmount(2.0).build()
         val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
         val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
         val addOns = listOf(addOn1, addOn2)
@@ -61,7 +65,11 @@ class PledgeDataExtTest : TestCase() {
     fun `test checkoutTotalAmount for reward shipping with AddOns and bonus support on crowdfund`() {
         val project = ProjectFactory.project()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
-        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(8.0).pledgeAmount(2.0).build()
+        val rw = RewardFactory.rewardWithShipping().toBuilder()
+            .shippingRules(listOf(shippingRule))
+            .latePledgeAmount(8.0)
+            .pledgeAmount(2.0)
+            .build()
         val addOn1 = RewardFactory.addOn().toBuilder().id(1L).quantity(3).latePledgeAmount(5.0).pledgeAmount(3.0).build()
         val addOn2 = RewardFactory.addOn().toBuilder().id(2L).quantity(2).latePledgeAmount(6.0).pledgeAmount(2.0).build()
         val addOns = listOf(addOn1, addOn2)
@@ -75,7 +83,9 @@ class PledgeDataExtTest : TestCase() {
     }
 
     fun `test when the selected reward has shipping test shippingCostIfShipping`() {
-        val rw = RewardFactory.rewardWithShipping()
+        val rw = RewardFactory.rewardWithShipping().toBuilder()
+            .shippingRules(listOf(ShippingRuleFactory.canadaShippingRule()))
+            .build()
         val project = ProjectFactory.project()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
 

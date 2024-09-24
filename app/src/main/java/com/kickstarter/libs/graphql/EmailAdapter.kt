@@ -1,14 +1,21 @@
 package com.kickstarter.libs.graphql
 
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 
-class EmailAdapter : CustomTypeAdapter<String> {
-    override fun encode(value: String): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLString(value)
+class EmailAdapter : Adapter<String> {
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
+        TODO("Not yet implemented")
     }
 
-    override fun decode(value: CustomTypeValue<*>): String {
-        return value.toString()
+    override fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        value: String
+    ) {
+        TODO("Not yet implemented")
     }
 }

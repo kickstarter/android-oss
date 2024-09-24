@@ -1,6 +1,6 @@
-mutation triggerThirdPartyEvent  ($triggerThirdPartyEventInput: TriggerThirdPartyEventInput!) {
-    triggerThirdPartyEvent(input: $triggerThirdPartyEventInput) {
-        message
-        success
-    }
-}
+#mutation triggerThirdPartyEvent  ($triggerThirdPartyEventInput: TriggerThirdPartyEventInput!) {
+#    triggerThirdPartyEvent(input: $triggerThirdPartyEventInput) {
+#        message
+#        success
+#    }
+#}

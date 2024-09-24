@@ -19,10 +19,12 @@ data class TPEventItemInputData(val itemId: String, val itemName: String, val pr
  * ThirdPartyAppDataInput information required for certain types of events for third party actors
  * @param androidConsent reflects the user opt-in value for consent management
  * @param iOSConsent flase in Android by default, reflects the user opt-in value for iOS users
+ * @param advertiserTrackingEnabled iOS only but mandatory on the mutation
  */
 data class TPAppDataInput(
     val iOSConsent: Boolean = false,
     val androidConsent: Boolean = true,
+    val advertiserTrackingEnabled: Boolean = false,
     val extInfo: List<String> = listOf(
         "a2",
         "",

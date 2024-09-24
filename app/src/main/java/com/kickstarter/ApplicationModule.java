@@ -9,6 +9,8 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.api.CustomScalarType;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -218,15 +220,10 @@ public class ApplicationModule {
       builder.addInterceptor(httpLoggingInterceptor);
     }
 
-    final OkHttpClient okHttpClient = builder.build();
-
-    return ApolloClient.builder()
-      .addCustomTypeAdapter(CustomType.DATE, new DateAdapter())
-      .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
-      .addCustomTypeAdapter(CustomType.ISO8601DATETIME, new Iso8601DateTimeAdapter())
-      .addCustomTypeAdapter(CustomType.DATETIME, new DateTimeAdapter())
+    return new ApolloClient.Builder()
+      .addCustomScalarAdapter(new CustomScalarType("Date","java.util.Date"), new DateAdapter())
+      .addCustomScalarAdapter(new CustomScalarType("DateTime","org.joda.time.DateTime"), new DateTimeAdapter())
       .serverUrl(webEndpoint + "/graph")
-      .okHttpClient(okHttpClient)
       .build();
   }
 

@@ -40,10 +40,10 @@ import UserPrivacyQuery
 import ValidateCheckoutQuery
 import WatchProjectMutation
 import android.util.Pair
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
@@ -97,6 +97,8 @@ import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.rx2.asObservable
 import type.BackingState
 import type.CurrencyCode
 import type.NonDeprecatedFlaggingKind
@@ -216,18 +218,15 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProject(slug: String): Observable<Project> {
         return Observable.defer {
             val ps = PublishSubject.create<Project>()
+            val query = FetchProjectQuery(slug)
             this.service.query(
-                FetchProjectQuery.builder()
-                    .slug(slug)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<FetchProjectQuery.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
-                }
-
-                override fun onResponse(response: Response<FetchProjectQuery.Data>) {
-                    if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                    else {
+                query
+            ).toFlow()
+                .asObservable()
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    } else {
                         response.data?.let { responseData ->
                             ps.onNext(
                                 projectTransformer(
@@ -237,8 +236,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                         ps.onComplete()
                     }
-                }
-            })
+                }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -812,27 +810,27 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
 
-            val mutation = getTriggerThirdPartyEventMutation(eventInput)
-
-            service.mutate(mutation)
-                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
-                        }
-
-                        response.data?.let {
-                            val message = it.triggerThirdPartyEvent()?.message() ?: ""
-                            val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
-                            ps.onNext(Pair(isSuccess, message))
-                        }
-                        ps.onComplete()
-                    }
-                })
+//            val mutation = getTriggerThirdPartyEventMutation(eventInput)
+//
+//            service.mutate(mutation)
+//                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
+//                    override fun onFailure(exception: ApolloException) {
+//                        ps.onError(exception)
+//                    }
+//
+//                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
+//                        if (response.hasErrors()) {
+//                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+//                        }
+//
+//                        response.data?.let {
+//                            val message = it.triggerThirdPartyEvent()?.message() ?: ""
+//                            val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
+//                            ps.onNext(Pair(isSuccess, message))
+//                        }
+//                        ps.onComplete()
+//                    }
+//                })
             return@defer ps
         }
     }

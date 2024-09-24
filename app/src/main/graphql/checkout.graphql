@@ -78,8 +78,8 @@ mutation CompleteOnSessionCheckout($checkoutId: ID!, $paymentIntentClientSecret:
   }
 }
 
-mutation completeOrder($projectId: ID!, $stripePaymentMethodId: String, $paymentSourceId: String, $paymentSourceReusable: Boolean, $paymentMethodTypes: [String!]) {
-  completeOrder(input:{stripePaymentMethodId: $stripePaymentMethodId, paymentSourceId: $paymentSourceId, paymentSourceReusable: $paymentSourceReusable, paymentMethodTypes: $paymentMethodTypes }) {
+mutation completeOrder($orderId: ID!, $stripePaymentMethodId: String, $paymentSourceId: String, $paymentSourceReusable: Boolean, $paymentMethodTypes: [String!]) {
+  completeOrder(input:{orderId: $orderId, stripePaymentMethodId: $stripePaymentMethodId, paymentSourceId: $paymentSourceId, paymentSourceReusable: $paymentSourceReusable, paymentMethodTypes: $paymentMethodTypes }) {
     status
     clientSecret
   }

@@ -8,6 +8,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.extensions.deriveNavigationDrawerData
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
@@ -186,6 +188,7 @@ interface DiscoveryViewModel {
         private val successMessage = PublishSubject.create<String>()
         private val messageError = PublishSubject.create<String?>()
         private val darkThemeEnabled = io.reactivex.subjects.BehaviorSubject.create<Boolean>()
+        private val darkThemeEnabledV1 = BehaviorSubject.create<Boolean>()
         private var isDarkTheme = false
         private var isDarkThemeInitialized = false
 
@@ -413,9 +416,10 @@ interface DiscoveryViewModel {
                 .filter { bool: Boolean? -> bool.isTrue() }
 
             currentUser
+                .compose(takeWhen(darkThemeEnabledV1))
                 .map { currentDrawerMenuIcon(it) }
                 .distinctUntilChanged()
-                .subscribe { if (isDarkThemeInitialized) drawerMenuIcon.onNext(it) }
+                .subscribe { drawerMenuIcon.onNext(it) }
         }
 
         override fun childFilterViewHolderRowClick(viewHolder: ChildFilterViewHolder, row: NavigationDrawerData.Section.Row) {
@@ -474,6 +478,7 @@ interface DiscoveryViewModel {
             this.isDarkTheme = isDarkTheme
             this.isDarkThemeInitialized = true
             darkThemeEnabled.onNext(isDarkTheme)
+            darkThemeEnabledV1.onNext(isDarkTheme)
         }
     }
 }

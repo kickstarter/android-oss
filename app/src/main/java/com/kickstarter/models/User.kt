@@ -2,6 +2,7 @@ package com.kickstarter.models
 
 import android.content.res.Resources
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.kickstarter.R
 import kotlinx.parcelize.Parcelize
 
@@ -50,7 +51,8 @@ class User private constructor(
     private val notifyOfMessages: Boolean,
     private val notifyOfUpdates: Boolean,
     private val optedOutOfRecommendations: Boolean,
-    private val ppoHasAction: Boolean?,
+    @SerializedName("ppoHasAction")
+    private val ppoHasAction: Boolean,
     private val promoNewsletter: Boolean,
     private val publishingNewsletter: Boolean,
     private val showPublicProfile: Boolean,
@@ -163,7 +165,7 @@ class User private constructor(
         private var notifyOfUpdates: Boolean = false,
         private var optedOutOfRecommendations: Boolean = false,
         private var promoNewsletter: Boolean = false,
-        private var ppoHasAction: Boolean? = false,
+        private var ppoHasAction: Boolean = false,
         private var publishingNewsletter: Boolean = false,
         private var showPublicProfile: Boolean = false,
         private var needsPassword: Boolean? = false,
@@ -217,7 +219,7 @@ class User private constructor(
         fun notifyOfMessages(notifyOfMessages: Boolean?) = apply { this.notifyOfMessages = notifyOfMessages ?: false }
         fun notifyOfUpdates(notifyOfUpdates: Boolean?) = apply { this.notifyOfUpdates = notifyOfUpdates ?: false }
         fun optedOutOfRecommendations(optedOutOfRecommendations: Boolean?) = apply { this.optedOutOfRecommendations = optedOutOfRecommendations ?: false }
-        fun ppoHasAction(ppoHasAction: Boolean?) = apply { this.ppoHasAction = ppoHasAction ?: false }
+        fun ppoHasAction(ppoHasAction: Boolean) = apply { this.ppoHasAction = ppoHasAction }
         fun promoNewsletter(promoNewsletter: Boolean?) = apply { this.promoNewsletter = promoNewsletter ?: false }
         fun publishingNewsletter(publishingNewsletter: Boolean?) = apply { this.publishingNewsletter = publishingNewsletter ?: false }
         fun showPublicProfile(showPublicProfile: Boolean?) = apply { this.showPublicProfile = showPublicProfile ?: false }

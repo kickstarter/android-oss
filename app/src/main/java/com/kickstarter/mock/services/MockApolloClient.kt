@@ -117,6 +117,13 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(ProjectFactory.backedProject())
     }
 
+    override fun getProjects(
+        discoveryParams: DiscoveryParams,
+        slug: String?
+    ): io.reactivex.Observable<DiscoverEnvelope> {
+        return io.reactivex.Observable.empty()
+    }
+
     override fun createSetupIntent(project: Project?): io.reactivex.Observable<String> {
         return io.reactivex.Observable.just("")
     }

@@ -15,6 +15,7 @@ import DeletePaymentSourceMutation
 import ErroredBackingsQuery
 import FetchCategoryQuery
 import FetchProjectQuery
+import FetchProjectsQuery
 import GetBackingQuery
 import GetCommentQuery
 import GetProjectAddOnsQuery
@@ -49,6 +50,8 @@ import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.toBoolean
+import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -66,6 +69,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
@@ -107,6 +111,7 @@ import java.nio.charset.Charset
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
     fun getProject(slug: String): Observable<Project>
+    fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope>
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
@@ -241,6 +246,65 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjects(
+        discoveryParams: DiscoveryParams,
+        slug: String?
+    ): Observable<DiscoverEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<DiscoverEnvelope>()
+            this.service.query(
+                buildFetchProjectsQuery(discoveryParams, slug)
+            ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchProjectsQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val projects = responseData.projects()?.edges()?.map {
+                            projectTransformer(it.node()?.fragments()?.projectCard())
+                        }
+                        val pageInfoEnvelope =
+                            responseData.projects()?.pageInfo()?.fragments()?.pageInfo()?.let {
+                                createPageInfoObject(it)
+                            }
+                        val discoverEnvelope = DiscoverEnvelope.builder()
+                            .projects(projects)
+                            .pageInfoEnvelope(pageInfoEnvelope)
+                            .build()
+                        Observable.just(discoverEnvelope)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                            }
+                    }
+                    ps.onComplete()
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun buildFetchProjectsQuery(
+        discoveryParams: DiscoveryParams,
+        slug: String?
+    ): FetchProjectsQuery {
+        val query = FetchProjectsQuery.builder()
+            .sort(discoveryParams.sort()?.toProjectSort())
+            .apply {
+                slug?.let { cursor -> this.cursor(cursor) }
+                discoveryParams.category()?.id()?.let { id -> this.categoryId(id.toString()) }
+                discoveryParams.recommended()
+                    ?.let { isRecommended -> this.recommended(isRecommended) }
+                discoveryParams.starred()?.let { isStarred -> this.starred(isStarred.toBoolean()) }
+                discoveryParams.backed()?.let { isBacked -> this.backed(isBacked.toBoolean()) }
+                discoveryParams.staffPicks()?.let { isPicked -> this.staffPicks(isPicked) }
+            }
+            .build()
+
+        return query
     }
 
     override fun createSetupIntent(project: Project?): Observable<String> {

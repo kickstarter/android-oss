@@ -45,7 +45,7 @@ import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: DiscoveryFragmentViewModel.ViewModel
+    private lateinit var vm: DiscoveryFragmentViewModel.DiscoveryFragmentViewModel
     val testScheduler = TestScheduler()
     private val activityTest = TestSubscriber<Activity?>()
     private val hasProjects = TestSubscriber<Boolean>()
@@ -65,7 +65,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private val startPreLaunchProjectActivity = TestSubscriber<Pair<Project, RefTag>>()
 
     private fun setUpEnvironment(environment: Environment) {
-        vm = DiscoveryFragmentViewModel.ViewModel(environment)
+        vm = DiscoveryFragmentViewModel.DiscoveryFragmentViewModel(environment)
 
         vm.outputs.activity().subscribe(activityTest)
         vm.outputs.projectList()

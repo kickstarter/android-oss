@@ -294,7 +294,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         val query = FetchProjectsQuery.builder()
             .sort(discoveryParams.sort()?.toProjectSort())
             .apply {
-                slug?.let { cursor -> this.cursor(cursor) }
+                slug?.let { cursor -> if (cursor.isNotEmpty()) this.cursor(cursor) }
                 discoveryParams.category()?.id()?.let { id -> this.categoryId(id.toString()) }
                 discoveryParams.recommended()
                     ?.let { isRecommended -> this.recommended(isRecommended) }

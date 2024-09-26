@@ -274,15 +274,16 @@ interface DiscoveryFragmentViewModel {
                 projects,
                 selectedParams.distinctUntilChanged()
             ) { projects, params ->
-                params?.let {
-                    combineProjectsAndParams(
-                        projects,
-                        it
-                    )
-                }
-            }.subscribe(
-                    projectList
+                combineProjectsAndParams(
+                    projects,
+                    params
                 )
+            }
+                .filter { it.isNotNull() }
+                .map { it }
+                .subscribe {
+                    projectList.onNext(it.toList())
+                }.addToDisposable(disposables)
 
             showActivityFeed = activityClick
             startUpdateActivity = activityUpdateClick
@@ -319,11 +320,10 @@ interface DiscoveryFragmentViewModel {
                         defaultParamsAndEnabled
                     ) && defaultParamsAndEnabled.second.tagId() == Editorial.LIGHTS_ON.tagId
                 }
-                .map { shouldShow: Boolean ->
-                    if (shouldShow) Editorial.LIGHTS_ON else null
+                .filter { shouldShow -> shouldShow }
+                .map {
+                    Editorial.LIGHTS_ON
                 }
-                .filter { it.isNotNull() }
-                .map { it }
                 .subscribe { shouldShowEditorial.onNext(it) }
                 .addToDisposable(disposables)
 

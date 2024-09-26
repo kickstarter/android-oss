@@ -161,10 +161,11 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             when (flowContext) {
                 PledgeFlowContext.NEW_PLEDGE,
                 PledgeFlowContext.CHANGE_REWARD -> getPledgeInfoFrom(pData)
-                PledgeFlowContext.MANAGE_REWARD -> {
+                PledgeFlowContext.MANAGE_REWARD,
+                PledgeFlowContext.FIX_ERRORED_PLEDGE
+                -> {
                     backing?.let { getPledgeInfoFrom(it) }
                 }
-
                 else -> {
                     errorAction.invoke(null)
                 }
@@ -363,7 +364,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 PledgeReason.PLEDGE -> createBacking()
                 PledgeReason.UPDATE_PLEDGE,
                 PledgeReason.UPDATE_REWARD,
-                PledgeReason.UPDATE_PAYMENT -> updateBacking()
+                PledgeReason.UPDATE_PAYMENT,
+                PledgeReason.FIX_PLEDGE -> updateBacking()
                 else -> {
                     errorAction.invoke(null)
                 }
@@ -441,7 +443,14 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         selectedPaymentMethod
                     )
                 }
-                PledgeReason.FIX_PLEDGE, // Managed on PledgeFragment/ViewModel
+                PledgeReason.FIX_PLEDGE -> {
+                    val rewards = pledgeData?.expandedRewardsAndAddOnsList() ?: emptyList()
+                    getUpdateBackingData(
+                        backing = backing,
+                        rewardsList = rewards,
+                        pMethod = selectedPaymentMethod
+                    )
+                }
                 PledgeReason.PLEDGE, // Error
                 PledgeReason.UPDATE_PLEDGE, // Error
                 PledgeReason.LATE_PLEDGE, // Error

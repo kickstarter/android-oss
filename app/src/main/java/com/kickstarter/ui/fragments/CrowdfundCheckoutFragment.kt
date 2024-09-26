@@ -114,7 +114,6 @@ class CrowdfundCheckoutFragment : Fragment() {
 
                     KSTheme {
                         // TODO: update to display local pickup
-                        // TODO: hide bonus support if 0
                         CheckoutScreen(
                             rewardsList = getRewardListAndPrices(rwList, environment, project),
                             selectedRewardsAndAddOns = rwList,

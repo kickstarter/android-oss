@@ -45,7 +45,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.CrowdfundCheckoutFragment
-import com.kickstarter.ui.fragments.PledgeFragment
 import timber.log.Timber
 
 fun Activity.startActivityWithTransition(
@@ -80,9 +79,7 @@ fun Activity.selectPledgeFragment(
     pledgeData: PledgeData,
     pledgeReason: PledgeReason,
 ): Fragment {
-    val fragment = if (pledgeReason == PledgeReason.FIX_PLEDGE) {
-        PledgeFragment()
-    } else CrowdfundCheckoutFragment()
+    val fragment = CrowdfundCheckoutFragment()
     return fragment.withData(pledgeData, pledgeReason)
 }
 

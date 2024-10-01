@@ -12,6 +12,7 @@ base_job: &base_job
     ADB_INSTALL_TIMEOUT: 8
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"'
     JDK_VERSION: openjdk-17
+    JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64 # Explicitly set Java 17
 
 version: 2.1
 orbs:

@@ -1,11 +1,10 @@
 package com.kickstarter.viewmodels
 
-import UserPrivacyQuery
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.collection
 import com.kickstarter.libs.RefTag.Companion.discovery
@@ -13,6 +12,7 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.preferences.MockIntPreference
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory.activityEnvelope
 import com.kickstarter.mock.factories.ActivityFactory.activity
@@ -24,12 +24,13 @@ import com.kickstarter.mock.factories.ProjectFactory.prelaunchProject
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.factories.UserFactory.userNeedPassword
-import com.kickstarter.mock.services.MockApiClient
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
-import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.ApolloClientType
+import com.kickstarter.models.UserPrivacy
+import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.DiscoveryParams.Companion.builder
 import com.kickstarter.services.DiscoveryParams.Companion.getDefaultParams
@@ -37,11 +38,12 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.data.Editorial
 import com.trello.rxlifecycle.FragmentEvent
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.TestScheduler
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.schedulers.TestScheduler
-import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
@@ -60,41 +62,43 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private val startUpdateActivity = TestSubscriber<Activity>()
     private val startLoginToutActivityToSaveProject = TestSubscriber<Project>()
     private val scrollToSavedProjectIndex = TestSubscriber<Int>()
-    private val showSavedPromptTest = TestSubscriber<Void>()
+    private val showSavedPromptTest = TestSubscriber<Unit>()
     private val startSetPasswordActivity = TestSubscriber<String>()
     private val startPreLaunchProjectActivity = TestSubscriber<Pair<Project, RefTag>>()
+
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryFragmentViewModel.DiscoveryFragmentViewModel(environment)
 
-        vm.outputs.activity().subscribe(activityTest)
+        vm.outputs.activity().subscribe { activityTest.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectList()
             .map {
                 ListUtils.nonEmpty(it)
-            }.subscribe(
-                hasProjects
-            )
+            }.subscribe {
+                hasProjects.onNext(it)
+            }.addToDisposable(disposables)
 
         vm.outputs.projectList()
             .filter {
                 ListUtils.nonEmpty(it)
-            }.subscribe(projects)
+            }.subscribe { projects.onNext(it) }.addToDisposable(disposables)
 
-        vm.outputs.shouldShowEditorial().subscribe(shouldShowEditorial)
-        vm.outputs.shouldShowEmptySavedView().subscribe(shouldShowEmptySavedView)
-        vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingViewTest)
-        vm.outputs.showActivityFeed().subscribe(showActivityFeed)
-        vm.outputs.showLoginTout().subscribe(showLoginTout)
-        vm.outputs.startEditorialActivity().subscribe(startEditorialActivity)
-        vm.outputs.startProjectActivity().subscribe(startProjectActivity)
-        vm.outputs.startUpdateActivity().subscribe(startUpdateActivity)
-        vm.outputs.startLoginToutActivityToSaveProject().subscribe(
-            startLoginToutActivityToSaveProject
-        )
-        vm.outputs.scrollToSavedProjectPosition().subscribe(scrollToSavedProjectIndex)
-        vm.outputs.showSavedPrompt().subscribe(showSavedPromptTest)
-        vm.outputs.startSetPasswordActivity().subscribe(startSetPasswordActivity)
-        vm.outputs.startPreLaunchProjectActivity().subscribe(startPreLaunchProjectActivity)
+        vm.outputs.shouldShowEditorial().subscribe { shouldShowEditorial.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.shouldShowEmptySavedView().subscribe { shouldShowEmptySavedView.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.shouldShowOnboardingView().subscribe { shouldShowOnboardingViewTest.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showActivityFeed().subscribe { showActivityFeed.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showLoginTout().subscribe { showLoginTout.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startEditorialActivity().subscribe { startEditorialActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startProjectActivity().subscribe { startProjectActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startUpdateActivity().subscribe { startUpdateActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startLoginToutActivityToSaveProject().subscribe {
+            startLoginToutActivityToSaveProject.onNext(it)
+        }.addToDisposable(disposables)
+        vm.outputs.scrollToSavedProjectPosition().subscribe { scrollToSavedProjectIndex.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showSavedPrompt().subscribe { showSavedPromptTest.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startSetPasswordActivity().subscribe { startSetPasswordActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     private fun setUpInitialHomeAllProjectsParams() {
@@ -106,7 +110,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRefresh() {
-        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
+        setUpEnvironment(environment().toBuilder().schedulerV2(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
@@ -125,7 +129,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectsEmitWithNewCategoryParams() {
-        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
+        setUpEnvironment(environment().toBuilder().schedulerV2(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
@@ -155,7 +159,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectsEmitWithNewSort() {
-        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
+        setUpEnvironment(environment().toBuilder().schedulerV2(testScheduler).build())
 
         // Initial load.
         setUpInitialHomeAllProjectsParams()
@@ -175,9 +179,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectsRefreshAfterLogin() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
         setUpEnvironment(environment)
 
@@ -206,7 +210,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 .sort(DiscoveryParams.Sort.MAGIC)
                 .build()
         )
-        shouldShowEditorial.assertValue(null)
+        shouldShowEditorial.assertNoValues()
     }
 
     @Test
@@ -215,12 +219,12 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Initial home all projects params.
         setUpInitialHomeAllProjectsParams()
-        shouldShowEditorial.assertValue(null)
+        shouldShowEditorial.assertNoValues()
     }
 
     @Test
     fun testShouldShowEditorial_featureDisabled() {
-        val user = MockCurrentUser()
+        val user = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -228,22 +232,22 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
         val environment = environment().toBuilder()
-            .currentUser(user)
+            .currentUserV2(user)
             .featureFlagClient(mockFeatureFlagClient)
             .build()
         setUpEnvironment(environment)
 
         setUpInitialHomeAllProjectsParams()
 
-        shouldShowEditorial.assertValue(null)
+        shouldShowEditorial.assertNoValues()
     }
 
     @Test
     fun testShouldShowEmptySavedView_isFalse_whenUserHasSavedProjects() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .apolloClient(MockApolloClient())
-            .currentUser(currentUser)
+            .apolloClientV2(MockApolloClientV2())
+            .currentUserV2(currentUser)
             .build()
         setUpEnvironment(environment)
 
@@ -269,8 +273,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShouldShowEmptySavedView_isTrue_whenUserHasNoSavedProjects() {
-        val currentUser: CurrentUserType = MockCurrentUser()
-        val apiClient: ApolloClientType = object : MockApolloClient() {
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
+        val apiClient: ApolloClientTypeV2 = object : MockApolloClientV2() {
             override fun getProjects(
                 params: DiscoveryParams,
                 cursor: String?
@@ -283,8 +287,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             }
         }
         val environment = environment().toBuilder()
-            .apolloClient(apiClient)
-            .currentUser(currentUser)
+            .apolloClientV2(apiClient)
+            .currentUserV2(currentUser)
             .build()
         setUpEnvironment(environment)
 
@@ -310,9 +314,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowHeaderViews() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val activity = activity()
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun fetchActivities(): Observable<ActivityEnvelope> {
                 return Observable.just(
                     activityEnvelope(listOf(activity))
@@ -322,8 +326,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val activitySamplePreference = MockIntPreference(987654321)
         val environment = environment().toBuilder()
             .activitySamplePreference(activitySamplePreference)
-            .apiClient(apiClient)
-            .currentUser(currentUser)
+            .apiClientV2(apiClient)
+            .currentUserV2(currentUser)
             .build()
         setUpEnvironment(environment)
 
@@ -353,10 +357,10 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLoginToutToSaveProject() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
-            .scheduler(testScheduler)
+            .currentUserV2(currentUser)
+            .schedulerV2(testScheduler)
             .build()
         setUpEnvironment(environment)
         val projects = BehaviorSubject.create<List<Pair<Project, DiscoveryParams>>>()
@@ -368,7 +372,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project save
-        val project = projects.value[0].first
+        val project = projects.value?.get(0)?.first ?: Project.builder().build()
         vm.inputs.onHeartButtonClicked(project)
         startLoginToutActivityToSaveProject.assertValue(project)
 
@@ -381,10 +385,10 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartSetPasswordActivity() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
-            .scheduler(testScheduler)
+            .currentUserV2(currentUser)
+            .schedulerV2(testScheduler)
             .build()
 
         setUpEnvironment(environment)
@@ -409,12 +413,10 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
-        val mockApolloClient = object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+        val mockApolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
-                    UserPrivacyQuery.Data(
-                        UserPrivacyQuery.Me(
-                            "",
+                    UserPrivacy(
                             "",
                             "rashad@test.com",
                             true,
@@ -425,14 +427,13 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                             emptyList()
                         )
                     )
-                )
             }
         }
 
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser)
+            environment().toBuilder().currentUserV2(currentUser)
                 .featureFlagClient(mockFeatureFlagClientType)
-                .apolloClient(mockApolloClient)
+                .apolloClientV2(mockApolloClient)
                 .build()
         )
 
@@ -453,10 +454,10 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSaveProject() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
-            .scheduler(testScheduler)
+            .currentUserV2(currentUser)
+            .schedulerV2(testScheduler)
             .build()
         setUpEnvironment(environment)
 
@@ -472,11 +473,11 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project save
-        val project = projects.value[0].first
+        val project = projects.value?.get(0)?.first ?: Project.builder().build()
         vm.inputs.onHeartButtonClicked(project)
         startLoginToutActivityToSaveProject.assertNoValues()
         this.projects.assertValueCount(2)
-        assertTrue(projects.value[0].first.isStarred())
+        assertTrue(projects.value!![0].first.isStarred())
         showSavedPromptTest.assertValueCount(1)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
@@ -493,7 +494,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartEditorialActivity() {
-        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
+        setUpEnvironment(environment().toBuilder().schedulerV2(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
@@ -512,7 +513,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testStartProjectActivity_whenViewingEditorial() {
         setUpEnvironment(
             environment().toBuilder()
-                .scheduler(testScheduler).build()
+                .schedulerV2(testScheduler).build()
         )
 
         // Load editorial params and root categories from activity.
@@ -530,8 +531,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.onNextEvents[0].first, project)
-        assertEquals(startProjectActivity.onNextEvents[0].second, collection(518))
+        assertEquals(startProjectActivity.events[0].first(), project)
+        assertEquals(startProjectActivity.events[0][1], collection(518))
 
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
@@ -542,7 +543,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartProjectActivity_whenViewingFeatureFlagOn_shouldEmitProjectPageActivity() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -550,9 +551,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser)
+            environment().toBuilder().currentUserV2(currentUser)
                 .featureFlagClient(mockFeatureFlagClient)
-                .scheduler(testScheduler)
+                .schedulerV2(testScheduler)
                 .build()
         )
 
@@ -570,8 +571,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.onNextEvents[0].first, project)
-        assertEquals(startProjectActivity.onNextEvents[0].second, collection(518))
+        assertEquals(startProjectActivity.events[0].first(), project)
+        assertEquals(startProjectActivity.events[0][1], collection(518))
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -581,7 +582,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartProjectActivity_whenViewingAllProjects() {
-        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
+        setUpEnvironment(environment().toBuilder().schedulerV2(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
@@ -593,8 +594,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectCardViewHolderClicked(project)
 
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.onNextEvents[0].first, project)
-        assertEquals(startProjectActivity.onNextEvents[0].second, discovery())
+        assertEquals(startProjectActivity.events[0].first(), project)
+        assertEquals(startProjectActivity.events[0][1], discovery())
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -604,7 +605,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartProjectActivity_whenFeatureFlagEnabled_shouldEmitProjectPageActivity() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -612,9 +613,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser)
+            environment().toBuilder().currentUserV2(currentUser)
                 .featureFlagClient(mockFeatureFlagClient)
-                .scheduler(testScheduler)
+                .schedulerV2(testScheduler)
                 .build()
         )
 
@@ -627,8 +628,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.onNextEvents[0].first, project)
-        assertEquals(startProjectActivity.onNextEvents[0].second, discovery())
+        assertEquals(startProjectActivity.events[0].first(), project)
+        assertEquals(startProjectActivity.events[0][1], discovery())
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -638,7 +639,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabled_shouldEmitPelaunchProjectPageActivity() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -646,9 +647,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser)
+            environment().toBuilder().currentUserV2(currentUser)
                 .featureFlagClient(mockFeatureFlagClient)
-                .scheduler(testScheduler)
+                .schedulerV2(testScheduler)
                 .build()
         )
 
@@ -662,13 +663,13 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(0)
         startPreLaunchProjectActivity.assertValueCount(1)
-        assertEquals(startPreLaunchProjectActivity.onNextEvents[0].first, project)
-        assertEquals(startPreLaunchProjectActivity.onNextEvents[0].second, discovery())
+        assertEquals(startPreLaunchProjectActivity.events[0].first(), project)
+        assertEquals(startPreLaunchProjectActivity.events[0][1], discovery())
     }
 
     @Test
     fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabledAndFeatureFlagDisabled_shouldEmitPelaunchProjectPageActivity() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -677,9 +678,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             }
         setUpEnvironment(
             environment().toBuilder()
-                .currentUser(currentUser)
+                .currentUserV2(currentUser)
                 .featureFlagClient(mockFeatureFlagClient)
-                .scheduler(testScheduler)
+                .schedulerV2(testScheduler)
                 .build()
         )
 
@@ -693,8 +694,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
         startPreLaunchProjectActivity.assertValueCount(0)
-        assertEquals(startProjectActivity.onNextEvents[0].first, project)
-        assertEquals(startProjectActivity.onNextEvents[0].second, discovery())
+        assertEquals(startProjectActivity.events[0].first(), project)
+        assertEquals(startProjectActivity.events[0][1], discovery())
     }
 
     @Test
@@ -718,17 +719,41 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testErroredResponseForFetchActivitiesWithCount() {
-        val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val throwableError = Throwable()
-        val apiClient: MockApiClient = object : MockApiClient() {
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchActivities(count: Int?): Observable<ActivityEnvelope> {
                 return Observable.error(throwableError)
             }
         }
         val env = environment()
             .toBuilder()
-            .currentUser(currentUser)
-            .apiClient(apiClient)
+            .currentUserV2(currentUser)
+            .apiClientV2(apiClient)
+            .build()
+        setUpEnvironment(env)
+
+        // Load initial params and root categories from activity.
+        setUpInitialHomeAllProjectsParams()
+
+        // Log in.
+        logUserIn(currentUser)
+        activityTest.assertNoValues()
+    }
+
+    @Test
+    fun testSuccessResponseForFetchActivitiesWithCount() {
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
+        val activity = activity()
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchActivities(count: Int?): Observable<ActivityEnvelope> {
+                return Observable.just(activityEnvelope(listOf(activity)))
+            }
+        }
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(currentUser)
+            .apiClientV2(apiClient)
             .build()
         setUpEnvironment(env)
 
@@ -738,35 +763,10 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         // Log in.
         logUserIn(currentUser)
         activityTest.assertValueCount(1)
-        activityTest.assertValue(null)
+        activityTest.assertValues(activity)
     }
 
-    @Test
-    fun testSuccessResponseForFetchActivitiesWithCount() {
-        val currentUser: CurrentUserType = MockCurrentUser()
-        val activity = activity()
-        val apiClient: MockApiClient = object : MockApiClient() {
-            override fun fetchActivities(count: Int?): Observable<ActivityEnvelope> {
-                return Observable.just(activityEnvelope(listOf(activity)))
-            }
-        }
-        val env = environment()
-            .toBuilder()
-            .currentUser(currentUser)
-            .apiClient(apiClient)
-            .build()
-        setUpEnvironment(env)
-
-        // Load initial params and root categories from activity.
-        setUpInitialHomeAllProjectsParams()
-
-        // Log in.
-        logUserIn(currentUser)
-        activityTest.assertValueCount(2)
-        activityTest.assertValues(null, activity)
-    }
-
-    private fun logUserIn(currentUser: CurrentUserType) {
+    private fun logUserIn(currentUser: CurrentUserTypeV2) {
         val user = user()
         currentUser.refresh(user)
         vm.inputs.paramsFromActivity(getDefaultParams(user))

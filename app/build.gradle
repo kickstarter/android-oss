@@ -35,7 +35,7 @@ def internalPublicVersion = new File(project.rootDir.path + "/app/internal_versi
 def isCircle = "true" == System.getenv("CIRCLECI")
 def isPrivateCIEnv = ("android-private" == System.getenv("CIRCLE_PROJECT_REPONAME"))
 def isRelease = ("external" == System.getenv("CIRCLE_BRANCH"))
-def compose_version = '1.4.3'
+def compose_version = '1.4.8'
 
 ext.signing = [
         storeFilePath: "path/to/keystore",

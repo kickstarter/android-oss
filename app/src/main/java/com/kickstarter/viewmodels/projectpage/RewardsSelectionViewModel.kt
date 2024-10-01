@@ -149,7 +149,11 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         if (expanded && currentPage == 0) {
             projectData?.let {
                 analytics.trackRewardsCarouselViewed(projectData = projectData)
-            } ?: analytics.trackRewardsCarouselViewed(projectData = currentProjectData)
+            } ?: {
+                if (::currentProjectData.isInitialized) {
+                    analytics.trackRewardsCarouselViewed(projectData = currentProjectData)
+                }
+            }
         }
     }
 

@@ -878,7 +878,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(data.rewardsIds?.first(), null)
         assertEquals(data.amount, null)
 
-        // Fix pledge flow should only send reward ID's and payment ID anything else
+        // Fix pledge flow should only payment ID anything else
         assertEquals(data.rewardsIds?.size, null)
         assertEquals(data.rewardsIds?.first(), null)
         assertEquals(data.amount, null)

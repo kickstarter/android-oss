@@ -24,6 +24,9 @@ jobs:
     <<: *base_job
     steps:
       - checkout
+      - run:
+          name: Validate Java Version
+          command: java -version
       - restore_cache:
           keys:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}

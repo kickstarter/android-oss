@@ -409,6 +409,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         project.backing()?.let { backing ->
             val backingData = when (pledgeReason) {
                 PledgeReason.UPDATE_PAYMENT -> {
+                    // - Update payment should NOT send amounts
                     val locationId = backing.locationId() ?: 0
                     val rwl = mutableListOf<Reward>()
                     backing.reward()?.let {
@@ -427,6 +428,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     )
                 }
                 PledgeReason.UPDATE_REWARD -> {
+                    // - Update Reward should send ALL newly selected items
                     val isShippable = pledgeData?.reward()?.let { RewardUtils.isShippable(it) } ?: false
                     val locationIdOrNull =
                         if (isShippable) pledgeData?.shippingRule()?.location()?.id().toString()
@@ -444,6 +446,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     )
                 }
                 PledgeReason.FIX_PLEDGE -> {
+                    // - Fix pledge should NOT send amounts
                     val rewards = pledgeData?.expandedRewardsAndAddOnsList() ?: emptyList()
                     getUpdateBackingData(
                         backing = backing,

@@ -337,8 +337,7 @@ interface ThreadViewModel {
                 .subscribe { pair ->
                     this.hasPendingComments.onNext(
                         pair.first.any {
-                            it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
-                                it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
+                            it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus || it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                         }
                     )
                 }
@@ -407,8 +406,9 @@ interface ThreadViewModel {
             /** reversed replies **/
             apolloPaginate
                 .paginatedData()
-                ?.map { it.toMutableList().reverse()
-                        it.toList()
+                ?.map {
+                    it.toMutableList().reverse()
+                    it.toList()
                 }
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()

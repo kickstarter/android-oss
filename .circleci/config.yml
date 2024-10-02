@@ -53,8 +53,12 @@ jobs:
             - v5-android-
       - attach_workspace:
           at: ~/project
-      - run: ./gradlew checkstyle
-      - run: ./gradlew ktlint
+      - run:
+         name: Check Style
+         command: ./gradlew checkstyle
+      - run:
+         name: KTLint
+         command: ./gradlew ktlint
 
       - run:
           name: Lint External Release

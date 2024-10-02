@@ -136,7 +136,7 @@ android {
 
     kotlinOptions {
         freeCompilerArgs = ['-Xjvm-default=all']
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = '17'
     }
 
     buildFeatures {

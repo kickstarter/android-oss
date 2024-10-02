@@ -1,48 +1,51 @@
 package com.kickstarter.ui.viewholders
 
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectNotificationViewBinding
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.ProjectNotification
 import com.kickstarter.viewmodels.ProjectNotificationViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(ProjectNotificationViewModel.ViewModel::class)
 class ProjectNotificationViewHolder(binding: ProjectNotificationViewBinding) :
     KSViewHolder(binding.root) {
     private val viewModel: ProjectNotificationViewModel.ViewModel = ProjectNotificationViewModel.ViewModel(environment())
+    private val disposables = CompositeDisposable()
 
     init {
-        RxView.clicks(binding.enabledSwitch)
-            .map { binding.enabledSwitch.isChecked }
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { viewModel.inputs.enabledSwitchClick(it) }
+        binding.enabledSwitch.setOnClickListener {
+            viewModel.inputs.enabledSwitchClick(binding.enabledSwitch.isChecked)
+        }
 
         viewModel.outputs.projectName()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.projectName.text = it }
+            .addToDisposable(disposables)
 
         viewModel.outputs.enabledSwitch()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(SwitchCompatUtils.setCheckedWithoutAnimation(binding.enabledSwitch))
+            .compose(Transformers.observeForUIV2())
+            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.enabledSwitch) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showUnableToSaveProjectNotificationError()
             .map { context().getString(R.string.profile_settings_error) }
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(ViewUtils.showToast(context()))
+            .subscribe { ViewUtils.showToast(context()) }
+            .addToDisposable(disposables)
     }
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
         val projectNotification = requireNotNull(data as ProjectNotification?) { ProjectNotification::class.java.toString() + " required to be non-null." }
         viewModel.projectNotification(projectNotification)
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
     }
 }

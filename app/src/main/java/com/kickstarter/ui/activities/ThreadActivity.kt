@@ -71,7 +71,7 @@ class ThreadActivity :
             env
         }
 
-        viewModel.intent(intent)
+        viewModel.handleIntent(intent)
 
         recyclerViewPaginator = RecyclerViewPaginatorV2(
             binding.commentRepliesRecyclerView,

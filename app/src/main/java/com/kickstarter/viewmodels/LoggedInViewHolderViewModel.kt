@@ -3,6 +3,8 @@ package com.kickstarter.viewmodels
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.FlipperFlagKey
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -45,12 +47,15 @@ interface LoggedInViewHolderViewModel {
         /** Emits the user to pass to delegate. */
         fun user(): Observable<User>
         fun pledgedProjectsIsVisible(): Observable<Boolean>
+        fun pledgedProjectsIndicatorIsVisible(): Observable<Boolean>
     }
 
     class ViewModel(val environment: Environment) : Inputs, Outputs {
 
-        private val user = PublishSubject.create<User>()
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val featureFlagClient = requireNotNull(environment.featureFlagClient())
 
+        private val user = PublishSubject.create<User>()
         private val activityCount = BehaviorSubject.create<Int>()
         private val activityCountTextColor = BehaviorSubject.create<Int>()
         private val avatarUrl = BehaviorSubject.create<String>()
@@ -59,6 +64,7 @@ interface LoggedInViewHolderViewModel {
         private val unreadMessagesCount = BehaviorSubject.create<Int>()
         private val userOutput = BehaviorSubject.create<User>()
         private val pledgedProjectsIsVisible = BehaviorSubject.create<Boolean>()
+        private val pledgedProjectsIndicatorIsVisible = BehaviorSubject.create<Boolean>()
 
         private val disposables = CompositeDisposable()
         val inputs: Inputs = this
@@ -104,10 +110,18 @@ interface LoggedInViewHolderViewModel {
                 .subscribe { this.dashboardRowIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
-            Observable.just(
-                environment.featureFlagClient()
-                    ?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
-            )
+            this.user
+                .map { it.ppoHasAction().isTrue() }
+                .subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }
+                .addToDisposable(disposables)
+
+            featureFlagClient.isBackendEnabledFlag(this.apolloClient.userPrivacy(), FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW)
+                .compose(Transformers.neverErrorV2())
+                .map { ffEnabledBackend ->
+                    val ffEnabledMobile = featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW)
+
+                    return@map ffEnabledMobile && ffEnabledBackend
+                }
                 .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
                 .addToDisposable(disposables)
         }
@@ -135,5 +149,6 @@ interface LoggedInViewHolderViewModel {
         override fun user(): Observable<User> = this.userOutput
 
         override fun pledgedProjectsIsVisible(): Observable<Boolean> = this.pledgedProjectsIsVisible
+        override fun pledgedProjectsIndicatorIsVisible(): Observable<Boolean> = this.pledgedProjectsIndicatorIsVisible
     }
 }

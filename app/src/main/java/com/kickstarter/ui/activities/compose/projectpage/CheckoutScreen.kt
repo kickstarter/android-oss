@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,6 +52,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
@@ -74,7 +76,9 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.kds_white
+import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.views.compose.checkout.ItemizedRewardListContainer
 import type.CreditCardTypes
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
@@ -117,7 +121,8 @@ fun CheckoutScreenPreview() {
             onPledgeCtaClicked = { },
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
-            onAccountabilityLinkClicked = {}
+            onAccountabilityLinkClicked = {},
+            onChangedPaymentMethod = {}
         )
     }
 }
@@ -130,18 +135,20 @@ fun CheckoutScreen(
     project: Project,
     email: String?,
     ksString: KSString? = null,
+    selectedRewardsAndAddOns: List<Reward> = listOf(),
     rewardsList: List<Pair<String, String>> = listOf(),
     shippingAmount: Double = 0.0,
     pledgeReason: PledgeReason,
     totalAmount: Double,
-    currentShippingRule: ShippingRule,
+    currentShippingRule: ShippingRule?,
     totalBonusSupport: Double = 0.0,
     rewardsHaveShippables: Boolean,
     isLoading: Boolean = false,
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
     newPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
-    onAccountabilityLinkClicked: () -> Unit
+    onAccountabilityLinkClicked: () -> Unit,
+    onChangedPaymentMethod: (StoredCard?) -> Unit = {}
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -153,10 +160,23 @@ fun CheckoutScreen(
 
     val onOptionSelected: (StoredCard?) -> Unit = {
         selectedOption.value = it
+        onChangedPaymentMethod.invoke(it)
     }
 
+    val totalAmountString = environment.ksCurrency()?.let {
+        RewardViewUtils.styleCurrency(
+            totalAmount,
+            project,
+            it
+        ).toString()
+    } ?: ""
+
     // - After adding new payment method, selected card should be updated to the newly added
-    UpdateSelectedCardIfNewCardAdded(remember { mutableStateOf(storedCards.size) }, storedCards, onOptionSelected)
+    UpdateSelectedCardIfNewCardAdded(
+        remember { mutableStateOf(storedCards.size) },
+        storedCards,
+        onOptionSelected
+    )
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -196,7 +216,7 @@ fun CheckoutScreen(
                                     .fillMaxWidth(),
                                 onClickAction = { onPledgeCtaClicked(selectedOption.value) },
                                 isEnabled = project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false,
-                                text = if (pledgeReason == PledgeReason.PLEDGE) stringResource(id = R.string.Pledge) else stringResource(
+                                text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(id = R.string.Pledge) + " $totalAmountString" else stringResource(
                                     id = R.string.Confirm
                                 )
                             )
@@ -211,10 +231,12 @@ fun CheckoutScreen(
                                 }
                             }
 
-                            if (!formattedEmailDisclaimerString.isNullOrEmpty()) {
+                            if (!formattedEmailDisclaimerString.isNullOrEmpty() && project.isInPostCampaignPledgingPhase() == true) {
                                 Text(
-                                    text = formattedEmailDisclaimerString, textAlign = TextAlign.Center,
-                                    style = typography.caption2, color = colors.kds_support_400
+                                    text = formattedEmailDisclaimerString,
+                                    textAlign = TextAlign.Center,
+                                    style = typography.caption2,
+                                    color = colors.kds_support_400
                                 )
                             }
 
@@ -237,22 +259,15 @@ fun CheckoutScreen(
             }
         ) { padding ->
 
-            val totalAmountString = environment.ksCurrency()?.let {
-                RewardViewUtils.styleCurrency(
-                    totalAmount,
-                    project,
-                    it
-                ).toString()
-            } ?: ""
-
-            val totalAmountConvertedString = if (project.currentCurrency() == project.currency()) "" else {
-                environment.ksCurrency()?.formatWithUserPreference(
-                    totalAmount,
-                    project,
-                    RoundingMode.UP,
-                    2
-                ) ?: ""
-            }
+            val totalAmountConvertedString =
+                if (project.currentCurrency() == project.currency()) "" else {
+                    environment.ksCurrency()?.formatWithUserPreference(
+                        totalAmount,
+                        project,
+                        RoundingMode.UP,
+                        2
+                    ) ?: ""
+                }
 
             val shippingAmountString = environment.ksCurrency()?.let {
                 RewardViewUtils.styleCurrency(
@@ -285,7 +300,7 @@ fun CheckoutScreen(
                     totalAmountConvertedString
                 ) ?: "About $totalAmountConvertedString"
 
-            val shippingLocation = currentShippingRule.location()?.displayableName() ?: ""
+            val shippingLocation = currentShippingRule?.location()?.displayableName() ?: ""
 
             val deliveryDateString = if (selectedReward?.estimatedDeliveryOn().isNotNull()) {
                 stringResource(id = R.string.Estimated_delivery) + " " + DateTimeUtils.estimatedDeliveryOn(
@@ -315,7 +330,8 @@ fun CheckoutScreen(
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                 storedCards.forEachIndexed { index, card ->
-                    val isAvailable = project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
+                    val isAvailable =
+                        project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
                     Card(
                         backgroundColor = colors.kds_white,
                         modifier = Modifier
@@ -455,8 +471,14 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                if (rewardsList.isNotEmpty()) {
-
+                val resourceString = stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline)
+                val disclaimerText = environment.ksString()?.format(
+                    resourceString,
+                    "total", totalAmountString,
+                    "project_deadline", project.deadline()?.let { DateTimeUtils.longDate(it) }
+                ) ?: ""
+                val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
+                if (!isNoReward) {
                     ItemizedRewardListContainer(
                         ksString = ksString,
                         rewardsList = rewardsList,
@@ -468,16 +490,57 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
-                        rewardsHaveShippables = rewardsHaveShippables
+                        rewardsHaveShippables = rewardsHaveShippables,
+                        disclaimerText = disclaimerText
                     )
                 } else {
+                    // - For noReward, totalAmount = bonusAmount as there is no reward
                     ItemizedRewardListContainer(
                         totalAmount = totalAmountString,
                         totalAmountCurrencyConverted = aboutTotalString,
                         initialBonusSupport = initialBonusSupportString,
-                        totalBonusSupport = totalBonusSupportString,
+                        totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
+                        disclaimerText = disclaimerText
                     )
+                }
+
+                if (environment.ksCurrency().isNotNull() && environment.ksString().isNotNull() && currentShippingRule.isNotNull()) {
+                    val estimatedShippingRangeString =
+                        RewardViewUtils.getEstimatedShippingCostString(
+                            context = LocalContext.current,
+                            ksCurrency = environment.ksCurrency()!!,
+                            ksString = environment.ksString()!!,
+                            project = project,
+                            rewards = selectedRewardsAndAddOns,
+                            selectedShippingRule = currentShippingRule!!,
+                            multipleQuantitiesAllowed = false,
+                            useUserPreference = false,
+                            useAbout = false
+                        )
+
+                    val estimatedShippingRangeConversionString =
+                        if (project.currentCurrency() == project.currency()) null
+                        else {
+                            RewardViewUtils.getEstimatedShippingCostString(
+                                context = LocalContext.current,
+                                ksCurrency = environment.ksCurrency()!!,
+                                ksString = environment.ksString()!!,
+                                project = project,
+                                rewards = selectedRewardsAndAddOns,
+                                selectedShippingRule = currentShippingRule,
+                                multipleQuantitiesAllowed = false,
+                                useUserPreference = true,
+                                useAbout = true
+                            )
+                        }
+
+                    if (estimatedShippingRangeString.isNotEmpty()) {
+                        KSEstimatedShippingCheckoutView(
+                            estimatedShippingRange = estimatedShippingRangeString,
+                            estimatedShippingRangeConversion = estimatedShippingRangeConversionString
+                        )
+                    }
                 }
             }
         }
@@ -501,7 +564,7 @@ private fun UpdateSelectedCardIfNewCardAdded(
     storedCards: List<StoredCard>,
     onOptionSelected: (StoredCard?) -> Unit
 ) {
-    if (index.value != storedCards.size) {
+    if (index.value != storedCards.size && storedCards.isNotEmpty()) {
         onOptionSelected(storedCards.first())
         index.value = storedCards.size
     }
@@ -746,6 +809,85 @@ fun KSCardElement(card: StoredCard, ksString: KSString?, isAvailable: Boolean) {
                     color = if (isAvailable) colors.kds_support_700 else colors.kds_support_400,
                     text = expirationString
                 )
+            }
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSEstimatedShippingCheckoutViewPreview() {
+    KSTheme {
+        KSEstimatedShippingCheckoutView(
+            estimatedShippingRange = "€5-€10",
+            estimatedShippingRangeConversion = "About $6-$11"
+        )
+    }
+}
+
+@Composable
+fun KSEstimatedShippingCheckoutView(
+    estimatedShippingRange: String,
+    estimatedShippingRangeConversion: String?,
+) {
+    Card(
+        modifier = Modifier.padding(dimensions.paddingMediumLarge),
+        shape = shapes.medium,
+        backgroundColor = colors.backgroundSurfacePrimary
+    ) {
+        // TODO: Get these strings translations in place
+        Row {
+            Column(modifier = Modifier.weight(0.6f)) {
+                Text(
+                    modifier = Modifier.padding(
+                        start = dimensions.paddingLarge,
+                        top = dimensions.paddingMedium
+                    ),
+                    text = stringResource(id = R.string.Estimated_Shipping),
+                    style = typography.calloutMedium,
+                    color = colors.textPrimary
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                Text(
+                    modifier = Modifier.padding(
+                        start = dimensions.paddingLarge,
+                        bottom = dimensions.paddingMedium
+                    ),
+                    text = stringResource(id = R.string.This_is_meant_to_give_you),
+                    style = typography.caption2,
+                    color = colors.textSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.width(dimensions.paddingMedium))
+
+            Column(modifier = Modifier.weight(0.4f), horizontalAlignment = Alignment.End) {
+                Text(
+                    modifier = Modifier.padding(
+                        end = dimensions.paddingLarge,
+                        top = dimensions.paddingMedium
+                    ),
+                    text = estimatedShippingRange,
+                    style = typography.calloutMedium,
+                    color = colors.textPrimary
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                if (!estimatedShippingRangeConversion.isNullOrEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(
+                            end = dimensions.paddingLarge,
+                            bottom = dimensions.paddingMedium
+                        ),
+                        text = estimatedShippingRangeConversion,
+                        style = typography.caption1,
+                        color = colors.textSecondary
+                    )
+                }
             }
         }
     }

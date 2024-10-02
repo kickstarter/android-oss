@@ -1,20 +1,21 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
-import com.kickstarter.ui.activities.PrivacyActivity
-import rx.Notification
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface PrivacyViewModel {
     interface Inputs {
@@ -33,13 +34,13 @@ interface PrivacyViewModel {
 
     interface Outputs {
         /** Emits when Following switch should be turned back on after user cancels opting out.  */
-        fun hideConfirmFollowingOptOutPrompt(): Observable<Void>
+        fun hideConfirmFollowingOptOutPrompt(): Observable<Unit>
 
         /** Emits when the user is a creator and we need to hide the private profile row. */
         fun hidePrivateProfileRow(): Observable<Boolean>
 
         /** Emits when user should be shown the Following confirmation dialog.  */
-        fun showConfirmFollowingOptOutPrompt(): Observable<Void>
+        fun showConfirmFollowingOptOutPrompt(): Observable<Unit>
 
         /** Emits user containing settings state.  */
         fun user(): Observable<User>
@@ -50,91 +51,100 @@ interface PrivacyViewModel {
         fun unableToSavePreferenceError(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<PrivacyActivity>(environment), Inputs, Outputs, Errors {
+    class PrivacyViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs, Errors {
         private val optIntoFollowing = PublishSubject.create<Boolean>()
         private val optOutOfFollowing = PublishSubject.create<Boolean>()
         private val userInput = PublishSubject.create<User>()
 
-        private val hideConfirmFollowingOptOutPrompt = BehaviorSubject.create<Void>()
+        private val hideConfirmFollowingOptOutPrompt = BehaviorSubject.create<Unit>()
         private var hidePrivateProfileRow = BehaviorSubject.create<Boolean>()
-        private val showConfirmFollowingOptOutPrompt = BehaviorSubject.create<Void>()
+        private val showConfirmFollowingOptOutPrompt = BehaviorSubject.create<Unit>()
         private val userOutput = BehaviorSubject.create<User>()
-        private val updateSuccess = PublishSubject.create<Void>()
+        private val updateSuccess = PublishSubject.create<Unit>()
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
 
-        val inputs: PrivacyViewModel.Inputs = this
-        val outputs: PrivacyViewModel.Outputs = this
-        val errors: PrivacyViewModel.Errors = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
+        val errors: Errors = this
 
-        private val client = requireNotNull(environment.apiClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val client = requireNotNull(environment.apiClientV2())
+        private val currentUser = requireNotNull(environment.currentUserV2())
+        private val disposables = CompositeDisposable()
 
         init {
             this.client.fetchCurrentUser()
                 .retry(2)
-                .compose(Transformers.neverError())
-                .compose(bindToLifecycle())
+                .compose(Transformers.neverErrorV2())
                 .subscribe { this.currentUser.refresh(it) }
+                .addToDisposable(disposables)
 
             val currentUser = this.currentUser.observable()
 
             currentUser
                 .take(1)
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
+                .filter { it.isNotNull() && it.getValue().isNotNull() }
+                .map { requireNotNull(it.getValue()) }
                 .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             currentUser
-                .compose(bindToLifecycle())
-                .filter { it.isNotNull() }
-                .map { user -> user.createdProjectsCount().isNonZero() }
-                .subscribe(this.hidePrivateProfileRow)
+                .filter { it.isNotNull() && it.getValue().isNotNull() }
+                .map { user -> user.getValue()?.createdProjectsCount().isNonZero() }
+                .subscribe { this.hidePrivateProfileRow.onNext(it) }
+                .addToDisposable(disposables)
 
             val updateSettingsNotification = this.userInput
                 .concatMap { this.updateSettings(it) }
 
             updateSettingsNotification
-                .compose(values())
-                .compose(bindToLifecycle())
+                .compose(valuesV2())
                 .subscribe { this.success(it) }
+                .addToDisposable(disposables)
 
             updateSettingsNotification
-                .compose(errors())
-                .compose(bindToLifecycle())
-                .subscribe(this.unableToSavePreferenceError)
+                .compose(errorsV2())
+                .filter { it.isNotNull() }
+                .map { it }
+                .subscribe { this.unableToSavePreferenceError.onNext(it) }
+                .addToDisposable(disposables)
 
             this.userInput
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .filter { it.isNotNull() }
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             this.userOutput
                 .window(2, 1)
-                .flatMap<List<User>> { it.toList() }
+                .flatMap<List<User>> { it.toList().toObservable() }
                 .map<User> { ListUtils.first(it) }
-                .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                .compose(bindToLifecycle())
-                .subscribe(this.userOutput)
+                .compose<User>(Transformers.takeWhenV2<User, Throwable>(this.unableToSavePreferenceError))
+                .subscribe { this.userOutput.onNext(it) }
+                .addToDisposable(disposables)
 
             this.optIntoFollowing
-                .compose<Boolean>(bindToLifecycle<Boolean>())
                 .filter { checked -> checked }
-                .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(true).build()) }
+                .filter { this.userOutput.value.isNotNull() }
+                .map { requireNotNull(this.userOutput.value) }
+                .subscribe { this.userInput.onNext(it.toBuilder().social(true).build()) }
+                .addToDisposable(disposables)
 
             this.optIntoFollowing
-                .compose<Boolean>(bindToLifecycle<Boolean>())
                 .filter { checked -> !checked }
-                .subscribe { _ -> this.showConfirmFollowingOptOutPrompt.onNext(null) }
+                .subscribe { _ -> this.showConfirmFollowingOptOutPrompt.onNext(Unit) }
+                .addToDisposable(disposables)
 
             this.optOutOfFollowing
-                .compose<Boolean>(bindToLifecycle<Boolean>())
                 .filter { optOut -> optOut }
-                .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(false).build()) }
+                .filter { this.userOutput.value.isNotNull() }
+                .map { requireNotNull(this.userOutput.value) }
+                .subscribe { this.userInput.onNext(it.toBuilder().social(false).build()) }
+                .addToDisposable(disposables)
 
             this.optOutOfFollowing
-                .compose<Boolean>(bindToLifecycle<Boolean>())
                 .filter { optOut -> !optOut }
-                .subscribe { _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) }
+                .subscribe { _ -> this.hideConfirmFollowingOptOutPrompt.onNext(Unit) }
+                .addToDisposable(disposables)
         }
 
         override fun optIntoFollowing(checked: Boolean) {
@@ -146,34 +156,49 @@ interface PrivacyViewModel {
         }
 
         override fun optedOutOfRecommendations(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().optedOutOfRecommendations(!checked).build())
+            this.userOutput.value?.let { user ->
+                this.userInput.onNext(user.toBuilder().optedOutOfRecommendations(!checked).build())
+            }
         }
 
         override fun showPublicProfile(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().showPublicProfile(!checked).build())
+            this.userOutput.value?.let { user ->
+                this.userInput.onNext(user.toBuilder().showPublicProfile(!checked).build())
+            }
         }
 
-        override fun hideConfirmFollowingOptOutPrompt(): Observable<Void> = this.hideConfirmFollowingOptOutPrompt
+        override fun hideConfirmFollowingOptOutPrompt(): Observable<Unit> = this.hideConfirmFollowingOptOutPrompt
 
         override fun hidePrivateProfileRow(): Observable<Boolean> = this.hidePrivateProfileRow
 
-        override fun showConfirmFollowingOptOutPrompt(): Observable<Void> = this.showConfirmFollowingOptOutPrompt
+        override fun showConfirmFollowingOptOutPrompt(): Observable<Unit> = this.showConfirmFollowingOptOutPrompt
 
         override fun user(): Observable<User> = this.userOutput
 
         override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
             .takeUntil(this.updateSuccess)
-            .map { _ -> null }
+            .map { it.localizedMessage }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
+            this.updateSuccess.onNext(Unit)
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
                 .materialize()
                 .share()
+        }
+
+        override fun onCleared() {
+            super.onCleared()
+            disposables.clear()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return PrivacyViewModel(environment) as T
         }
     }
 }

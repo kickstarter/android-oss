@@ -7,5 +7,6 @@ data class UserPrivacy(
     val isCreator: Boolean,
     val isDeliverable: Boolean,
     val isEmailVerified: Boolean,
-    val chosenCurrency: String
+    val chosenCurrency: String,
+    val enabledFeatures: List<String> = emptyList()
 )

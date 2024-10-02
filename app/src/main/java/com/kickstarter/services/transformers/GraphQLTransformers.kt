@@ -14,6 +14,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
@@ -44,6 +45,7 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
+import fragment.PpoCard.DeliveryAddress
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -159,8 +161,14 @@ fun rewardTransformer(
     val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     else rewardGr.limit()
 
-    val shippingRules = shippingRulesExpanded.map {
-        shippingRuleTransformer(it)
+    val shippingRules = if (shippingRulesExpanded.isNotEmpty()) {
+        shippingRulesExpanded.map {
+            shippingRuleTransformer(it)
+        }
+    } else {
+        rewardGr.shippingRules().map {
+            shippingRuleTransformer(it.fragments().shippingRule())
+        }
     }
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation()?.fragments()?.location())
@@ -494,7 +502,10 @@ fun userPrivacyTransformer(userPrivacy: UserPrivacyQuery.Me): UserPrivacy {
         isCreator = userPrivacy.isCreator ?: false,
         isDeliverable = userPrivacy.isDeliverable ?: false,
         isEmailVerified = userPrivacy.isEmailVerified ?: false,
-        chosenCurrency = userPrivacy.chosenCurrency() ?: defaultCurrency
+        chosenCurrency = userPrivacy.chosenCurrency() ?: defaultCurrency,
+        enabledFeatures = userPrivacy.enabledFeatures().map {
+            it.rawValue()
+        }
     )
 }
 
@@ -708,6 +719,7 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
         return@let rewardTransformer(
             reward,
+            allowedAddons = reward.allowedAddons().isNotNull(),
             rewardItems = complexRewardItemsTransformer(items?.fragments()?.rewardItems())
         )
     }
@@ -798,14 +810,18 @@ fun videoTransformer(video: fragment.Video?): Video {
  * @return ShippingRule
  */
 fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
-    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
+    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDoubleOrNull() ?: 0.0
     val location = rule.location()?.let {
         locationTransformer(it.fragments().location())
     }
+    val estimatedMin = rule.estimatedMin()?.amount()?.toDoubleOrNull() ?: 0.0
+    val estimatedMax = rule.estimatedMax()?.amount()?.toDoubleOrNull() ?: 0.0
 
     return ShippingRule.builder()
         .cost(cost)
         .location(location)
+        .estimatedMin(estimatedMin)
+        .estimatedMax(estimatedMax)
         .build()
 }
 
@@ -926,7 +942,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             }
             PPOCard.builder()
                 .backingId(ppoBackingData?.id())
-                .backingDetailsUrl(ppoBackingData?.backingDetailsPageUrl())
+                .backingDetailsUrl(ppoBackingData?.backingDetailsPageRoute())
                 .clientSecret(ppoBackingData?.clientSecret())
                 .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
                 .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
@@ -936,9 +952,11 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .projectSlug(ppoBackingData?.project()?.slug())
                 .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
                 .creatorName(ppoBackingData?.project()?.creator()?.name())
+                .creatorID(ppoBackingData?.project()?.creator()?.id())
                 .viewType(getTierType(it.node()?.tierType()))
+                .surveyID(ppoBackingData?.project()?.backerSurvey()?.id())
                 .flags(flags)
-                .addressID(ppoBackingData?.deliveryAddress()?.id())
+                .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress()))
                 .build()
         }
 
@@ -956,6 +974,21 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
         .pledges(ppoCards)
         .pageInfoEnvelope(pageInfoEnvelope)
         .build()
+}
+
+fun getDeliveryAddress(deliveryAddress: DeliveryAddress?): com.kickstarter.features.pledgedprojectsoverview.data.DeliveryAddress? {
+    deliveryAddress?.let { address ->
+        return com.kickstarter.features.pledgedprojectsoverview.data.DeliveryAddress.builder()
+            .addressId(address.id())
+            .addressLine1(address.addressLine1())
+            .addressLine2(address.addressLine2())
+            .city(address.city())
+            .region(address.region())
+            .postalCode(address.postalCode())
+            .phoneNumber(address.phoneNumber())
+            .recipientName(address.recipientName())
+            .build()
+    } ?: return null
 }
 
 fun getTierType(tierType: String?) =

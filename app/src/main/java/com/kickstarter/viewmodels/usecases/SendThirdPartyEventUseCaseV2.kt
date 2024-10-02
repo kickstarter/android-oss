@@ -46,7 +46,9 @@ class SendThirdPartyEventUseCaseV2(
     ): Observable<Pair<Boolean, String>> {
 
         return project
-            .filter { it.sendThirdPartyEvents() ?: false && canSendEventFlag }
+            .filter {
+                it.sendThirdPartyEvents() ?: false && canSendEventFlag
+            }
             .withLatestFrom(currentUser.observable()) { proj, user ->
                 Pair(proj, user.getValue())
             }

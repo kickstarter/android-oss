@@ -2,8 +2,6 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +21,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -43,10 +42,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
-import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
@@ -80,7 +80,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
             )
@@ -110,7 +110,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
                 errorSnackBarHostState = SnackbarHostState(),
@@ -138,9 +138,9 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onProjectPledgeSummaryClick = {},
-                onSendMessageClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 errorSnackBarHostState = SnackbarHostState(),
-                onSeeAllBackedProjectsClick = {},
+                onSeeAllBackedProjectsClick = {}
             )
         }
     }
@@ -157,7 +157,7 @@ fun PledgedProjectsOverviewScreen(
     ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
     onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
-    onSendMessageClick: (projectName: String) -> Unit,
+    onSendMessageClick: (projectName: String, projectID: String, ppoCards: List<PPOCard?>, totalAlerts: Int, creatorID: String) -> Unit,
     onSeeAllBackedProjectsClick: () -> Unit,
     onPrimaryActionButtonClicked: (PPOCard) -> Unit,
     onSecondaryActionButtonClicked: (PPOCard) -> Unit,
@@ -165,50 +165,52 @@ fun PledgedProjectsOverviewScreen(
     isErrored: Boolean = false,
     showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
+    analyticEvents: AnalyticEvents? = null,
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
+    var projectID by remember { mutableStateOf("") }
     val pullRefreshState = rememberPullRefreshState(
         isLoading,
         pullRefreshCallback,
     )
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState),
-        contentAlignment = Alignment.Center
-    ) {
-        Scaffold(
-            snackbarHost = {
-                SnackbarHost(
-                    modifier = Modifier.padding(dimensions.paddingSmall),
-                    hostState = errorSnackBarHostState,
-                    snackbar = { data ->
-                        // Action label is typically for the action on a snackbar, but we can
-                        // leverage it and show different visuals depending on what we pass in
-                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                            KSErrorSnackbar(text = data.message)
-                        } else {
-                            KSHeadsupSnackbar(text = data.message)
-                        }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.padding(dimensions.paddingSmall),
+                hostState = errorSnackBarHostState,
+                snackbar = { data ->
+                    // Action label is typically for the action on a snackbar, but we can
+                    // leverage it and show different visuals depending on what we pass in
+                    if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                        KSErrorSnackbar(text = data.message)
+                    } else {
+                        KSHeadsupSnackbar(text = data.message)
                     }
-                )
-            },
-            modifier = modifier,
-            topBar = {
-                TopToolBar(
-                    title = stringResource(id = R.string.project_alerts_fpo),
-                    titleColor = colors.textPrimary,
-                    leftOnClickAction = onBackPressed,
-                    leftIconColor = colors.icon,
-                    leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
-                    backgroundColor = colors.backgroundSurfacePrimary,
-                )
-            },
-            backgroundColor = colors.backgroundSurfacePrimary
-        ) { padding ->
+                }
+            )
+        },
+        modifier = modifier,
+        topBar = {
+            TopToolBar(
+                title = stringResource(id = R.string.Project_alerts),
+                titleColor = colors.textPrimary,
+                leftOnClickAction = onBackPressed,
+                leftIconColor = colors.icon,
+                leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
+                backgroundColor = colors.backgroundSurfacePrimary,
+            )
+        },
+        backgroundColor = colors.backgroundSurfacePrimary
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState),
+            contentAlignment = Alignment.TopCenter
+        ) {
             if (isErrored) {
                 PPOScreenErrorState()
             } else if (showEmptyState) {
@@ -229,7 +231,7 @@ fun PledgedProjectsOverviewScreen(
                     item {
                         if (!totalAlerts.isNullOrZero()) {
                             Text(
-                                text = stringResource(id = R.string.alerts_fpo).format("count", totalAlerts.toString()),
+                                text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
                                 style = typography.title3Bold,
                                 color = colors.textPrimary
                             )
@@ -247,22 +249,26 @@ fun PledgedProjectsOverviewScreen(
                                 onCardClick = { },
                                 onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
                                 projectName = it.projectName(),
-                                pledgeAmount = it.amount(),
+                                pledgeAmount = it.amount?.toDoubleOrNull()?.let { amount ->
+                                    RewardViewUtils.formatCurrency(amount, it.currencyCode?.rawValue(), it.currencySymbol)
+                                },
                                 imageUrl = it.imageUrl(),
                                 flags = it.flags,
                                 imageContentDescription = it.imageContentDescription(),
                                 creatorName = it.creatorName(),
-                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "") },
-                                shippingAddress = it.address() ?: "", // TODO replace with formatted address from PPO response
+                                sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
+                                shippingAddress = it.deliveryAddress()?.getFormattedAddress() ?: "",
                                 onActionButtonClicked = {
                                     onPrimaryActionButtonClicked(it)
                                 },
                                 onSecondaryActionButtonClicked = {
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
-                                            confirmedAddress = it.address() ?: ""
-                                            addressID = it.addressID ?: ""
+                                            analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
+                                            confirmedAddress = it.deliveryAddress()?.getFormattedAddress() ?: ""
+                                            addressID = it.deliveryAddress()?.addressId() ?: ""
                                             backingID = it.backingId ?: ""
+                                            projectID = it.projectId ?: ""
                                             openConfirmAddressAlertDialog.value = true
                                         }
                                         else -> {
@@ -279,17 +285,14 @@ fun PledgedProjectsOverviewScreen(
                     }
                 }
             }
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(KSTheme.colors.backgroundAccentGraySubtle.copy(alpha = 0.5f))
-                        .clickable(enabled = false) { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    KSCircularProgressIndicator()
-                }
-            }
+
+            PullRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                refreshing = isLoading,
+                state = pullRefreshState,
+                backgroundColor = colors.backgroundAccentGraySubtle,
+                contentColor = colors.backgroundAccentGreenBold
+            )
         }
     }
 
@@ -297,13 +300,14 @@ fun PledgedProjectsOverviewScreen(
         openConfirmAddressAlertDialog.value -> {
             KSAlertDialog(
                 setShowDialog = { openConfirmAddressAlertDialog.value = it },
-                headlineText = "Confirm your address",
+                headlineText = stringResource(id = R.string.confirm_your_address_fpo),
                 bodyText = confirmedAddress,
                 leftButtonText = stringResource(id = R.string.Cancel),
                 leftButtonAction = { openConfirmAddressAlertDialog.value = false },
                 rightButtonText = stringResource(id = R.string.Confirm),
                 rightButtonAction = {
                     openConfirmAddressAlertDialog.value = false
+                    analyticEvents?.trackPPOConfirmAddressSubmitCTAClicked(ppoCards = ppoCards.itemSnapshotList.items, projectID = projectID, totalCount = totalAlerts)
                     onAddressConfirmed(addressID, backingID)
                 }
             )
@@ -330,7 +334,7 @@ fun PPOScreenEmptyState(
     ) {
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.youre_all_caught_up_fpo),
+            text = stringResource(id = R.string.Youre_all_caught_up),
             style = typography.title3Bold,
         )
 
@@ -338,7 +342,7 @@ fun PPOScreenEmptyState(
 
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.when_projects_youve_backed_need_your_attention_youll_see_them_here_fpo),
+            text = stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
             style = typography.body,
             textAlign = TextAlign.Center
         )
@@ -347,7 +351,7 @@ fun PPOScreenEmptyState(
         KSPrimaryGreenButton(
             modifier = Modifier,
             onClickAction = { onSeeAllBackedProjectsClick.invoke() },
-            text = stringResource(id = R.string.see_all_backed__projects_fpo),
+            text = stringResource(id = R.string.See_all_backed__projects),
             isEnabled = true
         )
     }
@@ -377,7 +381,7 @@ fun PPOScreenErrorState() {
 
         Text(
             color = colors.textPrimary,
-            text = (stringResource(id = R.string.something_went_wrong_pull_to_refresh_fpo)),
+            text = (stringResource(id = R.string.Something_went_wrong_pull_to_refresh_no_period)),
             style = typography.body,
             textAlign = TextAlign.Center
         )

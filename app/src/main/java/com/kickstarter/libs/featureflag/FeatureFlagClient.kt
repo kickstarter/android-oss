@@ -7,9 +7,20 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
+import com.kickstarter.models.UserPrivacy
+import io.reactivex.Observable
 import timber.log.Timber
 
 interface FeatureFlagClientType {
+
+    /**
+     * Backend list of features flags enabled within `userPrivacy.enabledFeatures` field
+     *
+     * Checks if the FlipperFlagKey.name is present within enabledFeatures
+     */
+    fun isBackendEnabledFlag(privacy: Observable<UserPrivacy>, key: FlipperFlagKey): Observable<Boolean> {
+        return privacy.map { it.enabledFeatures.contains(key.key) }
+    }
 
     /**
      * Will received a callback, that callback will usually
@@ -51,6 +62,9 @@ interface FeatureFlagClientType {
      * Will return the active value for a String feature flag
      */
     fun getString(FlagKey: FlagKey): String
+}
+enum class FlipperFlagKey(val key: String) {
+    FLIPPER_PLEDGED_PROJECTS_OVERVIEW("pledge_projects_overview_2024")
 }
 
 enum class FlagKey(val key: String) {
@@ -137,6 +151,7 @@ class FeatureFlagClient(
     }
 
     override fun getString(key: FlagKey): String {
+
         val value = remoteConfig?.getString(key.key) ?: ""
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value

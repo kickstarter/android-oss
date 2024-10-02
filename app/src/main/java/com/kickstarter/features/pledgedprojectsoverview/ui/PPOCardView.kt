@@ -40,8 +40,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
+import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
-import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
@@ -196,7 +196,7 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
-                if (viewType == PPOCardViewType.CONFIRM_ADDRESS) {
+                if (viewType == PPOCardViewType.CONFIRM_ADDRESS && !shippingAddress.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
                     ShippingAddressView(
@@ -256,15 +256,14 @@ fun ProjectPledgeSummaryView(
                 color = colors.textPrimary,
                 style = typography.footnoteMedium,
                 overflow = TextOverflow.Ellipsis,
-                minLines = 2,
+                minLines = 1,
                 maxLines = 2
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
-            // TODO: Replace with translated string
             Text(
-                text = "$pledgeAmount pledged",
+                text = stringResource(id = R.string.pledge_amount_pledged_fpo).format("pledge_amount", pledgeAmount),
                 color = colors.textSecondary,
                 style = typography.caption2
             )
@@ -319,9 +318,8 @@ fun CreatorNameSendMessageView(
                 )
                 .clickable { sendAMessageClickAction.invoke() }
         ) {
-            // TODO: Replace with translated string
             Text(
-                text = "Send a message",
+                text = stringResource(id = R.string.send_a_message_fpo),
                 color = colors.textAccentGreen,
                 style = typography.caption2
             )
@@ -349,7 +347,7 @@ fun ShippingAddressView(
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
         Text(
-            text = "Shipping address",
+            text = stringResource(id = R.string.shipping_address_fpo),
             modifier = Modifier
                 .weight(0.25f)
                 .height(dimensions.clickableButtonHeight)
@@ -380,7 +378,11 @@ fun AlertFlagsView(flags: List<Flag?>) {
         modifier = Modifier
             .fillMaxWidth()
             .testTag(PPOCardViewTestTag.FlAG_LIST_VIEW.name)
-            .padding(top = dimensions.paddingMediumSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingMediumSmall),
+            .padding(
+                top = dimensions.paddingMediumSmall,
+                start = dimensions.paddingMediumSmall,
+                end = dimensions.paddingMediumSmall
+            ),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -409,12 +411,11 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             .padding(dimensions.paddingSmall)
             .testTag(PPOCardViewTestTag.CONFIRM_ADDRESS_BUTTONS_VIEW.name)
     ) {
-        // TODO: Replace with translated strings
         KSPrimaryBlackButton(
             modifier = Modifier
                 .weight(0.5f),
             onClickAction = { onEditAddressClicked.invoke() },
-            text = "Edit",
+            text = stringResource(id = R.string.edit_fpo),
             isEnabled = true,
             textStyle = typography.buttonText
         )
@@ -424,7 +425,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             modifier = Modifier
                 .weight(0.5f),
             onClickAction = { onConfirmAddressClicked.invoke() },
-            text = "Confirm",
+            text = stringResource(id = R.string.Confirm),
             isEnabled = isConfirmButtonEnabled,
             textStyle = typography.buttonText
         )
@@ -433,11 +434,10 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
 
 @Composable
 fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
-    // TODO: Replace with translated string
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onFixPaymentClicked.invoke() },
-        text = "Fix Payment",
+        text = stringResource(id = R.string.fix_payment_fpo),
         isEnabled = true,
         textStyle = typography.buttonText
     )
@@ -445,11 +445,10 @@ fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
 
 @Composable
 fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
-    // TODO: Replace with translated string
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
-        text = "Authenticate Card",
+        text = stringResource(id = R.string.authenticate_card_fpo),
         isEnabled = true,
         textStyle = typography.buttonText
     )
@@ -457,51 +456,12 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
 
 @Composable
 fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
-    // TODO: Replace with translated string
     KSPrimaryGreenButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
-        text = "Take Survey",
+        text = stringResource(id = R.string.take_survey_fpo),
         isEnabled = true,
         textStyle = typography.buttonText
-    )
-}
-
-@Composable
-fun AddressLocksAlertView(hoursRemaining: Int = -1) {
-    KSCoralBadge(
-        leadingIcon = {
-            // TODO: Replace with translated string
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.alertIconSize),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                contentDescription = "Address locks in $hoursRemaining hours",
-                colorFilter = ColorFilter.tint(colors.textSecondary)
-            )
-        },
-        // TODO: Replace with translated string
-        text = "Address locks in $hoursRemaining hours",
-    )
-}
-@Composable
-fun PledgeWillBeDroppedAlert(daysRemaining: Int = -1) {
-    KSCoralBadge(
-        leadingIcon = {
-            // TODO: Replace with translated string
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.alertIconSize),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
-                contentDescription = "Pledge will be dropped in $daysRemaining days",
-                colorFilter = ColorFilter.tint(colors.textAccentRedBold)
-            )
-        },
-        // TODO: Replace with translated string
-        text = "Pledge will be dropped in $daysRemaining days",
-        textColor = colors.textAccentRedBold
     )
 }
 

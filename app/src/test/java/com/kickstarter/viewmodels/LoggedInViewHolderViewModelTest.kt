@@ -4,10 +4,14 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.FlipperFlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
@@ -23,6 +27,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private val unreadMessagesCount = TestSubscriber<Int>()
     private val user = TestSubscriber<User>()
     private val pledgedProjectsIsVisible = TestSubscriber<Boolean>()
+    private val pledgedProjectsIndicatorIsVisible = TestSubscriber<Boolean>()
     private val disposables = CompositeDisposable()
 
     fun setUpEnvironment(environment: Environment) {
@@ -35,6 +40,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.unreadMessagesCount().subscribe { this.unreadMessagesCount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.user().subscribe { this.user.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgedProjectsIsVisible().subscribe { this.pledgedProjectsIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgedProjectsIndicatorIsVisible().subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -159,33 +165,130 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `when pledged projects feature is flag off, should emit false`() {
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return false
-                }
-            }
+    fun `when user has project alerts, should emit true`() {
+        setUpEnvironment(environment())
+        val user = UserFactory.user().toBuilder().ppoHasAction(true).build()
+        this.vm.inputs.configureWith(user)
 
-        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).build())
-        val user = UserFactory.user()
+        this.pledgedProjectsIndicatorIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun `when user doesnt have project alerts, should emit false`() {
+        setUpEnvironment(environment())
+        val user = UserFactory.user().toBuilder().ppoHasAction(false).build()
+        this.vm.inputs.configureWith(user)
+
+        this.pledgedProjectsIndicatorIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun `test feature flag enabled in backed and mobile shows PPO`() {
+        val privacy = UserPrivacy(
+            "Some Name",
+            "some@email.com",
+            true,
+            true,
+            true,
+            true,
+            "USD",
+            enabledFeatures = listOf("some_key_here", FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW.key)
+        )
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacy> {
+                return Observable.just(
+                    privacy
+                )
+            }
+        }
+        val ffClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .featureFlagClient(ffClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.pledgedProjectsIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun `test feature flag disabled in backed and enabled in mobile not show PPO`() {
+        val privacy = UserPrivacy(
+            "Some Name",
+            "some@email.com",
+            true,
+            true,
+            true,
+            true,
+            "USD",
+            enabledFeatures = listOf("some_key_here")
+        )
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacy> {
+                return Observable.just(
+                    privacy
+                )
+            }
+        }
+        val ffClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .featureFlagClient(ffClient)
+            .build()
+
+        setUpEnvironment(environment)
 
         this.pledgedProjectsIsVisible.assertValue(false)
     }
 
     @Test
-    fun `when pledged projects feature is flag on, should emit true`() {
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
-                }
+    fun `test feature flag disabled in backed and disabled in mobile not show PPO`() {
+        val privacy = UserPrivacy(
+            "Some Name",
+            "some@email.com",
+            true,
+            true,
+            true,
+            true,
+            "USD",
+            enabledFeatures = listOf("some_key_here")
+        )
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacy> {
+                return Observable.just(
+                    privacy
+                )
             }
+        }
 
-        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).build())
-        val user = UserFactory.user()
+        val ffClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
 
-        this.pledgedProjectsIsVisible.assertValue(true)
+        val environment = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .featureFlagClient(ffClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.pledgedProjectsIsVisible.assertValue(false)
     }
 
     @After

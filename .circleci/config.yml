@@ -27,7 +27,9 @@ jobs:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
             - v5-android-
       - run: make bootstrap-circle
-      - run: ./gradlew dependencies
+      - run:
+          name: Install dependencies
+          command: ./gradlew dependencies
       - save_cache:
           key: v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
           paths:
@@ -58,7 +60,8 @@ jobs:
           name: Lint External Release
           command: ./gradlew lintExternalRelease -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
       - run:
-          command: ./gradlew jacocoExternalDebugReport -PdisablePreDex
+          name: Jacoco External Debug Report
+          command: ./gradlew jacocoExternalDebugReport -PdisablePreDex -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
           no_output_timeout: 30m
       - store_artifacts:
           path: app/build/reports
@@ -99,7 +102,9 @@ jobs:
           name: Config Emulator for Screenshot test
           command: ./script/emulator/screenshot_config_emulator.sh
       # Temporary JDK 17 workaround https://github.com/pedrovgs/Shot/issues/268 until https://github.com/pedrovgs/Shot/pull/292 is merged
-      - run: ./gradlew internalDebugExecuteScreenshotTests -Dorg.gradle.jvmargs="--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.nio.channels=ALL-UNNAMED --add-exports java.base/sun.nio.ch=ALL-UNNAMED"
+      - run:
+          name: Internal Debug Execute Screenshot Tests
+          command: ./gradlew internalDebugExecuteScreenshotTests -Dorg.gradle.jvmargs="--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.nio.channels=ALL-UNNAMED --add-exports java.base/sun.nio.ch=ALL-UNNAMED" -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
       - android/save-gradle-cache:
           cache-prefix: v1a
       - store_artifacts:

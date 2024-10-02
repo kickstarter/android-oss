@@ -105,7 +105,7 @@ interface ThreadViewModel {
         private val hasPendingComments = BehaviorSubject.create<Boolean>()
         private val closeThreadActivity = BehaviorSubject.create<Unit>()
 
-        private val intent = PublishSubject.create<Intent>()
+        private val intentSubject = PublishSubject.create<Intent>()
 
         private val disposables = CompositeDisposable()
 
@@ -132,7 +132,7 @@ interface ThreadViewModel {
                 .filter { it.isNotNull() }
                 .map { it }
 
-            intent
+            intentSubject
                 .map { it.getBooleanExtra(IntentKey.REPLY_EXPAND, false) }
                 .distinctUntilChanged()
                 .subscribe { this.focusOnCompose.onNext(it) }
@@ -348,7 +348,7 @@ interface ThreadViewModel {
                 .subscribe { this.closeThreadActivity.onNext(it) }
                 .addToDisposable(disposables)
 
-            intent
+            intentSubject
                 .map { it.getBooleanExtra(IntentKey.REPLY_SCROLL_BOTTOM, false) }
                 .filter { it }
                 .compose(Transformers.takeWhenV2(this.onCommentReplies))
@@ -484,14 +484,14 @@ interface ThreadViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
-        private fun getCommentCardDataFromIntent() = intent
+        private fun getCommentCardDataFromIntent() = intentSubject
             .filter {
                 it.getParcelableExtra<CommentCardData?>(IntentKey.COMMENT_CARD_DATA).isNotNull()
             }
             .map { it.getParcelableExtra<CommentCardData>(IntentKey.COMMENT_CARD_DATA) as CommentCardData }
             .ofType(CommentCardData::class.java)
 
-        private fun getProjectUpdateId() = intent
+        private fun getProjectUpdateId() = intentSubject
             .map { it.getStringExtra(IntentKey.UPDATE_POST_ID) ?: "" }
 
         override fun nextPage() = nextPage.onNext(Unit)
@@ -539,8 +539,8 @@ interface ThreadViewModel {
             super.onCleared()
         }
 
-        fun intent(intent: Intent) {
-            this.intent.onNext(intent)
+        fun handleIntent(intent: Intent) {
+            this.intentSubject.onNext(intent)
         }
     }
 

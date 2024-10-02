@@ -11,8 +11,6 @@ base_job: &base_job
     TERM: dumb
     ADB_INSTALL_TIMEOUT: 8
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"'
-    JDK_VERSION: openjdk-17
-    JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64 # Explicitly set Java 17
 
 version: 2.1
 orbs:
@@ -24,20 +22,6 @@ jobs:
     <<: *base_job
     steps:
       - checkout
-      - run:
-          name: Install JDK 17
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y openjdk-17-jdk
-            sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-17-openjdk-amd64/bin/java 1
-            sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac 1
-            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
-            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-            echo "JAVA_HOME is set to $JAVA_HOME"
-      - run:
-          name: Validate Java Version
-          command: java -version
       - restore_cache:
           keys:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -69,7 +53,10 @@ jobs:
           at: ~/project
       - run: ./gradlew checkstyle
       - run: ./gradlew ktlint
-      - run: ./gradlew lintExternalRelease
+
+      - run:
+          name: Lint External Release
+          command: ./gradlew lintExternalRelease -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
       - run:
           command: ./gradlew jacocoExternalDebugReport -PdisablePreDex
           no_output_timeout: 30m

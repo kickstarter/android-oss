@@ -427,8 +427,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         selectedPaymentMethod
                     )
                 }
-                PledgeReason.UPDATE_REWARD -> {
-                    // - Update Reward should send ALL newly selected items
+                PledgeReason.UPDATE_REWARD,
+                PledgeReason.UPDATE_PLEDGE -> {
+                    // - Update Reward/Pledge should send ALL newly selected rewards/Locations
                     val isShippable = pledgeData?.reward()?.let { RewardUtils.isShippable(it) } ?: false
                     val locationIdOrNull =
                         if (isShippable) pledgeData?.shippingRule()?.location()?.id().toString()
@@ -446,16 +447,13 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     )
                 }
                 PledgeReason.FIX_PLEDGE -> {
-                    // - Fix pledge should NOT send amounts
-                    val rewards = pledgeData?.expandedRewardsAndAddOnsList() ?: emptyList()
+                    // - Fix pledge should NOT send amounts/rewardId's/locationId ONLY selected paymentMethod
                     getUpdateBackingData(
                         backing = backing,
-                        rewardsList = rewards,
                         pMethod = selectedPaymentMethod
                     )
                 }
                 PledgeReason.PLEDGE, // Error
-                PledgeReason.UPDATE_PLEDGE, // Error
                 PledgeReason.LATE_PLEDGE, // Error
                 null -> { null }
             }

@@ -599,8 +599,10 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.outputs.drawerMenuIcon().subscribe(drawerMenuIcon)
         drawerMenuIcon.assertValue(R.drawable.ic_menu)
         currentUser.refresh(user().toBuilder().unreadMessagesCount(4).build())
+        vm.setDarkTheme(isDarkTheme = false)
         drawerMenuIcon.assertValues(R.drawable.ic_menu, R.drawable.ic_menu_indicator)
         currentUser.refresh(user().toBuilder().erroredBackingsCount(2).build())
+        vm.setDarkTheme(isDarkTheme = false)
         drawerMenuIcon.assertValues(
             R.drawable.ic_menu,
             R.drawable.ic_menu_indicator,
@@ -610,12 +612,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             user().toBuilder().unreadMessagesCount(4).unseenActivityCount(3).erroredBackingsCount(2)
                 .build()
         )
+        vm.setDarkTheme(isDarkTheme = false)
         drawerMenuIcon.assertValues(
             R.drawable.ic_menu,
             R.drawable.ic_menu_indicator,
             R.drawable.ic_menu_error_indicator
         )
         currentUser.logout()
+        vm.setDarkTheme(isDarkTheme = false)
         drawerMenuIcon.assertValues(
             R.drawable.ic_menu, R.drawable.ic_menu_indicator, R.drawable.ic_menu_error_indicator,
             R.drawable.ic_menu

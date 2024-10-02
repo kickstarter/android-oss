@@ -407,7 +407,9 @@ interface ThreadViewModel {
             /** reversed replies **/
             apolloPaginate
                 .paginatedData()
-                ?.map { it.reversed() }
+                ?.map { it.toMutableList().reverse()
+                        it.toList()
+                }
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
                 ?.share()

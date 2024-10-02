@@ -49,7 +49,9 @@ jobs:
           paths:
             - ~/.gradle
             - ~/.android
-      - run: ./gradlew assembleExternalRelease
+      - run:
+          name: Assemble Release
+          command: ./gradlew assembleExternalRelease -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
       - persist_to_workspace:
           root: ~/project
           paths:

@@ -56,6 +56,7 @@
   <string name="Ask_a_question" formatted="false">Poser une question</string>
   <string name="Ask_me_anything" formatted="false">Posez-moi une question !</string>
   <string name="Ask_the_project_creator_directly" formatted="false">Veuillez adresser votre question au créateur.</string>
+  <string name="Authenticate_card" formatted="false">Authentifier la carte</string>
   <string name="Authentication_failed_please_try_again" formatted="false">Authentification échouée. Veuillez réessayer.</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">Authentification réussie. Veuillez tirer la page vers le bas pour l\'actualiser.</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Plus que %{time}%{units} pour regarder cette diffusion</string>
@@ -140,6 +141,7 @@ contributeurs</string>
   <string name="Complete_payment" formatted="false">Payer</string>
   <string name="Confirm" formatted="false">Confirmer</string>
   <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
+  <string name="Confirm_your_address" formatted="false">Confirmer votre adresse</string>
   <string name="Confirm_your_pledge_details" formatted="false">Confirmons le détail de votre engagement</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
   <string name="Contact_backer" formatted="false">Contacter le contributeur</string>
@@ -219,6 +221,7 @@ Cliquez pour réessayer.</string>
   <string name="Double_tap_to_toggle_setting" formatted="false">Cliquez deux fois pour activer/désactiver le réglage</string>
   <string name="Download_your_personal_data" formatted="false">Téléchargement de vos données personnelles</string>
   <string name="Earth" formatted="false">Terre</string>
+  <string name="Edit" formatted="false">Edit</string>
   <string name="Edit_profile" formatted="false">Modifier mon profil</string>
   <string name="Edit_reward" formatted="false">Modifier la récompense</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Soit l\'engagement soit le projet a été annulé avant la date limite.</string>
@@ -275,6 +278,7 @@ Cliquez pour réessayer.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Découvrez des projets que vous allez adorer : art, design, cinéma, jeux, musique et plus encore. L\'activité des projets que vous soutenez s\'affichera ici.</string>
   <string name="First_created" formatted="false">Premier projet créé</string>
   <string name="Fix" formatted="false">Corriger</string>
+  <string name="Fix_payment" formatted="false">Corriger mon paiement</string>
   <string name="Fix_payment_method" formatted="false">Correction du moyen de paiement</string>
   <string name="Fix_within_time_remaining" formatted="false">Il vous reste %{time_remaining} pour corriger un problème.</string>
   <string name="Fix_your_payment_method" formatted="false">Corriger votre moyen de paiement</string>
@@ -490,6 +494,7 @@ n\'ont rien soutenu.</string>
   <string name="Pledge" formatted="false">Je m\'engage</string>
   <string name="Pledge_activity" formatted="false">Mes engagements</string>
   <string name="Pledge_amount" formatted="false">Montant engagé</string>
+  <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} engagés</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_details" formatted="false">Détails de mon engagement</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Soutenez des projets et consultez la liste de vos projets enregistrés et soutenus.</string>
@@ -622,6 +627,7 @@ n\'ont rien soutenu.</string>
   <string name="Selected_card" formatted="false">Carte sélectionnée</string>
   <string name="Selected_reward" formatted="false">Récompense sélectionnée</string>
   <string name="Send" formatted="false">Envoyer</string>
+  <string name="Send_a_message" formatted="false">Envoyer un message</string>
   <string name="Send_verfication_email" formatted="false">Envoyer un e-mail de vérification</string>
   <string name="Set_new_password" formatted="false">Création d\'un mot de passe</string>
   <string name="Set_your_password" formatted="false">Veuillez créer un mot de passe</string>
@@ -633,6 +639,7 @@ n\'ont rien soutenu.</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Partagez ce projet sur Twitter.</string>
   <string name="Share_update" formatted="false">Partager</string>
   <string name="Shipping" formatted="false">Expédition</string>
+  <string name="Shipping_address" formatted="false">Adresse de livraison</string>
   <string name="Shipping_addresses" formatted="false">Adresses de livraison</string>
   <string name="Shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Shipping_to_country" formatted="false">Livraison : %{country}</string>
@@ -680,6 +687,7 @@ n\'ont rien soutenu.</string>
   <string name="Suspicious_creator_behavior" formatted="false">Comportement douteux de la part du créateur ou engagements suspects</string>
   <string name="Sustainable_distribution" formatted="false">Distribution durable</string>
   <string name="Sustainable_materials" formatted="false">Des matières durables</string>
+  <string name="Take_survey" formatted="false">Répondre au questionnaire</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme de cœur située à côté du projet pour recevoir une notification 48 avant la fin de la campagne.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme d\'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.</string>
@@ -773,6 +781,7 @@ n\'ont rien soutenu.</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Rendez-vous dans notre Centre de ressources pour l\'environnement</string>
   <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Consultez notre Centre de ressources pour l\'environnement&lt;/a></string>
   <string name="Watch_live" formatted="false">Regarder en direct</string>
+  <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">Impossible d\'authentifier votre moyen de paiement. Veuillez faire glisser la page vers le bas pour l\'actualiser et sélectionner un autre choix.</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">La connexion Facebook est désormais impossible. Veuillez vous connecter avec votre mot de passe Kickstarter, ou créer un autre mot de passe pour votre adresse Facebook.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Impossible de traiter cet engagement en raison d\'un problème survenu au niveau du moyen de paiement du contributeur.</string>
   <string name="We_cant_process_your_pledge" formatted="false">Impossible de traiter votre engagement.</string>

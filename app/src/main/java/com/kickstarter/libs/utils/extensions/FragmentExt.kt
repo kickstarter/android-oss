@@ -6,12 +6,20 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.CrowdfundCheckoutFragment
+import com.kickstarter.ui.fragments.PledgeFragment
 
 fun Fragment.selectPledgeFragment(
     pledgeData: PledgeData,
-    pledgeReason: PledgeReason
+    pledgeReason: PledgeReason,
+    ffEnabled: Boolean = false
 ): Fragment {
-    val fragment = CrowdfundCheckoutFragment()
+    val fragment = when (pledgeReason) {
+        PledgeReason.FIX_PLEDGE ->
+            if (ffEnabled) CrowdfundCheckoutFragment()
+            else PledgeFragment()
+        else -> CrowdfundCheckoutFragment()
+    }
+
     return fragment.withData(pledgeData, pledgeReason)
 }
 

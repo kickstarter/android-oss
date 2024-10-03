@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.toolbars.KSToolbar
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  style="@style/Toolbar"
-  android:id="@+id/activity_feed_toolbar"
-  app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  tools:showIn="@layout/activity_feed_layout">
+<com.kickstarter.ui.toolbars.KSToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_feed_toolbar"
+    style="@style/Toolbar"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    tools:showIn="@layout/activity_feed_layout">
 
   <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIconBackButton"
-      android:id="@+id/back_button" />
-    
+        android:id="@+id/back_button"
+        style="@style/ToolbarIconBackButton" />
+
     <TextView
-      style="@style/ToolbarTitle"
-      android:text="@string/activity_creator_navigation_header_activity" />
+        style="@style/ToolbarTitle"
+        android:text="@string/activity_creator_navigation_header_activity" />
 
   </RelativeLayout>
 

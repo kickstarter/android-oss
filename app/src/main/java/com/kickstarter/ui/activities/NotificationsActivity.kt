@@ -19,6 +19,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.NotificationsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -32,10 +33,13 @@ class NotificationsActivity : ComponentActivity() {
     private val circleFilled = R.drawable.circle_gray_filled
 
     private val subscribeString = R.string.profile_settings_accessibility_subscribe_notifications
-    private val subscribeMobileString = R.string.profile_settings_accessibility_subscribe_mobile_notifications
+    private val subscribeMobileString =
+        R.string.profile_settings_accessibility_subscribe_mobile_notifications
     private val unableToSaveString = R.string.profile_settings_error
-    private val unsubscribeMobileString = R.string.profile_settings_accessibility_unsubscribe_mobile_notifications
-    private val unsubscribeString = R.string.profile_settings_accessibility_unsubscribe_notifications
+    private val unsubscribeMobileString =
+        R.string.profile_settings_accessibility_unsubscribe_mobile_notifications
+    private val unsubscribeString =
+        R.string.profile_settings_accessibility_unsubscribe_notifications
 
     private var notifyMobileOfBackings: Boolean = false
     private var notifyMobileOfComments: Boolean = false
@@ -66,7 +70,10 @@ class NotificationsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNotificationsBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         this.getEnvironment()?.let { env ->
             viewModelFactory = NotificationsViewModel.Factory(env)
             env
@@ -105,7 +112,8 @@ class NotificationsActivity : ComponentActivity() {
     }
 
     private fun displayPreferences(user: User) {
-        binding.projectNotificationsCount.text = user.backedProjectsCount().intValueOrZero().toString()
+        binding.projectNotificationsCount.text =
+            user.backedProjectsCount().intValueOrZero().toString()
 
         displayMarketingUpdates(user)
         displayBackingsNotificationSettings(user)
@@ -121,7 +129,11 @@ class NotificationsActivity : ComponentActivity() {
 
     private fun displayMarketingUpdates(user: User) {
         this.notifyMobileOfMarketingUpdates = user.notifyMobileOfMarketingUpdate().isTrue()
-        toggleImageButtonIconColor(binding.marketingUpdatesPhoneIcon, this.notifyMobileOfMarketingUpdates, true)
+        toggleImageButtonIconColor(
+            binding.marketingUpdatesPhoneIcon,
+            this.notifyMobileOfMarketingUpdates,
+            true
+        )
     }
 
     private fun displayBackingsNotificationSettings(user: User) {
@@ -141,16 +153,22 @@ class NotificationsActivity : ComponentActivity() {
             binding.emailFrequencySpinner.setSelection(frequencyIndex, false)
         }
 
-        binding.emailFrequencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+        binding.emailFrequencySpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (frequencyIndex != position) {
-                    viewModel.inputs.notifyOfCreatorDigest(position == User.EmailFrequency.DAILY_SUMMARY.ordinal)
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (frequencyIndex != position) {
+                        viewModel.inputs.notifyOfCreatorDigest(position == User.EmailFrequency.DAILY_SUMMARY.ordinal)
+                    }
                 }
             }
-        }
     }
 
     private fun displayCommentsNotificationSettings(user: User) {
@@ -163,7 +181,10 @@ class NotificationsActivity : ComponentActivity() {
 
     private fun displayCommentRepliesNotificationSettings(user: User) {
         this.notifyMobileOfCommentReplies = user.notifyOfCommentReplies().isTrue()
-        toggleImageButtonIconColor(binding.commentRepliesMailIcon, this.notifyMobileOfCommentReplies)
+        toggleImageButtonIconColor(
+            binding.commentRepliesMailIcon,
+            this.notifyMobileOfCommentReplies
+        )
     }
 
     private fun displayCreatorTipsNotificationSettings(user: User) {
@@ -186,7 +207,11 @@ class NotificationsActivity : ComponentActivity() {
         this.notifyMobileOfFriendActivity = user.notifyMobileOfFriendActivity().isTrue()
         this.notifyOfFriendActivity = user.notifyOfFriendActivity().isTrue()
 
-        toggleImageButtonIconColor(binding.friendActivityPhoneIcon, this.notifyMobileOfFriendActivity, true)
+        toggleImageButtonIconColor(
+            binding.friendActivityPhoneIcon,
+            this.notifyMobileOfFriendActivity,
+            true
+        )
         toggleImageButtonIconColor(binding.friendActivityMailIcon, this.notifyOfFriendActivity)
     }
 
@@ -208,7 +233,11 @@ class NotificationsActivity : ComponentActivity() {
         this.notifyMobileOfUpdates = user.notifyMobileOfUpdates().isTrue()
         this.notifyOfUpdates = user.notifyOfUpdates().isTrue()
 
-        toggleImageButtonIconColor(binding.projectUpdatesPhoneIcon, this.notifyMobileOfUpdates, true)
+        toggleImageButtonIconColor(
+            binding.projectUpdatesPhoneIcon,
+            this.notifyMobileOfUpdates,
+            true
+        )
         toggleImageButtonIconColor(binding.projectUpdatesMailIcon, this.notifyOfUpdates)
     }
 
@@ -251,7 +280,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.backingsRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.backingsPhoneIcon, binding.backingsMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.backingsPhoneIcon,
+                binding.backingsMailIcon
+            )
         }
 
         binding.commentsMailIcon.setOnClickListener {
@@ -271,7 +303,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.commentsRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.commentsPhoneIcon, binding.commentsMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.commentsPhoneIcon,
+                binding.commentsMailIcon
+            )
         }
 
         binding.creatorEduMailIcon.setOnClickListener {
@@ -283,7 +318,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.creatorEduRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.creatorEduPhoneIcon, binding.creatorEduMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.creatorEduPhoneIcon,
+                binding.creatorEduMailIcon
+            )
         }
 
         binding.friendActivityMailIcon.setOnClickListener {
@@ -295,7 +333,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.friendsBackProjectRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.friendActivityPhoneIcon, binding.friendActivityMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.friendActivityPhoneIcon,
+                binding.friendActivityMailIcon
+            )
         }
 
         binding.messagesMailIcon.setOnClickListener {
@@ -307,7 +348,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.messagesNotificationRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.messagesPhoneIcon, binding.messagesMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.messagesPhoneIcon,
+                binding.messagesMailIcon
+            )
         }
 
         binding.newFollowersMailIcon.setOnClickListener {
@@ -319,7 +363,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.newFollowersRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.newFollowersPhoneIcon, binding.newFollowersMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.newFollowersPhoneIcon,
+                binding.newFollowersMailIcon
+            )
         }
 
         binding.postLikesPhoneIcon.setOnClickListener {
@@ -339,7 +386,10 @@ class NotificationsActivity : ComponentActivity() {
         }
 
         binding.projectUpdatesRow.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(binding.projectUpdatesPhoneIcon, binding.projectUpdatesMailIcon)
+            AnimationUtils.notificationBounceAnimation(
+                binding.projectUpdatesPhoneIcon,
+                binding.projectUpdatesMailIcon
+            )
         }
     }
 
@@ -347,7 +397,11 @@ class NotificationsActivity : ComponentActivity() {
         startActivity(Intent(this, ProjectNotificationSettingsActivity::class.java))
     }
 
-    private fun toggleImageButtonIconColor(imageButton: ImageButton, enabled: Boolean, typeMobile: Boolean = false) {
+    private fun toggleImageButtonIconColor(
+        imageButton: ImageButton,
+        enabled: Boolean,
+        typeMobile: Boolean = false
+    ) {
         val color = getEnabledColorResId(enabled)
         imageButton.setColorFilter(ContextCompat.getColor(this, color))
 

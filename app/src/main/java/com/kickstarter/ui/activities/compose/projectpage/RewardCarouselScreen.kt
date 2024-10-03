@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -59,7 +60,9 @@ fun RewardCarouselScreenPreview() {
             backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             RewardCarouselScreen(
-                modifier = Modifier.padding(padding),
+                modifier = Modifier
+                    .padding(padding)
+                    .systemBarsPadding(),
                 lazyRowState = rememberLazyListState(),
                 environment = Environment.Builder().build(),
                 rewards = (0..10).map {

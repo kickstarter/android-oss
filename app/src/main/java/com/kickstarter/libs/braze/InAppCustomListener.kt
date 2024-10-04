@@ -6,6 +6,7 @@ import com.braze.ui.inappmessage.InAppMessageOperation
 import com.braze.ui.inappmessage.listeners.IInAppMessageManagerListener
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import timber.log.Timber
 
 /**
@@ -15,7 +16,7 @@ import timber.log.Timber
  * for now we just need `beforeInAppMessageDisplayed`.
  */
 class InAppCustomListener(
-    loggedInUser: CurrentUserType,
+    loggedInUser: CurrentUserTypeV2,
     private val build: Build
 ) : IInAppMessageManagerListener {
 

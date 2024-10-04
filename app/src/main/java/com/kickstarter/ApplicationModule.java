@@ -427,9 +427,9 @@ public class ApplicationModule {
   @Singleton
   SegmentTrackingClient provideSegmentTrackingClient(
           final @ApplicationContext @NonNull Context context,
-          final @NonNull CurrentUserType currentUser,
+          final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build,
-          final @NonNull CurrentConfigType currentConfig,
+          final @NonNull CurrentConfigTypeV2 currentConfig,
           final @NonNull FeatureFlagClientType featureFlagClient) {
     return new SegmentTrackingClient(build, context, currentConfig, currentUser, featureFlagClient, PreferenceManager.getDefaultSharedPreferences(context));
   }

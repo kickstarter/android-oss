@@ -6,7 +6,6 @@ import com.kickstarter.libs.braze.BrazeClient
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.NAME
 import com.kickstarter.models.extensions.getTraits
@@ -19,15 +18,15 @@ import com.segment.analytics.Traits
 import com.segment.analytics.android.integrations.appboy.AppboyIntegration
 import com.segment.analytics.integrations.BasePayload
 import com.segment.analytics.integrations.IdentifyPayload
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 open class SegmentTrackingClient(
     build: Build,
     private val context: Context,
-    currentConfig: CurrentConfigType,
-    currentUser: CurrentUserType,
+    currentConfig: CurrentConfigTypeV2,
+    currentUser: CurrentUserTypeV2,
     ffClient: FeatureFlagClientType,
     preference: SharedPreferences
 ) : TrackingClient(context, currentUser, build, currentConfig, ffClient, preference) {
@@ -44,7 +43,7 @@ open class SegmentTrackingClient(
         this.currentConfig.observable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .map {
                 this.config = it
                 if (calledFromOnCreate) {
                     privateInitializer()
@@ -55,14 +54,16 @@ open class SegmentTrackingClient(
                     }
                 }
             }
+            .subscribe()
 
         this.currentUser.observable()
-            .filter { it.isNotNull() }
-            .map { requireNotNull(it) }
-            .subscribe {
+            .filter { it.isPresent()}
+            .map { requireNotNull(it.getValue()) }
+            .map {
                 this.loggedInUser = it
                 identify(it)
             }
+            .subscribe()
     }
 
     override fun initialize() {

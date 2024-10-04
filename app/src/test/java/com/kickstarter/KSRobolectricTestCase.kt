@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.AttributionEvents
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockTrackingClient
@@ -62,8 +63,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .applicationModule(TestApplicationModule(application()))
             .build()
 
-        val config = ConfigFactory.config().toBuilder()
-            .build()
+        val config = ConfigFactory.configForUSUser()
 
         mockCurrentConfigV2.config(config)
 
@@ -72,6 +72,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .apolloClient(MockApolloClient())
             .apolloClientV2(mockApolloClientV2)
             .currentConfig2(mockCurrentConfigV2)
+            .ksCurrency(KSCurrency(mockCurrentConfigV2))
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
             .attributionEvents(AttributionEvents(mockApolloClientV2))

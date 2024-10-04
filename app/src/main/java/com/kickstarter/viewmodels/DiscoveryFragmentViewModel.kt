@@ -585,13 +585,13 @@ interface DiscoveryFragmentViewModel {
         override fun activitySampleFriendBackingViewHolderProjectClicked(
             viewHolder: ActivitySampleFriendBackingViewHolder,
             project: Project?
-        )  {
+        ) {
             project?.let { activitySampleProjectClick.onNext(it) }
         }
         override fun activitySampleProjectViewHolderProjectClicked(
             viewHolder: ActivitySampleProjectViewHolder,
             project: Project?
-        )  {
+        ) {
             project?.let { activitySampleProjectClick.onNext(it) }
         }
         override fun activitySampleProjectViewHolderUpdateClicked(

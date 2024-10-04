@@ -422,16 +422,16 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
                     UserPrivacy(
-                            "",
-                            "rashad@test.com",
-                            true,
-                            true,
-                            false,
-                            false,
-                            "",
-                            emptyList()
-                        )
+                        "",
+                        "rashad@test.com",
+                        true,
+                        true,
+                        false,
+                        false,
+                        "",
+                        emptyList()
                     )
+                )
             }
         }
 

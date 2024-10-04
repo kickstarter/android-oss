@@ -117,11 +117,36 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(ProjectFactory.backedProject())
     }
 
-    override fun getProjects(
-        discoveryParams: DiscoveryParams,
-        slug: String?
-    ): io.reactivex.Observable<DiscoverEnvelope> {
-        return io.reactivex.Observable.empty()
+    override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): io.reactivex.Observable<DiscoverEnvelope> {
+        return io.reactivex.Observable.just(
+            DiscoverEnvelope
+                .builder()
+                .projects(
+                    listOf(
+                        ProjectFactory.project(),
+                        ProjectFactory.allTheWayProject(),
+                        ProjectFactory.successfulProject()
+                    )
+                )
+                .urls(
+                    DiscoverEnvelope.UrlsEnvelope
+                        .builder()
+                        .api(
+                            DiscoverEnvelope.UrlsEnvelope.ApiEnvelope
+                                .builder()
+                                .moreProjects("http://more.projects.please")
+                                .build()
+                        )
+                        .build()
+                )
+                .stats(
+                    DiscoverEnvelope.StatsEnvelope
+                        .builder()
+                        .count(10)
+                        .build()
+                )
+                .build()
+        )
     }
 
     override fun createSetupIntent(project: Project?): io.reactivex.Observable<String> {

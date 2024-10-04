@@ -274,11 +274,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                             .projects(projects)
                             .pageInfoEnvelope(pageInfoEnvelope)
                             .build()
-                        Observable.just(discoverEnvelope)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                ps.onNext(it)
-                            }
+                        ps.onNext(discoverEnvelope)
                     }
                     ps.onComplete()
                 }

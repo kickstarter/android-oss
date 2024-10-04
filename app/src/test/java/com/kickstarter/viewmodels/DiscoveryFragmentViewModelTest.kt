@@ -50,6 +50,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: DiscoveryFragmentViewModel.DiscoveryFragmentViewModel
     val testScheduler = TestScheduler()
     private val activityTest = TestSubscriber<Activity?>()
+    private val clearActivitiesTest = TestSubscriber<Unit>()
     private val hasProjects = TestSubscriber<Boolean>()
     private val projects = TestSubscriber<List<Pair<Project, DiscoveryParams>>>()
     private val shouldShowEditorial = TestSubscriber<Editorial?>()
@@ -72,6 +73,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm = DiscoveryFragmentViewModel.DiscoveryFragmentViewModel(environment)
 
         vm.outputs.activity().subscribe { activityTest.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.clearActivities().subscribe { clearActivitiesTest.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectList()
             .map {
                 ListUtils.nonEmpty(it)
@@ -346,13 +348,16 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         // Login.
         logUserIn(currentUser)
 
+        clearActivitiesTest.assertValueCount(1)
         // Activity sampler should be shown rather than onboarding view.
         shouldShowOnboardingViewTest.assertValues(true, false, false, false)
-        activityTest.assertValues(null, activity)
+        activityTest.assertValues(activity)
+        clearActivitiesTest.assertValueCount(1)
 
         // Change params. Activity sampler should not be shown.
         vm.inputs.paramsFromActivity(builder().build())
-        activityTest.assertValues(null, activity, null)
+        activityTest.assertValues(activity)
+        clearActivitiesTest.assertValueCount(2)
     }
 
     @Test
@@ -531,8 +536,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.events[0].first(), project)
-        assertEquals(startProjectActivity.events[0][1], collection(518))
+        assertEquals(startProjectActivity.values().first(), Pair(project, collection(518)))
 
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
@@ -571,8 +575,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.events[0].first(), project)
-        assertEquals(startProjectActivity.events[0][1], collection(518))
+        assertEquals(startProjectActivity.values().first(), Pair(project, collection(518)))
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -594,8 +597,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectCardViewHolderClicked(project)
 
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.events[0].first(), project)
-        assertEquals(startProjectActivity.events[0][1], discovery())
+        assertEquals(startProjectActivity.values().first(), Pair(project, discovery()))
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -628,8 +630,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.events[0].first(), project)
-        assertEquals(startProjectActivity.events[0][1], discovery())
+        assertEquals(startProjectActivity.values().first(), Pair(project, discovery()))
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -663,8 +664,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(0)
         startPreLaunchProjectActivity.assertValueCount(1)
-        assertEquals(startPreLaunchProjectActivity.events[0].first(), project)
-        assertEquals(startPreLaunchProjectActivity.events[0][1], discovery())
+        assertEquals(startPreLaunchProjectActivity.values().first().first, project)
+        assertEquals(startPreLaunchProjectActivity.values().first().second, discovery())
     }
 
     @Test
@@ -694,8 +695,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
         startPreLaunchProjectActivity.assertValueCount(0)
-        assertEquals(startProjectActivity.events[0].first(), project)
-        assertEquals(startProjectActivity.events[0][1], discovery())
+        assertEquals(startProjectActivity.values().first(), Pair(project, discovery()))
     }
 
     @Test

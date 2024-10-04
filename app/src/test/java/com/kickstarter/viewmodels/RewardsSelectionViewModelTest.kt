@@ -18,6 +18,7 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.FlowUIState
 import com.kickstarter.viewmodels.projectpage.RewardSelectionUIState
@@ -34,6 +35,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: RewardsSelectionViewModel
@@ -43,7 +45,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             RewardsSelectionViewModel.Factory(environment, useCase).create(RewardsSelectionViewModel::class.java)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test_providing_project_should_initialize_UIState() = runTest {
         createViewModel()
@@ -72,7 +73,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test_selecting_reward_with_addOns_no_previous_backing() = runTest {
         createViewModel()
@@ -116,7 +116,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test_selecting_reward_no_addOns_no_previous_backing() = runTest {
         createViewModel()
@@ -160,7 +159,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test_selecting_reward_with_addOns_previous_backing_same_selection() = runTest {
         createViewModel()
@@ -208,7 +206,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test_selecting_reward_with_addOns_previous_backing_different_selection() = runTest {
         createViewModel()
@@ -256,7 +253,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test_selecting_reward_with_no_addOns_previous_backing_no_addOns() = runTest {
         createViewModel()
@@ -423,9 +419,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertNoValues()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `Default Location when Backing Project is backed location, and list of shipping rules for "restricted" is all places available for all restricted rewards without duplicated`() = runTest {
+    fun `Default Location when Backing Project is backed location, and list of shipping rules for restricted is all places available for all restricted rewards without duplicated`() = runTest {
         val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
 
         val rw1 = RewardFactory
@@ -499,7 +494,6 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(shippingUiState.last().shippingRules.size, 2) // the 3 available shipping rules
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `config is from Canada and available rules are global so Default Shipping is Canada, and list of shipping Rules provided matches all available reward global shipping`() = runTest {
         val rw = RewardFactory
@@ -544,5 +538,89 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(shippingUiState.size, 3)
         assertEquals(shippingUiState.last().selectedShippingRule.location()?.name(), "Canada")
         assertEquals(shippingUiState.last().shippingRules, testShippingRulesList.shippingRules())
+    }
+
+    @Test
+    fun `When user is updating pledge, if selecting a different reward and had addOns backed, show alert`() = runTest {
+        val reward = RewardFactory.digitalReward()
+        val addOns = listOf(RewardFactory.reward(), RewardFactory.addOnMultiple())
+        val backing = Backing.builder()
+            .project(ProjectFactory.project())
+            .addOns(addOns)
+            .reward(reward)
+            .build()
+        val project = ProjectFactory.project().toBuilder()
+            .backing(backing)
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(false)
+            .build()
+
+        val otherRewardSelected = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .build()
+
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            createViewModel(environment())
+            viewModel.provideProjectData(projectData)
+            viewModel.onUserRewardSelection(otherRewardSelected)
+        }
+
+        advanceUntilIdle() // wait until all state emissions completed
+        assertEquals(viewModel.shouldShowAlert(), true)
+        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.UPDATE_PLEDGE)
+    }
+
+    @Test
+    fun `When user is making a new pledge, should not show alert`() = runTest {
+        val reward = RewardFactory.digitalReward()
+
+        val otherRewardSelected = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .build()
+
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward, otherRewardSelected))
+            .build()
+
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            createViewModel(environment())
+            viewModel.provideProjectData(projectData)
+            viewModel.onUserRewardSelection(otherRewardSelected)
+        }
+
+        advanceUntilIdle() // wait until all state emissions completed
+        assertEquals(viewModel.shouldShowAlert(), false)
+        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.PLEDGE)
+    }
+
+    @Test
+    fun `When user is pledging during late pledges, should not show alert`() = runTest {
+        val reward = RewardFactory.digitalReward()
+
+        val otherRewardSelected = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .build()
+
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward, otherRewardSelected))
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            createViewModel(environment())
+            viewModel.provideProjectData(projectData)
+            viewModel.onUserRewardSelection(otherRewardSelected)
+        }
+
+        advanceUntilIdle() // wait until all state emissions completed
+        assertEquals(viewModel.shouldShowAlert(), false)
+        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.LATE_PLEDGE)
     }
 }

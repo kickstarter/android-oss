@@ -13,6 +13,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
@@ -41,6 +42,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private lateinit var currentProjectData: ProjectData
+    private var pReason: PledgeReason? = null
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
     private var indexOfBackedReward = 0
@@ -74,9 +76,17 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
     fun provideProjectData(projectData: ProjectData) {
         currentProjectData = projectData
-        previousUserBacking = projectData.backing()
+        previousUserBacking =
+            if (projectData.backing() != null) projectData.backing()
+            else projectData.project().backing()
         previouslyBackedReward = getReward(previousUserBacking)
         indexOfBackedReward = indexOfBackedReward(project = projectData.project())
+        pReason = when {
+            previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == true -> PledgeReason.LATE_PLEDGE
+            previousUserBacking != null -> PledgeReason.UPDATE_PLEDGE
+            previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
+            else -> PledgeReason.PLEDGE
+        }
 
         viewModelScope.launch {
             emitCurrentState()
@@ -99,11 +109,16 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
     fun onUserRewardSelection(reward: Reward) {
         viewModelScope.launch {
-            val pledgeData =
-                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, currentProjectData, reward)
+            pReason?.let {
+                val pledgeData = PledgeData.with(
+                    PledgeFlowContext.forPledgeReason(it),
+                    currentProjectData,
+                    reward
+                )
+                analytics.trackSelectRewardCTA(pledgeData)
+            }
             newUserReward = reward
             emitCurrentState()
-            analytics.trackSelectRewardCTA(pledgeData)
 
             // Show add-ons
             mutableFlowUIRequest.emit(FlowUIState(currentPage = 1, expanded = true))
@@ -130,9 +145,15 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         return 0
     }
 
-    fun sendEvent(expanded: Boolean, currentPage: Int, projectData: ProjectData) {
+    fun sendEvent(expanded: Boolean, currentPage: Int = 0, projectData: ProjectData? = null) {
         if (expanded && currentPage == 0) {
-            analytics.trackRewardsCarouselViewed(projectData = projectData)
+            projectData?.let {
+                analytics.trackRewardsCarouselViewed(projectData = projectData)
+            } ?: {
+                if (::currentProjectData.isInitialized) {
+                    analytics.trackRewardsCarouselViewed(projectData = currentProjectData)
+                }
+            }
         }
     }
 
@@ -163,6 +184,38 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             shippingRulesUseCase?.filterBySelectedRule(shippingRule)
             emitShippingUIState()
         }
+    }
+
+    fun getPledgeData(): Pair<PledgeData, PledgeReason>? {
+        return this.currentProjectData.run {
+            pReason?.let { pReason ->
+                Pair(
+                    PledgeData.with(
+                        pledgeFlowContext = PledgeFlowContext.forPledgeReason(pReason),
+                        projectData = this,
+                        reward = newUserReward,
+                        shippingRule = selectedShippingRule
+                    ),
+                    pReason
+                )
+            }
+        }
+    }
+
+    /**
+     * Used during Crowdfunding phase, while updating pledge
+     * if User changes reward and had addOns backed before
+     * display Alert
+     */
+    fun shouldShowAlert(): Boolean {
+        val prevRw = previousUserBacking?.reward()
+        prevRw?.let {
+            if (pReason == PledgeReason.UPDATE_PLEDGE) {
+                return !previousUserBacking?.addOns().isNullOrEmpty() && prevRw.id() != newUserReward.id()
+            }
+        }
+
+        return false
     }
 
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :

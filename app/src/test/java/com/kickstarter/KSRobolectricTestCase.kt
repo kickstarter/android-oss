@@ -7,14 +7,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.AttributionEvents
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.Secrets
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ConfigFactory
@@ -56,10 +54,9 @@ abstract class KSRobolectricTestCase : TestCase() {
         super.setUp()
 
         val mockApolloClientV2 = MockApolloClientV2()
-        val mockCurrentConfig = MockCurrentConfig()
         val mockCurrentConfigV2 = MockCurrentConfigV2()
         val mockFeatureFlagClient = MockFeatureFlagClient()
-        val segmentTestClient = segmentTrackingClient(mockCurrentConfig, mockFeatureFlagClient)
+        val segmentTestClient = segmentTrackingClient(mockCurrentConfigV2, mockFeatureFlagClient)
 
         val component = DaggerApplicationComponent.builder()
             .applicationModule(TestApplicationModule(application()))
@@ -68,15 +65,12 @@ abstract class KSRobolectricTestCase : TestCase() {
         val config = ConfigFactory.config().toBuilder()
             .build()
 
-        mockCurrentConfig.config(config)
         mockCurrentConfigV2.config(config)
 
         environment = component.environment().toBuilder()
-            .ksCurrency(KSCurrency(mockCurrentConfig))
             .apiClient(MockApiClient())
             .apolloClient(MockApolloClient())
             .apolloClientV2(mockApolloClientV2)
-            .currentConfig(mockCurrentConfig)
             .currentConfig2(mockCurrentConfigV2)
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
@@ -100,11 +94,11 @@ abstract class KSRobolectricTestCase : TestCase() {
 
     protected fun ksString() = KSString(application().packageName, application().resources)
 
-    private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, ffClient: FeatureFlagClientType): MockTrackingClient {
+    private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfigV2, ffClient: FeatureFlagClientType): MockTrackingClient {
         segmentTrack = TestSubscriber()
         segmentIdentify = TestSubscriber()
         val segmentTrackingClient = MockTrackingClient(
-            MockCurrentUser(),
+            MockCurrentUserV2(),
             mockCurrentConfig,
             TrackingClientType.Type.SEGMENT,
             ffClient

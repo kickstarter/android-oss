@@ -11,7 +11,6 @@ import com.braze.support.BrazeLogger
 import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication

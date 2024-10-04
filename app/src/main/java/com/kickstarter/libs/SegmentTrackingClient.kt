@@ -57,7 +57,7 @@ open class SegmentTrackingClient(
             .subscribe()
 
         this.currentUser.observable()
-            .filter { it.isPresent()}
+            .filter { it.isPresent() }
             .map { requireNotNull(it.getValue()) }
             .map {
                 this.loggedInUser = it

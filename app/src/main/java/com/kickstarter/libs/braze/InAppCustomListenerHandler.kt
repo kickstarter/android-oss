@@ -1,6 +1,5 @@
 package com.kickstarter.libs.braze
 
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.models.User
 

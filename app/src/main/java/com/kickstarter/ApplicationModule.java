@@ -574,7 +574,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static KSCurrency provideKSCurrency(final @NonNull CurrentConfigType currentConfig) {
+  static KSCurrency provideKSCurrency(final @NonNull CurrentConfigTypeV2 currentConfig) {
     return new KSCurrency(currentConfig);
   }
 

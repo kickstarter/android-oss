@@ -161,11 +161,11 @@ fun Uri.isModalUri(webEndpoint: String): Boolean {
 
 fun Uri.isProjectSurveyUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && (
-            PROJECT_SURVEY.matcher(path()).matches() || PROJECT_SURVEY_EDIT.matcher(path())
-                .matches() || PROJECT_SURVEY_EDIT_ADDRESS.matcher(path())
-                .matches() || PROJECT_SURVEY_BACKING_REDEEM.matcher(path())
-                .matches() || PROJECT_SURVEY_BACKING_PLEDGE_REDEMPTION.matcher(path()).matches()
-            )
+        PROJECT_SURVEY.matcher(path()).matches() || PROJECT_SURVEY_EDIT.matcher(path())
+            .matches() || PROJECT_SURVEY_EDIT_ADDRESS.matcher(path())
+            .matches() || PROJECT_SURVEY_BACKING_REDEEM.matcher(path())
+            .matches() || PROJECT_SURVEY_BACKING_PLEDGE_REDEMPTION.matcher(path()).matches()
+        )
 }
 
 fun Uri.isProjectCommentUri(webEndpoint: String): Boolean {

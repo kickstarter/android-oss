@@ -49,6 +49,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -174,6 +175,9 @@ class ProjectPageActivity :
             stripe = requireNotNull(env.stripe())
             env
         }
+
+        val ffClient = requireNotNull(environment?.featureFlagClient())
+        ffClient.activate(this)
 
         flowController = PaymentSheet.FlowController.create(
             activity = this,
@@ -369,7 +373,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.showUpdatePledge()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showPledgeFragment(it) }
+            .subscribe { showPledgeFragment(it, ffClient) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.startRootCommentsActivity()
@@ -1075,8 +1079,12 @@ class ProjectPageActivity :
             .show()
     }
 
-    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
-        val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
+    private fun showPledgeFragment(
+        pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>,
+        ffClient: FeatureFlagClientType
+    ) {
+        val ffEnabled = ffClient.getBoolean(FlagKey.ANDROID_FIX_PLEDGE_REFACTOR)
+        val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second, ffEnabled)
         val tag = pledgeFragment::class.java.simpleName
         supportFragmentManager
             .beginTransaction()

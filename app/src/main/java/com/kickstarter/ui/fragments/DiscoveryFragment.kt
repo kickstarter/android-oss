@@ -49,7 +49,6 @@ import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
-import com.trello.rxlifecycle.FragmentEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -81,7 +80,7 @@ class DiscoveryFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                activity?.runOnUiThread { viewModel.inputs.fragmentLifeCycle(FragmentEvent.RESUME) }
+                activity?.runOnUiThread { viewModel.inputs.fragmentLifeCycle(Lifecycle.State.RESUMED) }
             }
         }
 

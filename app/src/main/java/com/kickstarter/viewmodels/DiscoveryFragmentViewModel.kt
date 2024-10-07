@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
@@ -33,7 +34,6 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
-import com.trello.rxlifecycle.FragmentEvent
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -46,7 +46,7 @@ interface DiscoveryFragmentViewModel {
         DiscoveryEditorialAdapter.Delegate,
         DiscoveryActivitySampleAdapter.Delegate {
 
-        fun fragmentLifeCycle(lifecycleEvent: FragmentEvent)
+        fun fragmentLifeCycle(lifecycleEvent: Lifecycle.State)
 
         /** Call when the page content should be cleared.   */
         fun clearPage()
@@ -134,7 +134,7 @@ interface DiscoveryFragmentViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUserV2())
-        private val lifecycleObservable = BehaviorSubject.create<FragmentEvent>()
+        private val lifecycleObservable = BehaviorSubject.create<Lifecycle.State>()
         private val featureFlagClient = environment.featureFlagClient()
         private val analyticEvents = requireNotNull(environment.analytics())
 
@@ -410,7 +410,7 @@ interface DiscoveryFragmentViewModel {
                     )
                 )
                 .filter {
-                    it.second == FragmentEvent.RESUME
+                    it.second == Lifecycle.State.RESUMED
                 }
                 .distinctUntilChanged()
                 .subscribe {
@@ -604,7 +604,7 @@ interface DiscoveryFragmentViewModel {
         override fun projectCardViewHolderClicked(project: Project) = projectCardClicked.onNext(project)
         override fun nextPage() = nextPage.onNext(Unit)
         override fun paramsFromActivity(params: DiscoveryParams) = paramsFromActivity.onNext(params)
-        override fun fragmentLifeCycle(lifecycleEvent: FragmentEvent) =
+        override fun fragmentLifeCycle(lifecycleEvent: Lifecycle.State) =
             this.lifecycleObservable.onNext(lifecycleEvent)
 
         override fun activity(): Observable<Activity> = activity

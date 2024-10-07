@@ -9,26 +9,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentDiscoveryBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.SwipeRefresher
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.getSetPasswordActivity
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
@@ -47,20 +49,28 @@ import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
-@RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel::class)
-class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
+class DiscoveryFragment : Fragment() {
     private var heartsAnimation: AnimatorSet? = null
-    private var recyclerViewPaginator: RecyclerViewPaginator? = null
+    private var recyclerViewPaginator: RecyclerViewPaginatorV2? = null
 
     private var binding: FragmentDiscoveryBinding? = null
     private var discoveryEditorialAdapter: DiscoveryEditorialAdapter? = null
     private val projectStarConfirmationString = R.string.project_star_confirmation
+    private val disposables = CompositeDisposable()
+
+    private lateinit var viewModelFactory: DiscoveryFragmentViewModel.Factory
+    private val viewModel: DiscoveryFragmentViewModel.DiscoveryFragmentViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = DiscoveryFragmentViewModel.Factory(env)
+        }
         binding = FragmentDiscoveryBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -68,13 +78,11 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.lifecycle()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .filter { it.isNotNull() }
-            .subscribe {
-                this.viewModel.inputs.fragmentLifeCycle(it)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                activity?.runOnUiThread { viewModel.inputs.fragmentLifeCycle(Lifecycle.State.RESUMED) }
             }
+        }
 
         val discoveryActivitySampleAdapter = DiscoveryActivitySampleAdapter(this.viewModel.inputs)
         val discoveryEditorialAdapter = DiscoveryEditorialAdapter(this.viewModel.inputs)
@@ -87,114 +95,125 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         binding?.discoveryRecyclerView?.apply {
             adapter = discoveryAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            recyclerViewPaginator = RecyclerViewPaginator(
+            recyclerViewPaginator = RecyclerViewPaginatorV2(
                 this,
                 { this@DiscoveryFragment.viewModel.inputs.nextPage() },
                 this@DiscoveryFragment.viewModel.outputs.isFetchingProjects()
             )
         }
 
-        binding?.discoverySwipeRefreshLayout?.let {
-            SwipeRefresher(
-                this,
-                it,
-                { this.viewModel.inputs.refresh() }
-            ) { this.viewModel.outputs.isFetchingProjects() }
+        binding?.discoverySwipeRefreshLayout?.let { swipeRefreshLayout ->
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel.inputs.refresh()
+            }
+
+            this.viewModel.outputs.isFetchingProjects()
+                .compose(Transformers.observeForUIV2())
+                .subscribe {
+                    swipeRefreshLayout.isRefreshing = it
+                }
+                .addToDisposable(disposables)
         }
 
         this.viewModel.outputs.activity()
-            .compose(bindToLifecycle())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryActivitySampleAdapter.takeActivity(it) }
+            .addToDisposable(disposables)
+
+        this.viewModel.outputs.clearActivities()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { discoveryActivitySampleAdapter.takeActivity(null) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startHeartAnimation()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .filter { !(lazyHeartCrossFadeAnimation()?.isRunning?:false) }
             .subscribe { lazyHeartCrossFadeAnimation()?.start() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.projectList()
-            .compose(bindToLifecycle())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryProjectCardAdapter.takeProjects(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shouldShowEditorial()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryEditorialAdapter.setShouldShowEditorial(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shouldShowEmptySavedView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe {
                 binding?.discoveryEmptyView?.isGone = !it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shouldShowOnboardingView()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryOnboardingAdapter.setShouldShowOnboardingView(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showActivityFeed()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startActivityFeedActivity() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startSetPasswordActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startSetPasswordActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startEditorialActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startEditorialActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startUpdateActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startUpdateActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startProjectActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it.first, it.second) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startPreLaunchProjectActivity()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startPreLaunchProjectActivity(it.first, it.second) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showLoginTout()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startLoginToutActivity() }
+            .addToDisposable(disposables)
 
         binding?.discoveryHeartsContainer?.let {
-            RxView.clicks(it)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.heartContainerClicked() }
+            it.setOnClickListener {
+                this.viewModel.inputs.heartContainerClicked()
+            }
         }
 
         this.viewModel.outputs.startLoginToutActivityToSaveProject()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startLoginToutActivity() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.scrollToSavedProjectPosition()
             .filter { it != -1 }
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.discoveryRecyclerView?.smoothScrollToPosition(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showSavedPrompt()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.showStarToast() }
+            .addToDisposable(disposables)
     }
 
     override fun onPause() {

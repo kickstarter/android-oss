@@ -77,7 +77,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     }).build()
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
-            viewModel.provideSnackbarMessage { message, _ , _-> snackbarAction = message }
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
             viewModel.onMessageCreatorClicked("test_project_slug", "projectID", "creatorID", listOf(PPOCardFactory.confirmAddressCard()), 10)
 
             // Should equal error string id

@@ -95,7 +95,7 @@ class PledgedProjectsOverviewViewModel(
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
-    private var snackbarMessage: (stringID: Int, type: String, duration : SnackbarDuration) -> Unit = { _, _, _ -> }
+    private var snackbarMessage: (stringID: Int, type: String, duration: SnackbarDuration) -> Unit = { _, _, _ -> }
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analyticEvents = requireNotNull(environment.analytics())
 
@@ -219,11 +219,11 @@ class PledgedProjectsOverviewViewModel(
         )
     }
 
-    fun showHeadsUpSnackbar(messageId: Int, duration : SnackbarDuration = SnackbarDuration.Short) {
+    fun showHeadsUpSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_HEADS_UP.name, duration)
     }
 
-    fun showErrorSnackbar(messageId: Int, duration : SnackbarDuration = SnackbarDuration.Short) {
+    fun showErrorSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name, duration)
     }
 

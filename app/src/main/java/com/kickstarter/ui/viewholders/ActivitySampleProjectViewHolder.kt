@@ -23,7 +23,7 @@ class ActivitySampleProjectViewHolder(
     interface Delegate {
         fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder?)
         fun activitySampleProjectViewHolderProjectClicked(viewHolder: ActivitySampleProjectViewHolder, project: Project?)
-        fun activitySampleProjectViewHolderUpdateClicked(viewHolder: ActivitySampleProjectViewHolder?, activity: Activity?)
+        fun activitySampleProjectViewHolderUpdateClicked(viewHolder: ActivitySampleProjectViewHolder?, activity: Activity)
     }
 
     @Throws(Exception::class)
@@ -80,10 +80,10 @@ class ActivitySampleProjectViewHolder(
         delegate.activitySampleProjectViewHolderSeeActivityClicked(this)
     }
 
-    fun activityProjectOnClick(activity: Activity) = if (activity?.category() == Activity.CATEGORY_UPDATE) {
+    fun activityProjectOnClick(activity: Activity) = if (activity.category() == Activity.CATEGORY_UPDATE) {
         delegate.activitySampleProjectViewHolderUpdateClicked(this, activity)
     } else {
-        delegate.activitySampleProjectViewHolderProjectClicked(this, activity?.project())
+        delegate.activitySampleProjectViewHolderProjectClicked(this, activity.project())
     }
 
     override fun destroy() {

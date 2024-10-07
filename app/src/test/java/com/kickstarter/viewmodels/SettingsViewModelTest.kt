@@ -3,12 +3,11 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
@@ -100,8 +99,8 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
-        MockCurrentUser(user),
-        MockCurrentConfig(),
+        MockCurrentUserV2(user),
+        MockCurrentConfigV2(),
         TrackingClientType.Type.SEGMENT,
         MockFeatureFlagClient()
     ).apply {

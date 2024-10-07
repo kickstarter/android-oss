@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory
@@ -543,7 +544,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         // Use a CA project with a MX$ currency
         val project = ProjectFactory.mxCurrencyCAProject()
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         // Set the current config for a US user. KSCurrency needs this config for conversions.

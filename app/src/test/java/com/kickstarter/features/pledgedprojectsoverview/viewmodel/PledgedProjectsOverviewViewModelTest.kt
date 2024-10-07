@@ -9,11 +9,11 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.AnalyticEvents
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -204,8 +204,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val mutableTotalAlerts = MutableStateFlow<Int>(0)
             val user = UserFactory.user()
             val trackingClient = MockTrackingClient(
-                MockCurrentUser(user),
-                MockCurrentConfig(),
+                MockCurrentUserV2(user),
+                MockCurrentConfigV2(),
                 TrackingClientType.Type.SEGMENT,
                 MockFeatureFlagClient()
             )
@@ -246,8 +246,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val totalAlertsList = mutableListOf<Int>()
             val user = UserFactory.user()
             val trackingClient = MockTrackingClient(
-                MockCurrentUser(user),
-                MockCurrentConfig(),
+                MockCurrentUserV2(user),
+                MockCurrentConfigV2(),
                 TrackingClientType.Type.SEGMENT,
                 MockFeatureFlagClient()
             )

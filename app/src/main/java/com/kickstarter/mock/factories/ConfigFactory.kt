@@ -39,6 +39,9 @@ object ConfigFactory {
 
     fun configForUSUser(): Config {
         return config()
+            .toBuilder()
+            .countryCode("US")
+            .build()
     }
 
     fun configForCA(): Config {

@@ -264,7 +264,7 @@ private val PROJECT_SURVEY_BACKING_PLEDGE_REDEMPTION = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/edit_address\\z"
 )
 
-//  /projects/:creator_param/:project_param/backing/pledge_redemption
+//  /projects/:creator_param/:project_param/backing/redeem
 private val PROJECT_SURVEY_BACKING_REDEEM = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/redeem\\z"
 )

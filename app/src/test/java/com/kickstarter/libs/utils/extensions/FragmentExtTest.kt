@@ -16,6 +16,33 @@ import org.junit.Test
 
 class FragmentExtTest : KSRobolectricTestCase() {
 
+    fun `test fragment is PledgeFragment when fix_pledge and ff disabled`() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+
+        val pledgeData = PledgeData.builder()
+            .pledgeFlowContext(PledgeFlowContext.FIX_ERRORED_PLEDGE)
+            .projectData(projectData)
+            .build()
+
+        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.FIX_PLEDGE, false)
+        assertTrue(fragment is PledgeFragment)
+    }
+
+    @Test
+    fun `test fragment is CrowdfundCheckoutFragment when fix_pledge and ff enabled`() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+
+        val pledgeData = PledgeData.builder()
+            .pledgeFlowContext(PledgeFlowContext.FIX_ERRORED_PLEDGE)
+            .projectData(projectData)
+            .build()
+
+        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.FIX_PLEDGE, true)
+        assertTrue(fragment is CrowdfundCheckoutFragment)
+    }
+
     @Test
     fun testFragment_whenData_Null() {
         val fragment = Fragment().withData(null, null)

@@ -107,14 +107,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(checkoutSuccess)
                             if (pledgeReason == PledgeReason.UPDATE_PAYMENT)
                                 (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated()
-                            if (pledgeReason == PledgeReason.UPDATE_REWARD || pledgeReason == PledgeReason.UPDATE_PLEDGE)
+                            if (pledgeReason == PledgeReason.UPDATE_REWARD || pledgeReason == PledgeReason.UPDATE_PLEDGE || pledgeReason == PledgeReason.FIX_PLEDGE)
                                 (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated()
                         }
                     }
 
                     KSTheme {
-                        // TODO: update to display local pickup
-                        // TODO: hide bonus support if 0
                         CheckoutScreen(
                             rewardsList = getRewardListAndPrices(rwList, environment, project),
                             selectedRewardsAndAddOns = rwList,

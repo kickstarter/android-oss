@@ -77,7 +77,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     }).build()
             ).create(PledgedProjectsOverviewViewModel::class.java)
 
-            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
             viewModel.onMessageCreatorClicked("test_project_slug", "projectID", "creatorID", listOf(PPOCardFactory.confirmAddressCard()), 10)
 
             // Should equal error string id
@@ -106,7 +106,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 viewModel.ppoUIState.toList(uiState)
             }
 
-            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
             viewModel.confirmAddress("addressID", "backingID")
 
             assertEquals(
@@ -143,7 +143,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 viewModel.ppoUIState.toList(uiState)
             }
 
-            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
             viewModel.confirmAddress("addressID", "backingID")
 
             assertEquals(
@@ -178,7 +178,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.ppoUIState.toList(uiState)
             }
-            viewModel.provideSnackbarMessage { message, _ -> snackbarAction = message }
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
             viewModel.confirmAddress("addressID", "backingID")
 
             assertEquals(

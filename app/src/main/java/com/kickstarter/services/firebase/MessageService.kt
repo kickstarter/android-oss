@@ -32,7 +32,7 @@ interface RefreshPushToken {
             successCallback.invoke(message)
         } catch (exception: ApiException) {
             val errorMessage = "$KO_MESSAGE ${
-            exception.errorEnvelope().errorMessages()
+            exception.errorEnvelope().errorMessage()
             }"
             if (exception.errorEnvelope().httpCode() != 401) // else OAuth token not authorized
                 errorCallback.invoke(errorMessage)

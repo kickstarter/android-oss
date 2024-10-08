@@ -366,6 +366,36 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProjectSurveyRedeemDeeplink_startsSurveyActivity() {
+        val url =
+            "https://www.kickstarter.com/projects/creator/project/backing/redeem"
+        setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testProjectSurveyPledgeRedemptionDeeplink_startsSurveyActivity() {
+        val url =
+            "https://www.kickstarter.com/projects/creator/project/backing/pledge_redemption"
+        setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertValueCount(1)
+    }
+
+    @Test
     fun testProjectDeepLinkWithRefTag_startsProjectActivity() {
         val mockUser = MockCurrentUserV2()
         val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(false)

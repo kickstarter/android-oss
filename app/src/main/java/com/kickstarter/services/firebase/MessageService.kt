@@ -1,6 +1,7 @@
 package com.kickstarter.services.firebase
 
 import android.text.TextUtils
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
@@ -11,6 +12,7 @@ import com.kickstarter.libs.braze.RemotePushClientType
 import com.kickstarter.models.pushdata.Activity
 import com.kickstarter.models.pushdata.GCM
 import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.ApiException
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope.Companion.builder
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope.ErroredPledge
@@ -18,9 +20,27 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope.Survey
 import timber.log.Timber
 import javax.inject.Inject
 
+interface RefreshPushToken {
+    companion object {
+        val OK_MESSAGE = "Push Token refreshed onNewToken: "
+        val KO_MESSAGE = "Failed to register Push Token: "
+    }
+    fun invoke(apiClient: ApiClientTypeV2, newToken: String, gson: Gson, successCallback: (String) -> Unit, errorCallback: (String) -> Unit) {
+        try {
+            val response = apiClient.registerPushToken(newToken).blockingSingle()
+            val message = "$OK_MESSAGE $response"
+            successCallback.invoke(message)
+        } catch (exception: ApiException) {
+            val errorMessage = "$KO_MESSAGE ${
+            exception.errorEnvelope().errorMessages()
+            }"
+            if (exception.errorEnvelope().httpCode() != 401) // else OAuth token not authorized
+                errorCallback.invoke(errorMessage)
+        }
+    }
+}
+
 class MessageService : FirebaseMessagingService() {
-    @Inject
-    lateinit var gson: Gson
 
     @Inject
     lateinit var pushNotifications: PushNotifications
@@ -31,9 +51,19 @@ class MessageService : FirebaseMessagingService() {
     @Inject
     lateinit var apiClient: ApiClientTypeV2
 
+    @Inject
+    lateinit var gson: Gson
+
     override fun onNewToken(s: String) {
-        apiClient.registerPushToken(s)
         super.onNewToken(s)
+        val refreshHandler = object : RefreshPushToken {}
+        refreshHandler.invoke(
+            apiClient = apiClient,
+            newToken = s,
+            gson = gson,
+            successCallback = { message -> FirebaseCrashlytics.getInstance().log(message) },
+            errorCallback = { errorMessage -> FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage)) }
+        )
     }
 
     override fun onCreate() {

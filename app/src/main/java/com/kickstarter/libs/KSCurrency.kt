@@ -30,7 +30,7 @@ fun KSCurrency?.getCurrencySymbols(project: Project): Pair<String, String> {
     return currencySymbolStartAndEnd
 }
 
-class KSCurrency(private val currentConfig: CurrentConfigType) {
+class KSCurrency(private val currentConfig: CurrentConfigTypeV2) {
     /**
      * Returns a currency string appropriate to the user's locale and location relative to a project.
      *
@@ -116,8 +116,8 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
     fun currencyNeedsCode(country: Country, excludeCurrencyCode: Boolean): Boolean {
         val countryIsUS = country === Country.US
         val config = currentConfig.observable()
-            .toBlocking()
-            .first()
+            .blockingFirst()
+
         val currencyNeedsCode = config.currencyNeedsCode(country.currencySymbol)
         val userInUS = config.countryCode() == Country.US.countryCode
         return if (userInUS && excludeCurrencyCode && countryIsUS) {

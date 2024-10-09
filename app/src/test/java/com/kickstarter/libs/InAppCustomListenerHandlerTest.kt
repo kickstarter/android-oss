@@ -124,7 +124,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
     @Test
     fun testMessageShouldShow_True() {
         val user = UserFactory.user()
-        val mockUser = MockCurrentUser(user)
+        val mockUser = MockCurrentUserV2(user)
         val handler = InAppCustomListenerHandler(mockUser)
 
         Thread.sleep(100) // wait a bit until InAppCustomListenerHandler.init block executed
@@ -133,7 +133,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
 
     @Test
     fun testMessageShouldShow_False() {
-        val mockUser = MockCurrentUser() // - no user logged in
+        val mockUser = MockCurrentUserV2() // - no user logged in
         val handler = InAppCustomListenerHandler(mockUser)
 
         Thread.sleep(100) // wait a bit until InAppCustomListenerHandler.init block executed
@@ -143,7 +143,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
     @Test
     fun testInAppCustomListener_DisplayNow() {
         val user = UserFactory.user()
-        val mockUser = MockCurrentUser(user)
+        val mockUser = MockCurrentUserV2(user)
         val listener = InAppCustomListener(mockUser, build)
 
         Thread.sleep(100) // wait a bit until InAppCustomListener.init block executed
@@ -152,7 +152,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
 
     @Test
     fun testInAppCustomListener_Discard() {
-        val mockUser = MockCurrentUser() // - no user logged in
+        val mockUser = MockCurrentUserV2() // - no user logged in
         val listener = InAppCustomListener(mockUser, build)
 
         Thread.sleep(100) // wait a bit until InAppCustomListener.init block executed

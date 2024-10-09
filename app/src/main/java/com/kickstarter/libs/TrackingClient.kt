@@ -24,9 +24,9 @@ import javax.inject.Inject
 
 abstract class TrackingClient(
     @param:ApplicationContext private val context: Context,
-    @set:Inject var currentUser: CurrentUserType,
+    @set:Inject var currentUser: CurrentUserTypeV2,
     @set:Inject var build: Build,
-    @set:Inject var currentConfig: CurrentConfigType,
+    @set:Inject var currentConfig: CurrentConfigTypeV2,
     @set:Inject var ffClient: FeatureFlagClientType,
     @set:Inject var sharedPreferences: SharedPreferences
 ) : TrackingClientType() {

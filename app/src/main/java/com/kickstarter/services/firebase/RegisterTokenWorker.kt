@@ -15,17 +15,17 @@ import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.extensions.isZero
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
-import rx.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
 class RegisterTokenWorker(@ApplicationContext applicationContext: Context, private val params: WorkerParameters) : Worker(applicationContext, params) {
 
     @Inject
-    lateinit var apiClient: ApiClientType
+    lateinit var apiClient: ApiClientTypeV2
     @Inject
     lateinit var build: Build
     @Inject
@@ -39,8 +39,7 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
             this.apiClient
                 .registerPushToken(this.token)
                 .subscribeOn(Schedulers.io())
-                .toBlocking()
-                .first()
+                .blockingFirst()
         )
     }
 

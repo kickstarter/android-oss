@@ -202,8 +202,7 @@ interface DiscoveryViewModel {
 
             val currentUser =
                 currentUserType.observable()
-                .filter { it.getValue().isNotNull() }
-                .map { it.getValue() }
+                .map { it.getValue() ?: User.builder().build() }
                 .filter { it.isNotNull() }
                 .map { it }
 

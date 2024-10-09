@@ -62,7 +62,7 @@ fun DiscoveryParams.refTag(): RefTag {
 fun DiscoveryParams.deriveNavigationDrawerData(
     categories: List<Category> = listOf(),
     expandedCategory: Category? = null,
-    user: User? = null
+    user: User
 ): NavigationDrawerData {
     val builder = NavigationDrawerData.builder()
 
@@ -73,7 +73,11 @@ fun DiscoveryParams.deriveNavigationDrawerData(
         .toList()
     val sectionsForVisible = paramsGroupedByRootCategory(visible)
     val sectionsFromAllParamsVisible = sectionsFromAllParams(sectionsForVisible, expandedCategory)
-    val topSections = topSections(user)
+    val topSections = if (user == User.builder().build()) {
+        topSections(null)
+    } else {
+        topSections(user)
+    }
 
     val allSections = topSections.toMutableList()
     allSections.addAll(sectionsFromAllParamsVisible)
@@ -81,7 +85,7 @@ fun DiscoveryParams.deriveNavigationDrawerData(
 
     return builder
         .sections(allSections)
-        .user(user)
+        .user(if (user == User.builder().build()) null else user)
         .selectedParams(this)
         .expandedCategory(expandedCategory)
         .build()

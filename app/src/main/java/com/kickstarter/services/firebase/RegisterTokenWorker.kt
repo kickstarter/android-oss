@@ -1,33 +1,26 @@
 package com.kickstarter.services.firebase
 
 import android.content.Context
-import android.os.Bundle
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonSyntaxException
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.services.ApiClientTypeV2
-import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
-import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 
 class RegisterTokenWorker(@ApplicationContext applicationContext: Context, private val params: WorkerParameters) : Worker(applicationContext, params) {
 
     @Inject
     lateinit var apiClient: ApiClientTypeV2
+
     @Inject
     lateinit var build: Build
+
     @Inject
     lateinit var gson: Gson
 
@@ -35,47 +28,24 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
 
     override fun doWork(): Result {
         (applicationContext as KSApplication).component().inject(this)
-        return handleResponse(
-            this.apiClient
-                .registerPushToken(this.token)
-                .subscribeOn(Schedulers.io())
-                .blockingFirst()
-        )
-    }
-
-    private fun handleResponse(response: JsonObject): Result {
-        return if (response.size().isZero()) {
-            FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_GLOBAL)
-            logResponse()
-            Result.success()
-        } else {
-            try {
-                val errorEnvelope = this.gson.fromJson(response, ErrorEnvelope::class.java)
-                logError("📵 Failed to register push token ${errorEnvelope.httpCode()} ${errorEnvelope.errorMessages()?.firstOrNull()}")
-                when (errorEnvelope.httpCode()) {
-                    in 400..499 -> Result.failure()
-                    else -> Result.retry()
-                }
-            } catch (exception: JsonSyntaxException) {
-                logError("📵 Failed to deserialize push token error $response")
-                Result.failure()
+        val refreshHandler = object : RefreshPushToken {}
+        var result: Result = Result.failure()
+        refreshHandler.invoke(
+            apiClient = apiClient,
+            newToken = this.token,
+            gson = gson,
+            successCallback = { message ->
+                FirebaseCrashlytics.getInstance().log(message)
+                FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_GLOBAL)
+                result = Result.success()
+            },
+            errorCallback = { errorMessage ->
+                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
+                result = Result.failure()
             }
-        }
-    }
+        )
 
-    private fun logResponse() {
-        val successMessage = "📲 Successfully registered push token"
-        if (this.build.isDebug) {
-            Timber.d(successMessage)
-        }
-        Firebase.analytics.logEvent("Successfully_registered_push_token", Bundle())
-    }
-
-    private fun logError(errorMessage: String) {
-        if (this.build.isDebug) {
-            Timber.e(errorMessage)
-        }
-        FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
+        return result
     }
 
     companion object {

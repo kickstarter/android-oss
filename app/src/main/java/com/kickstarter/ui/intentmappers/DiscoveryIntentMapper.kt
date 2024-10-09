@@ -17,18 +17,23 @@ object DiscoveryIntentMapper {
         client: ApiClientTypeV2,
         apolloClient: ApolloClientTypeV2
     ): Observable<DiscoveryParams> {
-        val paramsFromParcel = Observable.just(paramsFromIntent(intent))
-            .filter {
-                it.isNotNull()
-            }.map { it }
+        val paramsFromParcel = if (paramsFromIntent(intent).isNotNull()) {
+            Observable.just(paramsFromIntent(intent))
+                .filter {
+                    it.isNotNull()
+                }.map { it }
+        } else Observable.empty()
 
-        val paramsFromUri = Observable.just(IntentMapper.uri(intent))
-            .filter { it.isNotNull() }
-            .map { it }
-            .map { DiscoveryParams.fromUri(it) }
-            .flatMap {
-                paramsFromUri(it, client, apolloClient)
-            }
+        val paramsFromUri = if (IntentMapper.uri(intent).isNotNull()) {
+            Observable.just(IntentMapper.uri(intent))
+                .filter { it.isNotNull() }
+                .map { it }
+                .map { DiscoveryParams.fromUri(it) }
+                .flatMap {
+                    paramsFromUri(it, client, apolloClient)
+                }
+        } else Observable.empty()
+
         return Observable.merge(paramsFromParcel, paramsFromUri)
     }
 

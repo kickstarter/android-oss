@@ -40,7 +40,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 
 class DiscoveryViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: DiscoveryViewModel.ViewModel
+    private lateinit var vm: DiscoveryViewModel.DiscoveryViewModel
     private val clearPages = TestSubscriber<List<Int>>()
     private val drawerIsOpen = TestSubscriber<Boolean>()
     private val drawerMenuIcon = TestSubscriber<Int>()
@@ -70,7 +70,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val darkThemeEnabled = io.reactivex.subscribers.TestSubscriber<Boolean>()
     private val disposables = CompositeDisposable()
     private fun setUpEnvironment(environment: Environment) {
-        vm = DiscoveryViewModel.ViewModel(environment)
+        vm = DiscoveryViewModel.DiscoveryViewModel(environment)
     }
 
     @Test

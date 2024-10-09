@@ -3,8 +3,9 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.net.Uri
 import android.util.Pair
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -24,7 +25,6 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS
-import com.kickstarter.ui.activities.DiscoveryActivity
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
@@ -111,10 +111,10 @@ interface DiscoveryViewModel {
         fun showConsentManagementDialog(): Observable<Unit>
 
         /** Emits the error message from verify endpoint  */
-        fun showErrorMessage(): Observable<String?>
+        fun showErrorMessage(): Observable<String>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<DiscoveryActivity?>(environment), Inputs, Outputs {
+    class DiscoveryViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
         val inputs = this
         val outputs = this
 
@@ -123,6 +123,7 @@ interface DiscoveryViewModel {
         private val currentUserType = requireNotNull(environment.currentUserV2())
         private val currentConfigType = requireNotNull(environment.currentConfigV2())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val analyticEvents = requireNotNull(environment.analytics())
         private val ffClient = environment.featureFlagClient()
 
         private fun currentDrawerMenuIcon(user: User?): Int {
@@ -152,7 +153,7 @@ interface DiscoveryViewModel {
         }
 
         private val activityFeedClick = PublishSubject.create<Unit>()
-        private val childFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
+        private val childFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val internalToolsClick = PublishSubject.create<Unit>()
         private val loggedOutLoginToutClick = PublishSubject.create<Unit>()
         private val loggedOutHelpClick = PublishSubject.create<Unit>()
@@ -167,7 +168,7 @@ interface DiscoveryViewModel {
         private val pledgedProjectsClick = PublishSubject.create<Unit>()
         private val sortClicked = PublishSubject.create<Int>()
         private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
-        private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
+        private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val clearPages = BehaviorSubject.create<List<Int>>()
         private val drawerIsOpen = BehaviorSubject.create<Boolean>()
         private val drawerMenuIcon = BehaviorSubject.create<Int>()
@@ -185,12 +186,11 @@ interface DiscoveryViewModel {
         private val updateParamsForPage = BehaviorSubject.create<DiscoveryParams>()
         private val updateToolbarWithParams = BehaviorSubject.create<DiscoveryParams>()
         private val successMessage = PublishSubject.create<String>()
-        private val messageError = PublishSubject.create<String?>()
+        private val messageError = PublishSubject.create<String>()
         private val darkThemeEnabled = BehaviorSubject.create<Boolean>()
-        private val darkThemeEnabledV1 = BehaviorSubject.create<Boolean>()
         private val intent = PublishSubject.create<Intent>()
+        private val closeDrawer = PublishSubject.create<Unit>()
         private var isDarkTheme = false
-        private var isDarkThemeInitialized = false
         private val disposables = CompositeDisposable()
 
         init {
@@ -203,9 +203,16 @@ interface DiscoveryViewModel {
             showSettings = settingsClick
             showPledgedProjects = pledgedProjectsClick
 
-            val currentUser = currentUserType.observable()
+            val currentUser =
+                currentUserType.observable()
+                .filter { it.getValue().isNotNull() }
+                .map { it.getValue() }
+                .filter { it.isNotNull() }
+                .map { it }
 
             val changedUser = currentUser
+                .filter { it.isNotNull() }
+                .map { it }
                 .distinctUntilChanged()
 
             changedUser
@@ -223,7 +230,7 @@ interface DiscoveryViewModel {
                 .map { it.action }
                 .filter { Intent.ACTION_MAIN == it }
                 .compose(Transformers.combineLatestPair(changedUser))
-                .map { DiscoveryParams.getDefaultParams(it.second.getValue()) }
+                .map { DiscoveryParams.getDefaultParams(it.second) }
                 .share()
 
             val uriFromVerification = intent
@@ -250,7 +257,7 @@ interface DiscoveryViewModel {
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .map { it.errorMessage() }
                 .filter { it.isNotNull() }
-                .map { requireNotNull(it) }
+                .map { it }
                 .subscribe { messageError.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -346,14 +353,15 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
 
             val drawerClickedParentCategory = parentFilterRowClick
-                .map { it.params().category() }
+                .map { it.params().category() ?: Category.builder().build() }
+                .startWith(Category.builder().build())
 
             val expandedCategory = Observable.merge(
-                topFilterRowClick.map { null },
+                topFilterRowClick.map { Category.builder().build() },
                 drawerClickedParentCategory
-            ).scan() { previous: Category?, next: Category? ->
-                if (previous != null && next != null && previous == next) {
-                    return@scan null
+            ).scan { previous: Category, next: Category ->
+                if (previous == next) {
+                    return@scan Category.builder().build()
                 }
                 next
             }
@@ -364,11 +372,12 @@ interface DiscoveryViewModel {
                 .compose(Transformers.takeWhenV2(params))
                 .compose(Transformers.combineLatestPair(changedUser))
                 .map { it.first }
-                .flatMap {
-                    Observable.fromArray(DiscoveryParams.Sort.defaultSorts)
-                        .map { sort: DiscoveryParams.Sort? -> sort.positionFromSort() }
-                        .filter { sortPosition: Int -> sortPosition != it }
-                        .toList().toObservable()
+                .flatMap { pageInt ->
+                    Observable.just(
+                        DiscoveryParams.Sort.defaultSorts
+                            .map { it.positionFromSort() }
+                            .filter { it != pageInt }
+                    )
                 }
                 .subscribe { clearPages.onNext(it) }
                 .addToDisposable(disposables)
@@ -388,33 +397,31 @@ interface DiscoveryViewModel {
                 params,
                 expandedCategory,
                 currentUser
-            ) { c, s, ec, u -> s.deriveNavigationDrawerData(c, ec, u.getValue()) }
+            ) { c, s, ec, u -> s.deriveNavigationDrawerData(c, ec, u) }
                 .distinctUntilChanged()
                 .subscribe { navigationDrawerData.onNext(it) }
                 .addToDisposable(disposables)
 
             val drawerOpenObservables = listOf(
-                openDrawer,
-                childFilterRowClick.map { false },
-                topFilterRowClick.map { false },
-                internalToolsClick.map { false },
-                loggedOutLoginToutClick.map { false },
-                loggedOutHelpClick.map { false },
-                activityFeedClick.map { false },
-                messagesClick.map { false },
-                profileClick.map { false },
-                settingsClick.map { false },
-                pledgedProjectsClick.map { false }
+                childFilterRowClick.map {  },
+                topFilterRowClick.map {  },
+                internalToolsClick.map {  },
+                loggedOutLoginToutClick.map {  },
+                loggedOutHelpClick.map {  },
+                activityFeedClick.map {  },
+                messagesClick.map {  },
+                profileClick.map {  },
+                settingsClick.map {  },
+                pledgedProjectsClick.map {  }
             )
 
             Observable.merge(drawerOpenObservables)
-                .distinctUntilChanged()
-                .subscribe { drawerIsOpen.onNext(it) }
+                .subscribe { closeDrawer.onNext(Unit) }
                 .addToDisposable(disposables)
 
             currentUser
-                .compose(Transformers.takeWhenV2(darkThemeEnabledV1))
-                .map { currentDrawerMenuIcon(it.getValue()) }
+                .compose(Transformers.takeWhenV2(darkThemeEnabled))
+                .map { currentDrawerMenuIcon(it) }
                 .distinctUntilChanged()
                 .subscribe { drawerMenuIcon.onNext(it) }
                 .addToDisposable(disposables)
@@ -467,16 +474,30 @@ interface DiscoveryViewModel {
         override fun updateParamsForPage(): Observable<DiscoveryParams> { return updateParamsForPage }
         override fun updateToolbarWithParams(): Observable<DiscoveryParams> { return updateToolbarWithParams }
         override fun showSuccessMessage(): Observable<String> { return successMessage }
-        override fun showErrorMessage(): Observable<String?> { return messageError }
+        override fun showErrorMessage(): Observable<String> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Unit> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Unit> { return showConsentManagementDialog }
         override fun darkThemeEnabled(): Observable<Boolean> { return darkThemeEnabled }
+        fun closeDrawer(): Observable<Unit> { return closeDrawer }
 
         fun setDarkTheme(isDarkTheme: Boolean) {
             this.isDarkTheme = isDarkTheme
-            this.isDarkThemeInitialized = true
             darkThemeEnabled.onNext(isDarkTheme)
-            darkThemeEnabledV1.onNext(isDarkTheme)
+        }
+
+        fun provideIntent(intent: Intent) {
+            this.intent.onNext(intent)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return DiscoveryViewModel(environment) as T
         }
     }
 }

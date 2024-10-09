@@ -41,7 +41,8 @@ class MessagesAdapter : KSAdapter() {
     }
 
     override fun onBindViewHolder(
-        holder: KSViewHolder, position: Int,
+        holder: KSViewHolder,
+        position: Int,
         payloads: List<Any>
     ) {
         super.onBindViewHolder(holder, position, payloads)

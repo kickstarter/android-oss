@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventName
@@ -19,7 +19,7 @@ import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.musicCategory
 import com.kickstarter.mock.factories.UserFactory.noRecommendations
 import com.kickstarter.mock.factories.UserFactory.user
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -32,42 +32,41 @@ import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: DiscoveryViewModel.DiscoveryViewModel
     private val clearPages = TestSubscriber<List<Int>>()
-    private val drawerIsOpen = TestSubscriber<Boolean>()
     private val drawerMenuIcon = TestSubscriber<Int>()
     private val expandSortTabLayout = TestSubscriber<Boolean>()
-    private val navigationDrawerDataEmitted = TestSubscriber<Void>()
+    private val navigationDrawerDataEmitted = TestSubscriber<Unit>()
     private val position = TestSubscriber<Int>()
     private val rootCategories = TestSubscriber<List<Category>>()
     private val rotatedExpandSortTabLayout = TestSubscriber<Boolean>()
     private val rotatedUpdatePage = TestSubscriber<Int>()
     private val rotatedUpdateParams = TestSubscriber<DiscoveryParams>()
     private val rotatedUpdateToolbarWithParams = TestSubscriber<DiscoveryParams>()
-    private val showActivityFeed = TestSubscriber<Void>()
-    private val showHelp = TestSubscriber<Void>()
-    private val showInternalTools = TestSubscriber<Void>()
-    private val showLoginTout = TestSubscriber<Void>()
-    private val showMessages = TestSubscriber<Void>()
-    private val showProfile = TestSubscriber<Void>()
-    private val showSettings = TestSubscriber<Void>()
-    private val showPledgedProjects = TestSubscriber<Void>()
+    private val showActivityFeed = TestSubscriber<Unit>()
+    private val showHelp = TestSubscriber<Unit>()
+    private val showInternalTools = TestSubscriber<Unit>()
+    private val showLoginTout = TestSubscriber<Unit>()
+    private val showMessages = TestSubscriber<Unit>()
+    private val showProfile = TestSubscriber<Unit>()
+    private val showSettings = TestSubscriber<Unit>()
+    private val showPledgedProjects = TestSubscriber<Unit>()
     private val updatePage = TestSubscriber<Int>()
     private val updateParams = TestSubscriber<DiscoveryParams>()
     private val updateToolbarWithParams = TestSubscriber<DiscoveryParams>()
     private val showSuccessMessage = TestSubscriber<String>()
     private val showErrorMessage = TestSubscriber<String>()
-    private val showNotifPermissionRequest = TestSubscriber<Void>()
-    private val showConsentManagementDialog = TestSubscriber<Void>()
-    private val darkThemeEnabled = io.reactivex.subscribers.TestSubscriber<Boolean>()
+    private val showNotifPermissionRequest = TestSubscriber<Unit>()
+    private val showConsentManagementDialog = TestSubscriber<Unit>()
+    private val darkThemeEnabled = TestSubscriber<Boolean>()
     private val disposables = CompositeDisposable()
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryViewModel.DiscoveryViewModel(environment)
@@ -75,11 +74,11 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `test Dark Mode disabled`() {
-        val currentUser = MockCurrentUser()
-        val env = environment().toBuilder().currentUser(currentUser).build()
+        val currentUser = MockCurrentUserV2()
+        val env = environment().toBuilder().currentUserV2(currentUser).build()
         setUpEnvironment(env)
 
-        vm.intent(Intent(Intent.ACTION_MAIN))
+        vm.provideIntent(Intent(Intent.ACTION_MAIN))
 
         vm.outputs.darkThemeEnabled().subscribe { darkThemeEnabled.onNext(it) }.addToDisposable(disposables)
 
@@ -90,11 +89,11 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `test Dark Mode enabled`() {
-        val currentUser = MockCurrentUser()
-        val env = environment().toBuilder().currentUser(currentUser).build()
+        val currentUser = MockCurrentUserV2()
+        val env = environment().toBuilder().currentUserV2(currentUser).build()
         setUpEnvironment(env)
 
-        vm.intent(Intent(Intent.ACTION_MAIN))
+        vm.provideIntent(Intent(Intent.ACTION_MAIN))
 
         vm.outputs.darkThemeEnabled().subscribe { darkThemeEnabled.onNext(it) }.addToDisposable(disposables)
 
@@ -105,17 +104,16 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testDrawerData() {
-        val currentUser = MockCurrentUser()
-        val env = environment().toBuilder().currentUser(currentUser).build()
+        val currentUser = MockCurrentUserV2()
+        val env = environment().toBuilder().currentUserV2(currentUser).build()
         setUpEnvironment(env)
-        vm.outputs.navigationDrawerData().compose(Transformers.ignoreValues()).subscribe(
-            navigationDrawerDataEmitted
-        )
-        vm.outputs.drawerIsOpen().subscribe(drawerIsOpen)
+        vm.outputs.navigationDrawerData().compose(Transformers.ignoreValuesV2()).subscribe {
+            navigationDrawerDataEmitted.onNext(it)
+        }.addToDisposable(disposables)
 
         // Initialize activity.
         val intent = Intent(Intent.ACTION_MAIN)
-        vm.intent(intent)
+        vm.provideIntent(intent)
 
         // Initial MAGIC page selected.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -127,7 +125,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
         // Drawer data should emit. Drawer should be closed.
         navigationDrawerDataEmitted.assertValueCount(1)
-        drawerIsOpen.assertNoValues()
         segmentTrack.assertNoValues()
 
         // Open drawer and click the top PWL filter.
@@ -144,7 +141,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
         // Drawer data should emit. Drawer should open, then close upon selection.
         navigationDrawerDataEmitted.assertValueCount(2)
-        drawerIsOpen.assertValues(true, false)
         segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
 
         // Open drawer and click a child filter.
@@ -166,19 +162,18 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
         // Drawer data should emit. Drawer should open, then close upon selection.
         navigationDrawerDataEmitted.assertValueCount(3)
-        drawerIsOpen.assertValues(true, false, true, false)
         segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
     fun testUpdateInterfaceElementsWithParams() {
         setUpEnvironment(environment())
-        vm.outputs.updateToolbarWithParams().subscribe(updateToolbarWithParams)
-        vm.outputs.expandSortTabLayout().subscribe(expandSortTabLayout)
+        vm.outputs.updateToolbarWithParams().subscribe { updateToolbarWithParams.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.expandSortTabLayout().subscribe { expandSortTabLayout.onNext(it) }.addToDisposable(disposables)
 
         // Initialize activity.
         val intent = Intent(Intent.ACTION_MAIN)
-        vm.intent(intent)
+        vm.provideIntent(intent)
 
         // Initial MAGIC page selected.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -250,8 +245,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         )
 
         // Simulate rotating the device and hitting initial getInputs() again.
-        vm.outputs.updateToolbarWithParams().subscribe(rotatedUpdateToolbarWithParams)
-        vm.outputs.expandSortTabLayout().subscribe(rotatedExpandSortTabLayout)
+        vm.outputs.updateToolbarWithParams().subscribe { rotatedUpdateToolbarWithParams.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.expandSortTabLayout().subscribe { rotatedExpandSortTabLayout.onNext(it) }.addToDisposable(disposables)
 
         // Simulate recreating and setting POPULAR fragment, the previous position before rotation.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -272,14 +267,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testClickingInterfaceElements() {
         setUpEnvironment(environment())
-        vm.outputs.showActivityFeed().subscribe(showActivityFeed)
-        vm.outputs.showHelp().subscribe(showHelp)
-        vm.outputs.showInternalTools().subscribe(showInternalTools)
-        vm.outputs.showLoginTout().subscribe(showLoginTout)
-        vm.outputs.showMessages().subscribe(showMessages)
-        vm.outputs.showProfile().subscribe(showProfile)
-        vm.outputs.showSettings().subscribe(showSettings)
-        vm.outputs.showPledgedProjects().subscribe(showPledgedProjects)
+        vm.outputs.showActivityFeed().subscribe { showActivityFeed.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showHelp().subscribe { showHelp.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showInternalTools().subscribe { showInternalTools.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showLoginTout().subscribe { showLoginTout.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showMessages().subscribe { showMessages.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showProfile().subscribe { showProfile.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showSettings().subscribe { showSettings.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showPledgedProjects().subscribe { showPledgedProjects.onNext(it) }.addToDisposable(disposables)
         showActivityFeed.assertNoValues()
         showHelp.assertNoValues()
         showInternalTools.assertNoValues()
@@ -350,14 +345,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testInteractionBetweenParamsAndPageAdapter() {
         setUpEnvironment(environment())
-        vm.outputs.updateParamsForPage().subscribe(updateParams)
+        vm.outputs.updateParamsForPage().subscribe { updateParams.onNext(it) }.addToDisposable(disposables)
         vm.outputs.updateParamsForPage()
             .map { params: DiscoveryParams -> params.sort().positionFromSort() }
-            .subscribe(updatePage)
+            .subscribe { updatePage.onNext(it) }.addToDisposable(disposables)
 
         // Start initial activity.
         val intent = Intent(Intent.ACTION_MAIN)
-        vm.intent(intent)
+        vm.provideIntent(intent)
 
         // Initial MAGIC page selected.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -435,10 +430,10 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         updatePage.assertValues(0, 0, 1, 1, 1, 0)
 
         // Simulate rotating the device and hitting initial getInputs() again.
-        vm.outputs.updateParamsForPage().subscribe(rotatedUpdateParams)
+        vm.outputs.updateParamsForPage().subscribe { rotatedUpdateParams.onNext(it) }.addToDisposable(disposables)
         vm.outputs.updateParamsForPage()
             .map { params: DiscoveryParams -> params.sort().positionFromSort() }
-            .subscribe(rotatedUpdatePage)
+            .subscribe { rotatedUpdatePage.onNext(it) }.addToDisposable(disposables)
 
         // Should emit again with same params.
         rotatedUpdateParams.assertValues(
@@ -480,11 +475,11 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testClearingPages() {
         setUpEnvironment(environment())
-        vm.outputs.clearPages().subscribe(clearPages)
+        vm.outputs.clearPages().subscribe { clearPages.onNext(it) }.addToDisposable(disposables)
 
         // Start initial activity.
         val intent = Intent(Intent.ACTION_MAIN)
-        vm.intent(intent)
+        vm.provideIntent(intent)
         clearPages.assertNoValues()
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
@@ -536,14 +531,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
         vm.outputs.rootCategoriesAndPosition()
             .map { cp -> cp.first }
-            .subscribe(rootCategories)
+            .subscribe { rootCategories.onNext(it) }.addToDisposable(disposables)
 
         vm.outputs.rootCategoriesAndPosition()
             .map { cp -> cp.second }
-            .subscribe(position)
+            .subscribe { position.onNext(it) }.addToDisposable(disposables)
 
         // Start initial activity.
-        vm.intent(Intent(Intent.ACTION_MAIN))
+        vm.provideIntent(Intent(Intent.ACTION_MAIN))
 
         // Initial MAGIC page selected.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -587,16 +582,16 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testDrawerMenuIcon_whenLoggedOut() {
         setUpEnvironment(environment())
-        vm.outputs.drawerMenuIcon().subscribe(drawerMenuIcon)
+        vm.outputs.drawerMenuIcon().subscribe { drawerMenuIcon.onNext(it) }.addToDisposable(disposables)
         drawerMenuIcon.assertValue(R.drawable.ic_menu)
     }
 
     @Test
     fun testDrawerMenuIcon_afterLogInRefreshAndLogOut() {
-        val currentUser = MockCurrentUser()
-        setUpEnvironment(environment().toBuilder().currentUser(currentUser).build())
+        val currentUser = MockCurrentUserV2()
+        setUpEnvironment(environment().toBuilder().currentUserV2(currentUser).build())
         vm.setDarkTheme(isDarkTheme = false)
-        vm.outputs.drawerMenuIcon().subscribe(drawerMenuIcon)
+        vm.outputs.drawerMenuIcon().subscribe { drawerMenuIcon.onNext(it) }.addToDisposable(disposables)
         drawerMenuIcon.assertValue(R.drawable.ic_menu)
         currentUser.refresh(user().toBuilder().unreadMessagesCount(4).build())
         vm.setDarkTheme(isDarkTheme = false)
@@ -628,14 +623,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testDrawerMenuIcon_whenUserHasNoUnreadMessagesOrUnseenActivityOrErroredBackings() {
-        val currentUser = MockCurrentUser(user())
+        val currentUser = MockCurrentUserV2(user())
         setUpEnvironment(
             environment()
                 .toBuilder()
-                .currentUser(currentUser)
+                .currentUserV2(currentUser)
                 .build()
         )
-        vm.outputs.drawerMenuIcon().subscribe(drawerMenuIcon)
+        vm.outputs.drawerMenuIcon().subscribe { drawerMenuIcon.onNext(it) }.addToDisposable(disposables)
         drawerMenuIcon.assertValue(R.drawable.ic_menu)
     }
 
@@ -643,7 +638,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSuccessMessage() {
         val url = "https://*.kickstarter.com/profile/verify_email"
         val intentWithUrl = Intent().setData(Uri.parse(url))
-        val mockApiClient: MockApiClient = object : MockApiClient() {
+        val mockApiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun verifyEmail(token: String): Observable<EmailVerificationEnvelope> {
                 return Observable.just(
                     EmailVerificationEnvelope.builder()
@@ -654,12 +649,12 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             }
         }
         val mockedClientEnvironment = environment().toBuilder()
-            .apiClient(mockApiClient)
+            .apiClientV2(mockApiClient)
             .build()
         setUpEnvironment(mockedClientEnvironment)
-        vm.outputs.showSuccessMessage().subscribe(showSuccessMessage)
-        vm.outputs.showErrorMessage().subscribe(showErrorMessage)
-        vm.intent(intentWithUrl)
+        vm.outputs.showSuccessMessage().subscribe { showSuccessMessage.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showErrorMessage().subscribe { showErrorMessage.onNext(it) }.addToDisposable(disposables)
+        vm.provideIntent(intentWithUrl)
         showSuccessMessage.assertValue("Success")
         showErrorMessage.assertNoValues()
     }
@@ -671,18 +666,18 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         val errorEnvelope = ErrorEnvelope.builder()
             .httpCode(403).errorMessages(listOf("expired")).build()
         val apiException = ApiExceptionFactory.apiError(errorEnvelope)
-        val mockApiClient: MockApiClient = object : MockApiClient() {
+        val mockApiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun verifyEmail(token: String): Observable<EmailVerificationEnvelope> {
                 return Observable.error(apiException)
             }
         }
         val mockedClientEnvironment = environment().toBuilder()
-            .apiClient(mockApiClient)
+            .apiClientV2(mockApiClient)
             .build()
         setUpEnvironment(mockedClientEnvironment)
-        vm.outputs.showSuccessMessage().subscribe(showSuccessMessage)
-        vm.outputs.showErrorMessage().subscribe(showErrorMessage)
-        vm.intent(intentWithUrl)
+        vm.outputs.showSuccessMessage().subscribe { showSuccessMessage.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showErrorMessage().subscribe { showErrorMessage.onNext(it) }.addToDisposable(disposables)
+        vm.provideIntent(intentWithUrl)
         showSuccessMessage.assertNoValues()
         showErrorMessage.assertValue("expired")
     }
@@ -692,8 +687,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         val url = "https://www.kickstarter.com/discover/advanced?sort=end_date"
         val intentWithUrl = Intent().setData(Uri.parse(url))
         setUpEnvironment(environment())
-        vm.outputs.updateParamsForPage().subscribe(updateParams)
-        vm.intent(intentWithUrl)
+        vm.outputs.updateParamsForPage().subscribe { updateParams.onNext(it) }.addToDisposable(disposables)
+        vm.provideIntent(intentWithUrl)
         updateParams.assertValue(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build()
         )
@@ -703,7 +698,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testNotificationPermissionRequest_whenUserNotLoggedIn_shouldNotEmit() {
         setUpEnvironment(environment())
 
-        vm.outputs.showNotifPermissionsRequest().subscribe(showNotifPermissionRequest)
+        vm.outputs.showNotifPermissionsRequest().subscribe { showNotifPermissionRequest.onNext(it) }.addToDisposable(disposables)
 
         showNotifPermissionRequest.assertNoValues()
     }
@@ -712,18 +707,18 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testNotificationPermissionRequest_whenUserHasSeenRequest_shouldNotEmit() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         var user: User = user()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
 
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(true)
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .currentUser(currentUser)
+                .currentUserV2(currentUser)
                 .build()
         )
 
-        vm.outputs.showNotifPermissionsRequest().subscribe(showNotifPermissionRequest)
+        vm.outputs.showNotifPermissionsRequest().subscribe { showNotifPermissionRequest.onNext(it) }.addToDisposable(disposables)
 
         showNotifPermissionRequest.assertNoValues()
     }
@@ -732,20 +727,20 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     fun testNotificationPermissionRequest_whenLoggedInAndHasNotSeeRequest_shouldEmit() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         var user: User = user()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
 
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(false)
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .currentUser(currentUser)
+                .currentUserV2(currentUser)
                 .build()
         )
 
-        vm.outputs.showNotifPermissionsRequest().subscribe(showNotifPermissionRequest)
+        vm.outputs.showNotifPermissionsRequest().subscribe { showNotifPermissionRequest.onNext(it) }.addToDisposable(disposables)
 
-        showNotifPermissionRequest.assertValue(null)
+        showNotifPermissionRequest.assertValue(Unit)
     }
 
     @Test
@@ -768,7 +763,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
                 .build()
         )
 
-        vm.outputs.showConsentManagementDialog().subscribe(showConsentManagementDialog)
+        vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
 
         showConsentManagementDialog.assertNoValues()
     }
@@ -793,7 +788,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
                 .build()
         )
 
-        vm.outputs.showConsentManagementDialog().subscribe(showConsentManagementDialog)
+        vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
 
         showConsentManagementDialog.assertNoValues()
     }
@@ -819,24 +814,24 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
                 .build()
         )
 
-        vm.outputs.showConsentManagementDialog().subscribe(showConsentManagementDialog)
+        vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
 
-        showConsentManagementDialog.assertValue(null)
+        showConsentManagementDialog.assertValue(Unit)
     }
 
     private fun setUpDefaultParamsTest(user: User?) {
         val environmentBuilder = environment().toBuilder()
 
         if (user != null) {
-            val currentUser = MockCurrentUser(user)
-            environmentBuilder.currentUser(currentUser)
+            val currentUser = MockCurrentUserV2(user)
+            environmentBuilder.currentUserV2(currentUser)
         }
         setUpEnvironment(environmentBuilder.build())
-        vm.outputs.updateParamsForPage().subscribe(updateParams)
+        vm.outputs.updateParamsForPage().subscribe { updateParams.onNext(it) }.addToDisposable(disposables)
 
         // Start initial activity.
         val intent = Intent(Intent.ACTION_MAIN)
-        vm.intent(intent)
+        vm.provideIntent(intent)
 
         // Initial MAGIC page selected.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(

@@ -211,13 +211,6 @@ class DiscoveryActivity : AppCompatActivity() {
             .subscribe { drawerAdapter.takeData(it) }
             .addToDisposable(disposables)
 
-        viewModel.outputs.drawerIsOpen()
-            .compose(Transformers.observeForUIV2())
-            .subscribe {
-                binding.discoveryDrawerLayout.openDrawer(GravityCompat.START)
-            }
-            .addToDisposable(disposables)
-
         viewModel.closeDrawer()
             .compose(Transformers.observeForUIV2())
             .subscribe { binding.discoveryDrawerLayout.closeDrawer(GravityCompat.START) }

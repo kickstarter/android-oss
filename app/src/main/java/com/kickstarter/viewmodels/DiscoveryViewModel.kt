@@ -53,9 +53,6 @@ interface DiscoveryViewModel {
     }
 
     interface Outputs {
-        /** Emits a boolean that determines if the drawer is open or not.  */
-        fun drawerIsOpen(): Observable<Boolean>
-
         /** Emits the drawable resource ID of the drawer menu icon.   */
         fun drawerMenuIcon(): Observable<Int>
 
@@ -458,7 +455,6 @@ interface DiscoveryViewModel {
 
         // - Outputs
         override fun clearPages(): Observable<List<Int>> { return clearPages }
-        override fun drawerIsOpen(): Observable<Boolean> { return drawerIsOpen }
         override fun drawerMenuIcon(): Observable<Int> { return drawerMenuIcon }
         override fun expandSortTabLayout(): Observable<Boolean> { return expandSortTabLayout }
         override fun navigationDrawerData(): Observable<NavigationDrawerData> { return navigationDrawerData }

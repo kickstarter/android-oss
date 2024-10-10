@@ -35,7 +35,7 @@ def internalPublicVersion = new File(project.rootDir.path + "/app/internal_versi
 def isCircle = "true" == System.getenv("CIRCLECI")
 def isPrivateCIEnv = ("android-private" == System.getenv("CIRCLE_PROJECT_REPONAME"))
 def isRelease = ("external" == System.getenv("CIRCLE_BRANCH"))
-def compose_version = '1.4.3'
+def compose_version = '1.4.8'
 
 ext.signing = [
         storeFilePath: "path/to/keystore",
@@ -52,10 +52,10 @@ if (file('signing.gradle').exists()) {
 
 android {
     defaultConfig {
-        compileSdk 34
+        compileSdk = 35
         applicationId "com.kickstarter"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdk = 35
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
@@ -198,6 +198,7 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.annotation:annotation:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -317,9 +318,9 @@ dependencies {
     }
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + espresso
     androidTestImplementation 'androidx.test.espresso:espresso-intents:' + espresso
-    androidTestImplementation "androidx.test.ext:junit:1.1.3"
-    androidTestImplementation 'androidx.test:rules:1.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.7.2"
 
     // Desugaring Java 8 to < API 26
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'

@@ -67,10 +67,15 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val commentCardData = CommentCardDataFactory.commentCardData()
 
-        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, commentCardData))
+        this.vm.handleIntent(
+            intent = Intent().putExtra(
+                IntentKey.COMMENT_CARD_DATA,
+                commentCardData
+            )
+        )
         getComment.assertValue(commentCardData)
 
-        this.vm.intent(Intent().putExtra("Some other Key", commentCardData))
+        this.vm.handleIntent(intent = Intent().putExtra("Some other Key", commentCardData))
         getComment.assertValue(commentCardData)
     }
 
@@ -78,13 +83,13 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     fun testShouldFocusCompose() {
         setUpEnvironment()
 
-        this.vm.intent(Intent().putExtra(IntentKey.REPLY_EXPAND, false))
+        this.vm.handleIntent(intent = Intent().putExtra(IntentKey.REPLY_EXPAND, false))
         focusCompose.assertValue(false)
 
-        this.vm.intent(Intent().putExtra("Some other Key", false))
+        this.vm.handleIntent(intent = Intent().putExtra("Some other Key", false))
         focusCompose.assertValues(false)
 
-        this.vm.intent(Intent().putExtra(IntentKey.REPLY_EXPAND, true))
+        this.vm.handleIntent(intent = Intent().putExtra(IntentKey.REPLY_EXPAND, true))
         focusCompose.assertValues(false, true)
     }
 
@@ -106,7 +111,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.currentUserAvatar().subscribe { currentUserAvatar.onNext(it) }
             .addToDisposable(disposables)
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.handleIntent(intent = Intent().putExtra(IntentKey.PROJECT, project))
 
         // set user avatar with small url
         currentUserAvatar.assertValue(userAvatar.small())
@@ -123,7 +128,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardDataBacked()
@@ -145,7 +151,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -168,7 +175,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -193,7 +201,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardDataBacked()
@@ -218,7 +227,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -248,7 +258,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(env)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -275,7 +286,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(env)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -311,7 +323,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         this.vm.onCommentReplies().subscribe { onReplies.onNext(it) }.addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -333,7 +346,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     fun testThreadsViewModel_openCommentGuidelinesLink() {
         setUpEnvironment()
 
-        this.vm.intent(
+        this.vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -396,7 +410,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val onReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         val vm = ThreadViewModel.ThreadViewModel(env)
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -482,7 +497,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -612,7 +628,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -767,7 +784,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()
@@ -887,7 +905,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
-        vm.intent(
+        vm.handleIntent(
+            intent =
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardData()

@@ -26,6 +26,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ActivityFeedViewModel
 import com.kickstarter.viewmodels.ActivityFeedViewModel.Factory
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,7 +37,6 @@ class ActivityFeedActivity : AppCompatActivity() {
     private var currentUser: CurrentUserTypeV2? = null
     private var recyclerViewPaginator: RecyclerViewPaginatorV2? = null
     private lateinit var binding: ActivityFeedLayoutBinding
-
     private lateinit var viewModelFactory: Factory
     private val viewModel: ActivityFeedViewModel by viewModels {
         viewModelFactory
@@ -47,7 +47,10 @@ class ActivityFeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeedLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)
@@ -65,7 +68,11 @@ class ActivityFeedActivity : AppCompatActivity() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
 
-        recyclerViewPaginator = RecyclerViewPaginatorV2(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities())
+        recyclerViewPaginator = RecyclerViewPaginatorV2(
+            binding.recyclerView,
+            { viewModel.inputs.nextPage() },
+            viewModel.outputs.isFetchingActivities()
+        )
 
         binding.activityFeedSwipeRefreshLayout.setOnRefreshListener {
             viewModel.outputs.isFetchingActivities()

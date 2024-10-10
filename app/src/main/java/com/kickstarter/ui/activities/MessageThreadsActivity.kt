@@ -23,6 +23,7 @@ import com.kickstarter.models.MessageThread
 import com.kickstarter.ui.adapters.MessageThreadsAdapter
 import com.kickstarter.ui.data.Mailbox
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.MessageThreadsViewModel.Factory
 import com.kickstarter.viewmodels.MessageThreadsViewModel.MessageThreadsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,7 +45,10 @@ class MessageThreadsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MessageThreadsLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         setUpAdapter()

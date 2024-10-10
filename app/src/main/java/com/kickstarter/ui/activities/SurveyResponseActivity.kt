@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.services.RequestHandler
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.SurveyResponseViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
@@ -42,6 +43,10 @@ class SurveyResponseActivity : ComponentActivity() {
             factory = SurveyResponseViewModel.Factory(environment = env, intent = intent)
         }
         binding = SurveyResponseLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         binding.surveyResponseWebView.registerRequestHandlers(

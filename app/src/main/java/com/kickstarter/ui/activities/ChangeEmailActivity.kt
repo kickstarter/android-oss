@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ChangeEmailViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -41,7 +42,10 @@ class ChangeEmailActivity : AppCompatActivity() {
         }
 
         binding = ActivityChangeEmailBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
         setSupportActionBar(binding.changeEmailActivityToolbar.changeEmailToolbar)
 
@@ -62,7 +66,10 @@ class ChangeEmailActivity : AppCompatActivity() {
         this.viewModel.outputs.emailErrorIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it }
-            .subscribe { binding.newEmailContainer.error = getString(R.string.Email_must_be_a_valid_email_address) }
+            .subscribe {
+                binding.newEmailContainer.error =
+                    getString(R.string.Email_must_be_a_valid_email_address)
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.emailErrorIsVisible()
@@ -124,7 +131,14 @@ class ChangeEmailActivity : AppCompatActivity() {
 
         this.viewModel.outputs.warningTextColor()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.emailWarningTextView.setTextColor(ContextCompat.getColor(this@ChangeEmailActivity, it)) }
+            .subscribe {
+                binding.emailWarningTextView.setTextColor(
+                    ContextCompat.getColor(
+                        this@ChangeEmailActivity,
+                        it
+                    )
+                )
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.verificationEmailButtonText()
@@ -142,6 +156,7 @@ class ChangeEmailActivity : AppCompatActivity() {
                 imm.hideSoftInputFromWindow(binding.newEmail.windowToken, 0)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

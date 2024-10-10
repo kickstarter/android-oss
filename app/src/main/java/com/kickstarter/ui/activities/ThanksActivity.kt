@@ -25,6 +25,7 @@ import com.kickstarter.ui.adapters.ThanksAdapter
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showRatingDialogWidget
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ThanksViewModel
 import com.kickstarter.viewmodels.ThanksViewModel.Factory
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,6 +43,10 @@ class ThanksActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ThanksLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
         getEnvironment()?.let { env ->

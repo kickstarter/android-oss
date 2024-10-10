@@ -24,6 +24,7 @@ import com.kickstarter.models.Update
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.UpdateViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
@@ -47,7 +48,10 @@ class UpdateActivity : AppCompatActivity() {
         disposables = CompositeDisposable()
 
         binding = UpdateLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)

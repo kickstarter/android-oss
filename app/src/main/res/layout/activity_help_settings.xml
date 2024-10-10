@@ -7,8 +7,10 @@
   android:orientation="vertical">
 
   <com.google.android.material.appbar.AppBarLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+      android:id="@+id/toolbar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/kds_white">
 
     <include layout="@layout/help_toolbar" />
 

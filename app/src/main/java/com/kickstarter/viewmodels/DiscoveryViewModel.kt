@@ -42,9 +42,6 @@ import io.reactivex.subjects.PublishSubject
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
 
-        /** Call when you want to open or close the drawer.  */
-        fun openDrawer(open: Boolean)
-
         /** Call when the user selects a sort tab.  */
         fun sortClicked(sortPosition: Int)
 
@@ -445,7 +442,6 @@ interface DiscoveryViewModel {
         }
 
         // - Inputs
-        override fun openDrawer(open: Boolean) { openDrawer.onNext(open) }
         override fun parentFilterViewHolderRowClick(viewHolder: ParentFilterViewHolder, row: NavigationDrawerData.Section.Row) {
             parentFilterRowClick.onNext(row)
         }

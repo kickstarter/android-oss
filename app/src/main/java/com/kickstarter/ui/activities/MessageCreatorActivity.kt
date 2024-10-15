@@ -19,6 +19,7 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.MessageCreatorViewModel.Factory
 import com.kickstarter.viewmodels.MessageCreatorViewModel.MessageCreatorViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,7 +36,10 @@ class MessageCreatorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMessageCreatorBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)

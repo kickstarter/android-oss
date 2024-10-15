@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentMethodsIntent
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.AccountViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -59,7 +60,6 @@ class AccountActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         disposables = CompositeDisposable()
 
         val env = this.getEnvironment()?.let { env ->
@@ -68,7 +68,10 @@ class AccountActivity : AppCompatActivity() {
         }
 
         binding = ActivityAccountBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)
@@ -84,7 +87,11 @@ class AccountActivity : AppCompatActivity() {
         this.viewModel.outputs.email()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.createPasswordTextView.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", it)
+                binding.createPasswordTextView.text = this.ksString.format(
+                    getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account),
+                    "email",
+                    it
+                )
             }
             .addToDisposable(disposables)
 
@@ -113,14 +120,53 @@ class AccountActivity : AppCompatActivity() {
 
         this.viewModel.outputs.success()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(binding.accountContainer, R.string.Got_it_your_changes_have_been_saved) }
+            .subscribe {
+                showSnackbar(
+                    binding.accountContainer,
+                    R.string.Got_it_your_changes_have_been_saved
+                )
+            }
             .addToDisposable(disposables)
 
-        binding.createPasswordRow.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
-        binding.changeEmailRow.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
-        binding.changePasswordRow.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-        binding.paymentMethodsRow.setOnClickListener { startActivity(Intent().getPaymentMethodsIntent(this)) }
-        binding.privacyRow.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        binding.createPasswordRow.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    CreatePasswordActivity::class.java
+                )
+            )
+        }
+        binding.changeEmailRow.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ChangeEmailActivity::class.java
+                )
+            )
+        }
+        binding.changePasswordRow.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ChangePasswordActivity::class.java
+                )
+            )
+        }
+        binding.paymentMethodsRow.setOnClickListener {
+            startActivity(
+                Intent().getPaymentMethodsIntent(
+                    this
+                )
+            )
+        }
+        binding.privacyRow.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    PrivacyActivity::class.java
+                )
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -186,17 +232,23 @@ class AccountActivity : AppCompatActivity() {
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         binding.currencySpinner.adapter = arrayAdapter
 
-        binding.currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        binding.currencySpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
-                currentCurrencySelection?.let {
-                    if (supportedCurrencies.indexOf(it) != postion) {
-                        newCurrencySelection = supportedCurrencies[postion]
-                        lazyFollowingOptOutConfirmationDialog().show()
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    postion: Int,
+                    id: Long
+                ) {
+                    currentCurrencySelection?.let {
+                        if (supportedCurrencies.indexOf(it) != postion) {
+                            newCurrencySelection = supportedCurrencies[postion]
+                            lazyFollowingOptOutConfirmationDialog().show()
+                        }
                     }
                 }
             }
-        }
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -52,7 +53,9 @@ private fun AddOnsScreenPreview() {
             backgroundColor = colors.backgroundAccentGraySubtle
         ) { padding ->
             AddOnsScreen(
-                modifier = Modifier.padding(padding),
+                modifier = Modifier
+                    .padding(padding)
+                    .systemBarsPadding(),
                 environment = Environment.Builder().build(),
                 lazyColumnListState = rememberLazyListState(),
                 selectedReward = RewardFactory.reward().toBuilder().minimum(5.0).build(),

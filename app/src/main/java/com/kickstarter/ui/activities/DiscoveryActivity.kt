@@ -34,6 +34,7 @@ import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -54,14 +55,22 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
         super.onCreate(savedInstanceState)
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
         environment()
 
         // TODO: Replace with compose implementation
-        val nightModeFlags = this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        val nightModeFlags =
+            this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         viewModel.setDarkTheme(
             when (nightModeFlags) {
-                Configuration.UI_MODE_NIGHT_YES -> { true }
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    true
+                }
+
                 else -> false
             }
         )
@@ -70,7 +79,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             activateFeatureFlags(environment())
         }
 
-        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+        val requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
         internalTools = environment().internalTools()
 
@@ -137,7 +147,10 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .subscribe {
                 consentManagementDialogFragment = ConsentManagementDialogFragment()
                 consentManagementDialogFragment.isCancelable = false
-                consentManagementDialogFragment.show(supportFragmentManager, "consentManagementDialogFragment")
+                consentManagementDialogFragment.show(
+                    supportFragmentManager,
+                    "consentManagementDialogFragment"
+                )
             }
 
         viewModel.outputs.clearPages()
@@ -217,12 +230,22 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         viewModel.outputs.showSuccessMessage()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this@DiscoveryActivity.showSuccessSnackBar(binding.discoveryAnchorView, it) }
+            .subscribe {
+                this@DiscoveryActivity.showSuccessSnackBar(
+                    binding.discoveryAnchorView,
+                    it
+                )
+            }
 
         viewModel.outputs.showErrorMessage()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
+            .subscribe {
+                this@DiscoveryActivity.showErrorSnackBar(
+                    binding.discoveryAnchorView,
+                    it ?: ""
+                )
+            }
     }
 
     private fun activateFeatureFlags(environment: Environment) {

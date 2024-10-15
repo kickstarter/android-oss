@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical">
-
-  <com.google.android.material.appbar.AppBarLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <include layout="@layout/project_notification_settings_toolbar" />
-
-  </com.google.android.material.appbar.AppBarLayout>
-
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/project_notification_settings_recycler_view"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/project_notification_settings_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:listitem="@layout/project_notification_view" />
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/project_notification_settings_toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/project_notification_settings_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/project_notification_view" />
 
 </LinearLayout>

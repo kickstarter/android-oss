@@ -14,6 +14,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.EditProfileViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -32,7 +33,10 @@ class EditProfileActivity : ComponentActivity() {
         }
 
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
 
@@ -76,6 +80,9 @@ class EditProfileActivity : ComponentActivity() {
     }
 
     private fun displayPreferences(user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.privateProfileSwitch, user.showPublicProfile().isFalse())
+        SwitchCompatUtils.setCheckedWithoutAnimation(
+            binding.privateProfileSwitch,
+            user.showPublicProfile().isFalse()
+        )
     }
 }

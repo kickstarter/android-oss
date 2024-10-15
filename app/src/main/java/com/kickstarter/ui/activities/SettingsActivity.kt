@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.SettingsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -55,6 +56,10 @@ class SettingsActivity : AppCompatActivity() {
             getString(R.string.dark)
         )
         binding = SettingsLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         this.getEnvironment()?.let { env ->
             viewModelFactory = SettingsViewModel.Factory(env)
             sharedPrefs = env.sharedPreferences()

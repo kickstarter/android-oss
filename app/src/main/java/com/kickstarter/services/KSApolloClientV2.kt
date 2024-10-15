@@ -855,32 +855,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun creatorDetails(slug: String): Observable<CreatorDetails> {
         return Observable.defer {
             val ps = PublishSubject.create<CreatorDetails>()
-            service.query(
-                ProjectCreatorDetailsQuery.builder()
-                    .slug(slug)
-                    .build()
+
+            val query = ProjectCreatorDetailsQuery(
+                slug = slug
             )
-                .enqueue(object : ApolloCall.Callback<ProjectCreatorDetailsQuery.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            service.query(
+                query
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
                     }
 
-                    override fun onResponse(response: Response<ProjectCreatorDetailsQuery.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-
-                        response.data?.project()?.creator()?.let {
-                            ps.onNext(
-                                CreatorDetails.builder()
-                                    .backingsCount(it.backingsCount())
-                                    .launchedProjectsCount(it.launchedProjects()?.totalCount() ?: 1)
-                                    .build()
-                            )
-                            ps.onComplete()
-                        }
+                    response.data?.project?.creator?.let {
+                        ps.onNext(
+                            CreatorDetails.builder()
+                                .backingsCount(it.backingsCount)
+                                .launchedProjectsCount(it.launchedProjects?.totalCount ?: 1)
+                                .build()
+                        )
+                        ps.onComplete()
                     }
-                })
+                }.dispose()
             return@defer ps
         }
     }

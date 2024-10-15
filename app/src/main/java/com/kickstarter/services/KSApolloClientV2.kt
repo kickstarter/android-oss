@@ -29,7 +29,6 @@ import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
-import TriggerThirdPartyEventMutation
 import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
@@ -42,13 +41,13 @@ import WatchProjectMutation
 import android.util.Pair
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -87,7 +86,6 @@ import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
-import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
 import com.kickstarter.services.transformers.pledgedProjectsOverviewEnvelopeTransformer
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
@@ -99,10 +97,10 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.rx2.asObservable
 import type.BackingState
 import type.CurrencyCode
+import type.Date
 import type.NonDeprecatedFlaggingKind
 import type.PaymentTypes
 import type.StripeIntentContextTypes
@@ -232,7 +230,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         response.data?.let { responseData ->
                             ps.onNext(
                                 projectTransformer(
-                                    responseData.project()?.fragments()?.fullProject()
+                                    responseData.project?.fullProject
                                 )
                             )
                         }
@@ -245,32 +243,28 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun createSetupIntent(project: Project?): Observable<String> {
         return Observable.defer {
-            val createSetupIntentMut = CreateSetupIntentMutation.builder()
-                .apply {
-                    project?.let {
-                        this.projectId(encodeRelayId(it))
-                        this.setupIntentContext(StripeIntentContextTypes.CROWDFUNDING_CHECKOUT)
-                    } ?: run {
-                        this.setupIntentContext(StripeIntentContextTypes.PROFILE_SETTINGS)
-                    }
-                }
-                .build()
-
             val ps = PublishSubject.create<String>()
-            this.service.mutate(createSetupIntentMut)
-                .enqueue(object : ApolloCall.Callback<CreateSetupIntentMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
+            project?.let { proj ->
+                val mutation = CreateSetupIntentMutation(
+                    projectId = Optional.present(encodeRelayId(proj)),
+                    setupIntentContext = Optional.present(StripeIntentContextTypes.CROWDFUNDING_CHECKOUT)
+                )
 
-                    override fun onResponse(response: Response<CreateSetupIntentMutation.Data>) {
-                        if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                this.service.mutation(mutation)
+                    .toFlow()
+                    .asObservable()
+                    .doOnError { throwable ->
+                        ps.onError(throwable)
+                    }
+                    .subscribe { response ->
+                        if (response.hasErrors())
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
                         else {
-                            ps.onNext(response.data?.createSetupIntent()?.clientSecret() ?: "")
+                            ps.onNext(response.data?.createSetupIntent?.clientSecret ?: "")
                         }
                         ps.onComplete()
-                    }
-                })
+                    }.dispose()
+            }
             return@defer ps
         }
     }
@@ -278,38 +272,39 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
         return Observable.defer {
             val ps = PublishSubject.create<StoredCard>()
-            service.mutate(
-                SavePaymentMethodMutation.builder()
-                    .paymentType(savePaymentMethodData.paymentType)
-                    .stripeToken(savePaymentMethodData.stripeToken)
-                    .stripeCardId(savePaymentMethodData.stripeCardId)
-                    .reusable(savePaymentMethodData.reusable)
-                    .intentClientSecret(savePaymentMethodData.intentClientSecret)
-                    .build()
+            val mutation = SavePaymentMethodMutation(
+                paymentType = Optional.present(savePaymentMethodData.paymentType),
+                stripeToken = Optional.present(savePaymentMethodData.stripeToken),
+                stripeCardId = Optional.present(savePaymentMethodData.stripeCardId),
+                reusable = Optional.present(savePaymentMethodData.reusable),
+                intentClientSecret = Optional.present(savePaymentMethodData.intentClientSecret)
             )
-                .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            service.mutation(
+                mutation
+            )
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
                     }
 
-                    override fun onResponse(response: Response<SavePaymentMethodMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-
-                        val paymentSource = response.data?.createPaymentSource()?.paymentSource()
-                        paymentSource?.let {
-                            val storedCard = StoredCard.builder()
-                                .expiration(it.expirationDate())
-                                .id(it.id())
-                                .lastFourDigits(it.lastFour())
-                                .type(it.type())
-                                .build()
-                            ps.onNext(storedCard)
-                        }
-                        ps.onComplete()
+                    val paymentSource = response.data?.createPaymentSource?.paymentSource
+                    paymentSource?.let {
+                        // TODO: review the type for dates probably the Custom mapping requires some additions here
+                        val storedCard = StoredCard.builder()
+                            .expiration(it.expirationDate as java.util.Date?)
+                            .id(it.id)
+                            .lastFourDigits(it.lastFour)
+                            .type(it.type)
+                            .build()
+                        ps.onNext(storedCard)
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -317,34 +312,37 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<StoredCard>>()
-            this.service.query(UserPaymentsQuery.builder().build())
-                .enqueue(object : ApolloCall.Callback<UserPaymentsQuery.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
 
-                    override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        } else {
-                            val cardsList = mutableListOf<StoredCard>()
-                            response.data?.me()?.storedCards()?.nodes()?.map {
-                                it?.let { cardData ->
-                                    val card = StoredCard.builder()
-                                        .expiration(cardData.expirationDate())
-                                        .id(cardData.id())
-                                        .lastFourDigits(cardData.lastFour())
-                                        .type(it.type())
-                                        .stripeCardId(it.stripeCardId())
-                                        .build()
-                                    cardsList.add(card)
-                                }
+            val query = UserPaymentsQuery()
+            this.service
+                .query(query)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        val cardsList = mutableListOf<StoredCard>()
+                        response.data?.me?.storedCards?.nodes?.map {
+                            it?.let { cardData ->
+                                // TODO: review the type for dates probably the Custom mapping requires some additions here
+                                val card = StoredCard.builder()
+                                    .expiration(cardData.expirationDate as java.util.Date?)
+                                    .id(cardData.id)
+                                    .lastFourDigits(cardData.lastFour)
+                                    .type(it.type)
+                                    .stripeCardId(it.stripeCardId)
+                                    .build()
+                                cardsList.add(card)
                             }
-                            ps.onNext(cardsList)
                         }
-                        ps.onComplete()
+                        ps.onNext(cardsList)
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -352,25 +350,26 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<DeletePaymentSourceMutation.Data>()
-            service.mutate(
-                DeletePaymentSourceMutation.builder()
-                    .paymentSourceId(paymentSourceId)
-                    .build()
+            val mutation = DeletePaymentSourceMutation(
+                paymentSourceId = paymentSourceId,
             )
-                .enqueue(object : ApolloCall.Callback<DeletePaymentSourceMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+
+            service.mutation(
+                mutation
+            )
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
                     }
 
-                    override fun onResponse(response: Response<DeletePaymentSourceMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-
-                        response.data?.let { ps.onNext(it) }
-                        ps.onComplete()
-                    }
-                })
+                    response.data?.let { ps.onNext(it) }
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -384,31 +383,30 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             project?.let {
                 val ps = PublishSubject.create<String>()
                 val flagging = NonDeprecatedFlaggingKind.safeValueOf(flaggingKind)
-                val mutation = CreateFlaggingMutation.builder()
-                    .contentId(encodeRelayId(it))
-                    .details(details)
-                    .kind(flagging)
-                    .build()
+                val mutation = CreateFlaggingMutation(
+                    contentId = encodeRelayId(it),
+                    details = Optional.present(details),
+                    kind = flagging
+                )
 
-                service.mutate(
+                service.mutation(
                     mutation
-                ).enqueue(object : ApolloCall.Callback<CreateFlaggingMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+                ).toFlow()
+                    .asObservable()
+                    .doOnError { throwable ->
+                        ps.onError(throwable)
                     }
-
-                    override fun onResponse(response: Response<CreateFlaggingMutation.Data>) {
+                    .subscribe { response ->
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message))
                         }
                         response.data?.let { data ->
-                            data.createFlagging()?.flagging()?.kind()?.name?.let { kindString ->
+                            data.createFlagging?.flagging?.kind?.name?.let { kindString ->
                                 ps.onNext(kindString)
                             }
                         }
                         ps.onComplete()
-                    }
-                })
+                    }.dispose()
                 return@defer ps
             }
         }

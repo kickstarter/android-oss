@@ -48,6 +48,7 @@ import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -97,6 +98,7 @@ import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.rx2.asObservable
 import type.BackingState
@@ -501,29 +503,27 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     ): Observable<UpdateUserPasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdateUserPasswordMutation.Data>()
-            service.mutate(
-                UpdateUserPasswordMutation.builder()
-                    .currentPassword(currentPassword)
-                    .password(newPassword)
-                    .passwordConfirmation(confirmPassword)
-                    .build()
+            val mutation = UpdateUserPasswordMutation(
+                currentPassword = currentPassword,
+                password = newPassword,
+                passwordConfirmation = confirmPassword
+
             )
-                .enqueue(object : ApolloCall.Callback<UpdateUserPasswordMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            service.mutation(mutation)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
                     }
-
-                    override fun onResponse(response: Response<UpdateUserPasswordMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-                        response.data?.let {
-                            ps.onNext(it)
-                        }
-
-                        ps.onComplete()
+                    response.data?.let {
+                        ps.onNext(it)
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }

@@ -697,102 +697,98 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
         return Observable.defer {
-            val updateBackingMutation = UpdateBackingMutation.builder()
-                .backingId(encodeRelayId(updateBackingData.backing))
-                .amount(updateBackingData.amount)
-                .locationId(updateBackingData.locationId)
-                .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
-                .apply {
-                    updateBackingData.paymentSourceId?.let { this.paymentSourceId(it) }
-                    updateBackingData.intentClientSecret?.let { this.intentClientSecret(it) }
-                }
-                .build()
+            // TODO: Review nullability here for updateBacking mutation
 
+            val mutation = UpdateBackingMutation(
+                backingId = encodeRelayId(updateBackingData.backing),
+                amount = Optional.present(updateBackingData.amount),
+                locationId = Optional.present(updateBackingData.locationId),
+                rewardIds = Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } }),
+                paymentSourceId = Optional.present(updateBackingData.paymentSourceId),
+                intentClientSecret = Optional.present(updateBackingData.intentClientSecret)
+            )
             val ps = PublishSubject.create<Checkout>()
-            service.mutate(updateBackingMutation)
-                .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
+            service
+                .mutation(mutation)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    } else {
+                        val checkoutPayload = response.data?.updateBacking?.checkout
+                        val backing = Checkout.Backing.builder()
+                            .clientSecret(
+                                checkoutPayload?.backing?.checkoutBacking?.clientSecret
+                            )
+                            .requiresAction(
+                                checkoutPayload?.backing?.checkoutBacking?.requiresAction ?: false
+                            )
+                            .build()
 
-                    override fun onResponse(response: Response<UpdateBackingMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        } else {
-                            val checkoutPayload = response.data?.updateBacking()?.checkout()
-                            val backing = Checkout.Backing.builder()
-                                .clientSecret(
-                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                        ?.clientSecret()
-                                )
-                                .requiresAction(
-                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                        ?.requiresAction() ?: false
-                                )
-                                .build()
-
-                            val checkout = Checkout.builder()
-                                .id(decodeRelayId(checkoutPayload?.id()))
-                                .backing(backing)
-                                .build()
-                            ps.onNext(checkout)
-                        }
-                        ps.onComplete()
+                        val checkout = Checkout.builder()
+                            .id(decodeRelayId(checkoutPayload?.id))
+                            .backing(backing)
+                            .build()
+                        ps.onNext(checkout)
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
 
     override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
         return Observable.defer {
-            val createBackingMutation = CreateBackingMutation.builder()
-                .projectId(encodeRelayId(createBackingData.project))
-                .amount(createBackingData.amount)
-                .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
-                .paymentSourceId(createBackingData.paymentSourceId)
-                .setupIntentClientSecret(createBackingData.setupIntentClientSecret)
-                .locationId(createBackingData.locationId?.let { it })
-                .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
-                .refParam(createBackingData.refTag?.tag())
-                .build()
+            // TODO: Review nullability for this mutation
 
             val ps = PublishSubject.create<Checkout>()
+            val mutation = CreateBackingMutation(
+                projectId = encodeRelayId(createBackingData.project),
+                amount = createBackingData.amount,
+                paymentType = PaymentTypes.CREDIT_CARD.rawValue,
+                paymentSourceId = Optional.present(createBackingData.paymentSourceId),
+                setupIntentClientSecret = Optional.present(createBackingData.setupIntentClientSecret),
+                locationId = Optional.present(createBackingData.locationId),
+                rewardIds = Optional.present(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } }),
+                refParam = Optional.present(createBackingData.refTag?.tag())
+            )
 
-            this.service.mutate(createBackingMutation)
-                .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            this.service.mutation(mutation)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    } else {
+
+                        val checkoutPayload = response.data?.createBacking?.checkout
+
+                        // TODO: Add new status field to backing model
+                        val backing = Checkout.Backing.builder()
+                            .clientSecret(
+                                checkoutPayload?.backing?.checkoutBacking?.clientSecret
+                            )
+                            .requiresAction(
+                                checkoutPayload?.backing?.checkoutBacking
+                                    ?.requiresAction ?: false
+                            )
+                            .build()
+
+                        val checkout = Checkout.builder()
+                            .id(decodeRelayId(checkoutPayload?.id))
+                            .backing(backing)
+                            .build()
+                        ps.onNext(checkout)
                     }
-
-                    override fun onResponse(response: Response<CreateBackingMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        } else {
-
-                            val checkoutPayload = response.data?.createBacking()?.checkout()
-
-                            // TODO: Add new status field to backing model
-                            val backing = Checkout.Backing.builder()
-                                .clientSecret(
-                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                        ?.clientSecret()
-                                )
-                                .requiresAction(
-                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                        ?.requiresAction() ?: false
-                                )
-                                .build()
-
-                            val checkout = Checkout.builder()
-                                .id(decodeRelayId(checkoutPayload?.id()))
-                                .backing(backing)
-                                .build()
-                            ps.onNext(checkout)
-                        }
-                        ps.onComplete()
-                    }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -800,7 +796,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
-
+// TODO: rewrite this query on the thirdPartyEvents.graphQL file, something is off here
 //            val mutation = getTriggerThirdPartyEventMutation(eventInput)
 //
 //            service.mutate(mutation)
@@ -832,27 +828,26 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     ): Observable<CreatePasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
-            service.mutate(
-                CreatePasswordMutation.builder()
-                    .password(password)
-                    .passwordConfirmation(confirmPassword)
-                    .build()
+            val mutation = CreatePasswordMutation(
+                password = password,
+                passwordConfirmation = confirmPassword
             )
-                .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
                     }
-
-                    override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        }
-                        response.data?.let {
-                            ps.onNext(it)
-                        }
-                        ps.onComplete()
+                    response.data?.let {
+                        ps.onNext(it)
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }

@@ -415,7 +415,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             modifier = Modifier
                 .weight(0.5f),
             onClickAction = { onEditAddressClicked.invoke() },
-            text = stringResource(id = R.string.discovery_favorite_categories_buttons_edit),
+            text = stringResource(id = R.string.Edit),
             isEnabled = true,
             textStyle = typography.buttonText
         )

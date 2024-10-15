@@ -182,7 +182,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         )
 
         // Sort tab should be expanded.
-        expandSortTabLayout.assertValues(true)
+        expandSortTabLayout.assertValues(true, true)
 
         // Toolbar params should be loaded with initial params.
         updateToolbarWithParams.assertValues(
@@ -200,7 +200,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
 
         // Sort tab should be expanded.
-        expandSortTabLayout.assertValues(true, true)
+        expandSortTabLayout.assertValues(true, true, true)
 
         // Unchanged toolbar params should not emit.
         updateToolbarWithParams.assertValues(
@@ -218,7 +218,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         )
 
         // Sort tab should be expanded.
-        expandSortTabLayout.assertValues(true, true, true)
+        expandSortTabLayout.assertValues(true, true, true, true, true)
         segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
 
         // Select ART category from drawer.
@@ -235,7 +235,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         )
 
         // Sort tab should be expanded.
-        expandSortTabLayout.assertValues(true, true, true, true)
+        expandSortTabLayout.assertValues(true, true, true, true, true, true, true)
         segmentTrack.assertValues(
             EventName.CTA_CLICKED.eventName,
             EventName.CTA_CLICKED.eventName,
@@ -363,8 +363,9 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         // Initial params should emit. Page should not be updated yet.
         updateParams.assertValues(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build()
         )
-        updatePage.assertValues(0)
+        updatePage.assertValues(0, 0)
 
         // Select POPULAR sort position.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -377,9 +378,10 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         // Params and page should update with new POPULAR sort values.
         updateParams.assertValues(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).backed(-1).recommended(true).build()
         )
-        updatePage.assertValues(0, 1)
+        updatePage.assertValues(0, 0, 1)
 
         // Select ART category from the drawer.
         vm.inputs.childFilterViewHolderRowClick(
@@ -394,11 +396,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         // Params should update with new category; page should remain the same.
         updateParams.assertValues(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(artCategory())
+                .build(),
             DiscoveryParams.builder().category(artCategory()).sort(DiscoveryParams.Sort.POPULAR)
                 .build()
         )
-        updatePage.assertValues(0, 1, 1)
+        updatePage.assertValues(0, 0, 1, 1, 1)
 
         // Select MAGIC sort position.
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
@@ -411,13 +416,16 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         // Params and page should update with new MAGIC sort value.
         updateParams.assertValues(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(artCategory())
+                .build(),
             DiscoveryParams.builder().category(artCategory()).sort(DiscoveryParams.Sort.POPULAR)
                 .build(),
-            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).category(artCategory())
+            DiscoveryParams.builder().category(artCategory()).sort(DiscoveryParams.Sort.MAGIC)
                 .build()
         )
-        updatePage.assertValues(0, 1, 1, 0)
+        updatePage.assertValues(0, 0, 1, 1, 1, 0)
 
         // Simulate rotating the device and hitting initial getInputs() again.
         vm.outputs.updateParamsForPage().subscribe { rotatedUpdateParams.onNext(it) }.addToDisposable(disposables)
@@ -438,6 +446,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         setUpDefaultParamsTest(null)
         updateParams.assertValues(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).backed(-1).recommended(true).build()
         )
     }
 
@@ -447,6 +456,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         updateParams.assertValues(
             DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.MAGIC)
                 .build(),
+            DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.MAGIC)
+                .build()
         )
     }
 
@@ -455,6 +466,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         setUpDefaultParamsTest(noRecommendations())
         updateParams.assertValues(
             DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
+            DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
         )
     }
 

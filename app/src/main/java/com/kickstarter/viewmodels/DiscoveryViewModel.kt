@@ -217,19 +217,27 @@ interface DiscoveryViewModel {
                 }
                 .addToDisposable(disposables)
 
+            val intentObservable = intent.share()
+
             // Seed params when we are freshly launching the app with no data.
-            val paramsFromInitialIntent = intent
+            val paramsFromInitialIntent = intentObservable
                 .take(1)
+                .filter { it.action.isNotNull() }
                 .map { it.action }
                 .filter { Intent.ACTION_MAIN == it }
                 .compose(Transformers.combineLatestPair(changedUser))
                 .map { DiscoveryParams.getDefaultParams(it.second) }
                 .share()
 
-            val uriFromVerification = intent
+            val uriFromVerification = intentObservable
+                .filter { it.data.isNotNull() }
                 .map { it.data }
                 .ofType(Uri::class.java)
                 .filter { it.isVerificationEmailUrl() }
+
+            val paramsFromIntent = intentObservable
+                .map { it }
+                .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
 
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
@@ -272,9 +280,6 @@ interface DiscoveryViewModel {
                 .subscribe { showConsentManagementDialog.onNext(Unit) }
                 .addToDisposable(disposables)
 
-            val paramsFromIntent = intent
-                .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
-
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
             val drawerParamsClicked = childFilterRowClick
@@ -298,6 +303,7 @@ interface DiscoveryViewModel {
                 pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
                 params.map { it.sort() }
             ).filter { it.isNotNull() }
+                .map { it }
 
             // Combine params with the selected sort position.
             val paramsWithSort = Observable.combineLatest(

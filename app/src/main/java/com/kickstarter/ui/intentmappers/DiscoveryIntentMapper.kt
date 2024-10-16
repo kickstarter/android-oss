@@ -19,9 +19,8 @@ object DiscoveryIntentMapper {
     ): Observable<DiscoveryParams> {
         val paramsFromParcel = if (paramsFromIntent(intent).isNotNull()) {
             Observable.just(paramsFromIntent(intent))
-                .filter {
-                    it.isNotNull()
-                }.map { it }
+                .filter { it.isNotNull() }
+                .map { it }
         } else Observable.empty()
 
         val paramsFromUri = if (IntentMapper.uri(intent).isNotNull()) {
@@ -29,9 +28,11 @@ object DiscoveryIntentMapper {
                 .filter { it.isNotNull() }
                 .map { it }
                 .map { DiscoveryParams.fromUri(it) }
-                .flatMap {
-                    paramsFromUri(it, client, apolloClient)
-                }
+                .filter { it.isNotNull() }
+                .map { it }
+                .flatMap { paramsFromUri(it, client, apolloClient) }
+                .filter { it.isNotNull() }
+                .map { it }
         } else Observable.empty()
 
         return Observable.merge(paramsFromParcel, paramsFromUri)
@@ -92,6 +93,8 @@ object DiscoveryIntentMapper {
                 client
                     .fetchLocation(locationParam)
                     .compose(Transformers.neverErrorV2())
+                    .filter { it.isNotNull() }
+                    .map { it }
                     .map { DiscoveryParams.builder().location(it) }
             )
         }

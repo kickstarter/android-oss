@@ -347,10 +347,10 @@ class DiscoveryParams private constructor(
     val isAllProjects: Boolean
         get() = (
             (staffPicks().isFalse() || staffPicks().isNull()) &&
-            (starred() == null || starred() != 1) && (backed() == null || backed() != 1) &&
-            (social() == null || social() != 1) && category() == null && location() == null &&
-            tagId() == null
-        )
+                (starred() == null || starred() != 1) && (backed() == null || backed() != 1) &&
+                (social() == null || social() != 1) && category() == null && location() == null &&
+                tagId() == null
+            )
 
     /**
      * Determines if params are for Saved Projects, i.e. discovery with starred params.

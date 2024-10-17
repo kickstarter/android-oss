@@ -195,8 +195,7 @@ interface DiscoveryViewModel {
             showSettings = settingsClick
             showPledgedProjects = pledgedProjectsClick
 
-            val currentUser =
-                currentUserType.observable()
+            val currentUser = currentUserType.observable()
                 .map { it.getValue() ?: User.builder().build() }
                 .filter { it.isNotNull() }
                 .map { it }
@@ -400,16 +399,16 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
 
             val drawerOpenObservables = listOf(
-                childFilterRowClick.map {  },
-                topFilterRowClick.map {  },
-                internalToolsClick.map {  },
-                loggedOutLoginToutClick.map {  },
-                loggedOutHelpClick.map {  },
-                activityFeedClick.map {  },
-                messagesClick.map {  },
-                profileClick.map {  },
-                settingsClick.map {  },
-                pledgedProjectsClick.map {  }
+                childFilterRowClick.map { },
+                topFilterRowClick.map { },
+                internalToolsClick.map { },
+                loggedOutLoginToutClick.map { },
+                loggedOutHelpClick.map { },
+                activityFeedClick.map { },
+                messagesClick.map { },
+                profileClick.map { },
+                settingsClick.map { },
+                pledgedProjectsClick.map { }
             )
 
             Observable.merge(drawerOpenObservables)

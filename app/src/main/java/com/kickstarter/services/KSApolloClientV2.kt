@@ -226,6 +226,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 query
             ).toFlow()
                 .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
                 .subscribe { response ->
                     if (response.hasErrors()) {
                         if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
@@ -252,29 +255,28 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<DiscoverEnvelope>()
             this.service.query(
                 buildFetchProjectsQuery(discoveryParams, slug)
-            ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
-                }
-
-                override fun onResponse(response: Response<FetchProjectsQuery.Data>) {
-                    response.data?.let { responseData ->
-                        val projects = responseData.projects()?.edges()?.map {
-                            projectTransformer(it.node()?.fragments()?.projectCard())
-                        }
-                        val pageInfoEnvelope =
-                            responseData.projects()?.pageInfo()?.fragments()?.pageInfo()?.let {
-                                createPageInfoObject(it)
-                            }
-                        val discoverEnvelope = DiscoverEnvelope.builder()
-                            .projects(projects)
-                            .pageInfoEnvelope(pageInfoEnvelope)
-                            .build()
-                        ps.onNext(discoverEnvelope)
+            ).toFlow()
+            .asObservable()
+            .doOnError { throwable ->
+                ps.onError(throwable)
+            }
+            .subscribe { response ->
+                response.data?.let { responseData ->
+                    val projects = responseData.projects?.edges?.map {
+                        projectTransformer(it?.node?.projectCard)
                     }
-                    ps.onComplete()
+                    val pageInfoEnvelope =
+                        responseData.projects?.pageInfo?.pageInfo?.let {
+                            createPageInfoObject(it)
+                        }
+                    val discoverEnvelope = DiscoverEnvelope.builder()
+                        .projects(projects)
+                        .pageInfoEnvelope(pageInfoEnvelope)
+                        .build()
+                    ps.onNext(discoverEnvelope)
                 }
-            })
+                ps.onComplete()
+            }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -283,20 +285,15 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         discoveryParams: DiscoveryParams,
         slug: String?
     ): FetchProjectsQuery {
-        val query = FetchProjectsQuery.builder()
-            .sort(discoveryParams.sort()?.toProjectSort())
-            .apply {
-                slug?.let { cursor -> if (cursor.isNotEmpty()) this.cursor(cursor) }
-                discoveryParams.category()?.id()?.let { id -> this.categoryId(id.toString()) }
-                discoveryParams.recommended()
-                    ?.let { isRecommended -> this.recommended(isRecommended) }
-                discoveryParams.starred()?.let { isStarred -> this.starred(isStarred.toBoolean()) }
-                discoveryParams.backed()?.let { isBacked -> this.backed(isBacked.toBoolean()) }
-                discoveryParams.staffPicks()?.let { isPicked -> this.staffPicks(isPicked) }
-            }
-            .build()
-
-        return query
+        // TODO: improve nullability here
+        return FetchProjectsQuery(
+            sort = Optional.present(discoveryParams.sort()?.toProjectSort()),
+            cursor = Optional.present(slug),
+            categoryId = Optional.present(discoveryParams.category()?.id().toString()),
+            recommended = Optional.present(discoveryParams.recommended()),
+            starred = Optional.present(discoveryParams.starred().toBoolean()),
+            backed = Optional.present(discoveryParams.backed().toBoolean())
+        )
     }
 
     override fun createSetupIntent(project: Project?): Observable<String> {

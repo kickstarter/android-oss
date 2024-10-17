@@ -173,9 +173,7 @@ class DiscoveryActivity : AppCompatActivity() {
         viewModel.outputs.showInternalTools()
             .compose(Transformers.observeForUIV2())
             .subscribe {
-                internalTools?.let {
-                    startInternalToolsActivity()
-                }
+                internalTools?.maybeStartInternalToolsActivity(this)
             }
             .addToDisposable(disposables)
 
@@ -313,15 +311,6 @@ class DiscoveryActivity : AppCompatActivity() {
             intent,
             0,
             0
-        )
-    }
-
-    private fun startInternalToolsActivity() {
-        val intent = Intent(this, InternalToolsActivity::class.java)
-        this.startActivityWithTransition(
-            intent,
-            R.anim.slide_in_right,
-            R.anim.fade_out_slide_out_left
         )
     }
 

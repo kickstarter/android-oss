@@ -9,8 +9,8 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 class MockTrackingClient(
-    currentUser: CurrentUserType,
-    currentConfig: CurrentConfigType,
+    currentUser: CurrentUserTypeV2,
+    currentConfig: CurrentConfigTypeV2,
     private val type: Type,
     private val ffClient: FeatureFlagClientType
 ) : TrackingClientType() {
@@ -47,8 +47,8 @@ class MockTrackingClient(
     val identifiedUser = BehaviorSubject.create<User?>()
 
     init {
-        currentUser.observable().subscribe { user: User? -> propagateUser(user) }
-        currentConfig.observable().subscribe { c: Config? -> config = c }
+        currentUser.observable().map { propagateUser(it.getValue()) }.subscribe()
+        currentConfig.observable().map { c: Config? -> config = c }.subscribe()
     }
 
     override fun track(eventName: String, additionalProperties: Map<String, Any>) {

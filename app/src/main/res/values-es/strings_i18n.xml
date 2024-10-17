@@ -56,6 +56,7 @@
   <string name="Ask_a_question" formatted="false">Haz una pregunta</string>
   <string name="Ask_me_anything" formatted="false">¡Pregúntame!</string>
   <string name="Ask_the_project_creator_directly" formatted="false">Pregúntale al creador del proyecto directamente.</string>
+  <string name="Authenticate_card" formatted="false">Autenticar tarjeta</string>
   <string name="Authentication_failed_please_try_again" formatted="false">Autenticación fallida. Intenta de nuevo.</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">Autenticación exitosa. Desliza para actualizar.</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Disponible para reproducción %{time} %{units} más</string>
@@ -140,6 +141,7 @@ patrocinadores</string>
   <string name="Complete_payment" formatted="false">Completar pago</string>
   <string name="Confirm" formatted="false">Confirmar</string>
   <string name="Confirm_password" formatted="false">Confirmar nueva contraseña</string>
+  <string name="Confirm_your_address" formatted="false">Confirmar dirección</string>
   <string name="Confirm_your_pledge_details" formatted="false">Confirma los datos de tu contribución</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>
   <string name="Contact_backer" formatted="false">Contacta al patrocinador</string>
@@ -219,6 +221,7 @@ Toca para intentar de nuevo.</string>
   <string name="Double_tap_to_toggle_setting" formatted="false">Toca dos veces para cambiar la configuración</string>
   <string name="Download_your_personal_data" formatted="false">Descarga tus datos personales</string>
   <string name="Earth" formatted="false">Tierra</string>
+  <string name="Edit" formatted="false">Editar</string>
   <string name="Edit_profile" formatted="false">Editar perfil</string>
   <string name="Edit_reward" formatted="false">Editar recompensa</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Se canceló la contribución o el proyecto antes de que el plazo terminara.</string>
@@ -275,6 +278,7 @@ Toca para intentar de nuevo.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Proyectos a tu gusto - en arte, diseño, cine, juegos, música y otras categorías. Una vez que hayas patrocinado un proyecto, verás todas las actividades pertinentes aquí.</string>
   <string name="First_created" formatted="false">Primer proyecto creado</string>
   <string name="Fix" formatted="false">Corregir</string>
+  <string name="Fix_payment" formatted="false">Arreglar pago</string>
   <string name="Fix_payment_method" formatted="false">Corregir el método de pago</string>
   <string name="Fix_within_time_remaining" formatted="false">Corregir en %{time_remaining}</string>
   <string name="Fix_your_payment_method" formatted="false">Corrige tu método de pago</string>
@@ -490,6 +494,7 @@ Toca para intentar de nuevo.</string>
   <string name="Pledge" formatted="false">Contribución:</string>
   <string name="Pledge_activity" formatted="false">Actividad de contribución</string>
   <string name="Pledge_amount" formatted="false">Monto de contribución</string>
+  <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} contribuido</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
   <string name="Pledge_details" formatted="false">Detalles de la contribución</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Haz contribuciones a proyectos y revisa todos tus proyectos guardados y patrocinados - todo en un mismo lugar.</string>
@@ -622,6 +627,7 @@ Toca para intentar de nuevo.</string>
   <string name="Selected_card" formatted="false">Tarjeta seleccionada</string>
   <string name="Selected_reward" formatted="false">Recompensa seleccionada</string>
   <string name="Send" formatted="false">Enviar</string>
+  <string name="Send_a_message" formatted="false">Enviar un mensaje</string>
   <string name="Send_verfication_email" formatted="false">Enviar correo de verificación</string>
   <string name="Set_new_password" formatted="false">Configurar nueva contraseña</string>
   <string name="Set_your_password" formatted="false">Configura tu contraseña</string>
@@ -633,6 +639,7 @@ Toca para intentar de nuevo.</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Compartir este proyecto en Twitter.</string>
   <string name="Share_update" formatted="false">Compartir</string>
   <string name="Shipping" formatted="false">Envío</string>
+  <string name="Shipping_address" formatted="false">Dirección de envío</string>
   <string name="Shipping_addresses" formatted="false">Direcciones de envío</string>
   <string name="Shipping_destination" formatted="false">Destino de envío</string>
   <string name="Shipping_to_country" formatted="false">Envío: %{country}</string>
@@ -680,6 +687,7 @@ Toca para intentar de nuevo.</string>
   <string name="Suspicious_creator_behavior" formatted="false">Comportamiento del creador o actividad de contribución sospechosos</string>
   <string name="Sustainable_distribution" formatted="false">Distribución sustentable</string>
   <string name="Sustainable_materials" formatted="false">Materiales sustentables</string>
+  <string name="Take_survey" formatted="false">Completar cuestionario</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Haz clic en el icono de corazón de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Haz clic en el corazón en la página de cada proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Toca el icono de estrella de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
@@ -773,6 +781,7 @@ Toca para intentar de nuevo.</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Visita nuestro Centro de recursos medioambientales</string>
   <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Visita nuestro Centro de recursos medioambientales&lt;/a></string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
+  <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">No podemos autenticar tu método de pago. Desliza para actualizar la página y elegir otro.</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">Ya no admitimos el inicio de sesión a través de Facebook. Inicia sesión con tu contraseña de Kickstarter o configura una nueva contraseña con tu correo electrónico de Facebook.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">No podemos procesar esta contribución por un problema con el método de pago del patrocinador.</string>
   <string name="We_cant_process_your_pledge" formatted="false">No podemos procesar tu contribución.</string>

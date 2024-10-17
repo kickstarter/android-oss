@@ -80,7 +80,7 @@ abstract class CurrentUserTypeV2 {
 class CurrentUserV2(
     private val accessTokenPreference: StringPreferenceType,
     private val deviceRegistrar: DeviceRegistrarType,
-    gson: Gson,
+    private val gson: Gson,
     private val userPreference: StringPreferenceType
 ) : CurrentUserTypeV2() {
     val user = BehaviorSubject.create<KsOptional<User>>()
@@ -137,6 +137,7 @@ class CurrentUserV2(
 
     override fun refresh(freshUser: User) {
         user.onNext(KsOptional.of(freshUser))
+        userPreference.set(gson.toJson(freshUser, User::class.java))
     }
 
     override fun observable(): Observable<KsOptional<User>> {

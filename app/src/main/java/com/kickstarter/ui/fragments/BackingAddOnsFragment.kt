@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.ui.ArgumentsKey
@@ -42,12 +44,14 @@ class BackingAddOnsFragment : Fragment() {
         binding = FragmentBackingAddonsBinding.inflate(inflater, container, false)
         val view = binding?.root
         binding?.composeView?.apply {
-            val env = this?.context?.getEnvironment()?.let { env ->
+            val env = this.context?.getEnvironment()?.let { env ->
                 viewModelFactoryC = AddOnsViewModel.Factory(env, bundle = arguments)
-                // viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
                 viewModelC.provideBundle(arguments)
                 env
             }
+
+            val ffClient = requireNotNull(env?.featureFlagClient())
+            activity?.let { ffClient.activate(it) }
 
             viewModelC.provideErrorAction { message ->
                 activity?.runOnUiThread {
@@ -95,7 +99,8 @@ class BackingAddOnsFragment : Fragment() {
                                     viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
                                         showPledgeFragment(
                                             pledgeData = pDataAndReason.first,
-                                            pledgeReason = pDataAndReason.second
+                                            pledgeReason = pDataAndReason.second,
+                                            ffClient = ffClient
                                         )
                                     }
                                 } else {
@@ -116,8 +121,13 @@ class BackingAddOnsFragment : Fragment() {
         return view
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason)
+    private fun showPledgeFragment(
+        pledgeData: PledgeData,
+        pledgeReason: PledgeReason,
+        ffClient: FeatureFlagClientType
+    ) {
+        val ffEnabled = ffClient.getBoolean(FlagKey.ANDROID_FIX_PLEDGE_REFACTOR)
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, ffEnabled)
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)

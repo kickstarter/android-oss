@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -165,11 +166,12 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         }
                 }
 
-                viewModel.provideSnackbarMessage { stringId, type ->
+                viewModel.provideSnackbarMessage { stringId, type, duration ->
                     lifecycleScope.launch {
                         snackbarHostState.showSnackbar(
                             message = getString(stringId),
-                            actionLabel = type
+                            actionLabel = type,
+                            duration = duration
                         )
                     }
                 }
@@ -258,7 +260,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                     } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||
                         result.outcome == StripeIntentResult.Outcome.TIMEDOUT ||
                         result.outcome == StripeIntentResult.Outcome.UNKNOWN
-                    ) viewModel.showErrorSnackbar(R.string.Authentication_failed_please_try_again)
+                    ) viewModel.showErrorSnackbar(R.string.We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method, duration = SnackbarDuration.Long)
                 }
                 override fun onError(e: Exception) {
                     lifecycleScope.launch {

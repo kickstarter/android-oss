@@ -263,7 +263,7 @@ fun ProjectPledgeSummaryView(
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
             Text(
-                text = stringResource(id = R.string.pledge_amount_pledged_fpo).format("pledge_amount", pledgeAmount),
+                text = stringResource(id = R.string.Pledge_amount_pledged).format("pledge_amount", pledgeAmount),
                 color = colors.textSecondary,
                 style = typography.caption2
             )
@@ -319,7 +319,7 @@ fun CreatorNameSendMessageView(
                 .clickable { sendAMessageClickAction.invoke() }
         ) {
             Text(
-                text = stringResource(id = R.string.send_a_message_fpo),
+                text = stringResource(id = R.string.Send_a_message),
                 color = colors.textAccentGreen,
                 style = typography.caption2
             )
@@ -347,7 +347,7 @@ fun ShippingAddressView(
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
         Text(
-            text = stringResource(id = R.string.shipping_address_fpo),
+            text = stringResource(id = R.string.Shipping_address),
             modifier = Modifier
                 .weight(0.25f)
                 .height(dimensions.clickableButtonHeight)
@@ -415,7 +415,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             modifier = Modifier
                 .weight(0.5f),
             onClickAction = { onEditAddressClicked.invoke() },
-            text = stringResource(id = R.string.edit_fpo),
+            text = stringResource(id = R.string.Edit),
             isEnabled = true,
             textStyle = typography.buttonText
         )
@@ -437,7 +437,7 @@ fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onFixPaymentClicked.invoke() },
-        text = stringResource(id = R.string.fix_payment_fpo),
+        text = stringResource(id = R.string.Fix_payment),
         isEnabled = true,
         textStyle = typography.buttonText
     )
@@ -448,7 +448,7 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
     KSSecondaryRedButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
-        text = stringResource(id = R.string.authenticate_card_fpo),
+        text = stringResource(id = R.string.Authenticate_card),
         isEnabled = true,
         textStyle = typography.buttonText
     )
@@ -459,7 +459,7 @@ fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
     KSPrimaryGreenButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
         onClickAction = { onAuthenticateCardClicked.invoke() },
-        text = stringResource(id = R.string.take_survey_fpo),
+        text = stringResource(id = R.string.Take_survey),
         isEnabled = true,
         textStyle = typography.buttonText
     )

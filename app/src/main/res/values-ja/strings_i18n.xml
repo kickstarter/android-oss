@@ -56,6 +56,7 @@
   <string name="Ask_a_question" formatted="false">質問する</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Ask_the_project_creator_directly" formatted="false">プロジェクトのクリエイターに直接お問い合わせください。</string>
+  <string name="Authenticate_card" formatted="false">カードの認証手続き</string>
   <string name="Authentication_failed_please_try_again" formatted="false">認証に失敗しました。もう一度お試しください。</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">認証が成功しました。画面をプルダウンして、更新してください。</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
@@ -138,6 +139,7 @@
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm" formatted="false">確定する</string>
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
+  <string name="Confirm_your_address" formatted="false">住所確認</string>
   <string name="Confirm_your_pledge_details" formatted="false">プレッジの詳細を確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_backer" formatted="false">バッカーに連絡する</string>
@@ -217,6 +219,7 @@
   <string name="Double_tap_to_toggle_setting" formatted="false">ダブルタップして設定を切り替える</string>
   <string name="Download_your_personal_data" formatted="false">自分の個人データをダウンロード</string>
   <string name="Earth" formatted="false">全世界</string>
+  <string name="Edit" formatted="false">編集</string>
   <string name="Edit_profile" formatted="false">プロフィールを編集</string>
   <string name="Edit_reward" formatted="false">リワードを編集する</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">プレッジもプロジェクトも期限前にキャンセル済</string>
@@ -273,6 +276,7 @@
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
   <string name="Fix" formatted="false">修正する</string>
+  <string name="Fix_payment" formatted="false">お支払い方法の修正</string>
   <string name="Fix_payment_method" formatted="false">お支払い方法を修正</string>
   <string name="Fix_within_time_remaining" formatted="false">%{time_remaining} 以内に修正してください</string>
   <string name="Fix_your_payment_method" formatted="false">お支払い方法を修正</string>
@@ -487,6 +491,7 @@
   <string name="Pledge" formatted="false">プレッジする</string>
   <string name="Pledge_activity" formatted="false">プレッジ</string>
   <string name="Pledge_amount" formatted="false">プレッジする金額</string>
+  <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} のプレッジ</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">プレッジでプロジェクトに生命を。</string>
   <string name="Pledge_details" formatted="false">プレッジ詳細</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。</string>
@@ -620,6 +625,7 @@
   <string name="Selected_card" formatted="false">選択済みのカード</string>
   <string name="Selected_reward" formatted="false">選択したリワード</string>
   <string name="Send" formatted="false">送信</string>
+  <string name="Send_a_message" formatted="false">メッセージを送る</string>
   <string name="Send_verfication_email" formatted="false">認証メールを送信する</string>
   <string name="Set_new_password" formatted="false">新しいパスワードを設定</string>
   <string name="Set_your_password" formatted="false">パスワードを設定</string>
@@ -631,6 +637,7 @@
   <string name="Share_this_project_on_Twitter" formatted="false">プロジェクトをツイッターでシェアしましょう。</string>
   <string name="Share_update" formatted="false">アップデートをシェアしましょう</string>
   <string name="Shipping" formatted="false">配送</string>
+  <string name="Shipping_address" formatted="false">配送先住所</string>
   <string name="Shipping_addresses" formatted="false">配送先住所</string>
   <string name="Shipping_destination" formatted="false">配送地域</string>
   <string name="Shipping_to_country" formatted="false">送料：%{country}</string>
@@ -678,6 +685,7 @@
   <string name="Suspicious_creator_behavior" formatted="false">不審なクリエイターの言動、または不審なプレッジ行為</string>
   <string name="Sustainable_distribution" formatted="false">持続可能な流通</string>
   <string name="Sustainable_materials" formatted="false">持続可能な材料</string>
+  <string name="Take_survey" formatted="false">サーベイに回答する</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">終了48時間前に知らせるにはハートのアイコンをタップ！</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">星のマークを押すと、終了48時間前に通知が届きます。</string>
@@ -771,6 +779,7 @@
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Kickstarter の環境リソースセンターにアクセス</string>
   <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Kickstarter の環境リソースセンターにアクセス&lt;/a></string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
+  <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">お支払い方法を認証できませんでした。プルダウンしてページを更新し、別のお支払い方法をお選びください。</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">Facebook を介したログインはできなくなりました。Kickstarter のパスワードを使ってログインするか、Facebook のメールアドレスを使って新しいパスワードを設定してください。</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">バッカーのお支払い方法で問題があったためこのプレッジを処理することができません。</string>
   <string name="We_cant_process_your_pledge" formatted="false">プレッジを処理することができません。</string>

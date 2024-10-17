@@ -11,7 +11,7 @@ import com.braze.support.BrazeLogger
 import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
@@ -151,7 +151,7 @@ open class BrazeClient(
      * on the `onIntegrationReady` callback
      */
     companion object {
-        fun setInAppCustomListener(currentUser: CurrentUserType, build: Build) {
+        fun setInAppCustomListener(currentUser: CurrentUserTypeV2, build: Build) {
             BrazeInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, build))
         }
     }

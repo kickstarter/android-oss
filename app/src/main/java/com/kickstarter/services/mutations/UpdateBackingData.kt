@@ -24,7 +24,7 @@ fun getUpdateBackingData(
     backing: Backing,
     amount: String? = null,
     locationId: String? = null,
-    rewardsList: List<Reward> = listOf(),
+    rewardsList: List<Reward>? = null,
     pMethod: StoredCard? = null
 ): UpdateBackingData {
     return pMethod?.let { card ->

@@ -786,6 +786,106 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test fix Pledge Flow`() = runTest {
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        val rewardBacked = RewardFactory.rewardWithShipping().toBuilder()
+            .shippingRules(shippingRules = shippingRules)
+            .build()
+
+        val addOns1Backed = RewardFactory.rewardWithShipping()
+            .toBuilder()
+            .isAddOn(true)
+            .shippingRules(shippingRules)
+            .build()
+
+        val backing = BackingFactory.backing(rewardBacked)
+            .toBuilder()
+            .addOns(listOf(addOns1Backed))
+            .location(shippingRules.first().location())
+            .locationId(shippingRules.first().location()?.id())
+            .bonusAmount(5.0)
+            .amount(44.0)
+            .shippingAmount(33f)
+            .paymentSource(PaymentSourceFactory.visa())
+            .build()
+
+        val project = ProjectFactory.project().toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .rewards(listOf(rewardBacked))
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.FIX_PLEDGE),
+            projectData,
+            rewardBacked,
+            bonusAmount = 7.0,
+            addOns = listOf(addOns1Backed.toBuilder().quantity(5).build())
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.FIX_PLEDGE)
+
+        lateinit var data: UpdateBackingData
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("", "hola@ksr.com", true, true, true, true, "USD")
+                    )
+                }
+
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                    data = updateBackingData
+                    val checkout = Checkout.builder().id(77L).backing(Checkout.Backing.builder().requiresAction(false).clientSecret("clientSecret").build()).build()
+                    return Observable.just(checkout)
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val checkout = mutableListOf<Pair<CheckoutData, PledgeData>>()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+            viewModel.userChangedPaymentMethodSelected(cards.first())
+            viewModel.pledgeOrUpdatePledge()
+            viewModel.checkoutResultState.toList(checkout)
+        }
+        advanceUntilIdle()
+
+        assertEquals(data.rewardsIds?.size, null)
+        assertEquals(data.rewardsIds?.first(), null)
+        assertEquals(data.amount, null)
+
+        // Fix pledge flow should only payment ID anything else
+        assertEquals(data.rewardsIds?.size, null)
+        assertEquals(data.rewardsIds?.first(), null)
+        assertEquals(data.amount, null)
+        assertEquals(data.paymentSourceId, cards.first().id())
+    }
+
+    @Test
     fun `test adding new paymentMethod throw Stripe's paymentSheet`() = runTest {
 
         val reward = RewardFactory.reward()

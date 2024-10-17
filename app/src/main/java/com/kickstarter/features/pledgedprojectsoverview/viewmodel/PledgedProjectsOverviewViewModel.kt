@@ -1,5 +1,6 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
+import androidx.compose.material.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -94,7 +95,7 @@ class PledgedProjectsOverviewViewModel(
 
     private val mutablePpoCards = MutableStateFlow<PagingData<PPOCard>>(PagingData.empty())
     private var mutableProjectFlow = MutableSharedFlow<Project>()
-    private var snackbarMessage: (stringID: Int, type: String) -> Unit = { _, _ -> }
+    private var snackbarMessage: (stringID: Int, type: String, duration: SnackbarDuration) -> Unit = { _, _, _ -> }
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analyticEvents = requireNotNull(environment.analytics())
 
@@ -201,7 +202,7 @@ class PledgedProjectsOverviewViewModel(
         }
     }
 
-    fun provideSnackbarMessage(snackBarMessage: (Int, String) -> Unit) {
+    fun provideSnackbarMessage(snackBarMessage: (Int, String, SnackbarDuration) -> Unit) {
         this.snackbarMessage = snackBarMessage
     }
 
@@ -218,12 +219,12 @@ class PledgedProjectsOverviewViewModel(
         )
     }
 
-    fun showHeadsUpSnackbar(messageId: Int) {
-        snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_HEADS_UP.name)
+    fun showHeadsUpSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {
+        snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_HEADS_UP.name, duration)
     }
 
-    fun showErrorSnackbar(messageId: Int) {
-        snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name)
+    fun showErrorSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {
+        snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name, duration)
     }
 
     class Factory(

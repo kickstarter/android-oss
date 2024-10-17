@@ -162,7 +162,9 @@ fun Uri.isModalUri(webEndpoint: String): Boolean {
 fun Uri.isProjectSurveyUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && (
         PROJECT_SURVEY.matcher(path()).matches() || PROJECT_SURVEY_EDIT.matcher(path())
-            .matches() || PROJECT_SURVEY_EDIT_ADDRESS.matcher(path()).matches()
+            .matches() || PROJECT_SURVEY_EDIT_ADDRESS.matcher(path())
+            .matches() || PROJECT_SURVEY_BACKING_REDEEM.matcher(path())
+            .matches() || PROJECT_SURVEY_BACKING_PLEDGE_REDEMPTION.matcher(path()).matches()
         )
 }
 
@@ -255,6 +257,16 @@ private val PROJECT_SURVEY_EDIT = Pattern.compile(
 //  /projects/:creator_param/:project_param/surveys/:survey_param/edit_address
 private val PROJECT_SURVEY_EDIT_ADDRESS = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\/edit_address\\z"
+)
+
+//  /projects/:creator_param/:project_param/backing/pledge_redemption
+private val PROJECT_SURVEY_BACKING_PLEDGE_REDEMPTION = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/pledge_redemption\\z"
+)
+
+//  /projects/:creator_param/:project_param/backing/redeem
+private val PROJECT_SURVEY_BACKING_REDEEM = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/redeem\\z"
 )
 
 //  /projects/:creator_param/:project_param/mark_reward_fulfilled/true

@@ -1,20 +1,23 @@
 package com.kickstarter.libs.braze
 
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.models.User
 
 class InAppCustomListenerHandler(
-    private val currentUser: CurrentUserType
+    private val currentUser: CurrentUserTypeV2
 ) {
     private var loggedInUser: User? = null
 
     init {
 
         this.currentUser.observable()
+            .filter { it.isPresent() }
+            .map { requireNotNull(it.getValue()) }
             .distinctUntilChanged()
-            .subscribe {
+            .map {
                 this.loggedInUser = it
             }
+            .subscribe()
     }
 
     /**

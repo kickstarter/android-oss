@@ -3,7 +3,7 @@ package com.kickstarter.libs.utils
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -113,7 +113,7 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
             .countryCode(countryCode)
             .build()
 
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         return KSCurrency(currentConfig)

@@ -26,7 +26,6 @@ import com.kickstarter.libs.utils.extensions.checkPermissions
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.InternalToolsActivity
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.data.LoginReason

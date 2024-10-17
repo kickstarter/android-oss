@@ -9,7 +9,6 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Predicate
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.io.IOException
@@ -29,7 +28,7 @@ class CurrentConfig(
             .map { configJSONString(it, assetManager) }
             .filter { gson.fromJson(it, Config::class.java).isNotNull() }
             .map { gson.fromJson(it, Config::class.java) }
-            .map{ it }
+            .map { it }
             .compose(Transformers.neverErrorV2())
             .subscribeOn(AndroidSchedulers.mainThread())
 

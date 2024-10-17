@@ -16,7 +16,6 @@ import com.kickstarter.viewmodels.FacebookConfirmationViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-
 class FacebookConfirmationActivity : ComponentActivity() {
     private lateinit var binding: FacebookConfirmationLayoutBinding
     private lateinit var viewModelFactory: FacebookConfirmationViewModel.Factory

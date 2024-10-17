@@ -4,26 +4,26 @@ import android.Manifest
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Animatable
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
-import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkPermissions
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
@@ -31,23 +31,26 @@ import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.showErrorSnackBar
 import com.kickstarter.ui.extensions.showSuccessSnackBar
+import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
-@RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
-class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
+class DiscoveryActivity : AppCompatActivity() {
     private lateinit var drawerAdapter: DiscoveryDrawerAdapter
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
     private lateinit var consentManagementDialogFragment: ConsentManagementDialogFragment
     private var internalTools: InternalToolsType? = null
     private lateinit var binding: DiscoveryLayoutBinding
+    private lateinit var viewModelFactory: DiscoveryViewModel.Factory
+    private val viewModel: DiscoveryViewModel.DiscoveryViewModel by viewModels { viewModelFactory }
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -55,7 +58,17 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        environment()
+        getEnvironment()?.let { env ->
+            viewModelFactory = DiscoveryViewModel.Factory(env)
+
+            if (savedInstanceState == null) {
+                activateFeatureFlags(env)
+            }
+
+            internalTools = env.internalTools()
+        }
+
+        viewModel.provideIntent(intent)
 
         // TODO: Replace with compose implementation
         val nightModeFlags = this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
@@ -66,13 +79,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             }
         )
 
-        if (savedInstanceState == null) {
-            activateFeatureFlags(environment())
-        }
-
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
-
-        internalTools = environment().internalTools()
 
         drawerLayoutManager = LinearLayoutManager(this)
 
@@ -102,35 +109,37 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         addTabSelectedListenerToTabLayout()
 
         viewModel.outputs.expandSortTabLayout()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.discoverySortAppBarLayout.setExpanded(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.updateToolbarWithParams()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.discoveryToolbar.discoveryToolbar.loadParams(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.updateParamsForPage()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.discoveryViewPager.currentItem = it.sort().positionFromSort()
                 pagerAdapter.takeParams(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showNotifPermissionsRequest()
             .distinctUntilChanged()
             .filter {
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                     this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
             }
             .delay(2000, TimeUnit.MILLISECONDS)
-            .compose(bindToLifecycle())
             .subscribe {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
                 viewModel.inputs.hasSeenNotificationsPermission(true)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showConsentManagementDialog()
             .distinctUntilChanged()
@@ -139,90 +148,86 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
                 consentManagementDialogFragment.isCancelable = false
                 consentManagementDialogFragment.show(supportFragmentManager, "consentManagementDialogFragment")
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.clearPages()
-            .compose(bindToLifecycle())
-            .compose<List<Int?>>(Transformers.observeForUI())
+            .compose<List<Int?>>(Transformers.observeForUIV2())
             .subscribe { pagerAdapter.clearPages(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.rootCategoriesAndPosition()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { pagerAdapter.takeCategoriesForPosition(it.first, it.second) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showActivityFeed()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startActivityFeedActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showHelp()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startHelpSettingsActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showInternalTools()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { internalTools?.maybeStartInternalToolsActivity(this) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe {
+                internalTools?.maybeStartInternalToolsActivity(this)
+            }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showLoginTout()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startLoginToutActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showMessages()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startMessageThreadsActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showProfile()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startProfileActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showPledgedProjects()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startPledgedProjectsOverview() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showSettings()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { startSettingsActivity() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.navigationDrawerData()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { drawerAdapter.takeData(it) }
+            .addToDisposable(disposables)
 
-        viewModel.outputs.drawerIsOpen()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(RxDrawerLayout.open(binding.discoveryDrawerLayout, GravityCompat.START))
+        viewModel.closeDrawer()
+            .compose(Transformers.observeForUIV2())
+            .subscribe { binding.discoveryDrawerLayout.closeDrawer(GravityCompat.START) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.drawerMenuIcon()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { drawerMenuIcon: Int -> updateDrawerMenuIcon(drawerMenuIcon) }
-
-        //endregion
-        RxDrawerLayout.drawerOpen(binding.discoveryDrawerLayout, GravityCompat.START)
-            .skip(1)
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { viewModel.inputs.openDrawer(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showSuccessMessage()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this@DiscoveryActivity.showSuccessSnackBar(binding.discoveryAnchorView, it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.showErrorMessage()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
+            .addToDisposable(disposables)
     }
 
     private fun activateFeatureFlags(environment: Environment) {
@@ -255,48 +260,58 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         }
     }
 
-    protected fun startActivityFeedActivity() {
+    private fun startActivityFeedActivity() {
         startActivity(Intent(this, ActivityFeedActivity::class.java))
     }
 
-    protected fun startHelpSettingsActivity() {
+    private fun startHelpSettingsActivity() {
         startActivity(Intent(this, HelpSettingsActivity::class.java))
     }
 
     private fun startLoginToutActivity() {
         val intent = Intent(this, LoginToutActivity::class.java)
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+        this.startActivityWithTransition(
+            intent,
+            R.anim.slide_in_right,
+            R.anim.fade_out_slide_out_left
+        )
     }
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        this.startActivityWithTransition(
+            intent,
+            R.anim.slide_in_right,
+            R.anim.fade_out_slide_out_left
+        )
     }
 
     private fun startProfileActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        this.startActivityWithTransition(
+            intent,
+            R.anim.slide_in_right,
+            R.anim.fade_out_slide_out_left
+        )
     }
 
     private fun startPledgedProjectsOverview() {
         val intent = Intent(this, PledgedProjectsOverviewActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        this.startActivityWithTransition(
+            intent,
+            R.anim.slide_in_right,
+            R.anim.fade_out_slide_out_left
+        )
     }
 
     private fun startSettingsActivity() {
         val intent = Intent(this, SettingsActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(0, 0)
-    }
-
-    override fun onDestroy() {
-        viewModel = null
-        super.onDestroy()
+        this.startActivityWithTransition(
+            intent,
+            0,
+            0
+        )
     }
 
     companion object {

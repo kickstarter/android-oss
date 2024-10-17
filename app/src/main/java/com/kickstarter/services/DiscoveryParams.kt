@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
 import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
 import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toInteger
 import com.kickstarter.models.Category
@@ -345,8 +346,9 @@ class DiscoveryParams private constructor(
      */
     val isAllProjects: Boolean
         get() = (
-            staffPicks().isFalse() && (starred() == null || starred() != 1) && (backed() == null || backed() != 1) &&
-                (social() == null || social() != 1) && category() == null && location() == null && recommended().isFalse() &&
+            (staffPicks().isFalse() || staffPicks().isNull()) &&
+                (starred() == null || starred() != 1) && (backed() == null || backed() != 1) &&
+                (social() == null || social() != 1) && category() == null && location() == null &&
                 tagId() == null
             )
 

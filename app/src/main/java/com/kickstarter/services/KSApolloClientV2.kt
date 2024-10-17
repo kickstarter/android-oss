@@ -3,7 +3,7 @@ package com.kickstarter.services
 import CancelBackingMutation
 import ClearUserUnseenActivityMutation
 import CompleteOnSessionCheckoutMutation
-import CreateAttributionEventMutation
+import CompleteOrderMutation
 import CreateBackingMutation
 import CreateCheckoutMutation
 import CreateCommentMutation
@@ -39,11 +39,8 @@ import UserPrivacyQuery
 import ValidateCheckoutQuery
 import WatchProjectMutation
 import android.util.Pair
-import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
@@ -1599,15 +1596,15 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     ps.onError(throwable)
                 }
                 .subscribe { response ->
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
-                        }
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                    }
 
-                        response.data?.let {
-                            val isSuccess = it.createAttributionEvent?.successful ?: false
-                            ps.onNext(isSuccess)
-                        }
-                        ps.onComplete()
+                    response.data?.let {
+                        val isSuccess = it.createAttributionEvent?.successful ?: false
+                        ps.onNext(isSuccess)
+                    }
+                    ps.onComplete()
                 }.dispose()
             return@defer ps
         }
@@ -1619,24 +1616,23 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             val mutation = getCreateOrUpdateBackingAddressMutation(eventInput)
 
-            service.mutate(mutation)
-                .enqueue(object : ApolloCall.Callback<CreateOrUpdateBackingAddressMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            service.mutation(mutation)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
                     }
 
-                    override fun onResponse(response: Response<CreateOrUpdateBackingAddressMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
-                        }
-
-                        response.data?.let {
-                            val isSuccess = it.createOrUpdateBackingAddress()?.success() ?: false
-                            ps.onNext(isSuccess)
-                        }
-                        ps.onComplete()
+                    response.data?.let {
+                        val isSuccess = it.createOrUpdateBackingAddress?.success ?: false
+                        ps.onNext(isSuccess)
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -1645,33 +1641,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<CompleteOrderPayload>()
 
-            this.service.mutate(
-                CompleteOrderMutation.builder()
-                    .projectId(orderInput.projectId)
-                    .stripePaymentMethodId(orderInput.stripePaymentMethodId)
-                    .paymentSourceId(orderInput.paymentSourceId)
-                    .paymentSourceReusable(orderInput.paymentSourceReusable)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<CompleteOrderMutation.Data>() {
-                override fun onFailure(exception: ApolloException) {
-                    ps.onError(exception)
+            val mutation = CompleteOrderMutation(
+                orderId = "",
+                stripePaymentMethodId = Optional.present(orderInput.stripePaymentMethodId),
+                paymentSourceReusable = Optional.present(orderInput.paymentSourceReusable)
+            )
+            this.service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
                 }
-
-                override fun onResponse(response: Response<CompleteOrderMutation.Data>) {
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message ?: ""))
                     }
 
-                    response.data?.completeOrder()?.let {
+                    response.data?.completeOrder?.let {
                         val payload = CompleteOrderPayload(
-                            status = it.status(),
-                            clientSecret = it?.clientSecret() ?: ""
+                            status = it.status.name,
+                            clientSecret = it?.clientSecret ?: ""
                         )
                         ps.onNext(payload)
                     }
                     ps.onComplete()
-                }
-            })
+                }.dispose()
 
             return@defer ps
         }
@@ -1683,31 +1678,30 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             this.service.query(
                 getPledgedProjectsOverviewQuery(inputData)
-            )
-                .enqueue(object : ApolloCall.Callback<PledgedProjectsOverviewQuery.Data>() {
-                    override fun onFailure(e: ApolloException) {
-                        ps.onError(e)
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
                     }
 
-                    override fun onResponse(response: Response<PledgedProjectsOverviewQuery.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
-                        }
-
-                        response.data?.let { data ->
-                            Observable.just(data.pledgeProjectsOverview())
-                                .filter { it.pledges() != null }
-                                .map { pledgeProjectsOverview ->
-                                    pledgedProjectsOverviewEnvelopeTransformer(pledgeProjectsOverview)
-                                }
-                                .filter { it.isNotNull() }
-                                .subscribe {
-                                    ps.onNext(it)
-                                    ps.onComplete()
-                                }
-                        }
+                    response.data?.let { data ->
+                        // TODO: Remove this extra observable
+                        Observable.just(data.pledgeProjectsOverview)
+                            .filter { it.pledges != null }
+                            .map { pledgeProjectsOverview ->
+                                pledgedProjectsOverviewEnvelopeTransformer(pledgeProjectsOverview)
+                            }
+                            .filter { it.isNotNull() }
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onComplete()
+                            }.dispose()
                     }
-                })
+                }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

@@ -913,22 +913,21 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
 }
 
 fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAddressData): CreateOrUpdateBackingAddressMutation {
-    val graphInput =
-        CreateOrUpdateBackingAddressInput.builder()
-            .addressId(eventInput.addressID)
-            .backingId(eventInput.backingID)
-            .build()
 
-    return CreateOrUpdateBackingAddressMutation.builder().input(graphInput).build()
+    val graphInput = CreateOrUpdateBackingAddressInput(
+        addressId = eventInput.addressID,
+        backingId = eventInput.backingID
+    )
+    return CreateOrUpdateBackingAddressMutation(input = graphInput)
 }
 
 fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData): PledgedProjectsOverviewQuery {
-    return PledgedProjectsOverviewQuery.builder()
-        .after(queryInput.after)
-        .before(queryInput.before)
-        .first(queryInput.first)
-        .last(queryInput.last)
-        .build()
+    return PledgedProjectsOverviewQuery(
+        after = Optional.present(queryInput.after),
+        before = Optional.present(queryInput.before),
+        first = Optional.present(queryInput.first),
+        last = Optional.present(queryInput.last)
+    )
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {

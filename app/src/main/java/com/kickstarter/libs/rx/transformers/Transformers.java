@@ -1,12 +1,11 @@
 package com.kickstarter.libs.rx.transformers;
 
+import androidx.annotation.NonNull;
+
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
-import androidx.annotation.NonNull;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.subjects.PublishSubject;
 
 public final class Transformers {
   private Transformers() {}
@@ -68,43 +67,10 @@ public final class Transformers {
    * errors publish subject. `null` values will never be sent to
    * the publish subject.
    *
-   * @deprecated Use {@link Observable#materialize()} instead.
-   */
-  @Deprecated
-  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(final @NonNull PublishSubject<ErrorEnvelope> errorSubject) {
-    return new NeverApiErrorTransformer<>(errorSubject::onNext);
-  }
-
-  /**
-   * Prevents an observable from erroring on any {@link ApiException} exceptions,
-   * and any errors that do occur will be piped into the supplied
-   * errors publish subject. `null` values will never be sent to
-   * the publish subject.
-   *
    * Adapted to RxJava 2
    */
   public static <T> NeverApiErrorTransformerV2<T> pipeApiErrorsToV2(final @NonNull io.reactivex.subjects.PublishSubject<ErrorEnvelope> errorSubject) {
     return new NeverApiErrorTransformerV2<>(errorSubject::onNext);
-  }
-
-  /**
-   * Prevents an observable from erroring on any {@link ApiException} exceptions,
-   * and any errors that do occur will be piped into the supplied
-   * errors actions. `null` values will never be sent to the action.
-   *
-   * @deprecated Use {@link Observable#materialize()} instead.
-   */
-  @Deprecated
-  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(final @NonNull Action1<ErrorEnvelope> errorAction) {
-    return new NeverApiErrorTransformer<>(errorAction);
-  }
-
-  /**
-   * Emits the latest value of the source observable whenever the `when`
-   * observable emits.
-   */
-  public static <S, T> TakeWhenTransformer<S, T> takeWhen(final @NonNull Observable<T> when) {
-    return new TakeWhenTransformer<>(when);
   }
 
   /**
@@ -121,6 +87,7 @@ public final class Transformers {
    * Emits the latest value of the source `when` observable whenever the
    * `when` observable emits.
    */
+  // TODO: Delete this when last RX1 is removed
   public static <S, T> TakePairWhenTransformer<S, T> takePairWhen(final @NonNull Observable<T> when) {
     return new TakePairWhenTransformer<>(when);
   }
@@ -142,6 +109,7 @@ public final class Transformers {
   /**
    * Emits the latest values from two observables whenever either emits.
    */
+  // TODO: Delete this when last RX1 is removed
   public static <S, T> CombineLatestPairTransformer<S, T> combineLatestPair(final @NonNull Observable<T> second) {
     return new CombineLatestPairTransformer<>(second);
   }
@@ -151,19 +119,6 @@ public final class Transformers {
    */
   public static <S, T> CombineLatestPairTransformerV2<S, T> combineLatestPair(final @NonNull io.reactivex.Observable<T> second) {
     return new CombineLatestPairTransformerV2<>(second);
-  }
-  /**
-   * Waits until `until` emits one single item and then switches context to the source. This
-   * can be useful to delay work until a user logs in:
-   *
-   * ```
-   * somethingThatRequiresAuth
-   *   .compose(waitUntil(currentUser.loggedInUser()))
-   *   .subscribe(show)
-   * ```
-   */
-  public static @NonNull <T, R> WaitUntilTransformer<T, R> waitUntil(final @NonNull Observable<R> until) {
-    return new WaitUntilTransformer<>(until);
   }
 
   /**

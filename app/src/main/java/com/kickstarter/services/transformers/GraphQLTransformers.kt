@@ -5,6 +5,7 @@ import CreateOrUpdateBackingAddressMutation
 import PledgedProjectsOverviewQuery
 import TriggerThirdPartyEventMutation
 import UserPrivacyQuery
+import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
@@ -903,15 +904,12 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
     // Use gson to convert map -> JSON type to match mutation
     val eventPropertiesJson = gson.toJson(eventInput.eventProperties)
 
-    val graphInput =
-        CreateAttributionEventInput.builder()
-            .eventName(eventInput.eventName)
-            .eventProperties(eventPropertiesJson)
-            .projectId(eventInput.projectId)
-            .build()
-
-    return CreateAttributionEventMutation.builder().input(graphInput)
-        .build()
+    val input = CreateAttributionEventInput(
+        eventName = eventInput.eventName,
+        eventProperties = Optional.present(eventPropertiesJson),
+        projectId = Optional.present(eventInput.projectId)
+    )
+    return CreateAttributionEventMutation(input = input)
 }
 
 fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAddressData): CreateOrUpdateBackingAddressMutation {

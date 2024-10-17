@@ -1592,25 +1592,23 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<Boolean>()
 
             val mutation = getCreateAttributionEventMutation(eventInput, gson)
-
-            service.mutate(mutation)
-                .enqueue(object : ApolloCall.Callback<CreateAttributionEventMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<CreateAttributionEventMutation.Data>) {
+            service.mutation(mutation)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message ?: ""))
                         }
 
                         response.data?.let {
-                            val isSuccess = it.createAttributionEvent()?.successful() ?: false
+                            val isSuccess = it.createAttributionEvent?.successful ?: false
                             ps.onNext(isSuccess)
                         }
                         ps.onComplete()
-                    }
-                })
+                }.dispose()
             return@defer ps
         }
     }

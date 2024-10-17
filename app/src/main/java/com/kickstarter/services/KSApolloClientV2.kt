@@ -101,6 +101,7 @@ import kotlinx.coroutines.rx2.asObservable
 import type.BackingState
 import type.CurrencyCode
 import type.Date
+import type.DateTime
 import type.NonDeprecatedFlaggingKind
 import type.PaymentTypes
 import type.StripeIntentContextTypes
@@ -1204,50 +1205,48 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
-            this.service.query(
-                GetProjectCommentsQuery.builder()
-                    .cursor(cursor.ifEmpty { null })
-                    .slug(slug)
-                    .limit(limit)
-                    .build()
+            val query = GetProjectCommentsQuery(
+                cursor = Optional.present(cursor), // TODO: review! before it was -> cursor.ifEmpty { null }
+                slug = slug,
+                limit = limit
             )
-                .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {
-                    override fun onFailure(e: ApolloException) {
-                        ps.onError(e)
-                    }
-
-                    override fun onResponse(response: Response<GetProjectCommentsQuery.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        } else {
-                            response.data?.let { data ->
-                                data.project()?.comments()?.let { graphComments ->
-                                    val comments = graphComments.edges()?.map { edge ->
-                                        commentTransformer(
-                                            edge?.node()?.fragments()?.comment()
-                                        ).toBuilder()
-                                            .cursor(edge?.cursor())
-                                            .build()
-                                    }
-
-                                    val envelope = CommentEnvelope.builder()
-                                        .commentableId(data.project()?.id())
-                                        .comments(comments)
-                                        .totalCount(data.project()?.comments()?.totalCount() ?: 0)
-                                        .pageInfoEnvelope(
-                                            createPageInfoObject(
-                                                data.project()?.comments()?.pageInfo()?.fragments()
-                                                    ?.pageInfo()
-                                            )
-                                        )
+            this.service.query(
+                query
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.let { data ->
+                            data.project?.comments?.let { graphComments ->
+                                val comments = graphComments.edges?.map { edge ->
+                                    commentTransformer(
+                                        edge?.node?.comment
+                                    ).toBuilder()
+                                        .cursor(edge?.cursor)
                                         .build()
-                                    ps.onNext(envelope)
                                 }
+
+                                val envelope = CommentEnvelope.builder()
+                                    .commentableId(data.project?.id)
+                                    .comments(comments)
+                                    .totalCount(data.project?.comments?.totalCount ?: 0)
+                                    .pageInfoEnvelope(
+                                        createPageInfoObject(
+                                            data.project?.comments?.pageInfo?.pageInfo
+                                        )
+                                    )
+                                    .build()
+                                ps.onNext(envelope)
                             }
                         }
-                        ps.onComplete()
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1259,18 +1258,19 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
+            val query = GetRepliesForCommentQuery(
+                commentableId = encodeRelayId(comment),
+                cursor = Optional.present(cursor),
+                pageSize = Optional.present(pageSize),
+            )
             this.service.query(
-                GetRepliesForCommentQuery.builder()
-                    .commentableId(encodeRelayId(comment))
-                    .cursor(cursor)
-                    .pageSize(pageSize)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<GetRepliesForCommentQuery.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
+                query
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
                 }
-
-                override fun onResponse(response: Response<GetRepliesForCommentQuery.Data>) {
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
@@ -1283,20 +1283,18 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                     }
                     ps.onComplete()
-                }
-            })
+                }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
 
     private fun createCommentEnvelop(responseData: GetRepliesForCommentQuery.Data): CommentEnvelope {
-        val replies =
-            (responseData.commentable() as? GetRepliesForCommentQuery.AsComment)?.replies()
-        val listOfComments = replies?.nodes()?.map { commentFragment ->
-            commentTransformer(commentFragment.fragments().comment())
+        val replies = responseData.commentable?.onComment?.replies
+        val listOfComments = replies?.nodes?.map { commentFragment ->
+            commentTransformer(commentFragment?.comment)
         } ?: emptyList()
-        val totalCount = replies?.totalCount() ?: 0
-        val pageInfo = createPageInfoObject(replies?.pageInfo()?.fragments()?.pageInfo())
+        val totalCount = replies?.totalCount ?: 0
+        val pageInfo = createPageInfoObject(replies?.pageInfo?.pageInfo)
 
         return CommentEnvelope.builder()
             .comments(listOfComments)
@@ -1308,37 +1306,35 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun createComment(comment: PostCommentData): Observable<Comment> {
         return Observable.defer {
             val ps = PublishSubject.create<Comment>()
-            this.service.mutate(
-                CreateCommentMutation.builder()
-                    .parentId(comment.parent?.let { encodeRelayId(it) })
-                    .commentableId(comment.commentableId)
-                    .clientMutationId(comment.clientMutationId)
-                    .body(comment.body)
-                    .build()
+            val mutation = CreateCommentMutation(
+                parentId = Optional.present(comment.parent?.let { encodeRelayId(it) }),
+                commentableId = comment.commentableId,
+                clientMutationId = Optional.present(comment.clientMutationId),
+                body = comment.body
             )
-                .enqueue(object : ApolloCall.Callback<CreateCommentMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<CreateCommentMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        } else {
+            this.service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    } else {
                             /* make a copy of what you posted. just in case
                          * we want to update the list without doing
                          * a full refresh.
                          */
-                            ps.onNext(
-                                commentTransformer(
-                                    response.data?.createComment()?.comment()?.fragments()
-                                        ?.comment()
-                                )
+                        ps.onNext(
+                            commentTransformer(
+                                response.data?.createComment?.comment?.comment
                             )
-                        }
-                        ps.onComplete()
+                        )
                     }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -1346,31 +1342,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun erroredBackings(): Observable<List<ErroredBacking>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<ErroredBacking>>()
-            this.service.query(ErroredBackingsQuery.builder().build())
-                .enqueue(object : ApolloCall.Callback<ErroredBackingsQuery.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            val query = ErroredBackingsQuery()
+            this.service
+                .query(query)
+                .toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        val erroredBackings = response.data?.me?.backings?.nodes?.map {
+                            val project = ErroredBacking.Project.builder()
+                                .finalCollectionDate(it?.project?.finalCollectionDate as org.joda.time.DateTime) // TODO: Dates stuff
+                                .name(it.project?.name)
+                                .slug(it.project?.slug)
+                                .build()
+                            return@map ErroredBacking.builder()
+                                .project(project)
+                                .build()
+                        } ?: listOf()
+                        ps.onNext(erroredBackings)
                     }
-
-                    override fun onResponse(response: Response<ErroredBackingsQuery.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        } else {
-                            val erroredBackings = response.data?.me()?.backings()?.nodes()?.map {
-                                val project = ErroredBacking.Project.builder()
-                                    .finalCollectionDate(it.project()?.finalCollectionDate())
-                                    .name(it.project()?.name())
-                                    .slug(it.project()?.slug())
-                                    .build()
-                                return@map ErroredBacking.builder()
-                                    .project(project)
-                                    .build()
-                            } ?: listOf()
-                            ps.onNext(erroredBackings)
-                        }
-                        ps.onComplete()
-                    }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -1378,26 +1375,24 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun clearUnseenActivity(): Observable<Int> {
         return Observable.defer {
             val ps = PublishSubject.create<Int>()
-            service.mutate(
-                ClearUserUnseenActivityMutation.builder()
-                    .build()
-            )
-                .enqueue(object : ApolloCall.Callback<ClearUserUnseenActivityMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
+            val mutation = ClearUserUnseenActivityMutation()
+            service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
                     }
+                    response.data?.clearUserUnseenActivity?.activityIndicatorCount?.let {
+                        ps.onNext(it)
+                    } ?: ps.onError(Exception())
 
-                    override fun onResponse(response: Response<ClearUserUnseenActivityMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        }
-                        response.data?.clearUserUnseenActivity()?.activityIndicatorCount()?.let {
-                            ps.onNext(it)
-                        } ?: ps.onError(Exception())
-
-                        ps.onComplete()
-                    }
-                })
+                    ps.onComplete()
+                }.dispose()
             return@defer ps
         }
     }
@@ -1406,33 +1401,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<Backing>()
 
-            this.service.query(
-                GetProjectBackingQuery.builder()
-                    .slug(slug)
-                    .build()
+            val query = GetProjectBackingQuery(
+                slug = slug
             )
-                .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
-                    override fun onFailure(e: ApolloException) {
-                        ps.onError(e)
-                    }
+            this.service.query(
+                query
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.let { data ->
+                            data.project?.backing?.backing?.let { backingObj ->
+                                val backing = backingTransformer(
+                                    backingObj
+                                )
 
-                    override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        } else {
-                            response.data?.let { data ->
-                                data.project()?.backing()?.fragments()?.backing()?.let { backingObj ->
-                                    val backing = backingTransformer(
-                                        backingObj
-                                    )
-
-                                    ps.onNext(backing)
-                                    ps.onComplete()
-                                }
+                                ps.onNext(backing)
+                                ps.onComplete()
                             }
                         }
                     }
-                })
+                }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1441,35 +1435,36 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<CheckoutPayment>()
 
-            this.service.mutate(
-                CreateCheckoutMutation.builder()
-                    .projectId(encodeRelayId(createCheckoutData.project))
-                    .amount(createCheckoutData.amount)
-                    .rewardIds(
-                        createCheckoutData.rewardsIds?.let { list ->
-                            list.map { encodeRelayId(it) }
-                        }
-                    )
-                    .locationId(createCheckoutData.locationId)
-                    .refParam(createCheckoutData.refTag?.tag())
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<CreateCheckoutMutation.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
+            val mutation = CreateCheckoutMutation(
+                projectId = encodeRelayId(createCheckoutData.project),
+                amount = createCheckoutData.amount,
+                rewardIds = Optional.present(
+                    createCheckoutData.rewardsIds?.let { list ->
+                        list.map { encodeRelayId(it) }
+                    }
+                ),
+                locationId = Optional.present(createCheckoutData.locationId),
+                refParam = Optional.present(createCheckoutData.refTag?.tag())
+            )
+            this.service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
                 }
-
-                override fun onResponse(response: Response<CreateCheckoutMutation.Data>) {
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
                         response.data?.let { data ->
-                            data.createCheckout()?.checkout()?.let { checkoutObj ->
-                                val backingId = decodeRelayId(checkoutObj.id()) ?: 0L
+                            data.createCheckout?.checkout?.let { checkoutObj ->
+                                val backingId = decodeRelayId(checkoutObj.id) ?: 0L
                                 val backing = Backing.builder().id(backingId).build()
-                                decodeRelayId(checkoutObj.id())?.let { id ->
+                                decodeRelayId(checkoutObj.id)?.let { id ->
                                     val checkout = CheckoutPayment(
                                         id,
-                                        checkoutObj.paymentUrl(),
+                                        checkoutObj.paymentUrl,
                                         backing = backing
                                     )
                                     ps.onNext(checkout)
@@ -1478,8 +1473,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                     }
                     ps.onComplete()
-                }
-            })
+                }.dispose()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1490,30 +1484,30 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             val checkoutId = createPaymentIntentInput.checkoutId
             val backingId = encodeRelayId(createPaymentIntentInput.backing)
-            this.service.mutate(
-                CreatePaymentIntentMutation.builder()
-                    .projectId(encodeRelayId(createPaymentIntentInput.project))
-                    .amount(createPaymentIntentInput.amount)
-                    .paymentIntentContext(StripeIntentContextTypes.POST_CAMPAIGN_CHECKOUT)
-                    .checkoutId(Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())))
-                    .backingId(backingId)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<CreatePaymentIntentMutation.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
+            val mutation = CreatePaymentIntentMutation(
+                projectId = encodeRelayId(createPaymentIntentInput.project),
+                amount = createPaymentIntentInput.amount,
+                paymentIntentContext = Optional.present(StripeIntentContextTypes.POST_CAMPAIGN_CHECKOUT),
+                checkoutId = (Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset()))),
+                backingId = Optional.present(backingId)
+            )
+            this.service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
                 }
-
-                override fun onResponse(response: Response<CreatePaymentIntentMutation.Data>) {
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
-                        response.data?.createPaymentIntent()?.clientSecret()?.let {
+                        response.data?.createPaymentIntent?.clientSecret?.let {
                             ps.onNext(it)
                         } ?: ps.onError(Exception("Client Secret was Null"))
                     }
                     ps.onComplete()
-                }
-            })
+                }.dispose()
             return@defer ps
         }
     }
@@ -1525,33 +1519,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     ): Observable<PaymentValidationResponse> {
         return Observable.defer {
             val ps = PublishSubject.create<PaymentValidationResponse>()
-
+            val query = ValidateCheckoutQuery(
+                checkoutId = checkoutId,
+                paymentIntentClientSecret = paymentIntentClientSecret,
+                paymentSourceId = paymentSourceId
+            )
             this.service.query(
-                ValidateCheckoutQuery.builder()
-                    .checkoutId(checkoutId)
-                    .paymentIntentClientSecret(paymentIntentClientSecret)
-                    .paymentSourceId(paymentSourceId)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<ValidateCheckoutQuery.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
+                query
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
                 }
-
-                override fun onResponse(response: Response<ValidateCheckoutQuery.Data>) {
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
                         response.data?.let { data ->
                             val validation = PaymentValidationResponse(
-                                data.checkout()?.isValidForOnSessionCheckout?.valid() ?: false,
-                                data.checkout()?.isValidForOnSessionCheckout?.messages() ?: listOf()
+                                data.checkout?.isValidForOnSessionCheckout?.valid ?: false,
+                                data.checkout?.isValidForOnSessionCheckout?.messages ?: listOf()
                             )
                             ps.onNext(validation)
                         }
                         ps.onComplete()
                     }
-                }
-            })
+                }.dispose()
             return@defer ps
         }
     }
@@ -1565,31 +1558,31 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<Pair<String, Boolean>>()
 
-            this.service.mutate(
-                CompleteOnSessionCheckoutMutation.builder()
-                    .checkoutId(Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())))
-                    .paymentIntentClientSecret(paymentIntentClientSecret)
-                    .paymentSourceId(paymentSourceId)
-                    .paymentSourceReusable(paymentSourceReusable)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<CompleteOnSessionCheckoutMutation.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
+            val mutation = CompleteOnSessionCheckoutMutation(
+                checkoutId = Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())),
+                paymentIntentClientSecret = paymentIntentClientSecret,
+                paymentSourceId = Optional.present(paymentSourceId),
+                paymentSourceReusable = Optional.present(paymentSourceReusable)
+            )
+            this.service.mutation(
+                mutation
+            ).toFlow()
+                .asObservable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
                 }
-
-                override fun onResponse(response: Response<CompleteOnSessionCheckoutMutation.Data>) {
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
-                        response.data?.completeOnSessionCheckout()?.checkout()?.id()?.let { checkoutId ->
-                            response.data?.completeOnSessionCheckout()?.checkout()?.backing()?.requiresAction()?.let { requiresAction ->
+                        response.data?.completeOnSessionCheckout?.checkout?.id?.let { checkoutId ->
+                            response.data?.completeOnSessionCheckout?.checkout?.backing?.requiresAction?.let { requiresAction ->
                                 ps.onNext(Pair(checkoutId, requiresAction))
                             }
                         } ?: ps.onError(Exception("Checkout ID was null"))
                     }
                     ps.onComplete()
-                }
-            })
+                }.dispose()
             return@defer ps
         }
     }

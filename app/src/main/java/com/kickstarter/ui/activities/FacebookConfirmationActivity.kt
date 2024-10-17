@@ -64,6 +64,11 @@ class FacebookConfirmationActivity : ComponentActivity() {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
     private fun createNewAccountClick() {
         viewModel.inputs.createNewAccountClick()
     }

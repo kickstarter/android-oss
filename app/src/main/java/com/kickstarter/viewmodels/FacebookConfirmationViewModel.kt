@@ -122,6 +122,7 @@ interface FacebookConfirmationViewModel {
                 .take(1)
                 .map { false }
                 .subscribe { v: Boolean -> sendNewslettersIsChecked.onNext(v) }
+                .addToDisposable(disposables)
         }
 
         override fun createNewAccountClick() {
@@ -150,6 +151,11 @@ interface FacebookConfirmationViewModel {
 
         fun provideIntent(intent: Intent) {
             this.intent.onNext(intent)
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
     }
 

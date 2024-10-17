@@ -249,5 +249,7 @@ interface AddOnViewHolderViewModel {
         override fun localPickUpIsGone(): Observable<Boolean> = localPickUpIsGone
 
         override fun localPickUpName(): Observable<String> = localPickUpName
+
+        fun clear() = disposables.clear()
     }
 }

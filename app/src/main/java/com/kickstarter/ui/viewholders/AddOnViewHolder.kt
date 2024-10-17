@@ -118,6 +118,12 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
         }
     }
 
+    override fun destroy() {
+        viewModel.clear()
+        disposables.clear()
+        super.destroy()
+    }
+
     private fun bindReward(projectAndReward: Pair<ProjectData, Reward>) {
         this.viewModel.inputs.configureWith(projectAndReward.first, projectAndReward.second)
     }

@@ -1,22 +1,21 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import androidx.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.RewardViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.math.RoundingMode
 
 interface AddOnViewHolderViewModel {
@@ -76,7 +75,7 @@ interface AddOnViewHolderViewModel {
      *  - No interaction with the user just displaying information
      *  - Loading in [AddOnViewHolder] -> [RewardAndAddOnsAdapter] -> [BackingFragment]
      */
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) : Inputs, Outputs {
 
         private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val isAddonTitleGone = BehaviorSubject.create<Boolean>()
@@ -98,6 +97,8 @@ interface AddOnViewHolderViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private val disposables = CompositeDisposable()
+
         init {
             val reward = this.projectDataAndReward
                 .map { it.second }
@@ -107,81 +108,88 @@ interface AddOnViewHolderViewModel {
 
             projectAndReward
                 .map { buildCurrency(it.first, it.second) }
-                .compose(bindToLifecycle())
-                .subscribe(this.minimumAmountTitle)
+                .subscribe { this.minimumAmountTitle.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { it.first }
                 .map { it.currency() == it.currentCurrency() }
-                .compose(bindToLifecycle())
-                .subscribe(this.conversionIsGone)
+                .subscribe { this.conversionIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectAndReward
                 .map { getCurrency(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.conversion)
+                .subscribe { this.conversion.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isReward(it) }
+                .filter { it.description().isNotNull() }
                 .map { it.description() }
-                .compose(bindToLifecycle())
-                .subscribe(this.descriptionForReward)
+                .map { it }
+                .subscribe { this.descriptionForReward.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { !it.isAddOn() && RewardUtils.isNoReward(it) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.descriptionForNoReward.onNext(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
                     this.titleForNoReward.onNext(R.string.You_pledged_without_a_reward)
                 }
+                .addToDisposable(disposables)
 
             reward
                 .filter { RewardUtils.isItemized(it) }
+                .filter { if (it.isAddOn()) it.addOnsItems().isNotNull() else it.rewardsItems().isNotNull() }
                 .map { if (it.isAddOn()) it.addOnsItems() else it.rewardsItems() }
-                .compose(bindToLifecycle())
-                .subscribe(this.rewardItems)
+                .map { it }
+                .subscribe { this.rewardItems.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { RewardUtils.isItemized(it) }
                 .map { it.negate() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(this.rewardItemsAreGone)
+                .subscribe { this.rewardItemsAreGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { !it.isAddOn() && RewardUtils.isReward(it) }
+                .filter { it.title().isNotNull() }
                 .map { it.title() }
-                .compose(bindToLifecycle())
-                .subscribe(this.titleForReward)
+                .map { it }
+                .subscribe { this.titleForReward.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .map { !it.isAddOn() }
-                .compose(bindToLifecycle())
-                .subscribe(this.titleIsGone)
+                .subscribe { this.titleIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { it.isAddOn() && it.quantity()?.let { q -> q > 0 } ?: false }
                 .map { reward -> parametersForTitle(reward) }
-                .compose(bindToLifecycle())
-                .subscribe(this.titleForAddOn)
+                .subscribe { this.titleForAddOn.onNext(it) }
+                .addToDisposable(disposables)
 
             reward
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
                     RewardUtils.isLocalPickup(it)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.localPickUpIsGone.onNext(!it)
                 }
+                .addToDisposable(disposables)
 
             reward
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
+                .filter { it.localReceiptLocation()?.displayableName().isNotNull() }
                 .map { it.localReceiptLocation()?.displayableName() }
-                .filter { it.isNotNull() }
-                .compose(bindToLifecycle())
-                .subscribe(this.localPickUpName)
+                .map { it }
+                .subscribe { this.localPickUpName.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         private fun getCurrency(it: Pair<Project, Reward>) =

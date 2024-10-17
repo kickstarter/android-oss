@@ -36,7 +36,7 @@ class ConnectivityReceiver(
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        // TODO: once all migration to RXJava is completed and BaseActivity removed, get rid of the BroadcastReceiver receiver
+        // TODO: once all migration to RXJava is completed, get rid of the BroadcastReceiver receiver
         // and simple register the lifecycle observer on the target activity
         try {
             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -2,8 +2,8 @@ package com.kickstarter.features.pledgedprojectsoverview.data
 
 import android.os.Parcelable
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
+import com.kickstarter.type.CurrencyCode
 import kotlinx.parcelize.Parcelize
-import type.CurrencyCode
 
 @Parcelize
 class PPOCard private constructor(

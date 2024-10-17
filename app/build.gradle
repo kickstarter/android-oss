@@ -182,8 +182,12 @@ android {
 }
 
 apollo {
-    packageNamesFromFilePaths()
-    generateModelBuilder = true
+    packageName.set("com.kickstarter")
+    generateKotlinModels.set(true)
+//    service("service") {
+//        packageNamesFromFilePaths()
+//    }
+//    generateModelBuilder = true
 }
 
 repositories {

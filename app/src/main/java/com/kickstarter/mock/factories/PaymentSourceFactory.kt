@@ -1,7 +1,7 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.models.PaymentSource
-import type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardPaymentType
 import java.util.Date
 
 class PaymentSourceFactory private constructor() {
@@ -11,7 +11,7 @@ class PaymentSourceFactory private constructor() {
                 .id(IdFactory.id().toString())
                 .expirationDate(Date())
                 .lastFour("4321")
-                .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
+                .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue)
                 .state("ACTIVE")
                 .type("VISA")
                 .build()

@@ -1,8 +1,8 @@
 package com.kickstarter.libs.utils
 
 import com.kickstarter.models.Reward
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.data.CheckoutData
-import type.CreditCardPaymentType
 
 /**
  * Total count of selected add-ons (including multiple quantities of a single add-on)

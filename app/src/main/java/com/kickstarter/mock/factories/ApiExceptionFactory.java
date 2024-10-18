@@ -8,8 +8,9 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import java.util.Collections;
 
 import androidx.annotation.NonNull;
+
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
-import rx.Observable;
 
 public final class ApiExceptionFactory {
   private ApiExceptionFactory() {}

@@ -71,9 +71,9 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
 import org.junit.Test
-import rx.subjects.BehaviorSubject
 
 class SegmentTest : KSRobolectricTestCase() {
 
@@ -182,7 +182,7 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDefaultProperties() {
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackAppOpen()
@@ -198,7 +198,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -217,7 +217,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user().toBuilder().isAdmin(true).build()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -236,13 +236,13 @@ class SegmentTest : KSRobolectricTestCase() {
                 .build()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackActivityFeedPageViewed()
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals(0, expectedProperties["user_backed_projects_count"])
         assertEquals(false, expectedProperties["user_is_admin"])
         assertEquals(0, expectedProperties["user_launched_projects_count"])
@@ -259,7 +259,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -273,7 +273,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertProjectProperties(projectData.project())
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals("campaign_details", expectedProperties["context_cta"])
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
@@ -283,7 +283,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -305,7 +305,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -322,7 +322,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertDiscoverProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
 
         assertEquals("magic", expectedProperties[DISCOVER_SORT.contextName])
         assertEquals(DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
@@ -334,7 +334,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -353,7 +353,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
         assertProjectProperties(project)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
 
         assertEquals(PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(DISCOVER_ADVANCED.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
@@ -367,7 +367,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -387,7 +387,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
         assertProjectProperties(project)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
 
         // test custom discover properties
         assertNull(expectedProperties["discover_category_id"])
@@ -417,7 +417,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -436,7 +436,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals("test", expectedProperties["discover_search_term"])
         assertEquals(200, expectedProperties["discover_search_results_count"])
         assertEquals(false, expectedProperties["discover_everything"])
@@ -464,7 +464,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -483,7 +483,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
 
         assertEquals(PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(THANKS.contextName, expectedProperties[CONTEXT_PAGE.contextName])
@@ -498,7 +498,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -515,7 +515,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals("test", expectedProperties["discover_search_term"])
         assertEquals(200, expectedProperties["discover_search_results_count"])
         assertEquals(false, expectedProperties["discover_everything"])
@@ -537,7 +537,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -553,7 +553,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["discover_category_id"])
         assertNull(expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
@@ -576,7 +576,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -586,7 +586,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals(DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
@@ -598,7 +598,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -614,7 +614,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals("1", expectedProperties["discover_category_id"])
         assertEquals("categoryName", expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
@@ -637,7 +637,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -653,7 +653,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
 
         assertEquals("1", expectedProperties["discover_category_id"])
         assertEquals("categoryName", expectedProperties["discover_category_name"])
@@ -681,7 +681,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), EventContextValues.ContextSectionName.OVERVIEW.contextName)
@@ -690,7 +690,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertProjectProperties(project)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["user_uid"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -707,7 +707,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -715,7 +715,7 @@ class SegmentTest : KSRobolectricTestCase() {
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["user_uid"])
         assertEquals(true, expectedProperties["project_has_add_ons"])
     }
@@ -730,7 +730,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -738,7 +738,7 @@ class SegmentTest : KSRobolectricTestCase() {
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(true, expectedProperties["project_project_post_campaign_enabled"])
         assertEquals("post_campaign", expectedProperties["project_state"])
     }
@@ -754,7 +754,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -762,7 +762,7 @@ class SegmentTest : KSRobolectricTestCase() {
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(false, expectedProperties["project_project_post_campaign_enabled"])
         assertEquals("live", expectedProperties["project_state"])
     }
@@ -773,7 +773,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -781,7 +781,7 @@ class SegmentTest : KSRobolectricTestCase() {
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNotNull(expectedProperties["project_prelaunch_activated"])
     }
 
@@ -791,7 +791,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectPageTabChanged(
@@ -799,7 +799,7 @@ class SegmentTest : KSRobolectricTestCase() {
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNotNull(expectedProperties["project_prelaunch_activated"])
     }
 
@@ -811,13 +811,13 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
         segment.trackProjectScreenViewed(
             ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(true, expectedProperties["project_prelaunch_activated"])
     }
@@ -830,13 +830,13 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
         segment.trackProjectScreenViewed(
             ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
             EventContextValues.ContextSectionName.OVERVIEW.contextName
         )
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(false, expectedProperties["project_prelaunch_activated"])
     }
@@ -847,7 +847,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -861,7 +861,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -877,7 +877,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -890,7 +890,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(true, expectedProperties["project_user_is_backer"])
@@ -905,7 +905,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val creator = creator()
         val client = client(creator)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -917,7 +917,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertProjectProperties(project)
         assertContextProperties()
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         assertNull(expectedProperties["context_pledge_flow"])
 
@@ -940,7 +940,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -953,7 +953,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(true, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -967,7 +967,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -978,7 +978,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -993,7 +993,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1006,7 +1006,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertPledgeProperties()
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -1021,7 +1021,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1038,7 +1038,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
         assertUserProperties(false)
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["checkout_id"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
@@ -1054,7 +1054,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1071,7 +1071,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
         assertUserProperties(false)
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["checkout_id"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
@@ -1100,7 +1100,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val creator = creator()
         val client = client(creator)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1111,7 +1111,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertProjectProperties(project)
         assertContextProperties()
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         // - we test asserting this properties all methods in SharedFunctions.kt
         assertEquals(10.0, expectedProperties["checkout_amount"])
@@ -1133,7 +1133,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1149,7 +1149,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
         assertUserProperties(false)
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(EventContextValues.ContextPageName.UPDATE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
@@ -1161,7 +1161,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1179,7 +1179,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
         assertUserProperties(false)
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["checkout_id"])
         assertEquals("fix_errored_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
@@ -1195,7 +1195,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1212,7 +1212,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
         assertUserProperties(false)
 
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals("3", expectedProperties["checkout_id"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
@@ -1227,7 +1227,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackActivityFeedPageViewed()
@@ -1244,7 +1244,7 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testTwoFactorAuthProperties() {
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackTwoFactorAuthPageViewed()
@@ -1262,7 +1262,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val videoLength = 100L
         val videoStartedPosition = 0L
@@ -1296,7 +1296,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackLoginPagedViewed()
@@ -1304,7 +1304,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(null)
         assertContextProperties()
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
         assertNull(properties["user_uid"])
         assertEquals(LOGIN.contextName, properties[CONTEXT_PAGE.contextName])
 
@@ -1317,13 +1317,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackDiscoveryPageViewed(discoveryParams())
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertEquals(false, properties["discover_everything"])
         assertEquals(true, properties["discover_pwl"])
@@ -1344,13 +1344,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackDiscoverSortCTA(DiscoveryParams.Sort.POPULAR, discoveryParams())
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
@@ -1367,7 +1367,7 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testSignUpInitiateCtaClicked_Properties() {
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackSignUpInitiateCtaClicked()
@@ -1375,7 +1375,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(null)
         assertContextProperties()
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
         assertNull(properties["user_uid"])
         assertEquals(LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
         assertEquals(SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
@@ -1388,7 +1388,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackSignUpPageViewed()
@@ -1396,7 +1396,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(null)
         assertContextProperties()
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
         assertNull(properties["user_uid"])
         assertEquals(SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
@@ -1409,7 +1409,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -1425,7 +1425,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertPageContextProperty(PROJECT.contextName)
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals(commentId, expectedProperties[ContextPropertyKeyName.COMMENT_ROOT_ID.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
@@ -1437,7 +1437,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -1455,7 +1455,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertPageContextProperty(PROJECT.contextName)
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals(commentID, expectedProperties[ContextPropertyKeyName.COMMENT_ID.contextName])
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
         assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
@@ -1469,7 +1469,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
@@ -1489,7 +1489,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertPageContextProperty(PROJECT.contextName)
         assertUserProperties(false)
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertEquals(commentID, expectedProperties[ContextPropertyKeyName.COMMENT_ID.contextName])
         assertEquals(rootCommentID, expectedProperties[ContextPropertyKeyName.COMMENT_ROOT_ID.contextName])
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
@@ -1503,7 +1503,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackLoginOrSignUpPagedViewed()
@@ -1511,7 +1511,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(null)
         assertContextProperties()
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
         assertNull(properties["user_uid"])
         assertEquals(LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
@@ -1525,18 +1525,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPledgedProjectsOverviewPageViewed(ppoCards, 10)
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
 
@@ -1555,18 +1555,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPPOMessageCreatorCTAClicked("123123", ppoCards, 11, "09231")
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
@@ -1588,18 +1588,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPPOFixPaymentCTAClicked("123123", ppoCards, 11)
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
@@ -1620,18 +1620,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPPOOpenSurveyCTAClicked("123123", ppoCards, 11, "9023234")
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
@@ -1653,18 +1653,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPPOConfirmAddressInitiateCTAClicked("123123", ppoCards, 11)
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
@@ -1686,18 +1686,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPPOConfirmAddressSubmitCTAClicked("123123", ppoCards, 11)
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
@@ -1719,18 +1719,18 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackPPOConfirmAddressEditCTAClicked("123123", ppoCards, 11)
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
         assertSessionProperties(user)
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
 
@@ -1751,13 +1751,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackDiscoverFilterCTA(discoveryParams())
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
@@ -1796,13 +1796,13 @@ class SegmentTest : KSRobolectricTestCase() {
                 .build()
 
         client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
 
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackDiscoverFilterCTA(discoveryParams)
 
-        val properties = this.propertiesTest.value
+        val properties = this.propertiesTest.value ?: mapOf()
 
         assertContextProperties()
         assertUserProperties(false)
@@ -1832,7 +1832,7 @@ class SegmentTest : KSRobolectricTestCase() {
     )
 
     private fun assertCheckoutProperties() {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(30.0, expectedProperties["checkout_amount"])
         assertEquals("credit_card", expectedProperties["checkout_payment_type"])
         assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
@@ -1845,12 +1845,12 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     private fun assertContextProperties() {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
     }
 
     private fun assertDiscoverProperties() {
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["discover_category_id"])
         assertNull(expectedProperties["discover_category_name"])
         assertEquals(true, expectedProperties["discover_everything"])
@@ -1867,7 +1867,7 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     private fun assertPledgeProperties() {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(DateTime.parse("2019-03-26T19:26:09Z"), expectedProperties["checkout_reward_estimated_delivery_on"])
         assertEquals(false, expectedProperties["checkout_reward_has_items"])
         assertEquals("2", expectedProperties["checkout_reward_id"])
@@ -1883,12 +1883,12 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     private fun assertNotificationProperties() {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(1, expectedProperties["notification_count_address_locks_soon"])
     }
 
     private fun assertProjectProperties(project: Project) {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(100, expectedProperties["project_backers_count"])
         assertEquals("subcategoryName", expectedProperties["project_subcategory"])
         assertEquals("categoryName", expectedProperties["project_category"])
@@ -1925,7 +1925,7 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     private fun assertSessionProperties(user: User?) {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(9999, expectedProperties["session_app_build_number"])
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("native_android", expectedProperties["session_platform"])
@@ -1950,7 +1950,7 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     private fun assertUserProperties(isAdmin: Boolean) {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(3, expectedProperties["user_backed_projects_count"])
         assertEquals(6, expectedProperties["user_launched_projects_count"])
         assertEquals(9, expectedProperties["user_created_projects_count"])
@@ -1962,17 +1962,17 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     private fun assertCtaContextProperty(contextName: String) {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(contextName, expectedProperties[CONTEXT_CTA.contextName])
     }
 
     private fun assertPageContextProperty(contextName: String) {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(contextName, expectedProperties[CONTEXT_PAGE.contextName])
     }
 
     private fun assertVideoProperties(videoLength: Long, videoPosition: Long) {
-        val expectedProperties = this.propertiesTest.value
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertEquals(videoLength, expectedProperties["video_length"])
         assertEquals(videoPosition, expectedProperties["video_position"])
     }

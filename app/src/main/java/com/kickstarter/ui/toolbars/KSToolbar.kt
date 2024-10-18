@@ -13,12 +13,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.kickstarter.KSApplication
 import com.kickstarter.R
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.qualifiers.WebEndpoint
 import com.kickstarter.libs.utils.Secrets
-import rx.Subscription
-import rx.subscriptions.CompositeSubscription
 
 open class KSToolbar @JvmOverloads constructor(
     context: Context,
@@ -30,8 +27,6 @@ open class KSToolbar @JvmOverloads constructor(
 
     @WebEndpoint
     private var webEndpoint: String? = null
-
-    private val subscriptions = CompositeSubscription()
 
     init {
         init(context)
@@ -77,20 +72,8 @@ open class KSToolbar @JvmOverloads constructor(
         super.onAttachedToWindow()
     }
 
-    @CallSuper
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        subscriptions.clear()
-    }
-
-    protected fun addSubscription(subscription: Subscription) {
-        subscriptions.add(subscription)
-    }
-
     private fun backButtonClick() {
-        if (context is BaseActivity<*>) {
-            (context as BaseActivity<*>).back()
-        } else if (context is ComponentActivity) {
+        if (context is ComponentActivity) {
             (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
         } else {
             (context as AppCompatActivity).onBackPressed()

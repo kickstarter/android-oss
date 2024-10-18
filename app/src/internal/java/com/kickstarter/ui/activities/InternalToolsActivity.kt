@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.URLUtil
 import android.widget.EditText
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.work.BackoffPolicy
@@ -22,25 +23,20 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.libs.ApiEndpoint
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.Secrets
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.WorkUtils
 import com.kickstarter.services.firebase.ResetDeviceIdWorker
-import com.kickstarter.viewmodels.InternalToolsViewModel
 import org.joda.time.format.DateTimeFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@RequiresActivityViewModel(InternalToolsViewModel::class)
-class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
+class InternalToolsActivity : ComponentActivity() {
     @JvmField
     @Inject
     @ApiEndpointPreference
@@ -239,6 +235,4 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
         }
         ProcessPhoenix.triggerRebirth(this)
     }
-
-    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 }

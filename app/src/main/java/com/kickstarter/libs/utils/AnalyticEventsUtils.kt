@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.extensions.addOnsCost
 import com.kickstarter.libs.utils.extensions.bonus
 import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.refTag
@@ -96,7 +97,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun discoveryParamsProperties(params: DiscoveryParams, discoverSort: DiscoveryParams.Sort? = params.sort(), prefix: String = "discover_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-            put("everything", params.isAllProjects.isTrue())
+            put("everything", params.isAllProjects.isTrue() && params.recommended()?.isFalse() ?: true)
             put("pwl", params.staffPicks().isTrue())
             put("recommended", params.recommended()?.isTrue() ?: false)
             params.refTag()?.tag()?.let { put("ref_tag", it) }

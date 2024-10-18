@@ -4,8 +4,9 @@ import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 
 import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
+
+import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
 public final class MockCurrentConfig implements CurrentConfigType {
 

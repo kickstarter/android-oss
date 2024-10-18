@@ -13,7 +13,6 @@ import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApiClientV2;
-import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.mock.services.MockApolloClientV2;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
@@ -21,9 +20,7 @@ import com.kickstarter.services.ApiClientTypeV2;
 import com.kickstarter.services.ApiClientV2;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
-import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
-import com.kickstarter.services.KSApolloClient;
 import com.kickstarter.services.KSApolloClientV2;
 
 import javax.inject.Singleton;

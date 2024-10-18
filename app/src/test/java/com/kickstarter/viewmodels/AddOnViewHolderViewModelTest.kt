@@ -5,12 +5,14 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.RewardsItem
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: AddOnViewHolderViewModel.ViewModel
@@ -27,21 +29,22 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleForAddOn = TestSubscriber.create<Pair<String, Int>>()
     private val localPickUpIsGone = TestSubscriber.create<Boolean>()
     private val localPickUpName = TestSubscriber.create<String>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = AddOnViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.isAddonTitleGone().subscribe(this.quantityIsGone)
-        this.vm.outputs.conversion().subscribe(this.conversion)
-        this.vm.outputs.conversionIsGone().subscribe(this.conversionIsGone)
-        this.vm.outputs.descriptionForNoReward().subscribe(this.descriptionForNoReward)
-        this.vm.outputs.descriptionForReward().subscribe(this.descriptionForReward)
-        this.vm.outputs.rewardItems().subscribe(this.rewardItems)
-        this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
-        this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
-        this.vm.outputs.titleForReward().subscribe(this.titleForReward)
-        this.vm.outputs.titleForAddOn().subscribe(this.titleForAddOn)
-        this.vm.outputs.localPickUpIsGone().subscribe(this.localPickUpIsGone)
-        this.vm.outputs.localPickUpName().subscribe(this.localPickUpName)
+        this.vm.outputs.isAddonTitleGone().subscribe { this.quantityIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.conversion().subscribe { this.conversion.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.conversionIsGone().subscribe { this.conversionIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.descriptionForNoReward().subscribe { this.descriptionForNoReward.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.descriptionForReward().subscribe { this.descriptionForReward.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.rewardItems().subscribe { this.rewardItems.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.rewardItemsAreGone().subscribe { this.rewardItemsAreGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.titleForNoReward().subscribe { this.titleForNoReward.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.titleForReward().subscribe { this.titleForReward.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.titleForAddOn().subscribe { this.titleForAddOn.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.localPickUpIsGone().subscribe { this.localPickUpIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.localPickUpName().subscribe { this.localPickUpName.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test

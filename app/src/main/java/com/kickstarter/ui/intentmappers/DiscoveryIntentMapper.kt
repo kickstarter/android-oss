@@ -4,31 +4,37 @@ import android.content.Intent
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
-import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
-import rx.Observable
+import io.reactivex.Observable
 
 object DiscoveryIntentMapper {
     @JvmStatic
     fun params(
         intent: Intent,
-        client: ApiClientType,
-        apolloClient: ApolloClientType
+        client: ApiClientTypeV2,
+        apolloClient: ApolloClientTypeV2
     ): Observable<DiscoveryParams> {
-        val paramsFromParcel = Observable.just(paramsFromIntent(intent))
-            .filter {
-                it.isNotNull()
-            }.map { requireNotNull(it) }
+        val paramsFromParcel = if (paramsFromIntent(intent).isNotNull()) {
+            Observable.just(paramsFromIntent(intent))
+                .filter { it.isNotNull() }
+                .map { it }
+        } else Observable.empty()
 
-        val paramsFromUri = Observable.just(IntentMapper.uri(intent))
-            .filter { it.isNotNull() }
-            .map { requireNotNull(it) }
-            .map { DiscoveryParams.fromUri(it) }
-            .flatMap {
-                paramsFromUri(it, client, apolloClient)
-            }
+        val paramsFromUri = if (IntentMapper.uri(intent).isNotNull()) {
+            Observable.just(IntentMapper.uri(intent))
+                .filter { it.isNotNull() }
+                .map { it }
+                .map { DiscoveryParams.fromUri(it) }
+                .filter { it.isNotNull() }
+                .map { it }
+                .flatMap { paramsFromUri(it, client, apolloClient) }
+                .filter { it.isNotNull() }
+                .map { it }
+        } else Observable.empty()
+
         return Observable.merge(paramsFromParcel, paramsFromUri)
     }
 
@@ -42,8 +48,8 @@ object DiscoveryIntentMapper {
      */
     private fun paramsFromUri(
         params: DiscoveryParams,
-        client: ApiClientType,
-        apolloClient: ApolloClientType
+        client: ApiClientTypeV2,
+        apolloClient: ApolloClientTypeV2
     ): Observable<DiscoveryParams> {
         return Observable.zip(paramBuilders(params, client, apolloClient)) {
             var builder = DiscoveryParams.builder()
@@ -66,17 +72,17 @@ object DiscoveryIntentMapper {
      */
     private fun paramBuilders(
         params: DiscoveryParams,
-        client: ApiClientType,
-        apolloClient: ApolloClientType
+        client: ApiClientTypeV2,
+        apolloClient: ApolloClientTypeV2
     ): List<Observable<DiscoveryParams.Builder>> {
         val paramBuilders: MutableList<Observable<DiscoveryParams.Builder>> = ArrayList()
         val categoryParam = params.categoryParam()
         if (categoryParam != null) {
             paramBuilders.add(
                 apolloClient.fetchCategory(categoryParam)
-                    .compose(Transformers.neverError())
+                    .compose(Transformers.neverErrorV2())
                     .filter { it.isNotNull() }
-                    .map { requireNotNull(it) }
+                    .map { it }
                     .map { DiscoveryParams.builder().category(it) }
             )
         }
@@ -86,7 +92,9 @@ object DiscoveryIntentMapper {
             paramBuilders.add(
                 client
                     .fetchLocation(locationParam)
-                    .compose(Transformers.neverError())
+                    .compose(Transformers.neverErrorV2())
+                    .filter { it.isNotNull() }
+                    .map { it }
                     .map { DiscoveryParams.builder().location(it) }
             )
         }

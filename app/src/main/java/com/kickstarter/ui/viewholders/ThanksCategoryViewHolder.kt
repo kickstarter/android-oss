@@ -4,8 +4,10 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksCategoryViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
+import io.reactivex.disposables.CompositeDisposable
 
 class ThanksCategoryViewHolder(
     private val binding: ThanksCategoryViewBinding,
@@ -14,6 +16,7 @@ class ThanksCategoryViewHolder(
     private val viewModel = ThanksCategoryHolderViewModel.ViewModel(environment())
     private val delegate: Delegate = delegate
     private val ksString = requireNotNull(environment().ksString())
+    private val disposables = CompositeDisposable()
 
     interface Delegate {
         fun categoryViewHolderClicked(category: Category)
@@ -21,14 +24,14 @@ class ThanksCategoryViewHolder(
 
     init {
         viewModel.outputs.categoryName()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { categoryName: String -> setCategoryButtonText(categoryName) }
+            .addToDisposable(disposables)
         viewModel.outputs.notifyDelegateOfCategoryClick()
             .filter { it.isNotNull() }
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { category: Category -> this.delegate.categoryViewHolderClicked(category) }
+            .addToDisposable(disposables)
     }
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
@@ -42,5 +45,10 @@ class ThanksCategoryViewHolder(
 
     override fun onClick(view: View) {
         viewModel.inputs.categoryViewClicked()
+    }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
     }
 }

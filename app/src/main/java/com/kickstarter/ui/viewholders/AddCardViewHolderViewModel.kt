@@ -1,10 +1,9 @@
 package com.kickstarter.ui.viewholders
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
-import rx.Observable
-import rx.subjects.PublishSubject
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 
 interface AddCardViewHolderViewModel {
 
@@ -17,8 +16,7 @@ interface AddCardViewHolderViewModel {
         fun setDefaultState(): Observable<State>
     }
 
-    class ViewModel(@NonNull environment: Environment) :
-        ActivityViewModel<BackingAddOnViewHolder>(environment),
+    class ViewModel :
         Inputs,
         Outputs {
         val inputs: Inputs = this
@@ -28,21 +26,23 @@ interface AddCardViewHolderViewModel {
         val loading = PublishSubject.create<State>()
         val default = PublishSubject.create<State>()
 
+        private val disposables = CompositeDisposable()
+
         init {
 
             state
                 .filter {
                     it == State.DEFAULT
                 }
-                .compose(bindToLifecycle())
                 .subscribe { this.default.onNext(it) }
+                .addToDisposable(disposables)
 
             state
                 .filter {
                     it == State.LOADING
                 }
-                .compose(bindToLifecycle())
                 .subscribe { this.loading.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         // inputs
@@ -51,5 +51,7 @@ interface AddCardViewHolderViewModel {
         // output
         override fun setDefaultState() = this.default
         override fun setLoadingState() = this.loading
+
+        fun clear() = disposables.clear()
     }
 }

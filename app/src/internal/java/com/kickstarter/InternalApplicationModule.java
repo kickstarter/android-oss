@@ -2,7 +2,7 @@ package com.kickstarter;
 
 import android.content.SharedPreferences;
 
-import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo3.ApolloClient;
 import com.google.gson.Gson;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.InternalTools;
@@ -52,13 +52,6 @@ public final class InternalApplicationModule {
   @NonNull
   InternalToolsType providesInternalToolsType() {
     return new InternalTools();
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
-    return Secrets.IS_OSS ? new MockApolloClient() : new KSApolloClient(apolloClient);
   }
 
   @Provides

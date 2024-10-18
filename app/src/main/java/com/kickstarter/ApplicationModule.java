@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
-import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.CustomScalarType;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -75,7 +74,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiClientTypeV2;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
-import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
@@ -109,7 +107,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-import type.CustomType;
 
 @Module
 public class ApplicationModule {
@@ -124,7 +121,6 @@ public class ApplicationModule {
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull ApiClientType apiClient,
     final @NonNull ApiClientTypeV2 apiClientV2,
-    final @NonNull ApolloClientType apolloClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
@@ -155,7 +151,6 @@ public class ApplicationModule {
       .activitySamplePreference(activitySamplePreference)
       .apiClient(apiClient)
       .apiClientV2(apiClientV2)
-      .apolloClient(apolloClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
       .cookieManager(cookieManager)
@@ -220,6 +215,7 @@ public class ApplicationModule {
       builder.addInterceptor(httpLoggingInterceptor);
     }
 
+    // TODO: Review this piece around the CustomScalarTypes Dates are not being recognized as such
     return new ApolloClient.Builder()
       .addCustomScalarAdapter(new CustomScalarType("Date","java.util.Date"), new DateAdapter())
       .addCustomScalarAdapter(new CustomScalarType("DateTime","org.joda.time.DateTime"), new DateTimeAdapter())

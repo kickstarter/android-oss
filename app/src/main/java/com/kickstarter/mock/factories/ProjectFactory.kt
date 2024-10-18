@@ -1,16 +1,15 @@
 package com.kickstarter.mock.factories
 
-import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
+import com.kickstarter.type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardTypes
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import type.CreditCardPaymentType
-import type.CreditCardTypes
 
 object ProjectFactory {
     @JvmStatic
@@ -26,13 +25,13 @@ object ProjectFactory {
         return Project.builder()
             .availableCardTypes(
                 listOf(
-                    CreditCardTypes.AMEX.rawValue(),
-                    CreditCardTypes.DINERS.rawValue(),
-                    CreditCardTypes.DISCOVER.rawValue(),
-                    CreditCardTypes.JCB.rawValue(),
-                    CreditCardTypes.MASTERCARD.rawValue(),
-                    CreditCardTypes.UNIONPAY.rawValue(),
-                    CreditCardTypes.VISA.rawValue()
+                    CreditCardTypes.AMEX.rawValue,
+                    CreditCardTypes.DINERS.rawValue,
+                    CreditCardTypes.DISCOVER.rawValue,
+                    CreditCardTypes.JCB.rawValue,
+                    CreditCardTypes.MASTERCARD.rawValue,
+                    CreditCardTypes.UNIONPAY.rawValue,
+                    CreditCardTypes.VISA.rawValue
                 )
             )
             .backersCount(100)
@@ -128,7 +127,7 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue()))
+            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue))
             .canComment(true)
             .backing(backing)
             .isBacking(true)
@@ -376,9 +375,9 @@ object ProjectFactory {
             .toBuilder()
             .availableCardTypes(
                 listOf(
-                    CreditCardTypes.AMEX.rawValue(),
-                    CreditCardTypes.MASTERCARD.rawValue(),
-                    CreditCardTypes.VISA.rawValue()
+                    CreditCardTypes.AMEX.rawValue,
+                    CreditCardTypes.MASTERCARD.rawValue,
+                    CreditCardTypes.VISA.rawValue
                 )
             )
             .name("caProject")
@@ -398,9 +397,9 @@ object ProjectFactory {
             .toBuilder()
             .availableCardTypes(
                 listOf(
-                    CreditCardTypes.AMEX.rawValue(),
-                    CreditCardTypes.MASTERCARD.rawValue(),
-                    CreditCardTypes.VISA.rawValue()
+                    CreditCardTypes.AMEX.rawValue,
+                    CreditCardTypes.MASTERCARD.rawValue,
+                    CreditCardTypes.VISA.rawValue
                 )
             )
             .name("mxCurrencyCAProject")
@@ -419,9 +418,9 @@ object ProjectFactory {
             .toBuilder()
             .availableCardTypes(
                 listOf(
-                    CreditCardTypes.AMEX.rawValue(),
-                    CreditCardTypes.MASTERCARD.rawValue(),
-                    CreditCardTypes.VISA.rawValue()
+                    CreditCardTypes.AMEX.rawValue,
+                    CreditCardTypes.MASTERCARD.rawValue,
+                    CreditCardTypes.VISA.rawValue
                 )
             )
             .name("mxProject")
@@ -442,9 +441,9 @@ object ProjectFactory {
             .toBuilder()
             .availableCardTypes(
                 listOf(
-                    CreditCardTypes.AMEX.rawValue(),
-                    CreditCardTypes.MASTERCARD.rawValue(),
-                    CreditCardTypes.VISA.rawValue()
+                    CreditCardTypes.AMEX.rawValue,
+                    CreditCardTypes.MASTERCARD.rawValue,
+                    CreditCardTypes.VISA.rawValue
                 )
             )
             .name("ukProject")

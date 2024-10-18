@@ -1,49 +1,49 @@
 package com.kickstarter.services
 
-import CancelBackingMutation
-import ClearUserUnseenActivityMutation
-import CompleteOnSessionCheckoutMutation
-import CompleteOrderMutation
-import CreateBackingMutation
-import CreateCheckoutMutation
-import CreateCommentMutation
-import CreateFlaggingMutation
-import CreatePasswordMutation
-import CreatePaymentIntentMutation
-import CreateSetupIntentMutation
-import DeletePaymentSourceMutation
-import ErroredBackingsQuery
-import FetchCategoryQuery
-import FetchProjectQuery
-import FetchProjectsQuery
-import GetBackingQuery
-import GetCommentQuery
-import GetProjectAddOnsQuery
-import GetProjectBackingQuery
-import GetProjectCommentsQuery
-import GetProjectUpdateCommentsQuery
-import GetProjectUpdatesQuery
-import GetRepliesForCommentQuery
-import GetRootCategoriesQuery
-import GetShippingRulesForRewardIdQuery
-import ProjectCreatorDetailsQuery
-import SavePaymentMethodMutation
-import SendEmailVerificationMutation
-import SendMessageMutation
-import UnwatchProjectMutation
-import UpdateBackingMutation
-import UpdateUserCurrencyMutation
-import UpdateUserEmailMutation
-import UpdateUserPasswordMutation
-import UserPaymentsQuery
-import UserPrivacyQuery
-import ValidateCheckoutQuery
-import WatchProjectMutation
+import com.kickstarter.CancelBackingMutation
+import com.kickstarter.ClearUserUnseenActivityMutation
+import com.kickstarter.CompleteOnSessionCheckoutMutation
+import com.kickstarter.CompleteOrderMutation
+import com.kickstarter.CreateBackingMutation
+import com.kickstarter.CreateCheckoutMutation
+import com.kickstarter.CreateCommentMutation
+import com.kickstarter.CreateFlaggingMutation
+import com.kickstarter.CreatePaymentIntentMutation
+import com.kickstarter.CreateSetupIntentMutation
+import com.kickstarter.ErroredBackingsQuery
+import com.kickstarter.FetchCategoryQuery
+import com.kickstarter.FetchProjectsQuery
+import com.kickstarter.GetBackingQuery
+import com.kickstarter.GetCommentQuery
+import com.kickstarter.GetProjectAddOnsQuery
+import com.kickstarter.GetProjectBackingQuery
+import com.kickstarter.GetProjectCommentsQuery
+import com.kickstarter.GetProjectUpdateCommentsQuery
+import com.kickstarter.GetProjectUpdatesQuery
+import com.kickstarter.GetRepliesForCommentQuery
+import com.kickstarter.GetRootCategoriesQuery
+import com.kickstarter.GetShippingRulesForRewardIdQuery
+import com.kickstarter.ProjectCreatorDetailsQuery
+import com.kickstarter.SavePaymentMethodMutation
+import com.kickstarter.SendMessageMutation
+import com.kickstarter.UnwatchProjectMutation
+import com.kickstarter.UpdateBackingMutation
+import com.kickstarter.UpdateUserPasswordMutation
+import com.kickstarter.UserPaymentsQuery
+import com.kickstarter.UserPrivacyQuery
+import com.kickstarter.ValidateCheckoutQuery
+import com.kickstarter.WatchProjectMutation
 import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.CreatePasswordMutation
+import com.kickstarter.DeletePaymentSourceMutation
+import com.kickstarter.FetchProjectQuery
+import com.kickstarter.SendEmailVerificationMutation
+import com.kickstarter.UpdateUserCurrencyMutation
+import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -93,19 +93,19 @@ import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
+import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.asObservable
-import type.BackingState
-import type.CurrencyCode
-import type.Date
-import type.DateTime
-import type.NonDeprecatedFlaggingKind
-import type.PaymentTypes
-import type.StripeIntentContextTypes
+import com.kickstarter.type.BackingState
+import com.kickstarter.type.Date
+import com.kickstarter.type.DateTime
+import com.kickstarter.type.NonDeprecatedFlaggingKind
+import com.kickstarter.type.PaymentTypes
+import com.kickstarter.type.StripeIntentContextTypes
 import java.nio.charset.Charset
 
 interface ApolloClientTypeV2 {
@@ -1154,7 +1154,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
-    private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
+    private fun createPageInfoObject(pageFr: com.kickstarter.fragment.PageInfo?): PageInfoEnvelope {
         return PageInfoEnvelope.builder()
             .endCursor(pageFr?.endCursor ?: "")
             .hasNextPage(pageFr?.hasNextPage ?: false)

@@ -1,9 +1,9 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
+import com.kickstarter.type.CreditCardTypes
 import com.stripe.android.model.CardBrand
 import kotlinx.parcelize.Parcelize
-import type.CreditCardTypes
 import java.util.Date
 
 @Parcelize
@@ -29,7 +29,7 @@ class StoredCard private constructor(
         private var id: String? = "0L",
         private var lastFourDigits: String? = "",
         private var expiration: Date? = null,
-        private var type: CreditCardTypes? = CreditCardTypes.`$UNKNOWN`,
+        private var type: CreditCardTypes? = CreditCardTypes.UNKNOWN__,
         private var resourceId: Int? = null,
         private var clientSetupId: String? = null,
         private var stripeCardId: String? = null

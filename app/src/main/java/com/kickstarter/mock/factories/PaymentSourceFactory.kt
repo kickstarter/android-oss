@@ -20,7 +20,7 @@ class PaymentSourceFactory private constructor() {
         fun googlePay(): PaymentSource {
             return PaymentSource.builder()
                 .id(IdFactory.id().toString())
-                .paymentType(CreditCardPaymentType.ANDROID_PAY.rawValue())
+                .paymentType(CreditCardPaymentType.ANDROID_PAY.rawValue)
                 .state("ACTIVE")
                 .build()
         }
@@ -28,7 +28,7 @@ class PaymentSourceFactory private constructor() {
         fun applePay(): PaymentSource {
             return PaymentSource.builder()
                 .id(IdFactory.id().toString())
-                .paymentType(CreditCardPaymentType.APPLE_PAY.rawValue())
+                .paymentType(CreditCardPaymentType.APPLE_PAY.rawValue)
                 .state("ACTIVE")
                 .build()
         }
@@ -36,7 +36,7 @@ class PaymentSourceFactory private constructor() {
         fun bankAccount(): PaymentSource {
             return PaymentSource.builder()
                 .id(IdFactory.id().toString())
-                .paymentType(CreditCardPaymentType.BANK_ACCOUNT.rawValue())
+                .paymentType(CreditCardPaymentType.BANK_ACCOUNT.rawValue)
                 .state("ACTIVE")
                 .build()
         }

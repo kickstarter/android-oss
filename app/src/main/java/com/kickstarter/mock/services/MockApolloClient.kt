@@ -1,6 +1,11 @@
 package com.kickstarter.mock.services
 
 import android.util.Pair
+import com.kickstarter.CreatePasswordMutation
+import com.kickstarter.DeletePaymentSourceMutation
+import com.kickstarter.SendEmailVerificationMutation
+import com.kickstarter.UpdateUserCurrencyMutation
+import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
@@ -35,7 +40,6 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
@@ -49,6 +53,7 @@ import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import java.util.Collections
 
@@ -70,8 +75,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(
             UpdateUserPasswordMutation.Data(
                 UpdateUserPasswordMutation.UpdateUserAccount(
-                    "",
-                    UpdateUserPasswordMutation.User("", "some@email.com", true, true)
+                    UpdateUserPasswordMutation.User( "some@email.com", true, true)
                 )
             )
         )
@@ -83,8 +87,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(
             UpdateUserEmailMutation.Data(
                 UpdateUserEmailMutation.UpdateUserAccount(
-                    "",
-                    UpdateUserEmailMutation.User("", "Some Name", "some@email.com")
+                    UpdateUserEmailMutation.User("Some Name", "some@email.com")
                 )
             )
         )
@@ -94,7 +97,6 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(
             SendEmailVerificationMutation.Data(
                 SendEmailVerificationMutation.UserSendEmailVerification(
-                    "",
                     "12345"
                 )
             )
@@ -150,7 +152,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun deletePaymentSource(paymentSourceId: String): io.reactivex.Observable<DeletePaymentSourceMutation.Data> {
-        return io.reactivex.Observable.just(DeletePaymentSourceMutation.Data(DeletePaymentSourceMutation.PaymentSourceDelete("", "")))
+        return io.reactivex.Observable.just(DeletePaymentSourceMutation.Data(DeletePaymentSourceMutation.PaymentSourceDelete( "")))
     }
 
     override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): io.reactivex.Observable<StoredCard> {

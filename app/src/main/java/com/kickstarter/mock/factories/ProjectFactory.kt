@@ -1,5 +1,6 @@
 package com.kickstarter.mock.factories
 
+import com.apollographql.apollo3.api.CustomTypeValue
 import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -511,7 +512,7 @@ object ProjectFactory {
 
         return project()
             .toBuilder()
-            .launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)))
+            //.launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0))) // TODO dates
             .displayPrelaunch(true)
             .urls(Urls.builder().web(web).build())
             .build()

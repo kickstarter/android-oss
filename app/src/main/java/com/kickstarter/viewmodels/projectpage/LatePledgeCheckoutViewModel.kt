@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
-import type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardPaymentType
 
 data class LatePledgeCheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),

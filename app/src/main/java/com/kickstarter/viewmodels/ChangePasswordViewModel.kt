@@ -45,7 +45,7 @@ class ChangePasswordViewModel(val environment: Environment) : ViewModel() {
                 }
                 .map {
                     analytics.reset()
-                    mutableUIState.emit(UpdatePasswordUIState(isLoading = false, email = it.updateUserAccount()?.user()?.email() ?: ""))
+                    mutableUIState.emit(UpdatePasswordUIState(isLoading = false, email = it.updateUserAccount?.user?.email ?: ""))
                 }
                 .catch {
                     mutableUIState.emit(UpdatePasswordUIState(errorMessage = it.message ?: "", isLoading = false))

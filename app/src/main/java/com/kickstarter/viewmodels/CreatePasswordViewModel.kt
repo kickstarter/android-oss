@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.CreatePasswordMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.CreatePasswordMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2

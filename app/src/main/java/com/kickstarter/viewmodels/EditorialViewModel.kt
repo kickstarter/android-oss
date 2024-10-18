@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
@@ -119,7 +120,7 @@ interface EditorialViewModel {
         }
 
         private fun fetchCategories(): Observable<Notification<List<Category>>>? {
-            return this.apolloClient.fetchCategories()
+            return this.apolloClient.fetchCategories(viewModelScope = viewModelScope)
                 .doOnSubscribe { this.retryContainerIsGone.onNext(true) }
                 .materialize()
                 .share()

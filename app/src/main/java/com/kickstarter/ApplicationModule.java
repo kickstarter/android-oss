@@ -217,8 +217,8 @@ public class ApplicationModule {
 
     // TODO: Review this piece around the CustomScalarTypes Dates are not being recognized as such
     return new ApolloClient.Builder()
-      .addCustomScalarAdapter(new CustomScalarType("Date","java.util.Date"), new DateAdapter())
-      .addCustomScalarAdapter(new CustomScalarType("DateTime","org.joda.time.DateTime"), new DateTimeAdapter())
+      //.addCustomScalarAdapter(new CustomScalarType("Date","java.util.Date"), new DateAdapter())
+      //.addCustomScalarAdapter(new CustomScalarType("DateTime","org.joda.time.DateTime"), new DateTimeAdapter())
       .serverUrl(webEndpoint + "/graph")
       .build();
   }

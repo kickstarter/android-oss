@@ -182,12 +182,10 @@ android {
 }
 
 apollo {
-    packageName.set("com.kickstarter")
-    generateKotlinModels.set(true)
-//    service("service") {
-//        packageNamesFromFilePaths()
-//    }
-//    generateModelBuilder = true
+    service("service") {
+        packageName.set("com.kickstarter")
+        generateKotlinModels.set(true)
+    }
 }
 
 repositories {

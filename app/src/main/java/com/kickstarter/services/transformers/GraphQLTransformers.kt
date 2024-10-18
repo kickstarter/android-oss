@@ -3,7 +3,7 @@ package com.kickstarter.services.transformers
 import com.kickstarter.CreateAttributionEventMutation
 import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.PledgedProjectsOverviewQuery
-//import com.kickstarter.TriggerThirdPartyEventMutation
+// import com.kickstarter.TriggerThirdPartyEventMutation
 import com.kickstarter.UserPrivacyQuery
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
@@ -46,13 +46,12 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.type.CreateAttributionEventInput
 import com.kickstarter.type.CreateOrUpdateBackingAddressInput
-import com.kickstarter.viewmodels.usecases.TPEventInputData
 import com.kickstarter.fragment.FullProject
 import com.kickstarter.fragment.PpoCard.DeliveryAddress
 import com.kickstarter.fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
-//import com.kickstarter.type.AppDataInput
+// import com.kickstarter.type.AppDataInput
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
@@ -700,7 +699,7 @@ fun commentTransformer(commentFr: com.kickstarter.fragment.Comment?): Comment {
  * @param fragment.Baking projectFragment
  * @return Backing
  */
-fun backingTransformer(backingGr:  com.kickstarter.fragment.Backing?): Backing {
+fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
     // TODO Dates!!
     val payment = backingGr?.paymentSource?.payment?.let { payment ->
         PaymentSource.builder()
@@ -868,7 +867,7 @@ fun shippingRulesListTransformer(shippingRulesExpanded: List<com.kickstarter.fra
  * From KS dataModel TPEventInputData, transform it into
  * GraphQL defined mutation TriggerThirdPartyEventMutation
  */
-//fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
+// fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
 //    val graphAppData = AppDataInput.builder()
 //        .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
 //        .applicationTrackingEnabled(eventInput.appData.androidConsent)
@@ -901,7 +900,7 @@ fun shippingRulesListTransformer(shippingRulesExpanded: List<com.kickstarter.fra
 //
 //    return TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput)
 //        .build()
-//}
+// }
 
 /**
  * From KS dataModel CreateAttributionEventData, transform it into

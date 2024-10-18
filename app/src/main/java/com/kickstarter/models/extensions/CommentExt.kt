@@ -2,7 +2,6 @@ package com.kickstarter.models.extensions
 
 import com.kickstarter.models.Comment
 import com.kickstarter.models.User
-import com.kickstarter.type.CommentBadge
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus

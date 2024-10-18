@@ -1,8 +1,8 @@
 package com.kickstarter.ui.data
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import com.kickstarter.type.CreditCardPaymentType
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class CheckoutData private constructor(

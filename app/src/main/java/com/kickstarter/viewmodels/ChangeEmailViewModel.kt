@@ -1,10 +1,10 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.SendEmailVerificationMutation
-import com.kickstarter.UpdateUserEmailMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
+import com.kickstarter.SendEmailVerificationMutation
+import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2

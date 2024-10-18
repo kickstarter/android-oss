@@ -1,5 +1,11 @@
 package com.kickstarter.services
 
+import android.util.Pair
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Optional
+import com.google.android.gms.common.util.Base64Utils
+import com.google.gson.Gson
 import com.kickstarter.CancelBackingMutation
 import com.kickstarter.ClearUserUnseenActivityMutation
 import com.kickstarter.CompleteOnSessionCheckoutMutation
@@ -8,10 +14,13 @@ import com.kickstarter.CreateBackingMutation
 import com.kickstarter.CreateCheckoutMutation
 import com.kickstarter.CreateCommentMutation
 import com.kickstarter.CreateFlaggingMutation
+import com.kickstarter.CreatePasswordMutation
 import com.kickstarter.CreatePaymentIntentMutation
 import com.kickstarter.CreateSetupIntentMutation
+import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.ErroredBackingsQuery
 import com.kickstarter.FetchCategoryQuery
+import com.kickstarter.FetchProjectQuery
 import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
@@ -25,25 +34,17 @@ import com.kickstarter.GetRootCategoriesQuery
 import com.kickstarter.GetShippingRulesForRewardIdQuery
 import com.kickstarter.ProjectCreatorDetailsQuery
 import com.kickstarter.SavePaymentMethodMutation
+import com.kickstarter.SendEmailVerificationMutation
 import com.kickstarter.SendMessageMutation
 import com.kickstarter.UnwatchProjectMutation
 import com.kickstarter.UpdateBackingMutation
+import com.kickstarter.UpdateUserCurrencyMutation
+import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.UserPaymentsQuery
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.ValidateCheckoutQuery
 import com.kickstarter.WatchProjectMutation
-import android.util.Pair
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
-import com.google.android.gms.common.util.Base64Utils
-import com.google.gson.Gson
-import com.kickstarter.CreatePasswordMutation
-import com.kickstarter.DeletePaymentSourceMutation
-import com.kickstarter.FetchProjectQuery
-import com.kickstarter.SendEmailVerificationMutation
-import com.kickstarter.UpdateUserCurrencyMutation
-import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -93,19 +94,21 @@ import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
+import com.kickstarter.type.BackingState
 import com.kickstarter.type.CurrencyCode
+import com.kickstarter.type.NonDeprecatedFlaggingKind
+import com.kickstarter.type.PaymentTypes
+import com.kickstarter.type.StripeIntentContextTypes
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.asObservable
-import com.kickstarter.type.BackingState
-import com.kickstarter.type.Date
-import com.kickstarter.type.DateTime
-import com.kickstarter.type.NonDeprecatedFlaggingKind
-import com.kickstarter.type.PaymentTypes
-import com.kickstarter.type.StripeIntentContextTypes
 import java.nio.charset.Charset
 
 interface ApolloClientTypeV2 {
@@ -153,7 +156,7 @@ interface ApolloClientTypeV2 {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
     fun fetchCategory(param: String): Observable<Category?>
     fun getBacking(backingId: String): Observable<Backing>
-    fun fetchCategories(): Observable<List<Category>>
+    fun fetchCategories(viewModelScope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO): Observable<List<Category>>
 
     fun getProjectUpdates(
         slug: String,
@@ -256,27 +259,28 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             this.service.query(
                 buildFetchProjectsQuery(discoveryParams, slug)
             ).toFlow()
-            .asObservable()
-            .doOnError { throwable ->
-                ps.onError(throwable)
-            }
-            .subscribe { response ->
-                response.data?.let { responseData ->
-                    val projects = responseData.projects?.edges?.map {
-                        projectTransformer(it?.node?.projectCard)
-                    }
-                    val pageInfoEnvelope =
-                        responseData.projects?.pageInfo?.pageInfo?.let {
-                            createPageInfoObject(it)
-                        }
-                    val discoverEnvelope = DiscoverEnvelope.builder()
-                        .projects(projects)
-                        .pageInfoEnvelope(pageInfoEnvelope)
-                        .build()
-                    ps.onNext(discoverEnvelope)
+                .catch { throwable ->
+                    ps.onError(throwable)
                 }
-                ps.onComplete()
-            }.dispose()
+                .map { response ->
+                    response.data?.let { responseData ->
+                        val projects = responseData.projects?.edges?.map {
+                            projectTransformer(it?.node?.projectCard)
+                        }
+                        val pageInfoEnvelope =
+                            responseData.projects?.pageInfo?.pageInfo?.let {
+                                createPageInfoObject(it)
+                            }
+                        val discoverEnvelope = DiscoverEnvelope.builder()
+                            .projects(projects)
+                            .pageInfoEnvelope(pageInfoEnvelope)
+                            .build()
+                        ps.onNext(discoverEnvelope)
+                    }
+                    ps.onComplete()
+                }
+                .asObservable()
+                .subscribe()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1063,18 +1067,16 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun fetchCategories(): Observable<List<Category>> {
+    override fun fetchCategories(viewModelScope: CoroutineScope, dispatcher: CoroutineDispatcher): Observable<List<Category>> {
         return Observable.defer {
-            val ps = PublishSubject.create<List<Category>>()
             val query = GetRootCategoriesQuery()
-            this.service.query(
+            val ps = PublishSubject.create<List<Category>>()
+
+            service.query(
                 query
-            ).toFlow()
-                .asObservable()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
+            )
+                .toFlow()
+                .map { response: ApolloResponse<GetRootCategoriesQuery.Data> ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
@@ -1094,7 +1096,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                         ps.onComplete()
                     }
-                }.dispose()
+                }
+                .catch { throwable ->
+                    ps.onError(throwable)
+                }
+                .asObservable()
+                .subscribe()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

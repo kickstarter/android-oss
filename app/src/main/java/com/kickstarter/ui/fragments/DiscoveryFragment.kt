@@ -300,8 +300,8 @@ class DiscoveryFragment : Fragment() {
 
     private fun startLoginToutActivity() {
         context?.let {
-        val intent = Intent(context, LoginToutActivity::class.java)
-            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
+            val intent = Intent(context, LoginToutActivity::class.java)
+                .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
             startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
             TransitionUtils.transition(it, TransitionUtils.fadeIn())
         }
@@ -319,6 +319,7 @@ class DiscoveryFragment : Fragment() {
             TransitionUtils.transition(requireContext(), TransitionUtils.slideInFromRight())
         }
     }
+
     private fun startProjectActivity(project: Project, refTag: RefTag) {
         context?.let {
             val intent = Intent().getProjectIntent(it)

@@ -240,11 +240,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
+            discoveryParams.recommended().isTrue() -> RECOMMENDED.contextName
             discoveryParams.category()?.isRoot.isTrue() ||
                 discoveryParams.category() != null ||
                 discoveryParams.staffPicks().isTrue() ||
                 discoveryParams.isAllProjects.isTrue() -> RESULTS.contextName
-            discoveryParams.recommended().isTrue() -> RECOMMENDED.contextName
             else -> ""
         }
 

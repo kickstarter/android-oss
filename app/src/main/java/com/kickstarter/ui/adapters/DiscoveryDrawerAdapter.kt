@@ -21,7 +21,6 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
-import rx.Observable
 import java.util.ArrayList
 
 class DiscoveryDrawerAdapter(
@@ -158,27 +157,17 @@ class DiscoveryDrawerAdapter(
         newSections.add(listOf<Any?>(null)) // Divider
         newSections.add(listOf<Any>(R.string.Collections))
 
-        val topFilterSections = Observable.from(data.sections())
-            .filter {
-                it.isTopFilter
-            }
-            .toList()
-            .toBlocking().single()
+        val top = data.sections().filter { it.isTopFilter }
+        val category = data.sections().filter { it.isCategoryFilter }
 
-        val categoryFilterSections = Observable.from(data.sections())
-            .filter {
-                it.isCategoryFilter
-            }
-            .toList().toBlocking().single()
-
-        for (section in topFilterSections) {
+        for (section in top) {
             newSections.add(ArrayList<Any?>(section.rows()))
         }
 
         newSections.add(listOf<Any?>(null)) // Divider
         newSections.add(listOf<Any>(R.string.discovery_filters_categories_title))
 
-        for (section in categoryFilterSections) {
+        for (section in category) {
             newSections.add(ArrayList<Any?>(section.rows()))
         }
         return newSections

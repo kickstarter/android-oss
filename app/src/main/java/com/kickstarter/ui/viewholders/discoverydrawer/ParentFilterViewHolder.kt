@@ -10,7 +10,7 @@ class ParentFilterViewHolder(
     private val delegate: Delegate
 ) : KSViewHolder(binding.root) {
 
-    private var item: NavigationDrawerData.Section.Row? = null
+    private lateinit var item: NavigationDrawerData.Section.Row
 
     interface Delegate {
         fun parentFilterViewHolderRowClick(viewHolder: ParentFilterViewHolder, row: NavigationDrawerData.Section.Row)
@@ -18,14 +18,14 @@ class ParentFilterViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        item = requireNotNull(data as NavigationDrawerData.Section.Row?) { NavigationDrawerData.Section.Row::class.java.toString() + " required to be non-null." }
+        item = requireNotNull(data as NavigationDrawerData.Section.Row) { NavigationDrawerData.Section.Row::class.java.toString() + " required to be non-null." }
     }
 
     override fun onBind() {
         val context = context()
         val ksString = requireNotNull(environment().ksString())
-        binding.filterTextView.text = item?.params()?.filterString(context, ksString, false, true)
-        if (item?.rootIsExpanded() == true) {
+        binding.filterTextView.text = item.params().filterString(context, ksString, false, true)
+        if (item.rootIsExpanded()) {
             binding.expandButton.visibility = View.GONE
             binding.collapseButton.visibility = View.VISIBLE
         } else {
@@ -37,7 +37,7 @@ class ParentFilterViewHolder(
         }
     }
 
-    fun rowClick() {
-        delegate.parentFilterViewHolderRowClick(this, item!!)
+    private fun rowClick() {
+        delegate.parentFilterViewHolderRowClick(this, item)
     }
 }

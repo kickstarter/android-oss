@@ -262,17 +262,28 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun startActivityFeedActivity() {
-        startActivity(Intent(activity, ActivityFeedActivity::class.java))
+        context?.let {
+            startActivity(Intent(context, ActivityFeedActivity::class.java))
+        }
     }
 
     private fun startSetPasswordActivity(email: String) {
-        val intent = Intent().getSetPasswordActivity(requireContext(), email)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-        TransitionUtils.transition(requireContext(), TransitionUtils.fadeIn())
+        context?.let {
+            val intent = Intent().getSetPasswordActivity(requireContext(), email)
+            startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+            TransitionUtils.transition(requireContext(), TransitionUtils.fadeIn())
+        }
     }
 
     private fun showStarToast() {
-        ViewUtils.showToastFromTop(requireContext(), getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
+        context?.let {
+            ViewUtils.showToastFromTop(
+                requireContext(),
+                getString(this.projectStarConfirmationString),
+                0,
+                resources.getDimensionPixelSize(R.dimen.grid_8)
+            )
+        }
     }
 
     private fun startEditorialActivity(editorial: Editorial) {
@@ -288,20 +299,25 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun startLoginToutActivity() {
-        val intent = Intent(activity, LoginToutActivity::class.java)
-            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         context?.let {
+        val intent = Intent(context, LoginToutActivity::class.java)
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
+            startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
             TransitionUtils.transition(it, TransitionUtils.fadeIn())
         }
     }
 
     private fun startPreLaunchProjectActivity(project: Project, refTag: RefTag) {
-        val intent = Intent().getPreLaunchProjectActivity(requireContext(), project.slug())
-            .putExtra(IntentKey.REF_TAG, refTag)
-            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DISCOVERY.value)
-        startActivity(intent)
-        TransitionUtils.transition(requireContext(), TransitionUtils.slideInFromRight())
+        context?.let {
+            val intent = Intent().getPreLaunchProjectActivity(requireContext(), project.slug())
+                .putExtra(IntentKey.REF_TAG, refTag)
+                .putExtra(
+                    IntentKey.PREVIOUS_SCREEN,
+                    ThirdPartyEventValues.ScreenName.DISCOVERY.value
+                )
+            startActivity(intent)
+            TransitionUtils.transition(requireContext(), TransitionUtils.slideInFromRight())
+        }
     }
     private fun startProjectActivity(project: Project, refTag: RefTag) {
         context?.let {
@@ -315,11 +331,11 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun startUpdateActivity(activity: Activity) {
-        val intent = Intent(getActivity(), UpdateActivity::class.java)
-            .putExtra(IntentKey.PROJECT, activity.project())
-            .putExtra(IntentKey.UPDATE, activity.update())
-        startActivity(intent)
         context?.let {
+            val intent = Intent(context, UpdateActivity::class.java)
+                .putExtra(IntentKey.PROJECT, activity.project())
+                .putExtra(IntentKey.UPDATE, activity.update())
+            startActivity(intent)
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }
     }

@@ -7,7 +7,6 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
-import rx.Observable
 import type.ProjectSort
 import java.util.TreeMap
 
@@ -61,38 +60,32 @@ fun DiscoveryParams.refTag(): RefTag {
  * @param user The currently logged in user.
  */
 fun DiscoveryParams.deriveNavigationDrawerData(
-    categories: List<Category>,
-    expandedCategory: Category?,
-    user: User?
+    categories: List<Category> = listOf(),
+    expandedCategory: Category? = null,
+    user: User
 ): NavigationDrawerData {
     val builder = NavigationDrawerData.builder()
 
-    val categorySections = Observable.from(categories)
-        .filter {
-            isVisible(it, expandedCategory)
-        }
-        .flatMap {
-            doubleRootIfExpanded(it, expandedCategory)
-        }
-        .map {
-            DiscoveryParams.builder().category(it).build()
-        }
+    val visible = categories
+        .filter { isVisible(it, expandedCategory) }
+        .flatMap { doubleRootIfExpanded(it, expandedCategory) }
+        .map { DiscoveryParams.builder().category(it).build() }
         .toList()
-        .map {
-            paramsGroupedByRootCategory(it)
-        }.map {
-            sectionsFromAllParams(it, expandedCategory)
-        }
-        .toBlocking().single()
+    val sectionsForVisible = paramsGroupedByRootCategory(visible)
+    val sectionsFromAllParamsVisible = sectionsFromAllParams(sectionsForVisible, expandedCategory)
+    val topSections = if (user == User.builder().build()) {
+        topSections(null)
+    } else {
+        topSections(user)
+    }
 
-    val sections = Observable
-        .from(categorySections)
-        .startWith(topSections(user))
-        .toList().toBlocking().single()
+    val allSections = topSections.toMutableList()
+    allSections.addAll(sectionsFromAllParamsVisible)
+    allSections.toList()
 
     return builder
-        .sections(sections)
-        .user(user)
+        .sections(allSections)
+        .user(if (user == User.builder().build()) null else user)
         .selectedParams(this)
         .expandedCategory(expandedCategory)
         .build()
@@ -104,7 +97,7 @@ fun DiscoveryParams.deriveNavigationDrawerData(
  * @param expandedCategory The category that is currently expandable, possible `null`.
  */
 private fun isVisible(category: Category, expandedCategory: Category?): Boolean {
-    if (expandedCategory == null) {
+    if (expandedCategory == null || category.id() == 0L) {
         return category.isRoot
     }
     return if (category.isRoot) {
@@ -120,7 +113,7 @@ private fun sectionsFromAllParams(
     sections: List<List<DiscoveryParams>>,
     expandedCategory: Category?
 ): List<NavigationDrawerData.Section> {
-    return Observable.from(sections)
+    return sections
         .map {
             rowsFromParams(it)
         }.map {
@@ -135,18 +128,18 @@ private fun sectionsFromAllParams(
                 .expanded(it.second)
                 .build()
         }
-        .toList().toBlocking().single()
+        .toList()
 }
 
 /**
  * Converts a list of params into a list of rows that the drawer can use to display rows.
  */
 private fun rowsFromParams(params: List<DiscoveryParams>): List<NavigationDrawerData.Section.Row> {
-    return Observable.from(params)
+    return params
         .map {
             NavigationDrawerData.Section.Row.builder().params(it).build()
         }
-        .toList().toBlocking().single()
+        .toList()
 }
 
 /**
@@ -157,7 +150,7 @@ private fun rowsAreExpanded(
     expandedCategory: Category?
 ): Boolean {
     val sectionCategory = rows[0].params().category()
-    return sectionCategory != null && expandedCategory != null && sectionCategory.rootId() == expandedCategory.rootId()
+    return sectionCategory != null && expandedCategory != null && expandedCategory.id() != 0L && sectionCategory.rootId() == expandedCategory.rootId()
 }
 
 /**
@@ -169,13 +162,13 @@ private fun rowsAreExpanded(
 private fun doubleRootIfExpanded(
     category: Category,
     expandedCategory: Category?
-): Observable<Category> {
+): List<Category> {
     if (expandedCategory == null) {
-        return Observable.just(category)
+        return listOf(category)
     }
     return if (category.isRoot && category.id() == expandedCategory.id()) {
-        Observable.just(category, category)
-    } else Observable.just(category)
+        listOf(category, category)
+    } else listOf(category)
 }
 
 /**
@@ -202,13 +195,13 @@ private fun topSections(user: User?): List<NavigationDrawerData.Section> {
         }*/
     }
 
-    return Observable.from(filters)
+    return filters
         .map {
             NavigationDrawerData.Section.Row.builder().params(it).build()
         }
         .map { listOf(it) }
         .map { NavigationDrawerData.Section.builder().rows(it).build() }
-        .toList().toBlocking().single()
+        .toList()
 }
 
 /**

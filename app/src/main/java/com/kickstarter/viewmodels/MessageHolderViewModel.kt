@@ -1,14 +1,12 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.PairUtils
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Message
 import com.kickstarter.models.User
-import com.kickstarter.ui.viewholders.MessageViewHolder
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -45,7 +43,6 @@ interface MessageHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<MessageViewHolder?>(environment),
         Inputs,
         Outputs {
         private val currentUser: CurrentUserTypeV2?

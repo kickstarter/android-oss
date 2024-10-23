@@ -5,6 +5,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import org.junit.Test
@@ -65,7 +66,7 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
         val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
             categories,
             null,
-            null
+            User.builder().build()
         )
         assertEquals(5, data.sections().size)
         assertEquals(1, data.sections()[0].rows().size)
@@ -130,7 +131,7 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
         val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
             categories,
             CategoryFactory.artCategory(),
-            null
+            User.builder().build()
         )
         assertEquals(5, data.sections().size)
         assertEquals(1, data.sections()[0].rows().size)

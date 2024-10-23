@@ -225,7 +225,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun fetchCategory(param: String): io.reactivex.Observable<Category?> {
-        return io.reactivex.Observable.empty()
+        return io.reactivex.Observable.just(CategoryFactory.musicCategory())
     }
 
     override fun getBacking(backingId: String): io.reactivex.Observable<Backing> {
@@ -233,7 +233,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun fetchCategories(): io.reactivex.Observable<List<Category>> {
-        return io.reactivex.Observable.empty()
+        return io.reactivex.Observable.just(CategoryFactory.rootCategories())
     }
 
     override fun getProjectUpdates(

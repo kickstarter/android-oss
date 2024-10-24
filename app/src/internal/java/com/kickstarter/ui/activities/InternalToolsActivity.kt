@@ -13,6 +13,7 @@ import android.webkit.URLUtil
 import android.widget.EditText
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingWorkPolicy
@@ -36,7 +37,7 @@ import org.joda.time.format.DateTimeFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class InternalToolsActivity : ComponentActivity() {
+class InternalToolsActivity : AppCompatActivity() {
     @JvmField
     @Inject
     @ApiEndpointPreference

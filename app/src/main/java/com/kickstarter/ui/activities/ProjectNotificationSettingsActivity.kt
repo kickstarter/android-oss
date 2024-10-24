@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -29,6 +30,11 @@ class ProjectNotificationSettingsActivity : ComponentActivity() {
             viewModelFactory = ProjectNotificationSettingsViewModel.Factory(env)
         }
         binding = ProjectNotificationSettingsLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+
+        )
         setContentView(binding.root)
 
         val adapter = ProjectNotificationSettingsAdapter()

@@ -20,6 +20,7 @@ import com.kickstarter.ui.adapters.UpdatesAdapter
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel.Factory
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel.ProjectUpdatesViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -40,6 +41,10 @@ class ProjectUpdatesActivity : AppCompatActivity(), UpdatesAdapter.Delegate {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUpdatesBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)

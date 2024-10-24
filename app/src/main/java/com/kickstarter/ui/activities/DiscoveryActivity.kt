@@ -35,6 +35,7 @@ import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -57,6 +58,10 @@ class DiscoveryActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
         getEnvironment()?.let { env ->
             viewModelFactory = DiscoveryViewModel.Factory(env)
@@ -71,14 +76,17 @@ class DiscoveryActivity : AppCompatActivity() {
         viewModel.provideIntent(intent)
 
         // TODO: Replace with compose implementation
-        val nightModeFlags = this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        val nightModeFlags =
+            this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         viewModel.setDarkTheme(
             when (nightModeFlags) {
-                Configuration.UI_MODE_NIGHT_YES -> { true }
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    true
+                }
+
                 else -> false
             }
         )
-
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
         drawerLayoutManager = LinearLayoutManager(this)
@@ -146,7 +154,10 @@ class DiscoveryActivity : AppCompatActivity() {
             .subscribe {
                 consentManagementDialogFragment = ConsentManagementDialogFragment()
                 consentManagementDialogFragment.isCancelable = false
-                consentManagementDialogFragment.show(supportFragmentManager, "consentManagementDialogFragment")
+                consentManagementDialogFragment.show(
+                    supportFragmentManager,
+                    "consentManagementDialogFragment"
+                )
             }
             .addToDisposable(disposables)
 

@@ -9,7 +9,6 @@ import io.reactivex.functions.Function
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.net.MalformedURLException
-import java.util.ArrayList
 
 class ApolloPaginateV2<Data, Envelope : ApolloEnvelope, Params>(
     val nextPage: Observable<Unit>,

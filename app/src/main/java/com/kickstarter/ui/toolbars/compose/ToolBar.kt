@@ -82,6 +82,7 @@ fun TopToolBar(
             right()
         },
         backgroundColor = backgroundColor ?: colors.kds_white
+
     )
 }
 

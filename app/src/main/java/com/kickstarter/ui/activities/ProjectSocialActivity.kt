@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.adapters.ProjectSocialAdapter
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ProjectSocialViewModel.Factory
 import com.kickstarter.viewmodels.ProjectSocialViewModel.ProjectSocialViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,6 +33,10 @@ class ProjectSocialActivity : AppCompatActivity() {
         }
 
         binding = ProjectSocialLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         val adapter = ProjectSocialAdapter()

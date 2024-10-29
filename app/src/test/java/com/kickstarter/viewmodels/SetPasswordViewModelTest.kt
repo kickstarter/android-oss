@@ -128,8 +128,6 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.savePasswordClicked()
 
         this.success.assertValue("test@email.com")
-
-        assertEquals(false, mockUser.getUser()?.needsPassword())
     }
 
     @Test

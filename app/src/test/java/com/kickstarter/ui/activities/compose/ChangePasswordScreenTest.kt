@@ -87,7 +87,6 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
                 )
             }
         }
-
     }
 
     @Test
@@ -106,7 +105,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
         val passwordMismatchWarningText = context.getString(R.string.Passwords_matching_message)
         val passwordLengthWarningText = context.getString(R.string.Password_min_length_message)
 
-        //current password too short, button should be disabled but no warning text
+        // current password too short, button should be disabled but no warning text
         currentPasswordEditText.performTextInput("pass")
         newPasswordLine1EditText.performTextInput("password1")
         newPasswordLine2EditText.performTextInput("password1")
@@ -118,7 +117,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
         newPasswordLine1EditText.performTextClearance()
         newPasswordLine2EditText.performTextClearance()
 
-        //only one new password field filled out, button should be disabled but no warning text
+        // only one new password field filled out, button should be disabled but no warning text
         currentPasswordEditText.performTextInput("password")
         newPasswordLine1EditText.performTextInput("password1")
 
@@ -129,7 +128,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
         newPasswordLine1EditText.performTextClearance()
         newPasswordLine2EditText.performTextClearance()
 
-        //new passwords not long enough, button should be disabled and no warning text
+        // new passwords not long enough, button should be disabled and no warning text
         currentPasswordEditText.performTextInput("password")
         newPasswordLine1EditText.performTextInput("pass")
         newPasswordLine2EditText.performTextInput("password2")
@@ -142,7 +141,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
         newPasswordLine1EditText.performTextClearance()
         newPasswordLine2EditText.performTextClearance()
 
-        //passwords are long enough but don't match, button should be disabled and warning text shows
+        // passwords are long enough but don't match, button should be disabled and warning text shows
         currentPasswordEditText.performTextInput("password")
         newPasswordLine1EditText.performTextInput("password1")
         newPasswordLine2EditText.performTextInput("password2")
@@ -166,7 +165,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
             }
         }
 
-        //valid password and matching
+        // valid password and matching
         currentPasswordEditText.performTextInput("password")
         newPasswordLine1EditText.performTextInput("passwordA")
         newPasswordLine2EditText.performTextInput("passwordA")

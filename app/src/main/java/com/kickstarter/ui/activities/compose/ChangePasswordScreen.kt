@@ -160,7 +160,8 @@ fun ChangePasswordScreen(
                 .padding(padding)
         ) {
             AnimatedVisibility(visible = showProgressBar) {
-                KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth().testTag(ChangePasswordScreenTestTag.PROGRESS_BAR.name)
+                KSLinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth().testTag(ChangePasswordScreenTestTag.PROGRESS_BAR.name)
                 )
             }
 

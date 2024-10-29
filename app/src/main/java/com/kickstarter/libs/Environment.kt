@@ -19,7 +19,6 @@ class Environment private constructor(
     private val build: Build?,
     private val cookieManager: CookieManager?,
     private val currentConfigV2: CurrentConfigTypeV2?,
-    private val currentUser: CurrentUserType?,
     private val currentUserV2: CurrentUserTypeV2?,
     private val firstSessionPreference: BooleanPreferenceType?,
     private val gson: Gson?,
@@ -46,7 +45,6 @@ class Environment private constructor(
     fun build() = this.build
     fun cookieManager() = this.cookieManager
     fun currentConfigV2() = this.currentConfigV2
-    fun currentUser() = this.currentUser
     fun currentUserV2() = this.currentUserV2
     fun firstSessionPreference() = this.firstSessionPreference
     fun gson() = this.gson
@@ -74,7 +72,6 @@ class Environment private constructor(
         private var build: Build? = null,
         private var cookieManager: CookieManager? = null,
         private var currentConfigV2: CurrentConfigTypeV2? = null,
-        private var currentUser: CurrentUserType? = null,
         private var currentUserV2: CurrentUserTypeV2? = null,
         private var firstSessionPreference: BooleanPreferenceType? = null,
         private var gson: Gson? = null,
@@ -101,7 +98,6 @@ class Environment private constructor(
         fun build(build: Build) = apply { this.build = build }
         fun cookieManager(cookieManager: CookieManager) = apply { this.cookieManager = cookieManager }
         fun currentConfig2(currentConfig2: CurrentConfigTypeV2) = apply { this.currentConfigV2 = currentConfig2 }
-        fun currentUser(currentUser: CurrentUserType) = apply { this.currentUser = currentUser }
         fun currentUserV2(currentUserV2: CurrentUserTypeV2) = apply { this.currentUserV2 = currentUserV2 }
         fun firstSessionPreference(firstSessionPreference: BooleanPreferenceType) = apply { this.firstSessionPreference = firstSessionPreference }
         fun gson(gson: Gson) = apply { this.gson = gson }
@@ -130,7 +126,6 @@ class Environment private constructor(
             build = build,
             cookieManager = cookieManager,
             currentConfigV2 = currentConfigV2,
-            currentUser = currentUser,
             currentUserV2 = currentUserV2,
             firstSessionPreference = firstSessionPreference,
             gson = gson,
@@ -160,7 +155,6 @@ class Environment private constructor(
         build = build,
         cookieManager = cookieManager,
         currentConfigV2 = currentConfigV2,
-        currentUser = currentUser,
         currentUserV2 = currentUserV2,
         firstSessionPreference = firstSessionPreference,
         gson = gson,

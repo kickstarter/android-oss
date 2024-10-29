@@ -18,8 +18,6 @@ import com.kickstarter.libs.AttributionEvents;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentConfigTypeV2;
-import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.CurrentUserTypeV2;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
@@ -120,7 +118,6 @@ public class ApplicationModule {
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigTypeV2 currentConfig2,
-    final @NonNull CurrentUserType currentUser,
     final @NonNull CurrentUserTypeV2 currentUser2,
     final @NonNull @FirstSessionPreference BooleanPreferenceType firstSessionPreference,
     final @NonNull Gson gson,
@@ -148,7 +145,6 @@ public class ApplicationModule {
       .build(build)
       .cookieManager(cookieManager)
       .currentConfig2(currentConfig2)
-      .currentUser(currentUser)
       .currentUserV2(currentUser2)
       .firstSessionPreference(firstSessionPreference)
       .gson(gson)
@@ -322,7 +318,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
+  static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserTypeV2 currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
   }
@@ -420,7 +416,7 @@ public class ApplicationModule {
   @Singleton
   static AnalyticEvents provideAnalytics(
           final @ApplicationContext @NonNull Context context,
-          final @NonNull CurrentUserType currentUser,
+          final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build,
           final @NonNull FeatureFlagClientType ffClient,
           final @NonNull SegmentTrackingClient segmentClient) {
@@ -485,14 +481,6 @@ public class ApplicationModule {
   @Singleton
   static CookieManager provideCookieManager() {
     return new CookieManager();
-  }
-
-  @Provides
-  @Singleton
-  static CurrentUserType provideCurrentUser(final @AccessTokenPreference @NonNull StringPreferenceType accessTokenPreference,
-    final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
-    final @NonNull @UserPreference StringPreferenceType userPreference) {
-    return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
   @Provides
@@ -566,8 +554,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser, final @NonNull CurrentUserTypeV2 currentUserV2) {
-    return new Logout(cookieManager, currentUser, currentUserV2);
+  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserTypeV2 currentUser, final @NonNull CurrentUserTypeV2 currentUserV2) {
+    return new Logout(cookieManager, currentUserV2);
   }
 
   @Provides

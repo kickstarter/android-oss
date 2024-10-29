@@ -3,9 +3,9 @@ package com.kickstarter.viewmodels.usecases
 import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -45,11 +45,11 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
             }
         }
 
-    val currentUser: CurrentUserType = MockCurrentUser(UserFactory.user().toBuilder().id(7272).email("some@email.com").build())
+    val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(UserFactory.user().toBuilder().id(7272).email("some@email.com").build())
     private fun setUpEnvironment(mockFeatureFlagClient: MockFeatureFlagClient = mockFeatureFlagClientType): Environment {
         return environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .sharedPreferences(mockSharedPreferences)
             .featureFlagClient(mockFeatureFlagClient)
             .build()

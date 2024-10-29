@@ -4,10 +4,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.thanks
@@ -220,7 +218,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val hasSeenAppRatingPreference = MockBooleanPreference(false)
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
         val user = user().toBuilder().gamesNewsletter(false).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val project = project()
             .toBuilder()
             .category(tabletopGamesCategory())
@@ -235,7 +233,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .featureFlagClient(mockFeatureFlagClient)
             .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
@@ -272,10 +270,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_dontShowGamesNewsletterDialogIfRootCategoryIsNotGames() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
         val user = user().toBuilder().gamesNewsletter(false).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
@@ -293,10 +291,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySeen() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
         val user = user().toBuilder().gamesNewsletter(false).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
@@ -525,7 +523,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .currentUser(MockCurrentUser(user))
+                .currentUserV2(MockCurrentUserV2(user))
                 .sharedPreferences(sharedPreferences)
                 .featureFlagClient(mockFeatureFlagClient)
                 .build(),

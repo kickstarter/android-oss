@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -214,10 +213,9 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testToggleBookmark() {
-        val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
 
-        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder()
             .currentUserV2(currentUserV2).build()
         setUpEnvironment(mockedEnv)
 
@@ -225,7 +223,6 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(project.value, prelaunchProject)
 
-        currentUser.refresh(UserFactory.user())
         currentUserV2.refresh(UserFactory.user())
 
         vm.inputs.bookmarkButtonClicked()
@@ -255,10 +252,8 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLoggedOutStarProjectFlow() {
-        val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
-
-        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder()
             .currentUserV2(currentUserV2).build()
 
         setUpEnvironment(mockedEnv)
@@ -276,7 +271,6 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         this.startLoginToutActivity.assertValueCount(1)
 
         // Login
-        currentUser.refresh(UserFactory.user())
         currentUserV2.refresh(UserFactory.user())
 
         vm.inputs.bookmarkButtonClicked()
@@ -314,10 +308,9 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
-        val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
 
-        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder()
             .currentUserV2(currentUserV2)
             .featureFlagClient(mockFeatureFlagClient)
             .sharedPreferences(sharedPreferences)

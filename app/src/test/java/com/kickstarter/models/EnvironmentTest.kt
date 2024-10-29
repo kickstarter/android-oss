@@ -1,7 +1,7 @@
 package com.kickstarter.models
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.UserFactory
 import org.junit.Test
 
@@ -14,7 +14,7 @@ class EnvironmentTest : KSRobolectricTestCase() {
         assertNotNull(environment.activitySamplePreference())
         assertNotNull(environment.build())
         assertNotNull(environment.cookieManager())
-        assertNotNull(environment.currentUser())
+        assertNotNull(environment.currentUserV2())
         assertNotNull(environment.firstSessionPreference())
         assertNotNull(environment.gson())
         assertNotNull(environment.hasSeenAppRatingPreference())
@@ -34,8 +34,8 @@ class EnvironmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testToBuilderInit() {
-        val collaborator = MockCurrentUser(UserFactory.collaborator())
-        val environment = environment().toBuilder().currentUser(collaborator).build()
-        assertEquals(environment.currentUser(), collaborator)
+        val collaborator = MockCurrentUserV2(UserFactory.collaborator())
+        val environment = environment().toBuilder().currentUserV2(collaborator).build()
+        assertEquals(environment.currentUserV2(), collaborator)
     }
 }

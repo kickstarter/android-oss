@@ -13,7 +13,6 @@ class EnvironmentTest : KSRobolectricTestCase() {
 
         assertNotNull(environment.activitySamplePreference())
         assertNotNull(environment.apiClient())
-        assertNotNull(environment.apolloClient())
         assertNotNull(environment.build())
         assertNotNull(environment.cookieManager())
         assertNotNull(environment.currentConfig())

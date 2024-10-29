@@ -73,7 +73,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiClientTypeV2;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
-import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
@@ -122,7 +121,6 @@ public class ApplicationModule {
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull ApiClientType apiClient,
     final @NonNull ApiClientTypeV2 apiClientV2,
-    final @NonNull ApolloClientType apolloClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
@@ -153,7 +151,6 @@ public class ApplicationModule {
       .activitySamplePreference(activitySamplePreference)
       .apiClient(apiClient)
       .apiClientV2(apiClientV2)
-      .apolloClient(apolloClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
       .cookieManager(cookieManager)

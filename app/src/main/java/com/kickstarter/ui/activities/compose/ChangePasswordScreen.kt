@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -57,6 +58,18 @@ fun ChangePasswordPreview() {
             scaffoldState = rememberScaffoldState()
         )
     }
+}
+
+enum class ChangePasswordScreenTestTag {
+    BACK_BUTTON,
+    ACCEPT_BUTTON,
+    CURRENT_PASSWORD,
+    NEW_PASSWORD_1,
+    NEW_PASSWORD_2,
+    WARNING_TEXT,
+    PAGE_TITLE,
+    PROGRESS_BAR,
+    SUBTITLE,
 }
 
 @Composable
@@ -101,11 +114,14 @@ fun ChangePasswordScreen(
             TopToolBar(
                 title = stringResource(id = R.string.Change_password),
                 titleColor = colors.kds_support_700,
+                titleModifier = Modifier.testTag(ChangePasswordScreenTestTag.PAGE_TITLE.name),
                 leftOnClickAction = onBackClicked,
                 leftIconColor = colors.kds_support_700,
+                leftIconModifier = Modifier.testTag(ChangePasswordScreenTestTag.BACK_BUTTON.name),
                 backgroundColor = colors.kds_white,
                 right = {
                     IconButton(
+                        modifier = Modifier.testTag(ChangePasswordScreenTestTag.ACCEPT_BUTTON.name),
                         onClick = {
                             onAcceptButtonClicked.invoke(
                                 currentPassword,
@@ -144,11 +160,12 @@ fun ChangePasswordScreen(
                 .padding(padding)
         ) {
             AnimatedVisibility(visible = showProgressBar) {
-                KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth().testTag(ChangePasswordScreenTestTag.PROGRESS_BAR.name)
+                )
             }
 
             Text(
-                modifier = Modifier.padding(dimensions.paddingMedium),
+                modifier = Modifier.padding(dimensions.paddingMedium).testTag(ChangePasswordScreenTestTag.SUBTITLE.name),
                 text = stringResource(
                     id = R.string.Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password
                 ),
@@ -164,7 +181,7 @@ fun ChangePasswordScreen(
             ) {
 
                 KSHiddenTextInput(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag(ChangePasswordScreenTestTag.CURRENT_PASSWORD.name),
                     onValueChanged = { currentPassword = it },
                     label = stringResource(id = R.string.Current_password),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -180,7 +197,7 @@ fun ChangePasswordScreen(
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingMedium))
 
                 KSHiddenTextInput(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag(ChangePasswordScreenTestTag.NEW_PASSWORD_1.name),
                     onValueChanged = { newPasswordLine1 = it },
                     label = stringResource(id = R.string.New_password),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -196,7 +213,7 @@ fun ChangePasswordScreen(
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingMedium))
 
                 KSHiddenTextInput(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag(ChangePasswordScreenTestTag.NEW_PASSWORD_2.name),
                     onValueChanged = { newPasswordLine2 = it },
                     label = stringResource(id = R.string.Confirm_password),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -212,7 +229,7 @@ fun ChangePasswordScreen(
 
             AnimatedVisibility(visible = warningText.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.padding(dimensions.paddingMedium),
+                    modifier = Modifier.padding(dimensions.paddingMedium).testTag(ChangePasswordScreenTestTag.WARNING_TEXT.name),
                     text = warningText,
                     style = typography.body2,
                     color = colors.kds_support_700

@@ -20,7 +20,6 @@ class Environment private constructor(
     private val apolloClientV2: ApolloClientTypeV2?,
     private val build: Build?,
     private val cookieManager: CookieManager?,
-    private val currentConfig: CurrentConfigType?,
     private val currentConfigV2: CurrentConfigTypeV2?,
     private val currentUser: CurrentUserType?,
     private val currentUserV2: CurrentUserTypeV2?,
@@ -49,7 +48,6 @@ class Environment private constructor(
     fun apolloClientV2() = this.apolloClientV2
     fun build() = this.build
     fun cookieManager() = this.cookieManager
-    fun currentConfig() = this.currentConfig
     fun currentConfigV2() = this.currentConfigV2
     fun currentUser() = this.currentUser
     fun currentUserV2() = this.currentUserV2
@@ -79,7 +77,6 @@ class Environment private constructor(
         private var apolloClientV2: ApolloClientTypeV2? = null,
         private var build: Build? = null,
         private var cookieManager: CookieManager? = null,
-        private var currentConfig: CurrentConfigType? = null,
         private var currentConfigV2: CurrentConfigTypeV2? = null,
         private var currentUser: CurrentUserType? = null,
         private var currentUserV2: CurrentUserTypeV2? = null,
@@ -108,7 +105,6 @@ class Environment private constructor(
         fun apolloClientV2(apolloClientV2: ApolloClientTypeV2) = apply { this.apolloClientV2 = apolloClientV2 }
         fun build(build: Build) = apply { this.build = build }
         fun cookieManager(cookieManager: CookieManager) = apply { this.cookieManager = cookieManager }
-        fun currentConfig(currentConfig: CurrentConfigType) = apply { this.currentConfig = currentConfig }
         fun currentConfig2(currentConfig2: CurrentConfigTypeV2) = apply { this.currentConfigV2 = currentConfig2 }
         fun currentUser(currentUser: CurrentUserType) = apply { this.currentUser = currentUser }
         fun currentUserV2(currentUserV2: CurrentUserTypeV2) = apply { this.currentUserV2 = currentUserV2 }
@@ -139,7 +135,6 @@ class Environment private constructor(
             apolloClientV2 = apolloClientV2,
             build = build,
             cookieManager = cookieManager,
-            currentConfig = currentConfig,
             currentConfigV2 = currentConfigV2,
             currentUser = currentUser,
             currentUserV2 = currentUserV2,
@@ -171,7 +166,6 @@ class Environment private constructor(
         apolloClientV2 = apolloClientV2,
         build = build,
         cookieManager = cookieManager,
-        currentConfig = currentConfig,
         currentConfigV2 = currentConfigV2,
         currentUser = currentUser,
         currentUserV2 = currentUserV2,

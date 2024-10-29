@@ -16,9 +16,7 @@ import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AttributionEvents;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentConfigV2;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentConfigTypeV2;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.CurrentUserType;
@@ -124,7 +122,6 @@ public class ApplicationModule {
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
-    final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentConfigTypeV2 currentConfig2,
     final @NonNull CurrentUserType currentUser,
     final @NonNull CurrentUserTypeV2 currentUser2,
@@ -154,7 +151,6 @@ public class ApplicationModule {
       .apolloClientV2(apolloClientV2)
       .build(build)
       .cookieManager(cookieManager)
-      .currentConfig(currentConfig)
       .currentConfig2(currentConfig2)
       .currentUser(currentUser)
       .currentUserV2(currentUser2)
@@ -437,7 +433,6 @@ public class ApplicationModule {
           final @ApplicationContext @NonNull Context context,
           final @NonNull CurrentUserType currentUser,
           final @NonNull Build build,
-          final @NonNull CurrentConfigType currentConfig,
           final @NonNull FeatureFlagClientType ffClient,
           final @NonNull SegmentTrackingClient segmentClient) {
     final List<TrackingClientType> clients = Arrays.asList(segmentClient);
@@ -481,14 +476,6 @@ public class ApplicationModule {
   @NonNull
   static Build provideBuild(final @NonNull PackageInfo packageInfo) {
     return new Build(packageInfo);
-  }
-
-  @Provides
-  @Singleton
-  static CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
-                                                final @NonNull Gson gson,
-                                                final @ConfigPreference @NonNull StringPreferenceType configPreference) {
-    return new CurrentConfig(assetManager, gson, configPreference);
   }
 
   @Provides

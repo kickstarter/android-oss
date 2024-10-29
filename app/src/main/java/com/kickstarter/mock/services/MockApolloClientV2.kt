@@ -48,7 +48,6 @@ import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.viewmodels.usecases.TPEventInputData
-import rx.Observable
 import type.CurrencyCode
 import java.util.Collections
 

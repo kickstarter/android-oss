@@ -601,7 +601,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context,
-    final @NonNull ApiClientType client) {
+    final @NonNull ApiClientTypeV2 client) {
     return new PushNotifications(context, client);
   }
 

@@ -8,20 +8,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.ActivityLifecycleType;
 import com.kickstarter.libs.Environment;
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.RxLifecycle;
-
-import rx.Observable;
-import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public abstract class KSViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-  ActivityLifecycleType {
+public abstract class KSViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
   private final View view;
-  private final @NonNull PublishSubject<ActivityEvent> lifecycle = PublishSubject.create();
 
   public KSViewHolder(final @NonNull View view) {
     super(view);
@@ -55,38 +47,6 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    */
   abstract public void bindData(final @Nullable Object data) throws Exception;
 
-  @Override
-  public @NonNull Observable<ActivityEvent> lifecycle() {
-    return this.lifecycle;
-  }
-
-  /**
-   * This method is intended to be called only from `KSAdapter` in order for it to inform the view holder
-   * of its lifecycle.
-   */
-  public void lifecycleEvent(final @NonNull ActivityEvent event) {
-    this.lifecycle.onNext(event);
-
-    if (ActivityEvent.DESTROY.equals(event)) {
-      destroy();
-    }
-  }
-
-  /**
-   * Completes an observable when an {@link ActivityEvent} occurs in the activity's lifecycle.
-   */
-  public final @NonNull <T> Observable.Transformer<T, T> bindUntilEvent(final @NonNull ActivityEvent event) {
-    return RxLifecycle.bindUntilActivityEvent(this.lifecycle, event);
-  }
-
-  /**
-   * Completes an observable when the lifecycle event opposing the current lifecyle event is emitted.
-   * For example, if a subscription is made during {@link ActivityEvent#CREATE}, the observable will be completed
-   * in {@link ActivityEvent#DESTROY}.
-   */
-  public final @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
-    return RxLifecycle.bindActivity(this.lifecycle);
-  }
 
   /**
    * Called when the ViewHolder is being detached. Subclasses should override if they need to do any work

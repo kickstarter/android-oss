@@ -19,6 +19,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -65,6 +66,7 @@ fun RisksScreen(
                     bottom = dimensionResource(id = R.dimen.grid_4)
                 )
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3))
+                .testTag(RisksScreenTestTag.PAGE_TITLE.name)
         )
         Text(
             text = riskDescState.value,
@@ -75,6 +77,7 @@ fun RisksScreen(
                     top = dimensionResource(id = R.dimen.grid_3)
                 )
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3))
+                .testTag(RisksScreenTestTag.RISK_DESCRIPTION.name)
         )
         Spacer(
             modifier = Modifier
@@ -105,8 +108,15 @@ fun RisksScreen(
                     bottom = dimensionResource(id = R.dimen.grid_5)
                 )
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3))
+                .testTag(RisksScreenTestTag.CLICKABLE_TEXT.name)
         )
     }
+}
+
+enum class RisksScreenTestTag {
+    PAGE_TITLE,
+    RISK_DESCRIPTION,
+    CLICKABLE_TEXT
 }
 
 @Composable

@@ -67,9 +67,7 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiClientTypeV2;
-import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
@@ -117,7 +115,6 @@ public class ApplicationModule {
   @Provides
   @Singleton
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
-    final @NonNull ApiClientType apiClient,
     final @NonNull ApiClientTypeV2 apiClientV2,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
@@ -146,7 +143,6 @@ public class ApplicationModule {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
-      .apiClient(apiClient)
       .apiClientV2(apiClientV2)
       .apolloClientV2(apolloClientV2)
       .build(build)
@@ -280,13 +276,6 @@ public class ApplicationModule {
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserTypeV2 currentUser, final @NonNull Build build) {
     return new GraphQLInterceptor(clientId, currentUser, build);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(ApiService.class);
   }
 
   @Provides

@@ -10,7 +10,6 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -565,7 +564,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .country("US")
             .build()
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
         setUpEnvironment(environment(), project(project))
 

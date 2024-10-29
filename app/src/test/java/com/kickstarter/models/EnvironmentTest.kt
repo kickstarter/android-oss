@@ -12,10 +12,8 @@ class EnvironmentTest : KSRobolectricTestCase() {
         val environment = environment()
 
         assertNotNull(environment.activitySamplePreference())
-        assertNotNull(environment.apiClient())
         assertNotNull(environment.build())
         assertNotNull(environment.cookieManager())
-        assertNotNull(environment.currentConfig())
         assertNotNull(environment.currentUser())
         assertNotNull(environment.firstSessionPreference())
         assertNotNull(environment.gson())

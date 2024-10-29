@@ -17,7 +17,6 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import com.stripe.android.Stripe
@@ -67,7 +66,6 @@ abstract class KSRobolectricTestCase : TestCase() {
         mockCurrentConfigV2.config(config)
 
         environment = component.environment().toBuilder()
-            .apiClient(MockApiClient())
             .apolloClientV2(mockApolloClientV2)
             .currentConfig2(mockCurrentConfigV2)
             .ksCurrency(KSCurrency(mockCurrentConfigV2))

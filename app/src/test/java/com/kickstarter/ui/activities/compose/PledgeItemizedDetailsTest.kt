@@ -45,7 +45,6 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
     private val currencyConversion =
         composeTestRule.onNodeWithTag(PledgeItemizedDetailsTestTag.CURRENCY_CONVERSION.name)
 
-
     @Test
     fun `test view init`() {
         val rewardsList = listOf(Pair("T-shirt", "$22"), Pair("Pin", "$10"))
@@ -78,12 +77,12 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
         composeTestRule.onAllNodesWithTag("ITEM_NAME")[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("ITEM_NAME")[1].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("ITEM_NAME")[0].assertTextEquals("T-shirt")
-        composeTestRule.onAllNodesWithTag("ITEM_NAME")[1].assertTextEquals( "Pin")
+        composeTestRule.onAllNodesWithTag("ITEM_NAME")[1].assertTextEquals("Pin")
 
         composeTestRule.onAllNodesWithTag("ITEM_COST")[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("ITEM_COST")[1].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("ITEM_COST")[0].assertTextEquals("$22")
-        composeTestRule.onAllNodesWithTag("ITEM_COST")[1].assertTextEquals( "$10")
+        composeTestRule.onAllNodesWithTag("ITEM_COST")[1].assertTextEquals("$10")
 
         pledgeAmountTitle.assertIsDisplayed()
         pledgeAmountTitle.assertTextEquals(pledgeAmountTitleText)

@@ -911,8 +911,6 @@ class ProjectPageActivity :
         )
     }
 
-
-
     @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         var statusBarHeight = 0
@@ -995,7 +993,6 @@ class ProjectPageActivity :
             start()
         }
     }
-
 
     private fun setFragmentsState(expand: Boolean) {
         supportFragmentManager.fragments.map { fragment ->

@@ -333,7 +333,7 @@
   <string name="I_understand" formatted="false">理解しました</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に請求されます。</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に %{total} の請求が行われます。</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}. You will receive a proof of pledge that will be redeemable if the project is funded and the creator is successful at completing the creative venture.</string>
   <string name="If_you_turn_following_off" formatted="false">フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。</string>
   <string name="If_your_profile_is_private" formatted="false">プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。</string>
   <string name="If_your_profile_is_public" formatted="false">プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。</string>

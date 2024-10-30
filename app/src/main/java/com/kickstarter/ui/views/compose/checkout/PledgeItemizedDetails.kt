@@ -65,7 +65,7 @@ fun ItemizedRewardListContainerPreview() {
                 totalBonusSupport = "0",
                 deliveryDateString = "",
                 rewardsHaveShippables = false,
-                disclaimerText = stringResource(id = R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline)
+                disclaimerText = stringResource(id = R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
             )
         }
     }

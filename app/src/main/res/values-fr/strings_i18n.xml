@@ -335,7 +335,7 @@ Cliquez pour réessayer.</string>
   <string name="I_understand" formatted="false">Je comprends</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité le %{project_deadline}.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité de %{total} le %{project_deadline}.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Si l\'objectif de financement du projet est atteint, vous serez débité de %{total} le %{project_deadline}. Vous recevrez une preuve d\'engagement qui sera échangeable si le projet est intégralement financé et si le créateur mène son projet à bien.</string>
   <string name="If_you_turn_following_off" formatted="false">Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.</string>
   <string name="If_your_profile_is_private" formatted="false">Si votre profil est privé, seuls votre nom et votre photo seront visibles.</string>
   <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>

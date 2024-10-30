@@ -10,7 +10,7 @@
   app:cardCornerRadius="@dimen/card_container_radius"
   app:cardElevation="@dimen/grid_2"
   tools:layout_marginTop="620dp"
-  tools:showIn="@layout/activity_project">
+  tools:showIn="@layout/activity_project_page">
 
   <FrameLayout
     android:id="@+id/pledge_container"

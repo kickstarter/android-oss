@@ -34,6 +34,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -884,7 +886,6 @@ class ProjectPageActivity :
                 .alpha(finalAlpha)
                 .setDuration(200L)
                 .setListener(object : AnimatorListenerAdapter() {
-
                     override fun onAnimationEnd(animation: Animator) {
                         if (!show) {
                             binding.pledgeContainerLayout.scrim.visibility = View.GONE
@@ -913,10 +914,10 @@ class ProjectPageActivity :
     @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         var statusBarHeight = 0
-        // TODO: Replace with window insets compat
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            statusBarHeight = resources.getDimensionPixelSize(resourceId)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            insets
         }
 
         val expand = expandAndAnimate.first

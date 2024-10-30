@@ -237,4 +237,31 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
         disclaimerText.assertIsDisplayed()
         disclaimerText.assertTextEquals(disclaimer)
     }
+
+    @Test
+    fun `test delivery date, when delivery date not null, should show delivery date`() {
+        val rewardsList = listOf(Pair("T-shirt", "$22"), Pair("Pin", "$10"))
+        val disclaimer = context.getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
+
+        composeTestRule.setContent {
+            KSTheme {
+                ItemizedRewardListContainer(
+                    ksString = null,
+                    rewardsList = rewardsList,
+                    shippingAmount = 20.0,
+                    shippingAmountString = "$20.0",
+                    initialShippingLocation = "USA",
+                    totalAmount = "50$",
+                    totalAmountCurrencyConverted = "About CA\$ 1.38",
+                    initialBonusSupport = "1",
+                    totalBonusSupport = "10",
+                    deliveryDateString = "April 10",
+                    rewardsHaveShippables = true,
+                    disclaimerText = disclaimer
+                )
+            }
+        }
+        deliveryDate.assertIsDisplayed()
+        deliveryDate.assertTextEquals("April 10")
+    }
 }

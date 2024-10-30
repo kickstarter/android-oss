@@ -59,7 +59,7 @@ fun ItemizedRewardListContainerPreview() {
                 rewardsList = emptyList<Pair<String, String>>(),
                 shippingAmount = 20.0,
                 shippingAmountString = "",
-                initialShippingLocation = "USA",
+                initialShippingLocation = "",
                 totalAmount = "50$",
                 totalAmountCurrencyConverted = "About CA\$ 1.38",
                 initialBonusSupport = "0",
@@ -122,9 +122,10 @@ fun ItemizedRewardListContainer(
         )
 
         if (deliveryDateString.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(dimensions.paddingXSmall).testTag(PledgeItemizedDetailsTestTag.DELIVERY_DATE.name))
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
             Text(
+                modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DELIVERY_DATE.name),
                 text = deliveryDateString,
                 style = typography.caption1,
                 color = colors.textSecondary

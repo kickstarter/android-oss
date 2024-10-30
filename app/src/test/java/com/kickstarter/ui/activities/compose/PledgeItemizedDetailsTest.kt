@@ -241,7 +241,6 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
     @Test
     fun `test delivery date, when delivery date not null, should show delivery date`() {
         val rewardsList = listOf(Pair("T-shirt", "$22"), Pair("Pin", "$10"))
-        val disclaimer = context.getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
 
         composeTestRule.setContent {
             KSTheme {
@@ -257,7 +256,7 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "April 10",
                     rewardsHaveShippables = true,
-                    disclaimerText = disclaimer
+                    disclaimerText = ""
                 )
             }
         }

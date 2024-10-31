@@ -471,7 +471,7 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                val resourceString = stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline)
+                val resourceString = stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
                 val disclaimerText = environment.ksString()?.format(
                     resourceString,
                     "total", totalAmountString,

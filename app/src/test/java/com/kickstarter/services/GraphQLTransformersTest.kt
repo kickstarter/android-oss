@@ -176,4 +176,15 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         assertTrue(post.publishedAt() == date)
         assertTrue(post.updatedAt() == date)
     }
+
+    @Test
+    fun testShippingRulesForRewards_simpleShippingRulesExpanded() {
+        val rwFragment = mock(fragment.Reward::class.java)
+        // val rw = rewardTransformer()
+    }
+
+    @Test
+    fun testShippingRules_ShippingRulesExpanded() {
+        val rwFragment = mock(fragment.Reward::class.java)
+    }
 }

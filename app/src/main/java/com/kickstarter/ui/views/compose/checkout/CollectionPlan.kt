@@ -18,23 +18,23 @@ import androidx.compose.ui.unit.dp
 @Preview(showBackground = false, name = "Eligible - Pledge Over Time Selected")
 @Composable
 fun PreviewPledgeOverTimeSelected() {
-    PledgeRedemptionComponent(isEligible = true, initialSelectedOption = "Pledge Over Time")
+    CollectionPlan(isEligible = true, initialSelectedOption = "Pledge Over Time")
 }
 
 @Preview(showBackground = false, name = "Eligible - Pledge in Full Selected")
 @Composable
 fun PreviewPledgeInFullSelected() {
-    PledgeRedemptionComponent(isEligible = true, initialSelectedOption = "Pledge in full")
+    CollectionPlan(isEligible = true, initialSelectedOption = "Pledge in full")
 }
 
 @Preview(showBackground = false, name = "Not Eligible")
 @Composable
 fun PreviewNotEligibleComponent() {
-    PledgeRedemptionComponent(isEligible = false, initialSelectedOption = "Pledge in full")
+    CollectionPlan(isEligible = false, initialSelectedOption = "Pledge in full")
 }
 
 @Composable
-fun PledgeRedemptionComponent(isEligible: Boolean, initialSelectedOption: String = "Pledge in full") {
+fun CollectionPlan(isEligible: Boolean, initialSelectedOption: String = "Pledge in full") {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
 
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {

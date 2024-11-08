@@ -89,4 +89,13 @@
   <!-- TODO: Get translations for this and put it in i18n, then remove  -->
   <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
 
+  <!-- PLOT STRINGS-->
+  <string name="fpo_pledge_in_full">Pledge in Full</string>
+  <string name="fpo_pledge_over_time">Pledge Over Time</string>
+  <string name="fpo_collection_plan">Collection Plan</string>
+  <string name="fpo_payment">Payment</string>
+  <string name="fpo_available_for_pledges_over_150">Available for pledges over $150</string>
+  <string name="fpo_see_our_terms_of_use">See our Terms of Use</string>
+  <string name="fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost">You will be charged for your pledge over four payments, at no extra cost.  </string>
+  <string name="fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully">The first charge will be 24 hours after the project ends successfully, then every 2 weeks until fully paid. When this option is selected no further edits can be made to your pledge.</string>
 </resources>

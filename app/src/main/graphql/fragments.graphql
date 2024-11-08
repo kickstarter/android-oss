@@ -119,7 +119,6 @@ fragment fullProject on Project {
                 simpleShippingRulesExpanded {
                     cost
                     country
-                    currency
                     estimatedMax
                     estimatedMin
                     locationId

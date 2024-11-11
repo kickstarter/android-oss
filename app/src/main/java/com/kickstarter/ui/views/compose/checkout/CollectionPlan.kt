@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
@@ -31,19 +33,19 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
-@Preview(showBackground = false, name = "Eligible - Pledge Over Time Selected")
-@Composable
-fun PreviewPledgeOverTimeSelected() {
-    KSTheme {
-        CollectionPlan(isEligible = true, initialSelectedOption = "Pledge Over Time")
-    }
-}
-
 @Preview(showBackground = false, name = "Eligible - Pledge in Full Selected")
 @Composable
 fun PreviewPledgeInFullSelected() {
     KSTheme {
         CollectionPlan(isEligible = true, initialSelectedOption = "Pledge in full")
+    }
+}
+
+@Preview(showBackground = false, name = "Eligible - Pledge Over Time Selected")
+@Composable
+fun PreviewPledgeOverTimeSelected() {
+    KSTheme {
+        CollectionPlan(isEligible = true, initialSelectedOption = "Pledge Over Time")
     }
 }
 
@@ -60,8 +62,8 @@ enum class CollectionPlanTestTags {
     OPTION_PLEDGE_OVER_TIME,
     DESCRIPTION_TEXT,
     BADGE_TEXT,
-    EXPANDED_TEXT,
-    TERMS_TEXT,
+    EXPANDED_DESCRIPTION_TEXT,
+    TERMS_OF_USE_TEXT,
     CHARGE_ITEM,
 }
 
@@ -78,6 +80,7 @@ fun CollectionPlan(isEligible: Boolean, initialSelectedOption: String = "Pledge 
         )
         Spacer(Modifier.height(dimensions.paddingSmall))
         PledgeOption(
+            modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_OVER_TIME.name),
             optionText = stringResource(id = R.string.fpo_pledge_over_time),
             selected = selectedOption == "Pledge Over Time",
             description = if (isEligible) stringResource(id = R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost) else null,
@@ -87,7 +90,6 @@ fun CollectionPlan(isEligible: Boolean, initialSelectedOption: String = "Pledge 
             isExpanded = selectedOption == "Pledge Over Time" && isEligible,
             isSelectable = isEligible,
             showBadge = !isEligible,
-            modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_OVER_TIME.name)
         )
     }
 }
@@ -110,6 +112,7 @@ fun PledgeOption(
             .background(colors.kds_white)
             .clickable(enabled = isSelectable, onClick = onSelect)
             .padding(end = dimensions.paddingSmall, bottom = dimensions.paddingSmall)
+            .semantics { this.selected = selected }
             .then(
                 if (!isSelectable) Modifier.padding(
                     vertical = dimensions.paddingMediumSmall,
@@ -134,14 +137,17 @@ fun PledgeOption(
             }
             Column {
                 Text(
-                    modifier = Modifier.padding(top = if (isSelectable) dimensions.paddingMedium else dimensions.dialogButtonSpacing),
+                    modifier = Modifier.padding(
+                        top = if (isSelectable) dimensions.paddingMedium else dimensions.dialogButtonSpacing,
+                        bottom = dimensions.paddingSmall
+                    ),
                     text = optionText,
                     style = typography.subheadlineMedium,
                     color = if (isSelectable) colors.kds_black else colors.textDisabled
                 )
                 if (showBadge) {
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-                    PledgeBadge(modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name))
+                    PledgeBadge()
                 } else if (description != null) {
                     Text(
                         modifier = Modifier
@@ -155,14 +161,14 @@ fun PledgeOption(
                 if (isExpanded) {
                     Spacer(modifier = Modifier.height(dimensions.paddingSmall))
                     Text(
-                        modifier = Modifier.testTag(CollectionPlanTestTags.EXPANDED_TEXT.name),
+                        modifier = Modifier.testTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name),
                         text = stringResource(id = R.string.fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully),
                         style = typography.caption2,
                         color = colors.textDisabled
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
                     Text(
-                        modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_TEXT.name),
+                        modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name),
                         text = stringResource(id = R.string.fpo_see_our_terms_of_use),
                         style = typography.caption2,
                         color = colors.textAccentGreen
@@ -190,7 +196,10 @@ fun PledgeBadge(modifier: Modifier = Modifier) {
             )
     ) {
         Text(
-            text = stringResource(id = R.string.fpo_available_for_pledges_over_150),
+            modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
+            text = stringResource(
+                id = R.string.fpo_available_for_pledges_over_150
+            ),
             style = typography.body2Medium,
             color = colors.textDisabled
         )
@@ -215,12 +224,15 @@ fun ChargeSchedule() {
 fun ChargeItem(title: String, date: String, amount: String) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .testTag(CollectionPlanTestTags.CHARGE_ITEM.name),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.padding(bottom = dimensions.paddingMediumLarge)) {
-            Text(text = title, style = typography.body2Medium)
+            Text(
+                modifier = Modifier.testTag(CollectionPlanTestTags.CHARGE_ITEM.name),
+                text = title, style = typography.body2Medium
+            )
+
             Row(modifier = Modifier.padding(top = dimensions.paddingXSmall)) {
                 Text(text = date, color = colors.textSecondary, style = typography.footnote)
                 Spacer(modifier = Modifier.width(dimensions.paddingXLarge))

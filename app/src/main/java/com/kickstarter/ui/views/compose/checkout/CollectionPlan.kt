@@ -1,3 +1,4 @@
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,30 +34,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
-@Preview(showBackground = false, name = "Eligible - Pledge in Full Selected")
-@Composable
-fun PreviewPledgeInFullSelected() {
-    KSTheme {
-        CollectionPlan(isEligible = true, initialSelectedOption = "Pledge in full")
-    }
-}
-
-@Preview(showBackground = false, name = "Eligible - Pledge Over Time Selected")
-@Composable
-fun PreviewPledgeOverTimeSelected() {
-    KSTheme {
-        CollectionPlan(isEligible = true, initialSelectedOption = "Pledge Over Time")
-    }
-}
-
-@Preview(showBackground = false, name = "Not Eligible")
-@Composable
-fun PreviewNotEligibleComponent() {
-    KSTheme {
-        CollectionPlan(isEligible = false, initialSelectedOption = "Pledge in full")
-    }
-}
-
 enum class CollectionPlanTestTags {
     OPTION_PLEDGE_IN_FULL,
     OPTION_PLEDGE_OVER_TIME,
@@ -67,27 +44,84 @@ enum class CollectionPlanTestTags {
     CHARGE_ITEM,
 }
 
+enum class CollectionOptions {
+    PLEDGE_IN_FULL,
+    PLEDGE_OVER_TIME,
+}
+
+@Preview(
+    name = "Light Eligible - Pledge in Full Selected",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+)
+@Preview(
+    name = "Dark Eligible - Pledge in Full Selected",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
 @Composable
-fun CollectionPlan(isEligible: Boolean, initialSelectedOption: String = "Pledge in full") {
+fun PreviewPledgeInFullSelected() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = true,
+            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name
+        )
+    }
+}
+
+@Preview(
+    name = "Light Eligible - Pledge Over Time Selected",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    name = "Dark Eligible - Pledge Over Time Selected",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun PreviewPledgeOverTimeSelected() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = true,
+            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME.name
+        )
+    }
+}
+
+@Preview(name = "Light Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewNotEligibleComponent() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = false,
+            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name
+        )
+    }
+}
+
+
+@Composable
+fun CollectionPlan(
+    isEligible: Boolean,
+    initialSelectedOption: String = CollectionOptions.PLEDGE_IN_FULL.name
+) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         PledgeOption(
             optionText = stringResource(id = R.string.fpo_pledge_in_full),
-            selected = selectedOption == "Pledge in full",
-            onSelect = { selectedOption = "Pledge in full" },
+            selected = selectedOption == CollectionOptions.PLEDGE_IN_FULL.name,
+            onSelect = { selectedOption = CollectionOptions.PLEDGE_IN_FULL.name },
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_IN_FULL.name)
         )
         Spacer(Modifier.height(dimensions.paddingSmall))
         PledgeOption(
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_OVER_TIME.name),
             optionText = stringResource(id = R.string.fpo_pledge_over_time),
-            selected = selectedOption == "Pledge Over Time",
+            selected = selectedOption == CollectionOptions.PLEDGE_OVER_TIME.name,
             description = if (isEligible) stringResource(id = R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost) else null,
             onSelect = {
-                if (isEligible) selectedOption = "Pledge Over Time"
+                if (isEligible) selectedOption = CollectionOptions.PLEDGE_OVER_TIME.name
             },
-            isExpanded = selectedOption == "Pledge Over Time" && isEligible,
+            isExpanded = selectedOption == CollectionOptions.PLEDGE_OVER_TIME.name && isEligible,
             isSelectable = isEligible,
             showBadge = !isEligible,
         )

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
+import CollectionOptions
 import CollectionPlan
 import CollectionPlanTestTags
 import android.content.Context
@@ -50,7 +51,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = true, initialSelectedOption = "Pledge in full")
+                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name)
             }
         }
 
@@ -88,7 +89,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         val termsOfUseTextValue = context.getString(R.string.fpo_see_our_terms_of_use)
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = true, initialSelectedOption = "Pledge Over Time")
+                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME.name)
             }
         }
 
@@ -131,10 +132,9 @@ class CollectionPlanTest : KSRobolectricTestCase() {
     fun testPledgeOverTimeOptionIneligible() {
         val pledgeInFullText = context.getString(R.string.fpo_pledge_in_full)
         val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
-        val notEligibleBadgeText = context.getString(R.string.fpo_available_for_pledges_over_150)
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = false, initialSelectedOption = "Pledge in full")
+                CollectionPlan(isEligible = false, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name)
             }
         }
 

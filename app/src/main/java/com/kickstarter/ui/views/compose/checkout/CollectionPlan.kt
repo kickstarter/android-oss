@@ -97,7 +97,6 @@ fun PreviewNotEligibleComponent() {
     }
 }
 
-
 @Composable
 fun CollectionPlan(
     isEligible: Boolean,

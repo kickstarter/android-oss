@@ -9,6 +9,10 @@
   <color name="window_background">@color/kds_white</color>
   <color name="status_bar">@color/kds_support_100</color>
 
+  <!-- KRS  -->
+  <color name="ksr_legacy_grey_300">#F0F0F0</color>
+  <color name="ksr_legacy_dark_grey_500">#656969</color>
+
   <!-- KDS  -->
   <color name="kds_alert">#A12027</color>
   <color name="kds_black">@android:color/black</color>
@@ -79,4 +83,8 @@
 
   <!-- comments -->
   <color name="comment_background">#FBFBFA</color>
+
+  <!-- Other  -->
+  <color name="text_disabled">#B3B3B3</color>
+
 </resources>

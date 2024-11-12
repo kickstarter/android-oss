@@ -89,7 +89,7 @@
       android:layout_height="wrap_content"
       android:contentDescription="@string/tabbar_activity"
       android:orientation="horizontal"
-      android:visibility="visible">
+      android:visibility="gone">
 
     <TextView
         android:id="@+id/pledged_projects_overview"
@@ -123,7 +123,7 @@
         android:layout_width="@dimen/grid_1"
         android:layout_height="@dimen/grid_1"
         android:contentDescription="@string/Project_alerts"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
   </LinearLayout>
   <LinearLayout

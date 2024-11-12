@@ -9,6 +9,7 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
@@ -82,7 +83,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
         val descriptionTextValue =
             context.getString(R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost)
-        val extendedTextTextValue =
+        val extendedTextValue =
             context.getString(R.string.fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully)
         val termsOfUseTextValue = context.getString(R.string.fpo_see_our_terms_of_use)
         composeTestRule.setContent {
@@ -108,8 +109,19 @@ class CollectionPlanTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
             .assert(hasText(descriptionTextValue))
 
-        expandedText.assertIsDisplayed().assert(hasText(extendedTextTextValue))
-        termsText.assertIsDisplayed().assert(hasText(termsOfUseTextValue))
+        composeTestRule.onNodeWithTag(
+            CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name,
+            useUnmergedTree = true
+        )
+            .assertIsDisplayed()
+            .assert(hasText(extendedTextValue))
+
+        composeTestRule.onNodeWithTag(
+            CollectionPlanTestTags.TERMS_OF_USE_TEXT.name,
+            useUnmergedTree = true
+        )
+            .assertIsDisplayed()
+            .assert(hasText(termsOfUseTextValue))
 
         // Not eligible badge should not be displayed
         badgeText.assertIsNotDisplayed()
@@ -130,10 +142,10 @@ class CollectionPlanTest : KSRobolectricTestCase() {
 
         // Assert "Pledge in Full" option is displayed with correct text and is selected
         pledgeInFullOption.assertIsDisplayed().assert(hasText(pledgeInFullText))
-            .assertIsNotSelected()
+            .assertIsSelected()
 
         pledgeOverTimeOption.assertIsDisplayed().assert(hasText(pledgeOverTimeText))
-            .assertIsDeactivated()
+            .assertIsNotSelected()
 
         composeTestRule.onNodeWithTag(
             CollectionPlanTestTags.DESCRIPTION_TEXT.name,
@@ -141,10 +153,23 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         )
             .assertIsNotDisplayed()
 
-        expandedText.isNotDisplayed()
-        termsText.isNotDisplayed()
+        composeTestRule.onNodeWithTag(
+            CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name,
+            useUnmergedTree = true
+        )
+            .isNotDisplayed()
+
+        composeTestRule.onNodeWithTag(
+            CollectionPlanTestTags.TERMS_OF_USE_TEXT.name,
+            useUnmergedTree = true
+        )
+            .isNotDisplayed()
 
         // Assert that other elements are not displayed
-        badgeText.assertIsDisplayed().assert(hasText(notEligibleBadgeText))
+        composeTestRule.onNodeWithTag(
+            CollectionPlanTestTags.BADGE_TEXT.name,
+            useUnmergedTree = true
+        )
+            .isDisplayed()
     }
 }

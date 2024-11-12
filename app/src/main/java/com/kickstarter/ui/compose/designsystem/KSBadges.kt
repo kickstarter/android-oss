@@ -213,7 +213,7 @@ fun KSBetaBadge() {
                 bottom = dimensions.paddingXSmall,
                 end = dimensions.paddingXSmall
             ),
-        text = stringResource(R.string.beta_fpo).uppercase(),
+        text = stringResource(R.string.Beta).uppercase(),
         color = colors.textAccentGreen,
         style = typography.caption2Medium
     )

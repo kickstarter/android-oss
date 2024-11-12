@@ -108,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAllCaps="true"
-        android:text="@string/beta_fpo" />
+        android:text="@string/Beta" />
 
     <View
         android:layout_width="0dp"

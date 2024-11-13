@@ -1,13 +1,16 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.util.Log
 import android.util.Pair
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
@@ -15,6 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import okhttp3.Request
+import okio.Path.Companion.toPath
 
 interface SurveyResponseViewModel {
     interface Inputs {
@@ -92,11 +96,14 @@ interface SurveyResponseViewModel {
                 }
                 .map { requireNotNull(it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)) }
                 .ofType(String::class.java)
+                .map { environment.webEndpoint() + it.toUri().path() }
 
             val surveyUrl = Observable.merge(surveyActivityUrl, surveyNotificationUrl, surveyDeeplinkUrl)
 
             surveyUrl
-                .subscribe { webViewUrl.onNext(it) }
+                .subscribe {
+                    webViewUrl.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             val projectRequestAndSurveyUrl =

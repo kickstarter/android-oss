@@ -119,11 +119,11 @@ class SurveyResponseViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `open webview when survey is opened from deeplink`() {
-        val surveyResponse = "www.test.dev/projects/1231313/test-project-deeplink/backing/survey_responses"
+        val surveyUrlPath = "http://www.test.com/projects/1231313/test-project-deeplink/backing/survey_responses"
 
-        setUpEnvironment(environment(), Intent().putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponse))
+        setUpEnvironment(environment().toBuilder().webEndpoint("www.kickstarter.com").build(), Intent().putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyUrlPath))
 
-        webViewUrl.assertValues("www.test.dev/projects/1231313/test-project-deeplink/backing/survey_responses")
+        webViewUrl.assertValues("www.kickstarter.com/projects/1231313/test-project-deeplink/backing/survey_responses")
     }
 
     @After

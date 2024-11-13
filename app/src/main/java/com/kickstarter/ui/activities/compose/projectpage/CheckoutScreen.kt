@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
+import CollectionPlan
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -121,11 +122,55 @@ fun CheckoutScreenPreview() {
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
-            onChangedPaymentMethod = {}
+            onChangedPaymentMethod = {},
+            plotEnabled = false
         )
     }
 }
 
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun CheckoutScreenPlotEnabledPreview() {
+    KSTheme {
+        CheckoutScreen(
+            rewardsList = (1..6).map {
+                Pair("Cool Item $it", "$20")
+            },
+            environment = Environment.Builder().build(),
+            shippingAmount = 4.0,
+            selectedReward = RewardFactory.rewardWithShipping(),
+            currentShippingRule = ShippingRule.builder().build(),
+            totalAmount = 60.0,
+            totalBonusSupport = 5.0,
+            storedCards = listOf(
+                StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.visa()
+            ),
+            project =
+            Project.builder()
+                .currency("USD")
+                .currentCurrency("USD")
+                .state(Project.STATE_LIVE)
+                .availableCardTypes(
+                    listOf(
+                        CreditCardTypes.AMEX.rawValue(),
+                        CreditCardTypes.MASTERCARD.rawValue(),
+                        CreditCardTypes.VISA.rawValue()
+                    )
+                )
+                .build(),
+            email = "example@example.com",
+            pledgeReason = PledgeReason.PLEDGE,
+            rewardsHaveShippables = true,
+            onPledgeCtaClicked = { },
+            newPaymentMethodClicked = { },
+            onDisclaimerItemClicked = {},
+            onAccountabilityLinkClicked = {},
+            onChangedPaymentMethod = {},
+            plotEnabled = true
+        )
+    }
+}
 @Composable
 fun CheckoutScreen(
     storedCards: List<StoredCard> = listOf(),
@@ -147,7 +192,8 @@ fun CheckoutScreen(
     newPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
-    onChangedPaymentMethod: (StoredCard?) -> Unit = {}
+    onChangedPaymentMethod: (StoredCard?) -> Unit = {},
+    plotEnabled: Boolean = true
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -215,7 +261,9 @@ fun CheckoutScreen(
                                     .fillMaxWidth(),
                                 onClickAction = { onPledgeCtaClicked(selectedOption.value) },
                                 isEnabled = project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false,
-                                text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(id = R.string.Pledge) + " $totalAmountString" else stringResource(
+                                text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(
+                                    id = R.string.Pledge
+                                ) + " $totalAmountString" else stringResource(
                                     id = R.string.Confirm
                                 )
                             )
@@ -325,8 +373,33 @@ fun CheckoutScreen(
                     style = typography.title3Bold,
                     color = colors.kds_black,
                 )
-                Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
+                Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+                if (plotEnabled) {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = dimensions.paddingMediumLarge,
+                            end = dimensions.paddingMediumLarge
+                        ),
+                        text = stringResource(id = R.string.fpo_collection_plan),
+                        style = typography.headline,
+                        color = colors.kds_black,
+                    )
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+
+                    CollectionPlan(isEligible = true)
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+                    Text(
+                        modifier = Modifier.padding(
+                            start = dimensions.paddingMediumLarge,
+                            end = dimensions.paddingMediumLarge
+                        ),
+                        text = stringResource(id = R.string.fpo_payment),
+                        style = typography.headline,
+                        color = colors.kds_black,
+                    )
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+                }
                 storedCards.forEachIndexed { index, card ->
                     val isAvailable =
                         project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
@@ -469,7 +542,8 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                val resourceString = stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
+                val resourceString =
+                    stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
                 val disclaimerText = environment.ksString()?.format(
                     resourceString,
                     "total", totalAmountString,
@@ -489,7 +563,7 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = disclaimerText
+                        disclaimerText = disclaimerText,
                     )
                 } else {
                     // - For noReward, totalAmount = bonusAmount as there is no reward
@@ -499,11 +573,13 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = disclaimerText
+                        disclaimerText = disclaimerText,
                     )
                 }
 
-                if (environment.ksCurrency().isNotNull() && environment.ksString().isNotNull() && currentShippingRule.isNotNull()) {
+                if (environment.ksCurrency().isNotNull() && environment.ksString()
+                    .isNotNull() && currentShippingRule.isNotNull()
+                ) {
                     val estimatedShippingRangeString =
                         RewardViewUtils.getEstimatedShippingCostString(
                             context = LocalContext.current,

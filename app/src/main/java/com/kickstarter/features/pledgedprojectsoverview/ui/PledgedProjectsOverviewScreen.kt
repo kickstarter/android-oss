@@ -194,7 +194,6 @@ fun PledgedProjectsOverviewScreen(
                 }
             )
         },
-        modifier = modifier,
         topBar = {
             TopToolBar(
                 title = stringResource(id = R.string.Project_alerts),
@@ -203,6 +202,7 @@ fun PledgedProjectsOverviewScreen(
                 leftIconColor = colors.icon,
                 leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
                 backgroundColor = colors.backgroundSurfacePrimary,
+                showBetaPill = true
             )
         },
         backgroundColor = colors.backgroundSurfacePrimary

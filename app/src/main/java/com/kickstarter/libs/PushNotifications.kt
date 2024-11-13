@@ -441,7 +441,7 @@ class PushNotifications(
         val activityFeedIntent = Intent(this.context, ActivityFeedActivity::class.java)
 
         val surveyResponseIntent = Intent(this.context, SurveyResponseActivity::class.java)
-            .putExtra(IntentKey.SURVEY_RESPONSE, surveyUrlPath)
+            .putExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE, surveyUrlPath)
 
         val taskStackBuilder = TaskStackBuilder.create(this.context)
             .addNextIntentWithParentStack(activityFeedIntent)

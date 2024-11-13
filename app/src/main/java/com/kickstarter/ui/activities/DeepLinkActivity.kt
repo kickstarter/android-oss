@@ -127,7 +127,7 @@ class DeepLinkActivity : AppCompatActivity() {
                 if (isLoggedIn) {
                     startSurveyResponseActivity(uri.toString())
                 } else {
-                    startLoginForSurveys(surveyResponse)
+                    startLoginForSurveys(uri.toString())
                 }
             }.addToDisposable(disposables)
     }
@@ -214,17 +214,17 @@ class DeepLinkActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun startLoginForSurveys(surveyResponse: SurveyResponse) {
+    private fun startLoginForSurveys(surveyResponseUrl: String) {
         val intent = Intent(this, LoginToutActivity::class.java)
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-            .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse)
+            .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
-    private fun startSurveyResponseActivity(surveyResponsePath: String) {
+    private fun startSurveyResponseActivity(surveyResponseUrl: String) {
         ApplicationUtils.startNewDiscoveryActivity(this)
         val intent = Intent(this, SurveyResponseActivity::class.java)
-            .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponsePath)
+            .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
         startActivity(intent)
         finish()
     }

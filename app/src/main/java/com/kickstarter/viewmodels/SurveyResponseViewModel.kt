@@ -13,7 +13,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 
 interface SurveyResponseViewModel {
@@ -65,12 +64,24 @@ interface SurveyResponseViewModel {
         private val disposables = CompositeDisposable()
 
         init {
+
             val surveyWebUrl = intent()
                 .filter {
                     it.hasExtra(IntentKey.SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.SURVEY_RESPONSE)
                         .isNullOrEmpty()
                 }
-                .map { requireNotNull(it.getStringExtra(IntentKey.SURVEY_RESPONSE)) }
+                .map { requireNotNull(it.getParcelableExtra(IntentKey.SURVEY_RESPONSE)) }
+                .ofType(SurveyResponse::class.java)
+                .map {
+                    it.urls()?.web()?.survey() ?: ""
+                }
+
+            val surveyNotificationWebUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)
+                        .isNullOrEmpty()
+                }
+                .map { requireNotNull(it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)) }
                 .ofType(String::class.java)
 
             val surveyDeeplinkWebUrl = intent()
@@ -82,6 +93,10 @@ interface SurveyResponseViewModel {
                 .ofType(String::class.java)
 
             surveyWebUrl
+                .subscribe { webViewUrl.onNext(it) }
+                .addToDisposable(disposables)
+
+            surveyNotificationWebUrl
                 .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
                 .subscribe { webViewUrl.onNext(it) }
                 .addToDisposable(disposables)
@@ -93,7 +108,7 @@ interface SurveyResponseViewModel {
             val projectRequestAndSurveyUrl =
                 Observable.combineLatest<Request, String?, Pair<Request, String>>(
                     projectUriRequest,
-                    surveyWebUrl
+                    surveyNotificationWebUrl
                 ) { a: Request?, b: String? -> Pair.create(a, b) }
 
             projectRequestAndSurveyUrl

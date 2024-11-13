@@ -33,7 +33,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val scope = backgroundScope
 
-        val useCase = GetShippingRulesUseCase(apolloClient, project, config, scope, dispatcher)
+        val useCase = GetShippingRulesUseCase(project, config, scope, dispatcher)
 
         val state = mutableListOf<ShippingRulesState>()
         scope.launch(dispatcher) {
@@ -77,7 +77,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val scope = backgroundScope
 
-        val useCase = GetShippingRulesUseCase(apolloClient, project, config, scope, dispatcher)
+        val useCase = GetShippingRulesUseCase(project, config, scope, dispatcher)
 
         val state = mutableListOf<ShippingRulesState>()
         scope.launch(dispatcher) {

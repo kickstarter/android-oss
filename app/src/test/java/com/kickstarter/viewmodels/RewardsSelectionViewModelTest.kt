@@ -13,11 +13,9 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.FlowUIState
@@ -25,7 +23,6 @@ import com.kickstarter.viewmodels.projectpage.RewardSelectionUIState
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
-import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -324,6 +321,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
                 Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
                     .pledgeAmount(3.0)
                     .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+                    .shippingRules(testShippingRulesList.shippingRules())
                     .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED)
                     .build()
             else
@@ -349,17 +347,11 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(user))
             .build()
 
-        val apolloClient = object : MockApolloClientV2() {
-            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                return Observable.just(testShippingRulesList)
-            }
-        }
-
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
 
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(apolloClient, testProject, config, this, dispatcher)
+            val useCase = GetShippingRulesUseCase(testProject, config, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(testProjectData)
 
@@ -379,9 +371,9 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             testRewards[8]
         )
 
-        assertEquals(shippingUiState.size, 5)
-        assertEquals(shippingUiState[3].loading, true)
-        assertEquals(shippingUiState[4].loading, false)
+        assertEquals(shippingUiState.size, 4)
+        assertEquals(shippingUiState[2].loading, true)
+        assertEquals(shippingUiState[3].loading, false)
 
         // - make sure the uiState output reward list is filtered
         assertEquals(shippingUiState.last().filteredRw.size, filteredRewards.size)
@@ -475,12 +467,10 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(user))
             .build()
 
-        val apolloClient = requireNotNull(env.apolloClientV2())
-
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            val useCase = GetShippingRulesUseCase(project, config, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(projectData)
             viewModel.shippingUIState.toList(shippingUiState)
@@ -496,22 +486,17 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `config is from Canada and available rules are global so Default Shipping is Canada, and list of shipping Rules provided matches all available reward global shipping`() = runTest {
+        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
         val rw = RewardFactory
             .reward()
             .toBuilder()
             .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
             .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED)
+            .shippingRules(testShippingRulesList.shippingRules())
             .build()
         val user = UserFactory.user()
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw, rw, rw)).build()
         val projectData = ProjectDataFactory.project(project, null, null)
-
-        val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
-        val apolloClient = object : MockApolloClientV2() {
-            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                return Observable.just(testShippingRulesList)
-            }
-        }
 
         val config = ConfigFactory.configForCA()
         val currentConfig = MockCurrentConfigV2()
@@ -520,14 +505,13 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val env = environment()
             .toBuilder()
             .currentConfig2(currentConfig)
-            .apolloClientV2(apolloClient)
             .currentUserV2(MockCurrentUserV2(user))
             .build()
 
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(apolloClient, project, config, this, dispatcher)
+            val useCase = GetShippingRulesUseCase(project, config, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(projectData)
             viewModel.shippingUIState.toList(shippingUiState)
@@ -535,7 +519,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         advanceUntilIdle() // wait until all state emissions completed
 
-        assertEquals(shippingUiState.size, 3)
+        assertEquals(shippingUiState.size, 2)
         assertEquals(shippingUiState.last().selectedShippingRule.location()?.name(), "Canada")
         assertEquals(shippingUiState.last().shippingRules, testShippingRulesList.shippingRules())
     }

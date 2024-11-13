@@ -9,18 +9,14 @@ import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.services.ApolloClientTypeV2
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlow
 
 data class ShippingRulesState(
     val shippingRules: List<ShippingRule> = emptyList(),
@@ -43,7 +39,6 @@ data class ShippingRulesState(
  *  As the UseCase is lifecycle agnostic and is scoped to the class that uses it.
  */
 class GetShippingRulesUseCase(
-    private val apolloClient: ApolloClientTypeV2,
     private val project: Project,
     private val config: Config?,
     private val scope: CoroutineScope,
@@ -97,7 +92,7 @@ class GetShippingRulesUseCase(
             if (rewardsByShippingType.isNotEmpty() && project.isAllowedToPledge()) {
                 rewardsByShippingType.forEachIndexed { index, reward ->
 
-                    if (RewardUtils.shipsToRestrictedLocations(reward)) {
+                    if (RewardUtils.shipsToRestrictedLocations(reward) || RewardUtils.shipsWorldwide(reward)) {
                         reward.shippingRules()?.map {
                             avShipMap.put(
                                 requireNotNull(
@@ -106,9 +101,6 @@ class GetShippingRulesUseCase(
                                 it
                             )
                         }
-                    }
-                    if (RewardUtils.shipsWorldwide(reward)) {
-                        getGlobalShippingRulesForReward(reward, avShipMap)
                     }
 
                     // - Filter rewards once all shipping rules have been collected
@@ -160,29 +152,6 @@ class GetShippingRulesUseCase(
                 filteredRw = filteredRewards
             )
         )
-    }
-
-    private suspend fun getGlobalShippingRulesForReward(
-        reward: Reward,
-        shippingRules: MutableMap<Long, ShippingRule>
-    ) {
-        apolloClient.getShippingRules(reward)
-            .asFlow()
-            .map { rulesEnvelope ->
-                rulesEnvelope.shippingRules()?.map { rule ->
-                    rule?.let {
-                        shippingRules.put(
-                            requireNotNull(
-                                it.location()?.id()
-                            ),
-                            it
-                        )
-                    }
-                }
-            }
-            .catch { throwable ->
-                emitCurrentState(isLoading = false, errorMessage = throwable?.message)
-            }.collect()
     }
 
     /**

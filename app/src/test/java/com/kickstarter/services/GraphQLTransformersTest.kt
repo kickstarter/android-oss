@@ -6,18 +6,26 @@ import com.kickstarter.services.transformers.aiDisclosureTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer
+import com.kickstarter.services.transformers.rewardTransformer
+import com.kickstarter.services.transformers.simpleShippingRuleTransformer
 import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.services.transformers.userTransformer
 import fragment.AiDisclosure
+import fragment.Amount
 import fragment.EnvironmentalCommitment
 import fragment.Faq
+import fragment.FullProject
+import fragment.Reward
+import fragment.Reward.AllowedAddons
 import fragment.User
 import org.joda.time.DateTime
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import type.EnvironmentalCommitmentCategory
+import type.RewardType
+import type.ShippingPreference
 
 class GraphQLTransformersTest : KSRobolectricTestCase() {
 
@@ -175,5 +183,137 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         assertTrue(user.sequence() == 5)
         assertTrue(post.publishedAt() == date)
         assertTrue(post.updatedAt() == date)
+    }
+
+    @Test
+    fun `test simpleShippingRuleTransformer provides appropriate shippingRule`() {
+        val canadaSimpleSR = FullProject.SimpleShippingRulesExpanded(
+            "SimpleShippingRule",
+            "17.34562379823645234875620384756203847234",
+            "CA",
+            null,
+            null,
+            "TG9jYXRpb24tMjM0MjQ3NzU=",
+            "Canada"
+        )
+
+        val australiaSR = FullProject.SimpleShippingRulesExpanded(
+            "SimpleShippingRule",
+            "0",
+            "AU",
+            "20", // - Shipping Rule disable at shipping, cost = 0, estimated range max/min values not null
+            "2",
+            "TG9jYXRpb24tMjM0MjQ3NDg=",
+            "Australia"
+        )
+
+        val forbiddenValues = FullProject.SimpleShippingRulesExpanded(
+            "SimpleShippingRule",
+            "Pikachusito",
+            "AU",
+            "AyOma", // - Shipping Rule disable at shipping, cost = 0, estimated range max/min values not null
+            "",
+            "TG9jYXRpb24tMjM0MjQ3NDg=",
+            "Australia"
+        )
+
+        val cadShipping = simpleShippingRuleTransformer(canadaSimpleSR)
+        val ausShipping = simpleShippingRuleTransformer(australiaSR)
+
+        // - Expected output model in case of forbidden values (non-numeric) on Cost/Monetary related fields
+        val nonDoubleValues = simpleShippingRuleTransformer(forbiddenValues)
+
+        assert(cadShipping.location()?.id() == decodeRelayId(canadaSimpleSR.locationId()))
+        assert(cadShipping.cost() == 17.345623798236453) // -  Rounds up after 15th digit
+        assert(cadShipping.estimatedMax() == 0.0)
+        assert(cadShipping.estimatedMin() == 0.0)
+        assert(cadShipping.location()?.name() == canadaSimpleSR.locationName())
+        assert(cadShipping.location()?.displayableName() == canadaSimpleSR.locationName())
+        assert(cadShipping.location()?.country() == canadaSimpleSR.country())
+
+        assert(ausShipping.location()?.id() == decodeRelayId(australiaSR.locationId()))
+        assert(ausShipping.cost() == 0.0)
+        assert(ausShipping.estimatedMax() == 20.0)
+        assert(ausShipping.estimatedMin() == 2.0)
+        assert(ausShipping.location()?.name() == australiaSR.locationName())
+        assert(ausShipping.location()?.displayableName() == australiaSR.locationName())
+        assert(ausShipping.location()?.country() == australiaSR.country())
+
+        assert(nonDoubleValues.location()?.id() == decodeRelayId(forbiddenValues.locationId()))
+        assert(nonDoubleValues.cost() == 0.0)
+        assert(nonDoubleValues.estimatedMax() == 0.0)
+        assert(nonDoubleValues.estimatedMin() == 0.0)
+        assert(nonDoubleValues.location()?.name() == forbiddenValues.locationName())
+        assert(nonDoubleValues.location()?.displayableName() == forbiddenValues.locationName())
+        assert(nonDoubleValues.location()?.country() == forbiddenValues.country())
+    }
+
+    /**
+     * Reward{__typename=Reward, id=UmV3YXJkLTk2NTM3NzY=, name=Stormgate Supporter, ...
+     * Mock of a rewardFragment received from GraphQL data types
+     */
+    val fragmentReward = Reward(
+        "Reward",
+        "UmV3YXJkLTk2NTM3NzY",
+        "Stormgate Supporter",
+        452,
+        "Some reward description here",
+        DateTime.now().toDate(),
+        true,
+        Reward.Amount("Amount", Reward.Amount.Fragments(Amount("Money", "20.0", null, null))),
+        Reward.PledgeAmount(
+            "PledgeAmount",
+            Reward.PledgeAmount.Fragments(Amount("Money", "10.0", null, null))
+        ),
+        Reward.LatePledgeAmount(
+            "LatePledgeAmount",
+            Reward.LatePledgeAmount.Fragments(Amount("Money", "30.0", null, null))
+        ),
+        Reward.ConvertedAmount(
+            "ConvertedAmount",
+            Reward.ConvertedAmount.Fragments(Amount("Money", "30.0", null, null))
+        ),
+        ShippingPreference.UNRESTRICTED,
+        3,
+        3,
+        3,
+        DateTime.now().minusDays(50),
+        DateTime.now().plusDays(50),
+        RewardType.BASE,
+        AllowedAddons("RewardConnection", listOf(Reward.Node("Reward", "UmV3YXJkLTk3MDA2NjA"))),
+        null,
+    )
+
+    @Test
+    fun `test rewardTransformer returns appropriate shippingRules field when querying for simpleShippingRulesExpanded`() {
+
+        val canadaSimpleSR = FullProject.SimpleShippingRulesExpanded(
+            "SimpleShippingRule",
+            "17.34562379823645234875620384756203847234",
+            "CA",
+            null,
+            null,
+            "TG9jYXRpb24tMjM0MjQ3NzU=",
+            "Canada"
+        )
+
+        val australiaSR = FullProject.SimpleShippingRulesExpanded(
+            "SimpleShippingRule",
+            "0",
+            "AU",
+            "20", // - Shipping Rule disable at shipping, cost = 0, estimated range max/min values not null
+            "2",
+            "TG9jYXRpb24tMjM0MjQ3NDg=",
+            "Australia"
+        )
+
+        val reward = rewardTransformer(
+            rewardGr = fragmentReward,
+            simpleShippingRules = listOf(canadaSimpleSR, australiaSR)
+        )
+
+        assertTrue(reward.shippingRules()?.size == 2)
+        assertTrue(reward.shippingRules()?.first()?.id() == decodeRelayId(canadaSimpleSR.locationId()))
+        assertTrue(reward.shippingRules()?.last()?.id() == decodeRelayId(australiaSR.locationId()))
     }
 }

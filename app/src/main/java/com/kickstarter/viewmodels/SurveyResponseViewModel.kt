@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
@@ -67,8 +68,7 @@ interface SurveyResponseViewModel {
 
             val surveyWebUrl = intent()
                 .filter {
-                    it.hasExtra(IntentKey.SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.SURVEY_RESPONSE)
-                        .isNullOrEmpty()
+                    it.hasExtra(IntentKey.SURVEY_RESPONSE) && it.getParcelableExtra<SurveyResponse>(IntentKey.SURVEY_RESPONSE).isNotNull()
                 }
                 .map { requireNotNull(it.getParcelableExtra(IntentKey.SURVEY_RESPONSE)) }
                 .ofType(SurveyResponse::class.java)

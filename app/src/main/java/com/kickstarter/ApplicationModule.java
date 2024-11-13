@@ -52,7 +52,6 @@ import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
-import com.kickstarter.libs.qualifiers.ApiRetrofit;
 import com.kickstarter.libs.qualifiers.ApiRetrofitV2;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
@@ -90,16 +89,14 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Scheduler;
 import okhttp3.CookieJar;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
 import type.CustomType;
 
 @Module
@@ -130,8 +127,7 @@ public class ApplicationModule {
     final @NonNull AttributionEvents attributionEvents,
     final @NonNull Logout logout,
     final @NonNull PlayServicesCapability playServicesCapability,
-    final @NonNull Scheduler scheduler,
-    final @NonNull io.reactivex.Scheduler schedulerV2,
+    final @NonNull Scheduler schedulerV2,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull @WebEndpoint String webEndpoint,
@@ -157,7 +153,6 @@ public class ApplicationModule {
       .attributionEvents(attributionEvents)
       .logout(logout)
       .playServicesCapability(playServicesCapability)
-      .scheduler(scheduler)
       .schedulerV2(schedulerV2)
       .sharedPreferences(sharedPreferences)
       .stripe(stripe)
@@ -239,16 +234,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @ApiRetrofit
-  @NonNull
-  static Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
-    final @NonNull Gson gson,
-    final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(apiEndpoint.url(), gson, okHttpClient);
-  }
-
-  @Provides
-  @Singleton
   @ApiRetrofitV2
   @NonNull
   static Retrofit provideApiRetrofitV2(final @NonNull ApiEndpoint apiEndpoint,
@@ -312,7 +297,7 @@ public class ApplicationModule {
   static Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(webEndpoint, gson, okHttpClient);
+    return createRetrofitV2(webEndpoint, gson, okHttpClient);
   }
 
   @Provides
@@ -321,15 +306,6 @@ public class ApplicationModule {
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserTypeV2 currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
-  }
-
-  private static @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
-    return new Retrofit.Builder()
-      .client(okHttpClient)
-      .baseUrl(baseUrl)
-      .addConverterFactory(GsonConverterFactory.create(gson))
-      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-      .build();
   }
 
   private static @NonNull Retrofit createRetrofitV2(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
@@ -429,12 +405,6 @@ public class ApplicationModule {
   static AttributionEvents provideAttributionEvents(
     final @NonNull ApolloClientTypeV2 apolloClient) {
     return new AttributionEvents(apolloClient);
-  }
-
-  @Provides
-  @Singleton
-  static Scheduler provideScheduler() {
-    return Schedulers.computation();
   }
 
   @Provides

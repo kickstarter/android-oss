@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils.extensions
 
 import io.reactivex.functions.Function
-import rx.functions.Func1
 
 fun <T : Any> T?.isNull(): Boolean {
     return this == null
@@ -16,10 +15,6 @@ fun <T : Any> T?.coalesce(theDefault: T): T {
         return this!!
     }
     return theDefault
-}
-
-fun <T : Any> coalesceWith(theDefault: T): Func1<T, T> {
-    return Func1 { it.coalesce(theDefault) }
 }
 
 fun <T : Any> coalesceWithV2(theDefault: T): Function<T, T> {

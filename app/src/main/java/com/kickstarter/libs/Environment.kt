@@ -9,7 +9,6 @@ import com.kickstarter.libs.utils.PlayServicesCapability
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientTypeV2
 import com.stripe.android.Stripe
-import rx.Scheduler
 import java.net.CookieManager
 
 class Environment private constructor(
@@ -31,7 +30,6 @@ class Environment private constructor(
     private val attributionEvents: AttributionEvents?,
     private val logout: Logout?,
     private val playServicesCapability: PlayServicesCapability?,
-    private val scheduler: Scheduler?,
     private val schedulerV2: io.reactivex.Scheduler?,
     private val sharedPreferences: SharedPreferences?,
     private val stripe: Stripe?,
@@ -57,7 +55,6 @@ class Environment private constructor(
     fun attributionEvents() = this.attributionEvents
     fun logout() = this.logout
     fun playServicesCapability() = this.playServicesCapability
-    fun scheduler() = this.scheduler
     fun schedulerV2() = this.schedulerV2
     fun sharedPreferences() = this.sharedPreferences
     fun stripe() = this.stripe
@@ -84,7 +81,6 @@ class Environment private constructor(
         private var attributionEvents: AttributionEvents? = null,
         private var logout: Logout? = null,
         private var playServicesCapability: PlayServicesCapability? = null,
-        private var scheduler: Scheduler? = null,
         private var schedulerV2: io.reactivex.Scheduler? = null,
         private var sharedPreferences: SharedPreferences? = null,
         private var stripe: Stripe? = null,
@@ -110,7 +106,6 @@ class Environment private constructor(
         fun attributionEvents(attributionEvents: AttributionEvents) = apply { this.attributionEvents = attributionEvents }
         fun logout(logout: Logout) = apply { this.logout = logout }
         fun playServicesCapability(playServicesCapability: PlayServicesCapability) = apply { this.playServicesCapability = playServicesCapability }
-        fun scheduler(scheduler: Scheduler) = apply { this.scheduler = scheduler }
         fun schedulerV2(schedulerV2: io.reactivex.Scheduler) = apply { this.schedulerV2 = schedulerV2 }
         fun sharedPreferences(sharedPreferences: SharedPreferences) = apply { this.sharedPreferences = sharedPreferences }
         fun stripe(stripe: Stripe) = apply { this.stripe = stripe }
@@ -138,7 +133,6 @@ class Environment private constructor(
             attributionEvents = attributionEvents,
             logout = logout,
             playServicesCapability = playServicesCapability,
-            scheduler = scheduler,
             schedulerV2 = schedulerV2,
             sharedPreferences = sharedPreferences,
             stripe = stripe,
@@ -167,7 +161,6 @@ class Environment private constructor(
         attributionEvents = attributionEvents,
         logout = logout,
         playServicesCapability = playServicesCapability,
-        scheduler = scheduler,
         schedulerV2 = schedulerV2,
         sharedPreferences = sharedPreferences,
         stripe = stripe,

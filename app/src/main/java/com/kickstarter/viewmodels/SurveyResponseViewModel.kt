@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
-import android.util.Log
 import android.util.Pair
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import okhttp3.Request
-import okio.Path.Companion.toPath
 
 interface SurveyResponseViewModel {
     interface Inputs {

@@ -129,7 +129,7 @@ fun ItemizedRewardListContainer(
     deliveryDateString: String = "",
     rewardsHaveShippables: Boolean = false,
     disclaimerText: String = "",
-    plotSelected: Boolean
+    plotSelected: Boolean = false
 ) {
     Column(
         modifier = Modifier

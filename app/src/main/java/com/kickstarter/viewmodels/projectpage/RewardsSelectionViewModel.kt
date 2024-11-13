@@ -93,7 +93,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             environment.currentConfigV2()?.observable()?.asFlow()?.collectLatest {
                 if (shippingRulesUseCase == null) {
                     shippingRulesUseCase = GetShippingRulesUseCase(
-                        apolloClient,
                         projectData.project(),
                         it,
                         viewModelScope,

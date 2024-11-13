@@ -100,12 +100,30 @@ class SurveyResponseViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testWebViewUrl() {
+    fun `open webview when survey is opened from activity feed`() {
         val surveyResponse = surveyResponse()
 
         setUpEnvironment(environment(), Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse))
 
         webViewUrl.assertValues(surveyResponse.urls()?.web()?.survey())
+    }
+
+    @Test
+    fun `open webview when survey is opened from notification and url contains host`() {
+        val surveyUrlPath = "projects/1231313/test-project-notification/backing/survey_responses"
+
+        setUpEnvironment(environment().toBuilder().webEndpoint("www.test.dev/").build(), Intent().putExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE, surveyUrlPath))
+
+        webViewUrl.assertValues("www.test.dev/projects/1231313/test-project-notification/backing/survey_responses")
+    }
+
+    @Test
+    fun `open webview when survey is opened from deeplink`() {
+        val surveyResponse = "www.test.dev/projects/1231313/test-project-deeplink/backing/survey_responses"
+
+        setUpEnvironment(environment(), Intent().putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponse))
+
+        webViewUrl.assertValues("www.test.dev/projects/1231313/test-project-deeplink/backing/survey_responses")
     }
 
     @After

@@ -66,7 +66,7 @@ interface SurveyResponseViewModel {
 
         init {
 
-            val surveyWebUrl = intent()
+            val surveyActivityUrl = intent()
                 .filter {
                     it.hasExtra(IntentKey.SURVEY_RESPONSE) && it.getParcelableExtra<SurveyResponse>(IntentKey.SURVEY_RESPONSE).isNotNull()
                 }
@@ -76,15 +76,16 @@ interface SurveyResponseViewModel {
                     it.urls()?.web()?.survey() ?: ""
                 }
 
-            val surveyNotificationWebUrl = intent()
+            val surveyNotificationUrl = intent()
                 .filter {
                     it.hasExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)
                         .isNullOrEmpty()
                 }
                 .map { requireNotNull(it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)) }
                 .ofType(String::class.java)
+                .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
 
-            val surveyDeeplinkWebUrl = intent()
+            val surveyDeeplinkUrl = intent()
                 .filter {
                     it.hasExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)
                         .isNullOrEmpty()
@@ -92,23 +93,28 @@ interface SurveyResponseViewModel {
                 .map { requireNotNull(it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)) }
                 .ofType(String::class.java)
 
-            surveyWebUrl
-                .subscribe { webViewUrl.onNext(it) }
-                .addToDisposable(disposables)
+//            surveyActivityUrl
+//                .subscribe { webViewUrl.onNext(it) }
+//                .addToDisposable(disposables)
+//
+//            surveyNotificationUrl
+//                .subscribe { webViewUrl.onNext(it) }
+//                .addToDisposable(disposables)
+//
+//            surveyDeeplinkUrl
+//                .subscribe { webViewUrl.onNext(it) }
+//                .addToDisposable(disposables)
 
-            surveyNotificationWebUrl
-                .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
-                .subscribe { webViewUrl.onNext(it) }
-                .addToDisposable(disposables)
+            val surveyUrl = Observable.merge(surveyActivityUrl, surveyNotificationUrl, surveyDeeplinkUrl)
 
-            surveyDeeplinkWebUrl
+            surveyUrl
                 .subscribe { webViewUrl.onNext(it) }
                 .addToDisposable(disposables)
 
             val projectRequestAndSurveyUrl =
                 Observable.combineLatest<Request, String?, Pair<Request, String>>(
                     projectUriRequest,
-                    surveyNotificationWebUrl
+                    surveyUrl
                 ) { a: Request?, b: String? -> Pair.create(a, b) }
 
             projectRequestAndSurveyUrl

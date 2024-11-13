@@ -93,18 +93,6 @@ interface SurveyResponseViewModel {
                 .map { requireNotNull(it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)) }
                 .ofType(String::class.java)
 
-//            surveyActivityUrl
-//                .subscribe { webViewUrl.onNext(it) }
-//                .addToDisposable(disposables)
-//
-//            surveyNotificationUrl
-//                .subscribe { webViewUrl.onNext(it) }
-//                .addToDisposable(disposables)
-//
-//            surveyDeeplinkUrl
-//                .subscribe { webViewUrl.onNext(it) }
-//                .addToDisposable(disposables)
-
             val surveyUrl = Observable.merge(surveyActivityUrl, surveyNotificationUrl, surveyDeeplinkUrl)
 
             surveyUrl

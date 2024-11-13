@@ -260,7 +260,7 @@ private val PROJECT_SURVEY_EDIT_ADDRESS = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\/edit_address\\z"
 )
 
-//  /projects/:project_id/:project_slug/backing/survey_responses
+//  /projects/:creator_param/:project_param/backing/survey_responses
 private val PROJECT_SURVEY_RESPONSE = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/survey_responses\\z"
 )

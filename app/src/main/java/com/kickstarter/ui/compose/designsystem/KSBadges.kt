@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
@@ -55,6 +56,10 @@ fun KSBadgesPreview() {
                 icon = ImageVector.vectorResource(id = R.drawable.ic_clock),
                 message = "Address locks in 7 days"
             )
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+
+            KSBetaBadge()
         }
     }
 }
@@ -192,4 +197,24 @@ fun KSWarningBadge(
             )
         }
     }
+}
+
+@Composable
+fun KSBetaBadge() {
+    Text(
+        modifier = Modifier
+            .background(
+                color = colors.backgroundAccentGreenSubtle,
+                shape = shapes.small
+            )
+            .padding(
+                start = dimensions.paddingXSmall,
+                top = dimensions.paddingXSmall,
+                bottom = dimensions.paddingXSmall,
+                end = dimensions.paddingXSmall
+            ),
+        text = stringResource(R.string.Beta).uppercase(),
+        color = colors.textAccentGreen,
+        style = typography.caption2Medium
+    )
 }

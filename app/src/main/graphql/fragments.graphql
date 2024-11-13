@@ -115,6 +115,16 @@ fragment fullProject on Project {
             items {
                 ... rewardItems
             }
+            ... on Reward {
+                simpleShippingRulesExpanded {
+                    cost
+                    country
+                    estimatedMax
+                    estimatedMin
+                    locationId
+                    locationName
+                }
+            }
         }
     }
     risks
@@ -299,9 +309,6 @@ fragment reward on Reward {
     }
     convertedAmount{
         ... amount
-    }
-    shippingRules {
-        ... shippingRule
     }
     shippingPreference
     remainingQuantity

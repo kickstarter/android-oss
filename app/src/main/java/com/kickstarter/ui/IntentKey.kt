@@ -30,6 +30,7 @@ object IntentKey {
     const val PUSH_TOKEN = "com.kickstarter.kickstarter.intent_push_token"
     const val REF_TAG = "com.kickstarter.kickstarter.ref_tag"
     const val SURVEY_RESPONSE = "com.kickstarter.kickstarter.survey_response"
+    const val DEEPLINK_SURVEY_RESPONSE = "com.kickstarter.kickstarter.deeplink_survey_response"
     const val TOOLBAR_TITLE = "com.kickstarter.kickstarter.intent_toolbar_title"
     const val TRACKING_CLIENT_TYPE_TAG = "com.kickstarter.kickstarter.intent_tracking_client_tag"
     const val UPDATE = "com.kickstarter.kickstarter.intent_update"

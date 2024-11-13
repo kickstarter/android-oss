@@ -5,6 +5,7 @@ import android.util.Pair
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
@@ -12,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 
 interface SurveyResponseViewModel {
@@ -63,16 +65,28 @@ interface SurveyResponseViewModel {
         private val disposables = CompositeDisposable()
 
         init {
-            val surveyResponse = intent()
-                .map<Any?> { it.getParcelableExtra(IntentKey.SURVEY_RESPONSE) }
-                .ofType(SurveyResponse::class.java)
-
-            val surveyWebUrl = surveyResponse
-                .map {
-                    it.urls()?.web()?.survey() ?: ""
+            val surveyWebUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.SURVEY_RESPONSE)
+                        .isNullOrEmpty()
                 }
+                .map { requireNotNull(it.getStringExtra(IntentKey.SURVEY_RESPONSE)) }
+                .ofType(String::class.java)
+
+            val surveyDeeplinkWebUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)
+                        .isNullOrEmpty()
+                }
+                .map { requireNotNull(it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)) }
+                .ofType(String::class.java)
 
             surveyWebUrl
+                .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
+                .subscribe { webViewUrl.onNext(it) }
+                .addToDisposable(disposables)
+
+            surveyDeeplinkWebUrl
                 .subscribe { webViewUrl.onNext(it) }
                 .addToDisposable(disposables)
 

@@ -1,6 +1,8 @@
 package com.kickstarter.services.apiresponses
 
 import android.os.Parcelable
+import com.kickstarter.models.SurveyResponse.Urls
+import com.kickstarter.models.SurveyResponse.Urls.Web
 import com.kickstarter.models.pushdata.Activity
 import com.kickstarter.models.pushdata.GCM
 import kotlinx.parcelize.Parcelize
@@ -212,21 +214,27 @@ class PushNotificationEnvelope private constructor(
     @Parcelize
     class Survey private constructor(
         private val id: Long,
-        private val projectId: Long
+        private val projectId: Long,
+        private val urls: Urls?
     ) : Parcelable {
         fun id() = this.id
         fun projectId() = this.projectId
+        fun urls() = this.urls
 
         @Parcelize
         data class Builder(
             private var id: Long = 0L,
-            private var projectId: Long = 0L
+            private var projectId: Long = 0L,
+            private var urls: Urls? = null
+
         ) : Parcelable {
             fun id(id: Long) = apply { this.id = id }
             fun projectId(projectId: Long) = apply { this.projectId = projectId }
+            fun urls(urls: Urls?) = apply { urls?.let { this.urls = it } }
             fun build() = Survey(
                 id = id,
-                projectId = projectId
+                projectId = projectId,
+                urls = urls
             )
         }
 
@@ -251,6 +259,79 @@ class PushNotificationEnvelope private constructor(
             }
         }
     }
+
+
+    @Parcelize
+    class Urls private constructor(
+        private val web: Web
+    ) : Parcelable {
+        fun web() = this.web
+
+        @Parcelize
+        data class Builder(
+            private var web: Web = Web.builder()
+                .build()
+        ) : Parcelable {
+            fun web(web: Web?) = apply { this.web = web ?: Web.builder().build() }
+
+            fun build() = Urls(
+                web = web
+            )
+        }
+
+        fun toBuilder() = Builder(
+            web = web,
+        )
+
+        companion object {
+            @JvmStatic
+            fun builder() = Builder()
+        }
+
+        override fun equals(obj: Any?): Boolean {
+            var equals = super.equals(obj)
+            if (obj is Urls) {
+                equals = web() == obj.web()
+            }
+            return equals
+        }
+    }
+
+    @Parcelize
+    class Web private constructor(
+        private val survey: String?
+    ) : Parcelable {
+        fun survey() = this.survey
+
+        @Parcelize
+        data class Builder(
+            private var survey: String? = null
+        ) : Parcelable {
+            fun survey(survey: String?) = apply { this.survey = survey }
+            fun build() = Web(
+                survey = survey
+            )
+        }
+
+        fun toBuilder() = Builder(
+            survey = survey
+        )
+
+        companion object {
+            @JvmStatic
+            fun builder() = Builder()
+        }
+
+        override fun equals(obj: Any?): Boolean {
+            var equals = super.equals(obj)
+            if (obj is Web) {
+                equals = survey() == obj.survey()
+            }
+            return equals
+        }
+    }
+
+
 
     companion object {
         private val PROJECT_NOTIFICATION_CATEGORIES = listOf(

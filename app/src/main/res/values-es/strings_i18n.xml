@@ -84,6 +84,7 @@ patrocinadores</string>
   <string name="Backing_details" formatted="false">Detalles de la contribución</string>
   <string name="Backing_means_supporting" formatted="false">Patrocinar un proyecto significa apoyar una idea creativa, independientemente del resultado.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Conviértete en patrocinador y deja un comentario.</string>
+  <string name="Beta" formatted="false">Beta</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Unas cuantas veces al año: Noticias sobresalientes de Kickstarter y eventos cerca de ti.</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Importantes novedades de Kickstarter, además de proyectos y eventos ocasionales elegidos especialmente para ti.</string>
   <string name="Biography" formatted="false">Biografía</string>
@@ -335,7 +336,7 @@ Toca para intentar de nuevo.</string>
   <string name="I_understand" formatted="false">Entiendo</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el %{project_deadline}.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el monto de %{total} el %{project_deadline}.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Si el proyecto alcanza la meta de financiamiento, te cobraremos %{total} el %{project_deadline}. Recibirás un comprobante por la contribución que podrás canjear si el proyecto se financia con éxito y el creador logra completar su iniciativa.</string>
   <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
 </string>

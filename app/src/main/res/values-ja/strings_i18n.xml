@@ -82,6 +82,7 @@
   <string name="Backing_details" formatted="false">バック (支援) 詳細</string>
   <string name="Backing_means_supporting" formatted="false">「バックすること」とは、クリエイティブなプロジェクトを、その結果に関係なく支援することを意味します。</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">コメントを残すためにバッカーになる。</string>
+  <string name="Beta" formatted="false">ベータ</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Kickstarter に関するビッグニュースやお近くのイベントについて、年に数回お届け。</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Kickstarter のニュースに加え、あなたにピッタリのおすすめプロジェクトやイベントを随時お送りします.</string>
   <string name="Biography" formatted="false">自己紹介</string>
@@ -333,7 +334,7 @@
   <string name="I_understand" formatted="false">理解しました</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に請求されます。</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に %{total} の請求が行われます。</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline}に%{total}が請求されます。プロジェクトの資金が集まりクリエイターがその取り組み全体に成功した場合に引き換え可能となるプレッジ証明が届きます。</string>
   <string name="If_you_turn_following_off" formatted="false">フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。</string>
   <string name="If_your_profile_is_private" formatted="false">プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。</string>
   <string name="If_your_profile_is_public" formatted="false">プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。</string>

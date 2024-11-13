@@ -84,6 +84,7 @@ Unterstützer</string>
   <string name="Backing_details" formatted="false">Details zum Finanzierungsbeitrag</string>
   <string name="Backing_means_supporting" formatted="false">Die Unterstützung eines Projekts bedeutet, eine kreative Idee zu unterstützen, unabhängig vom Ergebnis.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Werde Unterstützer, um einen Kommentar zu hinterlassen.</string>
+  <string name="Beta" formatted="false">Beta</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Ein paar Mal pro Jahr: Kickstarter-Neuigkeiten und Events in deiner Nähe.</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Das Neueste von Kickstarter plus gelegentlich für dich ausgewählte Projekte und Events.</string>
   <string name="Biography" formatted="false">Biografie</string>
@@ -335,7 +336,7 @@ Antippen und erneut versuchen</string>
   <string name="I_understand" formatted="false">Verstanden</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am %{project_deadline} belastet.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Wenn dieses Projekt das Finanzierungsziel erreicht, wird deine Karte am %{project_deadline} mit %{total} belastet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Wenn das Projekt sein Finanzierungsziel erreicht, wird am %{project_deadline} deine Zahlung in Höhe von %{total} eingezogen. Du erhältst einen Nachweis über den Finanzierungsbeitrag, der einlösbar ist, wenn das Projekt finanziert ist und der Projektgründer seine kreative Idee erfolgreich umgesetzt hat.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
   <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.</string>
   <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>

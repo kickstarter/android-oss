@@ -13,10 +13,8 @@ import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.preferences.StringPreferenceType
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.syncUserFeatureFlagsFromPref
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -47,12 +45,10 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
     @Inject
     var featuresFlagPreference: StringPreferenceType? = null
     private var isInBackground = true
-    private var isLoggedIn = false
     private val disposables = CompositeDisposable()
 
     init {
         application.component().inject(this)
-        currentUser.observable().filter { it.isPresent() }.subscribe { isLoggedIn = true }.addToDisposable(disposables)
     }
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
@@ -117,17 +113,14 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
     private fun refreshUser() {
         val accessToken = currentUser.accessToken ?: ""
 
-        // Check if the access token is null and the user is still logged in.
-        if (isLoggedIn && accessToken.isNull()) {
-            forceLogout("access_token_null")
-        } else {
-            if (accessToken.isNotNull() && accessToken.isNotEmpty()) {
-                client.fetchCurrentUser()
-                    .compose(Transformers.neverErrorV2())
-                    .subscribe { user ->
-                        currentUser.refresh(user)
-                    }.addToDisposable(disposables)
-            }
+        if (accessToken.isNotNull() && accessToken.isNotEmpty()) {
+            client.fetchCurrentUser()
+                .doOnError {
+                    forceLogout(it.message ?: "")
+                }
+                .subscribe { user ->
+                    currentUser.refresh(user)
+                }.addToDisposable(disposables)
         }
     }
 

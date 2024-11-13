@@ -220,15 +220,19 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
             .survey(
                 PushNotificationEnvelope.Survey.builder()
                     .id(18249859L)
-                    .urls(PushNotificationEnvelope
-                        .Urls
-                        .builder()
-                        .web(PushNotificationEnvelope
-                            .Web
+                    .urls(
+                        PushNotificationEnvelope
+                            .Urls
                             .builder()
-                            .survey("projects/1119284604/test-survey-notification/backing/survey_responses")
-                            .build())
-                        .build())
+                            .web(
+                                PushNotificationEnvelope
+                                    .Web
+                                    .builder()
+                                    .survey("projects/1119284604/test-survey-notification/backing/survey_responses")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .projectId(PROJECT_ID)
                     .build()
             )

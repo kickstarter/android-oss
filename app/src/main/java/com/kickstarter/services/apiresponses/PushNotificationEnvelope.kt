@@ -260,7 +260,6 @@ class PushNotificationEnvelope private constructor(
         }
     }
 
-
     @Parcelize
     class Urls private constructor(
         private val web: Web
@@ -330,8 +329,6 @@ class PushNotificationEnvelope private constructor(
             return equals
         }
     }
-
-
 
     companion object {
         private val PROJECT_NOTIFICATION_CATEGORIES = listOf(

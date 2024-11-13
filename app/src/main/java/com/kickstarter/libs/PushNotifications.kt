@@ -29,7 +29,6 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.Update
-import com.kickstarter.models.Urls
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope

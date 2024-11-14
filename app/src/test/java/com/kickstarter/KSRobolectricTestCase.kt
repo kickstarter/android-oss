@@ -14,12 +14,14 @@ import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import com.stripe.android.Stripe
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import junit.framework.TestCase
 import org.joda.time.DateTimeUtils
@@ -43,6 +45,7 @@ abstract class KSRobolectricTestCase : TestCase() {
 
     lateinit var segmentTrack: TestSubscriber<String>
     lateinit var segmentIdentify: TestSubscriber<User>
+    private val disposables = CompositeDisposable()
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -50,6 +53,8 @@ abstract class KSRobolectricTestCase : TestCase() {
     @Before
     @Throws(Exception::class)
     public override fun setUp() {
+        // - clean subscriptions
+        disposables.clear()
         super.setUp()
 
         val mockApolloClientV2 = MockApolloClientV2()
@@ -100,8 +105,8 @@ abstract class KSRobolectricTestCase : TestCase() {
             TrackingClientType.Type.SEGMENT,
             ffClient
         )
-        segmentTrackingClient.eventNames.subscribe { segmentTrack.onNext(it) }.dispose()
-        segmentTrackingClient.identifiedUser.subscribe { segmentIdentify.onNext(it) }.dispose()
+        segmentTrackingClient.eventNames.subscribe { segmentTrack.onNext(it) }.addToDisposable(disposables)
+        segmentTrackingClient.identifiedUser.subscribe { segmentIdentify.onNext(it) }.addToDisposable(disposables)
         return segmentTrackingClient
     }
 }

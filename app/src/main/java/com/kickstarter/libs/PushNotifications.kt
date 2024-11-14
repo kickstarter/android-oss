@@ -139,19 +139,13 @@ class PushNotifications(
         subscriptions.add(
             notifications
                 .filter { obj: PushNotificationEnvelope -> obj.isSurvey() }
-                .flatMap { envelope: PushNotificationEnvelope ->
-                    this.fetchSurveyResponseWithEnvelope(
-                        envelope
-                    )
-                }
                 .filter {
                     isNotNull()
                 }
                 .observeOn(Schedulers.newThread())
-                .subscribe { envelopeAndSurveyResponse: Pair<PushNotificationEnvelope, SurveyResponse> ->
+                .subscribe {
                     this.displayNotificationFromSurveyResponseActivity(
-                        envelopeAndSurveyResponse.first,
-                        envelopeAndSurveyResponse.second
+                        it
                     )
                 }
         )
@@ -327,14 +321,14 @@ class PushNotifications(
 
     private fun displayNotificationFromSurveyResponseActivity(
         envelope: PushNotificationEnvelope,
-        surveyResponse: SurveyResponse
     ) {
         val gcm = envelope.gcm()
 
         val survey = envelope.survey() ?: return
+        val surveyUrlPath = envelope.survey()?.urls()?.web()?.survey() ?: return
 
         val notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_SURVEY)
-            .setContentIntent(surveyResponseContentIntent(envelope, surveyResponse))
+            .setContentIntent(surveyResponseContentIntent(envelope, surveyUrlPath))
             .build()
         notificationManager().notify(envelope.signature(), notification)
     }
@@ -441,12 +435,12 @@ class PushNotifications(
 
     private fun surveyResponseContentIntent(
         envelope: PushNotificationEnvelope,
-        surveyResponse: SurveyResponse
+        surveyUrlPath: String
     ): PendingIntent {
         val activityFeedIntent = Intent(this.context, ActivityFeedActivity::class.java)
 
         val surveyResponseIntent = Intent(this.context, SurveyResponseActivity::class.java)
-            .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse)
+            .putExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE, surveyUrlPath)
 
         val taskStackBuilder = TaskStackBuilder.create(this.context)
             .addNextIntentWithParentStack(activityFeedIntent)

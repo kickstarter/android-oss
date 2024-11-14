@@ -20,6 +20,7 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
 import com.stripe.android.Stripe
+import io.reactivex.subscribers.TestSubscriber
 import junit.framework.TestCase
 import org.joda.time.DateTimeUtils
 import org.junit.After
@@ -27,7 +28,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import rx.observers.TestSubscriber
 import kotlin.jvm.Throws
 @RunWith(KSRobolectricGradleTestRunner::class)
 @Config(
@@ -100,8 +100,8 @@ abstract class KSRobolectricTestCase : TestCase() {
             TrackingClientType.Type.SEGMENT,
             ffClient
         )
-        segmentTrackingClient.eventNames.subscribe(segmentTrack)
-        segmentTrackingClient.identifiedUser.subscribe(segmentIdentify)
+        segmentTrackingClient.eventNames.subscribe { segmentTrack.onNext(it) }.dispose()
+        segmentTrackingClient.identifiedUser.subscribe { segmentIdentify.onNext(it) }.dispose()
         return segmentTrackingClient
     }
 }

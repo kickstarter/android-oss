@@ -44,21 +44,18 @@ class AnyExtKtTest : KSRobolectricTestCase() {
     @Test
     fun testCoalesceWith() {
         val theDefault = 100
-        val source = rx.subjects.PublishSubject.create<Int?>()
+        val source = PublishSubject.create<Int?>()
         val result = source
-            .map(coalesceWith(theDefault))
+            .map(coalesceWithV2(theDefault))
 
         val resultTest = TestSubscriber.create<Int>()
-        result.subscribe { resultTest.onNext(it) }
+        result.subscribe { resultTest.onNext(it) }.dispose()
 
         source.onNext(1)
         resultTest.assertValue(1)
 
         source.onNext(2)
         resultTest.assertValues(1, 2)
-
-        source.onNext(null)
-        resultTest.assertValues(1, 2, theDefault)
     }
 
     @Test

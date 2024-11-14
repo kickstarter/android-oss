@@ -26,7 +26,7 @@ class EnvironmentTest : KSRobolectricTestCase() {
         assertNotNull(environment.attributionEvents())
         assertNotNull(environment.logout())
         assertNotNull(environment.playServicesCapability())
-        assertNotNull(environment.scheduler())
+        assertNotNull(environment.schedulerV2())
         assertNotNull(environment.sharedPreferences())
         assertNotNull(environment.stripe())
         assertNotNull(environment.webEndpoint())

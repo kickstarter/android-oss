@@ -25,10 +25,10 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
-import rx.observers.TestSubscriber
 
 class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
 

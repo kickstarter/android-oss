@@ -21,6 +21,7 @@ import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import io.reactivex.Observable
+import io.reactivex.subscribers.TestSubscriber
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
@@ -28,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
@@ -262,7 +262,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             }
 
             val segmentTrack: TestSubscriber<String> = TestSubscriber()
-            trackingClient.eventNames.subscribe(segmentTrack)
+            trackingClient.eventNames.subscribe { segmentTrack.onNext(it) }.dispose()
 
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,

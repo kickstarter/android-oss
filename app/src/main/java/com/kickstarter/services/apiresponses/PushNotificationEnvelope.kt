@@ -15,6 +15,8 @@ class PushNotificationEnvelope private constructor(
     private val message: Message?,
     private val project: Project?,
     private val survey: Survey?,
+    private val pledgeRedemption: PledgeRedemption?,
+
 ) : Parcelable {
     fun activity() = this.activity
     fun erroredPledge() = this.erroredPledge
@@ -22,6 +24,7 @@ class PushNotificationEnvelope private constructor(
     fun message() = this.message
     fun project() = this.project
     fun survey() = this.survey
+    fun pledgeRedemption() = this.pledgeRedemption
 
     @Parcelize
     data class Builder(
@@ -30,7 +33,8 @@ class PushNotificationEnvelope private constructor(
         private var gcm: GCM = GCM.builder().build(),
         private var message: Message? = null,
         private var project: Project? = null,
-        private var survey: Survey? = null
+        private var survey: Survey? = null,
+        private var pledgeRedemption: PledgeRedemption? = null
     ) : Parcelable {
         fun activity(activity: Activity?) = apply { this.activity = activity }
         fun erroredPledge(erroredPledge: ErroredPledge?) = apply { this.erroredPledge = erroredPledge }
@@ -38,13 +42,15 @@ class PushNotificationEnvelope private constructor(
         fun message(message: Message?) = apply { this.message = message }
         fun project(project: Project?) = apply { this.project = project }
         fun survey(survey: Survey?) = apply { this.survey = survey }
+        fun pledgeRedemption(pledgeRedemption: PledgeRedemption?) = apply { this.pledgeRedemption = pledgeRedemption }
         fun build() = PushNotificationEnvelope(
             activity = activity,
             erroredPledge = erroredPledge,
             gcm = gcm,
             message = message,
             project = project,
-            survey = survey
+            survey = survey,
+            pledgeRedemption = pledgeRedemption,
         )
     }
 
@@ -54,7 +60,8 @@ class PushNotificationEnvelope private constructor(
         gcm = gcm,
         message = message,
         project = project,
-        survey = survey
+        survey = survey,
+        pledgeRedemption = pledgeRedemption
     )
 
     override fun equals(other: Any?): Boolean {
@@ -65,6 +72,7 @@ class PushNotificationEnvelope private constructor(
                 gcm() == other.gcm() &&
                 message() == other.message() &&
                 project() == other.project() &&
+                pledgeRedemption() == other.pledgeRedemption() &&
                 survey() == other.survey()
         }
         return equals
@@ -87,6 +95,8 @@ class PushNotificationEnvelope private constructor(
     fun isProjectUpdateActivity() = activity() != null && activity()?.category() == com.kickstarter.models.Activity.CATEGORY_UPDATE
 
     fun isSurvey() = survey() != null
+
+    fun isPledgeRedemption() = pledgeRedemption() != null
 
     fun signature(): Int {
         // When we display an Android notification, we can give it a id. If the server sends a notification with the same
@@ -248,6 +258,50 @@ class PushNotificationEnvelope private constructor(
             if (other is Survey) {
                 equals = id() == other.id() &&
                     projectId() == other.projectId()
+            }
+            return equals
+        }
+
+        companion object {
+            @JvmStatic
+            fun builder(): Builder {
+                return Builder()
+            }
+        }
+    }
+
+    @Parcelize
+    class PledgeRedemption private constructor(
+        private val id: Long,
+        private val pledgeRedemptionPath: String?
+    ) : Parcelable {
+        fun id() = this.id
+        fun pledgeRedemptionPath() = this.pledgeRedemptionPath
+
+        @Parcelize
+        data class Builder(
+            private var id: Long = 0L,
+            private var pledgeRedemptionPath: String? = null
+
+        ) : Parcelable {
+            fun id(id: Long) = apply { this.id = id }
+            fun pledgeRedemptionPath(pledgeRedemptionPath: String?) = apply { pledgeRedemptionPath?.let { this.pledgeRedemptionPath = it } }
+            fun build() = PledgeRedemption(
+                id = id,
+                pledgeRedemptionPath = pledgeRedemptionPath
+            )
+        }
+
+        fun toBuilder() = Builder(
+            id = id,
+            pledgeRedemptionPath = pledgeRedemptionPath
+        )
+
+        override fun equals(other: Any?): Boolean {
+            var equals = super.equals(other)
+            if (other is PledgeRedemption) {
+                equals = id() == other.id() &&
+                        pledgeRedemptionPath() == other.pledgeRedemptionPath()
             }
             return equals
         }

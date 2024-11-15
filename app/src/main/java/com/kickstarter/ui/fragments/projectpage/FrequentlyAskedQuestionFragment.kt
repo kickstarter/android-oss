@@ -18,6 +18,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.SimpleDividerItemDecoration
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
@@ -120,7 +121,7 @@ class FrequentlyAskedQuestionFragment : Fragment(), Configure {
         startActivity(
             Intent(requireContext(), MessagesActivity::class.java)
                 .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.CREATOR_BIO_MODAL)
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT, project.reduceToPreLaunchProject())
                 .putExtra(IntentKey.BACKING, project.backing())
         )
     }

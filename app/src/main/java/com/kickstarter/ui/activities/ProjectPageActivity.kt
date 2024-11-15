@@ -58,6 +58,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
+import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -1065,7 +1066,7 @@ class ProjectPageActivity :
         if (clearFragmentBackStack() || (projectData.project().showLatePledgeFlow() && fFLatePledge)) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
-                    .putExtra(IntentKey.PROJECT, projectData.project())
+                    .putExtra(IntentKey.PROJECT, projectData.project().reduceToPreLaunchProject())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
                     .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             )
@@ -1135,7 +1136,7 @@ class ProjectPageActivity :
         startActivity(
             Intent(this, MessagesActivity::class.java)
                 .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PROJECT_PAGE)
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT, project.reduceToPreLaunchProject())
                 .putExtra(IntentKey.BACKING, project.backing())
         )
     }

@@ -44,6 +44,20 @@ abstract class CurrentUserTypeV2 {
     abstract fun observable(): Observable<KsOptional<User>>
 
     /**
+     * Returns the most recently emitted user from the user observable.
+     */
+    @Deprecated("Prefer {@link #observable()}")
+    abstract fun getUser(): User?
+
+    /**
+     * Returns a boolean that determines if there is a currently logged in user or not.
+     */
+    @Deprecated("Prefer {@link #observable()}")
+    open fun exists(): Boolean {
+        return getUser() != null
+    }
+
+    /**
      * Emits a boolean that determines if the user is logged in or not. The returned
      * observable will emit immediately with the logged in state, and then again
      * each time the current user is updated.
@@ -69,15 +83,25 @@ class CurrentUserV2(
     private val gson: Gson,
     private val userPreference: StringPreferenceType
 ) : CurrentUserTypeV2() {
-    private val user = BehaviorSubject.create<KsOptional<User>>()
+    val user = BehaviorSubject.create<KsOptional<User>>()
 
     init {
         val persistedUser = gson.fromJson(userPreference.get(), User::class.java)
         if (persistedUser != null) {
             user.onNext(KsOptional.of(persistedUser))
+        } else {
+            user.onNext(KsOptional.empty())
         }
 
         Timber.d("${this.javaClass} init persisted User: $persistedUser")
+    }
+
+    override fun getUser(): User? {
+        return user.value?.getValue()
+    }
+
+    override fun exists(): Boolean {
+        return getUser() != null
     }
 
     override val accessToken: String?

@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.util.Pair
-import bo.app.p5
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2

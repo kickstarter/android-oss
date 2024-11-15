@@ -312,7 +312,7 @@ fun Project.reduce(): Project {
  * The end goal is to reduce to the bare minimum the amount of memory required to be serialized on Intents
  * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
  */
-fun Project.reduceToPreLaunchProject(): Project {
+fun Project.reduceProjectPayload(): Project {
     val web = Web.builder()
         .project(this.webProjectUrl())
         .build()

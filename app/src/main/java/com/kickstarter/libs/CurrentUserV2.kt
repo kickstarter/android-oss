@@ -83,7 +83,7 @@ class CurrentUserV2(
     private val gson: Gson,
     private val userPreference: StringPreferenceType
 ) : CurrentUserTypeV2() {
-    val user = BehaviorSubject.create<KsOptional<User>>()
+    private val user = BehaviorSubject.create<KsOptional<User>>()
 
     init {
         val persistedUser = gson.fromJson(userPreference.get(), User::class.java)

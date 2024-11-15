@@ -851,6 +851,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(

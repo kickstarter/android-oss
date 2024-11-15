@@ -262,7 +262,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             }
 
             val segmentTrack: TestSubscriber<String> = TestSubscriber()
-            trackingClient.eventNames.subscribe { segmentTrack.onNext(it) }.dispose()
+            val subscription = trackingClient.eventNames.subscribe { segmentTrack.onNext(it) }
 
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,
@@ -302,6 +302,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             )
 
             segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+            subscription.dispose()
         }
     }
 

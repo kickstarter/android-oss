@@ -115,16 +115,6 @@ fragment fullProject on Project {
             items {
                 ... rewardItems
             }
-            ... on Reward {
-                simpleShippingRulesExpanded {
-                    cost
-                    country
-                    estimatedMax
-                    estimatedMin
-                    locationId
-                    locationName
-                }
-            }
         }
     }
     risks

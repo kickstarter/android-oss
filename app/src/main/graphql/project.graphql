@@ -19,6 +19,24 @@ query FetchProject($slug: String!) {
   }
 }
 
+query FetchProjectRewards($slug: String!) {
+  project(slug: $slug) {
+    rewards {
+      nodes {
+        ...reward
+        simpleShippingRulesExpanded {
+          cost
+          country
+          estimatedMax
+          estimatedMin
+          locationId
+          locationName
+        }
+      }
+    }
+  }
+}
+
 query ProjectCreatorDetails($slug: String!) {
   project(slug: $slug) {
     creator {

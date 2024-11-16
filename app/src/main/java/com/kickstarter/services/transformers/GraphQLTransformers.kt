@@ -130,7 +130,7 @@ fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitme
 fun rewardTransformer(
     rewardGr: fragment.Reward,
     shippingRulesExpanded: List<fragment.ShippingRule> = emptyList(),
-    simpleShippingRules: List<FullProject.SimpleShippingRulesExpanded> = emptyList(),
+    simpleShippingRules: List<FetchProjectRewardsQuery.SimpleShippingRulesExpanded> = emptyList(),
     allowedAddons: Boolean = false,
     rewardItems: List<RewardsItem> = emptyList(),
     addOnItems: List<RewardsItem> = emptyList()
@@ -198,7 +198,7 @@ fun rewardTransformer(
         .build()
 }
 
-fun simpleShippingRuleTransformer(simpleShippingRules: FullProject.SimpleShippingRulesExpanded): ShippingRule {
+fun simpleShippingRuleTransformer(simpleShippingRules: FetchProjectRewardsQuery.SimpleShippingRulesExpanded): ShippingRule {
     val id = decodeRelayId(simpleShippingRules.locationId()) ?: -1
     val country = simpleShippingRules.country() ?: ""
     val displayName = simpleShippingRules.locationName()
@@ -327,10 +327,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards()?.nodes()?.map {
-            val shippingRules = it.simpleShippingRulesExpanded()
             rewardTransformer(
                 it.fragments().reward(),
-                simpleShippingRules = shippingRules,
                 allowedAddons = it.allowedAddons().pageInfo().startCursor()?.isNotEmpty() ?: false,
                 rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems())
             )

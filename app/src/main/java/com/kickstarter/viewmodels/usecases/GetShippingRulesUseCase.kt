@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 data class ShippingRulesState(
@@ -41,6 +40,7 @@ data class ShippingRulesState(
 class GetShippingRulesUseCase(
     private val project: Project,
     private val config: Config?,
+    private val projectRewards: List<Reward> = emptyList(),
     private val scope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
@@ -49,7 +49,6 @@ class GetShippingRulesUseCase(
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
     private val allAvailableRulesForProject = mutableMapOf<Long, ShippingRule>()
-    private val projectRewards = project.rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
 
     init {
 
@@ -57,15 +56,15 @@ class GetShippingRulesUseCase(
         val rewardsToQuery = mutableMapOf<Long, Reward>()
 
         // Get first reward with unrestricted shipping preference, when quering `getShippingRules` will return ALL available locations, no need to query more rewards locations
-        project.rewards()?.filter { RewardUtils.shipsWorldwide(reward = it) }?.firstOrNull()?.let {
+        projectRewards.filter { RewardUtils.shipsWorldwide(reward = it) }?.firstOrNull()?.let {
             rewardsToQuery.put(it.id(), it)
         }
 
         // In case there is no unrestricted preference need to get restricted and local rewards, to query their specific locations
         if (rewardsToQuery.isEmpty()) {
-            project.rewards()?.filter {
+            projectRewards.filter {
                 RewardUtils.shipsToRestrictedLocations(reward = it)
-            }?.forEach {
+            }.forEach {
                 rewardsToQuery[it.id()] = it
             }
         }

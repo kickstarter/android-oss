@@ -9,12 +9,14 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.BackingFactory.backing
 import com.kickstarter.mock.factories.MessageFactory.message
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory.empty
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory.messageThreadEnvelope
 import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.creator
 import com.kickstarter.mock.factories.UserFactory.user
@@ -114,7 +116,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testBackingAndProject_Participant() {
         val project = project().toBuilder()
             .isBacking(false)
-            .build()
+            .build().reduceProjectPayload()
         val backing = backing().toBuilder()
             .project(project)
             .build()
@@ -149,7 +151,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testBackingInfo_NoBacking() {
         val project = project().toBuilder()
             .isBacking(false)
-            .build()
+            .build().reduceProjectPayload()
         val messageThread = messageThread().toBuilder()
             .project(project)
             .backing(null)
@@ -186,7 +188,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testConfiguredWithProject_AndBacking() {
         val backing = backing()
-        val project = project()
+        val project = project().reduceProjectPayload()
 
         // Start the view model with a backing and a project.
         setUpEnvironment(
@@ -205,7 +207,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(creator)
         val messageThread = messageThread()
             .toBuilder()
-            .project(project().toBuilder().creator(creator).build())
+            .project(project().toBuilder().creator(creator).build().reduceProjectPayload())
             .participant(participant)
             .build()
 
@@ -230,7 +232,8 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectData_ExistingMessages() {
-        val messageThread = messageThread()
+        val project = project().reduceProjectPayload()
+        val messageThread = messageThread().toBuilder().project(project).build()
         val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(thread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope())
@@ -251,7 +254,8 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testMessageEditTextHint() {
-        val messageThread = messageThread()
+        val project = project().reduceProjectPayload()
+        val messageThread = messageThread().toBuilder().project(project).build()
         val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForThread(thread: MessageThread): Observable<MessageThreadEnvelope> {
                 return Observable.just(messageThreadEnvelope())
@@ -270,8 +274,11 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testMessagesEmit() {
+        val project = project().reduceProjectPayload()
+        val messageThread = messageThread().toBuilder().project(project).build()
         val envelope = messageThreadEnvelope()
             .toBuilder()
+            .messageThread(messageThread)
             .messages(listOf(message()))
             .build()
         val apiClient: MockApiClientV2 = object : MockApiClientV2() {
@@ -295,7 +302,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testNoMessages() {
         val backing = backing()
-        val project = project()
+        val project = project().reduceProjectPayload()
         val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
                 return Observable.just(empty())
@@ -442,7 +449,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
                 .build(),
-            backerModalContextIntent(backing, project())
+            backerModalContextIntent(backing, project().reduceProjectPayload())
         )
 
         messageEditTextShouldRequestFocus.assertValueCount(1)
@@ -451,7 +458,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartBackingActivity_AsBacker() {
         val user = user()
-        val project = project().toBuilder().isBacking(true).build()
+        val project = project().toBuilder().isBacking(true).build().reduceProjectPayload()
         val backing = backing()
         val messageThread = messageThread()
             .toBuilder()
@@ -479,7 +486,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartBackingActivity_AsBacker_EmptyThread() {
         val user = user()
-        val project = project().toBuilder().isBacking(true).build()
+        val project = project().toBuilder().isBacking(true).build().reduceProjectPayload()
         val backing = backing()
         val apiClient: MockApiClientV2 = object : MockApiClientV2() {
             override fun fetchMessagesForBacking(backing: Backing): Observable<MessageThreadEnvelope> {
@@ -501,7 +508,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         val backer = user().toBuilder().name("Vanessa").build()
         val creator = user().toBuilder().name("Jessica").build()
         val backing = backing()
-        val project = project().toBuilder().creator(creator).build()
+        val project = project().toBuilder().creator(creator).build().reduceProjectPayload()
         val messageThread = messageThread()
             .toBuilder()
             .backing(backing)
@@ -540,10 +547,10 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartProjectPageActivity() {
-        val project = project().toBuilder().isBacking(true).build()
+        val project = project().toBuilder().isBacking(true).build().reduceProjectPayload()
         val messageThread = messageThread()
             .toBuilder()
-            .project(project)
+            .project(project.reduceProjectPayload())
             .build()
         val messageThreadEnvelope = messageThreadEnvelope()
             .toBuilder()
@@ -598,7 +605,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
                 .build(),
-            backerModalContextIntent(backing, project())
+            backerModalContextIntent(backing, project().reduceProjectPayload())
         )
 
         vm.inputs.messageEditTextIsFocused(true)
@@ -624,7 +631,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user()))
                 .build(),
-            backerModalContextIntent(backing, project())
+            backerModalContextIntent(backing, project().reduceProjectPayload())
         )
 
         vm.inputs.messageEditTextIsFocused(true)
@@ -646,7 +653,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testViewPledgeButton_IsGone_backerModal() {
         setUpEnvironment(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
-            backerModalContextIntent(backing(), project())
+            backerModalContextIntent(backing(), project().reduceProjectPayload())
         )
 
         // View pledge button is hidden when context is from the backer modal.
@@ -657,7 +664,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     fun testViewPledgeButton_IsVisible_creatorBioModal() {
         setUpEnvironment(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
-            creatorBioModalContextIntent(backing(), project())
+            creatorBioModalContextIntent(backing(), project().reduceProjectPayload())
         )
 
         // View pledge button is shown when context is from the creator bio modal.
@@ -706,7 +713,9 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         }
 
         private fun pushContextIntent(): Intent {
-            return messagesContextIntent(messageThread())
+            val project = ProjectFactory.project().reduceProjectPayload()
+            val messageThread = messageThread().toBuilder().project(project).build()
+            return messagesContextIntent(messageThread)
                 .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH)
         }
     }

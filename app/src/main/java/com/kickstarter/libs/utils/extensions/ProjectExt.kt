@@ -312,13 +312,14 @@ fun Project.reduce(): Project {
  * The end goal is to reduce to the bare minimum the amount of memory required to be serialized on Intents
  * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
  */
-fun Project.reduceToPreLaunchProject(): Project {
+fun Project.reduceProjectPayload(): Project {
     val web = Web.builder()
         .project(this.webProjectUrl())
         .build()
 
     return Project.Builder()
         .id(this.id())
+        .canComment(this.canComment())
         .slug(this.slug())
         .name(this.name())
         .creator(this.creator())
@@ -331,9 +332,14 @@ fun Project.reduceToPreLaunchProject(): Project {
         .currentCurrency(this.currentCurrency())
         .sendThirdPartyEvents(this.sendThirdPartyEvents())
         .isStarred(this.isStarred())
+        .isBacking(this.isBacking())
         .currency(this.currency())
         .currencySymbol(this.currencySymbol())
         .currencyTrailingCode(this.currencyTrailingCode())
         .urls(Urls.builder().web(web).build())
+        .isInPostCampaignPledgingPhase(this.isInPostCampaignPledgingPhase())
+        .postCampaignPledgingEnabled(this.postCampaignPledgingEnabled())
+        .sendThirdPartyEvents(this.sendThirdPartyEvents())
+        .state(this.state())
         .build()
 }

@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -16,14 +15,13 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -142,11 +140,6 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
         val intent = Intent(this, LoginToutActivity::class.java)
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-    }
-
-    fun Activity.startCreatorBioWebViewActivity(project: Project) {
-        startActivity(Intent().getCreatorBioWebViewActivityIntent(this, project))
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     @Override

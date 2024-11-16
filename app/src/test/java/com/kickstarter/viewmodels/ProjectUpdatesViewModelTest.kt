@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UpdateFactory.update
@@ -42,7 +43,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(env: Environment, project: Project, projectData: ProjectData) {
 
         // Configure the view model with a project intent.
-        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        val intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
             .putExtra(IntentKey.PROJECT_DATA, projectData)
 
         vm = Factory(env, intent).create(ProjectUpdatesViewModel::class.java)

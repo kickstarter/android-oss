@@ -9,7 +9,7 @@ import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -146,7 +146,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
             .isStarred(true)
             .creator(user)
             .build()
-            .reduceToPreLaunchProject().toBuilder().deadline(deadline).build()
+            .reduceProjectPayload().toBuilder().deadline(deadline).build()
 
         setUpEnvironment(testEnvironment)
 

@@ -389,7 +389,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
         val user = UserFactory.germanUser().toBuilder().chosenCurrency("CAD").build()
         val deadline = DateTime(DateTimeZone.UTC).plusDays(10)
         val project = ProjectFactory.project().toBuilder().watchesCount(10).isStarred(true).creator(user).build()
-        val reducedProject = project.reduceToPreLaunchProject().toBuilder().deadline(deadline).build()
+        val reducedProject = project.reduceProjectPayload().toBuilder().deadline(deadline).build()
 
         assertEquals(project.id(), reducedProject.id())
         assertEquals(project.name(), reducedProject.name())

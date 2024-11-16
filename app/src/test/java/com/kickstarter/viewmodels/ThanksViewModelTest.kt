@@ -15,6 +15,7 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.category
@@ -105,7 +106,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             intent = Intent()
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
                 .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
         )
 
@@ -131,7 +132,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             intent = Intent()
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
                 .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
         )
 
@@ -140,7 +141,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testFinishEmits() {
-        setUpEnvironment(intent = Intent().putExtra(IntentKey.PROJECT, project()))
+        setUpEnvironment(intent = Intent().putExtra(IntentKey.PROJECT, project().reduceProjectPayload()))
 
         vm.inputs.closeButtonClicked()
         finish.assertValueCount(1)
@@ -164,7 +165,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project()))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project().reduceProjectPayload()))
 
         showRatingDialogTest.assertValueCount(0)
     }
@@ -187,7 +188,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project()))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project().reduceProjectPayload()))
 
         showRatingDialogTest.assertValueCount(1)
     }
@@ -210,7 +211,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project()))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project().reduceProjectPayload()))
 
         showRatingDialogTest.assertValueCount(0)
     }
@@ -241,7 +242,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload()))
 
         showRatingDialogTest.assertValueCount(0)
     }
@@ -262,7 +263,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload()))
 
         showGamesNewsletterDialogTest.assertValueCount(1)
         assertEquals(listOf(false, true), hasSeenGamesNewsletterPreference.values())
@@ -284,7 +285,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(ceramicsCategory())
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload()))
 
         showGamesNewsletterDialogTest.assertValueCount(0)
     }
@@ -305,7 +306,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload()))
 
         showGamesNewsletterDialogTest.assertValueCount(0)
     }
@@ -326,7 +327,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload()))
 
         showGamesNewsletterDialogTest.assertValueCount(0)
     }
@@ -355,7 +356,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment,
             mockApiClientV2 = mockApiClientV2,
-            intent = Intent().putExtra(IntentKey.PROJECT, project)
+            intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
         )
 
         vm.signupToGamesNewsletterClick()
@@ -377,7 +378,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         val project = project().toBuilder().category(tabletopGamesCategory()).build()
 
-        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project))
+        setUpEnvironment(environment, intent = Intent().putExtra(IntentKey.PROJECT, project.reduceProjectPayload()))
 
         vm.signupToGamesNewsletterClick()
         showConfirmGamesNewsletterDialogTest.assertValueCount(1)
@@ -385,7 +386,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testThanksViewModel_startDiscovery() {
-        setUpEnvironment(intent = Intent().putExtra(IntentKey.PROJECT, project()))
+        setUpEnvironment(intent = Intent().putExtra(IntentKey.PROJECT, project().reduceProjectPayload()))
 
         val category = category()
 
@@ -414,7 +415,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
 
         setUpEnvironment(intent = intent)
 
@@ -458,7 +459,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
 
         setUpEnvironment(
             environment().toBuilder()
@@ -521,7 +522,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
 
         setUpEnvironment(
             environment().toBuilder()
@@ -575,7 +576,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
 
         setUpEnvironment(environment, intent = intent)
 
@@ -608,7 +609,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
 
         setUpEnvironment(intent = intent)
 
@@ -618,7 +619,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
         val intent = Intent()
-            .putExtra(IntentKey.PROJECT, project())
+            .putExtra(IntentKey.PROJECT, project().reduceProjectPayload())
 
         setUpEnvironment(intent = intent)
 

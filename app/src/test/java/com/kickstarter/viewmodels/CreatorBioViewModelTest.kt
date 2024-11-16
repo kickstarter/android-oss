@@ -5,6 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
@@ -27,7 +28,7 @@ class CreatorBioViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment, project: Project? = ProjectFactory.project()) {
         // Configure the view model with a project and url intent.
         val intent =
-            Intent().putExtra(IntentKey.PROJECT, project)
+            Intent().putExtra(IntentKey.PROJECT, project?.reduceProjectPayload())
                 .putExtra(IntentKey.URL, "http://www.project.com/creator-bio")
 
         this.vm = CreatorBioViewModel.Factory(environment, intent).create(CreatorBioViewModel::class.java)

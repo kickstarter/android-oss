@@ -498,6 +498,7 @@ n\'ont rien soutenu.</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} engagés</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_details" formatted="false">Détails de mon engagement</string>
+  <string name="Pledge_management" formatted="false">Gestion des engagements</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Soutenez des projets et consultez la liste de vos projets enregistrés et soutenus.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Engagez-vous à soutenir vos préférés, puis redécouvrez-les tous ici.</string>
   <string name="Pledge_was_dropped" formatted="false">Engagement abandonné.</string>

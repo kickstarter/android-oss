@@ -497,6 +497,7 @@ Antippen und erneut versuchen</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} beigetragen</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Du kannst jeden beliebigen Betrag eingeben, um das Projekt zu unterstützen.</string>
   <string name="Pledge_details" formatted="false">Dein Finanzierungsbeitrag</string>
+  <string name="Pledge_management" formatted="false">Beitragsverwaltung</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Unterstütze Projekte und sehe alle deine Projekte auf einen Blick.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Unterstütze deine Favoriten - alle von dir unterstützten Projekte werden hier angezeigt.</string>
   <string name="Pledge_was_dropped" formatted="false">Finanzierungsbeitrag wurde nicht übernommen.</string>

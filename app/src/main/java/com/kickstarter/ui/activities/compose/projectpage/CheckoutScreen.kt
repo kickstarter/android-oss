@@ -513,7 +513,7 @@ fun CheckoutScreen(
                 }
 
                 if (environment.ksCurrency().isNotNull() && environment.ksString()
-                        .isNotNull() && currentShippingRule.isNotNull()
+                    .isNotNull() && currentShippingRule.isNotNull()
                 ) {
                     val estimatedShippingRangeString =
                         RewardViewUtils.getEstimatedShippingCostString(

@@ -31,7 +31,7 @@ import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
-import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
@@ -168,8 +168,9 @@ fun Activity.startPledgeRedemption(project: Project) {
  * @param commentableId -> specific for deeplinking to a concrete thread
  */
 fun Activity.startRootCommentsActivity(projectData: ProjectData, commentableId: String? = null) {
+    val reducedProject = projectData.project().reduceProjectPayload()
     startActivity(
-        Intent().getRootCommentsActivityIntent(this, projectData, commentableId)
+        Intent().getRootCommentsActivityIntent(this, projectData.toBuilder().project(reducedProject).build(), commentableId)
     )
 
     this.let {
@@ -185,12 +186,12 @@ fun Activity.startReportProjectActivity(
     project: Project,
     startForResult: ActivityResultLauncher<Intent>
 ) {
-    startForResult.launch(Intent().getReportProjectActivityIntent(this, project = project))
+    startForResult.launch(Intent().getReportProjectActivityIntent(this, project = project.reduceProjectPayload()))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
 fun Activity.startCreatorBioWebViewActivity(project: Project) {
-    startActivity(Intent().getCreatorBioWebViewActivityIntent(this, project))
+    startActivity(Intent().getCreatorBioWebViewActivityIntent(this, project.reduceProjectPayload()))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
@@ -235,7 +236,8 @@ fun Activity.startUpdatesActivity(
  * @param projectAndData
  */
 fun Activity.startProjectUpdatesActivity(projectAndData: ProjectData) {
-    startActivity(Intent().getProjectUpdatesActivityIntent(this, projectAndData))
+    val reducedProject = projectAndData.project().reduceProjectPayload()
+    startActivity(Intent().getProjectUpdatesActivityIntent(this, projectAndData.toBuilder().project(reducedProject).build()))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
@@ -259,7 +261,7 @@ fun Activity.startPreLaunchProjectActivity(uri: Uri, project: Project, previousS
     val intent = Intent().getPreLaunchProjectActivity(
         this,
         project.slug(),
-        project.reduceToPreLaunchProject()
+        project.reduceProjectPayload()
     )
     // Pass full deeplink for attribution tracking purposes when launching from deeplink
     intent.setData(uri)

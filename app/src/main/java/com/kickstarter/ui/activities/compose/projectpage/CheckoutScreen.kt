@@ -489,7 +489,8 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = disclaimerText
+                        disclaimerText = disclaimerText,
+                        plotSelected = false
                     )
                 } else {
                     // - For noReward, totalAmount = bonusAmount as there is no reward
@@ -499,7 +500,8 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = disclaimerText
+                        disclaimerText = disclaimerText,
+                        plotSelected = false
                     )
                 }
 

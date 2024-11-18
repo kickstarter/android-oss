@@ -496,7 +496,6 @@ fun CheckoutScreen(
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
                         disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
-                        disclaimerText = disclaimerText,
                         plotSelected = false
                     )
                 } else {

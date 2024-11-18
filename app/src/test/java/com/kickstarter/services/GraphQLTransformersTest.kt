@@ -15,7 +15,6 @@ import fragment.AiDisclosure
 import fragment.Amount
 import fragment.EnvironmentalCommitment
 import fragment.Faq
-import fragment.FullProject
 import fragment.Reward
 import fragment.Reward.AllowedAddons
 import fragment.User
@@ -187,7 +186,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
 
     @Test
     fun `test simpleShippingRuleTransformer provides appropriate shippingRule`() {
-        val canadaSimpleSR = Reward.SimpleShippingRulesExpanded(
+        val canadaSimpleSR = FetchProjectRewardsQuery.SimpleShippingRulesExpanded(
             "SimpleShippingRule",
             "17.34562379823645234875620384756203847234",
             "CA",
@@ -197,7 +196,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
             "Canada"
         )
 
-        val australiaSR = FullProject.SimpleShippingRulesExpanded(
+        val australiaSR = FetchProjectRewardsQuery.SimpleShippingRulesExpanded(
             "SimpleShippingRule",
             "0",
             "AU",
@@ -207,7 +206,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
             "Australia"
         )
 
-        val forbiddenValues = FullProject.SimpleShippingRulesExpanded(
+        val forbiddenValues = FetchProjectRewardsQuery.SimpleShippingRulesExpanded(
             "SimpleShippingRule",
             "Pikachusito",
             "AU",
@@ -287,7 +286,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
     @Test
     fun `test rewardTransformer returns appropriate shippingRules field when querying for simpleShippingRulesExpanded`() {
 
-        val canadaSimpleSR = FullProject.SimpleShippingRulesExpanded(
+        val canadaSimpleSR = FetchProjectRewardsQuery.SimpleShippingRulesExpanded(
             "SimpleShippingRule",
             "17.34562379823645234875620384756203847234",
             "CA",
@@ -297,7 +296,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
             "Canada"
         )
 
-        val australiaSR = FullProject.SimpleShippingRulesExpanded(
+        val australiaSR = FetchProjectRewardsQuery.SimpleShippingRulesExpanded(
             "SimpleShippingRule",
             "0",
             "AU",

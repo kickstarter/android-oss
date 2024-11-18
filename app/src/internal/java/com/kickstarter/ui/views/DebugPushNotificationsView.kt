@@ -83,6 +83,10 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
         findViewById<Button>(R.id.simulate_burst_button).setOnClickListener {
             simulateBurstClick()
         }
+
+        findViewById<Button>(R.id.simulate_pledge_redemption_button).setOnClickListener {
+            simulatePledgeRedemptionButtonClick()
+        }
     }
 
     fun registerDeviceButtonClick() {
@@ -222,6 +226,24 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
                     .projectId(PROJECT_ID)
                     .build()
             )
+            .build()
+        pushNotifications?.add(envelope)
+    }
+
+    fun simulatePledgeRedemptionButtonClick() {
+        val gcm = GCM.builder()
+            .title("Pledge Management")
+            .alert("Omg we need you to check this pledge!")
+            .build()
+        val envelope: PushNotificationEnvelope = PushNotificationEnvelope.builder()
+            .gcm(gcm)
+            .pledgeRedemption(
+                PushNotificationEnvelope
+                    .PledgeRedemption
+                    .builder()
+                    .id(18249859L)
+                    .pledgeRedemptionPath("/projects/:creator_param/:project_param/backing/redeem")
+                    .build())
             .build()
         pushNotifications?.add(envelope)
     }

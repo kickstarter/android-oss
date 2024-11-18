@@ -344,7 +344,6 @@ class PushNotifications(
     ) {
         val gcm = envelope.gcm()
 
-        val survey = envelope.survey() ?: return
         val surveyUrlPath = envelope.survey()?.urls()?.web()?.survey() ?: return
 
         val notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_SURVEY)
@@ -358,7 +357,6 @@ class PushNotifications(
     ) {
         val gcm = envelope.gcm()
 
-        val pledgeRedemption = envelope.pledgeRedemption() ?: return
         val pledgeRedemptionPath = envelope.pledgeRedemption()?.pledgeRedemptionPath() ?: return
 
         val notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PLEDGE_REDEMPTION)

@@ -45,6 +45,9 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
     private val currencyConversion =
         composeTestRule.onNodeWithTag(PledgeItemizedDetailsTestTag.CURRENCY_CONVERSION.name)
 
+    private val plotSelectedBadge =
+        composeTestRule.onNodeWithTag(PledgeItemizedDetailsTestTag.PLOT_SELECTED_BADGE.name)
+
     @Test
     fun `test view init`() {
         val rewardsList = listOf(Pair("T-shirt", "$22"), Pair("Pin", "$10"))
@@ -63,7 +66,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "0",
                     deliveryDateString = "",
                     rewardsHaveShippables = false,
-                    disclaimerText = ""
+                    disclaimerText = "",
+                    plotSelected = false
                 )
             }
         }
@@ -114,7 +118,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "",
                     rewardsHaveShippables = false,
-                    disclaimerText = ""
+                    disclaimerText = "",
+                    plotSelected = false
                 )
             }
         }
@@ -144,7 +149,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "",
                     rewardsHaveShippables = false,
-                    disclaimerText = ""
+                    disclaimerText = "",
+                    plotSelected = false
                 )
             }
         }
@@ -174,7 +180,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "",
                     rewardsHaveShippables = true,
-                    disclaimerText = ""
+                    disclaimerText = "",
+                    plotSelected = false
                 )
             }
         }
@@ -202,7 +209,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "",
                     rewardsHaveShippables = true,
-                    disclaimerText = ""
+                    disclaimerText = "",
+                    plotSelected = false
                 )
             }
         }
@@ -214,7 +222,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
     @Test
     fun `test disclaimer, when disclaimer not null, should show disclaimer text`() {
         val rewardsList = listOf(Pair("T-shirt", "$22"), Pair("Pin", "$10"))
-        val disclaimer = context.getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
+        val disclaimer =
+            context.getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
 
         composeTestRule.setContent {
             KSTheme {
@@ -230,7 +239,8 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "",
                     rewardsHaveShippables = true,
-                    disclaimerText = disclaimer
+                    disclaimerText = disclaimer,
+                    plotSelected = false
                 )
             }
         }
@@ -256,11 +266,39 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
                     totalBonusSupport = "10",
                     deliveryDateString = "April 10",
                     rewardsHaveShippables = true,
-                    disclaimerText = ""
+                    disclaimerText = "",
+                    plotSelected = false
                 )
             }
         }
         deliveryDate.assertIsDisplayed()
         deliveryDate.assertTextEquals("April 10")
+    }
+
+    @Test
+    fun `test plot selected, when plot selected should show plot selected badge`() {
+        val rewardsList = listOf(Pair("T-shirt", "$22"), Pair("Pin", "$10"))
+
+        composeTestRule.setContent {
+            KSTheme {
+                ItemizedRewardListContainer(
+                    ksString = null,
+                    rewardsList = rewardsList,
+                    shippingAmount = 20.0,
+                    shippingAmountString = "$20.0",
+                    initialShippingLocation = "USA",
+                    totalAmount = "50$",
+                    totalAmountCurrencyConverted = "About CA\$ 1.38",
+                    initialBonusSupport = "1",
+                    totalBonusSupport = "10",
+                    deliveryDateString = "April 10",
+                    rewardsHaveShippables = true,
+                    disclaimerText = "",
+                    plotSelected = true
+                )
+            }
+        }
+        plotSelectedBadge.assertIsDisplayed()
+        plotSelectedBadge.assertTextEquals(context.getString(R.string.fpo_pledge_over_time))
     }
 }

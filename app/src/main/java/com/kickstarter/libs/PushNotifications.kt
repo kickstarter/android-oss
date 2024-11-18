@@ -227,7 +227,7 @@ class PushNotifications(
                 getNotificationChannel(
                     CHANNEL_PLEDGE_REDEMPTION,
                     R.string.fpo_pledge_management,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
                 )
             )
             val followingChannel = getNotificationChannel(
@@ -602,7 +602,8 @@ class PushNotifications(
             CHANNEL_PROJECT_ACTIVITY,
             CHANNEL_PROJECT_REMINDER,
             CHANNEL_PROJECT_UPDATES,
-            CHANNEL_SURVEY
+            CHANNEL_SURVEY,
+            CHANNEL_PLEDGE_REDEMPTION
         )
     }
 }

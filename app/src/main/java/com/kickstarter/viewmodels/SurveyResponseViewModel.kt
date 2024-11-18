@@ -86,7 +86,6 @@ interface SurveyResponseViewModel {
                 .ofType(String::class.java)
                 .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
 
-
             val surveyNotificationUrl = intent()
                 .filter {
                     it.hasExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)

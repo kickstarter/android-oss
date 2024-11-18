@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -50,7 +51,7 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(
             IntentKey.PROJECT,
-            project
+            project.reduceProjectPayload()
         )
 
         return bundle

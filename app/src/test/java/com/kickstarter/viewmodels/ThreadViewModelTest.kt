@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentCardDataFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
@@ -65,7 +66,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     fun testGetRootComment() {
         setUpEnvironment()
 
-        val commentCardData = CommentCardDataFactory.commentCardData()
+        val project = ProjectFactory.project().reduceProjectPayload()
+        val commentCardData = CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
 
         this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, commentCardData))
         getComment.assertValue(commentCardData)
@@ -122,11 +124,12 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showReplyComposer().subscribe { showReplyComposer.onNext(it) }
             .addToDisposable(disposables)
 
+        val project = ProjectFactory.backedProject().reduceProjectPayload()
         // Start the view model with a backed project and comment.
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardDataBacked()
+                CommentCardDataFactory.commentCardDataBacked().toBuilder().project(project).build()
             )
         )
 
@@ -145,10 +148,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.backedProject().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -167,11 +171,12 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showReplyComposer().subscribe { showReplyComposer.onNext(it) }
             .addToDisposable(disposables)
 
-        // Start the view model with a backed project and comment.
+        // Start the view model with a project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -193,10 +198,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.backedProject().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardDataBacked()
+                CommentCardDataFactory.commentCardDataBacked().toBuilder().project(project).build()
             )
         )
 
@@ -218,10 +224,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -248,10 +255,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(env)
 
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -275,10 +283,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(env)
 
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -311,10 +320,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         this.vm.onCommentReplies().subscribe { onReplies.onNext(it) }.addToDisposable(disposables)
 
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -333,10 +343,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     fun testThreadsViewModel_openCommentGuidelinesLink() {
         setUpEnvironment()
 
-        this.vm.intent(
+        val project = ProjectFactory.project().reduceProjectPayload()
+        vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
 
@@ -396,10 +407,12 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val onReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         val vm = ThreadViewModel.ThreadViewModel(env)
+
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
         vm.outputs.onCommentReplies().subscribe { onReplies.onNext(it) }
@@ -482,10 +495,12 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
+
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
         vm.outputs.onCommentReplies().subscribe { onReplies.onNext(it) }
@@ -612,10 +627,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
         vm.outputs.onCommentReplies().subscribe { onReplies.onNext(it) }
@@ -767,10 +783,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
         vm.outputs.onCommentReplies().subscribe { onReplies.onNext(it) }
@@ -887,10 +904,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val vm = ThreadViewModel.ThreadViewModel(env)
         // Start the view model with a backed project and comment.
+        val project = ProjectFactory.project().reduceProjectPayload()
         vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
-                CommentCardDataFactory.commentCardData()
+                CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
             )
         )
         vm.outputs.onCommentReplies().subscribe { onReplies.onNext(it) }

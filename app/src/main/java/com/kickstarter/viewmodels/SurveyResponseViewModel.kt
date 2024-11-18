@@ -2,10 +2,14 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.util.Pair
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
@@ -63,23 +67,47 @@ interface SurveyResponseViewModel {
         private val disposables = CompositeDisposable()
 
         init {
-            val surveyResponse = intent()
-                .map<Any?> { it.getParcelableExtra(IntentKey.SURVEY_RESPONSE) }
-                .ofType(SurveyResponse::class.java)
 
-            val surveyWebUrl = surveyResponse
+            val surveyActivityUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.SURVEY_RESPONSE) && it.getParcelableExtra<SurveyResponse>(IntentKey.SURVEY_RESPONSE).isNotNull()
+                }
+                .map { requireNotNull(it.getParcelableExtra(IntentKey.SURVEY_RESPONSE)) }
+                .ofType(SurveyResponse::class.java)
                 .map {
                     it.urls()?.web()?.survey() ?: ""
                 }
 
-            surveyWebUrl
-                .subscribe { webViewUrl.onNext(it) }
+            val surveyNotificationUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)
+                        .isNullOrEmpty()
+                }
+                .map { requireNotNull(it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)) }
+                .ofType(String::class.java)
+                .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
+
+            val surveyDeeplinkUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)
+                        .isNullOrEmpty()
+                }
+                .map { requireNotNull(it.getStringExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE)) }
+                .ofType(String::class.java)
+                .map { environment.webEndpoint() + it.toUri().path() }
+
+            val surveyUrl = Observable.merge(surveyActivityUrl, surveyNotificationUrl, surveyDeeplinkUrl)
+
+            surveyUrl
+                .subscribe {
+                    webViewUrl.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             val projectRequestAndSurveyUrl =
                 Observable.combineLatest<Request, String?, Pair<Request, String>>(
                     projectUriRequest,
-                    surveyWebUrl
+                    surveyUrl
                 ) { a: Request?, b: String? -> Pair.create(a, b) }
 
             projectRequestAndSurveyUrl

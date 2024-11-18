@@ -53,6 +53,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -737,10 +738,16 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                             val rwList = data.project()?.rewards()?.nodes()?.map {
                                 rewardTransformer(
                                     rewardGr = it.fragments().reward(),
+                                    allowedAddons = it.allowedAddons().pageInfo().startCursor()?.isNotEmpty() ?: false,
+                                    rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems()),
                                     simpleShippingRules = it.simpleShippingRulesExpanded()
                                 )
                             } ?: emptyList()
-                            ps.onNext(rwList)
+                            // - API does not provide the Reward no reward, we need to add it first
+                            val minPledge = data.project()?.minPledge()?.toDouble() ?: 1.0
+                            val modifiedRewards = rwList.toMutableList()
+                            modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+                            ps.onNext(modifiedRewards.toList())
                         }
                         ps.onComplete()
                     }

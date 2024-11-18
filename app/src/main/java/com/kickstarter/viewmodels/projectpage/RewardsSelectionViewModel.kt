@@ -91,10 +91,10 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
             else -> PledgeReason.PLEDGE
         }
-
+        val project = projectData.project()
         viewModelScope.launch {
             emitCurrentState()
-            apolloClient.getRewardsFromProject(projectData.project().slug() ?: "")
+            apolloClient.getRewardsFromProject(project.slug() ?: "")
                 .asFlow()
                 .map {
                     it
@@ -104,7 +104,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                         shippingRulesUseCase = GetShippingRulesUseCase(
                             project = projectData.project(),
                             config = config,
-                            projectRewards = rewardsList.filter { it.isAvailable() },
+                            projectRewards = rewardsList,
                             viewModelScope,
                             Dispatchers.IO
                         )

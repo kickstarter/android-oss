@@ -160,8 +160,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
             when (flowContext) {
                 PledgeFlowContext.NEW_PLEDGE,
-                PledgeFlowContext.CHANGE_REWARD -> getPledgeInfoFrom(pData)
-                PledgeFlowContext.MANAGE_REWARD,
+                PledgeFlowContext.CHANGE_REWARD,
+                PledgeFlowContext.MANAGE_REWARD -> {
+                    getPledgeInfoFrom(pData)
+                }
                 PledgeFlowContext.FIX_ERRORED_PLEDGE
                 -> {
                     backing?.let { getPledgeInfoFrom(it) }

@@ -21,9 +21,18 @@ query FetchProject($slug: String!) {
 
 query FetchProjectRewards($slug: String!) {
   project(slug: $slug) {
+    minPledge
     rewards {
       nodes {
-        ...reward
+        ... reward
+        allowedAddons {
+            pageInfo {
+                startCursor
+            }
+        }
+        items {
+            ... rewardItems
+        }
         simpleShippingRulesExpanded {
           cost
           country

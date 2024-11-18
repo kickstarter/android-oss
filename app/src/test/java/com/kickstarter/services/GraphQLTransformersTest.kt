@@ -187,7 +187,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
 
     @Test
     fun `test simpleShippingRuleTransformer provides appropriate shippingRule`() {
-        val canadaSimpleSR = FullProject.SimpleShippingRulesExpanded(
+        val canadaSimpleSR = Reward.SimpleShippingRulesExpanded(
             "SimpleShippingRule",
             "17.34562379823645234875620384756203847234",
             "CA",

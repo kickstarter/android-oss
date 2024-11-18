@@ -104,19 +104,6 @@ fragment fullProject on Project {
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
-    rewards {
-        nodes {
-            ... reward
-            allowedAddons {
-                pageInfo {
-                    startCursor
-                }
-            }
-            items {
-                ... rewardItems
-            }
-        }
-    }
     risks
     story
     slug

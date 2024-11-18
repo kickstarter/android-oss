@@ -325,19 +325,10 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
 
     val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
-    val rewards =
-        projectFragment?.rewards()?.nodes()?.map {
-            rewardTransformer(
-                it.fragments().reward(),
-                allowedAddons = it.allowedAddons().pageInfo().startCursor()?.isNotEmpty() ?: false,
-                rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems())
-            )
-        }
 
     // - GraphQL does not provide the Reward no reward, we need to add it first
-    val modifiedRewards = rewards?.toMutableList()
-    modifiedRewards?.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
-    modifiedRewards?.toList()
+    val modifiedRewards = emptyList<Reward>().toMutableList()
+    modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
 
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
@@ -412,7 +403,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .sendMetaCapiEvents(sendMetaCapiEvents)
         .sendThirdPartyEvents(sendThirdPartyEvents)
         .tags(tags)
-        .rewards(modifiedRewards)
+        .rewards(modifiedRewards.toList())
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)

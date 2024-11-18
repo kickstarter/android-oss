@@ -243,7 +243,8 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
                     .builder()
                     .id(18249339L)
                     .pledgeRedemptionPath("/projects/:creator_param/:project_param/backing/redeem")
-                    .build())
+                    .build()
+            )
             .build()
         pushNotifications?.add(envelope)
     }

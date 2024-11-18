@@ -301,7 +301,7 @@ class PushNotificationEnvelope private constructor(
             var equals = super.equals(other)
             if (other is PledgeRedemption) {
                 equals = id() == other.id() &&
-                        pledgeRedemptionPath() == other.pledgeRedemptionPath()
+                    pledgeRedemptionPath() == other.pledgeRedemptionPath()
             }
             return equals
         }

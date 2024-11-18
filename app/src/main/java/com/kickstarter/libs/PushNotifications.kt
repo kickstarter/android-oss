@@ -226,7 +226,7 @@ class PushNotifications(
             channels.add(
                 getNotificationChannel(
                     CHANNEL_PLEDGE_REDEMPTION,
-                    R.string.fpo_pledge_management,
+                    R.string.Pledge_management,
                     NotificationManager.IMPORTANCE_HIGH
                 )
             )

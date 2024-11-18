@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
@@ -44,7 +45,11 @@ class CrowdfundCheckoutFragment : Fragment() {
 
     private lateinit var flowController: PaymentSheet.FlowController
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentCrowdfundCheckoutBinding.inflate(inflater, container, false)
 
@@ -58,7 +63,11 @@ class CrowdfundCheckoutFragment : Fragment() {
 
             viewModel.provideErrorAction { message ->
                 activity?.runOnUiThread {
-                    showErrorToast(context, this, message ?: getString(R.string.general_error_something_wrong))
+                    showErrorToast(
+                        context,
+                        this,
+                        message ?: getString(R.string.general_error_something_wrong)
+                    )
                 }
             }
 
@@ -70,9 +79,10 @@ class CrowdfundCheckoutFragment : Fragment() {
                     useDarkTheme = true
                 ) {
 
-                    val checkoutStates = viewModel.crowdfundCheckoutUIState.collectAsStateWithLifecycle(
-                        initialValue = CheckoutUIState()
-                    ).value
+                    val checkoutStates =
+                        viewModel.crowdfundCheckoutUIState.collectAsStateWithLifecycle(
+                            initialValue = CheckoutUIState()
+                        ).value
 
                     val rwList = checkoutStates.selectedRewards
                     val email = checkoutStates.userEmail
@@ -88,10 +98,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val project = pledgeData?.projectData()?.project() ?: Project.builder().build()
                     val selectedRw = pledgeData?.reward() ?: Reward.builder().build()
 
-                    val checkoutSuccess = viewModel.checkoutResultState.collectAsStateWithLifecycle().value
+                    val checkoutSuccess =
+                        viewModel.checkoutResultState.collectAsStateWithLifecycle().value
                     val id = checkoutSuccess.first?.id() ?: -1
 
-                    val paymentSheetPresenter = viewModel.presentPaymentSheetStates.collectAsStateWithLifecycle().value
+                    val paymentSheetPresenter =
+                        viewModel.presentPaymentSheetStates.collectAsStateWithLifecycle().value
                     val setUpIntent = paymentSheetPresenter.setupClientId
 
                     configurePaymentSheet(paymentSheetPresenter.setupClientId)
@@ -104,7 +116,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                     LaunchedEffect(id) {
                         if (id > 0) {
                             if (pledgeReason == PledgeReason.PLEDGE)
-                                (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(checkoutSuccess)
+                                (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(
+                                    checkoutSuccess
+                                )
                             if (pledgeReason == PledgeReason.UPDATE_PAYMENT)
                                 (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated()
                             if (pledgeReason == PledgeReason.UPDATE_REWARD || pledgeReason == PledgeReason.UPDATE_PLEDGE || pledgeReason == PledgeReason.FIX_PLEDGE)
@@ -140,7 +154,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                             onAccountabilityLinkClicked = {},
                             onChangedPaymentMethod = { paymentMethodSelected ->
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
-                            }
+                            },
+                            isPlotEnabled = environment.featureFlagClient()
+                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false && pledgeReason == PledgeReason.PLEDGE,
                         )
                     }
                 }
@@ -207,16 +223,19 @@ class CrowdfundCheckoutFragment : Fragment() {
                         }
                     }
                 }
+
                 is PaymentSheetResult.Failed -> {
                     binding?.composeView?.let { view ->
                         context?.let {
-                            val errorMessage = paymentSheetResult.error.localizedMessage ?: getString(R.string.general_error_something_wrong)
+                            val errorMessage = paymentSheetResult.error.localizedMessage
+                                ?: getString(R.string.general_error_something_wrong)
                             activity?.runOnUiThread {
                                 showErrorToast(it, view, errorMessage)
                             }
                         }
                     }
                 }
+
                 is PaymentSheetResult.Completed -> {
                 }
             }

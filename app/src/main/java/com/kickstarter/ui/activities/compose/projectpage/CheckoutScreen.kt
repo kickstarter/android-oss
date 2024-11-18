@@ -123,7 +123,7 @@ fun CheckoutScreenPreview() {
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            plotEnabled = false
+            isPlotEnabled = false
         )
     }
 }
@@ -131,7 +131,7 @@ fun CheckoutScreenPreview() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun CheckoutScreenPlotEnabledPreview() {
+fun CheckoutScreenisPlotEnabledPreview() {
     KSTheme {
         CheckoutScreen(
             rewardsList = (1..6).map {
@@ -167,7 +167,7 @@ fun CheckoutScreenPlotEnabledPreview() {
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            plotEnabled = true
+            isPlotEnabled = true
         )
     }
 }
@@ -193,7 +193,7 @@ fun CheckoutScreen(
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
     onChangedPaymentMethod: (StoredCard?) -> Unit = {},
-    plotEnabled: Boolean = true
+    isPlotEnabled: Boolean
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -375,7 +375,7 @@ fun CheckoutScreen(
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-                if (plotEnabled) {
+                if (isPlotEnabled) {
                     Text(
                         modifier = Modifier.padding(
                             start = dimensions.paddingMediumLarge,

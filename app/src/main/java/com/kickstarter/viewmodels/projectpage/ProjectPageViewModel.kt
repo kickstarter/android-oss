@@ -1028,7 +1028,6 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             this.updatePledgeData
-                .distinctUntilChanged()
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
                 }.addToDisposable(disposables)

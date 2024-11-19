@@ -25,10 +25,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -36,7 +36,7 @@ import kotlinx.coroutines.rx2.asFlow
 data class RewardSelectionUIState(
     val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
-    val project: ProjectData = ProjectData.builder().build(),
+    val project: ProjectData = ProjectData.builder().build()
 )
 
 class RewardsSelectionViewModel(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel() {
@@ -96,9 +96,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             emitCurrentState()
             apolloClient.getRewardsFromProject(project.slug() ?: "")
                 .asFlow()
-                .map {
-                    it
-                }
                 .combine(currentConfig.asFlow()) { rewardsList, config ->
                     if (shippingRulesUseCase == null) {
                         shippingRulesUseCase = GetShippingRulesUseCase(
@@ -112,6 +109,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                     shippingRulesUseCase?.invoke()
                     emitShippingUIState()
                 }
+                .catch { }
                 .collect()
         }
     }

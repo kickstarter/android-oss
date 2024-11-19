@@ -49,6 +49,7 @@ import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.AvatarFactory
@@ -71,6 +72,7 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
 import org.junit.Test
@@ -80,6 +82,7 @@ class SegmentTest : KSRobolectricTestCase() {
     private val propertiesTest = BehaviorSubject.create<Map<String, Any>>()
     lateinit var build: Build
     lateinit var context: Context
+    private val disposables = CompositeDisposable()
 
     private val mockShared: SharedPreferences = MockSharedPreferences()
 
@@ -181,8 +184,8 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testDefaultProperties() {
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackAppOpen()
@@ -197,9 +200,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDefaultProperties_LoggedInUser() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackAppOpen()
@@ -216,9 +219,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDefaultProperties_LoggedInUser_isAdmin() {
         val user = user().toBuilder().isAdmin(true).build()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackAppOpen()
@@ -235,9 +238,9 @@ class SegmentTest : KSRobolectricTestCase() {
                 .id(12)
                 .build()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackActivityFeedPageViewed()
@@ -258,9 +261,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val project = project()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -282,9 +285,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryProperties_AllProjects() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -304,9 +307,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryPageViewed() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -333,9 +336,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryProjectCtaClickedProperties_AllProjects() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val project = project().toBuilder().build()
@@ -366,9 +369,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryProjectCtaClickedProperties_Recommended() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val project = project().toBuilder().build()
@@ -416,9 +419,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -463,9 +466,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -497,9 +500,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testSearchResultPageViewed_Properties() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -536,9 +539,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryProperties_NoCategory() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -575,9 +578,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryActivity_CTA_Clicked_Properties() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackDiscoverProjectCTAClicked()
@@ -597,9 +600,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testDiscoveryProperties_Category() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -636,9 +639,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testSearchCta_Properties() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -680,8 +683,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), EventContextValues.ContextSectionName.OVERVIEW.contextName)
@@ -706,8 +709,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = ProjectFactory.projectWithAddOns()
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -729,8 +732,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -753,8 +756,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -772,8 +775,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = ProjectFactory.projectWithAddOns()
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -790,8 +793,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = ProjectFactory.projectWithAddOns()
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectPageTabChanged(
@@ -810,8 +813,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .prelaunchActivated(true)
             .build()
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
         segment.trackProjectScreenViewed(
             ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
@@ -829,8 +832,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .prelaunchActivated(false)
             .build()
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
         segment.trackProjectScreenViewed(
             ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
@@ -846,9 +849,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -876,8 +879,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = backedProject()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -904,8 +907,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project().toBuilder().build()
         val creator = creator()
         val client = client(creator)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -939,8 +942,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project().toBuilder().isStarred(true).build()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectScreenViewed(
@@ -966,8 +969,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -992,8 +995,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1020,8 +1023,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1053,8 +1056,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1099,8 +1103,9 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val creator = creator()
         val client = client(creator)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1132,8 +1137,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = backedProject()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1160,8 +1166,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = backedProject()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1194,8 +1201,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -1226,8 +1234,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testActivityFeedsProperties() {
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackActivityFeedPageViewed()
@@ -1243,8 +1252,9 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testTwoFactorAuthProperties() {
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackTwoFactorAuthPageViewed()
@@ -1261,8 +1271,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val videoLength = 100L
         val videoStartedPosition = 0L
@@ -1295,8 +1305,8 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testLoginPageViewed() {
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackLoginPagedViewed()
@@ -1316,8 +1326,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
 
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1343,8 +1353,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
 
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1366,8 +1376,8 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testSignUpInitiateCtaClicked_Properties() {
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackSignUpInitiateCtaClicked()
@@ -1387,8 +1397,8 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testSignUpPageViewed_Properties() {
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackSignUpPageViewed()
@@ -1408,9 +1418,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val project = project()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val commentId = "1"
@@ -1436,9 +1446,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val project = project()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
@@ -1468,9 +1478,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val project = project()
         val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
-        client.identifiedUser.subscribe(this.segmentIdentify)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        client.identifiedUser.subscribe { this.segmentIdentify.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
@@ -1502,8 +1512,8 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testLoginOrSignUpPageViewed_Properties() {
 
         val client = client(null)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
         segment.trackLoginOrSignUpPagedViewed()
@@ -1524,8 +1534,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1554,8 +1564,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1587,8 +1597,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1619,8 +1629,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1652,8 +1662,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1685,8 +1695,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1718,8 +1728,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
 
         val ppoCards = listOf(PPOCardFactory.confirmAddressCard(), PPOCardFactory.confirmAddressCard(), PPOCardFactory.fixPaymentCard())
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1750,8 +1760,8 @@ class SegmentTest : KSRobolectricTestCase() {
         val user = user()
         val client = client(user)
 
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 
@@ -1795,8 +1805,8 @@ class SegmentTest : KSRobolectricTestCase() {
                 .category(null)
                 .build()
 
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
 
         val segment = AnalyticEvents(listOf(client))
 

@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -543,7 +542,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val intent = Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update())
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             intent
         ).create(CommentsViewModel::class.java)
 

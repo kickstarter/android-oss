@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -85,7 +85,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
         val author = UserFactory.user().toBuilder().id(1).build()
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setupEnvironment(environment)
 
@@ -104,7 +104,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenSuperBacker_shouldEmitSuperbacker() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setupEnvironment(environment)
@@ -125,7 +125,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenCollaborator_shouldEmitCollaborator() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setupEnvironment(environment)
@@ -149,7 +149,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenNoBadge_shouldEmitNoBadge() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setupEnvironment(environment)

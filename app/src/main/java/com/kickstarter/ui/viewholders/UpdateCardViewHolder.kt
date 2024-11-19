@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import androidx.core.view.isGone
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemUpdateCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
@@ -79,9 +78,9 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
             .subscribe { this.binding.updateTitle.text = it }
             .addToDisposable(disposables)
 
-        RxView.clicks(this.binding.updateContainer)
-            .compose(bindToLifecycle())
-            .subscribe { this.viewModel.inputs.updateClicked() }
+        this.binding.updateContainer.setOnClickListener {
+            this.viewModel.inputs.updateClicked()
+        }
     }
 
     private fun setBackersOnlyVisibility(show: Boolean) {

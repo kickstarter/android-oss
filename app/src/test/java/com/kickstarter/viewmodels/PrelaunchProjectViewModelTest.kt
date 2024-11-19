@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -25,6 +24,7 @@ import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import okhttp3.ResponseBody
 import org.joda.time.DateTime
@@ -33,7 +33,6 @@ import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.HttpException
-import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
@@ -214,10 +213,9 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testToggleBookmark() {
-        val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
 
-        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder()
             .currentUserV2(currentUserV2).build()
         setUpEnvironment(mockedEnv)
 
@@ -225,16 +223,15 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(project.value, prelaunchProject)
 
-        currentUser.refresh(UserFactory.user())
         currentUserV2.refresh(UserFactory.user())
 
         vm.inputs.bookmarkButtonClicked()
 
-        assertEquals(project.value.isStarred(), true)
+        assertEquals(project.value?.isStarred(), true)
 
         vm.inputs.bookmarkButtonClicked()
 
-        assertEquals(project.value.isStarred(), false)
+        assertEquals(project.value?.isStarred(), false)
     }
 
     @Test
@@ -249,16 +246,14 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         val expectedName = "Best Project 2K19"
         val expectedShareUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug + "?ref=android_project_share"
 
-        assertEquals(showShareSheet.value.first, expectedName)
-        assertEquals(showShareSheet.value.second, expectedShareUrl)
+        assertEquals(showShareSheet.value?.first, expectedName)
+        assertEquals(showShareSheet.value?.second, expectedShareUrl)
     }
 
     @Test
     fun testLoggedOutStarProjectFlow() {
-        val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
-
-        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder()
             .currentUserV2(currentUserV2).build()
 
         setUpEnvironment(mockedEnv)
@@ -271,21 +266,20 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         // Try starring while logged out
         vm.inputs.bookmarkButtonClicked()
 
-        assertEquals(project.value.isStarred(), false)
+        assertEquals(project.value?.isStarred(), false)
         this.showSavedPrompt.assertValueCount(0)
         this.startLoginToutActivity.assertValueCount(1)
 
         // Login
-        currentUser.refresh(UserFactory.user())
         currentUserV2.refresh(UserFactory.user())
 
         vm.inputs.bookmarkButtonClicked()
         vm.inputs.bookmarkButtonClicked()
-        assertEquals(true, project.value.isStarred())
+        assertEquals(true, project.value?.isStarred())
         this.showSavedPrompt.assertValueCount(1)
 
         vm.inputs.bookmarkButtonClicked()
-        assertEquals(false, project.value.isStarred())
+        assertEquals(false, project.value?.isStarred())
         this.showSavedPrompt.assertValueCount(1)
     }
 
@@ -314,10 +308,9 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
-        val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
 
-        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder()
             .currentUserV2(currentUserV2)
             .featureFlagClient(mockFeatureFlagClient)
             .sharedPreferences(sharedPreferences)

@@ -9,7 +9,6 @@ import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import com.kickstarter.services.ApiClientType
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -17,8 +16,6 @@ import javax.inject.Inject
 class ResetDeviceIdWorker(@ApplicationContext applicationContext: Context, params: WorkerParameters) : Worker(applicationContext, params) {
     @Inject
     lateinit var build: Build
-    @Inject
-    lateinit var apiClient: ApiClientType
 
     override fun doWork(): Result {
         (applicationContext as KSApplication).component().inject(this)

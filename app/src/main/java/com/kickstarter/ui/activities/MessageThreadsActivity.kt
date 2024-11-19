@@ -115,7 +115,7 @@ class MessageThreadsActivity : AppCompatActivity() {
         viewModel.outputs.unreadCountToolbarTextViewIsGone()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                ViewUtils.setGone(binding.messageThreadsToolbar.messageThreadsToolbarUnreadCountTextView)
+                ViewUtils.setGone(binding.messageThreadsToolbar.messageThreadsToolbarUnreadCountTextView, it)
             }
             .addToDisposable(disposables)
 

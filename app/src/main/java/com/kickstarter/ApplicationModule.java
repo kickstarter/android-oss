@@ -16,12 +16,8 @@ import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AttributionEvents;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentConfigV2;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentConfigTypeV2;
-import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.CurrentUserTypeV2;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
@@ -56,7 +52,6 @@ import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
-import com.kickstarter.libs.qualifiers.ApiRetrofit;
 import com.kickstarter.libs.qualifiers.ApiRetrofitV2;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
@@ -69,11 +64,8 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiClientTypeV2;
-import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
-import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
@@ -97,16 +89,14 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.Scheduler;
 import okhttp3.CookieJar;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
 import type.CustomType;
 
 @Module
@@ -120,15 +110,11 @@ public class ApplicationModule {
   @Provides
   @Singleton
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
-    final @NonNull ApiClientType apiClient,
     final @NonNull ApiClientTypeV2 apiClientV2,
-    final @NonNull ApolloClientType apolloClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
-    final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentConfigTypeV2 currentConfig2,
-    final @NonNull CurrentUserType currentUser,
     final @NonNull CurrentUserTypeV2 currentUser2,
     final @NonNull @FirstSessionPreference BooleanPreferenceType firstSessionPreference,
     final @NonNull Gson gson,
@@ -141,8 +127,7 @@ public class ApplicationModule {
     final @NonNull AttributionEvents attributionEvents,
     final @NonNull Logout logout,
     final @NonNull PlayServicesCapability playServicesCapability,
-    final @NonNull Scheduler scheduler,
-    final @NonNull io.reactivex.Scheduler schedulerV2,
+    final @NonNull Scheduler schedulerV2,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull @WebEndpoint String webEndpoint,
@@ -151,15 +136,11 @@ public class ApplicationModule {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
-      .apiClient(apiClient)
       .apiClientV2(apiClientV2)
-      .apolloClient(apolloClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
       .cookieManager(cookieManager)
-      .currentConfig(currentConfig)
       .currentConfig2(currentConfig2)
-      .currentUser(currentUser)
       .currentUserV2(currentUser2)
       .firstSessionPreference(firstSessionPreference)
       .gson(gson)
@@ -172,7 +153,6 @@ public class ApplicationModule {
       .attributionEvents(attributionEvents)
       .logout(logout)
       .playServicesCapability(playServicesCapability)
-      .scheduler(scheduler)
       .schedulerV2(schedulerV2)
       .sharedPreferences(sharedPreferences)
       .stripe(stripe)
@@ -254,16 +234,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @ApiRetrofit
-  @NonNull
-  static Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
-    final @NonNull Gson gson,
-    final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(apiEndpoint.url(), gson, okHttpClient);
-  }
-
-  @Provides
-  @Singleton
   @ApiRetrofitV2
   @NonNull
   static Retrofit provideApiRetrofitV2(final @NonNull ApiEndpoint apiEndpoint,
@@ -287,13 +257,6 @@ public class ApplicationModule {
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserTypeV2 currentUser, final @NonNull Build build) {
     return new GraphQLInterceptor(clientId, currentUser, build);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(ApiService.class);
   }
 
   @Provides
@@ -334,24 +297,15 @@ public class ApplicationModule {
   static Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(webEndpoint, gson, okHttpClient);
+    return createRetrofitV2(webEndpoint, gson, okHttpClient);
   }
 
   @Provides
   @Singleton
   @NonNull
-  static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
+  static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserTypeV2 currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
-  }
-
-  private static @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
-    return new Retrofit.Builder()
-      .client(okHttpClient)
-      .baseUrl(baseUrl)
-      .addConverterFactory(GsonConverterFactory.create(gson))
-      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-      .build();
   }
 
   private static @NonNull Retrofit createRetrofitV2(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
@@ -438,9 +392,8 @@ public class ApplicationModule {
   @Singleton
   static AnalyticEvents provideAnalytics(
           final @ApplicationContext @NonNull Context context,
-          final @NonNull CurrentUserType currentUser,
+          final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build,
-          final @NonNull CurrentConfigType currentConfig,
           final @NonNull FeatureFlagClientType ffClient,
           final @NonNull SegmentTrackingClient segmentClient) {
     final List<TrackingClientType> clients = Arrays.asList(segmentClient);
@@ -452,12 +405,6 @@ public class ApplicationModule {
   static AttributionEvents provideAttributionEvents(
     final @NonNull ApolloClientTypeV2 apolloClient) {
     return new AttributionEvents(apolloClient);
-  }
-
-  @Provides
-  @Singleton
-  static Scheduler provideScheduler() {
-    return Schedulers.computation();
   }
 
   @Provides
@@ -488,14 +435,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
-                                                final @NonNull Gson gson,
-                                                final @ConfigPreference @NonNull StringPreferenceType configPreference) {
-    return new CurrentConfig(assetManager, gson, configPreference);
-  }
-
-  @Provides
-  @Singleton
   static CurrentConfigTypeV2 provideCurrentConfig2(final @NonNull AssetManager assetManager,
                                                    final @NonNull Gson gson,
                                                    final @ConfigPreference @NonNull StringPreferenceType configPreference) {
@@ -512,14 +451,6 @@ public class ApplicationModule {
   @Singleton
   static CookieManager provideCookieManager() {
     return new CookieManager();
-  }
-
-  @Provides
-  @Singleton
-  static CurrentUserType provideCurrentUser(final @AccessTokenPreference @NonNull StringPreferenceType accessTokenPreference,
-    final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
-    final @NonNull @UserPreference StringPreferenceType userPreference) {
-    return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
   @Provides
@@ -593,8 +524,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser, final @NonNull CurrentUserTypeV2 currentUserV2) {
-    return new Logout(cookieManager, currentUser, currentUserV2);
+  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserTypeV2 currentUser, final @NonNull CurrentUserTypeV2 currentUserV2) {
+    return new Logout(cookieManager, currentUserV2);
   }
 
   @Provides

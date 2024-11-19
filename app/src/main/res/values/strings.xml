@@ -100,4 +100,5 @@
   <string name="fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost">You will be charged for your pledge over four payments, at no extra cost.  </string>
   <string name="fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully">The first charge will be 24 hours after the project ends successfully, then every 2 weeks until fully paid. When this option is selected no further edits can be made to your pledge.</string>
   <string name="fpo_charged_as_4_payments">Charged as 4 payments</string>
+  <string name="fpo_if_the_project_reaches_its_funding_goal_the_first_charge_of_20_will_be_collected_on_march_15_2024">If the project reaches its funding goal, the first charge of $20 will be collected on March 15, 2024.</string>
 </resources>

@@ -15,9 +15,9 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
+import io.reactivex.Observable
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import rx.Observable
 import type.CreditCardTypes
 import kotlin.math.floor
 
@@ -241,10 +241,10 @@ fun List<Project>.fillRootCategoryForFeaturedProjects(rootCategories: List<Categ
     }
 
     // Find the root category for the featured project's category
-    val projectRootCategory = Observable.from(rootCategories)
+    val projectRootCategory = Observable.fromIterable(rootCategories)
         .filter { rootCategory: Category -> rootCategory.id() == categoryParentId }
         .take(1)
-        .toBlocking().single()
+        .blockingFirst()
 
     // Sub in the found root category in our featured project.
     val newCategory = category.toBuilder().parent(projectRootCategory).build()

@@ -12,9 +12,9 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.StoredCard
 import com.stripe.android.model.CardBrand
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 import java.util.Date
 import java.util.GregorianCalendar
 

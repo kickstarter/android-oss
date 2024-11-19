@@ -11,7 +11,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.viewholders.KSArrayViewHolder
 import com.kickstarter.ui.viewholders.ShippingRuleViewHolder
-import rx.Observable
 
 class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items: ArrayList<Pair<ShippingRule, Project>>, private val delegate: Delegate) : KSArrayAdapter<Pair<ShippingRule, Project>>(ctx, resourceId, items) {
 
@@ -67,9 +66,10 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
         this.filteredItems.clear()
 
         this.filteredItems.addAll(
-            Observable.from(rules)
-                .map { rule -> Pair.create(rule, project) }
-                .toList().toBlocking().single()
+            rules.map {
+                    rule ->
+                Pair.create(rule, project)
+            }
         )
         notifyDataSetChanged()
     }

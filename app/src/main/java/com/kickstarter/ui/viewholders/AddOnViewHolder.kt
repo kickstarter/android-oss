@@ -29,7 +29,9 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
 
         this.viewModel.outputs.conversionIsGone()
             .compose(observeForUIV2())
-            .subscribe { ViewUtils.setGone(binding.addOnConversionTextView) }
+            .subscribe {
+                ViewUtils.setGone(binding.addOnConversionTextView, it)
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.conversion()
@@ -69,7 +71,9 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
 
         this.viewModel.outputs.rewardItemsAreGone()
             .compose(observeForUIV2())
-            .subscribe { ViewUtils.setGone(binding.addOnItemsContainer.addOnItemLayout) }
+            .subscribe {
+                ViewUtils.setGone(binding.addOnItemsContainer.addOnItemLayout, it)
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.isAddonTitleGone()

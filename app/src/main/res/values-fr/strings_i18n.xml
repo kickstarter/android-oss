@@ -365,8 +365,8 @@ Cliquez pour réessayer.</string>
   <string name="Keep_reading" formatted="false">Plus</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Soyez informé des prochaines diffusions en direct</string>
   <string name="Kickstarter_Arts" formatted="false">L\'art chez Kickstarter</string>
-  <string name="Kickstarter_Games" formatted="false">Kickstarter Games</string>
-  <string name="Kickstarter_Invent" formatted="false">Kickstarter Invent</string>
+  <string name="Kickstarter_Games" formatted="false">Jeux Kickstarter</string>
+  <string name="Kickstarter_Invent" formatted="false">Kickstarter invente</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si le projet est financé)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter n\'est pas un magasin.</string>
@@ -1627,7 +1627,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Nouvelles et évènements Kickstarter</string>
-  <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing" formatted="false">Lectures Kickstarter</string>
   <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Tous les mois, l\'équipe Éditions de Kickstarter met à l\'honneur dans une lettre d\'information des projets intéressants, des témoignages de créateurs et les actualités littéraires à ne pas manquer.</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">S\'abonner à tout</string>
   <string name="profile_settings_newsletter_title" formatted="false">Lettres d\'information</string>

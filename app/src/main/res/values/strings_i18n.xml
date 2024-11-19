@@ -499,6 +499,7 @@ from friends yet.</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} pledged</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_details" formatted="false">Pledge details</string>
+  <string name="Pledge_management" formatted="false">Pledge management</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
   <string name="Pledge_was_dropped" formatted="false">Pledge was dropped.</string>

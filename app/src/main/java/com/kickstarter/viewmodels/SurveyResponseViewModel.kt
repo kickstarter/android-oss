@@ -78,6 +78,14 @@ interface SurveyResponseViewModel {
                     it.urls()?.web()?.survey() ?: ""
                 }
 
+            val pledgeRedemptionUrl = intent()
+                .filter {
+                    it.hasExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION) && it.getParcelableExtra<SurveyResponse>(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION).isNotNull()
+                }
+                .map { requireNotNull(it.getParcelableExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION)) }
+                .ofType(String::class.java)
+                .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
+
             val surveyNotificationUrl = intent()
                 .filter {
                     it.hasExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE) && !it.getStringExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE)
@@ -96,7 +104,7 @@ interface SurveyResponseViewModel {
                 .ofType(String::class.java)
                 .map { environment.webEndpoint() + it.toUri().path() }
 
-            val surveyUrl = Observable.merge(surveyActivityUrl, surveyNotificationUrl, surveyDeeplinkUrl)
+            val surveyUrl = Observable.merge(surveyActivityUrl, surveyNotificationUrl, surveyDeeplinkUrl, pledgeRedemptionUrl)
 
             surveyUrl
                 .subscribe {
@@ -117,7 +125,8 @@ interface SurveyResponseViewModel {
                     )
                 }
                 .compose(Transformers.ignoreValuesV2())
-                .subscribe(showConfirmationDialog)
+                .subscribe { showConfirmationDialog.onNext(it) }
+                .addToDisposable(disposables)
 
             goBack = okButtonClicked
         }

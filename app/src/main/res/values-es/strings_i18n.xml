@@ -498,6 +498,7 @@ Toca para intentar de nuevo.</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} contribuido</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
   <string name="Pledge_details" formatted="false">Detalles de la contribución</string>
+  <string name="Pledge_management" formatted="false">Gestión de contribución</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Haz contribuciones a proyectos y revisa todos tus proyectos guardados y patrocinados - todo en un mismo lugar.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Patrocina tus favoritos y ve todos tus proyectos en un solo lugar.</string>
   <string name="Pledge_was_dropped" formatted="false">Contribución fue descartada.</string>

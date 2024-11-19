@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import com.facebook.FacebookAuthorizationException
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
@@ -50,7 +49,8 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
         vm.outputs.showDisclaimerActivity().subscribe { showDisclaimerActivity.onNext(it) }
             .addToDisposable(disposables)
-        environment.currentUser()?.observable()?.subscribe { currentUser.onNext(it) }
+        environment.currentUserV2()?.observable()?.subscribe { currentUser.onNext(it.getValue()) }
+            ?.addToDisposable(disposables)
         vm.outputs.finishOauthWithSuccessfulResult().subscribe {
             finishOathWithSuccessfulResult.onNext(it)
         }
@@ -104,7 +104,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun facebookLogin_error_reset_password_WithFeatureFlag_Enabled() {
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
         val mockFeatureFlagClientType: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -114,7 +114,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .featureFlagClient(mockFeatureFlagClientType)
             .build()
         setUpEnvironment(environment, LoginReason.DEFAULT)
@@ -138,7 +138,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun facebookLogin_error_login_WithFeatureFlag_Enabled() {
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -148,7 +148,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .featureFlagClient(mockFeatureFlagClient)
             .apiClientV2(object : MockApiClientV2() {
                 override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
@@ -178,10 +178,10 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun facebookLogin_error() {
-        val currentUser = MockCurrentUser()
+        val currentUser = MockCurrentUserV2()
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .apiClientV2(object : MockApiClientV2() {
                 override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
                     return Observable.error(Throwable("error"))

@@ -549,6 +549,8 @@ fun CheckoutScreen(
                     "total", totalAmountString,
                     "project_deadline", project.deadline()?.let { DateTimeUtils.longDate(it) }
                 ) ?: ""
+                val plotDisclaimerText =
+                    stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
                 val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
                 if (!isNoReward) {
                     ItemizedRewardListContainer(
@@ -563,7 +565,7 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = disclaimerText,
+                        disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
                         plotSelected = false
                     )
                 } else {
@@ -574,7 +576,7 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = disclaimerText,
+                        disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
                         plotSelected = false
                     )
                 }

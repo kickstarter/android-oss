@@ -83,22 +83,17 @@ class CurrentUserV2(
     private val gson: Gson,
     private val userPreference: StringPreferenceType
 ) : CurrentUserTypeV2() {
-    val user = BehaviorSubject.create<KsOptional<User>>()
-    init {
-        user
-            .filter { it.isPresent() }
-            .map { it.getValue() }
-            .skip(1)
-            .filter { `object`: User? -> `object`.isNotNull() }
-            .subscribe { u: User? ->
-                userPreference.set(gson.toJson(u, User::class.java))
-            }.dispose()
+    private val user = BehaviorSubject.create<KsOptional<User>>()
 
-        if (gson.fromJson(userPreference.get(), User::class.java) != null) {
-            user.onNext(KsOptional.of(gson.fromJson(userPreference.get(), User::class.java)))
+    init {
+        val persistedUser = gson.fromJson(userPreference.get(), User::class.java)
+        if (persistedUser != null) {
+            user.onNext(KsOptional.of(persistedUser))
         } else {
             user.onNext(KsOptional.empty())
         }
+
+        Timber.d("${this.javaClass} init persisted User: $persistedUser")
     }
 
     override fun getUser(): User? {
@@ -113,8 +108,10 @@ class CurrentUserV2(
         get() = accessTokenPreference.get()
 
     override fun login(newUser: User) {
-        Timber.d("Login user %s", newUser.name())
         user.onNext(KsOptional.of(newUser))
+        userPreference.set(gson.toJson(newUser, User::class.java))
+
+        Timber.d("${this.javaClass} Login user %s", newUser.name())
     }
 
     override fun setToken(accessToken: String) {
@@ -125,19 +122,22 @@ class CurrentUserV2(
         // - Register new token
         accessTokenPreference.set(accessToken)
         deviceRegistrar.registerDevice()
+
+        Timber.d("${this.javaClass} setToken: $accessToken")
     }
 
     override fun logout() {
-        Timber.d("Logout current user")
-        userPreference.delete()
         accessTokenPreference.delete()
         user.onNext(KsOptional.empty())
+        userPreference.delete()
         deviceRegistrar.unregisterDevice()
+        Timber.d("${this.javaClass} Logout current user")
     }
 
     override fun refresh(freshUser: User) {
         user.onNext(KsOptional.of(freshUser))
         userPreference.set(gson.toJson(freshUser, User::class.java))
+        Timber.d("${this.javaClass} Refresh current user")
     }
 
     override fun observable(): Observable<KsOptional<User>> {

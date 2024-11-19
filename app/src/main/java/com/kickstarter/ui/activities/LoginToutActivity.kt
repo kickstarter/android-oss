@@ -174,7 +174,7 @@ class LoginToutActivity : ComponentActivity() {
 
         showErrorMessageToasts()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showToast(this) }
+            .subscribe { ViewUtils.showToast(this, it ?: "") }
             .addToDisposable(disposables)
 
         viewModel.outputs.showUnauthorizedErrorDialog()

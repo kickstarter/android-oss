@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -35,11 +35,11 @@ class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingRuleText() {
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         val environment = environment().toBuilder()
-            .currentConfig(currentConfig)
+            .currentConfig2(currentConfig)
             .build()
 
         setupEnvironment(environment)

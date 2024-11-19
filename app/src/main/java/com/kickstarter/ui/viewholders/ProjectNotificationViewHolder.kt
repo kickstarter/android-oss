@@ -4,7 +4,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ProjectNotificationViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.SwitchCompatUtils
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.ViewUtils.showToast
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.ProjectNotification
 import com.kickstarter.viewmodels.ProjectNotificationViewModel
@@ -28,13 +28,13 @@ class ProjectNotificationViewHolder(binding: ProjectNotificationViewBinding) :
 
         viewModel.outputs.enabledSwitch()
             .compose(Transformers.observeForUIV2())
-            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.enabledSwitch) }
+            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.enabledSwitch, it) }
             .addToDisposable(disposables)
 
         viewModel.outputs.showUnableToSaveProjectNotificationError()
             .map { context().getString(R.string.profile_settings_error) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showToast(context()) }
+            .subscribe { showToast(context(), it) }
             .addToDisposable(disposables)
     }
 

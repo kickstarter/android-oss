@@ -45,7 +45,7 @@ interface FacebookConfirmationViewModel {
         ViewModel(), Inputs, Outputs {
         private val client = requireNotNull(environment.apiClientV2())
         private val loginUserCase = LoginUseCase(environment)
-        private val currentConfig = requireNotNull(environment.currentConfig())
+        private val currentConfig = requireNotNull(environment.currentConfigV2())
 
         private fun registerWithFacebookSuccess(envelope: AccessTokenEnvelope) {
             loginUserCase.setToken(envelope.accessToken())

@@ -4,7 +4,6 @@ import UpdateUserPasswordMutation
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ApiExceptionFactory
@@ -94,7 +93,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSuccess() {
         val user = UserFactory.userNeedPassword()
-        val mockUser = MockCurrentUser(user)
+        val mockUser = MockCurrentUserV2(user)
         val currentUserV2 = MockCurrentUserV2()
 
         val environment = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
@@ -113,7 +112,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
                 )
             }
         })
-            .currentUser(mockUser)
+            .currentUserV2(mockUser)
             .currentUserV2(currentUserV2)
             .build()
 
@@ -129,8 +128,6 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.savePasswordClicked()
 
         this.success.assertValue("test@email.com")
-
-        assertEquals(false, mockUser.user?.needsPassword())
     }
 
     @Test

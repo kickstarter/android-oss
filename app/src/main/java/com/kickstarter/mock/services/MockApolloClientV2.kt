@@ -54,7 +54,7 @@ import java.util.Collections
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun getRewardsFromProject(slug: String): io.reactivex.Observable<List<Reward>> {
-        TODO("Not yet implemented")
+        return io.reactivex.Observable.just(emptyList())
     }
 
     override fun watchProject(project: Project): io.reactivex.Observable<Project> {

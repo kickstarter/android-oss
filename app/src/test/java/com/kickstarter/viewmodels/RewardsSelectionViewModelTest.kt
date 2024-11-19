@@ -527,7 +527,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `When user is updating pledge, if selecting a different reward and had addOns backed, show alert`() = runTest {
+    fun `When user is updating reward selection, if selecting a different reward and had addOns backed, show alert`() = runTest {
         val reward = RewardFactory.digitalReward()
         val addOns = listOf(RewardFactory.reward(), RewardFactory.addOnMultiple())
         val backing = Backing.builder()
@@ -555,7 +555,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         advanceUntilIdle() // wait until all state emissions completed
         assertEquals(viewModel.shouldShowAlert(), true)
-        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.UPDATE_PLEDGE)
+        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.UPDATE_REWARD)
     }
 
     @Test

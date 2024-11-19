@@ -159,7 +159,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
             when (pledgeReason) {
                 PledgeReason.PLEDGE,
-                PledgeReason.UPDATE_PLEDGE,
                 PledgeReason.UPDATE_REWARD -> getPledgeInfoFrom(pData)
                 PledgeReason.UPDATE_PAYMENT,
                 PledgeReason.FIX_PLEDGE -> {

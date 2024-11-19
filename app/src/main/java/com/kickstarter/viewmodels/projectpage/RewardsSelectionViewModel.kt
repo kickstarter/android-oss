@@ -87,7 +87,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         indexOfBackedReward = indexOfBackedReward(project = projectData.project())
         pReason = when {
             previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == true -> PledgeReason.LATE_PLEDGE
-            previousUserBacking != null -> PledgeReason.UPDATE_PLEDGE
+            previousUserBacking != null -> PledgeReason.UPDATE_REWARD
             previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
             else -> PledgeReason.PLEDGE
         }
@@ -217,7 +217,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     fun shouldShowAlert(): Boolean {
         val prevRw = previousUserBacking?.reward()
         prevRw?.let {
-            if (pReason == PledgeReason.UPDATE_PLEDGE) {
+            if (pReason == PledgeReason.UPDATE_REWARD) {
                 return !previousUserBacking?.addOns().isNullOrEmpty() && prevRw.id() != newUserReward.id()
             }
         }

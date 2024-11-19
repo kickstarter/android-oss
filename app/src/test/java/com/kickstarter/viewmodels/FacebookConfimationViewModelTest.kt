@@ -2,9 +2,9 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.services.MockApiClientV2
@@ -85,9 +85,9 @@ class FacebookConfimationViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testToggleSendNewsLetter_isNotChecked() {
-        val currentConfig: CurrentConfigType = MockCurrentConfig()
+        val currentConfig: CurrentConfigTypeV2 = MockCurrentConfigV2()
         currentConfig.config(config().toBuilder().countryCode("US").build())
-        val environment = environment().toBuilder().currentConfig(currentConfig).build()
+        val environment = environment().toBuilder().currentConfig2(currentConfig).build()
         val vm = FacebookConfirmationViewModel.FacebookConfirmationViewModel(environment)
 
         vm.outputs.sendNewslettersIsChecked().subscribe { this.sendNewslettersIsChecked.onNext(it) }.addToDisposable(disposables)

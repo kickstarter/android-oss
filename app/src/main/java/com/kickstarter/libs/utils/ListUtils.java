@@ -2,10 +2,10 @@ package com.kickstarter.libs.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import rx.functions.Func2;
 
 public final class ListUtils {
   private ListUtils() {
@@ -65,7 +65,7 @@ public final class ListUtils {
   /**
    * Returns true if `y` is equal to any of the values in `xs`, where equality is determined by a given function.
    */
-  public static <T> boolean contains(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
+  public static <T> boolean contains(final @NonNull List<T> xs, final @NonNull T y, final @NonNull BiFunction<T, T, Boolean> equality) {
     return ListUtils.indexOf(xs, y, equality) != -1;
   }
 
@@ -81,7 +81,7 @@ public final class ListUtils {
    * determined by a given function.
    */
   public static @NonNull <T> List<T> difference(final @NonNull List<T> lhs, final @NonNull List<T> rhs,
-    final @NonNull Func2<T, T, Boolean> equality) {
+    final @NonNull BiFunction<T, T, Boolean> equality) {
 
     final List<T> result = new ArrayList<>();
     for (final T litem : lhs) {
@@ -110,7 +110,7 @@ public final class ListUtils {
    * Returns the first element in `xs` that equals `x`, or `null` if `x` is not found in `xs`. Equality is determined
    * by the given function.
    */
-  public static @Nullable <T> T find(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
+  public static @Nullable <T> T find(final @NonNull List<T> xs, final @NonNull T y, final @NonNull BiFunction<T, T, Boolean> equality) {
     final int idx = ListUtils.indexOf(xs, y, equality);
     if (idx == -1) {
       return null;
@@ -147,9 +147,9 @@ public final class ListUtils {
    * Returns the index of the first element in `xs` that equals `x`, or `-1` if `x` is not found in `xs`. Equality is determined
    * by the given function.
    */
-  public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
+  public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T y, final @NonNull BiFunction<T, T, Boolean> equality) {
     for (int idx = 0; idx < xs.size(); idx++) {
-      if (equality.call(xs.get(idx), y)) {
+      if (equality.apply(xs.get(idx), y)) {
         return idx;
       }
     }
@@ -166,7 +166,7 @@ public final class ListUtils {
   /**
    * Returns a list containing the elements of `lhs` that exist in `rhs`, where equality is determined by the given function.
    */
-  public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs, final @NonNull Func2<T, T, Boolean> equality) {
+  public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs, final @NonNull BiFunction<T, T, Boolean> equality) {
     final List<T> result = new ArrayList<>();
     for (final T litem : lhs) {
       if (ListUtils.contains(rhs, litem, equality)) {

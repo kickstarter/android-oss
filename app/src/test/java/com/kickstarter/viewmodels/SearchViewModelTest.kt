@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.search
 import com.kickstarter.libs.RefTag.Companion.searchFeatured
@@ -384,7 +384,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {
-        val user = MockCurrentUser()
+        val user = MockCurrentUserV2()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -403,7 +403,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
             }
         }
         val env = environment().toBuilder()
-            .currentUser(user)
+            .currentUserV2(user)
             .featureFlagClient(mockFeatureFlagClient)
             .schedulerV2(scheduler)
             .apiClientV2(apiClient)

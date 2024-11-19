@@ -6,7 +6,6 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
@@ -328,7 +327,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a message thread.
         setUpEnvironment(
-            environment().toBuilder().currentUser(MockCurrentUser(user())).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(user())).build(),
             messagesContextIntent(messageThread())
         )
 

@@ -12,7 +12,7 @@ import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.UpdateCardViewHolder
-import rx.Observable
+import io.reactivex.Observable
 
 class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
 
@@ -34,9 +34,9 @@ class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
         sections().clear()
 
         addSection(
-            Observable.from(updates)
+            Observable.fromIterable(updates)
                 .map { update -> Pair.create(project, update) }
-                .toList().toBlocking().single()
+                .toList().blockingGet()
         )
 
         if (updates.isEmpty()) {

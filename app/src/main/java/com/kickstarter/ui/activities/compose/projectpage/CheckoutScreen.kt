@@ -565,7 +565,7 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
+                        disclaimerText = if (isPlotEnabled) plotDisclaimerText else disclaimerText,
                         plotSelected = false
                     )
                 } else {
@@ -576,7 +576,7 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
+                        disclaimerText = if (isPlotEnabled) plotDisclaimerText else disclaimerText,
                         plotSelected = false
                     )
                 }

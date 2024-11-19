@@ -159,6 +159,15 @@
       android:text="@string/debug_push_notifications_simulate_burst"
       style="@style/BorderButton" />
 
+    <Button
+      android:id="@+id/simulate_pledge_redemption_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_pledge_redemption"
+      style="@style/BorderButton" />
+
   </LinearLayout>
 
 </com.kickstarter.ui.views.DebugPushNotificationsView>

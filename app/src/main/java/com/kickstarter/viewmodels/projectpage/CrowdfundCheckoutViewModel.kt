@@ -146,7 +146,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     fun provideBundle(arguments: Bundle?) {
         val pData = arguments?.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
         pledgeReason = arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason?
-        val flowContext = pledgeReason?.let { PledgeFlowContext.forPledgeReason(it) }
 
         if (pData != null) {
             pledgeData = pData
@@ -158,14 +157,12 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 sharedPreferences
             )
 
-            when (flowContext) {
-                PledgeFlowContext.NEW_PLEDGE,
-                PledgeFlowContext.CHANGE_REWARD,
-                PledgeFlowContext.MANAGE_REWARD -> {
-                    getPledgeInfoFrom(pData)
-                }
-                PledgeFlowContext.FIX_ERRORED_PLEDGE
-                -> {
+            when (pledgeReason) {
+                PledgeReason.PLEDGE,
+                PledgeReason.UPDATE_PLEDGE,
+                PledgeReason.UPDATE_REWARD -> getPledgeInfoFrom(pData)
+                PledgeReason.UPDATE_PAYMENT,
+                PledgeReason.FIX_PLEDGE -> {
                     backing?.let { getPledgeInfoFrom(it) }
                 }
                 else -> {

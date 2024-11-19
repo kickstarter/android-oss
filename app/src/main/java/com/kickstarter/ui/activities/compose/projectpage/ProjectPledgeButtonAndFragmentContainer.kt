@@ -293,8 +293,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         isLoading = isLoading,
                                         onDisclaimerItemClicked = onDisclaimerItemClicked,
                                         onAccountabilityLinkClicked = onAccountabilityLinkClicked,
-                                        isPlotEnabled = environment?.featureFlagClient()
-                                            ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false,
+                                        isPlotEnabled = false,
                                     )
                                 }
                             }

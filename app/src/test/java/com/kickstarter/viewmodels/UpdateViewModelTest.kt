@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -131,9 +131,9 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUpdateViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
-        val user = MockCurrentUser()
+        val user = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(user)
+            .currentUserV2(user)
             .build()
         val vm = UpdateViewModel.UpdateViewModel(environment)
         val startProjectActivity = TestSubscriber<Pair<Uri, RefTag>>()

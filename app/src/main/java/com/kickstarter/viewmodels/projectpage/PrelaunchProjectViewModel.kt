@@ -89,7 +89,7 @@ interface PrelaunchProjectViewModel {
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val startLoginToutActivity = PublishSubject.create<Unit>()
         private val showSavedPrompt = PublishSubject.create<Unit>()
-        private val currentProject2 = rx.subjects.PublishSubject.create<Project>()
+        private val currentProject2 = PublishSubject.create<Project>()
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()

@@ -29,8 +29,6 @@ import androidx.annotation.Nullable;
 import com.kickstarter.R;
 import com.kickstarter.ui.views.ConfirmDialog;
 
-import rx.functions.Action1;
-
 public final class ViewUtils {
   private ViewUtils() {}
 
@@ -162,10 +160,6 @@ public final class ViewUtils {
     toast.show();
   }
 
-  public static Action1<String> showToast(final @NonNull Context context) {
-    return (message) -> showToast(context, message);
-  }
-
   /**
    *  @deprecated Sets the visiblity of a view to {@link View#VISIBLE} or {@link View#GONE}. Setting
    * the view to GONE removes it from the layout so that it no longer takes up any space.
@@ -180,15 +174,6 @@ public final class ViewUtils {
   }
 
   /**
-   *  @deprecated Sets the visiblity of a view .Setting the view to GONE removes it from the layout
-   *  so that it no longer takes up any space.
-   */
-  @Deprecated
-  public static Action1<Boolean> setGone(final @NonNull View view) {
-    return (gone) -> setGone(view, gone);
-  }
-
-  /**
    *  @deprecated Sets the visibility of a view to {@link View#VISIBLE} or {@link View#INVISIBLE}. Setting
    * the view to INVISIBLE makes it hidden, but it still takes up space.
    */
@@ -199,14 +184,5 @@ public final class ViewUtils {
     } else {
       view.setVisibility(View.VISIBLE);
     }
-  }
-
-  /**
-   * @deprecated Sets the visibility of a view . Setting the view to INVISIBLE makes it hidden,
-   * but it still takes up space.
-   */
-  @Deprecated
-  public static Action1<Boolean> setInvisible(final @NonNull View view) {
-    return (invisible) -> setInvisible(view, invisible);
   }
 }

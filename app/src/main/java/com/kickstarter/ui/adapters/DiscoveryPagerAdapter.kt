@@ -9,7 +9,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.DiscoveryFragment
-import rx.Observable
+import io.reactivex.Observable
 
 class DiscoveryPagerAdapter(
     fragmentManager: FragmentManager,
@@ -48,52 +48,56 @@ class DiscoveryPagerAdapter(
      * Passes along root categories to its fragment position to help fetch appropriate projects.
      */
     fun takeCategoriesForPosition(categories: List<Category>, position: Int) {
-        Observable.from(fragments)
+        Observable.fromIterable(fragments)
             .filter(DiscoveryFragment::isInstantiated)
             .filter(DiscoveryFragment::isAttached)
             .filter { frag: DiscoveryFragment ->
                 val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
                 fragmentPosition == position
             }
-            .subscribe { frag: DiscoveryFragment -> frag.takeCategories(categories) }
+            .map { frag: DiscoveryFragment -> frag.takeCategories(categories) }
+            .subscribe()
     }
 
     /**
      * Take current params from activity and pass to the appropriate fragment.
      */
     fun takeParams(params: DiscoveryParams) {
-        Observable.from(fragments)
+        Observable.fromIterable(fragments)
             .filter(DiscoveryFragment::isInstantiated)
             .filter(DiscoveryFragment::isAttached)
             .filter { frag: DiscoveryFragment ->
                 val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
                 params.sort().positionFromSort() == fragmentPosition
             }
-            .subscribe { frag: DiscoveryFragment -> frag.updateParams(params) }
+            .map { frag: DiscoveryFragment -> frag.updateParams(params) }
+            .subscribe()
     }
 
     /**
      * Call when the view model tells us to clear specific pages.
      */
     fun clearPages(pages: List<Int?>) {
-        Observable.from(fragments)
+        Observable.fromIterable(fragments)
             .filter(DiscoveryFragment::isInstantiated)
             .filter(DiscoveryFragment::isAttached)
             .filter { frag: DiscoveryFragment ->
                 val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
                 pages.contains(fragmentPosition)
             }
-            .subscribe { obj: DiscoveryFragment -> obj.clearPage() }
+            .map { obj: DiscoveryFragment -> obj.clearPage() }
+            .subscribe()
     }
 
     fun scrollToTop(position: Int) {
-        Observable.from(fragments)
+        Observable.fromIterable(fragments)
             .filter(DiscoveryFragment::isInstantiated)
             .filter(DiscoveryFragment::isAttached)
             .filter { frag: DiscoveryFragment ->
                 val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
                 position == fragmentPosition
             }
-            .subscribe { obj: DiscoveryFragment -> obj.scrollToTop() }
+            .map { obj: DiscoveryFragment -> obj.scrollToTop() }
+            .subscribe()
     }
 }

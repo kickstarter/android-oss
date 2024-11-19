@@ -1,7 +1,7 @@
 package com.kickstarter.models
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.UserFactory
 import org.junit.Test
 
@@ -12,12 +12,9 @@ class EnvironmentTest : KSRobolectricTestCase() {
         val environment = environment()
 
         assertNotNull(environment.activitySamplePreference())
-        assertNotNull(environment.apiClient())
-        assertNotNull(environment.apolloClient())
         assertNotNull(environment.build())
         assertNotNull(environment.cookieManager())
-        assertNotNull(environment.currentConfig())
-        assertNotNull(environment.currentUser())
+        assertNotNull(environment.currentUserV2())
         assertNotNull(environment.firstSessionPreference())
         assertNotNull(environment.gson())
         assertNotNull(environment.hasSeenAppRatingPreference())
@@ -29,7 +26,7 @@ class EnvironmentTest : KSRobolectricTestCase() {
         assertNotNull(environment.attributionEvents())
         assertNotNull(environment.logout())
         assertNotNull(environment.playServicesCapability())
-        assertNotNull(environment.scheduler())
+        assertNotNull(environment.schedulerV2())
         assertNotNull(environment.sharedPreferences())
         assertNotNull(environment.stripe())
         assertNotNull(environment.webEndpoint())
@@ -37,8 +34,8 @@ class EnvironmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testToBuilderInit() {
-        val collaborator = MockCurrentUser(UserFactory.collaborator())
-        val environment = environment().toBuilder().currentUser(collaborator).build()
-        assertEquals(environment.currentUser(), collaborator)
+        val collaborator = MockCurrentUserV2(UserFactory.collaborator())
+        val environment = environment().toBuilder().currentUserV2(collaborator).build()
+        assertEquals(environment.currentUserV2(), collaborator)
     }
 }

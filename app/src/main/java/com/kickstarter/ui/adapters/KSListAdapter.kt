@@ -11,7 +11,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.utils.ExceptionUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
-import com.trello.rxlifecycle.ActivityEvent
 import java.util.ArrayList
 
 abstract class KSListAdapter(
@@ -74,30 +73,13 @@ abstract class KSListAdapter(
     override fun onViewDetachedFromWindow(holder: KSViewHolder) {
         super.onViewDetachedFromWindow(holder)
 
-        // View holders are "stopped" when they are detached from the window for recycling
-        holder.lifecycleEvent(ActivityEvent.STOP)
-
-        // View holders are "destroy" when they are detached from the window and no adapter is listening
-        // to events, so ostensibly the view holder is being deallocated.
         if (!hasObservers()) {
-            holder.lifecycleEvent(ActivityEvent.DESTROY)
             holder.destroy()
         }
     }
 
-    override fun onViewAttachedToWindow(holder: KSViewHolder) {
-        super.onViewAttachedToWindow(holder)
-
-        // View holders are "started" when they are attached to the new window because this means
-        // it has been recycled.
-        holder.lifecycleEvent(ActivityEvent.START)
-    }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, @LayoutRes layout: Int): KSViewHolder {
         val viewHolder = viewHolder(layout, viewGroup)
-
-        viewHolder.lifecycleEvent(ActivityEvent.CREATE)
-
         return viewHolder
     }
 

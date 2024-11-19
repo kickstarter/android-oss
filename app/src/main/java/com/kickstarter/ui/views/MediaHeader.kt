@@ -16,8 +16,8 @@ import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.data.MediaElement
 import com.kickstarter.ui.extensions.loadImageWithResize
-import rx.Observable
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 class MediaHeader @JvmOverloads constructor(
     context: Context,
@@ -26,7 +26,7 @@ class MediaHeader @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var binding: MediaHeaderBinding =
         MediaHeaderBinding.inflate(LayoutInflater.from(context), this, true)
-    private var playButtonClicks = PublishSubject.create<Void>()
+    private var playButtonClicks = PublishSubject.create<Unit>()
     private var onFullScreenClicked = PublishSubject.create<Pair<String, Long>>()
 
     interface Inputs {
@@ -65,7 +65,7 @@ class MediaHeader @JvmOverloads constructor(
 
     interface Outputs {
 
-        fun playButtonClicks(): Observable<Void>
+        fun playButtonClicks(): Observable<Unit>
         fun onFullScreenClicked(): Observable<Pair<String, Long>>
     }
 
@@ -124,7 +124,7 @@ class MediaHeader @JvmOverloads constructor(
         }
     }
     val outputs: Outputs = object : Outputs {
-        override fun playButtonClicks(): Observable<Void> = playButtonClicks
+        override fun playButtonClicks(): Observable<Unit> = playButtonClicks
         override fun onFullScreenClicked(): Observable<Pair<String, Long>> = onFullScreenClicked
     }
 
@@ -134,7 +134,7 @@ class MediaHeader @JvmOverloads constructor(
             binding.videoPlayButtonOverlay.isGone = true
             binding.videoProjectView.isVisible = true
             binding.videoProjectView.setPlayerPlayWhenReadyFlag(true)
-            playButtonClicks.onNext(null)
+            playButtonClicks.onNext(Unit)
         }
 
         binding.videoProjectView.setOnFullScreenClickedListener(object : OnFullScreenOpenedClickedListener {

@@ -5,7 +5,6 @@ import android.util.Pair
 import android.view.View
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
@@ -183,9 +182,9 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             }
             .addToDisposable(disposables)
 
-        RxView.clicks(this.binding.rewardPledgeButton)
-            .compose(bindToLifecycle())
-            .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
+        this.binding.rewardPledgeButton.setOnClickListener {
+            this.viewModel.inputs.rewardClicked(this.adapterPosition)
+        }
 
         this.viewModel.outputs.hasAddOnsAvailable()
             .filter { it.isNotNull() }

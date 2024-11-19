@@ -104,6 +104,11 @@ fragment fullProject on Project {
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
+    rewards { # query within project the bare minimum for rewards
+        nodes {
+            ... reward
+        }
+    }
     risks
     story
     slug

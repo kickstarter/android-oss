@@ -220,7 +220,8 @@ fun RewardCarouselScreen(
                                 id = R.string.Back_it_because_you_believe_in_it
                             ),
                             onRewardSelectClicked = { onRewardSelected(reward) },
-                            isCTAButtonVisible = project.isAllowedToPledge()
+                            isCTAButtonVisible = project.isAllowedToPledge(),
+                            yourSelectionIsVisible = project.backing()?.isBacked(reward) ?: false,
                         )
                     } else {
                         KSRewardCard(

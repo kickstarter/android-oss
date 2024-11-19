@@ -549,7 +549,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         val project = project().toBuilder().isBacking(true).build().reduceProjectPayload()
         val messageThread = messageThread()
             .toBuilder()
-            .project(project.reduceProjectPayload())
+            .project(project)
             .build()
         val messageThreadEnvelope = messageThreadEnvelope()
             .toBuilder()

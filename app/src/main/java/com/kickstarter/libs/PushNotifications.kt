@@ -149,6 +149,19 @@ class PushNotifications(
                     )
                 }
         )
+        subscriptions.add(
+            notifications
+                .filter { obj: PushNotificationEnvelope -> obj.isPledgeRedemption() }
+                .filter {
+                    isNotNull()
+                }
+                .observeOn(Schedulers.newThread())
+                .subscribe {
+                    this.displayNotificationFromPledgeRedemption(
+                        it
+                    )
+                }
+        )
     }
 
     fun add(envelope: PushNotificationEnvelope) {
@@ -208,6 +221,13 @@ class PushNotifications(
                     CHANNEL_PROJECT_UPDATES,
                     R.string.Project_updates,
                     NotificationManager.IMPORTANCE_DEFAULT
+                )
+            )
+            channels.add(
+                getNotificationChannel(
+                    CHANNEL_PLEDGE_REDEMPTION,
+                    R.string.Pledge_management,
+                    NotificationManager.IMPORTANCE_HIGH
                 )
             )
             val followingChannel = getNotificationChannel(
@@ -324,11 +344,23 @@ class PushNotifications(
     ) {
         val gcm = envelope.gcm()
 
-        val survey = envelope.survey() ?: return
         val surveyUrlPath = envelope.survey()?.urls()?.web()?.survey() ?: return
 
         val notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_SURVEY)
-            .setContentIntent(surveyResponseContentIntent(envelope, surveyUrlPath))
+            .setContentIntent(surveyResponseContentIntent(envelope, surveyUrlPath, IntentKey.NOTIFICATION_SURVEY_RESPONSE))
+            .build()
+        notificationManager().notify(envelope.signature(), notification)
+    }
+
+    private fun displayNotificationFromPledgeRedemption(
+        envelope: PushNotificationEnvelope,
+    ) {
+        val gcm = envelope.gcm()
+
+        val pledgeRedemptionPath = envelope.pledgeRedemption()?.pledgeRedemptionPath() ?: return
+
+        val notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PLEDGE_REDEMPTION)
+            .setContentIntent(surveyResponseContentIntent(envelope, pledgeRedemptionPath, IntentKey.NOTIFICATION_PLEDGE_REDEMPTION))
             .build()
         notificationManager().notify(envelope.signature(), notification)
     }
@@ -435,12 +467,13 @@ class PushNotifications(
 
     private fun surveyResponseContentIntent(
         envelope: PushNotificationEnvelope,
-        surveyUrlPath: String
+        urlPath: String,
+        intentKey: String
     ): PendingIntent {
         val activityFeedIntent = Intent(this.context, ActivityFeedActivity::class.java)
 
         val surveyResponseIntent = Intent(this.context, SurveyResponseActivity::class.java)
-            .putExtra(IntentKey.NOTIFICATION_SURVEY_RESPONSE, surveyUrlPath)
+            .putExtra(intentKey, urlPath)
 
         val taskStackBuilder = TaskStackBuilder.create(this.context)
             .addNextIntentWithParentStack(activityFeedIntent)
@@ -560,6 +593,8 @@ class PushNotifications(
         private const val CHANNEL_PROJECT_REMINDER = "PROJECT_REMINDER"
         private const val CHANNEL_PROJECT_UPDATES = "PROJECT_UPDATES"
         private const val CHANNEL_SURVEY = "SURVEY"
+        private const val CHANNEL_PLEDGE_REDEMPTION = "PLEDGE_REDEMPTION"
+
         private val NOTIFICATION_CHANNELS = arrayOf(
             CHANNEL_ERRORED_PLEDGES,
             CHANNEL_FOLLOWING,
@@ -567,7 +602,8 @@ class PushNotifications(
             CHANNEL_PROJECT_ACTIVITY,
             CHANNEL_PROJECT_REMINDER,
             CHANNEL_PROJECT_UPDATES,
-            CHANNEL_SURVEY
+            CHANNEL_SURVEY,
+            CHANNEL_PLEDGE_REDEMPTION
         )
     }
 }

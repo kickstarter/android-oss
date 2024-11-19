@@ -148,7 +148,8 @@ fun CheckoutScreen(
     newPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
-    onChangedPaymentMethod: (StoredCard?) -> Unit = {}
+    onChangedPaymentMethod: (StoredCard?) -> Unit = {},
+    plotSelected: Boolean = false,
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -216,7 +217,9 @@ fun CheckoutScreen(
                                     .fillMaxWidth(),
                                 onClickAction = { onPledgeCtaClicked(selectedOption.value) },
                                 isEnabled = project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false,
-                                text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(id = R.string.Pledge) + " $totalAmountString" else stringResource(
+                                text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(
+                                    id = R.string.Pledge
+                                ) + " $totalAmountString" else stringResource(
                                     id = R.string.Confirm
                                 )
                             )
@@ -471,12 +474,15 @@ fun CheckoutScreen(
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                val resourceString = stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
+                val resourceString =
+                    stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
                 val disclaimerText = environment.ksString()?.format(
                     resourceString,
                     "total", totalAmountString,
                     "project_deadline", project.deadline()?.let { DateTimeUtils.longDate(it) }
                 ) ?: ""
+                val plotDisclaimerText =
+                    stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
                 val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
                 if (!isNoReward) {
                     ItemizedRewardListContainer(
@@ -491,7 +497,8 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = disclaimerText
+                        disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
+                        plotSelected = false
                     )
                 } else {
                     // - For noReward, totalAmount = bonusAmount as there is no reward
@@ -501,11 +508,14 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = disclaimerText
+                        disclaimerText = if (plotSelected) plotDisclaimerText else disclaimerText,
+                        plotSelected = false
                     )
                 }
 
-                if (environment.ksCurrency().isNotNull() && environment.ksString().isNotNull() && currentShippingRule.isNotNull()) {
+                if (environment.ksCurrency().isNotNull() && environment.ksString()
+                    .isNotNull() && currentShippingRule.isNotNull()
+                ) {
                     val estimatedShippingRangeString =
                         RewardViewUtils.getEstimatedShippingCostString(
                             context = LocalContext.current,

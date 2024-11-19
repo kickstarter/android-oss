@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.FacebookConfirmationLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
@@ -62,8 +61,9 @@ class FacebookConfirmationActivity : ComponentActivity() {
             .subscribe { ViewUtils.showDialog(this, getString(R.string.signup_error_title), it) }
             .addToDisposable(disposables)
 
-        RxView.clicks(binding.newsletterSwitch)
-            .subscribe { viewModel.inputs.sendNewslettersClick(binding.newsletterSwitch.isChecked) }
+        binding.newsletterSwitch.setOnClickListener {
+            viewModel.inputs.sendNewslettersClick(binding.newsletterSwitch.isChecked)
+        }
 
         binding.createNewAccountButton.setOnClickListener {
             createNewAccountClick()

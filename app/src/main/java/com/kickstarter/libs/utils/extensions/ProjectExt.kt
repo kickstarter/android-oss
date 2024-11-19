@@ -15,9 +15,9 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
+import io.reactivex.Observable
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import rx.Observable
 import type.CreditCardTypes
 import kotlin.math.floor
 
@@ -241,10 +241,10 @@ fun List<Project>.fillRootCategoryForFeaturedProjects(rootCategories: List<Categ
     }
 
     // Find the root category for the featured project's category
-    val projectRootCategory = Observable.from(rootCategories)
+    val projectRootCategory = Observable.fromIterable(rootCategories)
         .filter { rootCategory: Category -> rootCategory.id() == categoryParentId }
         .take(1)
-        .toBlocking().single()
+        .blockingFirst()
 
     // Sub in the found root category in our featured project.
     val newCategory = category.toBuilder().parent(projectRootCategory).build()
@@ -312,13 +312,14 @@ fun Project.reduce(): Project {
  * The end goal is to reduce to the bare minimum the amount of memory required to be serialized on Intents
  * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
  */
-fun Project.reduceToPreLaunchProject(): Project {
+fun Project.reduceProjectPayload(): Project {
     val web = Web.builder()
         .project(this.webProjectUrl())
         .build()
 
     return Project.Builder()
         .id(this.id())
+        .canComment(this.canComment())
         .slug(this.slug())
         .name(this.name())
         .creator(this.creator())
@@ -331,9 +332,14 @@ fun Project.reduceToPreLaunchProject(): Project {
         .currentCurrency(this.currentCurrency())
         .sendThirdPartyEvents(this.sendThirdPartyEvents())
         .isStarred(this.isStarred())
+        .isBacking(this.isBacking())
         .currency(this.currency())
         .currencySymbol(this.currencySymbol())
         .currencyTrailingCode(this.currencyTrailingCode())
         .urls(Urls.builder().web(web).build())
+        .isInPostCampaignPledgingPhase(this.isInPostCampaignPledgingPhase())
+        .postCampaignPledgingEnabled(this.postCampaignPledgingEnabled())
+        .sendThirdPartyEvents(this.sendThirdPartyEvents())
+        .state(this.state())
         .build()
 }

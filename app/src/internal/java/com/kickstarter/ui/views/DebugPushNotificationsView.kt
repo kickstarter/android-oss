@@ -9,6 +9,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.DeviceRegistrarType
 import com.kickstarter.libs.PushNotifications
 import com.kickstarter.models.Activity
+import com.kickstarter.models.Urls
 import com.kickstarter.models.pushdata.GCM
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import javax.inject.Inject
@@ -217,8 +218,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
         val envelope: PushNotificationEnvelope = PushNotificationEnvelope.builder()
             .gcm(gcm)
             .survey(
-                PushNotificationEnvelope.Survey.builder()
-                    .id(18249859L)
+                PushNotificationEnvelope.Survey.builder().id(18249859L).urls(PushNotificationEnvelope.Urls.builder().web(PushNotificationEnvelope.Web.builder().survey("/projects/:creator_param/:project_param/backing/survey_responses").build()).build())
                     .projectId(PROJECT_ID)
                     .build()
             )

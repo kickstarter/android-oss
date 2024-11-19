@@ -2,7 +2,7 @@ package com.kickstarter.services.interceptors
 
 import android.net.Uri
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isHivequeenUri
@@ -19,7 +19,7 @@ import java.io.IOException
  * Interceptor for web requests to Kickstarter, not API requests. Used by web views and the web client.
  */
 class WebRequestInterceptor(
-    private val currentUser: CurrentUserType,
+    private val currentUser: CurrentUserTypeV2,
     private val endpoint: String,
     private val internalTools: InternalToolsType,
     private val build: Build
@@ -29,9 +29,9 @@ class WebRequestInterceptor(
 
     init {
         currentUser.observable()
-            .subscribe {
-                loggedInUser = it
-            }
+            .filter { it.isPresent() }
+            .map { loggedInUser = it.getValue() }
+            .subscribe()
     }
 
     @Throws(IOException::class)

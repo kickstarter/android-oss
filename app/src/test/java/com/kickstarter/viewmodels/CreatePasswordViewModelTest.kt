@@ -143,7 +143,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.createPasswordClicked()
         this.success.assertValue("test@emai")
 
-        currentUser.assertValues(user, null)
+        // TODO: Force Logout logic after succesful change is living on the UI, should be moved to the VM and tested
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(

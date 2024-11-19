@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -220,10 +220,10 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProfileViewModel_shouldEmitProjectPage() {
-        val user = MockCurrentUser()
+        val user = MockCurrentUserV2()
 
         val environment = environment().toBuilder()
-            .currentUser(user)
+            .currentUserV2(user)
             .build()
 
         setUpEnvironment(environment)

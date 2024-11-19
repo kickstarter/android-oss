@@ -19,7 +19,7 @@ import com.kickstarter.ui.viewholders.RewardAddCardViewHolder
 import com.kickstarter.ui.viewholders.RewardCardSelectedViewHolder
 import com.kickstarter.ui.viewholders.RewardCardUnselectedViewHolder
 import com.kickstarter.ui.viewholders.State
-import rx.Observable
+import io.reactivex.Observable
 
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     interface Delegate : RewardCardUnselectedViewHolder.Delegate, RewardAddCardViewHolder.Delegate
@@ -61,9 +61,9 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     fun takeCards(cards: List<StoredCard>, project: Project) {
         sections().clear()
         addSection(
-            Observable.from(cards)
+            Observable.fromIterable(cards)
                 .map { Pair(it, project) }
-                .toList().toBlocking().single()
+                .toList().blockingGet()
         )
         addSection(listOf(null))
         notifyDataSetChanged()

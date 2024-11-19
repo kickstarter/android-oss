@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
@@ -308,8 +309,9 @@ class CommentsActivity :
      * // TODO: https://kickstarter.atlassian.net/browse/NT-1955
      */
     private fun startThreadActivity(commentData: CommentCardData, openKeyboard: Boolean, projectUpdateId: String? = null) {
+        val reducedProject = commentData.project?.reduceProjectPayload()
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
-            putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
+            putExtra(IntentKey.COMMENT_CARD_DATA, commentData.toBuilder().project(reducedProject).build())
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
             putExtra(IntentKey.UPDATE_POST_ID, projectUpdateId)
         }
@@ -321,8 +323,9 @@ class CommentsActivity :
     }
 
     private fun startThreadActivityFromDeepLink(commentData: CommentCardData, projectUpdateId: String? = null) {
+        val reducedProject = commentData.project?.reduceProjectPayload()
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
-            putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
+            putExtra(IntentKey.COMMENT_CARD_DATA, commentData.toBuilder().project(reducedProject).build())
             putExtra(IntentKey.REPLY_EXPAND, false)
             putExtra(IntentKey.REPLY_SCROLL_BOTTOM, true)
             putExtra(IntentKey.UPDATE_POST_ID, projectUpdateId)

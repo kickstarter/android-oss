@@ -4,9 +4,9 @@ import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.models.User
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 
 class MockTrackingClient(
     currentUser: CurrentUserTypeV2,
@@ -28,7 +28,6 @@ class MockTrackingClient(
 
     override fun reset() {
         loggedInUser = null
-        identifiedUser.onNext(null)
     }
 
     override fun isEnabled(): Boolean {

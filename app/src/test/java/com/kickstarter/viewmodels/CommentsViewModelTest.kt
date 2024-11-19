@@ -3,10 +3,10 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
@@ -60,7 +60,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
 
         // Start the view model with a backed project.
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.backedProject()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.backedProject().reduceProjectPayload()))
         val vm = Factory(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build(),
             intent
@@ -77,7 +77,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_whenUserIsLoggedOut_composerShouldBeGone() {
         // Start the view model with a backed project.
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(
             environment().toBuilder().build(),
             intent
@@ -94,7 +94,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_whenUserIsLoggedInNotBacking_shouldShowDisabledComposer() {
         // Start the view model with a backed project.
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build(),
             intent
@@ -114,7 +114,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
             .toBuilder()
             .canComment(true)
-            .build()
+            .build().reduceProjectPayload()
         val vm = Factory(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(project))
@@ -134,10 +134,10 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
             .toBuilder()
             .canComment(false)
-            .build()
+            .build().reduceProjectPayload()
         val vm = Factory(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
-            Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+            Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(project))
         ).create(CommentsViewModel::class.java)
 
         vm.outputs.commentComposerStatus().subscribe { commentComposerStatus.onNext(it) }.addToDisposable(disposables)
@@ -156,11 +156,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .creator(creator)
             .isBacking(false)
-            .build()
+            .build().reduceProjectPayload()
 
         val vm = Factory(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
-            Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+            Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(project))
         ).create(CommentsViewModel::class.java)
 
         vm.outputs.commentComposerStatus().subscribe { commentComposerStatus.onNext(it) }.addToDisposable(disposables)
@@ -179,11 +179,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
             .toBuilder()
             .isBacking(false)
-            .build()
+            .build().reduceProjectPayload()
 
         val vm = Factory(
             environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
-            Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+            Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(project))
         ).create(CommentsViewModel::class.java)
 
         val currentUserAvatar = TestSubscriber<String?>()
@@ -230,7 +230,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
 
-        val vm = Factory(env, Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))).create(CommentsViewModel::class.java)
+        val vm = Factory(env, Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))).create(CommentsViewModel::class.java)
         val commentsList = TestSubscriber<List<CommentCardData>>()
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -277,7 +277,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
         val commentsList = TestSubscriber<List<CommentCardData>?>()
 
@@ -289,7 +289,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_ProjectCommentsEmit() {
         val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(environment(), intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -353,7 +353,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
         vm.outputs.setEmptyState().subscribe { showEmptyState.onNext(it) }.addToDisposable(disposables)
 
@@ -380,7 +380,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_ProjectRefresh() {
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(environment(), intent).create(CommentsViewModel::class.java)
 
         // Start the view model with a project.
@@ -399,7 +399,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.initialLoadCommentsError().subscribe { initialLoadError.onNext(it) }.addToDisposable(disposables)
@@ -434,7 +434,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         firstCall = false
@@ -475,7 +475,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             })
             .schedulerV2(testScheduler).build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -542,7 +542,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val intent = Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update())
         val vm = Factory(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build(),
+            environment().toBuilder().currentUserV2(MockCurrentUserV2(currentUser)).build(),
             intent
         ).create(CommentsViewModel::class.java)
 
@@ -566,7 +566,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun backButtonPressed_whenEmits_shouldEmitToCloseActivityStream_FromProject() {
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(environment(), intent).create(CommentsViewModel::class.java)
 
         vm.outputs.closeCommentsPage().subscribe { closeCommentPage.onNext(it) }.addToDisposable(disposables)
@@ -633,7 +633,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .schedulerV2(testScheduler)
             .build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.inputs.onReplyClicked(comment1, true)
@@ -685,7 +685,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
             .build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent = intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -783,7 +783,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
             .build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -890,7 +890,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
             .build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -981,7 +981,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .commentCardState(CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus)
             .build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)
@@ -1034,7 +1034,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val intent = Intent().apply {
             putExtra(IntentKey.COMMENT, commentID)
-            putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+            putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         }
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
@@ -1090,7 +1090,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .schedulerV2(testScheduler)
             .build()
 
-        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project()))
+        val intent = Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project().reduceProjectPayload()))
         val vm = Factory(env, intent).create(CommentsViewModel::class.java)
 
         vm.outputs.commentsList().subscribe { commentsList.onNext(it) }.addToDisposable(disposables)

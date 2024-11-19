@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.AvatarFactory
@@ -231,7 +230,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentReplyButtonVisibility_whenUserLoggedInAndProjectBacked_shouldSendTrue() {
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
         val comment = CommentFactory.comment()
@@ -243,7 +242,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentReplyButtonVisibility_whenUserLoggedInAndProjectNotBacked_shouldSendFalse() {
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
         val comment = CommentFactory.comment()
@@ -284,7 +283,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val repliesCount = BehaviorSubject.create<Int>()
 
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
         val comment = CommentFactory.comment(repliesCount = 1)
@@ -423,7 +422,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(responseComment)
                 }
             })
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setUpEnvironment(env)
 
@@ -568,7 +567,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_whenCommentFlagged_shouldSetStatusToFlagged() {
-        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+        val env = environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build()
         setUpEnvironment(env)
 
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, hasFlaggings = true)
@@ -594,7 +593,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_whenCommentFlaggedAndSustained_shouldNotSetStatusToFlagged() {
 
-        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+        val env = environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build()
         setUpEnvironment(env)
 
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, hasFlaggings = true, sustained = true)
@@ -606,7 +605,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_whenCommentFlaggedAndDeleted_shouldNotSetStatusToFlagged() {
-        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+        val env = environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build()
         setUpEnvironment(env)
 
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, isDelete = true, hasFlaggings = true, sustained = false)
@@ -669,7 +668,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val author = UserFactory.user().toBuilder().id(1).build()
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
         setUpEnvironment(environment)
 
@@ -689,7 +688,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenCreator_shouldEmitCreator() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setUpEnvironment(environment)
@@ -711,7 +710,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenSuperBacker_shouldEmitSuperbacker() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setUpEnvironment(environment)
@@ -733,7 +732,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenNoBadge_shouldEmitNoBadge() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser(currentUser))
+            .currentUserV2(MockCurrentUserV2(currentUser))
             .build()
 
         setUpEnvironment(environment)

@@ -28,7 +28,6 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.showAlertDialog
-import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.chrome.ChromeTabsHelper
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
@@ -175,7 +174,7 @@ class LoginToutActivity : ComponentActivity() {
 
         showErrorMessageToasts()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.showToast(this) }
+            .subscribe { ViewUtils.showToast(this, it ?: "") }
             .addToDisposable(disposables)
 
         viewModel.outputs.showUnauthorizedErrorDialog()
@@ -331,16 +330,17 @@ class LoginToutActivity : ComponentActivity() {
     }
 
     private fun goToSurveyIfSurveyPresent() {
-        val surveyResponse = IntentCompat.getParcelableExtra(intent, IntentKey.SURVEY_RESPONSE, SurveyResponse::class.java)
-        surveyResponse?.let {
-            startSurveyResponseActivity(surveyResponse)
+        val surveyResponseDeeplink = IntentCompat.getParcelableExtra(intent, IntentKey.DEEPLINK_SURVEY_RESPONSE, String::class.java)
+
+        surveyResponseDeeplink?.let {
+            startSurveyResponseActivity(surveyResponseDeeplink)
         }
     }
 
-    private fun startSurveyResponseActivity(surveyResponse: SurveyResponse) {
+    private fun startSurveyResponseActivity(surveyResponseUrl: String) {
         ApplicationUtils.startNewDiscoveryActivity(this)
         val intent = Intent(this, SurveyResponseActivity::class.java)
-            .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse)
+            .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
         startActivity(intent)
         finish()
     }

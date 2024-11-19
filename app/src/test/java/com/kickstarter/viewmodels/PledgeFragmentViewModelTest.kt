@@ -16,7 +16,6 @@ import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
@@ -2348,7 +2347,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         val germanyShippingRule = ShippingRuleFactory.germanyShippingRule()
@@ -2501,7 +2500,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         val germanyShippingRule = ShippingRuleFactory.germanyShippingRule()
@@ -3127,7 +3126,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         val germanyShippingRule = ShippingRuleFactory.germanyShippingRule()

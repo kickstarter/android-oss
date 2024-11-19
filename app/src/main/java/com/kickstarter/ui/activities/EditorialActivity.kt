@@ -5,7 +5,6 @@ import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityEditorialBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
@@ -81,8 +80,9 @@ class EditorialActivity : AppCompatActivity() {
             }
             .addToDisposable(disposables)
 
-        RxView.clicks(binding.editorialRetryContainer.root)
-            .subscribe { this.viewModel.inputs.retryContainerClicked() }
+        binding.editorialRetryContainer.root.setOnClickListener {
+            this.viewModel.inputs.retryContainerClicked()
+        }
     }
 
     private fun discoveryFragment(): DiscoveryFragment = supportFragmentManager.findFragmentById(R.id.fragment_discovery) as DiscoveryFragment

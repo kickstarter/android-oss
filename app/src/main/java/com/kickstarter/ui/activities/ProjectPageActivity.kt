@@ -45,7 +45,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
@@ -53,13 +52,13 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
+import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -464,12 +463,14 @@ class ProjectPageActivity :
             .addToDisposable(disposables)
 
         binding.mediaHeader.outputs.onFullScreenClicked()
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.inputs.fullScreenVideoButtonClicked(it) }
+            .addToDisposable(disposables)
 
         binding.mediaHeader.outputs.playButtonClicks()
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.inputs.onVideoPlayButtonClicked() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.onOpenVideoInFullScreen()
             .subscribeOn(Schedulers.io())
@@ -997,10 +998,6 @@ class ProjectPageActivity :
     private fun setFragmentsState(expand: Boolean) {
         supportFragmentManager.fragments.map { fragment ->
             when (fragment) {
-                is BaseFragment<*> -> {
-                    fragment.setState(expand && fragment.isVisible)
-                }
-
                 is RewardsFragment -> {
                     fragment.setState(expand && fragment.isVisible)
                 }
@@ -1151,7 +1148,7 @@ class ProjectPageActivity :
         ) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
-                    .putExtra(IntentKey.PROJECT, projectData.project())
+                    .putExtra(IntentKey.PROJECT, projectData.project().reduceProjectPayload())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
                     .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             )
@@ -1225,11 +1222,8 @@ class ProjectPageActivity :
     private fun startMessagesActivity(project: Project) {
         startActivity(
             Intent(this, MessagesActivity::class.java)
-                .putExtra(
-                    IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT,
-                    MessagePreviousScreenType.PROJECT_PAGE
-                )
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PROJECT_PAGE)
+                .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
                 .putExtra(IntentKey.BACKING, project.backing())
         )
     }

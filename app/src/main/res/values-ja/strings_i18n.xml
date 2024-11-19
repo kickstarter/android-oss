@@ -495,6 +495,7 @@
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} のプレッジ</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">プレッジでプロジェクトに生命を。</string>
   <string name="Pledge_details" formatted="false">プレッジ詳細</string>
+  <string name="Pledge_management" formatted="false">プレッジ管理</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">ここにバックした全プロジェクトが表示されます。</string>
   <string name="Pledge_was_dropped" formatted="false">プレッジは取り消されました</string>

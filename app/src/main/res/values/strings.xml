@@ -33,6 +33,7 @@
   <string name="debug_push_notifications_simulate_burst">Simulate burst</string>
   <string name="debug_push_notifications_simulate_notifications">Simulate notifications</string>
   <string name="debug_push_notifications_unregister_device">Unregister device</string>
+  <string name="debug_push_notifications_pledge_redemption">Pledge Redemption</string>
   <string name="Endpoint">Endpoint</string>
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API</string>
   <string name="Enter_Hivequeen_name">Enter Hivequeen name (e.g.: christopher)</string>

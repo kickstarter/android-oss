@@ -291,7 +291,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         newPaymentMethodClicked = onAddPaymentMethodClicked,
                                         isLoading = isLoading,
                                         onDisclaimerItemClicked = onDisclaimerItemClicked,
-                                        onAccountabilityLinkClicked = onAccountabilityLinkClicked
+                                        onAccountabilityLinkClicked = onAccountabilityLinkClicked,
+                                        isPlotEnabled = false,
                                     )
                                 }
                             }

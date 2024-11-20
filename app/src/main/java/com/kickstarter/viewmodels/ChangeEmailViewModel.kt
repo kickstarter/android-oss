@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
-import SendEmailVerificationMutation
-import UpdateUserEmailMutation
+import com.kickstarter.SendEmailVerificationMutation
+import com.kickstarter.UpdateUserEmailMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
@@ -179,7 +179,7 @@ interface ChangeEmailViewModel {
             updateEmailNotification
                 .compose(valuesV2())
                 .subscribe {
-                    it.updateUserAccount()?.user()?.email()?.let { email ->
+                    it.updateUserAccount?.user?.email?.let { email ->
                         this.currentEmail.onNext(email)
                     }
                     this.success.onNext(Unit)

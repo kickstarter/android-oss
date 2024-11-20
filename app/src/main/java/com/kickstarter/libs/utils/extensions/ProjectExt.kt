@@ -18,7 +18,7 @@ import com.kickstarter.services.DiscoveryParams
 import io.reactivex.Observable
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import type.CreditCardTypes
+import com.kickstarter.type.CreditCardTypes
 import kotlin.math.floor
 
 /**
@@ -61,7 +61,7 @@ fun Project.showLatePledgeFlow() = this.isInPostCampaignPledgingPhase() ?: false
  *
  * @return boolean that represents if the card type is available
  */
-fun Project.acceptedCardType(cardType: CreditCardTypes?) = this.availableCardTypes()?.contains(cardType?.rawValue()) ?: false
+fun Project.acceptedCardType(cardType: CreditCardTypes?) = this.availableCardTypes()?.contains(cardType?.rawValue) ?: false
 
 /**
  * Combines each project in the list with the discovery param

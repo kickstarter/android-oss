@@ -1,7 +1,7 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.models.StoredCard
-import type.CreditCardTypes
+import com.kickstarter.type.CreditCardTypes
 import java.util.Date
 
 object StoredCardFactory {

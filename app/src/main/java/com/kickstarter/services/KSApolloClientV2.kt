@@ -1724,8 +1724,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                     response.data?.completeOrder?.let {
                         val payload = CompleteOrderPayload(
-                            status = it.status.name,
-                            clientSecret = it?.clientSecret ?: ""
+                            status = it.status,
+                            clientSecret = it.clientSecret ?: ""
                         )
                         ps.onNext(payload)
                     }

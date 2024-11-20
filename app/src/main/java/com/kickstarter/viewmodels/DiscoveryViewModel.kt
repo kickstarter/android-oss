@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
@@ -330,7 +331,7 @@ interface DiscoveryViewModel {
                 }
                 .addToDisposable(disposables)
 
-            val categories = apolloClient.fetchCategories()
+            val categories = apolloClient.fetchCategories(viewModelScope = this.viewModelScope)
                 .compose(Transformers.neverErrorV2())
                 .flatMapIterable { it }
                 .toSortedList()

@@ -1,7 +1,7 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.ui.data.CheckoutData
-import type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardPaymentType
 
 object CheckoutDataFactory {
     @JvmStatic

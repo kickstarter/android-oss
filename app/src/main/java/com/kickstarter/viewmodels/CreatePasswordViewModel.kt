@@ -1,6 +1,6 @@
 package com.kickstarter.viewmodels
 
-import CreatePasswordMutation
+import com.kickstarter.CreatePasswordMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
@@ -74,7 +74,7 @@ interface CreatePasswordViewModel {
 
             createNewPasswordNotification
                 .compose(valuesV2())
-                .map { it.updateUserAccount()?.user()?.email() }
+                .map { it.updateUserAccount?.user?.email }
                 .filter { it.isNotNull() }
                 .map { it }
                 .subscribe {

@@ -39,8 +39,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import type.CreditCardPaymentType
-import type.CreditCardTypes
+import com.kickstarter.type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -327,7 +327,7 @@ interface BackingFragmentViewModel {
                 .addToDisposable(disposables)
 
             backing
-                .map { CreditCardPaymentType.safeValueOf(it.paymentSource()?.paymentType()) }
+                .map { CreditCardPaymentType.safeValueOf(it.paymentSource()?.paymentType() ?: "") }
                 .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
                 .map { it.negate() }
                 .distinctUntilChanged()
@@ -507,7 +507,7 @@ interface BackingFragmentViewModel {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
-                CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type())))
+                CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type() ?: "")))
                 else -> Either.Left(CardBrand.Unknown.code)
             }
         }

@@ -78,7 +78,7 @@ import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.views.compose.checkout.ItemizedRewardListContainer
-import type.CreditCardTypes
+import com.kickstarter.type.CreditCardTypes
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -108,9 +108,9 @@ fun CheckoutScreenPreview() {
                 .state(Project.STATE_LIVE)
                 .availableCardTypes(
                     listOf(
-                        CreditCardTypes.AMEX.rawValue(),
-                        CreditCardTypes.MASTERCARD.rawValue(),
-                        CreditCardTypes.VISA.rawValue()
+                        CreditCardTypes.AMEX.rawValue,
+                        CreditCardTypes.MASTERCARD.rawValue,
+                        CreditCardTypes.VISA.rawValue
                     )
                 )
                 .build(),

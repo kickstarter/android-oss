@@ -1,6 +1,6 @@
 package com.kickstarter.viewmodels
 
-import DeletePaymentSourceMutation
+import com.kickstarter.DeletePaymentSourceMutation
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

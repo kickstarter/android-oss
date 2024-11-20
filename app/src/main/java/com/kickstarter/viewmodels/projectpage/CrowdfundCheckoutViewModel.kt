@@ -25,6 +25,7 @@ import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.isFromPaymentSheet
 import com.kickstarter.services.mutations.getUpdateBackingData
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -46,7 +47,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
-import type.CreditCardPaymentType
 
 data class CheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),

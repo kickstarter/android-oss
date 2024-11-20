@@ -8,7 +8,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import type.TriggerThirdPartyEventInput
+//import com.kickstarter.type.TriggerThirdPartyEventInput
 
 /***
  * ThirdPartyEventInputData data model to sent items values to third party analytics systems

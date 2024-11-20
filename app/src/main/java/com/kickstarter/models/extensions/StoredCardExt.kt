@@ -8,10 +8,10 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.CreateBackingData
-import type.CreditCardTypes
+import com.kickstarter.type.CreditCardTypes
 
 fun StoredCard.getCardTypeDrawable(): Int {
-    val cardType = this.type() ?: CreditCardTypes.`$UNKNOWN`
+    val cardType = this.type() ?: CreditCardTypes.UNKNOWN__
     val resourceId = this.expiration()?.let {
         getCardTypeDrawable(cardType)
     } ?: this.resourceId() ?: R.drawable.generic_bank_md
@@ -20,7 +20,7 @@ fun StoredCard.getCardTypeDrawable(): Int {
 }
 
 fun StoredCard.isFromPaymentSheet(): Boolean {
-    return this.type() == CreditCardTypes.`$UNKNOWN` &&
+    return this.type() == CreditCardTypes.UNKNOWN__ &&
         this.lastFourDigits()?.isNotEmpty() ?: false &&
         this.clientSetupId()?.isNotEmpty() ?: false
 }
@@ -56,7 +56,7 @@ fun StoredCard.getBackingData(
 }
 
 fun PaymentSource.getCardTypeDrawable(): Int {
-    val type = CreditCardTypes.safeValueOf(this.type())
+    val type = CreditCardTypes.safeValueOf(this.type() ?: "")
     return getCardTypeDrawable(type)
 }
 

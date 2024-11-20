@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
@@ -116,7 +117,7 @@ interface SetPasswordViewModel {
 
             val userHasPassword = setNewPasswordNotification
                 .compose(Transformers.valuesV2())
-                .filter { it.updateUserAccount()?.user()?.hasPassword() ?: false }
+                .filter { it.updateUserAccount?.user?.hasPassword ?: false }
 
             this.currentUserV2.loggedInUser()
                 .compose(Transformers.takePairWhenV2(userHasPassword))
@@ -128,7 +129,7 @@ interface SetPasswordViewModel {
                             it.first.toBuilder().needsPassword(false).build()
                         )
                     }
-                    this.success.onNext(it.second.updateUserAccount()?.user()?.email() ?: "")
+                    this.success.onNext(it.second.updateUserAccount?.user?.email ?: "")
                 }.addToDisposable(disposables)
         }
 

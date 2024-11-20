@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.libs.ApiPaginatorV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
@@ -27,6 +26,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import org.joda.time.DateTime
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
@@ -268,7 +268,8 @@ interface SearchViewModel {
                     }
 
             selectedProject.subscribe {
-                if (it.first.launchedAt() == DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)) &&
+                // TODO: Custom date adapter issues, not entirely sure why it was used here ??
+                if (it.first.launchedAt() == DateTime.now() &&
                     ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
                 ) {
                     startPreLaunchProjectActivity.onNext(it)

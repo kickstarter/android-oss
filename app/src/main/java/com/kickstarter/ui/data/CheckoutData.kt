@@ -2,7 +2,7 @@ package com.kickstarter.ui.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardPaymentType
 
 @Parcelize
 class CheckoutData private constructor(
@@ -23,7 +23,7 @@ class CheckoutData private constructor(
     data class Builder(
         private var id: Long? = null,
         private var amount: Double = 0.0,
-        private var paymentType: CreditCardPaymentType = CreditCardPaymentType.`$UNKNOWN`,
+        private var paymentType: CreditCardPaymentType = CreditCardPaymentType.UNKNOWN__,
         private var shippingAmount: Double = 0.0,
         private var bonusAmount: Double? = null
     ) : Parcelable {

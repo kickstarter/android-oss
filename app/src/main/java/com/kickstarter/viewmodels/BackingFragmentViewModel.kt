@@ -29,6 +29,8 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getCardTypeDrawable
+import com.kickstarter.type.CreditCardPaymentType
+import com.kickstarter.type.CreditCardTypes
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -39,8 +41,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import com.kickstarter.type.CreditCardPaymentType
-import com.kickstarter.type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit

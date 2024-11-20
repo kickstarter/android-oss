@@ -37,11 +37,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
 import com.kickstarter.libs.utils.extensions.parseHtmlTag
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
+import com.kickstarter.type.FlaggingKind
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.viewmodels.ReportProjectViewModel
-import com.kickstarter.type.FlaggingKind
 
 @Composable
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)

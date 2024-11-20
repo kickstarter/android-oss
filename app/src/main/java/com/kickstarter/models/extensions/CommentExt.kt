@@ -5,7 +5,6 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
-import com.kickstarter.type.CommentBadge
 
 /**
  * Update the internal persisted list of comments with the successful response

@@ -1,9 +1,9 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.UpdateUserCurrencyMutation
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -11,11 +11,11 @@ import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.type.CurrencyCode
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import com.kickstarter.type.CurrencyCode
 
 interface AccountViewModel {
 

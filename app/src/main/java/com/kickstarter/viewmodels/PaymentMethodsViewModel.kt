@@ -1,9 +1,9 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.DeletePaymentSourceMutation
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
@@ -123,7 +123,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             deleteCardNotification
                 .compose(valuesV2())
                 .map {
-                    it.paymentSourceDelete()?.clientMutationId() ?: ""
+                    it.paymentSourceDelete?.clientMutationId ?: ""
                 }
                 .subscribe {
                     this.refreshCards.onNext(Unit)

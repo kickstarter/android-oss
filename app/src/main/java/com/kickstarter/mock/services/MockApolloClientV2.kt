@@ -1,12 +1,12 @@
 package com.kickstarter.mock.services
 
+import android.util.Pair
 import com.kickstarter.CreatePasswordMutation
 import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.SendEmailVerificationMutation
 import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.UpdateUserPasswordMutation
-import android.util.Pair
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.mock.factories.BackingFactory
@@ -47,8 +47,8 @@ import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
-import com.kickstarter.viewmodels.usecases.TPEventInputData
 import com.kickstarter.type.CurrencyCode
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -72,7 +72,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(
             UpdateUserPasswordMutation.Data(
                 UpdateUserPasswordMutation.UpdateUserAccount(
-                    UpdateUserPasswordMutation.User( "some@email.com", true, true)
+                    UpdateUserPasswordMutation.User("some@email.com", true, true)
                 )
             )
         )
@@ -84,7 +84,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(
             UpdateUserEmailMutation.Data(
                 UpdateUserEmailMutation.UpdateUserAccount(
-                    UpdateUserEmailMutation.User( "Some Name", "some@email.com")
+                    UpdateUserEmailMutation.User("Some Name", "some@email.com")
                 )
             )
         )

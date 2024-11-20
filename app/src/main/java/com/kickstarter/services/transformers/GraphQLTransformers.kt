@@ -161,15 +161,12 @@ fun rewardTransformer(
     val limit = if (isAddOn) chooseLimit(rewardGr.limit, rewardGr.limitPerBacker)
     else rewardGr.limit
 
-    val shippingRules = if (shippingRulesExpanded.isNotEmpty()) {
-        shippingRulesExpanded.map {
-            shippingRuleTransformer(it)
-        }
-    } else {
-        rewardGr.shippingRules.mapNotNull {
-            it?.shippingRule?.let { it1 -> shippingRuleTransformer(it1) }
-        }
-    }
+    val shippingRules =
+        shippingRulesExpanded.takeIf { it.isNotEmpty() }?.map { shippingRuleTransformer(it) }
+//            ?: simpleShippingRules.takeIf { it.isNotEmpty() }?.map {
+//                return@map simpleShippingRuleTransformer(it)
+//            }
+            ?: emptyList()
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
@@ -306,11 +303,13 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val minPledge = projectFragment?.minPledge?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards?.nodes?.map {
-            it?.let { it1 ->
+            it?.reward?.let {
+                // val shippingRules = it.simpleShippingRulesExpanded()
                 rewardTransformer(
-                    it1.reward,
-                    allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
-                    rewardItems = complexRewardItemsTransformer(it.items?.rewardItems)
+                    it,
+//                    simpleShippingRules = shippingRules,
+//                    allowedAddons = it.allowedAddons.pageInfo().startCursor()?.isNotEmpty() ?: false,
+//                    rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems())
                 )
             }
         }

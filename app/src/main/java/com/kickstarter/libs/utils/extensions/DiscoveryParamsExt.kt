@@ -6,8 +6,8 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import com.kickstarter.type.ProjectSort
+import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import java.util.TreeMap
 
 /**

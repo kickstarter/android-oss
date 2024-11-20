@@ -15,10 +15,10 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.CreditCardTypes
 import io.reactivex.Observable
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import com.kickstarter.type.CreditCardTypes
 import kotlin.math.floor
 
 /**

@@ -5,10 +5,10 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CreditCardTypes
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 
 object ProjectFactory {
     @JvmStatic

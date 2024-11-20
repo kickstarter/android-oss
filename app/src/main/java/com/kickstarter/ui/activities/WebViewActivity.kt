@@ -7,6 +7,7 @@ import com.kickstarter.databinding.WebViewLayoutBinding
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.views.KSWebView
+import com.kickstarter.utils.WindowInsetsUtil
 
 class WebViewActivity : ComponentActivity() {
     private lateinit var binding: WebViewLayoutBinding
@@ -14,6 +15,10 @@ class WebViewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = WebViewLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         val toolbarTitle = intent.getStringExtra(IntentKey.TOOLBAR_TITLE)

@@ -105,7 +105,7 @@ interface ThreadViewModel {
         private val hasPendingComments = BehaviorSubject.create<Boolean>()
         private val closeThreadActivity = BehaviorSubject.create<Unit>()
 
-        private val intentSubject = PublishSubject.create<Intent>()
+        private val intent = PublishSubject.create<Intent>()
 
         private val disposables = CompositeDisposable()
 
@@ -132,7 +132,7 @@ interface ThreadViewModel {
                 .filter { it.isNotNull() }
                 .map { it }
 
-            intentSubject
+            intent
                 .map { it.getBooleanExtra(IntentKey.REPLY_EXPAND, false) }
                 .distinctUntilChanged()
                 .subscribe { this.focusOnCompose.onNext(it) }
@@ -337,7 +337,8 @@ interface ThreadViewModel {
                 .subscribe { pair ->
                     this.hasPendingComments.onNext(
                         pair.first.any {
-                            it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus || it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
+                            it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
+                                it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                         }
                     )
                 }
@@ -347,7 +348,7 @@ interface ThreadViewModel {
                 .subscribe { this.closeThreadActivity.onNext(it) }
                 .addToDisposable(disposables)
 
-            intentSubject
+            intent
                 .map { it.getBooleanExtra(IntentKey.REPLY_SCROLL_BOTTOM, false) }
                 .filter { it }
                 .compose(Transformers.takeWhenV2(this.onCommentReplies))
@@ -406,10 +407,7 @@ interface ThreadViewModel {
             /** reversed replies **/
             apolloPaginate
                 .paginatedData()
-                ?.map {
-                    it.toMutableList().reverse()
-                    it.toList()
-                }
+                ?.map { it.reversed() }
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
                 ?.share()
@@ -486,14 +484,14 @@ interface ThreadViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
-        private fun getCommentCardDataFromIntent() = intentSubject
+        private fun getCommentCardDataFromIntent() = intent
             .filter {
                 it.getParcelableExtra<CommentCardData?>(IntentKey.COMMENT_CARD_DATA).isNotNull()
             }
             .map { it.getParcelableExtra<CommentCardData>(IntentKey.COMMENT_CARD_DATA) as CommentCardData }
             .ofType(CommentCardData::class.java)
 
-        private fun getProjectUpdateId() = intentSubject
+        private fun getProjectUpdateId() = intent
             .map { it.getStringExtra(IntentKey.UPDATE_POST_ID) ?: "" }
 
         override fun nextPage() = nextPage.onNext(Unit)
@@ -541,8 +539,8 @@ interface ThreadViewModel {
             super.onCleared()
         }
 
-        fun handleIntent(intent: Intent) {
-            this.intentSubject.onNext(intent)
+        fun intent(intent: Intent) {
+            this.intent.onNext(intent)
         }
     }
 

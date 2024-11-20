@@ -69,15 +69,10 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project().reduceProjectPayload()
         val commentCardData = CommentCardDataFactory.commentCardData().toBuilder().project(project).build()
 
-        this.vm.handleIntent(
-            intent = Intent().putExtra(
-                IntentKey.COMMENT_CARD_DATA,
-                commentCardData
-            )
-        )
+        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, commentCardData))
         getComment.assertValue(commentCardData)
 
-        this.vm.handleIntent(intent = Intent().putExtra("Some other Key", commentCardData))
+        this.vm.intent(Intent().putExtra("Some other Key", commentCardData))
         getComment.assertValue(commentCardData)
     }
 
@@ -85,13 +80,13 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     fun testShouldFocusCompose() {
         setUpEnvironment()
 
-        this.vm.handleIntent(intent = Intent().putExtra(IntentKey.REPLY_EXPAND, false))
+        this.vm.intent(Intent().putExtra(IntentKey.REPLY_EXPAND, false))
         focusCompose.assertValue(false)
 
-        this.vm.handleIntent(intent = Intent().putExtra("Some other Key", false))
+        this.vm.intent(Intent().putExtra("Some other Key", false))
         focusCompose.assertValues(false)
 
-        this.vm.handleIntent(intent = Intent().putExtra(IntentKey.REPLY_EXPAND, true))
+        this.vm.intent(Intent().putExtra(IntentKey.REPLY_EXPAND, true))
         focusCompose.assertValues(false, true)
     }
 
@@ -113,7 +108,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.currentUserAvatar().subscribe { currentUserAvatar.onNext(it) }
             .addToDisposable(disposables)
         // Start the view model with a project.
-        vm.handleIntent(intent = Intent().putExtra(IntentKey.PROJECT, project))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         // set user avatar with small url
         currentUserAvatar.assertValue(userAvatar.small())
@@ -131,8 +126,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val project = ProjectFactory.backedProject().reduceProjectPayload()
         // Start the view model with a backed project and comment.
-        vm.handleIntent(
-            intent =
+        vm.intent(
             Intent().putExtra(
                 IntentKey.COMMENT_CARD_DATA,
                 CommentCardDataFactory.commentCardDataBacked().toBuilder().project(project).build()

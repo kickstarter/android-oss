@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.14'
+        classpath 'com.apollographql.apollo3:apollo-gradle-plugin:3.8.5'
         classpath 'com.karumi:shot:5.13.0'
     }
 }
@@ -23,7 +23,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.apollographql.apollo'
+apply plugin: 'com.apollographql.apollo3'
 apply plugin: 'jacoco'
 apply from: 'quality.gradle'
 apply from: "$project.rootDir/jacoco.gradle"
@@ -182,12 +182,10 @@ android {
 }
 
 apollo {
-    customTypeMapping = [
-            "Date" : "java.util.Date",
-            "Email": "java.lang.String",
-            "ISO8601DateTime" : "org.joda.time.DateTime",
-            "DateTime" : "org.joda.time.DateTime"
-    ]
+    service("service") {
+        packageName.set("com.kickstarter")
+        generateKotlinModels.set(true)
+    }
 }
 
 repositories {
@@ -218,7 +216,7 @@ dependencies {
 
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation 'com.apollographql.apollo:apollo-runtime:2.5.14'
+    implementation 'com.apollographql.apollo3:apollo-runtime:3.8.5'
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
     implementation("com.google.android.play:review-ktx:2.0.1")
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

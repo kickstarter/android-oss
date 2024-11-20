@@ -8,7 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
-import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.network.http.DefaultHttpEngine;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -97,7 +98,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import type.CustomType;
 
 @Module
 public class ApplicationModule {
@@ -200,13 +200,9 @@ public class ApplicationModule {
 
     final OkHttpClient okHttpClient = builder.build();
 
-    return ApolloClient.builder()
-      .addCustomTypeAdapter(CustomType.DATE, new DateAdapter())
-      .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
-      .addCustomTypeAdapter(CustomType.ISO8601DATETIME, new Iso8601DateTimeAdapter())
-      .addCustomTypeAdapter(CustomType.DATETIME, new DateTimeAdapter())
+    return new ApolloClient.Builder()
       .serverUrl(webEndpoint + "/graph")
-      .okHttpClient(okHttpClient)
+      .httpEngine(new DefaultHttpEngine(okHttpClient))
       .build();
   }
 

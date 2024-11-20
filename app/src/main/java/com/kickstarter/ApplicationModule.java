@@ -202,6 +202,7 @@ public class ApplicationModule {
 
     return new ApolloClient.Builder()
       .serverUrl(webEndpoint + "/graph")
+      //.addCustomScalarAdapter(YourType.type, ...)
       .httpEngine(new DefaultHttpEngine(okHttpClient))
       .build();
   }

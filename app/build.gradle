@@ -27,6 +27,7 @@ apply plugin: 'com.apollographql.apollo3'
 apply plugin: 'jacoco'
 apply from: 'quality.gradle'
 apply from: "$project.rootDir/jacoco.gradle"
+def apolloVersion = '3.8.5'
 
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
@@ -216,7 +217,10 @@ dependencies {
 
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation 'com.apollographql.apollo3:apollo-runtime:3.8.5'
+
+    implementation "com.apollographql.apollo3:apollo-adapters:$apolloVersion"
+    implementation "com.apollographql.apollo3:apollo-runtime:$apolloVersion"
+
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
     implementation("com.google.android.play:review-ktx:2.0.1")
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

@@ -130,6 +130,7 @@ fun environmentalCommitmentTransformer(envCommit: com.kickstarter.fragment.Envir
 fun rewardTransformer(
     rewardGr: com.kickstarter.fragment.Reward,
     shippingRulesExpanded: List<com.kickstarter.fragment.ShippingRule> = emptyList(),
+    simpleShippingRules: List<FullProject.SimpleShippingRulesExpanded> = emptyList(),
     allowedAddons: Boolean = false,
     rewardItems: List<RewardsItem> = emptyList(),
     addOnItems: List<RewardsItem> = emptyList()
@@ -163,10 +164,9 @@ fun rewardTransformer(
 
     val shippingRules =
         shippingRulesExpanded.takeIf { it.isNotEmpty() }?.map { shippingRuleTransformer(it) }
-//            ?: simpleShippingRules.takeIf { it.isNotEmpty() }?.map {
-//                return@map simpleShippingRuleTransformer(it)
-//            }
-            ?: emptyList()
+            ?: simpleShippingRules.takeIf { it.isNotEmpty() }?.map {
+                return@map simpleShippingRuleTransformer(it)
+            } ?: emptyList()
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
@@ -194,6 +194,30 @@ fun rewardTransformer(
         .isAvailable(available)
         .backersCount(backersCount)
         .localReceiptLocation(localReceiptLocation)
+        .build()
+}
+
+fun simpleShippingRuleTransformer(simpleShippingRules: FullProject.SimpleShippingRulesExpanded): ShippingRule {
+    val id = decodeRelayId(simpleShippingRules.locationId) ?: -1
+    val country = simpleShippingRules.country ?: ""
+    val displayName = simpleShippingRules.locationName
+
+    val location = Location.builder()
+        .id(id)
+        .country(country)
+        .displayableName(displayName)
+        .name(displayName)
+        .build()
+    val cost = simpleShippingRules.cost?.toDoubleOrNull() ?: 0.0
+    val estimatedMin = simpleShippingRules.estimatedMin?.toDoubleOrNull() ?: 0.0
+    val estimatedMax = simpleShippingRules.estimatedMax?.toDoubleOrNull() ?: 0.0
+
+    return ShippingRule.builder()
+        .id(id)
+        .location(location)
+        .cost(cost)
+        .estimatedMax(estimatedMax)
+        .estimatedMin(estimatedMin)
         .build()
 }
 
@@ -302,14 +326,14 @@ fun projectTransformer(projectFragment: FullProject?): Project {
 
     val minPledge = projectFragment?.minPledge?.toDouble() ?: 1.0
     val rewards =
-        projectFragment?.rewards?.nodes?.map {
-            it?.reward?.let {
-                // val shippingRules = it.simpleShippingRulesExpanded()
+        projectFragment?.rewards?.nodes?.map { node ->
+            node?.reward?.let {
+                val shippingRules = node.onReward.simpleShippingRulesExpanded.filterNotNull()
                 rewardTransformer(
                     it,
-//                    simpleShippingRules = shippingRules,
-//                    allowedAddons = it.allowedAddons.pageInfo().startCursor()?.isNotEmpty() ?: false,
-//                    rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems())
+                    simpleShippingRules = shippingRules,
+                    allowedAddons = node.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
+                    rewardItems = complexRewardItemsTransformer(node.items?.rewardItems)
                 )
             }
         }

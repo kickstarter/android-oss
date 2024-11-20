@@ -103,9 +103,6 @@ import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.asObservable
@@ -156,7 +153,7 @@ interface ApolloClientTypeV2 {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
     fun fetchCategory(param: String): Observable<Category?>
     fun getBacking(backingId: String): Observable<Backing>
-    fun fetchCategories(viewModelScope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO): Observable<List<Category>>
+    fun fetchCategories(): Observable<List<Category>>
 
     fun getProjectUpdates(
         slug: String,
@@ -228,11 +225,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             this.service.query(
                 query
             ).toFlow()
-                .asObservable()
-                .doOnError { throwable ->
+                .catch { throwable ->
                     ps.onError(throwable)
                 }
-                .subscribe { response ->
+                .map { response ->
                     if (response.hasErrors()) {
                         if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
                     } else {
@@ -245,7 +241,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                         ps.onComplete()
                     }
-                }.dispose()
+                }
+                .asObservable()
+                .subscribe()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -311,21 +309,22 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                 this.service.mutation(mutation)
                     .toFlow()
-                    .asObservable()
-                    .doOnError { throwable ->
+                    .catch { throwable ->
                         ps.onError(throwable)
                     }
-                    .subscribe { response ->
+                    .map { response ->
                         if (response.hasErrors())
                             ps.onError(java.lang.Exception(response.errors?.first()?.message))
                         else {
                             ps.onNext(response.data?.createSetupIntent?.clientSecret ?: "")
                         }
                         ps.onComplete()
-                    }.dispose()
+                    }
+                    .asObservable()
+                    .subscribe()
             }
             return@defer ps
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
@@ -1043,11 +1042,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             this.service.query(
                 query
             ).toFlow()
-                .asObservable()
-                .doOnError { throwable ->
+                .catch { throwable ->
                     ps.onError(throwable)
                 }
-                .subscribe { response ->
+                .map { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
@@ -1062,12 +1060,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                         ps.onComplete()
                     }
-                }.dispose()
+                }
+                .asObservable()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun fetchCategories(viewModelScope: CoroutineScope, dispatcher: CoroutineDispatcher): Observable<List<Category>> {
+    override fun fetchCategories(): Observable<List<Category>> {
         return Observable.defer {
             val query = GetRootCategoriesQuery()
             val ps = PublishSubject.create<List<Category>>()

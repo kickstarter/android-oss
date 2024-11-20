@@ -58,8 +58,8 @@ import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
+import org.joda.time.LocalDate
 import java.nio.charset.Charset
-import java.util.Date
 import kotlin.math.absoluteValue
 
 /**
@@ -135,6 +135,7 @@ fun rewardTransformer(
     rewardItems: List<RewardsItem> = emptyList(),
     addOnItems: List<RewardsItem> = emptyList()
 ): Reward {
+    // TODO: Dates again!!
     val amount = rewardGr.amount.amount.amount?.toDouble() ?: 0.0
     val latePledgeAmount = rewardGr.latePledgeAmount.amount.amount?.toDouble() ?: 0.0
     val pledgeAmount = rewardGr.pledgeAmount.amount.amount?.toDouble() ?: 0.0
@@ -730,7 +731,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .type(payment.type.rawValue)
             .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue)
             .id(payment.id)
-            .expirationDate(payment.expirationDate as Date)
+            .expirationDate(LocalDate.parse(payment.expirationDate as String).toDate()) // TODO: Date adapter needs to be handled this for spikes
             .lastFour(payment.lastFour)
             .build()
     }

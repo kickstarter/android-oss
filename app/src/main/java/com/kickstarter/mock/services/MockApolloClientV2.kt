@@ -50,8 +50,6 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -108,8 +106,11 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(ProjectFactory.backedProject())
     }
 
-    override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): io.reactivex.Observable<DiscoverEnvelope> {
-        return io.reactivex.Observable.just(
+    override fun getProjects(
+        discoveryParams: DiscoveryParams,
+        cursor: String?
+    ): Observable<DiscoverEnvelope> {
+        return Observable.just(
             DiscoverEnvelope
                 .builder()
                 .projects(
@@ -223,11 +224,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(BackingFactory.backing())
     }
 
-    override fun fetchCategories(
-        viewModelScope: CoroutineScope,
-        dispatcher: CoroutineDispatcher
-    ): Observable<List<Category>> {
-        return io.reactivex.Observable.just(CategoryFactory.rootCategories())
+    override fun fetchCategories(): Observable<List<Category>> {
+        return Observable.just(CategoryFactory.rootCategories())
     }
 
     override fun getProjectUpdates(

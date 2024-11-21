@@ -242,7 +242,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
                     .PledgeRedemption
                     .builder()
                     .id(18249339L)
-                    .pledgeRedemptionPath("/projects/wildcrown/youtuber-collection-1-collectors-edition-enamel-pins/backing/redeem")
+                    .pledgeRedemptionPath("/projects/:creator_param/:project_param/backing/redeem")
                     .build()
             )
             .build()

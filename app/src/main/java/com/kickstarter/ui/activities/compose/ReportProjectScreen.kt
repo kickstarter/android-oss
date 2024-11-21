@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.ClickableText
@@ -44,8 +45,18 @@ import com.kickstarter.viewmodels.ReportProjectViewModel
 import type.FlaggingKind
 
 @Composable
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFF0EAE2,
+    name = "Light",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0X00000000,
+    name = "Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 fun PreviewTextLinks() {
     KSTheme {
         TextWithClickableLink(html = stringResource(id = R.string.Projects_may_not_offer))
@@ -53,8 +64,18 @@ fun PreviewTextLinks() {
 }
 
 @Composable
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFF0EAE2,
+    name = "Light",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0X00000000,
+    name = "Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 fun ReportProjectScreenPreview() {
     KSTheme {
         ReportProjectCategoryScreen(PaddingValues())
@@ -62,8 +83,18 @@ fun ReportProjectScreenPreview() {
 }
 
 @Composable
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFF0EAE2,
+    name = "Light",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0X00000000,
+    name = "Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 fun CategoryRowPreview() {
     KSTheme {
         val list = rulesMap().values.first()
@@ -73,8 +104,18 @@ fun CategoryRowPreview() {
 }
 
 @Composable
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(showBackground = true, backgroundColor = 0X00000000, name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFF0EAE2,
+    name = "Light",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0X00000000,
+    name = "Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 fun RulesListPreview() {
     KSTheme {
         val list = rulesMap().values.first()
@@ -91,11 +132,31 @@ fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String,
         true // Do not  has link on the subtitle
     )
     val rulesListProject = listOf(
-        Triple(stringResource(id = R.string.Prohibited_items), stringResource(id = R.string.Projects_may_not_offer), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
-        Triple(stringResource(id = R.string.Copying_reselling), stringResource(id = R.string.Projects_cannot_plagiarize), FlaggingKind.RESALE.rawValue()),
-        Triple(stringResource(id = R.string.Prototype_misrepresentation), stringResource(id = R.string.Creators_must_be_transparent), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
-        Triple(stringResource(id = R.string.Suspicious_creator_behavior), stringResource(id = R.string.Project_creators_and_their), FlaggingKind.POST_FUNDING_ISSUES.rawValue()),
-        Triple(stringResource(id = R.string.Not_raising_funds), stringResource(id = R.string.Projects_on), FlaggingKind.NOT_PROJECT_OTHER.rawValue())
+        Triple(
+            stringResource(id = R.string.Prohibited_items),
+            stringResource(id = R.string.Projects_may_not_offer),
+            FlaggingKind.PROHIBITED_ITEMS.rawValue()
+        ),
+        Triple(
+            stringResource(id = R.string.Copying_reselling),
+            stringResource(id = R.string.Projects_cannot_plagiarize),
+            FlaggingKind.RESALE.rawValue()
+        ),
+        Triple(
+            stringResource(id = R.string.Prototype_misrepresentation),
+            stringResource(id = R.string.Creators_must_be_transparent),
+            FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()
+        ),
+        Triple(
+            stringResource(id = R.string.Suspicious_creator_behavior),
+            stringResource(id = R.string.Project_creators_and_their),
+            FlaggingKind.POST_FUNDING_ISSUES.rawValue()
+        ),
+        Triple(
+            stringResource(id = R.string.Not_raising_funds),
+            stringResource(id = R.string.Projects_on),
+            FlaggingKind.NOT_PROJECT_OTHER.rawValue()
+        )
     )
 
     val spamCat = Triple(
@@ -104,8 +165,16 @@ fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String,
         true // Do not  has link on the subtitle
     )
     val rulesListSpam = listOf(
-        Triple(stringResource(id = R.string.Spam), stringResource(id = R.string.Ex_using), FlaggingKind.GUIDELINES_SPAM.rawValue()),
-        Triple(stringResource(id = R.string.Abuse), stringResource(id = R.string.Ex_posting), FlaggingKind.GUIDELINES_ABUSE.rawValue()),
+        Triple(
+            stringResource(id = R.string.Spam),
+            stringResource(id = R.string.Ex_using),
+            FlaggingKind.GUIDELINES_SPAM.rawValue()
+        ),
+        Triple(
+            stringResource(id = R.string.Abuse),
+            stringResource(id = R.string.Ex_posting),
+            FlaggingKind.GUIDELINES_ABUSE.rawValue()
+        ),
     )
 
     val intellectualCat = Triple(
@@ -115,7 +184,11 @@ fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String,
     )
 
     val rulesListIntellectual = listOf(
-        Triple(stringResource(id = R.string.Intellectual_property_violation), stringResource(id = R.string.Kickstarter_takes_claims), FlaggingKind.NOT_PROJECT.rawValue()),
+        Triple(
+            stringResource(id = R.string.Intellectual_property_violation),
+            stringResource(id = R.string.Kickstarter_takes_claims),
+            FlaggingKind.NOT_PROJECT.rawValue()
+        ),
     )
 
     return mapOf(
@@ -270,7 +343,10 @@ fun ReportProjectCategoryScreen(
     inputs: ReportProjectViewModel.Inputs? = null
 ) {
     Surface(
-        modifier = Modifier.animateContentSize().fillMaxSize()
+        modifier = Modifier
+            .systemBarsPadding()
+            .animateContentSize()
+            .fillMaxSize()
     ) {
 
         val categories = rulesMap().keys.toList()

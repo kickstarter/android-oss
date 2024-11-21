@@ -8,11 +8,18 @@ import com.kickstarter.databinding.HelpLayoutBinding
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.qualifiers.WebEndpoint
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.utils.WindowInsetsUtil
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
 open class HelpActivity : ComponentActivity() {
-    @IntDef(HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_ACCESSIBILITY)
+    @IntDef(
+        HELP_TYPE_TERMS,
+        HELP_TYPE_PRIVACY,
+        HELP_TYPE_HOW_IT_WORKS,
+        HELP_TYPE_COOKIE_POLICY,
+        HELP_TYPE_ACCESSIBILITY
+    )
     @Retention(RetentionPolicy.SOURCE)
     annotation class HelpType
 
@@ -58,7 +65,10 @@ open class HelpActivity : ComponentActivity() {
         environment = this.getEnvironment()
         webEndpoint = environment?.webEndpoint()
         binding = HelpLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root,
+        )
         setContentView(binding.root)
 
         val url = getUrlForHelpType(helpType)

@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.kickstarter.features.pledgeredemption.viewmodels.PledgeRedemptionViewModel
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.mock.factories.RewardFactory
@@ -35,6 +36,7 @@ class PledgeRedemptionActivity : ComponentActivity() {
                 val shippingAmount = backing.shippingAmount().toDouble()
                 val totalAmount = backing.amount()
                 val bonus = backing.bonusAmount()
+                val pledgeReason = PledgeReason.PLEDGE
 
                 backing.reward()?.let { lists.add(it) }
                 backing.addOns()?.map { lists.add(it) }
@@ -42,7 +44,12 @@ class PledgeRedemptionActivity : ComponentActivity() {
                 val darModeEnabled = this.isDarkModeEnabled(env = requireNotNull(env))
                 KickstarterApp(useDarkTheme = darModeEnabled) {
                     CheckoutScreen(
-                        rewardsList = lists.map { Pair(it.title() ?: "", it.pledgeAmount().toString()) },
+                        rewardsList = lists.map {
+                            Pair(
+                                it.title() ?: "",
+                                it.pledgeAmount().toString()
+                            )
+                        },
                         environment = env,
                         shippingAmount = shippingAmount,
                         selectedReward = RewardFactory.rewardWithShipping(),
@@ -52,12 +59,14 @@ class PledgeRedemptionActivity : ComponentActivity() {
                         storedCards = emptyList(),
                         project = project,
                         email = "example@example.com",
-                        pledgeReason = PledgeReason.PLEDGE,
+                        pledgeReason = pledgeReason,
                         rewardsHaveShippables = true,
                         onPledgeCtaClicked = { },
                         newPaymentMethodClicked = { },
                         onDisclaimerItemClicked = {},
-                        onAccountabilityLinkClicked = {}
+                        onAccountabilityLinkClicked = {},
+                        isPlotEnabled = env.featureFlagClient()
+                            ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false,
                     )
                 }
             }

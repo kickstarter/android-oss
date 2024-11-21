@@ -287,14 +287,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         discoveryParams: DiscoveryParams,
         slug: String?
     ): FetchProjectsQuery {
-        // TODO: improve nullability here
         return FetchProjectsQuery(
             sort = Optional.present(discoveryParams.sort()?.toProjectSort()),
-            cursor = Optional.present(slug),
-            categoryId = Optional.present(discoveryParams.category()?.id().toString()),
-            recommended = Optional.present(discoveryParams.recommended()),
-            starred = Optional.present(discoveryParams.starred().toBoolean()),
-            backed = Optional.present(discoveryParams.backed().toBoolean())
+            cursor = if (slug == null) Optional.present(slug) else Optional.absent(),
+            categoryId = if (discoveryParams.category()?.id() == null) Optional.absent() else Optional.present(discoveryParams.category()?.id().toString()),
+            recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(discoveryParams.recommended()),
+            starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),
+            backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean())
         )
     }
 

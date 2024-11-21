@@ -58,7 +58,6 @@ import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
-import org.joda.time.LocalDate
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 

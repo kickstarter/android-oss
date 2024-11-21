@@ -490,6 +490,12 @@ interface DiscoveryFragmentViewModel {
                 .addToDisposable(disposables)
         }
 
+        override fun onCleared() {
+            apolloClient.cleanDisposables()
+            disposables.clear()
+            super.onCleared()
+        }
+
         /**
          * Calls to GraphQL client to fetch projects filtering by DiscoveryParams
          * @param discoveryParamsStringPair .first discovery params.

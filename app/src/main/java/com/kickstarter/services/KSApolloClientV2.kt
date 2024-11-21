@@ -47,6 +47,7 @@ import com.kickstarter.ValidateCheckoutQuery
 import com.kickstarter.WatchProjectMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
@@ -101,6 +102,7 @@ import com.kickstarter.type.PaymentTypes
 import com.kickstarter.type.StripeIntentContextTypes
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.catch
@@ -208,12 +210,19 @@ interface ApolloClientTypeV2 {
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
     fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
+    fun cleanDisposables()
 }
 
 private const val PAGE_SIZE = 25
 private const val REPLIES_PAGE_SIZE = 7
 
 class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClientTypeV2 {
+    private val disposables = CompositeDisposable()
+
+    override fun cleanDisposables() {
+        disposables.clear()
+    }
+
     override fun getProject(project: Project): Observable<Project> {
         return getProject(project.slug() ?: "")
     }
@@ -244,6 +253,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }
                 .asObservable()
                 .subscribe()
+                .addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -279,6 +289,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }
                 .asObservable()
                 .subscribe()
+                .addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1100,6 +1111,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }
                 .asObservable()
                 .subscribe()
+                .addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

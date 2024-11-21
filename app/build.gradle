@@ -222,6 +222,8 @@ dependencies {
 
     implementation "com.apollographql.apollo3:apollo-adapters:$apolloVersion"
     implementation "com.apollographql.apollo3:apollo-runtime:$apolloVersion"
+    // RxJava2 support
+    implementation "com.apollographql.apollo3:apollo-rx2-support:$apolloVersion"
 
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
     implementation("com.google.android.play:review-ktx:2.0.1")

@@ -126,6 +126,15 @@ class SurveyResponseViewModelTest : KSRobolectricTestCase() {
         webViewUrl.assertValues("www.kickstarter.com/projects/1231313/test-project-deeplink/backing/survey_responses")
     }
 
+    @Test
+    fun `open webview when pledge redemption is opened from notification`() {
+        val pledgeRedemptionUrlPath = "projects/1231313/test-project-notification/backing/redeem"
+
+        setUpEnvironment(environment().toBuilder().webEndpoint("www.test.dev/").build(), Intent().putExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION, pledgeRedemptionUrlPath))
+
+        webViewUrl.assertValues("www.test.dev/projects/1231313/test-project-notification/backing/redeem")
+    }
+
     @After
     fun clear() {
         disposables.clear()

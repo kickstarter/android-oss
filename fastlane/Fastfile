@@ -63,7 +63,7 @@ lane :internal do
   version_name  = Milkrun::VersionName.new(audience: audience).read
   slack_message = ["🚀",audience,build_type,"|",version_name,version_code,"successfully delivered to S3 and Firebase!"].join(' ')
 
-  build_android_app(task: "assembleInternalRelease")
+  build_android_app(task: "assembleInternalRelease -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64")
 
   path_to_apk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
   Milkrun::S3Package.new(version_code: version_code, file_path: path_to_apk).upload

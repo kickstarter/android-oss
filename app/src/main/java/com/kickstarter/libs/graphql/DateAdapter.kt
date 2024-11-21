@@ -4,17 +4,24 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import org.joda.time.Instant
-import java.time.OffsetDateTime
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class DateAdapter : Adapter<Date> {
 
+    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Date {
-        return Date(OffsetDateTime.parse(reader.nextString()!!).toInstant().toEpochMilli())
+        return try {
+            reader.nextString()?.let { DATE_FORMAT.parse(it) } ?: Date()
+        } catch (exception: ParseException) {
+            throw RuntimeException(exception)
+        }
     }
 
     override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Date) {
-        writer.value(Instant.ofEpochMilli(value.time).toString())
+        writer.value(DATE_FORMAT.format(value))
     }
 }

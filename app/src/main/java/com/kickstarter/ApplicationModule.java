@@ -42,6 +42,7 @@ import com.kickstarter.libs.featureflag.FeatureFlagClient;
 import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
+import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.keystore.EncryptionEngine;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -203,6 +204,7 @@ public class ApplicationModule {
       .serverUrl(webEndpoint + "/graph")
       .addCustomScalarAdapter(Date.Companion.getType(), new DateAdapter())
       .addCustomScalarAdapter(com.kickstarter.type.DateTime.Companion.getType(), new DateTimeAdapter())
+      .addCustomScalarAdapter(com.kickstarter.type.ISO8601DateTime.Companion.getType(), new Iso8601DateTimeAdapter())
       .httpEngine(new DefaultHttpEngine(okHttpClient))
       .build();
   }

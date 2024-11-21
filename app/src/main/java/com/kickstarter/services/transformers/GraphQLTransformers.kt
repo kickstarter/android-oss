@@ -94,7 +94,7 @@ fun <T : Relay> encodeRelayId(relay: T): String {
 fun projectFaqTransformer(faq: com.kickstarter.fragment.Faq): ProjectFaq {
     val id = decodeRelayId(faq.id) ?: -1
     val answer = faq.answer
-    val createdAt = faq.createdAt as DateTime // TODO: Review DateTime adapters
+    val createdAt = faq.createdAt
     val question = faq.question
 
     return ProjectFaq.builder()
@@ -135,7 +135,6 @@ fun rewardTransformer(
     rewardItems: List<RewardsItem> = emptyList(),
     addOnItems: List<RewardsItem> = emptyList()
 ): Reward {
-    // TODO: Dates again!!
     val amount = rewardGr.amount.amount.amount?.toDouble() ?: 0.0
     val latePledgeAmount = rewardGr.latePledgeAmount.amount.amount?.toDouble() ?: 0.0
     val pledgeAmount = rewardGr.pledgeAmount.amount.amount?.toDouble() ?: 0.0
@@ -275,7 +274,6 @@ fun complexRewardItemsTransformer(items: com.kickstarter.fragment.RewardItems?):
  * @return Project
  */
 fun projectTransformer(projectFragment: FullProject?): Project {
-    // TODO: Review Dates
     val availableCards = projectFragment?.availableCardTypes ?: emptyList()
     val backersCount = projectFragment?.backersCount ?: 0
     val blurb = projectFragment?.description ?: ""
@@ -391,23 +389,23 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .category(category)
         .commentsCount(commentsCount)
         .country(country)
-        .createdAt(createdAt as DateTime)
+        .createdAt(createdAt)
         .creator(creator)
         .currency(currency)
         .currencySymbol(currencySymbol)
         .currentCurrency(currency) // - selected currency can be fetched form the User/Configuration Object
         .currencyTrailingCode(false) // - This field is available on V1 Configuration Object
         .displayPrelaunch(displayPrelaunch)
-        .featuredAt(featuredAt as DateTime)
+        .featuredAt(featuredAt)
         .friends(friends)
         .fxRate(fxRate)
-        .deadline(deadline as DateTime)
+        .deadline(deadline)
         .goal(goal)
         .id(id)
         .isBacking(isBacking)
         .isStarred(isStarred)
-        .lastUpdatePublishedAt(updatedAt as DateTime)
-        .launchedAt(launchedAt as DateTime)
+        .lastUpdatePublishedAt(updatedAt)
+        .launchedAt(launchedAt)
         .location(location)
         .name(name)
         .permissions(permission)
@@ -421,7 +419,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)
-        .stateChangedAt(stateChangedAt as DateTime)
+        .stateChangedAt(stateChangedAt)
         .staticUsdRate(staticUSDRate)
         .usdExchangeRate(usdExchangeRate)
         .updatedAt(updatedAt)
@@ -542,7 +540,6 @@ fun userPrivacyTransformer(userPrivacy: UserPrivacyQuery.Me): UserPrivacy {
  * @return Project
  */
 fun projectTransformer(projectFragment: ProjectCard?): Project {
-    // TODO: Dates!!
     val backersCount = projectFragment?.backersCount ?: 0
     val blurb = projectFragment?.description ?: ""
     val category = if (projectFragment?.category?.category != null) {
@@ -586,21 +583,21 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .blurb(blurb)
         .category(category)
         .country(country)
-        .createdAt(createdAt as DateTime)
+        .createdAt(createdAt)
         .creator(creator)
         .currencySymbol(currencySymbol)
         .currencyTrailingCode(false) // - This field is available on V1 Configuration Object
         .displayPrelaunch(displayPrelaunch)
-        .featuredAt(featuredAt as DateTime)
+        .featuredAt(featuredAt)
         .friends(friends)
         .fxRate(fxRate)
-        .deadline(deadline as DateTime)
+        .deadline(deadline)
         .pledged(pledged)
         .goal(goal)
         .id(id)
         .isBacking(isBacking)
         .isStarred(isStarred)
-        .launchedAt(launchedAt as DateTime)
+        .launchedAt(launchedAt)
         .location(location)
         .name(name)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
@@ -609,7 +606,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .staffPick(staffPicked)
         .state(state)
         .urls(urls)
-        .stateChangedAt(stateChangedAt as DateTime)
+        .stateChangedAt(stateChangedAt)
         .build()
 }
 
@@ -629,7 +626,6 @@ private fun getPhoto(photoUrl: @Nullable String?): Photo? {
 }
 
 fun updateTransformer(post: com.kickstarter.fragment.Post?): Update {
-    // TODO DateTime
     val id = decodeRelayId(post?.id) ?: -1
     val author = User.builder()
         .id(decodeRelayId(post?.author?.user?.id) ?: -1)
@@ -667,10 +663,10 @@ fun updateTransformer(post: com.kickstarter.fragment.Post?): Update {
         .isPublic(post?.isPublic)
         .likesCount(post?.likesCount)
         .projectId(projectId)
-        .publishedAt(publishedAt as DateTime)
+        .publishedAt(publishedAt)
         .sequence(sequence)
         .title(title)
-        .updatedAt(updatedAt as DateTime)
+        .updatedAt(updatedAt)
         .urls(updateUrl)
         .user(author)
         .visible(post?.isVisible)
@@ -678,7 +674,6 @@ fun updateTransformer(post: com.kickstarter.fragment.Post?): Update {
 }
 
 fun commentTransformer(commentFr: com.kickstarter.fragment.Comment?): Comment {
-    // TODO dates!!
     val badges: List<String> = commentFr?.authorBadges?.map { badge ->
         badge?.rawValue ?: ""
     } ?: emptyList()
@@ -709,7 +704,7 @@ fun commentTransformer(commentFr: com.kickstarter.fragment.Comment?): Comment {
         .body(body)
         .authorBadges(badges)
         .cursor("")
-        .createdAt(createdAt as DateTime)
+        .createdAt(createdAt)
         .deleted(deleted)
         .hasFlaggings(hasFlaggings)
         .sustained(sustained)
@@ -724,14 +719,13 @@ fun commentTransformer(commentFr: com.kickstarter.fragment.Comment?): Comment {
  * @return Backing
  */
 fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
-    // TODO Dates!!
     val payment = backingGr?.paymentSource?.payment?.let { payment ->
         PaymentSource.builder()
             .state(payment.state.toString())
             .type(payment.type.rawValue)
             .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue)
             .id(payment.id)
-            .expirationDate(LocalDate.parse(payment.expirationDate as String).toDate()) // TODO: Date adapter needs to be handled this for spikes
+            .expirationDate(payment.expirationDate)
             .lastFour(payment.lastFour)
             .build()
     }
@@ -786,7 +780,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
         .rewardId(reward?.id())
         .locationId(locationId)
         .locationName(location?.displayableName)
-        .pledgedAt(backingGr?.pledgedOn as DateTime)
+        .pledgedAt(backingGr?.pledgedOn)
         .projectId(projectId)
         .sequence(backingGr?.sequence?.toLong() ?: 0)
         .shippingAmount(shippingAmount?.amount?.amount?.toFloat() ?: 0f)

@@ -85,6 +85,7 @@ class SetPasswordActivity : AppCompatActivity() {
                 } else false
             ) {
                 SetPasswordScreen(
+
                     onSaveButtonClicked = { newPassword ->
                         viewModel.inputs.newPassword(newPassword)
                         viewModel.inputs.confirmPassword(newPassword)

@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.PrivacyViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -41,6 +42,10 @@ class PrivacyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPrivacyBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
 
         getEnvironment()?.let { env ->
             viewModelFactory = PrivacyViewModel.Factory(env)

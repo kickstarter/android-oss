@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -26,10 +27,14 @@ class FacebookConfirmationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FacebookConfirmationLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
-        binding.signUpWithFacebookToolbar.loginToolbar.title = getString(R.string.facebook_confirmation_navbar_title)
+        binding.signUpWithFacebookToolbar.loginToolbar.title =
+            getString(R.string.facebook_confirmation_navbar_title)
 
         viewModel.outputs.prefillEmail()
             .observeOn(AndroidSchedulers.mainThread())
@@ -43,7 +48,12 @@ class FacebookConfirmationActivity : ComponentActivity() {
 
         viewModel.outputs.sendNewslettersIsChecked()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.newsletterSwitch, it) }
+            .subscribe {
+                SwitchCompatUtils.setCheckedWithoutAnimation(
+                    binding.newsletterSwitch,
+                    it
+                )
+            }
             .addToDisposable(disposables)
 
         viewModel.outputs.signupError()

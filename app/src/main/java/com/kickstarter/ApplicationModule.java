@@ -73,6 +73,7 @@ import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.kickstarter.type.Date;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
@@ -202,7 +203,7 @@ public class ApplicationModule {
 
     return new ApolloClient.Builder()
       .serverUrl(webEndpoint + "/graph")
-      //.addCustomScalarAdapter(YourType.type, ...)
+      .addCustomScalarAdapter(Date.Companion.getType(), new DateAdapter())
       .httpEngine(new DefaultHttpEngine(okHttpClient))
       .build();
   }

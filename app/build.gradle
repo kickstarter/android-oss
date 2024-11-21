@@ -185,7 +185,9 @@ android {
 apollo {
     service("service") {
         packageName.set("com.kickstarter")
-        generateKotlinModels.set(true)
+        mapScalar("Date", "java.util.Date")
+        mapScalar("ISO8601DateTime", "org.joda.time.DateTime")
+        mapScalar("DateTime", "org.joda.time.DateTime")
     }
 }
 

@@ -41,6 +41,7 @@ import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.featureflag.FeatureFlagClient;
 import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
+import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.keystore.EncryptionEngine;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -201,6 +202,7 @@ public class ApplicationModule {
     return new ApolloClient.Builder()
       .serverUrl(webEndpoint + "/graph")
       .addCustomScalarAdapter(Date.Companion.getType(), new DateAdapter())
+      .addCustomScalarAdapter(com.kickstarter.type.DateTime.Companion.getType(), new DateTimeAdapter())
       .httpEngine(new DefaultHttpEngine(okHttpClient))
       .build();
   }

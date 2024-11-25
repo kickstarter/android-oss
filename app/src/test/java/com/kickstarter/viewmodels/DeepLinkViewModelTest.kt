@@ -323,7 +323,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectSurveyDeeplink_startsSurveyActivity() {
         val url =
-            "https://www.kickstarter.com/projects/creator/project/surveys/survey-param"
+            "https://www.kickstarter.com/projects/alexlidell/power-of-five-collectors-edition-omnibus/backing/survey_responses"
         setUpEnvironment(intent = intentWithData(url))
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
@@ -338,7 +338,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectSurveyEditDeeplink_startsSurveyActivity() {
         val url =
-            "https://www.kickstarter.com/projects/creator/project/surveys/survey-param/edit"
+            "https://www.kickstarter.com/projects/alexlidell/power-of-five-collectors-edition-omnibus/surveys/0/edit"
         setUpEnvironment(intent = intentWithData(url))
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
@@ -368,7 +368,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectSurveyRedeemDeeplink_startsSurveyActivity() {
         val url =
-            "https://www.kickstarter.com/projects/creator/project/backing/redeem"
+            "https://www.kickstarter.com/projects/alexlidell/power-of-five-collectors-edition-omnibus/backing/redeem"
         setUpEnvironment(intent = intentWithData(url))
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()

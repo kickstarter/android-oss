@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.CreatorBioViewModel.CreatorBioViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -28,7 +29,10 @@ class CreatorBioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatorBioBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         this.getEnvironment()?.let { env ->
             viewModelFactory = CreatorBioViewModel.Factory(env, intent = intent)
             env

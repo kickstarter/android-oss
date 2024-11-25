@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
@@ -91,6 +92,7 @@ fun PreLaunchProjectPageScreen(
 ) {
     val project = projectState.value
     Scaffold(
+        modifier = Modifier.systemBarsPadding(),
         topBar = {
             TopToolBar(
                 right = {

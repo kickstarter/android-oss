@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.fragments.DiscoveryFragment
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.EditorialViewModel
 import io.reactivex.disposables.CompositeDisposable
 
@@ -27,7 +28,10 @@ class EditorialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditorialBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         getEnvironment()?.let { env ->
             intent?.let {
                 factory = EditorialViewModel.Factory(env, it)

@@ -104,7 +104,7 @@ fun CollectionPlan(
 ) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)) {
         PledgeOption(
             optionText = stringResource(id = R.string.fpo_pledge_in_full),
             selected = selectedOption == CollectionOptions.PLEDGE_IN_FULL.name,
@@ -144,7 +144,7 @@ fun PledgeOption(
             .clip(RoundedCornerShape(dimensions.radiusSmall))
             .background(colors.kds_white)
             .clickable(enabled = isSelectable, onClick = onSelect)
-            .padding(end = dimensions.paddingSmall, bottom = dimensions.paddingSmall)
+            .padding(bottom = dimensions.paddingSmall, end = dimensions.paddingMedium)
             .semantics { this.selected = selected }
             .then(
                 if (!isSelectable) Modifier.padding(

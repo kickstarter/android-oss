@@ -49,13 +49,12 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
-import io.reactivex.Observable
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 
-    override fun cleanDisposables() {
-        TODO("Not yet implemented")
+    override fun getRewardsFromProject(slug: String): io.reactivex.Observable<List<Reward>> {
+        return io.reactivex.Observable.just(emptyList())
     }
 
     override fun watchProject(project: Project): io.reactivex.Observable<Project> {
@@ -110,11 +109,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(ProjectFactory.backedProject())
     }
 
-    override fun getProjects(
-        discoveryParams: DiscoveryParams,
-        cursor: String?
-    ): Observable<DiscoverEnvelope> {
-        return Observable.just(
+    override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): io.reactivex.Observable<DiscoverEnvelope> {
+        return io.reactivex.Observable.just(
             DiscoverEnvelope
                 .builder()
                 .projects(
@@ -228,8 +224,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(BackingFactory.backing())
     }
 
-    override fun fetchCategories(): Observable<List<Category>> {
-        return Observable.just(CategoryFactory.rootCategories())
+    override fun fetchCategories(): io.reactivex.Observable<List<Category>> {
+        return io.reactivex.Observable.just(CategoryFactory.rootCategories())
     }
 
     override fun getProjectUpdates(
@@ -343,5 +339,9 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): io.reactivex.Observable<PledgedProjectsOverviewEnvelope> {
         return io.reactivex.Observable.empty()
+    }
+
+    override fun cleanDisposables() {
+        TODO("Not yet implemented")
     }
 }

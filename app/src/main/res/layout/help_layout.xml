@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent" >
-
-  <include
-    android:id="@+id/help_toolbar"
-    layout="@layout/help_toolbar" />
-
-  <com.kickstarter.ui.views.KSWebView
-    android:id="@+id/kickstarter_web_view"
-    android:layout_below="@id/help_toolbar"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/help_main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/help_toolbar"
+        layout="@layout/help_toolbar" />
+
+    <com.kickstarter.ui.views.KSWebView
+        android:id="@+id/kickstarter_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/help_toolbar" />
 
 </RelativeLayout>

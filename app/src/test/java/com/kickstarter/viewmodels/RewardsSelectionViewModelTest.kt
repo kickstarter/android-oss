@@ -351,7 +351,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val shippingUiState = mutableListOf<ShippingRulesState>()
 
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(testProject, config, this, dispatcher)
+            val useCase = GetShippingRulesUseCase(testProject, config, testRewards, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(testProjectData)
 
@@ -449,8 +449,9 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             .locationName(testShippingRulesList.first().location()?.displayableName())
             .build()
 
+        val rwList = listOf(rw1, rw2, rw3)
         val project = ProjectFactory.project().toBuilder()
-            .rewards(listOf(rw1, rw2, rw3))
+            .rewards(rwList)
             .backing(backing)
             .isBacking(true)
             .build()
@@ -470,7 +471,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(project, config, this, dispatcher)
+            val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(projectData)
             viewModel.shippingUIState.toList(shippingUiState)
@@ -495,7 +496,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             .shippingRules(testShippingRulesList.shippingRules())
             .build()
         val user = UserFactory.user()
-        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw, rw, rw)).build()
+        val rwList = listOf(rw, rw, rw)
+        val project = ProjectFactory.project().toBuilder().rewards(rwList).build()
         val projectData = ProjectDataFactory.project(project, null, null)
 
         val config = ConfigFactory.configForCA()
@@ -511,7 +513,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(project, config, this, dispatcher)
+            val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
             createViewModel(env, useCase)
             viewModel.provideProjectData(projectData)
             viewModel.shippingUIState.toList(shippingUiState)
@@ -525,7 +527,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `When user is updating pledge, if selecting a different reward and had addOns backed, show alert`() = runTest {
+    fun `When user is updating reward selection, if selecting a different reward and had addOns backed, show alert`() = runTest {
         val reward = RewardFactory.digitalReward()
         val addOns = listOf(RewardFactory.reward(), RewardFactory.addOnMultiple())
         val backing = Backing.builder()
@@ -553,7 +555,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         advanceUntilIdle() // wait until all state emissions completed
         assertEquals(viewModel.shouldShowAlert(), true)
-        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.UPDATE_PLEDGE)
+        assertEquals(viewModel.getPledgeData()?.second, PledgeReason.UPDATE_REWARD)
     }
 
     @Test

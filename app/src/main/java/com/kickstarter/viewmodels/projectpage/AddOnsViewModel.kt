@@ -150,7 +150,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                         bonusAmount = b.amount()
                     } else {
                         backedAddOns = b.addOns() ?: emptyList()
-                        currentUserReward = b.reward() ?: currentUserReward
                         bonusAmount = b.bonusAmount()
                     }
                 }
@@ -229,10 +228,14 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             holder[it.id()] = it
         }
 
-        // Take the backed AddOns, update with the backed AddOn information which will contain the backed quantity
-        backedAddOns.map {
-            holder[it.id()] = it
-            currentSelection[it.id()] = it.quantity() ?: 0
+        // Take the backed AddOns, update with matching addOn ID with the quantity information
+        backedAddOns.map { backedAddOn ->
+            val aux = holder[backedAddOn.id()]
+            if (aux != null) {
+                val updated = aux.toBuilder().quantity(backedAddOn.quantity()).build()
+                holder[backedAddOn.id()] = updated
+            }
+            currentSelection[backedAddOn.id()] = backedAddOn.quantity() ?: 0
         }
 
         return holder.values.toList()
@@ -278,7 +281,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         val selectedAddOns = mutableListOf<Reward>()
         addOns.forEach {
             val amount = currentSelection[it.id()]
-            if (amount != null) {
+            if (amount != null && amount > 0) {
                 selectedAddOns.add(it.toBuilder().quantity(amount).build())
             }
         }

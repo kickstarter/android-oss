@@ -8,6 +8,7 @@ import com.kickstarter.UserPrivacyQuery
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
@@ -129,7 +130,7 @@ fun environmentalCommitmentTransformer(envCommit: com.kickstarter.fragment.Envir
 fun rewardTransformer(
     rewardGr: com.kickstarter.fragment.Reward,
     shippingRulesExpanded: List<com.kickstarter.fragment.ShippingRule> = emptyList(),
-    simpleShippingRules: List<FullProject.SimpleShippingRulesExpanded> = emptyList(),
+    simpleShippingRules: List<FetchProjectRewardsQuery.SimpleShippingRulesExpanded> = emptyList(),
     allowedAddons: Boolean = false,
     rewardItems: List<RewardsItem> = emptyList(),
     addOnItems: List<RewardsItem> = emptyList()
@@ -196,7 +197,7 @@ fun rewardTransformer(
         .build()
 }
 
-fun simpleShippingRuleTransformer(simpleShippingRules: FullProject.SimpleShippingRulesExpanded): ShippingRule {
+fun simpleShippingRuleTransformer(simpleShippingRules: FetchProjectRewardsQuery.SimpleShippingRulesExpanded): ShippingRule {
     val id = decodeRelayId(simpleShippingRules.locationId) ?: -1
     val country = simpleShippingRules.country ?: ""
     val displayName = simpleShippingRules.locationName
@@ -324,14 +325,10 @@ fun projectTransformer(projectFragment: FullProject?): Project {
 
     val minPledge = projectFragment?.minPledge?.toDouble() ?: 1.0
     val rewards =
-        projectFragment?.rewards?.nodes?.map { node ->
-            node?.reward?.let {
-                val shippingRules = node.onReward.simpleShippingRulesExpanded.filterNotNull()
+        projectFragment?.rewards?.nodes?.map {
+            it?.reward?.let { rw ->
                 rewardTransformer(
-                    it,
-                    simpleShippingRules = shippingRules,
-                    allowedAddons = node.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
-                    rewardItems = complexRewardItemsTransformer(node.items?.rewardItems)
+                    rewardGr = rw
                 )
             }
         }

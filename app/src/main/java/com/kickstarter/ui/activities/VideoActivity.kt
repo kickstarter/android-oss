@@ -30,6 +30,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.VideoViewModel.Factory
 import com.kickstarter.viewmodels.VideoViewModel.VideoViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -55,6 +56,10 @@ class VideoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = VideoPlayerLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         val environment = this.getEnvironment()?.let { env ->

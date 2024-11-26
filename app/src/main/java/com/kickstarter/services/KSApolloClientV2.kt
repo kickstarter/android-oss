@@ -22,6 +22,7 @@ import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.ErroredBackingsQuery
 import com.kickstarter.FetchCategoryQuery
 import com.kickstarter.FetchProjectQuery
+import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
@@ -52,6 +53,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -211,6 +213,7 @@ interface ApolloClientTypeV2 {
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
     fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
+    fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun cleanDisposables()
 }
 
@@ -715,6 +718,44 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
+    override fun getRewardsFromProject(slug: String): Observable<List<Reward>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Reward>>()
+            val query = FetchProjectRewardsQuery(slug)
+
+            this.service.query(query)
+                .rxSingle()
+                .subscribeOn(Schedulers.io())
+                .doOnError {
+                    ps.onError(it)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    }
+                    response.data?.let { data ->
+                        val rwList = data.project?.rewards?.nodes?.map {
+                            it?.reward?.let { rwGr ->
+                                rewardTransformer(
+                                    rewardGr = rwGr,
+                                    allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
+                                    rewardItems = complexRewardItemsTransformer(it.items?.rewardItems),
+                                    simpleShippingRules = it.simpleShippingRulesExpanded.filterNotNull()
+                                )
+                            }
+                        } ?: emptyList<Reward>()
+                        // - API does not provide the Reward no reward, we need to add it first
+                        val minPledge = data.project?.minPledge?.toDouble() ?: 1.0
+                        val modifiedRewards = rwList.toMutableList()
+                        modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+                        ps.onNext(modifiedRewards.toList() as List<Reward>)
+                    }
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+            return@defer ps
+        }
+    }
+
     private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
         // TODO: Review the nulabillity of all of these pieces
         return addOnsGr.nodes?.map { node ->
@@ -723,7 +764,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     ?: emptyList()
             rewardTransformer(
                 requireNotNull(node?.reward),
-                shippingRulesGr,
+                shippingRulesExpanded = shippingRulesGr,
                 addOnItems = complexRewardItemsTransformer(node?.items?.rewardItems)
             )
         }?.toList() ?: emptyList()

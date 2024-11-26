@@ -17,6 +17,7 @@ import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showErrorSnackBar
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
@@ -48,6 +49,10 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         }
 
         binding = ActivitySettingsPaymentMethodsBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
         setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)

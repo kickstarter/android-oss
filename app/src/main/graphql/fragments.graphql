@@ -104,27 +104,9 @@ fragment fullProject on Project {
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
-    rewards {
+    rewards { # query within project the bare minimum for rewards
         nodes {
             ... reward
-            allowedAddons {
-                pageInfo {
-                    startCursor
-                }
-            }
-            items {
-                ... rewardItems
-            }
-            ... on Reward {
-                simpleShippingRulesExpanded {
-                    cost
-                    country
-                    estimatedMax
-                    estimatedMin
-                    locationId
-                    locationName
-                }
-            }
         }
     }
     risks

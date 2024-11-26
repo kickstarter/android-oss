@@ -15,6 +15,7 @@ import DeletePaymentSourceMutation
 import ErroredBackingsQuery
 import FetchCategoryQuery
 import FetchProjectQuery
+import FetchProjectRewardsQuery
 import FetchProjectsQuery
 import GetBackingQuery
 import GetCommentQuery
@@ -52,6 +53,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -208,6 +210,7 @@ interface ApolloClientTypeV2 {
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
     fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
+    fun getRewardsFromProject(slug: String): Observable<List<Reward>>
 }
 
 private const val PAGE_SIZE = 25
@@ -712,6 +715,45 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getRewardsFromProject(slug: String): Observable<List<Reward>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Reward>>()
+            val query = FetchProjectRewardsQuery.builder()
+                .slug(slug)
+                .build()
+
+            this.service.query(query)
+                .enqueue(object : ApolloCall.Callback<FetchProjectRewardsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<FetchProjectRewardsQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.let { data ->
+                            val rwList = data.project()?.rewards()?.nodes()?.map {
+                                rewardTransformer(
+                                    rewardGr = it.fragments().reward(),
+                                    allowedAddons = it.allowedAddons().pageInfo().startCursor()?.isNotEmpty() ?: false,
+                                    rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems()),
+                                    simpleShippingRules = it.simpleShippingRulesExpanded()
+                                )
+                            } ?: emptyList()
+                            // - API does not provide the Reward no reward, we need to add it first
+                            val minPledge = data.project()?.minPledge()?.toDouble() ?: 1.0
+                            val modifiedRewards = rwList.toMutableList()
+                            modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+                            ps.onNext(modifiedRewards.toList())
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
     }
 
     private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {

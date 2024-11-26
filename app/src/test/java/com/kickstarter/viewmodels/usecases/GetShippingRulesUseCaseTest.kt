@@ -33,7 +33,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val scope = backgroundScope
 
-        val useCase = GetShippingRulesUseCase(project, config, scope, dispatcher)
+        val useCase = GetShippingRulesUseCase(project, config, project.rewards() ?: emptyList(), scope, dispatcher)
 
         val state = mutableListOf<ShippingRulesState>()
         scope.launch(dispatcher) {
@@ -66,9 +66,10 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
             .shippingRules(listOf(shippingRule1, shippingRule2, shippingRule3))
             .build()
 
+        val rwList = listOf(reward, reward2)
         val project = ProjectFactory.project()
             .toBuilder()
-            .rewards(listOf(reward, reward2))
+            .rewards(rwList)
             .state(Project.STATE_SUCCESSFUL)
             .isInPostCampaignPledgingPhase(true)
             .postCampaignPledgingEnabled(true)
@@ -77,7 +78,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val scope = backgroundScope
 
-        val useCase = GetShippingRulesUseCase(project, config, scope, dispatcher)
+        val useCase = GetShippingRulesUseCase(project, config, rwList, scope, dispatcher)
 
         val state = mutableListOf<ShippingRulesState>()
         scope.launch(dispatcher) {

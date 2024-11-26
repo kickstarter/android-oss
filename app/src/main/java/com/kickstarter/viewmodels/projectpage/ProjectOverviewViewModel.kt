@@ -709,6 +709,7 @@ interface ProjectOverviewViewModel {
                 .addToDisposable(disposables)
         }
         override fun onCleared() {
+            apolloClient.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

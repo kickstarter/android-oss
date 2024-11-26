@@ -139,6 +139,7 @@ interface ProjectUpdatesViewModel {
         }
 
         override fun onCleared() {
+            client.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

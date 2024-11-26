@@ -237,11 +237,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val query = FetchProjectQuery(slug)
             this.service.query(
                 query
-            ).toFlow()
-                .catch { throwable ->
+            ).rxSingle()
+                .subscribeOn(Schedulers.io())
+                .doOnError { throwable ->
                     ps.onError(throwable)
                 }
-                .map { response ->
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
                     } else {
@@ -255,8 +256,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onComplete()
                     }
                 }
-                .asObservable()
-                .subscribe()
                 .addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())

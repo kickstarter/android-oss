@@ -535,6 +535,7 @@ interface ThreadViewModel {
         override fun closeThreadActivity(): Observable<Unit> = this.closeThreadActivity
 
         override fun onCleared() {
+            apolloClient.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

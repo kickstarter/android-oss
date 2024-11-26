@@ -92,6 +92,7 @@ interface CreatePasswordViewModel {
         }
 
         override fun onCleared() {
+            apolloClientV2.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

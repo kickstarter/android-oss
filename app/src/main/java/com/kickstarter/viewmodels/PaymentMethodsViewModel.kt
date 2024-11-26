@@ -208,6 +208,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     }
 
     override fun onCleared() {
+        apolloClient.cleanDisposables()
         compositeDisposable.clear()
         super.onCleared()
     }

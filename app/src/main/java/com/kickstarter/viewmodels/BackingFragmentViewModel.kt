@@ -650,6 +650,7 @@ interface BackingFragmentViewModel {
         override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
 
         override fun onCleared() {
+            apolloClient.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

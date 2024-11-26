@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 data class ShippingRulesState(
@@ -41,6 +40,7 @@ data class ShippingRulesState(
 class GetShippingRulesUseCase(
     private val project: Project,
     private val config: Config?,
+    private val projectRewards: List<Reward> = emptyList(),
     private val scope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
@@ -49,28 +49,27 @@ class GetShippingRulesUseCase(
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
     private val allAvailableRulesForProject = mutableMapOf<Long, ShippingRule>()
-    private val projectRewards = project.rewards()?.filter { RewardUtils.isNoReward(it) || it.isAvailable() } ?: listOf()
 
     init {
 
         // To avoid duplicates insert reward.id as key
-        val rewardsToQuery = mutableMapOf<Long, Reward>()
+        val rewardsToExtractLocation = mutableMapOf<Long, Reward>()
 
         // Get first reward with unrestricted shipping preference, when quering `getShippingRules` will return ALL available locations, no need to query more rewards locations
-        project.rewards()?.filter { RewardUtils.shipsWorldwide(reward = it) }?.firstOrNull()?.let {
-            rewardsToQuery.put(it.id(), it)
+        projectRewards.filter { RewardUtils.shipsWorldwide(reward = it) }?.firstOrNull()?.let {
+            rewardsToExtractLocation.put(it.id(), it)
         }
 
         // In case there is no unrestricted preference need to get restricted and local rewards, to query their specific locations
-        if (rewardsToQuery.isEmpty()) {
-            project.rewards()?.filter {
+        if (rewardsToExtractLocation.isEmpty()) {
+            projectRewards.filter {
                 RewardUtils.shipsToRestrictedLocations(reward = it)
-            }?.forEach {
-                rewardsToQuery[it.id()] = it
+            }.forEach {
+                rewardsToExtractLocation[it.id()] = it
             }
         }
 
-        this.rewardsByShippingType = rewardsToQuery.values.toList()
+        this.rewardsByShippingType = rewardsToExtractLocation.values.toList()
     }
 
     // - Do not expose mutable states
@@ -171,7 +170,7 @@ class GetShippingRulesUseCase(
         val isIsValidRule = allAvailableShippingRules[locationId]
 
         rewards.map { rw ->
-            if (RewardUtils.shipsWorldwide(rw)) {
+            if (RewardUtils.shipsWorldwide(rw) && rw.isAvailable()) {
                 filteredRewards.add(rw)
             }
 
@@ -179,16 +178,16 @@ class GetShippingRulesUseCase(
                 filteredRewards.add(rw)
             }
 
-            if (RewardUtils.isLocalPickup(rw)) {
+            if (RewardUtils.isLocalPickup(rw) && rw.isAvailable()) {
                 filteredRewards.add(rw)
             }
 
-            if (RewardUtils.isDigital(rw)) {
+            if (RewardUtils.isDigital(rw) && rw.isAvailable()) {
                 filteredRewards.add(rw)
             }
 
             // - If shipping is restricted, make sure the reward is able to ship to selected rule
-            if (RewardUtils.shipsToRestrictedLocations(rw)) {
+            if (RewardUtils.shipsToRestrictedLocations(rw) && rw.isAvailable()) {
                 if (isIsValidRule != null) {
                     rw.shippingRules()?.map {
                         if (it.location()?.id() == locationId) {
@@ -215,7 +214,7 @@ class GetShippingRulesUseCase(
                 val backing = project.backing()
                 val locationId = project.backing()?.locationId() ?: 0L
                 this.id(locationId)
-                val reward = backing?.reward()?.let {
+                backing?.reward()?.let {
                     if (RewardUtils.shipsToRestrictedLocations(it)) {
                         val rule = backing?.reward()?.shippingRules()
                             ?.first { it.location()?.id() == locationId }

@@ -25,7 +25,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -33,13 +36,14 @@ import kotlinx.coroutines.rx2.asFlow
 data class RewardSelectionUIState(
     val selectedReward: Reward = Reward.builder().build(),
     val initialRewardIndex: Int = 0,
-    val project: ProjectData = ProjectData.builder().build(),
+    val project: ProjectData = ProjectData.builder().build()
 )
 
 class RewardsSelectionViewModel(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) : ViewModel() {
 
     private val analytics = requireNotNull(environment.analytics())
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val currentConfig = requireNotNull(environment.currentConfigV2()?.observable())
 
     private lateinit var currentProjectData: ProjectData
     private var pReason: PledgeReason? = null
@@ -83,26 +87,30 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         indexOfBackedReward = indexOfBackedReward(project = projectData.project())
         pReason = when {
             previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == true -> PledgeReason.LATE_PLEDGE
-            previousUserBacking != null -> PledgeReason.UPDATE_PLEDGE
+            previousUserBacking != null -> PledgeReason.UPDATE_REWARD
             previousUserBacking == null && projectData.project().isInPostCampaignPledgingPhase() == false -> PledgeReason.PLEDGE
             else -> PledgeReason.PLEDGE
         }
-
+        val project = projectData.project()
         viewModelScope.launch {
             emitCurrentState()
-            environment.currentConfigV2()?.observable()?.asFlow()?.collectLatest {
-                if (shippingRulesUseCase == null) {
-                    shippingRulesUseCase = GetShippingRulesUseCase(
-                        projectData.project(),
-                        it,
-                        viewModelScope,
-                        Dispatchers.IO
-                    )
+            apolloClient.getRewardsFromProject(project.slug() ?: "")
+                .asFlow()
+                .combine(currentConfig.asFlow()) { rewardsList, config ->
+                    if (shippingRulesUseCase == null) {
+                        shippingRulesUseCase = GetShippingRulesUseCase(
+                            project = projectData.project(),
+                            config = config,
+                            projectRewards = rewardsList,
+                            viewModelScope,
+                            Dispatchers.IO
+                        )
+                    }
+                    shippingRulesUseCase?.invoke()
+                    emitShippingUIState()
                 }
-                shippingRulesUseCase?.invoke()
-
-                emitShippingUIState()
-            }
+                .catch { }
+                .collect()
         }
     }
 
@@ -209,7 +217,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     fun shouldShowAlert(): Boolean {
         val prevRw = previousUserBacking?.reward()
         prevRw?.let {
-            if (pReason == PledgeReason.UPDATE_PLEDGE) {
+            if (pReason == PledgeReason.UPDATE_REWARD) {
                 return !previousUserBacking?.addOns().isNullOrEmpty() && prevRw.id() != newUserReward.id()
             }
         }

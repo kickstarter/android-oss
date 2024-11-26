@@ -28,7 +28,7 @@ fun PledgeData.shippingCostIfShipping(): Double {
     var addOnsShippingCost = 0.0
     this.addOns()?.map {
         if (RewardUtils.shipsWorldwide(it) || RewardUtils.shipsToRestrictedLocations(it)) {
-            addOnsShippingCost += (it.shippingRules()?.first()?.cost() ?: 0.0) * (it.quantity() ?: 0)
+            addOnsShippingCost += (it.shippingRules()?.firstOrNull()?.cost() ?: 0.0) * (it.quantity() ?: 0)
         } else 0.0
     }
 

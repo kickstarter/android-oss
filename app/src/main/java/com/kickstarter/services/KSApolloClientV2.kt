@@ -677,8 +677,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service
                 .query(query)
-                .toFlow()
-                .asObservable()
+                .rxFlowable()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -686,25 +685,15 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     }
-
+                    
                     response.data?.let { data ->
-                        Observable.just(data.node)
-                            .map { it.onReward }
-                            .filter { !it.shippingRulesExpanded?.nodes.isNullOrEmpty() }
-                            .map {
-                                it.shippingRulesExpanded?.nodes?.mapNotNull { node ->
-                                    node?.shippingRule
-                                }
-                            }
-                            .filter { it.isNotNull() }
-                            .subscribe { shippingList ->
-                                val shippingEnvelope =
-                                    shippingRulesListTransformer(shippingList ?: emptyList())
-                                ps.onNext(shippingEnvelope)
-                            }.dispose()
+                        val shippingEnvelope = data.node?.onReward?.shippingRulesExpanded?.nodes?.mapNotNull { node ->
+                            node?.shippingRule
+                        } ?: emptyList()
+                        ps.onNext(shippingRulesListTransformer(shippingEnvelope))
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

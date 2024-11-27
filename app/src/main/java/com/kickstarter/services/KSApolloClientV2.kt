@@ -109,7 +109,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.asObservable
 import java.nio.charset.Charset
@@ -1065,7 +1064,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
-                .subscribe{ response ->
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
@@ -1092,9 +1091,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             service.query(
                 query
-            )
-                .toFlow()
-                .map { response: ApolloResponse<GetRootCategoriesQuery.Data> ->
+            ).rxFlowable()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response: ApolloResponse<GetRootCategoriesQuery.Data> ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
@@ -1115,11 +1116,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onComplete()
                     }
                 }
-                .catch { throwable ->
-                    ps.onError(throwable)
-                }
-                .asObservable()
-                .subscribe()
                 .addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())

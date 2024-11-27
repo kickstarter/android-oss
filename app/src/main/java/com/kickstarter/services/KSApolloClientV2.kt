@@ -252,8 +252,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                 )
                             )
                         }
-                        ps.onComplete()
                     }
+                    ps.onComplete()
                 }
                 .addToDisposable(disposables)
             return@defer ps
@@ -290,6 +290,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(discoverEnvelope)
                     }
                 }
+                ps.onComplete()
             }.addToDisposable(disposables)
         return ps
     }
@@ -331,8 +332,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(response.data?.createSetupIntent?.clientSecret ?: "")
                     }
                     ps.onComplete()
-                }
-                .addToDisposable(disposables)
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -712,7 +712,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onError(Exception(response.errors?.first()?.message))
                     }
                     response.data?.let { data ->
-                        val rwList = data.project?.rewards?.nodes?.map {
+                        val rwList: List<Reward?> = data.project?.rewards?.nodes?.map {
                             it?.reward?.let { rwGr ->
                                 rewardTransformer(
                                     rewardGr = rwGr,
@@ -724,9 +724,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         } ?: emptyList<Reward>()
                         // - API does not provide the Reward no reward, we need to add it first
                         val minPledge = data.project?.minPledge?.toDouble() ?: 1.0
-                        val modifiedRewards = rwList.toMutableList()
+                        val modifiedRewards = rwList.filterNotNull().toMutableList()
                         modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
-                        ps.onNext(modifiedRewards.toList() as List<Reward>)
+                        ps.onNext(modifiedRewards.toList())
                     }
                     ps.onComplete()
                 }.addToDisposable(disposables)
@@ -957,8 +957,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                 .launchedProjectsCount(it.launchedProjects?.totalCount ?: 1)
                                 .build()
                         )
-                        ps.onComplete()
                     }
+                    ps.onComplete()
                 }.addToDisposable(disposables)
             return@defer ps
         }
@@ -1076,8 +1076,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                 }
                             }
                         }
-                        ps.onComplete()
                     }
+                    ps.onComplete()
                 }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
@@ -1112,8 +1112,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                 }
                             ps.onNext(rootCategories)
                         }
-                        ps.onComplete()
                     }
+                    ps.onComplete()
                 }
                 .addToDisposable(disposables)
             return@defer ps
@@ -1673,7 +1673,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
-                .subscribe  { response ->
+                .subscribe { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message ?: ""))
                     }

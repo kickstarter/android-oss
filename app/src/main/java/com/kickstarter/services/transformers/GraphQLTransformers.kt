@@ -1,20 +1,22 @@
 package com.kickstarter.services.transformers
 
-import com.kickstarter.CreateAttributionEventMutation
-import com.kickstarter.CreateOrUpdateBackingAddressMutation
-import com.kickstarter.PledgedProjectsOverviewQuery
-// import com.kickstarter.TriggerThirdPartyEventMutation
-import com.kickstarter.UserPrivacyQuery
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.CreateAttributionEventMutation
+import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.FetchProjectRewardsQuery
+import com.kickstarter.PledgedProjectsOverviewQuery
+import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
+import com.kickstarter.fragment.FullProject
+import com.kickstarter.fragment.PpoCard.DeliveryAddress
+import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
@@ -45,20 +47,16 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
 import com.kickstarter.type.CreateOrUpdateBackingAddressInput
-import com.kickstarter.fragment.FullProject
-import com.kickstarter.fragment.PpoCard.DeliveryAddress
-import com.kickstarter.fragment.ProjectCard
-import org.jetbrains.annotations.Nullable
-import org.joda.time.DateTime
-// import com.kickstarter.type.AppDataInput
-import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
+import org.jetbrains.annotations.Nullable
+import org.joda.time.DateTime
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 

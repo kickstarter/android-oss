@@ -52,6 +52,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOver
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.mock.factories.RewardFactory
@@ -1184,8 +1185,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1199,7 +1199,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1218,14 +1218,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<CommentEnvelope>()
 
             val query = GetProjectUpdateCommentsQuery(
-                cursor = Optional.present(cursor), // TODO: Review was this before -> .cursor(cursor.ifEmpty { null })
+                cursor = if (cursor.isPresent()) Optional.present(cursor) else Optional.absent(),
                 id = updateId,
                 limit = limit
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxFlowable()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1260,7 +1259,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

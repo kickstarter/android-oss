@@ -685,7 +685,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     }
-                    
+
                     response.data?.let { data ->
                         val shippingEnvelope = data.node?.onReward?.shippingRulesExpanded?.nodes?.mapNotNull { node ->
                             node?.shippingRule
@@ -704,7 +704,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val query = FetchProjectRewardsQuery(slug)
 
             this.service.query(query)
-                .rxSingle()
+                .rxFlowable()
                 .subscribeOn(Schedulers.io())
                 .doOnError {
                     ps.onError(it)

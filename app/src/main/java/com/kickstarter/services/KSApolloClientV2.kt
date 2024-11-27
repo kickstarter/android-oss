@@ -780,21 +780,20 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
         return Observable.defer {
-            // TODO: Review nullability here for updateBacking mutation
-
             val mutation = UpdateBackingMutation(
                 backingId = encodeRelayId(updateBackingData.backing),
-                amount = Optional.present(updateBackingData.amount),
-                locationId = Optional.present(updateBackingData.locationId),
-                rewardIds = Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } }),
-                paymentSourceId = Optional.present(updateBackingData.paymentSourceId),
-                intentClientSecret = Optional.present(updateBackingData.intentClientSecret)
+                amount = if (updateBackingData.amount.isNotNull()) Optional.present(updateBackingData.amount) else Optional.absent(),
+                locationId = if (updateBackingData.locationId.isNotNull()) Optional.present(updateBackingData.locationId) else Optional.absent(),
+                rewardIds =
+                if (updateBackingData.rewardsIds.isNotNull()) Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                else Optional.absent(),
+                paymentSourceId = if (updateBackingData.paymentSourceId.isNotNull()) Optional.present(updateBackingData.paymentSourceId) else Optional.absent(),
+                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent()
             )
             val ps = PublishSubject.create<Checkout>()
             service
                 .mutation(mutation)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -819,30 +818,31 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(checkout)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
 
     override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
         return Observable.defer {
-            // TODO: Review nullability for this mutation
-
             val ps = PublishSubject.create<Checkout>()
             val mutation = CreateBackingMutation(
                 projectId = encodeRelayId(createBackingData.project),
                 amount = createBackingData.amount,
                 paymentType = PaymentTypes.CREDIT_CARD.rawValue,
-                paymentSourceId = Optional.present(createBackingData.paymentSourceId),
-                setupIntentClientSecret = Optional.present(createBackingData.setupIntentClientSecret),
-                locationId = Optional.present(createBackingData.locationId),
-                rewardIds = Optional.present(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } }),
-                refParam = Optional.present(createBackingData.refTag?.tag())
+                paymentSourceId = if (createBackingData.paymentSourceId.isNotNull()) Optional.present(createBackingData.paymentSourceId) else Optional.absent(),
+                setupIntentClientSecret =
+                if (createBackingData.setupIntentClientSecret.isNotNull()) Optional.present(createBackingData.setupIntentClientSecret)
+                else Optional.absent(),
+                locationId = if (createBackingData.locationId.isNotNull()) Optional.present(createBackingData.locationId) else Optional.absent(),
+                rewardIds =
+                if (createBackingData.rewardsIds.isNotNull()) Optional.present(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                else Optional.absent(),
+                refParam = if (createBackingData.refTag?.tag().isNotNull()) Optional.present(createBackingData.refTag?.tag()) else Optional.absent()
             )
 
             this.service.mutation(mutation)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -871,7 +871,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(checkout)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }

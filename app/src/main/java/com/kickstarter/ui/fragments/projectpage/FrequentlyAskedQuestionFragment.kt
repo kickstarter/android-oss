@@ -113,7 +113,7 @@ class FrequentlyAskedQuestionFragment : Fragment(), Configure {
     private fun startComposeMessageActivity(it: Project?) {
         startActivity(
             Intent(requireContext(), MessageCreatorActivity::class.java)
-                .putExtra(IntentKey.PROJECT, it)
+                .putExtra(IntentKey.PROJECT, it?.reduceProjectPayload())
         )
     }
 

@@ -80,9 +80,9 @@ interface SurveyResponseViewModel {
 
             val pledgeRedemptionUrl = intent()
                 .filter {
-                    it.hasExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION) && it.getParcelableExtra<SurveyResponse>(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION).isNotNull()
+                    it.hasExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION) && !it.getStringExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION).isNullOrEmpty()
                 }
-                .map { requireNotNull(it.getParcelableExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION)) }
+                .map { requireNotNull(it.getStringExtra(IntentKey.NOTIFICATION_PLEDGE_REDEMPTION)) }
                 .ofType(String::class.java)
                 .map { UrlUtils.appendPath(environment.webEndpoint(), it) }
 

@@ -1404,8 +1404,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val query = ErroredBackingsQuery()
             this.service
                 .query(query)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1415,9 +1414,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     } else {
                         val erroredBackings = response.data?.me?.backings?.nodes?.map {
                             val project = ErroredBacking.Project.builder()
-                                .finalCollectionDate(it?.project?.finalCollectionDate as org.joda.time.DateTime) // TODO: Dates stuff
-                                .name(it.project?.name)
-                                .slug(it.project?.slug)
+                                .finalCollectionDate(it?.project?.finalCollectionDate)
+                                .name(it?.project?.name)
+                                .slug(it?.project?.slug)
                                 .build()
                             return@map ErroredBacking.builder()
                                 .project(project)
@@ -1426,7 +1425,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(erroredBackings)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1465,8 +1464,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1481,11 +1479,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                 )
 
                                 ps.onNext(backing)
-                                ps.onComplete()
                             }
                         }
                     }
-                }.dispose()
+                    ps.onComplete()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1740,8 +1738,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             this.service.query(
                 getPledgedProjectsOverviewQuery(inputData)
-            ).toFlow()
-                .asObservable()
+            ).rxFlowable()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1751,19 +1748,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     }
 
                     response.data?.let { data ->
-                        // TODO: Remove this extra observable
-                        Observable.just(data.pledgeProjectsOverview)
-                            .filter { it.pledges != null }
-                            .map { pledgeProjectsOverview ->
-                                pledgedProjectsOverviewEnvelopeTransformer(pledgeProjectsOverview)
-                            }
-                            .filter { it.isNotNull() }
-                            .subscribe {
-                                ps.onNext(it)
-                                ps.onComplete()
-                            }.dispose()
+                        data.pledgeProjectsOverview?.let {
+                            pledgedProjectsOverviewEnvelopeTransformer(it)
+                        }?.let {
+                            ps.onNext(it)
+                        }
                     }
-                }.dispose()
+                    ps.onComplete()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

@@ -26,25 +26,57 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import java.time.Instant
+import java.util.Locale
 
 enum class PaymentScheduleTestTags {
     PAYMENT_SCHEDULE_TITLE,
+    EXPAND_ICON,
     DATE_TEXT,
     AMOUNT_TEXT,
-    EXPAND_ICON,
     BADGE_TEXT,
-    TERMS_OF_USE_TEXT,
+    TERMS_OF_USE_TEXT
 }
 
-enum class PaymentStatuses {
-    COLLECTED,
-    AUTHENTICATION_REQUIRED,
-    SCHEDULED
-}
+val samplePaymentIncrements = listOf(
+    PaymentIncrement(
+        id = 1234,
+        amount = 3400,
+        state = PaymentIncrement.State.UNATTEMPTED,
+        paymentIncrementalId = 1,
+        paymentIncrementalType = "pledge",
+        date = Instant.parse("2024-10-14T18:12:00Z") // Mon, 14 Oct 2024 18:12 UTC
+    ),
+    PaymentIncrement(
+        id = 1235,
+        amount = 2500,
+        state = PaymentIncrement.State.COLLECTED,
+        paymentIncrementalId = 2,
+        paymentIncrementalType = "pledge",
+        date = Instant.parse("2024-10-15T14:00:00Z") // Tue, 15 Oct 2024 14:00 UTC
+    ),
+    PaymentIncrement(
+        id = 1236,
+        amount = 4500,
+        state = PaymentIncrement.State.UNATTEMPTED,
+        paymentIncrementalId = 3,
+        paymentIncrementalType = "pledge",
+        date = Instant.parse("2024-10-16T10:00:00Z") // Wed, 16 Oct 2024 10:00 UTC
+    ),
+    PaymentIncrement(
+        id = 1237,
+        amount = 5200,
+        state = PaymentIncrement.State.COLLECTED,
+        paymentIncrementalId = 4,
+        paymentIncrementalType = "pledge",
+        date = Instant.parse("2024-10-17T16:30:00Z") // Thu, 17 Oct 2024 16:30 UTC
+    )
+)
 
 @Preview(
     name = "Dark Collapsed State", uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -58,6 +90,7 @@ fun PreviewCollapsedPaymentScheduleWhite() {
         PaymentSchedule(
             isExpanded = false,
             onExpandChange = {}
+
         )
     }
 }
@@ -69,7 +102,8 @@ fun PreviewExpandedPaymentSchedule() {
     KSTheme {
         PaymentSchedule(
             isExpanded = true,
-            onExpandChange = {}
+            onExpandChange = {},
+            paymentIncrements = samplePaymentIncrements
         )
     }
 }
@@ -81,7 +115,9 @@ fun InteractivePaymentSchedulePreview() {
     KSTheme {
         PaymentSchedule(
             isExpanded = isExpanded,
-            onExpandChange = { isExpanded = it }
+            onExpandChange = { isExpanded = it },
+            paymentIncrements = samplePaymentIncrements
+
         )
     }
 }
@@ -90,7 +126,7 @@ fun InteractivePaymentSchedulePreview() {
 fun PaymentSchedule(
     isExpanded: Boolean = false,
     onExpandChange: (Boolean) -> Unit = {},
-    // TODO: Add payment schedule data model when available
+    paymentIncrements: List<PaymentIncrement> = listOf()
 ) {
     Card(
         elevation = 0.dp,
@@ -129,14 +165,9 @@ fun PaymentSchedule(
 
             if (isExpanded) {
                 Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-                PaymentRow("Mar 15, 2024", " $20.00", PaymentStatuses.SCHEDULED)
-                PaymentRow("Mar 29, 2024", "$20.00", PaymentStatuses.COLLECTED)
-                PaymentRow(
-                    "Apr 11, 2024",
-                    "$20.00",
-                    PaymentStatuses.AUTHENTICATION_REQUIRED,
-                )
-                PaymentRow("Apr 26, 2024", "$20.00", PaymentStatuses.COLLECTED)
+                paymentIncrements.forEach { paymentIncrement ->
+                    PaymentRow(paymentIncrement)
+                }
                 Spacer(modifier = Modifier.height(dimensions.paddingSmall))
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
@@ -150,7 +181,8 @@ fun PaymentSchedule(
 }
 
 @Composable
-fun PaymentRow(date: String, amount: String, status: PaymentStatuses) {
+fun PaymentRow(paymentIncrement: PaymentIncrement) {
+    val formattedAmount = String.format(Locale.US, "%.2f", paymentIncrement.amount / 100.0)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,23 +195,41 @@ fun PaymentRow(date: String, amount: String, status: PaymentStatuses) {
         ) {
             Text(
                 modifier = Modifier.testTag(PaymentScheduleTestTags.DATE_TEXT.name),
-                text = date,
+                text = paymentIncrement.formattedDate,
                 style = typography.body2Medium,
             )
-            StatusBadge(status)
+            StatusBadge(paymentIncrement.state)
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            text = amount,
-            style = typography.title1
+            text = "USD$ $formattedAmount",
+            style = typography.title3
         )
     }
 }
 
 @Composable
-fun StatusBadge(status: PaymentStatuses) {
-    when (status) {
-        PaymentStatuses.COLLECTED -> {
+fun StatusBadge(state: PaymentIncrement.State) {
+    when (state) {
+        PaymentIncrement.State.UNATTEMPTED -> {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = colors.backgroundAccentOrangeSubtle,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+                    text = stringResource(id = R.string.fpo_unattempted),
+                    style = typography.caption1Medium,
+                    color = colors.textSecondary
+                )
+            }
+        }
+
+        PaymentIncrement.State.COLLECTED -> {
             Box(
                 modifier = Modifier
                     .background(
@@ -193,38 +243,6 @@ fun StatusBadge(status: PaymentStatuses) {
                     text = stringResource(id = R.string.fpo_collected),
                     style = typography.caption1Medium,
                     color = colors.textAccentGreen
-                )
-            }
-        }
-
-        PaymentStatuses.AUTHENTICATION_REQUIRED -> {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = colors.backgroundAccentOrangeSubtle,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_authentication_required),
-                    style = typography.caption1Medium,
-                    color = colors.textSecondary
-                )
-            }
-        }
-
-        PaymentStatuses.SCHEDULED -> {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_scheduled),
-                    style = typography.caption1Medium,
-                    color = colors.textSecondary
                 )
             }
         }

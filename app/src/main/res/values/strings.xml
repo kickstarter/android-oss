@@ -103,7 +103,6 @@
   <string name="fpo_if_the_project_reaches_its_funding_goal_the_first_charge_of_20_will_be_collected_on_march_15_2024">If the project reaches its funding goal, the first charge of $20 will be collected on March 15, 2024.</string>
   <string name="fpo_terms_of_use">Terms of Use</string>
   <string name="fpo_collected">Collected</string>
-  <string name="fpo_scheduled">Scheduled</string>
-  <string name="fpo_authentication_required">Authentication required</string>
+  <string name="fpo_unattempted">Unattempted</string>
   <string name="fpo_payment_schedule">Payment schedule</string>
 </resources>

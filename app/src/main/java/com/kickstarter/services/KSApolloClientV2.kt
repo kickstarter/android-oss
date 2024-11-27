@@ -1436,8 +1436,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val mutation = ClearUserUnseenActivityMutation()
             service.mutation(
                 mutation
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1450,7 +1449,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     } ?: ps.onError(Exception())
 
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }

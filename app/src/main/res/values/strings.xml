@@ -105,4 +105,5 @@
   <string name="fpo_collected">Collected</string>
   <string name="fpo_scheduled">Scheduled</string>
   <string name="fpo_authentication_required">Authentication required</string>
+  <string name="fpo_payment_schedule">Payment schedule</string>
 </resources>

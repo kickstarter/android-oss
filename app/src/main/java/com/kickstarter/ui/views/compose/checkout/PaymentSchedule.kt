@@ -7,19 +7,26 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kickstarter.R
+
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
+enum class PaymentScheduleTestTags {
+    PAYMENT_SCHEDULE_TITLE,
+    DATE_TEXT,
+    AMOUNT_TEXT,
+    EXPAND_ICON,
+    BADGE_TEXT,
+    TERMS_OF_USE_TEXT,
+}
 
 enum class PaymentStatuses {
     COLLECTED,
@@ -27,6 +34,9 @@ enum class PaymentStatuses {
     SCHEDULED
 }
 
+@Preview(
+    name = "Dark Collapsed State", uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
 @Preview(
     name = "Light Collapsed State", uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
@@ -75,50 +85,51 @@ fun PaymentSchedule(
         elevation = 0.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(dimensions.paddingMedium)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(dimensions.paddingMedium)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onExpandChange(!isExpanded) }  // Icon click toggles expansion
-                    .testTag("payment_schedule_title"),  // Test tag for the header
-                verticalAlignment = Alignment.CenterVertically
+                    ,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Payment schedule",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.PAYMENT_SCHEDULE_TITLE.name),
+                    text = stringResource(id = R.string.fpo_payment_schedule),
+                    style = typography.body2Medium,
                 )
                 Icon(
-                    painter = if (isExpanded) painterResource(id = R.drawable.ic_arrow_up) else painterResource(
+                    modifier = Modifier
+                        .testTag(PaymentScheduleTestTags.EXPAND_ICON.name)
+                        .clickable { onExpandChange(!isExpanded) },
+                    painter =
+                    if (isExpanded) painterResource(id = R.drawable.ic_arrow_up) else painterResource(
                         id = R.drawable.ic_arrow_down
                     ),
                     contentDescription = "Expand",
                     tint = colors.textSecondary,
-                    modifier = Modifier.testTag("expand_icon")  // Test tag for the icon
                 )
             }
 
             if (isExpanded) {
-                Spacer(modifier = Modifier.height(8.dp))
-                PaymentRow("Mar 15, 2024", "$20.00", PaymentStatuses.SCHEDULED, Color.Green)
-                PaymentRow("Mar 29, 2024", "$20.00", PaymentStatuses.COLLECTED, Color.Red)
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                PaymentRow("Mar 15, 2024", " $20.00", PaymentStatuses.SCHEDULED)
+                PaymentRow("Mar 29, 2024", "$20.00", PaymentStatuses.COLLECTED)
                 PaymentRow(
                     "Apr 11, 2024",
                     "$20.00",
                     PaymentStatuses.AUTHENTICATION_REQUIRED,
-                    Color.Gray
                 )
-                PaymentRow("Apr 26, 2024", "$20.00", PaymentStatuses.COLLECTED, Color.Gray)
-                Spacer(modifier = Modifier.height(8.dp))
+                PaymentRow("Apr 26, 2024", "$20.00", PaymentStatuses.COLLECTED)
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
                 Text(
-                    modifier = Modifier.testTag("terms_of_use_text"),  // Test tag for terms text
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
                     text = stringResource(id = R.string.fpo_terms_of_use),
                     style = typography.subheadline,
                     color = colors.textAccentGreen
@@ -129,26 +140,28 @@ fun PaymentSchedule(
 }
 
 @Composable
-fun PaymentRow(date: String, amount: String, status: PaymentStatuses, statusColor: Color) {
+fun PaymentRow(date: String, amount: String, status: PaymentStatuses) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = dimensions.paddingSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensions.paddingXSmall)
         ) {
             Text(
+                modifier = Modifier.testTag(PaymentScheduleTestTags.DATE_TEXT.name),
                 text = date,
                 style = typography.body2Medium,
             )
-            StatusBadge(status)  // Status badge for each payment row
+            StatusBadge(status)
         }
         Text(
+            modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
             text = amount,
-            fontSize = 14.sp
+            style = typography.title1
         )
     }
 }
@@ -166,7 +179,7 @@ fun StatusBadge(status: PaymentStatuses) {
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.testTag("badge_text"),  // Test tag for badge text
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
                     text = stringResource(id = R.string.fpo_collected),
                     style = typography.caption1Medium,
                     color = colors.textAccentGreen
@@ -184,7 +197,7 @@ fun StatusBadge(status: PaymentStatuses) {
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.testTag("badge_text"),  // Test tag for badge text
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
                     text = stringResource(id = R.string.fpo_authentication_required),
                     style = typography.caption1Medium,
                     color = colors.textSecondary
@@ -198,7 +211,7 @@ fun StatusBadge(status: PaymentStatuses) {
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.testTag("badge_text"),  // Test tag for badge text
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
                     text = stringResource(id = R.string.fpo_scheduled),
                     style = typography.caption1Medium,
                     color = colors.textSecondary

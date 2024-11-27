@@ -1061,11 +1061,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.query(
                 query
-            ).toFlow()
-                .catch { throwable ->
+            ).rxSingle()
+                .doOnError { throwable ->
                     ps.onError(throwable)
                 }
-                .map { response ->
+                .subscribe{ response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
@@ -1080,8 +1080,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                         ps.onComplete()
                     }
-                }
-                .asObservable()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

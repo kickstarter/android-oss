@@ -43,7 +43,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
-import kotlinx.coroutines.CoroutineScope
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
@@ -280,13 +279,12 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val apiClient: ApolloClientTypeV2 = object : MockApolloClientV2() {
             override fun getProjects(
                 params: DiscoveryParams,
-                cursor: String?,
-                viewModelScope: CoroutineScope
+                cursor: String?
             ): Observable<DiscoverEnvelope> {
                 return if (params.isSavedProjects) {
                     Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(ArrayList()))
                 } else {
-                    super.getProjects(params, cursor, viewModelScope)
+                    super.getProjects(params, cursor)
                 }
             }
         }

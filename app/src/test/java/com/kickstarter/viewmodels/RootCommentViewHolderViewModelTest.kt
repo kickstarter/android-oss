@@ -6,6 +6,7 @@ import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.type.CommentBadge
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
@@ -13,7 +14,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import type.CommentBadge
 
 class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: RootCommentViewHolderViewModel.ViewModel
@@ -81,7 +81,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun commentBadge_whenYouAndSuperbacker_shouldEmitSuperbacker() {
-        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue())
+        val authorBadges = listOf<String>(CommentBadge.superbacker.rawValue)
         val author = UserFactory.user().toBuilder().id(1).build()
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val environment = environment().toBuilder()
@@ -108,7 +108,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setupEnvironment(environment)
-        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue())
+        val authorBadges = listOf<String>(CommentBadge.superbacker.rawValue)
         val author = UserFactory.user().toBuilder().id(2).build()
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
         val commentCardData = CommentCardData.builder()
@@ -130,8 +130,8 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
 
         setupEnvironment(environment)
         val authorBadges = listOf<String>(
-            CommentBadge.SUPERBACKER.rawValue(),
-            CommentBadge.COLLABORATOR.rawValue()
+            CommentBadge.superbacker.rawValue,
+            CommentBadge.collaborator.rawValue
         )
         val author = UserFactory.user().toBuilder().id(2).build()
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
@@ -170,7 +170,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator() {
         setupEnvironment(environment())
         val authorBadges =
-            listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())
+            listOf<String>(CommentBadge.superbacker.rawValue, CommentBadge.creator.rawValue)
         val author = UserFactory.user().toBuilder().id(2).build()
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
         val commentCardData = CommentCardData.builder()

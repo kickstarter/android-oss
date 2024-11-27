@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserPasswordMutation
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -105,8 +105,7 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(
                     UpdateUserPasswordMutation.Data(
                         UpdateUserPasswordMutation.UpdateUserAccount(
-                            "",
-                            UpdateUserPasswordMutation.User("", "test@email.com", false, true)
+                            UpdateUserPasswordMutation.User("test@email.com", false, true)
                         )
                     )
                 )

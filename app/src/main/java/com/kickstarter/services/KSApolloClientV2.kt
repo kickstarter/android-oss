@@ -1022,7 +1022,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(success)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1035,8 +1035,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1049,7 +1048,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(category)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

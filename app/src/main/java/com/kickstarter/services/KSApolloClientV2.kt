@@ -4,6 +4,7 @@ import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.rx2.rxFlowable
 import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
@@ -267,26 +268,29 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     ): Observable<DiscoverEnvelope> {
         val ps = PublishSubject.create<DiscoverEnvelope>()
         this.service.query(query = buildFetchProjectsQuery(discoveryParams, slug))
-            .rxSingle()
+            .rxFlowable()
             .subscribeOn(Schedulers.io())
             .doOnError {
                 ps.onError(it)
             }
-// TODO: Should not be having to to subscriptions on the networking client, just transforming into observable type we want VM needs to be examinated
             .subscribe { response ->
-                response.data?.let { responseData ->
-                    val projects = responseData.projects?.edges?.map {
-                        projectTransformer(it?.node?.projectCard)
-                    }
-                    val pageInfoEnvelope =
-                        responseData.projects?.pageInfo?.pageInfo?.let {
-                            createPageInfoObject(it)
+                if (response.hasErrors()) {
+                    if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                } else {
+                    response.data?.let { responseData ->
+                        val projects = responseData.projects?.edges?.map {
+                            projectTransformer(it?.node?.projectCard)
                         }
-                    val discoverEnvelope = DiscoverEnvelope.builder()
-                        .projects(projects)
-                        .pageInfoEnvelope(pageInfoEnvelope)
-                        .build()
-                    ps.onNext(discoverEnvelope)
+                        val pageInfoEnvelope =
+                            responseData.projects?.pageInfo?.pageInfo?.let {
+                                createPageInfoObject(it)
+                            }
+                        val discoverEnvelope = DiscoverEnvelope.builder()
+                            .projects(projects)
+                            .pageInfoEnvelope(pageInfoEnvelope)
+                            .build()
+                        ps.onNext(discoverEnvelope)
+                    }
                 }
             }.addToDisposable(disposables)
         return ps

@@ -80,6 +80,7 @@ fun InteractivePaymentSchedulePreview() {
 fun PaymentSchedule(
     isExpanded: Boolean = false,
     onExpandChange: (Boolean) -> Unit = {},
+    //TODO: Add payment schedule data model when available
 ) {
     Card(
         elevation = 0.dp,

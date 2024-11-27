@@ -1499,8 +1499,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         list.map { encodeRelayId(it) }
                     }
                 ),
-                locationId = Optional.present(createCheckoutData.locationId),
-                refParam = Optional.present(createCheckoutData.refTag?.tag())
+                locationId = if (createCheckoutData.locationId.isNotNull()) Optional.present(createCheckoutData.locationId) else Optional.absent(),
+                refParam = if (createCheckoutData.refTag?.tag().isNotNull()) Optional.present(createCheckoutData.refTag?.tag()) else Optional.absent()
             )
             this.service.mutation(
                 mutation
@@ -1549,8 +1549,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.mutation(
                 mutation
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1563,7 +1562,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         } ?: ps.onError(Exception("Client Secret was Null"))
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1582,8 +1581,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1598,9 +1596,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                             )
                             ps.onNext(validation)
                         }
-                        ps.onComplete()
                     }
-                }.dispose()
+                    ps.onComplete()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1617,13 +1615,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val mutation = CompleteOnSessionCheckoutMutation(
                 checkoutId = Base64Utils.encodeUrlSafe(("Checkout-$checkoutId").toByteArray(Charset.defaultCharset())),
                 paymentIntentClientSecret = paymentIntentClientSecret,
-                paymentSourceId = Optional.present(paymentSourceId),
+                paymentSourceId = if (paymentSourceId.isNotNull()) Optional.present(paymentSourceId) else Optional.absent(),
                 paymentSourceReusable = Optional.present(paymentSourceReusable)
             )
             this.service.mutation(
                 mutation
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1638,7 +1635,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         } ?: ps.onError(Exception("Checkout ID was null"))
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1649,8 +1646,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             val mutation = getCreateAttributionEventMutation(eventInput, gson)
             service.mutation(mutation)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1664,7 +1660,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(isSuccess)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1676,12 +1672,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val mutation = getCreateOrUpdateBackingAddressMutation(eventInput)
 
             service.mutation(mutation)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
-                .subscribe { response ->
+                .subscribe  { response ->
                     if (response.hasErrors()) {
                         ps.onError(Exception(response.errors?.first()?.message ?: ""))
                     }
@@ -1691,11 +1686,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(isSuccess)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
 
+    // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview
     override fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload> {
         return Observable.defer {
             val ps = PublishSubject.create<CompleteOrderPayload>()
@@ -1707,8 +1703,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.mutation(
                 mutation
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1725,7 +1720,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(payload)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
 
             return@defer ps
         }

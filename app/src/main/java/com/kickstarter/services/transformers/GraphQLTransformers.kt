@@ -19,6 +19,7 @@ import com.kickstarter.fragment.PpoCard.DeliveryAddress
 import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
@@ -925,8 +926,8 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
 
     val input = CreateAttributionEventInput(
         eventName = eventInput.eventName,
-        eventProperties = Optional.present(eventPropertiesJson),
-        projectId = Optional.present(eventInput.projectId)
+        eventProperties = if (eventPropertiesJson.isPresent()) Optional.present(eventPropertiesJson) else Optional.absent(),
+        projectId = if (eventInput.projectId.isNullOrBlank()) Optional.absent() else Optional.present(eventInput.projectId)
     )
     return CreateAttributionEventMutation(input = input)
 }

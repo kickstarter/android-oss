@@ -1473,11 +1473,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     } else {
                         response.data?.let { data ->
                             data.project?.backing?.backing?.let { backingObj ->
-                                val backing = backingTransformer(
+                                backingTransformer(
                                     backingObj
-                                )
-
-                                ps.onNext(backing)
+                                )?.let {
+                                    ps.onNext(it)
+                                }
                             }
                         }
                     }

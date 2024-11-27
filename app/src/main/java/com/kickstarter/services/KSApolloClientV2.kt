@@ -737,7 +737,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     }
 
     private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
-        // TODO: Review the nulabillity of all of these pieces
         return addOnsGr.nodes?.map { node ->
             val shippingRulesGr =
                 node?.shippingRulesExpanded?.nodes?.map { requireNotNull(it?.shippingRule) }
@@ -761,8 +760,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
             this.service
                 .query(query)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -775,7 +773,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(addOns)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }

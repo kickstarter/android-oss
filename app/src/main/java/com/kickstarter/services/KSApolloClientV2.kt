@@ -1272,14 +1272,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
             val query = GetProjectCommentsQuery(
-                cursor = Optional.present(cursor), // TODO: review! before it was -> cursor.ifEmpty { null }
+                cursor = if (cursor.isPresent()) Optional.present(cursor) else Optional.absent(),
                 slug = slug,
                 limit = limit
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxFlowable()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1312,7 +1311,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -1326,13 +1325,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<CommentEnvelope>()
             val query = GetRepliesForCommentQuery(
                 commentableId = encodeRelayId(comment),
-                cursor = Optional.present(cursor),
+                cursor = if (cursor.isNullOrBlank()) Optional.absent() else Optional.present(cursor),
                 pageSize = Optional.present(pageSize),
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxFlowable()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1341,15 +1339,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onError(Exception(response.errors?.first()?.message))
                     } else {
                         response.data?.let { responseData ->
-                            Observable.just(createCommentEnvelop(responseData))
-                                .subscribe {
-                                    ps.onNext(it)
-                                    ps.onComplete()
-                                }
+                            ps.onNext(createCommentEnvelop(responseData))
                         }
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

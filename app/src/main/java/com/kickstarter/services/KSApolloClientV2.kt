@@ -1136,42 +1136,33 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
             this.service.query(
                 query
-            ).toFlow()
-                .asObservable()
+            ).rxFlowable()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
                 .subscribe { response ->
-                    response.data?.let { data ->
-                        // TODO: Remove this observable it does not makes sense
-                        Observable.just(data.project)
-                            .filter { it?.posts != null }
-                            .map { project ->
-
-                                val updates = project?.posts?.edges?.map { edge ->
-                                    updateTransformer(
-                                        edge?.node?.post
-                                    ).toBuilder()
-                                        .build()
-                                }
-
-                                UpdatesGraphQlEnvelope.builder()
-                                    .updates(updates)
-                                    .totalCount(project?.posts?.totalCount ?: 0)
-                                    .pageInfoEnvelope(
-                                        createPageInfoObject(
-                                            project?.posts?.pageInfo?.pageInfo
-                                        )
-                                    )
-                                    .build()
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        response.data?.let { data ->
+                            val updates = data.project?.posts?.edges?.map {
+                                updateTransformer(it?.node?.post)
                             }
-                            .filter { it.isNotNull() }
-                            .subscribe {
-                                ps.onNext(it)
-                                ps.onComplete()
-                            }.dispose()
+                            val envelope = UpdatesGraphQlEnvelope.builder()
+                                .updates(updates)
+                                .totalCount(data.project?.posts?.totalCount ?: 0)
+                                .pageInfoEnvelope(
+                                    createPageInfoObject(
+                                        data.project?.posts?.pageInfo?.pageInfo
+                                    )
+                                )
+                                .build()
+
+                            ps.onNext(envelope)
+                        }
                     }
-                }.dispose()
+                    ps.onComplete()
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

@@ -1367,15 +1367,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<Comment>()
             val mutation = CreateCommentMutation(
-                parentId = Optional.present(comment.parent?.let { encodeRelayId(it) }),
+                parentId = if (comment.parent?.id().isNotNull()) Optional.present(comment.parent?.let { encodeRelayId(it) }) else Optional.absent(),
                 commentableId = comment.commentableId,
                 clientMutationId = Optional.present(comment.clientMutationId),
                 body = comment.body
             )
             this.service.mutation(
                 mutation
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -1394,7 +1393,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         )
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }

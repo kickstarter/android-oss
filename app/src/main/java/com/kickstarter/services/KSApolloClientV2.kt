@@ -313,28 +313,28 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun createSetupIntent(project: Project?): Observable<String> {
         return Observable.defer {
             val ps = PublishSubject.create<String>()
-            project?.let { proj ->
-                val mutation = CreateSetupIntentMutation(
-                    projectId = Optional.present(encodeRelayId(proj)),
+            val mutation = project?.let {
+                CreateSetupIntentMutation(
+                    projectId = Optional.present(encodeRelayId(it)),
                     setupIntentContext = Optional.present(StripeIntentContextTypes.CROWDFUNDING_CHECKOUT)
                 )
+            } ?: CreateSetupIntentMutation(Optional.absent(), Optional.present(StripeIntentContextTypes.PROFILE_SETTINGS))
 
-                this.service.mutation(mutation)
-                    .toFlow()
-                    .catch { throwable ->
-                        ps.onError(throwable)
+            this.service.mutation(mutation)
+                .rxSingle()
+                .subscribeOn(Schedulers.io())
+                .doOnError {
+                    ps.onError(it)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors())
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    else {
+                        ps.onNext(response.data?.createSetupIntent?.clientSecret ?: "")
                     }
-                    .map { response ->
-                        if (response.hasErrors())
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        else {
-                            ps.onNext(response.data?.createSetupIntent?.clientSecret ?: "")
-                        }
-                        ps.onComplete()
-                    }
-                    .asObservable()
-                    .subscribe()
-            }
+                    ps.onComplete()
+                }
+                .addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -343,17 +343,16 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<StoredCard>()
             val mutation = SavePaymentMethodMutation(
-                paymentType = Optional.present(savePaymentMethodData.paymentType),
-                stripeToken = Optional.present(savePaymentMethodData.stripeToken),
-                stripeCardId = Optional.present(savePaymentMethodData.stripeCardId),
-                reusable = Optional.present(savePaymentMethodData.reusable),
-                intentClientSecret = Optional.present(savePaymentMethodData.intentClientSecret)
+                paymentType = if (savePaymentMethodData.paymentType.isNotNull()) Optional.present(savePaymentMethodData.paymentType) else Optional.absent(),
+                stripeToken = if (savePaymentMethodData.stripeToken.isNotNull()) Optional.present(savePaymentMethodData.stripeToken) else Optional.absent(),
+                stripeCardId = if (savePaymentMethodData.stripeCardId.isNotNull()) Optional.present(savePaymentMethodData.stripeCardId) else Optional.absent(),
+                reusable = if (savePaymentMethodData.reusable.isNotNull()) Optional.present(savePaymentMethodData.reusable) else Optional.absent(),
+                intentClientSecret = if (savePaymentMethodData.intentClientSecret.isNotNull()) Optional.present(savePaymentMethodData.intentClientSecret) else Optional.absent()
             )
             service.mutation(
                 mutation
             )
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -364,9 +363,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                     val paymentSource = response.data?.createPaymentSource?.paymentSource
                     paymentSource?.let {
-                        // TODO: review the type for dates probably the Custom mapping requires some additions here
                         val storedCard = StoredCard.builder()
-                            .expiration(it.expirationDate as java.util.Date?)
+                            .expiration(it.expirationDate)
                             .id(it.id)
                             .lastFourDigits(it.lastFour)
                             .type(it.type)
@@ -374,7 +372,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(storedCard)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -386,8 +384,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val query = UserPaymentsQuery()
             this.service
                 .query(query)
-                .toFlow()
-                .asObservable()
+                .rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -398,9 +395,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         val cardsList = mutableListOf<StoredCard>()
                         response.data?.me?.storedCards?.nodes?.map {
                             it?.let { cardData ->
-                                // TODO: review the type for dates probably the Custom mapping requires some additions here
                                 val card = StoredCard.builder()
-                                    .expiration(cardData.expirationDate as java.util.Date?)
+                                    .expiration(cardData.expirationDate)
                                     .id(cardData.id)
                                     .lastFourDigits(cardData.lastFour)
                                     .type(it.type)
@@ -412,7 +408,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(cardsList)
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -486,10 +482,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<UserPrivacy>()
             val query = UserPrivacyQuery()
+
             service.query(
                 query = query
-            ).toFlow()
-                .asObservable()
+            ).rxSingle()
                 .doOnError { throwable ->
                     ps.onError(throwable)
                 }
@@ -498,7 +494,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         ps.onNext(userPrivacyTransformer(it))
                     }
                     ps.onComplete()
-                }.dispose()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }

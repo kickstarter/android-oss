@@ -254,8 +254,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         }
                     }
                     ps.onComplete()
-                }
-                .addToDisposable(disposables)
+                }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

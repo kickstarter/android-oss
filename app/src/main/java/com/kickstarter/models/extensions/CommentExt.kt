@@ -49,9 +49,9 @@ fun Comment.updateCommentFailedToPost(
 }
 
 fun Comment.assignAuthorBadge(user: User? = null): CommentCardBadge {
-    if (this.authorBadges()?.contains(CommentCardBadge.CREATOR.name) == true) return CommentCardBadge.CREATOR
-    if (this.authorBadges()?.contains(CommentCardBadge.COLLABORATOR.name) == true) return CommentCardBadge.COLLABORATOR
-    if (this.authorBadges()?.contains(CommentCardBadge.SUPERBACKER.name) == true) return CommentCardBadge.SUPERBACKER
+    if (this.authorBadges()?.contains(CommentCardBadge.CREATOR.name.lowercase()) == true) return CommentCardBadge.CREATOR
+    if (this.authorBadges()?.contains(CommentCardBadge.COLLABORATOR.name.lowercase()) == true) return CommentCardBadge.COLLABORATOR
+    if (this.authorBadges()?.contains(CommentCardBadge.SUPERBACKER.name.lowercase()) == true) return CommentCardBadge.SUPERBACKER
     if (this.author().id() == user?.id()) return CommentCardBadge.YOU
     return CommentCardBadge.NO_BADGE
 }

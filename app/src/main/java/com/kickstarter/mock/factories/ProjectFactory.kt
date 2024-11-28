@@ -510,7 +510,7 @@ object ProjectFactory {
 
         return project()
             .toBuilder()
-            .launchedAt(DateTime.now().plusDays(1)) // TODO: Date time adapters
+            .launchedAt(DateTime(0))
             .displayPrelaunch(true)
             .urls(Urls.builder().web(web).build())
             .build()

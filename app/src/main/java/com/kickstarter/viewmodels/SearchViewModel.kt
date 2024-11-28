@@ -267,8 +267,8 @@ interface SearchViewModel {
                     }
 
             selectedProject.subscribe {
-                // TODO: Custom date adapter issues, not entirely sure why it was used here ??
-                if (it.first.launchedAt() == DateTime.now() &&
+                val epochDateTime = DateTime(0)
+                if (it.first.launchedAt() == epochDateTime &&
                     ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
                 ) {
                     startPreLaunchProjectActivity.onNext(it)

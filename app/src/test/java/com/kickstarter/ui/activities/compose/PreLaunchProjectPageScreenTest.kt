@@ -20,6 +20,7 @@ import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.P
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_SAVE_BUTTON
+import org.joda.time.DateTime
 import org.junit.Test
 
 class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
@@ -57,10 +58,7 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
     @Test
     fun verifyOnSaveButtonClicked() {
         val project = ProjectFactory.project().toBuilder()
-            .launchedAt(
-                // DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0))
-                null
-            )
+            .launchedAt(DateTime(0))
             .displayPrelaunch(true)
             .watchesCount(1)
             .urls(Urls.builder().build()).build()

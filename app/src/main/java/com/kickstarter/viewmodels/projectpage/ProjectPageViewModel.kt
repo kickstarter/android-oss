@@ -1057,9 +1057,8 @@ interface ProjectPageViewModel {
         private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
-            // Check the feature flag
-            // TODO: Add another validation when API is ready to add the value that PLOT is selected on the project
-            val isPledgeOverTimeEnabled = featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME)
+
+            val isPledgeOverTimeEnabled = featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) && project.isPledgeOverTimeAllowed() == true
             return when {
                 !project.isBacking() || count.isNonZero() -> 0
                 project.isLive -> when {

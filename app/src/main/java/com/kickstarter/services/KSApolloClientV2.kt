@@ -261,10 +261,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun getProjects(
         discoveryParams: DiscoveryParams,
-        slug: String?
+        cursor: String?
     ): Observable<DiscoverEnvelope> {
         val ps = PublishSubject.create<DiscoverEnvelope>()
-        this.service.query(query = buildFetchProjectsQuery(discoveryParams, slug))
+        this.service.query(query = buildFetchProjectsQuery(discoveryParams, cursor))
             .rxFlowable()
             .subscribeOn(Schedulers.io())
             .doOnError {
@@ -296,11 +296,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     private fun buildFetchProjectsQuery(
         discoveryParams: DiscoveryParams,
-        slug: String?
+        cursor: String?
     ): FetchProjectsQuery {
         return FetchProjectsQuery(
             sort = Optional.present(discoveryParams.sort()?.toProjectSort()),
-            cursor = if (slug == null) Optional.present(slug) else Optional.absent(),
+            cursor = cursor?.let { if (it.isNotEmpty()) Optional.present(it) else Optional.absent() } ?: Optional.absent(),
             categoryId = if (discoveryParams.category()?.id() == null) Optional.absent() else Optional.present(discoveryParams.category()?.id().toString()),
             recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(discoveryParams.recommended()),
             starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),

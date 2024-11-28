@@ -298,7 +298,7 @@ interface DiscoveryViewModel {
 
             val sortToTabOpen = Observable.merge(
                 pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
-                params.map { it.sort() }
+                params.filter { it.sort().isNotNull() }.map { it.sort() }
             ).filter { it.isNotNull() }
                 .map { it }
 

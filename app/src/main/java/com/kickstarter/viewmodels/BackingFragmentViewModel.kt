@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhenV2
@@ -240,7 +241,10 @@ interface BackingFragmentViewModel {
             val reward = Observable.merge(rewardA, rewardB)
                 .distinctUntilChanged()
 
-            val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
+            val isCreator = Observable.combineLatest(
+                this.currentUser.observable(),
+                backedProject
+            ) { user, project ->
                 Pair(user, project)
             }
                 .map { it.second.userIsCreator(it.first.getValue()) }
@@ -295,7 +299,11 @@ interface BackingFragmentViewModel {
                     this.pledgeSummaryIsGone.onNext(it)
                 }.addToDisposable(disposables)
 
-            Observable.combineLatest(backedProject, backing, this.currentUser.loggedInUser()) { p, b, user -> Triple(p, b, user) }
+            Observable.combineLatest(
+                backedProject,
+                backing,
+                this.currentUser.loggedInUser()
+            ) { p, b, user -> Triple(p, b, user) }
                 .map { pledgeStatusData(it.first, it.second, it.third) }
                 .distinctUntilChanged()
                 .subscribe { this.pledgeStatusData.onNext(it) }
@@ -305,7 +313,13 @@ interface BackingFragmentViewModel {
                 .filter { it.shippingAmount().isNotNull() }
                 .map { requireNotNull(it.shippingAmount()) }
                 .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
-                .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
+                .map {
+                    ProjectViewUtils.styleCurrency(
+                        it.first.toDouble(),
+                        it.second,
+                        this.ksCurrency
+                    )
+                }
                 .distinctUntilChanged()
                 .subscribe { this.shippingAmount.onNext(it) }
                 .addToDisposable(disposables)
@@ -393,7 +407,10 @@ interface BackingFragmentViewModel {
             backing
                 .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
                 .compose(takePairWhenV2(this.receivedCheckboxToggled))
-                .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverErrorV2()) }
+                .switchMap {
+                    this.apiClient.postBacking(it.first.second, it.first.first, it.second)
+                        .compose(neverErrorV2())
+                }
                 .share()
                 .subscribe()
 
@@ -507,7 +524,14 @@ interface BackingFragmentViewModel {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
-                CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type())))
+                CreditCardPaymentType.CREDIT_CARD -> Either.Left(
+                    StoredCard.issuer(
+                        CreditCardTypes.safeValueOf(
+                            paymentSource.type()
+                        )
+                    )
+                )
+
                 else -> Either.Left(CardBrand.Unknown.code)
             }
         }
@@ -521,7 +545,11 @@ interface BackingFragmentViewModel {
             }
         }
 
-        private fun pledgeStatusData(project: Project, backing: Backing, user: User): PledgeStatusData {
+        private fun pledgeStatusData(
+            project: Project,
+            backing: Backing,
+            user: User
+        ): PledgeStatusData {
 
             var statusStringRes: Int?
 
@@ -534,13 +562,22 @@ interface BackingFragmentViewModel {
                         Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
                         Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
                         Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
-                        Backing.STATUS_PLEDGED -> R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline
+                        Backing.STATUS_PLEDGED -> {
+                            if (project.isPledgeOverTimeAllowed() == true &&
+                                environment.featureFlagClient()
+                                    ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true
+                            ) {
+                                R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of
+                            } else {
+                                R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline
+                            }
+                        }
+
                         Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
                         else -> null
                     }
                 }
             } else {
-
                 statusStringRes = when (project.state()) {
                     Project.STATE_CANCELED -> R.string.You_canceled_this_project_so_the_backers_payment_method_was_never_charged
                     Project.STATE_FAILED -> R.string.Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged
@@ -603,13 +640,17 @@ interface BackingFragmentViewModel {
 
         override fun cardLogo(): Observable<Int> = this.cardLogo
 
-        override fun fixPaymentMethodButtonIsGone(): Observable<Boolean> = this.fixPaymentMethodButtonIsGone
+        override fun fixPaymentMethodButtonIsGone(): Observable<Boolean> =
+            this.fixPaymentMethodButtonIsGone
 
-        override fun fixPaymentMethodMessageIsGone(): Observable<Boolean> = this.fixPaymentMethodMessageIsGone
+        override fun fixPaymentMethodMessageIsGone(): Observable<Boolean> =
+            this.fixPaymentMethodMessageIsGone
 
-        override fun notifyDelegateToRefreshProject(): Observable<Unit> = this.notifyDelegateToRefreshProject
+        override fun notifyDelegateToRefreshProject(): Observable<Unit> =
+            this.notifyDelegateToRefreshProject
 
-        override fun notifyDelegateToShowFixPledge(): Observable<Unit> = this.notifyDelegateToShowFixPledge
+        override fun notifyDelegateToShowFixPledge(): Observable<Unit> =
+            this.notifyDelegateToShowFixPledge
 
         override fun paymentMethodIsGone(): Observable<Boolean> = this.paymentMethodIsGone
 
@@ -621,15 +662,18 @@ interface BackingFragmentViewModel {
 
         override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
 
-        override fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>> = this.projectDataAndReward
+        override fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>> =
+            this.projectDataAndReward
 
-        override fun projectDataAndAddOns(): Observable<Pair<ProjectData, List<Reward>>> = this.addOnsList
+        override fun projectDataAndAddOns(): Observable<Pair<ProjectData, List<Reward>>> =
+            this.addOnsList
 
         override fun receivedCheckboxChecked(): Observable<Boolean> = this.receivedCheckboxChecked
 
         override fun receivedSectionIsGone(): Observable<Boolean> = this.receivedSectionIsGone
 
-        override fun receivedSectionCreatorIsGone(): Observable<Boolean> = this.receivedSectionCreatorIsGone
+        override fun receivedSectionCreatorIsGone(): Observable<Boolean> =
+            this.receivedSectionCreatorIsGone
 
         override fun shippingAmount(): Observable<CharSequence> = this.shippingAmount
 
@@ -639,7 +683,8 @@ interface BackingFragmentViewModel {
 
         override fun showUpdatePledgeSuccess(): Observable<Unit> = this.showUpdatePledgeSuccess
 
-        override fun swipeRefresherProgressIsVisible(): Observable<Boolean> = this.swipeRefresherProgressIsVisible
+        override fun swipeRefresherProgressIsVisible(): Observable<Boolean> =
+            this.swipeRefresherProgressIsVisible
 
         override fun totalAmount(): Observable<CharSequence> = this.totalAmount
 
@@ -647,7 +692,8 @@ interface BackingFragmentViewModel {
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
-        override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
+        override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> =
+            this.deliveryDisclaimerSectionIsGone
 
         override fun onCleared() {
             disposables.clear()

@@ -8,9 +8,9 @@ import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.factories.ProjectFactory.caProject
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.ukProject
+import com.kickstarter.type.CurrencyCode
 import junit.framework.TestCase
 import org.junit.Test
-import type.CurrencyCode
 import java.math.RoundingMode
 
 class KSCurrencyTest : TestCase() {
@@ -39,7 +39,7 @@ class KSCurrencyTest : TestCase() {
         val currency = createKSCurrency("CA")
         val preferUSD_USProject = project()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals(
             "US$ 100",
@@ -55,7 +55,7 @@ class KSCurrencyTest : TestCase() {
         )
         val preferUSD_CAProject = caProject()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals(
             "US$ 100",
@@ -71,7 +71,7 @@ class KSCurrencyTest : TestCase() {
         )
         val preferUSD_UKProject = ukProject()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals(
             "US$ 100",
@@ -92,7 +92,7 @@ class KSCurrencyTest : TestCase() {
         val currency = createKSCurrency("US")
         val preferUSD_USProject = project()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals(
             "$100",
@@ -108,7 +108,7 @@ class KSCurrencyTest : TestCase() {
         )
         val preferUSD_CAProject = caProject()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals(
             "$100",
@@ -124,7 +124,7 @@ class KSCurrencyTest : TestCase() {
         )
         val preferUSD_UKProject = ukProject()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals(
             "$100",
@@ -185,7 +185,7 @@ class KSCurrencyTest : TestCase() {
         val currency = createKSCurrency("US")
         val preferUSD_USProject = project()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("$100", currency.formatWithUserPreference(100.1, preferUSD_USProject))
         assertEquals("$100", currency.formatWithUserPreference(100.9, preferUSD_USProject))
@@ -207,7 +207,7 @@ class KSCurrencyTest : TestCase() {
         )
         val preferUSD_CAProject = caProject()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("$75", currency.formatWithUserPreference(100.1, preferUSD_CAProject))
         assertEquals("$75", currency.formatWithUserPreference(100.9, preferUSD_CAProject))
@@ -229,7 +229,7 @@ class KSCurrencyTest : TestCase() {
         )
         val preferUSD_UKProject = ukProject()
             .toBuilder()
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("$150", currency.formatWithUserPreference(100.1, preferUSD_UKProject))
         assertEquals("$150", currency.formatWithUserPreference(100.9, preferUSD_UKProject))
@@ -271,7 +271,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_USProject = project()
             .toBuilder()
             .fxRate(1f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 100", currency.formatWithUserPreference(100.1, preferUSD_USProject))
         assertEquals("US$ 100", currency.formatWithUserPreference(100.9, preferUSD_USProject))
@@ -294,7 +294,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_CAProject = caProject()
             .toBuilder()
             .fxRate(.75f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 75", currency.formatWithUserPreference(100.1, preferUSD_CAProject))
         assertEquals("US$ 75", currency.formatWithUserPreference(100.9, preferUSD_CAProject))
@@ -317,7 +317,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_UKProject = ukProject()
             .toBuilder()
             .fxRate(1.5f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 150", currency.formatWithUserPreference(100.1, preferUSD_UKProject))
         assertEquals("US$ 150", currency.formatWithUserPreference(100.9, preferUSD_UKProject))
@@ -345,7 +345,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_USProject = project()
             .toBuilder()
             .fxRate(1f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 100", currency.formatWithUserPreference(100.1, preferUSD_USProject))
         assertEquals("US$ 100", currency.formatWithUserPreference(100.9, preferUSD_USProject))
@@ -368,7 +368,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_CAProject = caProject()
             .toBuilder()
             .fxRate(.75f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 75", currency.formatWithUserPreference(100.1, preferUSD_CAProject))
         assertEquals("US$ 75", currency.formatWithUserPreference(100.9, preferUSD_CAProject))
@@ -391,7 +391,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_UKProject = ukProject()
             .toBuilder()
             .fxRate(1.5f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 150", currency.formatWithUserPreference(100.1, preferUSD_UKProject))
         assertEquals("US$ 150", currency.formatWithUserPreference(100.9, preferUSD_UKProject))
@@ -419,7 +419,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_USProject = project()
             .toBuilder()
             .fxRate(1f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 100", currency.formatWithUserPreference(100.1, preferUSD_USProject))
         assertEquals("US$ 100", currency.formatWithUserPreference(100.9, preferUSD_USProject))
@@ -442,7 +442,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_CAProject = caProject()
             .toBuilder()
             .fxRate(.75f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 75", currency.formatWithUserPreference(100.1, preferUSD_CAProject))
         assertEquals("US$ 75", currency.formatWithUserPreference(100.9, preferUSD_CAProject))
@@ -465,7 +465,7 @@ class KSCurrencyTest : TestCase() {
         val preferUSD_UKProject = ukProject()
             .toBuilder()
             .fxRate(1.5f)
-            .currentCurrency(CurrencyCode.USD.rawValue())
+            .currentCurrency(CurrencyCode.USD.rawValue)
             .build()
         assertEquals("US$ 150", currency.formatWithUserPreference(100.1, preferUSD_UKProject))
         assertEquals("US$ 150", currency.formatWithUserPreference(100.9, preferUSD_UKProject))
@@ -493,7 +493,7 @@ class KSCurrencyTest : TestCase() {
         val preferCAD_USProject = project()
             .toBuilder()
             .fxRate(1.5f)
-            .currentCurrency(CurrencyCode.CAD.rawValue())
+            .currentCurrency(CurrencyCode.CAD.rawValue)
             .build()
         assertEquals("CA$ 150", currency.formatWithUserPreference(100.1, preferCAD_USProject))
         assertEquals("CA$ 150", currency.formatWithUserPreference(100.9, preferCAD_USProject))
@@ -516,7 +516,7 @@ class KSCurrencyTest : TestCase() {
         val preferCAD_CAProject = caProject()
             .toBuilder()
             .fxRate(1f)
-            .currentCurrency(CurrencyCode.CAD.rawValue())
+            .currentCurrency(CurrencyCode.CAD.rawValue)
             .build()
         assertEquals("CA$ 100", currency.formatWithUserPreference(100.1, preferCAD_CAProject))
         assertEquals("CA$ 100", currency.formatWithUserPreference(100.9, preferCAD_CAProject))
@@ -539,7 +539,7 @@ class KSCurrencyTest : TestCase() {
         val preferCAD_UKProject = ukProject()
             .toBuilder()
             .fxRate(.75f)
-            .currentCurrency(CurrencyCode.CAD.rawValue())
+            .currentCurrency(CurrencyCode.CAD.rawValue)
             .build()
         assertEquals("CA$ 75", currency.formatWithUserPreference(100.1, preferCAD_UKProject))
         assertEquals("CA$ 75", currency.formatWithUserPreference(100.9, preferCAD_UKProject))
@@ -567,7 +567,7 @@ class KSCurrencyTest : TestCase() {
         val preferGBP_USProject = project()
             .toBuilder()
             .fxRate(.75f)
-            .currentCurrency(CurrencyCode.GBP.rawValue())
+            .currentCurrency(CurrencyCode.GBP.rawValue)
             .build()
         assertEquals("£75", currency.formatWithUserPreference(100.1, preferGBP_USProject))
         assertEquals("£75", currency.formatWithUserPreference(100.9, preferGBP_USProject))
@@ -590,7 +590,7 @@ class KSCurrencyTest : TestCase() {
         val preferGBP_CAProject = caProject()
             .toBuilder()
             .fxRate(1.5f)
-            .currentCurrency(CurrencyCode.GBP.rawValue())
+            .currentCurrency(CurrencyCode.GBP.rawValue)
             .build()
         assertEquals("£150", currency.formatWithUserPreference(100.1, preferGBP_CAProject))
         assertEquals("£150", currency.formatWithUserPreference(100.9, preferGBP_CAProject))
@@ -613,7 +613,7 @@ class KSCurrencyTest : TestCase() {
         val preferGBP_UKProject = ukProject()
             .toBuilder()
             .fxRate(1f)
-            .currentCurrency(CurrencyCode.GBP.rawValue())
+            .currentCurrency(CurrencyCode.GBP.rawValue)
             .build()
         assertEquals("£100", currency.formatWithUserPreference(100.1, preferGBP_UKProject))
         assertEquals("£100", currency.formatWithUserPreference(100.9, preferGBP_UKProject))

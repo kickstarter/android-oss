@@ -252,7 +252,7 @@ fun PledgedProjectsOverviewScreen(
                                 onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
                                 projectName = it.projectName(),
                                 pledgeAmount = it.amount?.toDoubleOrNull()?.let { amount ->
-                                    RewardViewUtils.formatCurrency(amount, it.currencyCode?.rawValue(), it.currencySymbol)
+                                    RewardViewUtils.formatCurrency(amount, it.currencyCode?.rawValue, it.currencySymbol)
                                 },
                                 imageUrl = it.imageUrl(),
                                 flags = it.flags,

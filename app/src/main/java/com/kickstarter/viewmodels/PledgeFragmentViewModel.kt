@@ -42,6 +42,7 @@ import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.isFromPaymentSheet
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
@@ -58,7 +59,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import type.CreditCardPaymentType
 import java.math.RoundingMode
 import java.text.NumberFormat
 import kotlin.math.max

@@ -51,7 +51,7 @@ object AnalyticEventsUtils {
             checkoutData.id()?.let { put("id", it.toString()) }
             put(
                 "payment_type",
-                checkoutData.paymentType().rawValue().lowercase(Locale.getDefault())
+                checkoutData.paymentType().rawValue.lowercase(Locale.getDefault())
             )
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
@@ -73,7 +73,7 @@ object AnalyticEventsUtils {
             checkoutData.id()?.let { put("id", it.toString()) }
             put(
                 "payment_type",
-                checkoutData.paymentType().rawValue().lowercase(Locale.getDefault())
+                checkoutData.paymentType().rawValue.lowercase(Locale.getDefault())
             )
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())

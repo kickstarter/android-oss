@@ -15,13 +15,13 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentMethodsIntent
+import com.kickstarter.type.CurrencyCode
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.AccountViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import type.CurrencyCode
 
 class AccountActivity : AppCompatActivity() {
 
@@ -199,7 +199,7 @@ class AccountActivity : AppCompatActivity() {
             CurrencyCode.SEK -> getString(R.string.Currency_SEK)
             CurrencyCode.SGD -> getString(R.string.Currency_SGD)
             CurrencyCode.USD -> getString(R.string.Currency_USD)
-            else -> currency.rawValue()
+            else -> currency.rawValue
         }
     }
 
@@ -210,11 +210,11 @@ class AccountActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.Change_currency))
                 .setMessage(getString(R.string.Project_goal_and_pledge))
                 .setNegativeButton(R.string.Cancel) { _, _ ->
-                    setSpinnerSelection(currentCurrencySelection!!.rawValue())
+                    setSpinnerSelection(currentCurrencySelection!!.rawValue)
                 }
                 .setPositiveButton(R.string.Yes_change_currency) { _, _ ->
                     this.viewModel.inputs.onSelectedCurrency(newCurrencySelection!!)
-                    setSpinnerSelection(newCurrencySelection!!.rawValue())
+                    setSpinnerSelection(newCurrencySelection!!.rawValue)
                 }
                 .create()
         }

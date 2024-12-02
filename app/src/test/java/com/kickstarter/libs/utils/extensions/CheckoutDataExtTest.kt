@@ -1,9 +1,9 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.data.CheckoutData
 import junit.framework.TestCase
-import type.CreditCardPaymentType
 
 class CheckoutDataExtTest : TestCase() {
 

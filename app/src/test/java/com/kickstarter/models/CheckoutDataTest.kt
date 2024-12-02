@@ -2,9 +2,9 @@ package com.kickstarter.models
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.CheckoutDataFactory
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.data.CheckoutData
 import org.junit.Test
-import type.CreditCardPaymentType
 
 class CheckoutDataTest : KSRobolectricTestCase() {
 

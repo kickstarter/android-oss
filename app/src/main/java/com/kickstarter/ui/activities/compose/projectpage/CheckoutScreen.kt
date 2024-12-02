@@ -67,6 +67,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.models.extensions.isFromPaymentSheet
+import com.kickstarter.type.CreditCardTypes
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.compose.login.LoginToutTestTag
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
@@ -80,7 +81,6 @@ import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.views.compose.checkout.ItemizedRewardListContainer
-import type.CreditCardTypes
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -110,9 +110,9 @@ fun CheckoutScreenPreview() {
                 .state(Project.STATE_LIVE)
                 .availableCardTypes(
                     listOf(
-                        CreditCardTypes.AMEX.rawValue(),
-                        CreditCardTypes.MASTERCARD.rawValue(),
-                        CreditCardTypes.VISA.rawValue()
+                        CreditCardTypes.AMEX.rawValue,
+                        CreditCardTypes.MASTERCARD.rawValue,
+                        CreditCardTypes.VISA.rawValue
                     )
                 )
                 .build(),
@@ -132,7 +132,7 @@ fun CheckoutScreenPreview() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun CheckoutScreenisPlotEnabledPreview() {
+fun CheckoutScreenIsPlotEnabledPreview() {
     KSTheme {
         CheckoutScreen(
             rewardsList = (1..6).map {
@@ -154,9 +154,9 @@ fun CheckoutScreenisPlotEnabledPreview() {
                 .state(Project.STATE_LIVE)
                 .availableCardTypes(
                     listOf(
-                        CreditCardTypes.AMEX.rawValue(),
-                        CreditCardTypes.MASTERCARD.rawValue(),
-                        CreditCardTypes.VISA.rawValue()
+                        CreditCardTypes.AMEX.rawValue,
+                        CreditCardTypes.MASTERCARD.rawValue,
+                        CreditCardTypes.VISA.rawValue
                     )
                 )
                 .build(),

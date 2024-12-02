@@ -165,7 +165,6 @@ class ThanksActivity : AppCompatActivity() {
 
     private fun startDiscoveryActivity(params: DiscoveryParams) {
         val intent = Intent(this, DiscoveryActivity::class.java)
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             .putExtra(IntentKey.DISCOVERY_PARAMS, params)
         startActivity(intent)
     }

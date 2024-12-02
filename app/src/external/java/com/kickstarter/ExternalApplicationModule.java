@@ -1,6 +1,6 @@
 package com.kickstarter;
 
-import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo3.ApolloClient;
 import com.google.gson.Gson;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.InternalToolsType;

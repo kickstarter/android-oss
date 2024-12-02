@@ -1,7 +1,7 @@
 package com.kickstarter.features.pledgedprojectsoverview.data
 
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
-import type.CurrencyCode
+import com.kickstarter.type.CurrencyCode
 
 class PPOCardFactory private constructor() {
     companion object {

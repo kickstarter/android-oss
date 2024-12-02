@@ -20,6 +20,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.stripe.android.Stripe
@@ -41,7 +42,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
-import type.CreditCardPaymentType
 
 data class LatePledgeCheckoutUIState(
     val storeCards: List<StoredCard> = listOf(),

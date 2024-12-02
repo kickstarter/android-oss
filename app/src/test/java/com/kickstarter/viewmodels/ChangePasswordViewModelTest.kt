@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
@@ -93,8 +93,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(
                         UpdateUserPasswordMutation.Data(
                             UpdateUserPasswordMutation.UpdateUserAccount(
-                                "",
-                                UpdateUserPasswordMutation.User("", "test@email.com", false, false)
+                                UpdateUserPasswordMutation.User("test@email.com", false, false)
                             )
                         )
                     )
@@ -167,8 +166,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(
                     UpdateUserPasswordMutation.Data(
                         UpdateUserPasswordMutation.UpdateUserAccount(
-                            "",
-                            UpdateUserPasswordMutation.User("", "new22test@email.com", false, false)
+                            UpdateUserPasswordMutation.User("new22test@email.com", false, false)
                         )
                     )
                 )

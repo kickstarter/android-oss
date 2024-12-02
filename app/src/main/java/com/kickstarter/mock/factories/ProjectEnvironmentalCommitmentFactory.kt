@@ -1,7 +1,7 @@
 package com.kickstarter.mock.factories
 
+import com.kickstarter.libs.EnvironmentalCommitmentCategories
 import com.kickstarter.models.EnvironmentalCommitment
-import type.EnvironmentalCommitmentCategory
 
 class ProjectEnvironmentalCommitmentFactory private constructor() {
     companion object {
@@ -18,7 +18,7 @@ class ProjectEnvironmentalCommitmentFactory private constructor() {
                 "No, there is no extra VAT or taxes for backers.\r\n\r\nWe will export the " +
                     "tables to local countries first and forward to respective shipping addresses through local couriers. We will clear the customs for all the desks. \r\n\r\nVAT and taxes are already included in the reward price and no extra payment will be required from backers."
             )
-            .category(EnvironmentalCommitmentCategory.LONG_LASTING_DESIGN.name)
+            .category(EnvironmentalCommitmentCategories.LONG_LASTING_DESIGN.name.lowercase())
             .build()
 
         private fun getSustainableMaterialsCategory() = EnvironmentalCommitment.builder()
@@ -27,7 +27,7 @@ class ProjectEnvironmentalCommitmentFactory private constructor() {
                 "No, there is no extra VAT or taxes for backers.\r\n\r\nWe will export the " +
                     "tables to local countries first and forward to respective shipping addresses through local couriers. We will clear the customs for all the desks. \r\n\r\nVAT and taxes are already included in the reward price and no extra payment will be required from backers."
             )
-            .category(EnvironmentalCommitmentCategory.SUSTAINABLE_MATERIALS.name)
+            .category(EnvironmentalCommitmentCategories.SUSTAINABLE_MATERIALS.name.lowercase())
             .build()
     }
 }

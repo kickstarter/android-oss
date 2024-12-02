@@ -21,6 +21,7 @@ import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.type.FlaggingKind
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
@@ -34,7 +35,6 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
 import org.junit.After
 import org.junit.Test
-import type.FlaggingKind
 import java.util.Arrays
 
 class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
@@ -625,7 +625,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(env, project(project))
 
-        vm.inputs.refreshFlaggedState(FlaggingKind.NOT_PROJECT.rawValue())
+        vm.inputs.refreshFlaggedState(FlaggingKind.NOT_PROJECT.rawValue)
         this.shouldShowProjectFlagged.assertValues(true, true)
         this.shouldShowReportProject.assertValues(false, false)
     }

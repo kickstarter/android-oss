@@ -30,6 +30,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CheckoutData
@@ -50,7 +51,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.Mockito
-import type.CreditCardPaymentType
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {

@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
-import DeletePaymentSourceMutation
 import android.util.Pair
+import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory

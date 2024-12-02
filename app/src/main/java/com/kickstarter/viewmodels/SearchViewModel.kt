@@ -5,12 +5,10 @@ import android.content.SharedPreferences
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.libs.ApiPaginatorV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.RefTagUtils
@@ -27,6 +25,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import org.joda.time.DateTime
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
@@ -268,7 +267,8 @@ interface SearchViewModel {
                     }
 
             selectedProject.subscribe {
-                if (it.first.launchedAt() == DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)) &&
+                val epochDateTime = DateTime(0)
+                if (it.first.launchedAt() == epochDateTime &&
                     ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
                 ) {
                     startPreLaunchProjectActivity.onNext(it)

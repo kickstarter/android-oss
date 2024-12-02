@@ -131,6 +131,7 @@ interface LoggedInViewHolderViewModel {
         }
 
         override fun onCleared() {
+            apolloClient.cleanDisposables()
             disposables.clear()
         }
 

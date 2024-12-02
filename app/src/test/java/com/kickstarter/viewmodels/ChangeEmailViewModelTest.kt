@@ -1,9 +1,9 @@
 package com.kickstarter.viewmodels
 
-import SendEmailVerificationMutation
-import UpdateUserEmailMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.SendEmailVerificationMutation
+import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -224,7 +224,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(
                         SendEmailVerificationMutation.Data(
                             SendEmailVerificationMutation
-                                .UserSendEmailVerification("", "1234")
+                                .UserSendEmailVerification("1234")
                         )
                     )
                 }
@@ -268,8 +268,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
                         UpdateUserEmailMutation.Data(
                             UpdateUserEmailMutation
                                 .UpdateUserAccount(
-                                    "",
-                                    UpdateUserEmailMutation.User("", "", email)
+                                    UpdateUserEmailMutation.User("", email)
                                 )
                         )
                     )

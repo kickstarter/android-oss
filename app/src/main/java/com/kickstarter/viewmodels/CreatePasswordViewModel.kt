@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
-import CreatePasswordMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.CreatePasswordMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
@@ -74,7 +74,7 @@ interface CreatePasswordViewModel {
 
             createNewPasswordNotification
                 .compose(valuesV2())
-                .map { it.updateUserAccount()?.user()?.email() }
+                .map { it.updateUserAccount?.user?.email }
                 .filter { it.isNotNull() }
                 .map { it }
                 .subscribe {
@@ -92,6 +92,7 @@ interface CreatePasswordViewModel {
         }
 
         override fun onCleared() {
+            apolloClientV2.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

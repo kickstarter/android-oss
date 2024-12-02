@@ -12,12 +12,12 @@ import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.CreditCardTypes
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import type.CreditCardTypes
 import java.util.Locale
 
 class ProjectExtTest : KSRobolectricTestCase() {

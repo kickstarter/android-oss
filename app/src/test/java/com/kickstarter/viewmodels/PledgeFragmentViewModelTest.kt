@@ -40,6 +40,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.type.CreditCardTypes
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CardState
@@ -60,7 +61,6 @@ import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
-import type.CreditCardTypes
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
@@ -2538,7 +2538,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
-            .availableCardTypes(listOf(CreditCardTypes.VISA.rawValue()))
+            .availableCardTypes(listOf(CreditCardTypes.VISA.rawValue))
             .backing(backing)
             .build()
 

@@ -7,10 +7,8 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Urls
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.COMING_SOON_BADGE
@@ -22,6 +20,7 @@ import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.P
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_SAVE_BUTTON
+import org.joda.time.DateTime
 import org.junit.Test
 
 class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
@@ -59,9 +58,7 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
     @Test
     fun verifyOnSaveButtonClicked() {
         val project = ProjectFactory.project().toBuilder()
-            .launchedAt(
-                DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0))
-            )
+            .launchedAt(DateTime(0))
             .displayPrelaunch(true)
             .watchesCount(1)
             .urls(Urls.builder().build()).build()

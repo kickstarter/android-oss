@@ -8,10 +8,10 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.getCardTypeDrawable
+import com.kickstarter.type.CreditCardTypes
 import com.stripe.android.model.CardBrand
 import junit.framework.TestCase
 import org.junit.Test
-import type.CreditCardTypes
 import java.util.Date
 
 class StoredCardTest : TestCase() {
@@ -47,7 +47,7 @@ class StoredCardTest : TestCase() {
 
         val resourceID = storedCard.getCardTypeDrawable()
         assertEquals(storedCard.lastFourDigits(), "1234")
-        assertEquals(storedCard.type(), CreditCardTypes.`$UNKNOWN`)
+        assertEquals(storedCard.type(), CreditCardTypes.UNKNOWN__)
         assertEquals(resourceID, 1234)
     }
 
@@ -94,7 +94,7 @@ class StoredCardTest : TestCase() {
         assertEquals(StoredCard.issuer(CreditCardTypes.MASTERCARD), CardBrand.MasterCard.code)
         assertEquals(StoredCard.issuer(CreditCardTypes.UNIONPAY), CardBrand.UnionPay.code)
         assertEquals(StoredCard.issuer(CreditCardTypes.VISA), CardBrand.Visa.code)
-        assertEquals(StoredCard.issuer(CreditCardTypes.`$UNKNOWN`), CardBrand.Unknown.code)
+        assertEquals(StoredCard.issuer(CreditCardTypes.UNKNOWN__), CardBrand.Unknown.code)
     }
 
     @Test
@@ -106,7 +106,7 @@ class StoredCardTest : TestCase() {
         assertEquals(getCardTypeDrawable(CreditCardTypes.MASTERCARD), R.drawable.mastercard_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.UNIONPAY), R.drawable.union_pay_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
-        assertEquals(getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.UNKNOWN__), R.drawable.generic_bank_md)
     }
 
     @Test

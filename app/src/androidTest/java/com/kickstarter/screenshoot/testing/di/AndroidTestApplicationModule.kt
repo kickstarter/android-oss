@@ -2,7 +2,7 @@ package com.kickstarter.screenshoot.testing.di
 
 import android.app.Application
 import androidx.annotation.NonNull
-import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo3.ApolloClient
 import com.google.gson.Gson
 import com.kickstarter.ApplicationModule
 import com.kickstarter.libs.ApiEndpoint

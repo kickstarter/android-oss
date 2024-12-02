@@ -1,18 +1,18 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserCurrencyMutation
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.AccountViewModel.AccountViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import type.CurrencyCode
 
 class AccountViewModelTest : KSRobolectricTestCase() {
 
@@ -88,7 +88,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(
                         UpdateUserCurrencyMutation.Data(
                             UpdateUserCurrencyMutation
-                                .UpdateUserProfile("", UpdateUserCurrencyMutation.User("", currency.rawValue()))
+                                .UpdateUserProfile(UpdateUserCurrencyMutation.User(currency.rawValue))
                         )
                     )
                 }
@@ -97,10 +97,10 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
         this.chosenCurrency.assertValue("USD")
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
-        this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
-        this.success.assertValue(CurrencyCode.AUD.rawValue())
+        this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue)
+        this.success.assertValue(CurrencyCode.AUD.rawValue)
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
-        this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
+        this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue)
     }
 
     @Test

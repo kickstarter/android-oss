@@ -8,6 +8,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.type.FlaggingKind
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
@@ -18,7 +19,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import type.FlaggingKind
 
 class ReportProjectViewModelTest : KSRobolectricTestCase() {
 
@@ -43,7 +43,7 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
             details: String,
             flaggingKind: String
         ): Observable<String> {
-            return Observable.just(FlaggingKind.SPAM.rawValue())
+            return Observable.just(FlaggingKind.SPAM.rawValue)
         }
     }).build()
 
@@ -90,10 +90,10 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(getEnvironment(), getBundle(project))
 
-        vm.inputs.inputDetails(FlaggingKind.SPAM.rawValue())
-        vm.inputs.kind(FlaggingKind.SPAM.rawValue())
+        vm.inputs.inputDetails(FlaggingKind.SPAM.rawValue)
+        vm.inputs.kind(FlaggingKind.SPAM.rawValue)
         vm.inputs.createFlagging()
-        finish.assertValue(ReportProjectViewModel.ReportProjectViewModel.NavigationResult(true, FlaggingKind.SPAM.rawValue()))
+        finish.assertValue(ReportProjectViewModel.ReportProjectViewModel.NavigationResult(true, FlaggingKind.SPAM.rawValue))
     }
 
     @Test

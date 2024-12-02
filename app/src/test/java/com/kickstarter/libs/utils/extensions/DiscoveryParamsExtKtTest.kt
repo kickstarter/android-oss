@@ -7,9 +7,9 @@ import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.ProjectSort
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import org.junit.Test
-import type.ProjectSort
 
 class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
 

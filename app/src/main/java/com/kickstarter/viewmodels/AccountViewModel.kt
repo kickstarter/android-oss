@@ -1,9 +1,9 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserCurrencyMutation
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -11,11 +11,11 @@ import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.type.CurrencyCode
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import type.CurrencyCode
 
 interface AccountViewModel {
 
@@ -93,14 +93,14 @@ interface AccountViewModel {
 
             val updateCurrencyNotification = this.onSelectedCurrency
                 .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
-                .filter { it.first.rawValue() != it.second }
+                .filter { it.first.rawValue != it.second }
                 .map<CurrencyCode> { it.first }
                 .switchMap { updateUserCurrency(it).materialize() }
                 .share()
 
             updateCurrencyNotification
                 .compose(valuesV2())
-                .map { it.updateUserProfile()?.user()?.chosenCurrency() ?: "" }
+                .map { it.updateUserProfile?.user?.chosenCurrency ?: "" }
                 .filter { it.isNotNull() }
                 .subscribe {
                     this.chosenCurrency.onNext(it)
@@ -153,6 +153,7 @@ interface AccountViewModel {
         }
 
         override fun onCleared() {
+            apolloClient.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

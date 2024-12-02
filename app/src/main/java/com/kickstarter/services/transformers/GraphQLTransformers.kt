@@ -1,20 +1,25 @@
 package com.kickstarter.services.transformers
 
-import CreateAttributionEventMutation
-import CreateOrUpdateBackingAddressMutation
-import PledgedProjectsOverviewQuery
-import TriggerThirdPartyEventMutation
-import UserPrivacyQuery
+import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.CreateAttributionEventMutation
+import com.kickstarter.CreateOrUpdateBackingAddressMutation
+import com.kickstarter.FetchProjectRewardsQuery
+import com.kickstarter.PledgedProjectsOverviewQuery
+import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
+import com.kickstarter.fragment.FullProject
+import com.kickstarter.fragment.PpoCard.DeliveryAddress
+import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
@@ -43,22 +48,16 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
-import com.kickstarter.viewmodels.usecases.TPEventInputData
-import fragment.FullProject
-import fragment.PpoCard.DeliveryAddress
-import fragment.ProjectCard
+import com.kickstarter.type.CollaboratorPermission
+import com.kickstarter.type.CreateAttributionEventInput
+import com.kickstarter.type.CreateOrUpdateBackingAddressInput
+import com.kickstarter.type.CreditCardPaymentType
+import com.kickstarter.type.CurrencyCode
+import com.kickstarter.type.Feature
+import com.kickstarter.type.RewardType
+import com.kickstarter.type.ShippingPreference
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
-import type.AppDataInput
-import type.CollaboratorPermission
-import type.CreateAttributionEventInput
-import type.CreateOrUpdateBackingAddressInput
-import type.CreditCardPaymentType
-import type.CurrencyCode
-import type.RewardType
-import type.ShippingPreference
-import type.ThirdPartyEventItemInput
-import type.TriggerThirdPartyEventInput
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
@@ -91,11 +90,11 @@ fun <T : Relay> encodeRelayId(relay: T): String {
  * @param fragment.Faq faq
  * @return ProjectFaq
  */
-fun projectFaqTransformer(faq: fragment.Faq): ProjectFaq {
-    val id = decodeRelayId(faq.id()) ?: -1
-    val answer = faq.answer()
-    val createdAt = faq.createdAt()
-    val question = faq.question()
+fun projectFaqTransformer(faq: com.kickstarter.fragment.Faq): ProjectFaq {
+    val id = decodeRelayId(faq.id) ?: -1
+    val answer = faq.answer
+    val createdAt = faq.createdAt
+    val question = faq.question
 
     return ProjectFaq.builder()
         .id(id)
@@ -110,10 +109,10 @@ fun projectFaqTransformer(faq: fragment.Faq): ProjectFaq {
  * @param fragment.EnvironmentalCommitment
  * @return EnvironmentalCommitment
  */
-fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitment): EnvironmentalCommitment {
-    val id = decodeRelayId(envCommit.id()) ?: -1
-    val category = envCommit.commitmentCategory().name
-    val description = envCommit.description()
+fun environmentalCommitmentTransformer(envCommit: com.kickstarter.fragment.EnvironmentalCommitment): EnvironmentalCommitment {
+    val id = decodeRelayId(envCommit.id) ?: -1
+    val category = envCommit.commitmentCategory.name
+    val description = envCommit.description
 
     return EnvironmentalCommitment.builder()
         .id(id = id)
@@ -128,48 +127,47 @@ fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitme
  * @return Reward
  */
 fun rewardTransformer(
-    rewardGr: fragment.Reward,
-    shippingRulesExpanded: List<fragment.ShippingRule> = emptyList(),
+    rewardGr: com.kickstarter.fragment.Reward,
+    shippingRulesExpanded: List<com.kickstarter.fragment.ShippingRule> = emptyList(),
     simpleShippingRules: List<FetchProjectRewardsQuery.SimpleShippingRulesExpanded> = emptyList(),
     allowedAddons: Boolean = false,
     rewardItems: List<RewardsItem> = emptyList(),
     addOnItems: List<RewardsItem> = emptyList()
 ): Reward {
-    val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
-    val latePledgeAmount = rewardGr.latePledgeAmount().fragments().amount().amount()?.toDouble() ?: 0.0
-    val pledgeAmount = rewardGr.pledgeAmount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val amount = rewardGr.amount.amount.amount?.toDouble() ?: 0.0
+    val latePledgeAmount = rewardGr.latePledgeAmount.amount.amount?.toDouble() ?: 0.0
+    val pledgeAmount = rewardGr.pledgeAmount.amount.amount?.toDouble() ?: 0.0
     val convertedAmount =
-        rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
-    val desc = rewardGr.description()
-    val title = rewardGr.name()
-    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
-    val remaining = rewardGr.remainingQuantity()
-    val endsAt = rewardGr.endsAt()?.let { DateTime(it) }
-    val startsAt = rewardGr.startsAt()?.let { DateTime(it) }
-    val rewardId = decodeRelayId(rewardGr.id()) ?: -1
-    val available = rewardGr.available()
-    val isAddOn = rewardGr.rewardType() == RewardType.ADDON
-    val isReward = rewardGr.rewardType() == RewardType.BASE
-    val backersCount = rewardGr.backersCount()
-    val shippingPreference = when (rewardGr.shippingPreference()) {
-        ShippingPreference.NONE -> Reward.ShippingPreference.NONE
-        ShippingPreference.RESTRICTED -> Reward.ShippingPreference.RESTRICTED
-        ShippingPreference.UNRESTRICTED -> Reward.ShippingPreference.UNRESTRICTED
-        ShippingPreference.LOCAL -> Reward.ShippingPreference.LOCAL
+        rewardGr.convertedAmount.amount.amount?.toDouble() ?: 0.0
+    val desc = rewardGr.description
+    val title = rewardGr.name
+    val estimatedDelivery = rewardGr.estimatedDeliveryOn?.let { DateTime(it) }
+    val remaining = rewardGr.remainingQuantity
+    val endsAt = rewardGr.endsAt?.let { DateTime(it) }
+    val startsAt = rewardGr.startsAt?.let { DateTime(it) }
+    val rewardId = decodeRelayId(rewardGr.id) ?: -1
+    val available = rewardGr.available
+    val isAddOn = rewardGr.rewardType == RewardType.addon
+    val isReward = rewardGr.rewardType == RewardType.base
+    val backersCount = rewardGr.backersCount
+    val shippingPreference = when (rewardGr.shippingPreference) {
+        ShippingPreference.none -> Reward.ShippingPreference.NONE
+        ShippingPreference.restricted -> Reward.ShippingPreference.RESTRICTED
+        ShippingPreference.unrestricted -> Reward.ShippingPreference.UNRESTRICTED
+        ShippingPreference.local -> Reward.ShippingPreference.LOCAL
         else -> Reward.ShippingPreference.UNKNOWN
     }
 
-    val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
-    else rewardGr.limit()
+    val limit = if (isAddOn) chooseLimit(rewardGr.limit, rewardGr.limitPerBacker)
+    else rewardGr.limit
 
     val shippingRules =
         shippingRulesExpanded.takeIf { it.isNotEmpty() }?.map { shippingRuleTransformer(it) }
             ?: simpleShippingRules.takeIf { it.isNotEmpty() }?.map {
                 return@map simpleShippingRuleTransformer(it)
-            }
-            ?: emptyList()
+            } ?: emptyList()
 
-    val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation()?.fragments()?.location())
+    val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
     return Reward.builder()
         .title(title)
@@ -199,9 +197,9 @@ fun rewardTransformer(
 }
 
 fun simpleShippingRuleTransformer(simpleShippingRules: FetchProjectRewardsQuery.SimpleShippingRulesExpanded): ShippingRule {
-    val id = decodeRelayId(simpleShippingRules.locationId()) ?: -1
-    val country = simpleShippingRules.country() ?: ""
-    val displayName = simpleShippingRules.locationName()
+    val id = decodeRelayId(simpleShippingRules.locationId) ?: -1
+    val country = simpleShippingRules.country ?: ""
+    val displayName = simpleShippingRules.locationName
 
     val location = Location.builder()
         .id(id)
@@ -209,9 +207,9 @@ fun simpleShippingRuleTransformer(simpleShippingRules: FetchProjectRewardsQuery.
         .displayableName(displayName)
         .name(displayName)
         .build()
-    val cost = simpleShippingRules.cost()?.toDoubleOrNull() ?: 0.0
-    val estimatedMin = simpleShippingRules.estimatedMin()?.toDoubleOrNull() ?: 0.0
-    val estimatedMax = simpleShippingRules.estimatedMax()?.toDoubleOrNull() ?: 0.0
+    val cost = simpleShippingRules.cost?.toDoubleOrNull() ?: 0.0
+    val estimatedMin = simpleShippingRules.estimatedMin?.toDoubleOrNull() ?: 0.0
+    val estimatedMax = simpleShippingRules.estimatedMax?.toDoubleOrNull() ?: 0.0
 
     return ShippingRule.builder()
         .id(id)
@@ -245,12 +243,12 @@ private fun chooseLimit(limitReward: Int?, limitPerBacker: Int?): Int {
  * @param fragment.Reward.items
  * @return List<RewardItem>
  */
-fun complexRewardItemsTransformer(items: fragment.RewardItems?): List<RewardsItem> {
-    val rewardItems = items?.edges()?.map { edge ->
-        val quantity = edge.quantity()
-        val description = edge.node()?.name()
-        val id = decodeRelayId(edge.node()?.id()) ?: -1
-        val name = edge.node()?.name() ?: ""
+fun complexRewardItemsTransformer(items: com.kickstarter.fragment.RewardItems?): List<RewardsItem> {
+    val rewardItems = items?.edges?.map { edge ->
+        val quantity = edge?.quantity
+        val description = edge?.node?.name
+        val id = decodeRelayId(edge?.node?.id) ?: -1
+        val name = edge?.node?.name ?: ""
 
         val item = Item.builder()
             .name(name)
@@ -275,61 +273,63 @@ fun complexRewardItemsTransformer(items: fragment.RewardItems?): List<RewardsIte
  * @return Project
  */
 fun projectTransformer(projectFragment: FullProject?): Project {
-    val availableCards = projectFragment?.availableCardTypes() ?: emptyList()
-    val backersCount = projectFragment?.backersCount() ?: 0
-    val blurb = projectFragment?.description() ?: ""
-    val backing = if (projectFragment?.backing()?.fragments()?.backing() != null) {
-        backingTransformer(projectFragment.backing()?.fragments()?.backing())
+    val availableCards = projectFragment?.availableCardTypes ?: emptyList()
+    val backersCount = projectFragment?.backersCount ?: 0
+    val blurb = projectFragment?.description ?: ""
+    val backing = if (projectFragment?.backing?.backing != null) {
+        backingTransformer(projectFragment.backing?.backing)
     } else null
-    val category = if (projectFragment?.category()?.fragments()?.category() != null) {
-        categoryTransformer(projectFragment.category()?.fragments()?.category())
+    val category = if (projectFragment?.category?.category != null) {
+        categoryTransformer(projectFragment.category?.category)
     } else null
-    val commentsCount = projectFragment?.commentsCount() ?: 0
-    val country = projectFragment?.country()?.fragments()?.country()?.name() ?: ""
-    val createdAt = projectFragment?.createdAt()
-    val creator = userTransformer(projectFragment?.creator()?.fragments()?.user())
-    val currency = projectFragment?.currency()?.name ?: ""
-    val currencySymbol = projectFragment?.goal()?.fragments()?.amount()?.symbol()
-    val prelaunchActivated = projectFragment?.prelaunchActivated()
-    val sendMetaCapiEvents = projectFragment?.sendMetaCapiEvents()
-    val sendThirdPartyEvents = projectFragment?.sendThirdPartyEvents()
-    val featuredAt = projectFragment?.projectOfTheDayAt()
+    val commentsCount = projectFragment?.commentsCount ?: 0
+    val country = projectFragment?.country?.country?.name ?: ""
+    val createdAt = projectFragment?.createdAt
+    val creator = userTransformer(projectFragment?.creator?.user)
+    val currency = projectFragment?.currency?.name ?: ""
+    val currencySymbol = projectFragment?.goal?.amount?.symbol
+    val prelaunchActivated = projectFragment?.prelaunchActivated
+    val sendMetaCapiEvents = projectFragment?.sendMetaCapiEvents
+    val sendThirdPartyEvents = projectFragment?.sendThirdPartyEvents
+    val featuredAt = projectFragment?.projectOfTheDayAt
     val friends =
-        projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) }
+        projectFragment?.friends?.nodes?.map { userTransformer(it?.user) }
             ?: emptyList<User>()
-    val fxRate = projectFragment?.fxRate()?.toFloat()
-    val deadline = projectFragment?.deadlineAt()
-    val goal = projectFragment?.goal()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
-    val id = decodeRelayId(projectFragment?.id()) ?: -1
-    val isBacking = projectFragment?.backing()?.fragments()?.backing()?.let { true } ?: false
+    val fxRate = projectFragment?.fxRate?.toFloat()
+    val deadline = projectFragment?.deadlineAt
+    val goal = projectFragment?.goal?.amount?.amount?.toDouble() ?: 0.0
+    val id = decodeRelayId(projectFragment?.id) ?: -1
+    val isBacking = projectFragment?.backing?.backing?.let { true } ?: false
     val isStarred = projectFragment?.isWatched ?: false
-    val launchedAt = projectFragment?.launchedAt()
-    val location = locationTransformer(projectFragment?.location()?.fragments()?.location())
-    val name = projectFragment?.name()
-    val permission = projectFragment?.collaboratorPermissions()?.map {
+    val launchedAt = projectFragment?.launchedAt
+    val location = locationTransformer(projectFragment?.location?.location)
+    val name = projectFragment?.name
+    val permission = projectFragment?.collaboratorPermissions?.map {
         when (it) {
-            CollaboratorPermission.COMMENT -> Permission.COMMENT
-            CollaboratorPermission.EDIT_FAQ -> Permission.EDIT_FAQ
-            CollaboratorPermission.EDIT_PROJECT -> Permission.EDIT_PROJECT
-            CollaboratorPermission.FULFILLMENT -> Permission.FULFILLMENT
-            CollaboratorPermission.POST -> Permission.POST
-            CollaboratorPermission.VIEW_PLEDGES -> Permission.VIEW_PLEDGES
+            CollaboratorPermission.comment -> Permission.COMMENT
+            CollaboratorPermission.edit_faq -> Permission.EDIT_FAQ
+            CollaboratorPermission.edit_project -> Permission.EDIT_PROJECT
+            CollaboratorPermission.fulfillment -> Permission.FULFILLMENT
+            CollaboratorPermission.post -> Permission.POST
+            CollaboratorPermission.view_pledges -> Permission.VIEW_PLEDGES
             else -> Permission.UNKNOWN
         }
     }
-    val pledged = projectFragment?.pledged()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
-    val photoUrl = projectFragment?.fragments()?.full()?.image()?.url()
+    val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
+    val photoUrl = projectFragment?.full?.image?.url
     val photo = getPhoto(photoUrl)
     val tags = mutableListOf<String>()
-    projectFragment?.fragments()?.tagsCreative()?.tags()?.map { tags.add(it.id()) }
-    projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
+    projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
+    projectFragment?.tagsDiscovery?.tags?.map { tags.add(it?.id ?: "") }
 
-    val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
+    val minPledge = projectFragment?.minPledge?.toDouble() ?: 1.0
     val rewards =
-        projectFragment?.rewards()?.nodes()?.map {
-            rewardTransformer(
-                it.fragments().reward()
-            )
+        projectFragment?.rewards?.nodes?.map {
+            it?.reward?.let { rw ->
+                rewardTransformer(
+                    rewardGr = rw
+                )
+            }
         }
 
     // - GraphQL does not provide the Reward no reward, we need to add it first
@@ -337,43 +337,43 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     modifiedRewards?.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
     modifiedRewards?.toList()
 
-    val slug = projectFragment?.slug()
+    val slug = projectFragment?.slug
     val staffPicked = projectFragment?.isProjectWeLove ?: false
-    val state = projectFragment?.state()?.name?.lowercase()
-    val stateChangedAt = projectFragment?.stateChangedAt()
-    val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat() ?: 1f
-    val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat() ?: 1f
-    val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.let {
-        if (it.isNotEmpty()) return@let it.first()?.updatedAt()
+    val state = projectFragment?.state?.name?.lowercase()
+    val stateChangedAt = projectFragment?.stateChangedAt
+    val staticUSDRate = projectFragment?.usdExchangeRate?.toFloat() ?: 1f
+    val usdExchangeRate = projectFragment?.usdExchangeRate?.toFloat() ?: 1f
+    val updatedAt = projectFragment?.posts?.updates?.nodes?.let {
+        if (it.isNotEmpty()) return@let it.first()?.updatedAt
         else null
     }
-    val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.totalCount()
-    val url = projectFragment?.url()
+    val updatesCount = projectFragment?.posts?.updates?.totalCount
+    val url = projectFragment?.url
     val urlsWeb = Web.builder()
         .project(url)
         .rewards("$url/rewards")
         .build()
     val urls = Urls.builder().web(urlsWeb).build()
-    val video = if (projectFragment?.video()?.fragments()?.video() != null) {
-        videoTransformer(projectFragment.video()?.fragments()?.video())
+    val video = if (projectFragment?.video?.video != null) {
+        videoTransformer(projectFragment.video?.video)
     } else null
     val displayPrelaunch = (projectFragment?.isLaunched ?: false).negate()
-    val faqs = projectFragment?.faqs()?.nodes()?.map { node ->
-        projectFaqTransformer(node.fragments().faq())
+    val faqs = projectFragment?.faqs?.nodes?.map { node ->
+        node?.let { projectFaqTransformer(it.faq) }
     } ?: emptyList()
-    val eCommitment = projectFragment?.environmentalCommitments()?.map {
-        environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
+    val eCommitment = projectFragment?.environmentalCommitments?.map {
+        it?.let { it1 -> environmentalCommitmentTransformer(it1.environmentalCommitment) }
     } ?: emptyList()
-    val aiDisclosure = projectFragment?.aiDisclosure()?.fragments()?.aiDisclosure()?.let {
+    val aiDisclosure = projectFragment?.aiDisclosure?.aiDisclosure?.let {
         aiDisclosureTransformer(it)
-    } ?: null
-    val risks = projectFragment?.risks()
-    val story = projectFragment?.story()?.toString() ?: ""
-    val userCanComment = projectFragment?.canComment() ?: false
-    val isFlagged = projectFragment?.flagging()?.kind()?.let { true } ?: false
-    val watchesCount = projectFragment?.watchesCount() ?: 0
+    }
+    val risks = projectFragment?.risks
+    val story = projectFragment?.story?.toString() ?: ""
+    val userCanComment = projectFragment?.canComment ?: false
+    val isFlagged = projectFragment?.flagging?.kind?.let { true } ?: false
+    val watchesCount = projectFragment?.watchesCount ?: 0
     val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
-    val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled() ?: false
+    val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled ?: false
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -410,7 +410,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .sendMetaCapiEvents(sendMetaCapiEvents)
         .sendThirdPartyEvents(sendThirdPartyEvents)
         .tags(tags)
-        .rewards(modifiedRewards)
+        .rewards(modifiedRewards?.filterNotNull()?.toList())
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)
@@ -423,8 +423,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .updatesCount(updatesCount)
         .urls(urls)
         .video(video)
-        .projectFaqs(faqs)
-        .envCommitments(eCommitment)
+        .projectFaqs(faqs.filterNotNull())
+        .envCommitments(eCommitment.filterNotNull())
         .aiDisclosure(aiDisclosure)
         .risks(risks)
         .story(story)
@@ -440,15 +440,15 @@ fun projectTransformer(projectFragment: FullProject?): Project {
  * @param FullProject.AiDisclosure aiDisclosureGraph
  * @return AiDisclosure
  */
-fun aiDisclosureTransformer(aiDisclosureGraph: fragment.AiDisclosure): AiDisclosure {
+fun aiDisclosureTransformer(aiDisclosureGraph: com.kickstarter.fragment.AiDisclosure): AiDisclosure {
     return AiDisclosure.builder()
-        .id(decodeRelayId(aiDisclosureGraph.id()) ?: -1)
-        .fundingForAiAttribution(aiDisclosureGraph.fundingForAiAttribution())
-        .fundingForAiConsent(aiDisclosureGraph.fundingForAiConsent())
-        .fundingForAiOption(aiDisclosureGraph.fundingForAiOption())
-        .generatedByAiConsent(aiDisclosureGraph.generatedByAiConsent())
-        .generatedByAiDetails(aiDisclosureGraph.generatedByAiDetails())
-        .otherAiDetails(aiDisclosureGraph.otherAiDetails())
+        .id(decodeRelayId(aiDisclosureGraph.id) ?: -1)
+        .fundingForAiAttribution(aiDisclosureGraph.fundingForAiAttribution)
+        .fundingForAiConsent(aiDisclosureGraph.fundingForAiConsent)
+        .fundingForAiOption(aiDisclosureGraph.fundingForAiOption)
+        .generatedByAiConsent(aiDisclosureGraph.generatedByAiConsent)
+        .generatedByAiDetails(aiDisclosureGraph.generatedByAiDetails)
+        .otherAiDetails(aiDisclosureGraph.otherAiDetails)
         .build()
 }
 
@@ -457,15 +457,15 @@ fun aiDisclosureTransformer(aiDisclosureGraph: fragment.AiDisclosure): AiDisclos
  * @param fragment.Category category
  * @return Project
  */
-fun categoryTransformer(categoryFragment: fragment.Category?): Category {
-    val analyticsName = categoryFragment?.analyticsName() ?: ""
-    val name = categoryFragment?.name() ?: ""
-    val id = decodeRelayId(categoryFragment?.id()) ?: -1
-    val slug = categoryFragment?.slug()
-    val parentId = decodeRelayId(categoryFragment?.parentCategory()?.id()) ?: 0
-    val parentName = categoryFragment?.parentCategory()?.name()
-    val parentSlug = categoryFragment?.parentCategory()?.slug()
-    val parentAnalyticName = categoryFragment?.parentCategory()?.analyticsName() ?: ""
+fun categoryTransformer(categoryFragment: com.kickstarter.fragment.Category?): Category {
+    val analyticsName = categoryFragment?.analyticsName ?: ""
+    val name = categoryFragment?.name ?: ""
+    val id = decodeRelayId(categoryFragment?.id) ?: -1
+    val slug = categoryFragment?.slug
+    val parentId = decodeRelayId(categoryFragment?.parentCategory?.id) ?: 0
+    val parentName = categoryFragment?.parentCategory?.name
+    val parentSlug = categoryFragment?.parentCategory?.slug
+    val parentAnalyticName = categoryFragment?.parentCategory?.analyticsName ?: ""
 
     val parentCategory = if (parentId > 0) {
         Category.builder()
@@ -492,13 +492,13 @@ fun categoryTransformer(categoryFragment: fragment.Category?): Category {
  * @param fragment.User user
  * @return User
  */
-fun userTransformer(user: fragment.User?): User {
-    val id = decodeRelayId(user?.id()) ?: -1
-    val name = user?.name()
+fun userTransformer(user: com.kickstarter.fragment.User?): User {
+    val id = decodeRelayId(user?.id) ?: -1
+    val name = user?.name
     val avatar = Avatar.builder()
-        .medium(user?.imageUrl())
+        .medium(user?.imageUrl)
         .build()
-    val chosenCurrency = user?.chosenCurrency() ?: CurrencyCode.USD.rawValue()
+    val chosenCurrency = user?.chosenCurrency ?: CurrencyCode.USD.rawValue
 
     return User.builder()
         .id(id)
@@ -514,17 +514,17 @@ fun userTransformer(user: fragment.User?): User {
  * @return UserPrivacy
  */
 fun userPrivacyTransformer(userPrivacy: UserPrivacyQuery.Me): UserPrivacy {
-    val defaultCurrency = CurrencyCode.USD.rawValue()
+    val defaultCurrency = CurrencyCode.USD.rawValue
     return UserPrivacy(
-        name = userPrivacy.name(),
-        email = userPrivacy.email() ?: "",
-        hasPassword = userPrivacy.hasPassword() ?: false,
+        name = userPrivacy.name,
+        email = userPrivacy.email ?: "",
+        hasPassword = userPrivacy.hasPassword ?: false,
         isCreator = userPrivacy.isCreator ?: false,
         isDeliverable = userPrivacy.isDeliverable ?: false,
         isEmailVerified = userPrivacy.isEmailVerified ?: false,
-        chosenCurrency = userPrivacy.chosenCurrency() ?: defaultCurrency,
-        enabledFeatures = userPrivacy.enabledFeatures().map {
-            it.rawValue()
+        chosenCurrency = userPrivacy.chosenCurrency ?: defaultCurrency,
+        enabledFeatures = userPrivacy.enabledFeatures.map { feature: Feature ->
+            feature.rawValue
         }
     )
 }
@@ -535,37 +535,37 @@ fun userPrivacyTransformer(userPrivacy: UserPrivacyQuery.Me): UserPrivacy {
  * @return Project
  */
 fun projectTransformer(projectFragment: ProjectCard?): Project {
-    val backersCount = projectFragment?.backersCount() ?: 0
-    val blurb = projectFragment?.description() ?: ""
-    val category = if (projectFragment?.category()?.fragments()?.category() != null) {
-        categoryTransformer(projectFragment.category()?.fragments()?.category())
+    val backersCount = projectFragment?.backersCount ?: 0
+    val blurb = projectFragment?.description ?: ""
+    val category = if (projectFragment?.category?.category != null) {
+        categoryTransformer(projectFragment.category.category)
     } else null
-    val country = projectFragment?.country()?.fragments()?.country()?.name() ?: ""
-    val createdAt = projectFragment?.createdAt()
-    val creator = userTransformer(projectFragment?.creator()?.fragments()?.user())
-    val currencySymbol = projectFragment?.goal()?.fragments()?.amount()?.symbol()
-    val prelaunchActivated = projectFragment?.prelaunchActivated()
-    val featuredAt = projectFragment?.projectOfTheDayAt()
+    val country = projectFragment?.country?.country?.name ?: ""
+    val createdAt = projectFragment?.createdAt
+    val creator = userTransformer(projectFragment?.creator?.user)
+    val currencySymbol = projectFragment?.goal?.amount?.symbol
+    val prelaunchActivated = projectFragment?.prelaunchActivated
+    val featuredAt = projectFragment?.projectOfTheDayAt
     val friends =
-        projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) }
+        projectFragment?.friends?.nodes?.map { userTransformer(it?.user) }
             ?: emptyList()
-    val pledged = projectFragment?.pledged()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
-    val fxRate = projectFragment?.fxRate()?.toFloat()
-    val deadline = projectFragment?.deadlineAt()
-    val goal = projectFragment?.goal()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
-    val id = decodeRelayId(projectFragment?.id()) ?: -1
-    val isBacking = projectFragment?.backing()?.id()?.let { true } ?: false
+    val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
+    val fxRate = projectFragment?.fxRate?.toFloat()
+    val deadline = projectFragment?.deadlineAt
+    val goal = projectFragment?.goal?.amount?.amount?.toDouble() ?: 0.0
+    val id = decodeRelayId(projectFragment?.id) ?: -1
+    val isBacking = projectFragment?.backing?.id?.let { true } ?: false
     val isStarred = projectFragment?.isWatched ?: false
-    val launchedAt = projectFragment?.launchedAt()
-    val location = locationTransformer(projectFragment?.location()?.fragments()?.location())
-    val name = projectFragment?.name()
-    val photoUrl = projectFragment?.fragments()?.full()?.image()?.url()
+    val launchedAt = projectFragment?.launchedAt
+    val location = locationTransformer(projectFragment?.location?.location)
+    val name = projectFragment?.name
+    val photoUrl = projectFragment?.full?.image?.url
     val photo = getPhoto(photoUrl)
-    val slug = projectFragment?.slug()
+    val slug = projectFragment?.slug
     val staffPicked = projectFragment?.isProjectWeLove ?: false
-    val state = projectFragment?.state()?.name?.lowercase()
-    val stateChangedAt = projectFragment?.stateChangedAt()
-    val url = projectFragment?.url()
+    val state = projectFragment?.state?.name?.lowercase()
+    val stateChangedAt = projectFragment?.stateChangedAt
+    val url = projectFragment?.url
     val urlsWeb = Web.builder()
         .project(url)
         .rewards("$url/rewards")
@@ -620,35 +620,35 @@ private fun getPhoto(photoUrl: @Nullable String?): Photo? {
     return photo
 }
 
-fun updateTransformer(post: fragment.Post?): Update {
-    val id = decodeRelayId(post?.id()) ?: -1
+fun updateTransformer(post: com.kickstarter.fragment.Post?): Update {
+    val id = decodeRelayId(post?.id) ?: -1
     val author = User.builder()
-        .id(decodeRelayId(post?.author()?.fragments()?.user()?.id()) ?: -1)
-        .name(post?.author()?.fragments()?.user()?.name() ?: "")
+        .id(decodeRelayId(post?.author?.user?.id) ?: -1)
+        .name(post?.author?.user?.name ?: "")
         .avatar(
             Avatar.builder()
-                .medium(post?.author()?.fragments()?.user()?.imageUrl())
+                .medium(post?.author?.user?.imageUrl)
                 .build()
         )
         .build()
 
-    val projectId = decodeRelayId(post?.project()?.id()) ?: -1
+    val projectId = decodeRelayId(post?.project?.id) ?: -1
 
-    val title = post?.title() ?: ""
+    val title = post?.title ?: ""
 
-    val publishedAt = post?.publishedAt()
-    val updatedAt = post?.updatedAt()
-    val sequence = post?.number() ?: 0
+    val publishedAt = post?.publishedAt
+    val updatedAt = post?.updatedAt
+    val sequence = post?.number ?: 0
 
-    val url = post?.project()?.url()
+    val url = post?.project?.url
     val urlsWeb = Update.Urls.Web.builder()
         .update("$url/posts/$id")
         .build()
     val updateUrl = Update.Urls.builder().web(urlsWeb).build()
 
-    val updateFreeformPost = post?.fragments()?.updateFreeformPost()
-    val commentsCount = updateFreeformPost?.commentsCount()
-    val body = updateFreeformPost?.body() as? String
+    val updateFreeformPost = post?.updateFreeformPost
+    val commentsCount = updateFreeformPost?.commentsCount
+    val body = updateFreeformPost?.body as? String
 
     return Update.builder()
         .body(body)
@@ -656,7 +656,7 @@ fun updateTransformer(post: fragment.Post?): Update {
         .hasLiked(post?.isLiked)
         .id(id)
         .isPublic(post?.isPublic)
-        .likesCount(post?.likesCount())
+        .likesCount(post?.likesCount)
         .projectId(projectId)
         .publishedAt(publishedAt)
         .sequence(sequence)
@@ -668,29 +668,29 @@ fun updateTransformer(post: fragment.Post?): Update {
         .build()
 }
 
-fun commentTransformer(commentFr: fragment.Comment?): Comment {
-    val badges: List<String> = commentFr?.authorBadges()?.map { badge ->
-        badge?.rawValue() ?: ""
+fun commentTransformer(commentFr: com.kickstarter.fragment.Comment?): Comment {
+    val badges: List<String> = commentFr?.authorBadges?.map { badge ->
+        badge?.rawValue ?: ""
     } ?: emptyList()
 
     val author = User.builder()
-        .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
-        .name(commentFr?.author()?.fragments()?.user()?.name() ?: "")
+        .id(decodeRelayId(commentFr?.author?.user?.id) ?: -1)
+        .name(commentFr?.author?.user?.name ?: "")
         .avatar(
             Avatar.builder()
-                .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
+                .medium(commentFr?.author?.user?.imageUrl)
                 .build()
         )
         .build()
-    val id = decodeRelayId(commentFr?.id()) ?: -1
-    val repliesCount = commentFr?.replies()?.totalCount() ?: 0
-    val body = commentFr?.body() ?: ""
-    val createdAt = commentFr?.createdAt()
-    val deleted = commentFr?.deleted() ?: false
-    val hasFlaggings = commentFr?.hasFlaggings() ?: false
-    val sustained = commentFr?.sustained() ?: false
-    val authorCanceled = commentFr?.authorCanceledPledge() ?: false
-    val parentId = decodeRelayId(commentFr?.parentId())
+    val id = decodeRelayId(commentFr?.id) ?: -1
+    val repliesCount = commentFr?.replies?.totalCount ?: 0
+    val body = commentFr?.body ?: ""
+    val createdAt = commentFr?.createdAt
+    val deleted = commentFr?.deleted ?: false
+    val hasFlaggings = commentFr?.hasFlaggings ?: false
+    val sustained = commentFr?.sustained ?: false
+    val authorCanceled = commentFr?.authorCanceledPledge ?: false
+    val parentId = decodeRelayId(commentFr?.parentId)
 
     return Comment.builder()
         .id(id)
@@ -713,60 +713,60 @@ fun commentTransformer(commentFr: fragment.Comment?): Comment {
  * @param fragment.Baking projectFragment
  * @return Backing
  */
-fun backingTransformer(backingGr: fragment.Backing?): Backing {
-    val payment = backingGr?.paymentSource()?.fragments()?.payment()?.let { payment ->
+fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
+    val payment = backingGr?.paymentSource?.payment?.let { payment ->
         PaymentSource.builder()
-            .state(payment.state().toString())
-            .type(payment.type().rawValue())
-            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
-            .id(payment.id())
-            .expirationDate(payment.expirationDate())
-            .lastFour(payment.lastFour())
+            .state(payment.state.toString())
+            .type(payment.type.rawValue)
+            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue)
+            .id(payment.id)
+            .expirationDate(payment.expirationDate)
+            .lastFour(payment.lastFour)
             .build()
     }
 
-    val addOns = backingGr?.addOns()?.let {
+    val addOns = backingGr?.addOns?.let {
         return@let getAddOnsList(it)
     }
 
-    val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
+    val id = decodeRelayId(backingGr?.id)?.let { it } ?: 0
 
-    val location = backingGr?.location()?.fragments()?.location()
-    val locationId = decodeRelayId(location?.id())
-    val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: -1
-    val shippingAmount = backingGr?.shippingAmount()?.fragments()
-    val items = backingGr?.reward()?.items()
-    val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
+    val location = backingGr?.location?.location
+    val locationId = decodeRelayId(location?.id)
+    val projectId = decodeRelayId(backingGr?.project?.project?.id) ?: -1
+    val shippingAmount = backingGr?.shippingAmount
+    val items = backingGr?.reward?.items
+    val reward = backingGr?.reward?.reward?.let { reward ->
         return@let rewardTransformer(
             reward,
-            allowedAddons = reward.allowedAddons().isNotNull(),
-            rewardItems = complexRewardItemsTransformer(items?.fragments()?.rewardItems())
+            allowedAddons = reward.allowedAddons.isNotNull(),
+            rewardItems = complexRewardItemsTransformer(items?.rewardItems)
         )
     }
 
-    val backerData = backingGr?.backer()?.fragments()?.user()
-    val nameBacker = backerData?.let { it.name() } ?: ""
-    val backerId = decodeRelayId(backerData?.id()) ?: -1
+    val backerData = backingGr?.backer?.user
+    val nameBacker = backerData?.let { it.name } ?: ""
+    val backerId = decodeRelayId(backerData?.id) ?: -1
     val avatar = Avatar.builder()
-        .medium(backerData?.imageUrl())
+        .medium(backerData?.imageUrl)
         .build()
-    val completedByBacker = backingGr?.backerCompleted() ?: false
+    val completedByBacker = backingGr?.backerCompleted ?: false
 
     val backer = User.builder()
         .id(backerId)
         .name(nameBacker)
         .avatar(avatar)
         .build()
-    val status = backingGr?.status()?.rawValue() ?: ""
+    val status = backingGr?.status?.rawValue ?: ""
 
     val isPostCampaign = backingGr?.isPostCampaign ?: false
 
     return Backing.builder()
-        .amount(backingGr?.amount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
-        .bonusAmount(backingGr?.bonusAmount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
+        .amount(backingGr?.amount?.amount?.amount?.toDouble() ?: 0.0)
+        .bonusAmount(backingGr?.bonusAmount?.amount?.amount?.toDouble() ?: 0.0)
         .paymentSource(payment)
         .backerId(backerId)
-        .backerUrl(backerData?.imageUrl())
+        .backerUrl(backerData?.imageUrl)
         .backerName(nameBacker)
         .backer(backer)
         .id(id)
@@ -774,13 +774,13 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
         .addOns(addOns)
         .rewardId(reward?.id())
         .locationId(locationId)
-        .locationName(location?.displayableName())
-        .pledgedAt(backingGr?.pledgedOn())
+        .locationName(location?.displayableName)
+        .pledgedAt(backingGr?.pledgedOn)
         .projectId(projectId)
-        .sequence(backingGr?.sequence()?.toLong() ?: 0)
-        .shippingAmount(shippingAmount?.amount()?.amount()?.toFloat() ?: 0f)
+        .sequence(backingGr?.sequence?.toLong() ?: 0)
+        .shippingAmount(shippingAmount?.amount?.amount?.toFloat() ?: 0f)
         .status(status)
-        .cancelable(backingGr?.cancelable() ?: false)
+        .cancelable(backingGr?.cancelable ?: false)
         .completedByBacker(completedByBacker)
         .isPostCampaign(isPostCampaign)
         .build()
@@ -790,16 +790,17 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
  * For addOns we receive this kind of data structure :[D, D, D, D, D, C, E, E]
  * and we need to transform it in : D(5),C(1),E(2)
  */
-fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
-    val rewardsList = addOns.nodes()?.map { node ->
-        rewardTransformer(node.fragments().reward())
+fun getAddOnsList(addOns: com.kickstarter.fragment.Backing.AddOns): List<Reward> {
+    val rewardsList = addOns.nodes?.mapNotNull { node ->
+        node?.let { rewardTransformer(it.reward) }
     }
 
     val mapHolder = mutableMapOf<Long, Reward>()
 
     rewardsList?.forEach {
-        val q = mapHolder[it.id()]?.quantity() ?: 0
-        mapHolder[it.id()] = it.toBuilder().quantity(q + 1).build()
+        val rwId = it.id()
+        val q = mapHolder[rwId]?.quantity() ?: 0
+        mapHolder[rwId] = it.toBuilder().quantity(q + 1).build()
     }
 
     return mapHolder.values.toList()
@@ -810,11 +811,11 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
  * @param fragment.Video video
  * @return Project
  */
-fun videoTransformer(video: fragment.Video?): Video {
-    val frame = video?.previewImageUrl()
-    val base = video?.videoSources()?.base()?.src()
-    val high = video?.videoSources()?.high()?.src()
-    val hls = video?.videoSources()?.hls()?.src()
+fun videoTransformer(video: com.kickstarter.fragment.Video?): Video {
+    val frame = video?.previewImageUrl
+    val base = video?.videoSources?.base?.src
+    val high = video?.videoSources?.high?.src
+    val hls = video?.videoSources?.hls?.src
 
     return Video.builder()
         .base(base)
@@ -829,13 +830,13 @@ fun videoTransformer(video: fragment.Video?): Video {
  * @param fragment.ShippingRule
  * @return ShippingRule
  */
-fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
-    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDoubleOrNull() ?: 0.0
-    val location = rule.location()?.let {
-        locationTransformer(it.fragments().location())
+fun shippingRuleTransformer(rule: com.kickstarter.fragment.ShippingRule): ShippingRule {
+    val cost = rule.cost?.amount?.amount?.toDoubleOrNull() ?: 0.0
+    val location = rule.location?.let {
+        locationTransformer(it.location)
     }
-    val estimatedMin = rule.estimatedMin()?.amount()?.toDoubleOrNull() ?: 0.0
-    val estimatedMax = rule.estimatedMax()?.amount()?.toDoubleOrNull() ?: 0.0
+    val estimatedMin = rule.estimatedMin?.amount?.toDoubleOrNull() ?: 0.0
+    val estimatedMax = rule.estimatedMax?.amount?.toDoubleOrNull() ?: 0.0
 
     return ShippingRule.builder()
         .cost(cost)
@@ -850,11 +851,11 @@ fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
  * @param fragment.Location
  * @return Location
  */
-fun locationTransformer(locationGR: fragment.Location?): Location {
-    val id = decodeRelayId(locationGR?.id()) ?: -1
-    val country = locationGR?.country() ?: ""
-    val displayName = locationGR?.displayableName()
-    val name = locationGR?.name()
+fun locationTransformer(locationGR: com.kickstarter.fragment.Location?): Location {
+    val id = decodeRelayId(locationGR?.id) ?: -1
+    val country = locationGR?.country ?: ""
+    val displayName = locationGR?.displayableName
+    val name = locationGR?.name
 
     return Location.builder()
         .id(id)
@@ -864,10 +865,10 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
         .build()
 }
 
-fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRule>): ShippingRulesEnvelope {
-    val shippingRulesList: List<ShippingRule> = shippingRulesExpanded?.mapNotNull { shippingRule ->
+fun shippingRulesListTransformer(shippingRulesExpanded: List<com.kickstarter.fragment.ShippingRule>): ShippingRulesEnvelope {
+    val shippingRulesList: List<ShippingRule> = shippingRulesExpanded.map { shippingRule ->
         shippingRuleTransformer(shippingRule)
-    } ?: emptyList<ShippingRule>()
+    }
 
     return ShippingRulesEnvelope
         .builder()
@@ -879,40 +880,40 @@ fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRu
  * From KS dataModel TPEventInputData, transform it into
  * GraphQL defined mutation TriggerThirdPartyEventMutation
  */
-fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
-    val graphAppData = AppDataInput.builder()
-        .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
-        .applicationTrackingEnabled(eventInput.appData.androidConsent)
-        .extinfo(eventInput.appData.extInfo)
-        .build()
-
-    val items: List<ThirdPartyEventItemInput> = eventInput.items
-        .map {
-            ThirdPartyEventItemInput.builder()
-                .itemId(it.itemId)
-                .itemName(it.itemName)
-                .price(it.price)
-                .build()
-        }
-
-    val graphInput =
-        TriggerThirdPartyEventInput.builder()
-            .userId(eventInput.userId)
-            .eventName(eventInput.eventName)
-            .deviceId(eventInput.deviceId)
-            .firebaseScreen(eventInput.firebaseScreen)
-            .firebasePreviousScreen(eventInput.firebasePreviousScreen)
-            .projectId(eventInput.projectId)
-            .pledgeAmount(eventInput.pledgeAmount)
-            .shipping(eventInput.shipping)
-            .appData(graphAppData)
-            .items(items)
-            .transactionId(eventInput.transactionId)
-            .build()
-
-    return TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput)
-        .build()
-}
+// fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
+//    val graphAppData = AppDataInput.builder()
+//        .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
+//        .applicationTrackingEnabled(eventInput.appData.androidConsent)
+//        .extinfo(eventInput.appData.extInfo)
+//        .build()
+//
+//    val items: List<ThirdPartyEventItemInput> = eventInput.items
+//        .map {
+//            ThirdPartyEventItemInput.builder()
+//                .itemId(it.itemId)
+//                .itemName(it.itemName)
+//                .price(it.price)
+//                .build()
+//        }
+//
+//    val graphInput =
+//        TriggerThirdPartyEventInput.builder()
+//            .userId(eventInput.userId)
+//            .eventName(eventInput.eventName)
+//            .deviceId(eventInput.deviceId)
+//            .firebaseScreen(eventInput.firebaseScreen)
+//            .firebasePreviousScreen(eventInput.firebasePreviousScreen)
+//            .projectId(eventInput.projectId)
+//            .pledgeAmount(eventInput.pledgeAmount)
+//            .shipping(eventInput.shipping)
+//            .appData(graphAppData)
+//            .items(items)
+//            .transactionId(eventInput.transactionId)
+//            .build()
+//
+//    return TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput)
+//        .build()
+// }
 
 /**
  * From KS dataModel CreateAttributionEventData, transform it into
@@ -923,74 +924,70 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
     // Use gson to convert map -> JSON type to match mutation
     val eventPropertiesJson = gson.toJson(eventInput.eventProperties)
 
-    val graphInput =
-        CreateAttributionEventInput.builder()
-            .eventName(eventInput.eventName)
-            .eventProperties(eventPropertiesJson)
-            .projectId(eventInput.projectId)
-            .build()
-
-    return CreateAttributionEventMutation.builder().input(graphInput)
-        .build()
+    val input = CreateAttributionEventInput(
+        eventName = eventInput.eventName,
+        eventProperties = if (eventPropertiesJson.isPresent()) Optional.present(eventPropertiesJson) else Optional.absent(),
+        projectId = if (eventInput.projectId.isNullOrBlank()) Optional.absent() else Optional.present(eventInput.projectId)
+    )
+    return CreateAttributionEventMutation(input = input)
 }
 
 fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAddressData): CreateOrUpdateBackingAddressMutation {
-    val graphInput =
-        CreateOrUpdateBackingAddressInput.builder()
-            .addressId(eventInput.addressID)
-            .backingId(eventInput.backingID)
-            .build()
 
-    return CreateOrUpdateBackingAddressMutation.builder().input(graphInput).build()
+    val graphInput = CreateOrUpdateBackingAddressInput(
+        addressId = eventInput.addressID,
+        backingId = eventInput.backingID
+    )
+    return CreateOrUpdateBackingAddressMutation(input = graphInput)
 }
 
 fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData): PledgedProjectsOverviewQuery {
-    return PledgedProjectsOverviewQuery.builder()
-        .after(queryInput.after)
-        .before(queryInput.before)
-        .first(queryInput.first)
-        .last(queryInput.last)
-        .build()
+    return PledgedProjectsOverviewQuery(
+        after = Optional.present(queryInput.after),
+        before = Optional.present(queryInput.before),
+        first = Optional.present(queryInput.first),
+        last = Optional.present(queryInput.last)
+    )
 }
 
 fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverviewQuery.PledgeProjectsOverview): PledgedProjectsOverviewEnvelope {
     val ppoCards =
-        ppoResponse.pledges()?.edges()?.map {
-            val ppoBackingData = it.node()?.backing()?.fragments()?.ppoCard()
-            val flags = it.node()?.flags()?.map { flag ->
-                Flag.builder().message(flag.message()).icon(flag.icon()).type(flag.type()).build()
+        ppoResponse.pledges?.edges?.mapNotNull {
+            val ppoBackingData = it?.node?.backing?.ppoCard
+            val flags = it?.node?.flags?.map { flag ->
+                Flag.builder().message(flag.message).icon(flag.icon).type(flag.type).build()
             }
             PPOCard.builder()
-                .backingId(ppoBackingData?.id())
-                .backingDetailsUrl(ppoBackingData?.backingDetailsPageRoute())
-                .clientSecret(ppoBackingData?.clientSecret())
-                .amount(ppoBackingData?.amount()?.fragments()?.amount()?.amount())
-                .currencyCode(ppoBackingData?.amount()?.fragments()?.amount()?.currency())
-                .currencySymbol(ppoBackingData?.amount()?.fragments()?.amount()?.symbol())
-                .projectName(ppoBackingData?.project()?.name())
-                .projectId(ppoBackingData?.project()?.id())
-                .projectSlug(ppoBackingData?.project()?.slug())
-                .imageUrl(ppoBackingData?.project()?.fragments()?.full()?.image()?.url())
-                .creatorName(ppoBackingData?.project()?.creator()?.name())
-                .creatorID(ppoBackingData?.project()?.creator()?.id())
-                .viewType(getTierType(it.node()?.tierType()))
-                .surveyID(ppoBackingData?.project()?.backerSurvey()?.id())
+                .backingId(ppoBackingData?.id)
+                .backingDetailsUrl(ppoBackingData?.backingDetailsPageRoute)
+                .clientSecret(ppoBackingData?.clientSecret)
+                .amount(ppoBackingData?.amount?.amount?.amount)
+                .currencyCode(ppoBackingData?.amount?.amount?.currency)
+                .currencySymbol(ppoBackingData?.amount?.amount?.symbol)
+                .projectName(ppoBackingData?.project?.name)
+                .projectId(ppoBackingData?.project?.id)
+                .projectSlug(ppoBackingData?.project?.slug)
+                .imageUrl(ppoBackingData?.project?.full?.image?.url)
+                .creatorName(ppoBackingData?.project?.creator?.name)
+                .creatorID(ppoBackingData?.project?.creator?.id)
+                .viewType(getTierType(it?.node?.tierType))
+                .surveyID(ppoBackingData?.project?.backerSurvey?.id)
                 .flags(flags)
-                .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress()))
+                .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress))
                 .build()
         }
 
-    val pageInfoEnvelope = ppoResponse.pledges()?.pageInfo().let {
+    val pageInfoEnvelope = ppoResponse.pledges?.pageInfo.let {
         PageInfoEnvelope.builder()
-            .hasNextPage(it?.hasNextPage() ?: false)
-            .endCursor(it?.endCursor() ?: "")
-            .hasPreviousPage(it?.hasPreviousPage() ?: false)
-            .startCursor(it?.startCursor() ?: "")
+            .hasNextPage(it?.hasNextPage ?: false)
+            .endCursor(it?.endCursor ?: "")
+            .hasPreviousPage(it?.hasPreviousPage ?: false)
+            .startCursor(it?.startCursor ?: "")
             .build()
     }
 
     return PledgedProjectsOverviewEnvelope.builder()
-        .totalCount(ppoResponse.pledges()?.totalCount())
+        .totalCount(ppoResponse.pledges?.totalCount)
         .pledges(ppoCards)
         .pageInfoEnvelope(pageInfoEnvelope)
         .build()
@@ -999,14 +996,14 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
 fun getDeliveryAddress(deliveryAddress: DeliveryAddress?): com.kickstarter.features.pledgedprojectsoverview.data.DeliveryAddress? {
     deliveryAddress?.let { address ->
         return com.kickstarter.features.pledgedprojectsoverview.data.DeliveryAddress.builder()
-            .addressId(address.id())
-            .addressLine1(address.addressLine1())
-            .addressLine2(address.addressLine2())
-            .city(address.city())
-            .region(address.region())
-            .postalCode(address.postalCode())
-            .phoneNumber(address.phoneNumber())
-            .recipientName(address.recipientName())
+            .addressId(address.id)
+            .addressLine1(address.addressLine1)
+            .addressLine2(address.addressLine2)
+            .city(address.city)
+            .region(address.region)
+            .postalCode(address.postalCode)
+            .phoneNumber(address.phoneNumber)
+            .recipientName(address.recipientName)
             .build()
     } ?: return null
 }

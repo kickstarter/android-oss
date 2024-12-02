@@ -8,7 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
-import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.network.http.DefaultHttpEngine;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -42,7 +43,6 @@ import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
-import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.keystore.EncryptionEngine;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -72,6 +72,7 @@ import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.kickstarter.type.Date;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
@@ -97,7 +98,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import type.CustomType;
 
 @Module
 public class ApplicationModule {
@@ -200,13 +200,12 @@ public class ApplicationModule {
 
     final OkHttpClient okHttpClient = builder.build();
 
-    return ApolloClient.builder()
-      .addCustomTypeAdapter(CustomType.DATE, new DateAdapter())
-      .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
-      .addCustomTypeAdapter(CustomType.ISO8601DATETIME, new Iso8601DateTimeAdapter())
-      .addCustomTypeAdapter(CustomType.DATETIME, new DateTimeAdapter())
+    return new ApolloClient.Builder()
       .serverUrl(webEndpoint + "/graph")
-      .okHttpClient(okHttpClient)
+      .addCustomScalarAdapter(Date.Companion.getType(), new DateAdapter())
+      .addCustomScalarAdapter(com.kickstarter.type.DateTime.Companion.getType(), new DateTimeAdapter())
+      .addCustomScalarAdapter(com.kickstarter.type.ISO8601DateTime.Companion.getType(), new Iso8601DateTimeAdapter())
+      .httpEngine(new DefaultHttpEngine(okHttpClient))
       .build();
   }
 

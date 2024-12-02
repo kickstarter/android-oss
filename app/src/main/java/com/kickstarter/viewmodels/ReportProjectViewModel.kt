@@ -136,6 +136,7 @@ interface ReportProjectViewModel {
         }
 
         override fun onCleared() {
+            apolloClient.cleanDisposables()
             disposables.clear()
             super.onCleared()
         }

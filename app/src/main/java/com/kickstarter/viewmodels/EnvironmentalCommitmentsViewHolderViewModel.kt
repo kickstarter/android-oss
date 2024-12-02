@@ -45,7 +45,7 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
             this.projectEnvironmentalCommitmentInput
                 .map {
                     EnvironmentalCommitmentCategories.values().firstOrNull { environmentalCommitmentCategory ->
-                        environmentalCommitmentCategory.name == it.category
+                        environmentalCommitmentCategory.name.lowercase() == it.category
                     }?.title
                 }
                 .filter { it.isNotNull() }

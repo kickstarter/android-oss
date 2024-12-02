@@ -296,10 +296,12 @@ interface ProjectPageViewModel {
         private val heartButtonClicked = PublishSubject.create<Unit>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Unit>()
         private val onGlobalLayout = PublishSubject.create<Unit>()
-        private val fullScreenVideoButtonClicked = PublishSubject.create<kotlin.Pair<String, Long>>()
+        private val fullScreenVideoButtonClicked =
+            PublishSubject.create<kotlin.Pair<String, Long>>()
         private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Unit>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Unit>()
-        private val pledgeSuccessfullyCreated = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
+        private val pledgeSuccessfullyCreated =
+            PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Unit>()
         private val pledgeToolbarNavigationClicked = PublishSubject.create<Unit>()
         private val refreshProject = PublishSubject.create<Unit>()
@@ -338,11 +340,14 @@ interface ProjectPageViewModel {
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Unit>()
         private val startRootCommentsActivity = PublishSubject.create<ProjectData>()
-        private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, ProjectData>>()
+        private val startRootCommentsForCommentsThreadActivity =
+            PublishSubject.create<Pair<String, ProjectData>>()
         private val startLoginToutActivity = PublishSubject.create<Unit>()
         private val startMessagesActivity = PublishSubject.create<Project>()
-        private val startProjectUpdateActivity = PublishSubject.create<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
-        private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateActivity =
+            PublishSubject.create<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateToRepliesDeepLinkActivity =
+            PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
@@ -384,7 +389,10 @@ interface ProjectPageViewModel {
                     .doAfterTerminate {
                         progressBarIsGone.onNext(true)
                     }
-                    .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                    .withLatestFrom(
+                        currentConfig.observable(),
+                        currentUser.observable()
+                    ) { project, config, user ->
                         return@withLatestFrom project.updateProjectWith(config, user.getValue())
                     }
                     .materialize()
@@ -420,7 +428,8 @@ interface ProjectPageViewModel {
             mappedProjectValues
                 .subscribe {
                     if (it.showLatePledgeFlow()) {
-                        val isFFEnabled = featureFlagClient.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES)
+                        val isFFEnabled =
+                            featureFlagClient.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES)
                         this.showLatePledgeFlow.onNext(it.showLatePledgeFlow() && isFFEnabled)
                     }
 
@@ -438,9 +447,14 @@ interface ProjectPageViewModel {
             // An observable of the ref tag stored in the cookie for the project. Emits an optional since this value can be null.
             val cookieRefTag = initialProject
                 .take(1)
-                .map {
-                        p ->
-                    KsOptional.of(RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences))
+                .map { p ->
+                    KsOptional.of(
+                        RefTagUtils.storedCookieRefTagForProject(
+                            p,
+                            this.cookieManager,
+                            this.sharedPreferences
+                        )
+                    )
                 }
 
             val refTag = intent
@@ -451,7 +465,11 @@ interface ProjectPageViewModel {
 
             val saveProjectFromDeepLinkActivity = intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    3,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, false)
                 }
@@ -459,7 +477,11 @@ interface ProjectPageViewModel {
 
             val saveProjectFromDeepUrl = intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    3,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .filter { it.data.isNotNull() }
                 .map { requireNotNull(it.data) }
                 .filter {
@@ -511,8 +533,14 @@ interface ProjectPageViewModel {
                             .doAfterTerminate {
                                 progressBarIsGone.onNext(true)
                             }
-                            .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
-                                return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                            .withLatestFrom(
+                                currentConfig.observable(),
+                                currentUser.observable()
+                            ) { project, config, user ->
+                                return@withLatestFrom project.updateProjectWith(
+                                    config,
+                                    user.getValue()
+                                )
                             }
                             .materialize()
                     }
@@ -534,22 +562,23 @@ interface ProjectPageViewModel {
                 }
                 .share()
 
-            val projectOnDeepLinkChangeSave = Observable.merge(saveProjectFromDeepLinkActivity, saveProjectFromDeepUrl)
-                .compose(combineLatestPair(this.currentUser.observable()))
-                .filter { it.second.isPresent() }
-                .withLatestFrom(initialProject) { userAndFlag, p ->
-                    Pair(userAndFlag, p)
-                }
-                .take(1)
-                .filter {
-                    it.second.isStarred() != it.first.first
-                }.switchMap {
-                    if (it.first.first) {
-                        this.saveProject(it.second)
-                    } else {
-                        this.unSaveProject(it.second)
+            val projectOnDeepLinkChangeSave =
+                Observable.merge(saveProjectFromDeepLinkActivity, saveProjectFromDeepUrl)
+                    .compose(combineLatestPair(this.currentUser.observable()))
+                    .filter { it.second.isPresent() }
+                    .withLatestFrom(initialProject) { userAndFlag, p ->
+                        Pair(userAndFlag, p)
                     }
-                }.share()
+                    .take(1)
+                    .filter {
+                        it.second.isStarred() != it.first.first
+                    }.switchMap {
+                        if (it.first.first) {
+                            this.saveProject(it.second)
+                        } else {
+                            this.unSaveProject(it.second)
+                        }
+                    }.share()
 
             val currentProject = Observable.mergeArray(
                 initialProject,
@@ -579,7 +608,11 @@ interface ProjectPageViewModel {
                 }
                 .addToDisposable(disposables)
 
-            val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)
+            val projectSavedStatus = Observable.merge(
+                projectOnUserChangeSave,
+                savedProjectOnLoginSuccess,
+                projectOnDeepLinkChangeSave
+            )
 
             projectSavedStatus
                 .subscribe { this.analyticEvents.trackWatchProjectCTA(it, PROJECT) }
@@ -591,23 +624,28 @@ interface ProjectPageViewModel {
                 .subscribe { this.showSavedPrompt.onNext(it) }
                 .addToDisposable(disposables)
 
-            val currentProjectData = Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, KsOptional<Uri?>, Project, ProjectData>(
-                refTag,
-                cookieRefTag,
-                fullDeeplink,
-                currentProject
-            ) { refTagFromIntent, refTagFromCookie, fullDeeplink, project ->
-                projectData(refTagFromIntent, refTagFromCookie, fullDeeplink, project)
-            }
+            val currentProjectData =
+                Observable.combineLatest<KsOptional<RefTag?>, KsOptional<RefTag?>, KsOptional<Uri?>, Project, ProjectData>(
+                    refTag,
+                    cookieRefTag,
+                    fullDeeplink,
+                    currentProject
+                ) { refTagFromIntent, refTagFromCookie, fullDeeplink, project ->
+                    projectData(refTagFromIntent, refTagFromCookie, fullDeeplink, project)
+                }
 
             currentProjectData
                 .distinctUntilChanged()
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
+                    val tabConfigEnv = PagerTabConfig(
+                        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT,
+                        showEnvironmentalTab
+                    )
 
-                    val showAiTab = it.project().aiDisclosure()?.let { disclosure -> !disclosure.isUIEmptyValues() } ?: false
+                    val showAiTab = it.project().aiDisclosure()
+                        ?.let { disclosure -> !disclosure.isUIEmptyValues() } ?: false
                     val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))
@@ -616,18 +654,27 @@ interface ProjectPageViewModel {
 
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
-                .map { Pair(it.name(), UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())) }
+                .map {
+                    Pair(
+                        it.name(),
+                        UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())
+                    )
+                }
                 .subscribe { this.showShareSheet.onNext(it) }
                 .addToDisposable(disposables)
 
-            val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
+            val latestProjectAndProjectData =
+                currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
             intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    3,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .filter {
-                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
-                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) && it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }
                 .withLatestFrom(latestProjectAndProjectData) { _, project ->
                     project
@@ -639,7 +686,11 @@ interface ProjectPageViewModel {
 
             intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    3,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
                         it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
@@ -655,9 +706,14 @@ interface ProjectPageViewModel {
 
             intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    3,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .filter {
-                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)
+                        ?.isNotEmpty() ?: false &&
                         it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }.map {
                     Pair(
@@ -674,9 +730,14 @@ interface ProjectPageViewModel {
 
             intent
                 .take(1)
-                .delay(3, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    3,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .filter {
-                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)
+                        ?.isNotEmpty() ?: false &&
                         it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
                 }.map {
                     Pair(
@@ -819,7 +880,12 @@ interface ProjectPageViewModel {
                         it.first.project().toBuilder().backing(it.second).build()
                     } else it.first.project()
 
-                    projectData(KsOptional.of(it.first.refTagFromIntent()), KsOptional.of(it.first.refTagFromCookie()), KsOptional.of(it.first.fullDeeplink()), updatedProject)
+                    projectData(
+                        KsOptional.of(it.first.refTagFromIntent()),
+                        KsOptional.of(it.first.refTagFromCookie()),
+                        KsOptional.of(it.first.fullDeeplink()),
+                        updatedProject
+                    )
                 }
                 .subscribe { this.updateFragments.onNext(it) }
                 .addToDisposable(disposables)
@@ -845,7 +911,9 @@ interface ProjectPageViewModel {
             val projectDataAndBackedReward = currentProjectData
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                 .filter { it.first.project().backing().isNotNull() }
-                .filter { it.first.project().backing()?.backedReward(it.first.project()).isNotNull() }
+                .filter {
+                    it.first.project().backing()?.backedReward(it.first.project()).isNotNull()
+                }
                 .map { pD ->
                     pD.first.project().backing()?.backedReward(pD.first.project())?.let {
                         Pair(pD.first.toBuilder().backing(pD.second).build(), it)
@@ -854,13 +922,23 @@ interface ProjectPageViewModel {
 
             projectDataAndBackedReward
                 .compose(takeWhenV2(this.fixPaymentMethodButtonClicked))
-                .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
+                .map {
+                    Pair(
+                        pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE),
+                        PledgeReason.FIX_PLEDGE
+                    )
+                }
                 .subscribe { this.updatePledgeData.onNext(it) }
                 .addToDisposable(disposables)
 
             projectDataAndBackedReward
                 .compose(takeWhenV2<Pair<ProjectData, Reward>, Unit>(this.updatePaymentClicked))
-                .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
+                .map {
+                    Pair(
+                        pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD),
+                        PledgeReason.UPDATE_PAYMENT
+                    )
+                }
                 .subscribe {
                     this.updatePledgeData.onNext(it)
                     this.analyticEvents.trackChangePaymentMethod(it.first)
@@ -878,7 +956,11 @@ interface ProjectPageViewModel {
 
             currentProject
                 .filter { it.isBacking() }
-                .map { if (it.backing()?.isErrored() == true) R.string.Payment_failure else R.string.Youre_a_backer }
+                .map {
+                    if (it.backing()
+                        ?.isErrored() == true
+                    ) R.string.Payment_failure else R.string.Youre_a_backer
+                }
                 .distinctUntilChanged()
                 .subscribe { this.backingDetailsTitle.onNext(it) }
                 .addToDisposable(disposables)
@@ -896,7 +978,10 @@ interface ProjectPageViewModel {
             val currentProjectAndUser = currentProject
                 .compose<Pair<Project, KsOptional<User>>>(combineLatestPair(this.currentUser.observable()))
 
-            Observable.combineLatest(currentProjectData, this.currentUser.observable()) { data, user ->
+            Observable.combineLatest(
+                currentProjectData,
+                this.currentUser.observable()
+            ) { data, user ->
                 ProjectViewUtils.pledgeActionButtonText(
                     data.project(),
                     user.getValue(),
@@ -994,12 +1079,22 @@ interface ProjectPageViewModel {
                     val pledgeFlowContext = projectDataAndPledgeFlowContext.second
                     // If a cookie hasn't been set for this ref+project then do so.
                     if (data.refTagFromCookie() == null) {
-                        data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
+                        data.refTagFromIntent()?.let {
+                            RefTagUtils.storeCookie(
+                                it,
+                                data.project(),
+                                this.cookieManager,
+                                this.sharedPreferences
+                            )
+                        }
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
                     // Send event to segment
-                    this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+                    this.analyticEvents.trackProjectScreenViewed(
+                        dataWithStoredCookieRefTag,
+                        OVERVIEW.contextName
+                    )
                     // Send event to backend event attribution
                     this.attributionEvents.trackProjectPageViewed(dataWithStoredCookieRefTag)
                 }.addToDisposable(disposables)
@@ -1010,7 +1105,10 @@ interface ProjectPageViewModel {
                 .compose(takePairWhenV2(this.tabSelected))
                 .distinctUntilChanged()
                 .subscribe {
-                    this.analyticEvents.trackProjectPageTabChanged(it.first, getSelectedTabContextName(it.second))
+                    this.analyticEvents.trackProjectPageTabChanged(
+                        it.first,
+                        getSelectedTabContextName(it.second)
+                    )
                 }.addToDisposable(disposables)
 
             fullProjectDataAndPledgeFlowContext
@@ -1044,33 +1142,41 @@ interface ProjectPageViewModel {
             super.onCleared()
         }
 
-        private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {
-            ProjectPagerTabs.OVERVIEW.ordinal -> OVERVIEW.contextName
-            ProjectPagerTabs.CAMPAIGN.ordinal -> CAMPAIGN.contextName
-            ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
-            ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
-            ProjectPagerTabs.USE_OF_AI.ordinal -> AI.contextName
-            ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
-            else -> OVERVIEW.contextName
-        }
+        private fun getSelectedTabContextName(selectedTabIndex: Int): String =
+            when (selectedTabIndex) {
+                ProjectPagerTabs.OVERVIEW.ordinal -> OVERVIEW.contextName
+                ProjectPagerTabs.CAMPAIGN.ordinal -> CAMPAIGN.contextName
+                ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
+                ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
+                ProjectPagerTabs.USE_OF_AI.ordinal -> AI.contextName
+                ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
+                else -> OVERVIEW.contextName
+            }
 
         private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
-
-            val isPledgeOverTimeEnabled = featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) && project.isPledgeOverTimeAllowed() == true
+            val isPledgeOverTimeEnabled =
+                featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) && project.isPledgeOverTimeAllowed() == true && project.backing()?.incremental() == true
             return when {
                 !project.isBacking() || count.isNonZero() -> 0
                 project.isLive -> when {
                     isPledgeOverTimeEnabled -> R.menu.manage_pledge_plot_selected
-                    project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
+                    project.backing()
+                        ?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
+
                     else -> R.menu.manage_pledge_live
                 }
+
                 else -> R.menu.manage_pledge_ended
             }
         }
 
-        private fun pledgeData(reward: Reward, projectData: ProjectData, pledgeFlowContext: PledgeFlowContext): PledgeData {
+        private fun pledgeData(
+            reward: Reward,
+            projectData: ProjectData,
+            pledgeFlowContext: PledgeFlowContext
+        ): PledgeData {
             return PledgeData.with(pledgeFlowContext, projectData, reward)
         }
 
@@ -1078,12 +1184,19 @@ interface ProjectPageViewModel {
             return when {
                 project.userIsCreator(currentUser) -> null
                 project.isLive && !project.isBacking() -> PledgeFlowContext.NEW_PLEDGE
-                !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
+                !project.isLive && project.backing()
+                    ?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
+
                 else -> null
             }
         }
 
-        private fun projectData(refTagFromIntent: KsOptional<RefTag?>, refTagFromCookie: KsOptional<RefTag?>, fullDeeplink: KsOptional<Uri?>, project: Project): ProjectData {
+        private fun projectData(
+            refTagFromIntent: KsOptional<RefTag?>,
+            refTagFromCookie: KsOptional<RefTag?>,
+            fullDeeplink: KsOptional<Uri?>,
+            project: Project
+        ): ProjectData {
             return ProjectData
                 .builder()
                 .refTagFromIntent(refTagFromIntent.getValue())
@@ -1096,7 +1209,13 @@ interface ProjectPageViewModel {
         private fun storeCurrentCookieRefTag(data: ProjectData): ProjectData {
             return data
                 .toBuilder()
-                .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
+                .refTagFromCookie(
+                    RefTagUtils.storedCookieRefTagForProject(
+                        data.project(),
+                        cookieManager,
+                        sharedPreferences
+                    )
+                )
                 .build()
         }
 
@@ -1197,13 +1316,15 @@ interface ProjectPageViewModel {
 
         override fun activityResult(result: ActivityResult) = this.activityResult.onNext(result)
 
-        override fun backingDetailsSubtitle(): Observable<Either<String, Int>?> = this.backingDetailsSubtitle
+        override fun backingDetailsSubtitle(): Observable<Either<String, Int>?> =
+            this.backingDetailsSubtitle
 
         override fun backingDetailsTitle(): Observable<Int> = this.backingDetailsTitle
 
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
-        override fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>> = this.expandPledgeSheet
+        override fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>> =
+            this.expandPledgeSheet
 
         override fun goBack(): Observable<Unit> = this.goBack
 
@@ -1213,11 +1334,13 @@ interface ProjectPageViewModel {
 
         override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
 
-        override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> = this.pledgeActionButtonContainerIsGone
+        override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> =
+            this.pledgeActionButtonContainerIsGone
 
         override fun pledgeActionButtonText(): Observable<Int> = this.pledgeActionButtonText
 
-        override fun pledgeToolbarNavigationIcon(): Observable<Int> = this.pledgeToolbarNavigationIcon
+        override fun pledgeToolbarNavigationIcon(): Observable<Int> =
+            this.pledgeToolbarNavigationIcon
 
         override fun pledgeToolbarTitle(): Observable<Int> = this.pledgeToolbarTitle
 
@@ -1225,7 +1348,8 @@ interface ProjectPageViewModel {
 
         override fun projectData(): Observable<ProjectData> = this.projectData
 
-        override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone
+        override fun reloadProjectContainerIsGone(): Observable<Boolean> =
+            this.reloadProjectContainerIsGone
 
         override fun reloadProgressBarIsGone(): Observable<Boolean> = this.retryProgressBarIsGone
 
@@ -1239,17 +1363,20 @@ interface ProjectPageViewModel {
 
         override fun showCancelPledgeSuccess(): Observable<Unit> = this.showCancelPledgeSuccess
 
-        override fun showPledgeNotCancelableDialog(): Observable<Unit> = this.showPledgeNotCancelableDialog
+        override fun showPledgeNotCancelableDialog(): Observable<Unit> =
+            this.showPledgeNotCancelableDialog
 
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
 
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
 
-        override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> = this.showUpdatePledge
+        override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> =
+            this.showUpdatePledge
 
         override fun showUpdatePledgeSuccess(): Observable<Unit> = this.showUpdatePledgeSuccess
 
-        override fun startRootCommentsActivity(): Observable<ProjectData> = this.startRootCommentsActivity
+        override fun startRootCommentsActivity(): Observable<ProjectData> =
+            this.startRootCommentsActivity
 
         override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, ProjectData>> =
             this.startRootCommentsForCommentsThreadActivity
@@ -1258,14 +1385,17 @@ interface ProjectPageViewModel {
 
         override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
 
-        override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> = this.startThanksActivity
+        override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> =
+            this.startThanksActivity
 
-        override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
+        override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> =
+            this.startProjectUpdateActivity
 
         override fun startProjectUpdateToRepliesDeepLinkActivity(): Observable<Pair<Pair<String, String>, Pair<Project, ProjectData>>> =
             this.startProjectUpdateToRepliesDeepLinkActivity
 
-        override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> = this.onOpenVideoInFullScreen
+        override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> =
+            this.onOpenVideoInFullScreen
 
         override fun updateTabs(): Observable<List<PagerTabConfig>> = this.updateTabs
 
@@ -1277,11 +1407,13 @@ interface ProjectPageViewModel {
 
         override fun playButtonIsVisible(): Observable<Boolean> = this.playButtonIsVisible
 
-        override fun backingViewGroupIsVisible(): Observable<Boolean> = this.backingViewGroupIsVisible
+        override fun backingViewGroupIsVisible(): Observable<Boolean> =
+            this.backingViewGroupIsVisible
 
         override fun showLatePledgeFlow(): Observable<Boolean> = this.showLatePledgeFlow
 
-        override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> = this.showPledgeRedemptionScreen
+        override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
+            this.showPledgeRedemptionScreen
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->
@@ -1293,7 +1425,8 @@ interface ProjectPageViewModel {
 
                     val backingAmount = backing.amount()
 
-                    val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
+                    val formattedAmount =
+                        this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
                     Either.Left("$formattedAmount $title".trim())
                 }

@@ -1751,8 +1751,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProjectWithPlotSelected()))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_plot_selected)
-
     }
+
     @Test
     fun testManagePledgeMenu_whenManaging() {
         setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())

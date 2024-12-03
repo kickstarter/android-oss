@@ -153,7 +153,7 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
-            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue()))
+            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue))
             .canComment(true)
             .backing(backing)
             .isBacking(true)

@@ -7,9 +7,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
@@ -762,6 +764,38 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
                 R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline,
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)
+            )
+        )
+    }
+
+    @Test
+    fun testPledgeStatusData_whenPlotIsAllowed() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        val backing = backingWithStatus(Backing.STATUS_PLEDGED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProjectWithPlotSelected()
+            .toBuilder()
+            .deadline(deadline)
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .apolloClientV2(mockApolloClientForBacking(backing))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.pledgeStatusData.assertValue(
+            PledgeStatusData(
+                R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of,
                 expectedCurrency(environment, backedProject, 20.0),
                 DateTimeUtils.longDate(deadline)
             )

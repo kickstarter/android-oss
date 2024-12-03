@@ -132,7 +132,32 @@ object ProjectFactory {
             .isBacking(true)
             .build()
     }
-
+    @JvmStatic
+    fun backedProjectWithPlotSelected(): Project {
+        val project = project().toBuilder().isPledgeOverTimeAllowed(true).build()
+        val reward = RewardFactory.reward()
+        val backing = Backing.builder()
+            .amount(10.0)
+            .backerId(IdFactory.id().toLong())
+            .cancelable(true)
+            .id(IdFactory.id().toLong())
+            .sequence(1)
+            .reward(reward)
+            .rewardId(reward.id())
+            .paymentSource(PaymentSourceFactory.visa())
+            .pledgedAt(DateTime.now())
+            .projectId(project.id())
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
+            .build()
+        return project
+            .toBuilder()
+            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue))
+            .canComment(true)
+            .backing(backing)
+            .isBacking(true)
+            .build()
+    }
     @JvmStatic
     fun backedProjectWithRewardAndAddOnsLimitReached(): Project {
         val project = project()

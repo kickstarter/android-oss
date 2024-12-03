@@ -34,6 +34,7 @@ class Project private constructor(
     private val goal: Double,
     private val id: Long, // in the Kickstarter app, this is project.pid not project.id
     private val isBacking: Boolean,
+    private val isPledgeOverTimeAllowed: Boolean?,
     private val isStarred: Boolean,
     private val lastUpdatePublishedAt: DateTime?,
     private val launchedAt: DateTime?,
@@ -90,6 +91,7 @@ class Project private constructor(
     fun goal() = this.goal
     override fun id() = this.id
     fun isBacking() = this.isBacking
+    fun isPledgeOverTimeAllowed() = this.isPledgeOverTimeAllowed
     fun isStarred() = this.isStarred
     fun lastUpdatePublishedAt() = this.lastUpdatePublishedAt
     fun launchedAt() = this.launchedAt
@@ -149,6 +151,7 @@ class Project private constructor(
         private var goal: Double = 0.0,
         private var id: Long = 0L,
         private var isBacking: Boolean = false,
+        private var isPledgeOverTimeAllowed: Boolean? = null,
         private var isStarred: Boolean = false,
         private var lastUpdatePublishedAt: DateTime? = null,
         private var launchedAt: DateTime? = null,
@@ -209,6 +212,7 @@ class Project private constructor(
         fun goal(goal: Double?) = apply { this.goal = goal ?: 0.0 }
         fun id(id: Long?) = apply { this.id = id ?: 0L }
         fun isBacking(isBacking: Boolean?) = apply { this.isBacking = isBacking ?: false }
+        fun isPledgeOverTimeAllowed(isPledgeOverTimeAllowed: Boolean?) = apply { this.isPledgeOverTimeAllowed = isPledgeOverTimeAllowed }
         fun isStarred(isStarred: Boolean?) = apply { this.isStarred = isStarred ?: false }
         fun lastUpdatePublishedAt(lastUpdatePublishedAt: DateTime?) = apply { this.lastUpdatePublishedAt = lastUpdatePublishedAt }
         fun launchedAt(launchedAt: DateTime?) = apply { this.launchedAt = launchedAt }
@@ -264,6 +268,7 @@ class Project private constructor(
             goal = goal,
             id = id,
             isBacking = isBacking,
+            isPledgeOverTimeAllowed = isPledgeOverTimeAllowed,
             isStarred = isStarred,
             lastUpdatePublishedAt = lastUpdatePublishedAt,
             launchedAt = launchedAt,
@@ -324,6 +329,7 @@ class Project private constructor(
         goal = goal,
         id = id,
         isBacking = isBacking,
+        isPledgeOverTimeAllowed = isPledgeOverTimeAllowed,
         isStarred = isStarred,
         lastUpdatePublishedAt = lastUpdatePublishedAt,
         launchedAt = launchedAt,
@@ -497,6 +503,7 @@ class Project private constructor(
                 goal() == other.goal() &&
                 id() == other.id() &&
                 isBacking() == other.isBacking() &&
+                isPledgeOverTimeAllowed() == other.isPledgeOverTimeAllowed() &&
                 isStarred() == other.isStarred() &&
                 lastUpdatePublishedAt() == other.lastUpdatePublishedAt() &&
                 launchedAt() == other.launchedAt() &&

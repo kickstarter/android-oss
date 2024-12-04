@@ -1739,6 +1739,21 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testManagePledgeMenu_whenProjectBacked_Live_And_PLOTSelected() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).apolloClientV2(apolloClientSuccessfulGetProject()).build())
+
+        // Start the view model with a PLOT selected project
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProjectWithPlotSelected()))
+
+        this.managePledgeMenu.assertValue(R.menu.manage_pledge_plot_selected)
+    }
+
+    @Test
     fun testManagePledgeMenu_whenManaging() {
         setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
 

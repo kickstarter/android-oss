@@ -152,6 +152,7 @@ fragment backing on Backing {
     pledgedOn
     backerCompleted
     isPostCampaign
+    incremental
     project {
         ... project
     }

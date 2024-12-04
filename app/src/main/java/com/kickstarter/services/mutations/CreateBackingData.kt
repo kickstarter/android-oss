@@ -4,4 +4,6 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 
-data class CreateBackingData(val project: Project, val amount: String, val paymentSourceId: String? = null, val setupIntentClientSecret: String? = null, val locationId: String?, val reward: Reward? = null, val rewardsIds: List<Reward>? = null, val refTag: RefTag?, val stripeCardId: String? = null)
+data class CreateBackingData(val project: Project, val amount: String, val paymentSourceId: String? = null, val setupIntentClientSecret: String? = null, val locationId: String?, val reward: Reward? = null, val rewardsIds: List<Reward>? = null, val refTag: RefTag?, val stripeCardId: String? = null, val applePay: Boolean = false,  val incremental: Boolean = false, val pledgeFlowContext: PledgeFlowContext? = null) {
+    data class PledgeFlowContext(val isFromBackingFragment: Boolean, val isFromManagePledge: Boolean)
+}

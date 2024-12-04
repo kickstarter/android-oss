@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/cancel_pledge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/Cancel_pledge"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/contact_creator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/Contact_creator"
+        app:showAsAction="never" />
+</menu>

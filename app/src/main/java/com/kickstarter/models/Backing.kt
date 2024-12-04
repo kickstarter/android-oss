@@ -19,6 +19,7 @@ class Backing private constructor(
     private val completedAt: DateTime?,
     private val completedByBacker: Boolean,
     private val id: Long,
+    private val incremental: Boolean?,
     private val location: Location?,
     private val locationId: Long?,
     private val locationName: String?,
@@ -47,6 +48,7 @@ class Backing private constructor(
     fun completedAt() = this.completedAt
     fun completedByBacker() = this.completedByBacker
     override fun id() = this.id
+    fun incremental() = this.incremental
     fun location() = this.location
     fun locationId() = this.locationId
     fun locationName() = this.locationName
@@ -77,6 +79,7 @@ class Backing private constructor(
         private var completedAt: DateTime? = null,
         private var completedByBacker: Boolean = false,
         private var id: Long = 0L,
+        private var incremental: Boolean? = null,
         private var location: Location? = null,
         private var locationId: Long? = null,
         private var locationName: String? = null,
@@ -105,6 +108,7 @@ class Backing private constructor(
         fun completedAt(completedAt: DateTime?) = apply { this.completedAt = completedAt }
         fun completedByBacker(completedByBacker: Boolean?) = apply { this.completedByBacker = completedByBacker ?: false }
         fun id(id: Long?) = apply { this.id = id ?: 0L }
+        fun incremental(incremental: Boolean?) = apply { this.incremental = incremental }
         fun location(location: Location?) = apply { this.location = location }
         fun locationId(locationId: Long?) = apply { this.locationId = locationId }
         fun locationName(locationName: String?) = apply { this.locationName = locationName }
@@ -132,6 +136,7 @@ class Backing private constructor(
             completedAt = completedAt,
             completedByBacker = completedByBacker,
             id = id,
+            incremental = incremental,
             location = location,
             locationId = locationId,
             locationName = locationName,
@@ -162,6 +167,7 @@ class Backing private constructor(
         completedAt = completedAt,
         completedByBacker = completedByBacker,
         id = id,
+        incremental = incremental,
         location = location,
         locationId = locationId,
         locationName = locationName,
@@ -183,6 +189,7 @@ class Backing private constructor(
         var equals = super.equals(other)
         if (other is Backing) {
             equals = id() == other.id() &&
+                incremental() == other.incremental() &&
                 amount() == other.amount() &&
                 backer() == other.backer() &&
                 backerNote() == other.backerNote() &&

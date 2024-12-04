@@ -141,6 +141,7 @@ object ProjectFactory {
             .backerId(IdFactory.id().toLong())
             .cancelable(true)
             .id(IdFactory.id().toLong())
+            .incremental(true)
             .sequence(1)
             .reward(reward)
             .rewardId(reward.id())

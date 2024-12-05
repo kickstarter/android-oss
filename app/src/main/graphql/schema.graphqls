@@ -4502,6 +4502,11 @@ type Order implements Node {
   address: Address
 
   """
+  Whether the order requires shipping or tax
+  """
+  autoExemptable: Boolean!
+
+  """
   The associated backer
   """
   backer: User!

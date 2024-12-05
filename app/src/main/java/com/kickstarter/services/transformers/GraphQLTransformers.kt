@@ -7,6 +7,7 @@ import com.kickstarter.CreateAttributionEventMutation
 import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.PledgedProjectsOverviewQuery
+import com.kickstarter.TriggerThirdPartyEventMutation
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
@@ -19,6 +20,7 @@ import com.kickstarter.fragment.PpoCard.DeliveryAddress
 import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
@@ -48,6 +50,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.type.AppDataInput
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
 import com.kickstarter.type.CreateOrUpdateBackingAddressInput
@@ -56,6 +59,8 @@ import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
+import com.kickstarter.type.ThirdPartyEventItemInput
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
 import java.nio.charset.Charset
@@ -881,40 +886,36 @@ fun shippingRulesListTransformer(shippingRulesExpanded: List<com.kickstarter.fra
  * From KS dataModel TPEventInputData, transform it into
  * GraphQL defined mutation TriggerThirdPartyEventMutation
  */
-// fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
-//    val graphAppData = AppDataInput.builder()
-//        .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
-//        .applicationTrackingEnabled(eventInput.appData.androidConsent)
-//        .extinfo(eventInput.appData.extInfo)
-//        .build()
-//
-//    val items: List<ThirdPartyEventItemInput> = eventInput.items
-//        .map {
-//            ThirdPartyEventItemInput.builder()
-//                .itemId(it.itemId)
-//                .itemName(it.itemName)
-//                .price(it.price)
-//                .build()
-//        }
-//
-//    val graphInput =
-//        TriggerThirdPartyEventInput.builder()
-//            .userId(eventInput.userId)
-//            .eventName(eventInput.eventName)
-//            .deviceId(eventInput.deviceId)
-//            .firebaseScreen(eventInput.firebaseScreen)
-//            .firebasePreviousScreen(eventInput.firebasePreviousScreen)
-//            .projectId(eventInput.projectId)
-//            .pledgeAmount(eventInput.pledgeAmount)
-//            .shipping(eventInput.shipping)
-//            .appData(graphAppData)
-//            .items(items)
-//            .transactionId(eventInput.transactionId)
-//            .build()
-//
-//    return TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput)
-//        .build()
-// }
+fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
+    val graphAppData = AppDataInput(
+        advertiserTrackingEnabled = eventInput.appData.iOSConsent,
+        applicationTrackingEnabled = eventInput.appData.androidConsent,
+        extinfo = eventInput.appData.extInfo
+    )
+
+    val items: List<ThirdPartyEventItemInput> = eventInput.items
+        .map {
+            ThirdPartyEventItemInput(
+                itemId = it.itemId,
+                itemName = it.itemName,
+                price = if (it.price.isNotNull()) Optional.present(it.price) else Optional.absent()
+            )
+        }
+
+    return TriggerThirdPartyEventMutation(
+        userId = if (eventInput.isNull()) Optional.absent() else Optional.present(eventInput.userId),
+        eventName = eventInput.eventName,
+        deviceId = eventInput.deviceId,
+        firebaseScreen = if (eventInput.firebaseScreen.isNull()) Optional.absent() else Optional.present(eventInput.firebaseScreen),
+        firebasePreviousScreen = if (eventInput.firebasePreviousScreen.isNull()) Optional.absent() else Optional.present(eventInput.firebasePreviousScreen),
+        projectId = eventInput.projectId,
+        pledgeAmount = if (eventInput.pledgeAmount.isNull()) Optional.absent() else Optional.present(eventInput.pledgeAmount),
+        shipping = if (eventInput.shipping.isNull()) Optional.absent() else Optional.present(eventInput.shipping),
+        appData = if (graphAppData.isNull()) Optional.absent() else Optional.present(graphAppData),
+        items = if (items.isNull()) Optional.absent() else Optional.present(items),
+        transactionId = if (eventInput.isNull()) Optional.absent() else Optional.present(eventInput.transactionId)
+    )
+}
 
 /**
  * From KS dataModel CreateAttributionEventData, transform it into

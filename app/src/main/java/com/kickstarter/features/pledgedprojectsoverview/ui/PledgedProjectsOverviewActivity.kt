@@ -247,28 +247,34 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
-        stripe.onPaymentResult(
-            requestCode, intent,
-            object : ApiResultCallback<PaymentIntentResult> {
-                override fun onSuccess(result: PaymentIntentResult) {
-                    lifecycleScope.launch {
-                        viewModel.showLoadingState(false)
+        this.getEnvironment()?.stripe()?.let {
+            it.onPaymentResult(
+                requestCode, intent,
+                object : ApiResultCallback<PaymentIntentResult> {
+                    override fun onSuccess(result: PaymentIntentResult) {
+                        lifecycleScope.launch {
+                            viewModel.showLoadingState(false)
+                        }
+                        if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
+                            viewModel.showHeadsUpSnackbar(R.string.Youve_been_authenticated_successfully_pull_to_refresh)
+                            viewModel.getPledgedProjects()
+                        } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||
+                            result.outcome == StripeIntentResult.Outcome.TIMEDOUT ||
+                            result.outcome == StripeIntentResult.Outcome.UNKNOWN
+                        ) viewModel.showErrorSnackbar(
+                            R.string.We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method,
+                            duration = SnackbarDuration.Long
+                        )
                     }
-                    if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
-                        viewModel.showHeadsUpSnackbar(R.string.Youve_been_authenticated_successfully_pull_to_refresh)
-                        viewModel.getPledgedProjects()
-                    } else if (result.outcome == StripeIntentResult.Outcome.FAILED ||
-                        result.outcome == StripeIntentResult.Outcome.TIMEDOUT ||
-                        result.outcome == StripeIntentResult.Outcome.UNKNOWN
-                    ) viewModel.showErrorSnackbar(R.string.We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method, duration = SnackbarDuration.Long)
-                }
-                override fun onError(e: Exception) {
-                    lifecycleScope.launch {
-                        viewModel.showLoadingState(false)
+
+                    override fun onError(e: Exception) {
+                        lifecycleScope.launch {
+                            viewModel.showLoadingState(false)
+                        }
+                        viewModel.showErrorSnackbar(R.string.general_error_something_wrong)
                     }
-                    viewModel.showErrorSnackbar(R.string.general_error_something_wrong)
                 }
-            }
-        )
+            )
+        }
     }
 }

@@ -11,7 +11,9 @@ import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.utils.WindowInsetsUtil
+import com.kickstarter.viewmodels.BackingDetailsViewModel
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -26,6 +28,10 @@ class FacebookConfirmationActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = FacebookConfirmationViewModel.Factory(env)
+        }
+
         binding = FacebookConfirmationLayoutBinding.inflate(layoutInflater)
         WindowInsetsUtil.manageEdgeToEdge(
             window,

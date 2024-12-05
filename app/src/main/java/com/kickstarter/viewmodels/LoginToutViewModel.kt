@@ -271,7 +271,7 @@ interface LoginToutViewModel {
                 .addToDisposable(disposables)
 
             startFacebookConfirmationActivity = loginError
-                .filter(ErrorEnvelope::isConfirmFacebookSignupError)
+//                .filter(ErrorEnvelope::isConfirmFacebookSignupError)
                 .filter { it.facebookUser() != null }
                 .map { it.facebookUser() }
                 .compose(Transformers.combineLatestPair(facebookAccessToken))

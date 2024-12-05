@@ -1,6 +1,8 @@
-#mutation triggerThirdPartyEvent  ($triggerThirdPartyEventInput: TriggerThirdPartyEventInput!) {
-#    triggerThirdPartyEvent(input: $triggerThirdPartyEventInput) {
-#        message
-#        success
-#    }
-#}
+mutation triggerThirdPartyEvent($deviceId: String!, $eventName: String!, $firebaseScreen: String, $firebasePreviousScreen: String, $items: [ThirdPartyEventItemInput!],
+$projectId: ID!, $pledgeAmount: Float, $shipping: Float, $transactionId: String, $userId: String, $appData: AppDataInput ) {
+    triggerThirdPartyEvent(input: {deviceId: $deviceId, eventName: $eventName, firebaseScreen: $firebaseScreen, firebasePreviousScreen: $firebasePreviousScreen,
+    items: $items, projectId: $projectId, pledgeAmount: $pledgeAmount, shipping: $shipping, transactionId: $transactionId, userId: $userId, appData: $appData}) {
+        message
+        success
+    }
+}

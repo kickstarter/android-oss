@@ -94,6 +94,7 @@ import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
+import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
 import com.kickstarter.services.transformers.pledgedProjectsOverviewEnvelopeTransformer
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
@@ -876,28 +877,27 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
-// TODO: rewrite this query on the thirdPartyEvents.graphQL file, something is off here
-//            val mutation = getTriggerThirdPartyEventMutation(eventInput)
-//
-//            service.mutate(mutation)
-//                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
-//                    override fun onFailure(exception: ApolloException) {
-//                        ps.onError(exception)
-//                    }
-//
-//                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
-//                        if (response.hasErrors()) {
-//                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
-//                        }
-//
-//                        response.data?.let {
-//                            val message = it.triggerThirdPartyEvent()?.message() ?: ""
-//                            val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
-//                            ps.onNext(Pair(isSuccess, message))
-//                        }
-//                        ps.onComplete()
-//                    }
-//                })
+
+            val mutation = getTriggerThirdPartyEventMutation(eventInput)
+
+            service
+                .mutation(mutation)
+                .rxSingle()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    } else {
+                        val message = response.data?.triggerThirdPartyEvent?.message
+                        val isSuccess = response.data?.triggerThirdPartyEvent?.success ?: false
+
+                        ps.onNext(Pair(isSuccess, message))
+                    }
+
+                    ps.onComplete()
+                }.addToDisposable(disposables)
             return@defer ps
         }
     }
@@ -1710,7 +1710,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                     response.data?.completeOrder?.let {
                         val payload = CompleteOrderPayload(
-                            status = it.status,
+                            status = it.status.name,
                             clientSecret = it.clientSecret ?: ""
                         )
                         ps.onNext(payload)

@@ -4502,11 +4502,6 @@ type Order implements Node {
   address: Address
 
   """
-  Whether the order requires shipping or tax
-  """
-  autoExemptable: Boolean!
-
-  """
   The associated backer
   """
   backer: User!
@@ -4520,6 +4515,11 @@ type Order implements Node {
   Contains the backer's item preferences and responses to survey questions
   """
   cart: Cart
+
+  """
+  Whether or not the order would be auto-exemptable if the order had no cross-sells.
+  """
+  checkoutVoucherAutoCompletable: Boolean!
 
   """
   Add-ons selected for this order during Pledge Redemption
@@ -4572,11 +4572,6 @@ type Order implements Node {
   The total tax amount for the order
   """
   totalTax: Int
-
-  """
-  Whether or not the order would be auto-exemptable if the order had no cross-sells.
-  """
-  voucherAutoExemptable: Boolean!
 }
 
 """

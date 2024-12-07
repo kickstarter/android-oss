@@ -829,6 +829,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 amount = createBackingData.amount,
                 paymentType = PaymentTypes.CREDIT_CARD.rawValue,
                 paymentSourceId = if (createBackingData.paymentSourceId.isNotNull()) Optional.present(createBackingData.paymentSourceId) else Optional.absent(),
+                incremental = if (createBackingData.incremental.isNotNull()) Optional.present(createBackingData.incremental) else Optional.absent(),
                 setupIntentClientSecret =
                 if (createBackingData.setupIntentClientSecret.isNotNull()) Optional.present(createBackingData.setupIntentClientSecret)
                 else Optional.absent(),
@@ -1710,7 +1711,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                     response.data?.completeOrder?.let {
                         val payload = CompleteOrderPayload(
-                            status = it.status.name,
+                            status = it.status.toString(),
                             clientSecret = it.clientSecret ?: ""
                         )
                         ps.onNext(payload)

@@ -765,7 +765,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
     val status = backingGr?.status?.rawValue ?: ""
 
     val isPostCampaign = backingGr?.isPostCampaign ?: false
-
+    val incremental = backingGr?.incremental ?: false
     return Backing.builder()
         .amount(backingGr?.amount?.amount?.amount?.toDouble() ?: 0.0)
         .bonusAmount(backingGr?.bonusAmount?.amount?.amount?.toDouble() ?: 0.0)
@@ -775,6 +775,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
         .backerName(nameBacker)
         .backer(backer)
         .id(id)
+        .incremental(incremental)
         .reward(reward)
         .addOns(addOns)
         .rewardId(reward?.id())

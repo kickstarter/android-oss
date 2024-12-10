@@ -38,10 +38,4 @@
     app:layout_constraintVertical_bias="0"
     tools:text="$40" />
 
-  <androidx.compose.ui.platform.ComposeView
-      android:id="@+id/plot_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

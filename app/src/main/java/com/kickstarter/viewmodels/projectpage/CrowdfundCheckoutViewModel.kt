@@ -26,7 +26,6 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.isFromPaymentSheet
-import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.getUpdateBackingData
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.ArgumentsKey

@@ -8,7 +8,7 @@ data class PaymentPlan(
     val amountIsPledgeOverTimeEligible: Boolean,
     val paymentIncrements: List<PaymentIncrement>?,
     val projectIsPledgeOverTimeAllowed: Boolean,
-): Parcelable {
+) : Parcelable {
     fun amountIsPledgeOverTimeEligible() = this.amountIsPledgeOverTimeEligible
     fun paymentIncrements() = this.paymentIncrements
     fun projectIsPledgeOverTimeAllowed() = this.projectIsPledgeOverTimeAllowed
@@ -33,7 +33,6 @@ data class PaymentPlan(
         fun builder() = Builder()
     }
 
-
     fun toBuilder() = Builder(
         amountIsPledgeOverTimeEligible = amountIsPledgeOverTimeEligible,
         paymentIncrements = paymentIncrements,
@@ -44,10 +43,9 @@ data class PaymentPlan(
         var equals = super.equals(other)
         if (other is PaymentPlan) {
             equals = amountIsPledgeOverTimeEligible() == other.amountIsPledgeOverTimeEligible() &&
-                    paymentIncrements() == other.paymentIncrements() &&
-                    projectIsPledgeOverTimeAllowed() == other.projectIsPledgeOverTimeAllowed()
+                paymentIncrements() == other.paymentIncrements() &&
+                projectIsPledgeOverTimeAllowed() == other.projectIsPledgeOverTimeAllowed()
         }
         return equals
     }
-
 }

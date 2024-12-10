@@ -9,7 +9,7 @@ data class Money(
     val amount: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
-): Parcelable {
+) : Parcelable {
     fun amount() = this.amount
     fun currencyCode() = this.currencyCode
     fun currencySymbol() = this.currencySymbol
@@ -20,7 +20,7 @@ data class Money(
         var currencyCode: CurrencyCode? = null,
         var currencySymbol: String? = null,
 
-        ) : Parcelable {
+    ) : Parcelable {
         fun amount(amount: String?) = apply { this.amount = amount }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }
@@ -35,8 +35,8 @@ data class Money(
         var equals = super.equals(obj)
         if (obj is Money) {
             equals = amount() == obj.amount() &&
-                    currencyCode() == obj.currencyCode() &&
-                    currencySymbol() == obj.currencySymbol()
+                currencyCode() == obj.currencyCode() &&
+                currencySymbol() == obj.currencySymbol()
         }
         return equals
     }

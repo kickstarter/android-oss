@@ -480,7 +480,9 @@ interface DiscoveryViewModel {
         }
 
         fun provideIntent(intent: Intent) {
-            this.intent.onNext(intent)
+            if(intent.isNotNull()) {
+                this.intent.onNext(intent)
+            }
         }
 
         override fun onCleared() {

@@ -244,11 +244,6 @@ class DiscoveryActivity : AppCompatActivity() {
             .addToDisposable(disposables)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-    }
-
     private fun activateFeatureFlags(environment: Environment) {
         environment.featureFlagClient()?.activate(this)
     }

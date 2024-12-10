@@ -173,9 +173,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     errorAction.invoke(null)
                 }
             }
-            project.slug()?.let {
-                buildPaymentPlan(it, totalAmount.toString())
-            }
+           
             collectUserInformation()
             sendPageViewedEvent()
         }
@@ -408,24 +406,6 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 _checkoutResultState.emit(Pair(checkoutData, pledgeData))
                 emitCurrentState(isLoading = false)
             }
-    }
-
-    fun buildPaymentPlan(slug: String, amount: String) {
-        viewModelScope.launch(dispatcher) {
-            val input = BuildPaymentPlanData(slug = slug, amount = amount)
-            viewModelScope
-                .launch(dispatcher) {
-                    apolloClient
-                        .buildPaymentPlan(input)
-                        .asFlow()
-                        .onStart {
-                        }.map {
-                            Log.d("Leigh", it.amountIsPledgeOverTimeEligible.toString())
-                        }.catch {
-                        }.onCompletion {
-                        }.collect()
-                }
-        }
     }
 
     private suspend fun updateBacking() {

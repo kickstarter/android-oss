@@ -168,6 +168,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     errorAction.invoke(null)
                 }
             }
+
             collectUserInformation()
             sendPageViewedEvent()
         }

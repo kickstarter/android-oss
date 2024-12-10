@@ -209,11 +209,7 @@ query BuildPaymentPlan($slug: String!, $amount: String!) {
         amount {
           ...amount
         }
-        paymentIncrementableId
-        paymentIncrementableType
         scheduledCollection
-        state
-        stateReason
       }
     }
   }

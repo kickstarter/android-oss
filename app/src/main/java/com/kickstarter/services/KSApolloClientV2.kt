@@ -8,6 +8,7 @@ import com.apollographql.apollo3.rx2.rxFlowable
 import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CancelBackingMutation
 import com.kickstarter.ClearUserUnseenActivityMutation
 import com.kickstarter.CompleteOnSessionCheckoutMutation
@@ -57,6 +58,7 @@ import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.BuildPaymentPlanData
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
@@ -67,6 +69,7 @@ import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
+import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -95,6 +98,7 @@ import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
 import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
+import com.kickstarter.services.transformers.paymentPlanTransformer
 import com.kickstarter.services.transformers.pledgedProjectsOverviewEnvelopeTransformer
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
@@ -214,6 +218,7 @@ interface ApolloClientTypeV2 {
     fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
+    fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun cleanDisposables()
 }
 
@@ -727,6 +732,38 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         val modifiedRewards = rwList.filterNotNull().toMutableList()
                         modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
                         ps.onNext(modifiedRewards.toList())
+                    }
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+            return@defer ps
+        }
+    }
+
+    override fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan> {
+        return Observable.defer {
+            val ps = PublishSubject.create<PaymentPlan>()
+            val query = BuildPaymentPlanQuery(
+                slug = input.slug,
+                amount = input.amount
+            )
+
+            this.service.query(query)
+                .rxFlowable()
+                .subscribeOn(Schedulers.io())
+                .doOnError {
+                    ps.onError(it)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    }
+
+                    response.data?.let { data ->
+                        data.project?.paymentPlan?.let {
+                            paymentPlanTransformer(it)
+                        }?.let {
+                            ps.onNext(it)
+                        }
                     }
                     ps.onComplete()
                 }.addToDisposable(disposables)

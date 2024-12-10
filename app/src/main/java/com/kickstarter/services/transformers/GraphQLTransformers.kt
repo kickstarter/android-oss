@@ -3,6 +3,7 @@ package com.kickstarter.services.transformers
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CreateAttributionEventMutation
 import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.FetchProjectRewardsQuery
@@ -32,6 +33,9 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
+import com.kickstarter.models.Money
+import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
@@ -992,6 +996,43 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
         .totalCount(ppoResponse.pledges?.totalCount)
         .pledges(ppoCards)
         .pageInfoEnvelope(pageInfoEnvelope)
+        .build()
+}
+
+fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.PaymentPlan): PaymentPlan {
+    val paymentIncrements =
+        buildPaymentPlanResponse.paymentIncrements?.map {
+
+            val money = Money.builder()
+                .amount(it.amount.amount.amount)
+                .currencyCode(it.amount.amount.currency)
+                .currencySymbol(it.amount.amount.symbol)
+                .build()
+
+            val paymentIncrementableId = it.paymentIncrementableId
+            val paymentIncrementableType = it.paymentIncrementableType
+            val scheduledCollection = it.scheduledCollection
+            val state = when (it.state) {
+                "collected" -> PaymentIncrement.State.COLLECTED
+                "unattempted" -> PaymentIncrement.State.UNATTEMPTED
+                else -> PaymentIncrement.State.UNKNOWN
+            }
+            val stateReason = it.stateReason
+
+            PaymentIncrement.builder()
+                .paymentIncrementableId(paymentIncrementableId)
+                .paymentIncrementableType(paymentIncrementableType)
+                .amount(money)
+                .scheduledCollection(scheduledCollection)
+                .state(state)
+                .stateReason(stateReason)
+                .build()
+        }
+
+    return PaymentPlan.builder()
+        .paymentIncrements(paymentIncrements)
+        .amountIsPledgeOverTimeEligible(buildPaymentPlanResponse.amountIsPledgeOverTimeEligible)
+        .projectIsPledgeOverTimeAllowed(buildPaymentPlanResponse.projectIsPledgeOverTimeAllowed)
         .build()
 }
 

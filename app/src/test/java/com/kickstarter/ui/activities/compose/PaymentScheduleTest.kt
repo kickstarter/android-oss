@@ -15,6 +15,7 @@ import com.kickstarter.R
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrement.State
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import org.joda.time.DateTime
 import org.junit.Before
 import org.junit.Test
 import java.time.Instant
@@ -50,7 +51,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             state = State.UNATTEMPTED,
             paymentIncrementalId = 1,
             paymentIncrementalType = "pledge",
-            date = Instant.parse("2024-10-14T18:12:00Z") // Mon, 14 Oct 2024 18:12 UTC
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = ""
         ),
         PaymentIncrement(
             id = 1235,
@@ -58,7 +60,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             state = State.COLLECTED,
             paymentIncrementalId = 2,
             paymentIncrementalType = "pledge",
-            date = Instant.parse("2024-10-15T14:00:00Z") // Tue, 15 Oct 2024 14:00 UTC
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = ""
         ),
         PaymentIncrement(
             id = 1236,
@@ -66,7 +69,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             state = State.UNATTEMPTED,
             paymentIncrementalId = 3,
             paymentIncrementalType = "pledge",
-            date = Instant.parse("2024-10-16T10:00:00Z") // Wed, 16 Oct 2024 10:00 UTC
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = ""
         ),
         PaymentIncrement(
             id = 1237,
@@ -74,7 +78,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             state = State.COLLECTED,
             paymentIncrementalId = 4,
             paymentIncrementalType = "pledge",
-            date = Instant.parse("2024-10-17T16:30:00Z") // Thu, 17 Oct 2024 16:30 UTC
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = ""
         )
     )
 

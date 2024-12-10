@@ -26,12 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.extensions.parseToDouble
+import com.kickstarter.models.Money
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import java.time.Instant
+import org.joda.time.DateTime
 import java.util.Locale
 
 enum class PaymentScheduleTestTags {
@@ -45,36 +48,36 @@ enum class PaymentScheduleTestTags {
 
 val samplePaymentIncrements = listOf(
     PaymentIncrement(
-        id = 1234,
-        amount = 3400,
+        amount = Money.builder().amount("34.00").build(),
         state = PaymentIncrement.State.UNATTEMPTED,
-        paymentIncrementalId = 1,
-        paymentIncrementalType = "pledge",
-        date = Instant.parse("2024-10-14T18:12:00Z") // Mon, 14 Oct 2024 18:12 UTC
+        paymentIncrementableId = "1",
+        paymentIncrementableType = "pledge",
+        scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+        stateReason = ""
     ),
     PaymentIncrement(
-        id = 1235,
-        amount = 2500,
+        amount = Money.builder().amount("25.00").build(),
         state = PaymentIncrement.State.COLLECTED,
-        paymentIncrementalId = 2,
-        paymentIncrementalType = "pledge",
-        date = Instant.parse("2024-10-15T14:00:00Z") // Tue, 15 Oct 2024 14:00 UTC
+        paymentIncrementableId = "2",
+        paymentIncrementableType = "pledge",
+        scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+        stateReason = ""
     ),
     PaymentIncrement(
-        id = 1236,
-        amount = 4500,
+        amount = Money.builder().amount("45.00").build(),
         state = PaymentIncrement.State.UNATTEMPTED,
-        paymentIncrementalId = 3,
-        paymentIncrementalType = "pledge",
-        date = Instant.parse("2024-10-16T10:00:00Z") // Wed, 16 Oct 2024 10:00 UTC
+        paymentIncrementableId = "3",
+        paymentIncrementableType = "pledge",
+        scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+        stateReason = ""
     ),
     PaymentIncrement(
-        id = 1237,
-        amount = 5200,
+        amount = Money.builder().amount("52.00").build(),
         state = PaymentIncrement.State.COLLECTED,
-        paymentIncrementalId = 4,
-        paymentIncrementalType = "pledge",
-        date = Instant.parse("2024-10-17T16:30:00Z") // Thu, 17 Oct 2024 16:30 UTC
+        paymentIncrementableId = "4",
+        paymentIncrementableType = "pledge",
+        scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+        stateReason = ""
     )
 )
 
@@ -126,7 +129,7 @@ fun InteractivePaymentSchedulePreview() {
 fun PaymentSchedule(
     isExpanded: Boolean = false,
     onExpandChange: (Boolean) -> Unit = {},
-    paymentIncrements: List<PaymentIncrement> = listOf()
+    paymentIncrements: List<PaymentIncrement> = listOf(),
 ) {
     Card(
         elevation = 0.dp,
@@ -182,7 +185,7 @@ fun PaymentSchedule(
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement) {
-    val formattedAmount = String.format(Locale.US, "%.2f", paymentIncrement.amount / 100.0)
+    val formattedAmount = String.format(Locale.US, "%.2f", paymentIncrement.amount.amount.parseToDouble())
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -195,7 +198,7 @@ fun PaymentRow(paymentIncrement: PaymentIncrement) {
         ) {
             Text(
                 modifier = Modifier.testTag(PaymentScheduleTestTags.DATE_TEXT.name),
-                text = paymentIncrement.formattedDate,
+                text = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection),
                 style = typography.body2Medium,
             )
             StatusBadge(paymentIncrement.state)
@@ -246,5 +249,6 @@ fun StatusBadge(state: PaymentIncrement.State) {
                 )
             }
         }
+        PaymentIncrement.State.UNKNOWN -> {}
     }
 }

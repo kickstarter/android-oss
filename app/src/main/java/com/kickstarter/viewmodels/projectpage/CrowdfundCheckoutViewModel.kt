@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.os.Bundle
+import android.util.Log
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.models.Backing
+import com.kickstarter.models.BuildPaymentPlanData
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -24,6 +26,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.isFromPaymentSheet
+import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.getUpdateBackingData
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.ui.ArgumentsKey
@@ -41,8 +44,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -168,7 +174,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     errorAction.invoke(null)
                 }
             }
-
+            project.slug()?.let {
+                buildPaymentPlan(it, totalAmount.toString())
+            }
             collectUserInformation()
             sendPageViewedEvent()
         }
@@ -401,6 +409,24 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 _checkoutResultState.emit(Pair(checkoutData, pledgeData))
                 emitCurrentState(isLoading = false)
             }
+    }
+
+    fun buildPaymentPlan(slug: String, amount: String) {
+        viewModelScope.launch(dispatcher) {
+            val input = BuildPaymentPlanData(slug = slug, amount = amount)
+            viewModelScope
+                .launch(dispatcher) {
+                    apolloClient
+                        .buildPaymentPlan(input)
+                        .asFlow()
+                        .onStart {
+                        }.map {
+                            Log.d("Leigh", it.amountIsPledgeOverTimeEligible.toString())
+                        }.catch {
+                        }.onCompletion {
+                        }.collect()
+                }
+        }
     }
 
     private suspend fun updateBacking() {

@@ -480,7 +480,7 @@ interface DiscoveryViewModel {
         }
 
         fun provideIntent(intent: Intent) {
-            if(intent.isNotNull()) {
+            if (intent.isNotNull()) {
                 this.intent.onNext(intent)
             }
         }

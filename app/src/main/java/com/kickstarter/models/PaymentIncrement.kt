@@ -1,45 +1,80 @@
 package com.kickstarter.models
 
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import org.joda.time.DateTime
 
+@Parcelize
 data class PaymentIncrement(
-    val id: Long,
-    val amount: Int,
+    val amount: Money,
+    val paymentIncrementableId: String,
+    val paymentIncrementableType: String,
+    val scheduledCollection: DateTime,
     val state: State,
-    val paymentIncrementalType: String,
-    val paymentIncrementalId: Long,
-    val date: Instant
-) {
-    val formattedDate: String
-        get() {
-            val zonedDateTime = ZonedDateTime.ofInstant(date, ZoneOffset.UTC)
-            val formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy")
-            return zonedDateTime.format(formatter)
-        }
-    enum class State {
-        UNATTEMPTED,
-        COLLECTED
+    val stateReason: String?
+) : Parcelable {
+    fun amount() = this.amount
+    fun paymentIncrementableId() = this.paymentIncrementableId
+    fun paymentIncrementableType() = this.paymentIncrementableType
+    fun scheduledCollection() = this.scheduledCollection
+    fun state() = this.state
+    fun stateReason() = this.stateReason
+
+    @Parcelize
+    data class Builder(
+        private var amount: Money = Money.builder().build(),
+        private var paymentIncrementableId: String = "",
+        private var paymentIncrementableType: String = "",
+        private var scheduledCollection: DateTime = DateTime.now(),
+        private var state: State = State.UNKNOWN,
+        private var stateReason: String? = null
+    ) : Parcelable {
+        fun amount(amount: Money) = apply { this.amount = amount }
+        fun paymentIncrementableId(paymentIncrementableId: String) = apply { this.paymentIncrementableId = paymentIncrementableId }
+        fun paymentIncrementableType(paymentIncrementableType: String) = apply { this.paymentIncrementableType = paymentIncrementableType }
+        fun scheduledCollection(scheduledCollection: DateTime) = apply { this.scheduledCollection = scheduledCollection }
+        fun state(state: State) = apply { this.state = state }
+        fun stateReason(stateReason: String?) = apply { this.stateReason = stateReason }
+        fun build() = PaymentIncrement(
+            amount = amount,
+            paymentIncrementableId = paymentIncrementableId,
+            paymentIncrementableType = paymentIncrementableType,
+            scheduledCollection = scheduledCollection,
+            state = state,
+            stateReason = stateReason
+        )
     }
 
-    fun stateAsString(): String {
-        return state.name.lowercase()
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is PaymentIncrement) {
+            equals = amount() == obj.amount() &&
+                paymentIncrementableId() == obj.paymentIncrementableId() &&
+                paymentIncrementableType() == obj.paymentIncrementableType() &&
+                scheduledCollection() == obj.scheduledCollection() &&
+                state() == obj.state() &&
+                stateReason() == obj.stateReason()
+        }
+        return equals
     }
+
+    fun toBuilder() = Builder(
+        amount = amount,
+        paymentIncrementableId = paymentIncrementableId,
+        paymentIncrementableType = paymentIncrementableType,
+        scheduledCollection = scheduledCollection,
+        state = state,
+        stateReason = stateReason,
+    )
 
     companion object {
-        fun create(
-            id: Long,
-            amount: Int,
-            state: State,
-            paymentIncrementalType: String,
-            paymentIncrementalId: Long,
-            date: Instant
-        ): PaymentIncrement {
-            return PaymentIncrement(
-                id, amount, state, paymentIncrementalType, paymentIncrementalId, date
-            )
-        }
+        @JvmStatic
+        fun builder() = Builder()
+    }
+
+    enum class State {
+        COLLECTED,
+        UNATTEMPTED,
+        UNKNOWN,
     }
 }

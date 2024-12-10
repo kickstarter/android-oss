@@ -199,3 +199,18 @@ mutation CreateFlagging($contentId: ID!, $details: String, $kind: NonDeprecatedF
     }
   }
 }
+
+query BuildPaymentPlan($slug: String!, $amount: String!) {
+  project(slug: $slug) {
+    paymentPlan(amount: $amount) {
+      projectIsPledgeOverTimeAllowed
+      amountIsPledgeOverTimeEligible
+      paymentIncrements {
+        amount {
+          ...amount
+        }
+        scheduledCollection
+      }
+    }
+  }
+}

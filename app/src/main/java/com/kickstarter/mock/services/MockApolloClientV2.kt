@@ -18,6 +18,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.BuildPaymentPlanData
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.CheckoutPayment
@@ -28,6 +29,7 @@ import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
+import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -338,6 +340,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): io.reactivex.Observable<PledgedProjectsOverviewEnvelope> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun buildPaymentPlan(inputData: BuildPaymentPlanData): io.reactivex.Observable<PaymentPlan> {
         return io.reactivex.Observable.empty()
     }
 

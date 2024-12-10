@@ -305,6 +305,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val goal = projectFragment?.goal?.amount?.amount?.toDouble() ?: 0.0
     val id = decodeRelayId(projectFragment?.id) ?: -1
     val isBacking = projectFragment?.backing?.backing?.let { true } ?: false
+    val isPledgeOverTimeAllowed = projectFragment?.isPledgeOverTimeAllowed ?: false
     val isStarred = projectFragment?.isWatched ?: false
     val launchedAt = projectFragment?.launchedAt
     val location = locationTransformer(projectFragment?.location?.location)
@@ -403,6 +404,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .goal(goal)
         .id(id)
         .isBacking(isBacking)
+        .isPledgeOverTimeAllowed(isPledgeOverTimeAllowed)
         .isStarred(isStarred)
         .lastUpdatePublishedAt(updatedAt)
         .launchedAt(launchedAt)
@@ -560,6 +562,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
     val goal = projectFragment?.goal?.amount?.amount?.toDouble() ?: 0.0
     val id = decodeRelayId(projectFragment?.id) ?: -1
     val isBacking = projectFragment?.backing?.id?.let { true } ?: false
+    val isPledgeOverTimeAllowed = projectFragment?.isPledgeOverTimeAllowed ?: false
     val isStarred = projectFragment?.isWatched ?: false
     val launchedAt = projectFragment?.launchedAt
     val location = locationTransformer(projectFragment?.location?.location)
@@ -596,6 +599,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .goal(goal)
         .id(id)
         .isBacking(isBacking)
+        .isPledgeOverTimeAllowed(isPledgeOverTimeAllowed)
         .isStarred(isStarred)
         .launchedAt(launchedAt)
         .location(location)

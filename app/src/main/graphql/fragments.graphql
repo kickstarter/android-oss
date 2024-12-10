@@ -3,6 +3,7 @@ fragment projectCard on Project {
     backersCount
     description
     isLaunched
+    isPledgeOverTimeAllowed
     backing {
         id
     }
@@ -56,6 +57,7 @@ fragment fullProject on Project {
     description
     minPledge
     isLaunched
+    isPledgeOverTimeAllowed
     sendMetaCapiEvents
     sendThirdPartyEvents
     backing {

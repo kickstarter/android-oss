@@ -34,7 +34,7 @@ class Project private constructor(
     private val goal: Double,
     private val id: Long, // in the Kickstarter app, this is project.pid not project.id
     private val isBacking: Boolean,
-    private val isPledgeOverTimeAllowed: Boolean?,
+    private val isPledgeOverTimeAllowed: Boolean? = null,
     private val isStarred: Boolean,
     private val lastUpdatePublishedAt: DateTime?,
     private val launchedAt: DateTime?,
@@ -442,6 +442,10 @@ class Project private constructor(
             if (it.isBeforeNow) false
             else it.isBefore(DateTime().plusDays(2))
         } ?: false
+
+    fun isPlotAllowed(): Boolean {
+        return isPledgeOverTimeAllowed ?: false
+    }
 
     fun percentageFunded(): Float {
         return if (goal() > 0.0f) {

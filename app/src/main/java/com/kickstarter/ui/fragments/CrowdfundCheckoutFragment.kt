@@ -156,7 +156,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             },
                             isPledgeOverTimeAllowed = environment.featureFlagClient()
-                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false && pledgeReason == PledgeReason.PLEDGE,
+                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true and project.isPlotAllowed() && pledgeReason == PledgeReason.PLEDGE,
                         )
                     }
                 }

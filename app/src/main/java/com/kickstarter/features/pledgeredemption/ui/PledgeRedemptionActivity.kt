@@ -66,7 +66,7 @@ class PledgeRedemptionActivity : ComponentActivity() {
                         onDisclaimerItemClicked = {},
                         onAccountabilityLinkClicked = {},
                         isPledgeOverTimeAllowed = env.featureFlagClient()
-                            ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false,
+                            ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && project.isPlotAllowed(),
                     )
                 }
             }

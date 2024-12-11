@@ -62,7 +62,8 @@ fun PreviewPledgeInFullSelected() {
     KSTheme {
         CollectionPlan(
             isEligible = true,
-            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name
+            selectedOption = CollectionOptions.PLEDGE_IN_FULL.name,
+            onOptionSelected = {}
         )
     }
 }
@@ -80,7 +81,8 @@ fun PreviewPledgeOverTimeSelected() {
     KSTheme {
         CollectionPlan(
             isEligible = true,
-            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME.name
+            selectedOption = CollectionOptions.PLEDGE_OVER_TIME.name,
+            onOptionSelected = {}
         )
     }
 }
@@ -92,23 +94,22 @@ fun PreviewNotEligibleComponent() {
     KSTheme {
         CollectionPlan(
             isEligible = false,
-            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name
-        )
+            selectedOption = CollectionOptions.PLEDGE_IN_FULL.name,
+            onOptionSelected = {})
     }
 }
 
 @Composable
 fun CollectionPlan(
     isEligible: Boolean,
-    initialSelectedOption: String = CollectionOptions.PLEDGE_IN_FULL.name
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
 ) {
-    var selectedOption by remember { mutableStateOf(initialSelectedOption) }
-
     Column(modifier = Modifier.padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)) {
         PledgeOption(
             optionText = stringResource(id = R.string.fpo_pledge_in_full),
             selected = selectedOption == CollectionOptions.PLEDGE_IN_FULL.name,
-            onSelect = { selectedOption = CollectionOptions.PLEDGE_IN_FULL.name },
+            onSelect = { onOptionSelected(CollectionOptions.PLEDGE_IN_FULL.name) },
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_IN_FULL.name)
         )
         Spacer(Modifier.height(dimensions.paddingSmall))
@@ -118,7 +119,7 @@ fun CollectionPlan(
             selected = selectedOption == CollectionOptions.PLEDGE_OVER_TIME.name,
             description = if (isEligible) stringResource(id = R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost) else null,
             onSelect = {
-                if (isEligible) selectedOption = CollectionOptions.PLEDGE_OVER_TIME.name
+                if (isEligible) onOptionSelected(CollectionOptions.PLEDGE_OVER_TIME.name)
             },
             isExpanded = selectedOption == CollectionOptions.PLEDGE_OVER_TIME.name && isEligible,
             isSelectable = isEligible,

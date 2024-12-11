@@ -1,7 +1,10 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
+import CollectionOptions
 import CollectionPlan
 import android.content.res.Configuration
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -81,6 +84,7 @@ import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.views.compose.checkout.ItemizedRewardListContainer
+import timber.log.Timber
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -172,6 +176,7 @@ fun CheckoutScreenIsPlotEnabledPreview() {
         )
     }
 }
+
 @Composable
 fun CheckoutScreen(
     storedCards: List<StoredCard> = listOf(),
@@ -207,6 +212,14 @@ fun CheckoutScreen(
     val onOptionSelected: (StoredCard?) -> Unit = {
         selectedOption.value = it
         onChangedPaymentMethod.invoke(it)
+    }
+
+    val collectionPlanSelectedOption = remember {
+        mutableStateOf(CollectionOptions.PLEDGE_IN_FULL.name)
+    }
+
+    val onCollectionPlanOptionSelected: (String) -> Unit = { option ->
+        collectionPlanSelectedOption.value = option
     }
 
     val totalAmountString = environment.ksCurrency()?.let {
@@ -389,7 +402,11 @@ fun CheckoutScreen(
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                    CollectionPlan(isEligible = true)
+                    CollectionPlan(
+                        isEligible = true,//Todo - Add the validation for isEligible
+                        selectedOption = collectionPlanSelectedOption.toString(),
+                        onOptionSelected = onCollectionPlanOptionSelected
+                    )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                     Text(
                         modifier = Modifier.padding(
@@ -584,7 +601,7 @@ fun CheckoutScreen(
                 }
 
                 if (environment.ksCurrency().isNotNull() && environment.ksString()
-                    .isNotNull() && currentShippingRule.isNotNull()
+                        .isNotNull() && currentShippingRule.isNotNull()
                 ) {
                     val estimatedShippingRangeString =
                         RewardViewUtils.getEstimatedShippingCostString(

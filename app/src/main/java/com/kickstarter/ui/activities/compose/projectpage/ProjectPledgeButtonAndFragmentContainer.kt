@@ -293,7 +293,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         isLoading = isLoading,
                                         onDisclaimerItemClicked = onDisclaimerItemClicked,
                                         onAccountabilityLinkClicked = onAccountabilityLinkClicked,
-                                        isPlotEnabled = false,
+                                        isPledgeOverTimeAllowed = false,
                                     )
                                 }
                             }

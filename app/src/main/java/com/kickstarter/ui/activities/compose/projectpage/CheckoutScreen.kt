@@ -124,7 +124,7 @@ fun CheckoutScreenPreview() {
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            isPlotEnabled = false
+            isPledgeOverTimeAllowed = false
         )
     }
 }
@@ -168,7 +168,7 @@ fun CheckoutScreenIsPlotEnabledPreview() {
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            isPlotEnabled = true
+            isPledgeOverTimeAllowed = true
         )
     }
 }
@@ -194,7 +194,7 @@ fun CheckoutScreen(
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
     onChangedPaymentMethod: (StoredCard?) -> Unit = {},
-    isPlotEnabled: Boolean
+    isPledgeOverTimeAllowed: Boolean
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -377,7 +377,7 @@ fun CheckoutScreen(
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-                if (isPlotEnabled) {
+                if (isPledgeOverTimeAllowed) {
                     Text(
                         modifier = Modifier.padding(
                             start = dimensions.paddingMediumLarge,
@@ -567,7 +567,7 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = if (isPlotEnabled) plotDisclaimerText else disclaimerText,
+                        disclaimerText = if (isPledgeOverTimeAllowed) plotDisclaimerText else disclaimerText,
                         plotSelected = false
                     )
                 } else {
@@ -578,7 +578,7 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = if (isPlotEnabled) plotDisclaimerText else disclaimerText,
+                        disclaimerText = if (isPledgeOverTimeAllowed) plotDisclaimerText else disclaimerText,
                         plotSelected = false
                     )
                 }

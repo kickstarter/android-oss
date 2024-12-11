@@ -155,7 +155,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                             onChangedPaymentMethod = { paymentMethodSelected ->
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             },
-                            isPlotEnabled = environment.featureFlagClient()
+                            isPledgeOverTimeAllowed = environment.featureFlagClient()
                                 ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false && pledgeReason == PledgeReason.PLEDGE,
                         )
                     }

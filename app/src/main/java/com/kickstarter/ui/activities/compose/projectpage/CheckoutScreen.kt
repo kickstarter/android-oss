@@ -194,7 +194,7 @@ fun CheckoutScreen(
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
     onChangedPaymentMethod: (StoredCard?) -> Unit = {},
-    isPlotEnabled: Boolean
+    isPlotEnabled: Boolean = false
 ) {
     val selectedOption = remember {
         mutableStateOf(

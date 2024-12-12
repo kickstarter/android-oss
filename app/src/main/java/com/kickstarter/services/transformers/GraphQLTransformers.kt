@@ -1013,23 +1013,11 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
                 .currencySymbol(it.amount.amount.symbol)
                 .build()
 
-            val paymentIncrementableId = it.paymentIncrementableId
-            val paymentIncrementableType = it.paymentIncrementableType
             val scheduledCollection = it.scheduledCollection
-            val state = when (it.state) {
-                "collected" -> PaymentIncrement.State.COLLECTED
-                "unattempted" -> PaymentIncrement.State.UNATTEMPTED
-                else -> PaymentIncrement.State.UNKNOWN
-            }
-            val stateReason = it.stateReason
 
             PaymentIncrement.builder()
-                .paymentIncrementableId(paymentIncrementableId)
-                .paymentIncrementableType(paymentIncrementableType)
                 .amount(money)
                 .scheduledCollection(scheduledCollection)
-                .state(state)
-                .stateReason(stateReason)
                 .build()
         }
 

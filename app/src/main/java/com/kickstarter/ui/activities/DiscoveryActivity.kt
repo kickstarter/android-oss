@@ -29,6 +29,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showErrorSnackBar
 import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.ui.extensions.startActivityWithTransition
@@ -57,6 +58,8 @@ class DiscoveryActivity : AppCompatActivity() {
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
+        setUpConnectivityStatusCheck(lifecycle)
+
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         WindowInsetsUtil.manageEdgeToEdge(
             window,

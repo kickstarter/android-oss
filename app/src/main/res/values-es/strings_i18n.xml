@@ -58,7 +58,9 @@
   <string name="Ask_the_project_creator_directly" formatted="false">Pregúntale al creador del proyecto directamente.</string>
   <string name="Authenticate_card" formatted="false">Autenticar tarjeta</string>
   <string name="Authentication_failed_please_try_again" formatted="false">Autenticación fallida. Intenta de nuevo.</string>
+  <string name="Authentication_required" formatted="false">Autenticación necesaria</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">Autenticación exitosa. Desliza para actualizar.</string>
+  <string name="Available_for_pledges_over" formatted="false">Disponible para contribuciones superiores a %{amount}</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Disponible para reproducción %{time} %{units} más</string>
   <string name="Back" formatted="false">Atrás</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Apóyalo porque crees en él.</string>
@@ -120,6 +122,8 @@ patrocinadores</string>
   <string name="Change_password" formatted="false">Cambiar contraseña</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
   <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Cambia tu ubicación de envío u omite los complementos para continuar.</string>
+  <string name="Charge_number" formatted="false">Cargo %{number}</string>
+  <string name="Charged_as_number_of_payments" formatted="false">cobrado en %{number} pagos</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Vuelve más tarde para obtener una actualización sobre tu progreso de exportación.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Echa un vistazo a estos proyectos seleccionados exclusivamente para ti.</string>
@@ -136,6 +140,7 @@ patrocinadores</string>
   <string name="Closes_project" formatted="false">Cierra el proyecto.</string>
   <string name="Collaborator" formatted="false">Colaborador</string>
   <string name="Collapses_subcategories" formatted="false">Muestra menos subcategorías.</string>
+  <string name="Collection_plan" formatted="false">Plan de pagos</string>
   <string name="Collections" formatted="false">Colecciones</string>
   <string name="Coming_soon" formatted="false">Próximamente</string>
   <string name="Comment_reply_digest" formatted="false">Resumen de respuestas a comentarios</string>
@@ -335,6 +340,7 @@ Toca para intentar de nuevo.</string>
   <string name="I_plan_to_use_AI_generated_content" formatted="false">Tengo pensado usar contenido generado por IA en mi proyecto.</string>
   <string name="I_understand" formatted="false">Entiendo</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
+  <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">Si el proyecto alcanza la meta, el primer cargo de %{amount} se cobrará el %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Si el proyecto alcanza la meta de financiamiento, te cobraremos %{total} el %{project_deadline}. Recibirás un comprobante por la contribución que podrás canjear si el proyecto se financia con éxito y el creador logra completar su iniciativa.</string>
   <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
@@ -366,8 +372,8 @@ Toca para intentar de nuevo.</string>
   <string name="Keep_reading" formatted="false">Leer más</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Recibe info sobre live streams futuros</string>
   <string name="Kickstarter_Arts" formatted="false">Arte en Kickstarter</string>
-  <string name="Kickstarter_Games" formatted="false">Kickstarter Games</string>
-  <string name="Kickstarter_Invent" formatted="false">Kickstarter Invent</string>
+  <string name="Kickstarter_Games" formatted="false">Juegos de Kickstarter</string>
+  <string name="Kickstarter_Invent" formatted="false">Invenciones de Kickstarter</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si la financiación es exitosa)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter no es una tienda.</string>
@@ -481,6 +487,7 @@ Toca para intentar de nuevo.</string>
   <string name="Password_visibility" formatted="false">Visibilidad de la contraseña</string>
   <string name="Passwords_matching_message" formatted="false">Las nuevas contraseñas deben coincidir.</string>
   <string name="Past_live_stream" formatted="false">Live Stream pasado</string>
+  <string name="Payment" formatted="false">Pago</string>
   <string name="Payment_failure" formatted="false">Error de pago</string>
   <string name="Payment_method" formatted="false">Método de pago</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
@@ -493,11 +500,13 @@ Toca para intentar de nuevo.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Por favor inicia sesión o regístrate para participar en este Live Stream.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Por favor inicia sesión o regístrate para suscribirte a este Live Stream.</string>
   <string name="Pledge" formatted="false">Contribución:</string>
+  <string name="Pledge_Over_Time" formatted="false">Contribución en cuotas</string>
   <string name="Pledge_activity" formatted="false">Actividad de contribución</string>
   <string name="Pledge_amount" formatted="false">Monto de contribución</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} contribuido</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
   <string name="Pledge_details" formatted="false">Detalles de la contribución</string>
+  <string name="Pledge_in_full" formatted="false">Contribución total</string>
   <string name="Pledge_management" formatted="false">Gestión de contribución</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Haz contribuciones a proyectos y revisa todos tus proyectos guardados y patrocinados - todo en un mismo lugar.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Patrocina tus favoritos y ve todos tus proyectos en un solo lugar.</string>
@@ -609,10 +618,12 @@ Toca para intentar de nuevo.</string>
   <string name="Saved_projects" formatted="false">Proyectos guardados</string>
   <string name="Saves_project" formatted="false">Guarda este proyecto.</string>
   <string name="Say_something_kind" formatted="false">Di algo amable...</string>
+  <string name="Scheduled" formatted="false">Programado</string>
   <string name="Security_code" formatted="false">Código de seguridad</string>
   <string name="See_all_backed__projects" formatted="false">Ver todos los proyectos patrocinados</string>
   <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
   <string name="See_our_suggestions" formatted="false">Ver nuestras sugerencias ▸</string>
+  <string name="See_our_terms_of_use" formatted="false">Ver nuestros Términos de uso</string>
   <string name="See_rewards" formatted="false">Ver recompensas</string>
   <string name="See_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="Select" formatted="false">Seleccionar</string>
@@ -835,6 +846,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">Has cancelado este proyecto, así que no se realizó ningún cargo al método de pago del patrocinador.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Has cancelado tu contribución a este proyecto.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">No puedes usar esta tarjeta de crédito para patrocinar un proyecto de %{project_country}.</string>
+  <string name="You_have_selected_pledge_over_time" formatted="false">Seleccionaste Contribución en cuotas. Si el proyecto alcanza la meta, el primer cargo de %{amount} se cobrará el %{date}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>
   <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito y tu contribución por &lt;b>%{pledge_total}&lt;/b> se ha recaudado.&lt;/p>\n
 &lt;p>Recibirás la confirmación en %{user_email} cuando estemos por entregarte las recompensas para que puedas pagar los costos de envío e impuestos.&lt;/p>\n
@@ -845,6 +857,8 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Contribuiste sin recompensa</string>
   <string name="You_saved_this_project" formatted="false">Uno de tus proyectos guardados.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">Se te cobrará tu contribución en cuatro pagos sin costo adicional.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">El primer pago será 24 horas después de que el proyecto finalice con éxito y luego cada 2 semanas hasta el monto total de la contribución. Cuando se selecciona esta opción, no se pueden realizar más modificaciones en tu contribución.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Perderás el comentario si sales de esta página.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">No se te cobrará por patrocinar un proyecto a menos que alcance su meta de financiamiento.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Recibirás un correo electrónico en %{email} cuando la descarga esté lista.</string>
@@ -1628,7 +1642,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Novedades y eventos de Kickstarter</string>
-  <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing" formatted="false">Lecturas de Kickstarter</string>
   <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Regístrate para recibir un boletín mensual del equipo de publicaciones de Kickstarter que destaca nuevos proyectos estupendos, historias de creadores y eventos literarios que tengan en la mira.</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">Suscribir a todos</string>
   <string name="profile_settings_newsletter_title" formatted="false">Boletines informativos</string>

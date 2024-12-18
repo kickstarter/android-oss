@@ -58,7 +58,9 @@
   <string name="Ask_the_project_creator_directly" formatted="false">Ask the project creator directly.</string>
   <string name="Authenticate_card" formatted="false">Authenticate Card</string>
   <string name="Authentication_failed_please_try_again" formatted="false">Authentication failed. Please try again.</string>
+  <string name="Authentication_required" formatted="false">Authentication required</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">Authentication success. Please pull to refresh.</string>
+  <string name="Available_for_pledges_over" formatted="false">Available for pledges over %{amount}</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Back it because you believe in it.</string>
@@ -120,6 +122,8 @@ backers</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Change your shipping location or skip add-ons to continue.</string>
+  <string name="Charge_number" formatted="false">Charge %{number}</string>
+  <string name="Charged_as_number_of_payments" formatted="false">charged as %{number} payments</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Check out these handpicked projects just for you.</string>
@@ -136,6 +140,7 @@ backers</string>
   <string name="Closes_project" formatted="false">Closes project.</string>
   <string name="Collaborator" formatted="false">Collaborator</string>
   <string name="Collapses_subcategories" formatted="false">Collapses subcategories.</string>
+  <string name="Collection_plan" formatted="false">Collection Plan</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Coming_soon" formatted="false">Coming soon</string>
   <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
@@ -335,6 +340,7 @@ Tap to retry</string>
   <string name="I_plan_to_use_AI_generated_content" formatted="false">I plan to use AI-generated content in my project.</string>
   <string name="I_understand" formatted="false">I understand</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
+  <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">If the project reaches its funding goal, the first charge of %{amount} will be collected on %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}. You will receive a proof of pledge that will be redeemable if the project is funded and the creator is successful at completing the creative venture.</string>
   <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
@@ -482,6 +488,7 @@ from friends yet.</string>
   <string name="Password_visibility" formatted="false">Password visibility</string>
   <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
   <string name="Past_live_stream" formatted="false">Past live stream</string>
+  <string name="Payment" formatted="false">Payment</string>
   <string name="Payment_failure" formatted="false">Payment failure</string>
   <string name="Payment_method" formatted="false">Payment method</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
@@ -494,11 +501,13 @@ from friends yet.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Please log in or sign up to subscribe to this live stream.</string>
   <string name="Pledge" formatted="false">Pledge</string>
+  <string name="Pledge_Over_Time" formatted="false">Pledge Over Time</string>
   <string name="Pledge_activity" formatted="false">Pledge activity</string>
   <string name="Pledge_amount" formatted="false">Pledge amount</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} pledged</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_details" formatted="false">Pledge details</string>
+  <string name="Pledge_in_full" formatted="false">Pledge in full</string>
   <string name="Pledge_management" formatted="false">Pledge management</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
@@ -611,10 +620,12 @@ daring ideas.</string>
   <string name="Saved_projects" formatted="false">Saved projects</string>
   <string name="Saves_project" formatted="false">Saves project.</string>
   <string name="Say_something_kind" formatted="false">Say something kind...</string>
+  <string name="Scheduled" formatted="false">Scheduled</string>
   <string name="Security_code" formatted="false">Security code</string>
   <string name="See_all_backed__projects" formatted="false">See all backed projects</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
   <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
+  <string name="See_our_terms_of_use" formatted="false">See our Terms of Use</string>
   <string name="See_rewards" formatted="false">See rewards</string>
   <string name="See_the_rewards" formatted="false">See the rewards</string>
   <string name="Select" formatted="false">Select</string>
@@ -838,6 +849,7 @@ Please try again later.</string>
   <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">You canceled this project, so the backer’s payment method was never charged.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">You canceled your pledge for this project.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">You can’t use this credit card to back a project from %{project_country}.</string>
+  <string name="You_have_selected_pledge_over_time" formatted="false">You have selected Pledge Over Time. If the project reaches its funding goal, the first charge of %{amount} will be collected on %{date}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
   <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>You have successfully pledged to &lt;b>%{project_name}&lt;/b>. Your pledge of &lt;b>%{pledge_total}&lt;/b> has been collected.&lt;/p>\n
 &lt;p>You’ll receive a confirmation email at %{user_email} when your rewards are ready to fulfill so that you can finalize and pay shipping and tax.&lt;/p>\n
@@ -848,6 +860,8 @@ Please try again later.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">You will be charged for your pledge over four payments, at no extra cost.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">The first charge will be 24 hours after the project ends successfully, then every 2 weeks until fully paid. When this option is selected no further edits can be made to your pledge.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">You’ll lose the comment if you leave this page.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">You won\'t be charged for backing a project unless it reaches its funding goal.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>

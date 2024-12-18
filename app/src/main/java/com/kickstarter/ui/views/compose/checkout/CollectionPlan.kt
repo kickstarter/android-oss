@@ -133,7 +133,7 @@ fun CollectionPlan(
 
     Column(modifier = Modifier.padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)) {
         PledgeOption(
-            optionText = stringResource(id = R.string.fpo_pledge_in_full),
+            optionText = stringResource(id = R.string.Pledge_in_full),
             selected = selectedOption == CollectionOptions.PLEDGE_IN_FULL,
             onSelect = { onOptionSelected.invoke(CollectionOptions.PLEDGE_IN_FULL) },
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_IN_FULL.name),
@@ -141,9 +141,9 @@ fun CollectionPlan(
         Spacer(Modifier.height(dimensions.paddingSmall))
         PledgeOption(
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_OVER_TIME.name),
-            optionText = stringResource(id = R.string.fpo_pledge_over_time),
+            optionText = stringResource(id = R.string.Pledge_Over_Time),
             selected = selectedOption == CollectionOptions.PLEDGE_OVER_TIME,
-            description = if (isEligible) stringResource(id = R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost) else null,
+            description = if (isEligible) stringResource(id = R.string.You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description) else null,
             onSelect = {
                 if (isEligible) onOptionSelected.invoke(CollectionOptions.PLEDGE_OVER_TIME)
             },
@@ -231,14 +231,14 @@ fun PledgeOption(
                 if (isExpanded) {
                     Text(
                         modifier = Modifier.testTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name),
-                        text = stringResource(id = R.string.fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully),
+                        text = stringResource(id = R.string.You_will_be_charged_for_your_pledge_over_four_payments_expanded_description),
                         style = typography.caption2,
                         color = colors.textSecondary
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
                     Text(
                         modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name),
-                        text = stringResource(id = R.string.fpo_see_our_terms_of_use),
+                        text = stringResource(id = R.string.See_our_terms_of_use),
                         style = typography.caption2,
                         color = colors.textAccentGreen
                     )
@@ -268,7 +268,7 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
     ) {
         Text(
             modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
-            text = stringResource(id = R.string.fpo_available_for_pledges_over_amount).format("amount", plotMinimum ?: PLOT_MINIMUM_AMOUNT),
+            text = stringResource(id = R.string.Available_for_pledges_over).format("amount", plotMinimum ?: PLOT_MINIMUM_AMOUNT),
             style = typography.body2Medium,
             color = colors.textDisabled
         )
@@ -287,7 +287,7 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
             ksCurrency?.let {
                 count++
                 val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = projectCurrency, projectCurrentCurrency = projectCurrentCurrency).toString()
-                val chargeString = stringResource(R.string.fpo_charge_count).format(key1 = "number", value1 = count.toString())
+                val chargeString = stringResource(R.string.Charge_number).format(key1 = "number", value1 = count.toString())
                 ChargeItem(title = chargeString, date = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection), amount = formattedAmount)
             }
         }

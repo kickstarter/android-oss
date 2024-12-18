@@ -44,10 +44,10 @@ class CollectionPlanTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeInFullOptionSelected() {
-        val pledgeInFullText = context.getString(R.string.fpo_pledge_in_full)
-        val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
+        val pledgeInFullText = context.getString(R.string.Pledge_in_full)
+        val pledgeOverTimeText = context.getString(R.string.Pledge_Over_Time)
         val descriptionTextValue =
-            context.getString(R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost)
+            context.getString(R.string.You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description)
 
         composeTestRule.setContent {
             KSTheme {
@@ -80,13 +80,13 @@ class CollectionPlanTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeOverTimeOptionSelected() {
-        val pledgeInFullText = context.getString(R.string.fpo_pledge_in_full)
-        val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
+        val pledgeInFullText = context.getString(R.string.Pledge_in_full)
+        val pledgeOverTimeText = context.getString(R.string.Pledge_Over_Time)
         val descriptionTextValue =
-            context.getString(R.string.fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost)
+            context.getString(R.string.You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description)
         val extendedTextValue =
-            context.getString(R.string.fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully)
-        val termsOfUseTextValue = context.getString(R.string.fpo_see_our_terms_of_use)
+            context.getString(R.string.You_will_be_charged_for_your_pledge_over_four_payments_expanded_description)
+        val termsOfUseTextValue = context.getString(R.string.See_our_terms_of_use)
         composeTestRule.setContent {
             KSTheme {
                 CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME)
@@ -130,8 +130,8 @@ class CollectionPlanTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeOverTimeOptionIneligible() {
-        val pledgeInFullText = context.getString(R.string.fpo_pledge_in_full)
-        val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
+        val pledgeInFullText = context.getString(R.string.Pledge_in_full)
+        val pledgeOverTimeText = context.getString(R.string.Pledge_Over_Time)
         composeTestRule.setContent {
             KSTheme {
                 CollectionPlan(isEligible = false, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL)

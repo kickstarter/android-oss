@@ -242,7 +242,7 @@ fun PledgeOption(
                         style = typography.caption2,
                         color = colors.textAccentGreen
                     )
-                    if(!paymentIncrements.isNullOrEmpty()) {
+                    if (!paymentIncrements.isNullOrEmpty()) {
                         ChargeSchedule(paymentIncrements, ksCurrency, projectCurrency, projectCurrentCurrency)
                     }
                 }
@@ -266,12 +266,12 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
                 bottom = dimensions.paddingXSmall,
             )
     ) {
-            Text(
-                modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
-                text = stringResource(id = R.string.fpo_available_for_pledges_over_amount).format("amount", plotMinimum ?: PLOT_MINIMUM_AMOUNT),
-                style = typography.body2Medium,
-                color = colors.textDisabled
-            )
+        Text(
+            modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
+            text = stringResource(id = R.string.fpo_available_for_pledges_over_amount).format("amount", plotMinimum ?: PLOT_MINIMUM_AMOUNT),
+            style = typography.body2Medium,
+            color = colors.textDisabled
+        )
     }
 }
 

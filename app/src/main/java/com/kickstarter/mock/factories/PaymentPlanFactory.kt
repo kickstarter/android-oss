@@ -34,7 +34,5 @@ class PaymentPlanFactory {
                 projectIsPledgeOverTimeAllowed = true
             )
         }
-
-
     }
 }

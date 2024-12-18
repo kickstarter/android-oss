@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels.projectpage
 
 import CollectionOptions
 import android.os.Bundle
-import android.util.Log
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -367,10 +366,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     fun collectionPlanSelected(collectionOption: CollectionOptions) {
         incrementalPledge =
-        when (collectionOption) {
-            CollectionOptions.PLEDGE_IN_FULL -> false
-            CollectionOptions.PLEDGE_OVER_TIME -> true
-        }
+            when (collectionOption) {
+                CollectionOptions.PLEDGE_IN_FULL -> false
+                CollectionOptions.PLEDGE_OVER_TIME -> true
+            }
 
         scope.launch {
             emitCurrentState(isLoading = false)

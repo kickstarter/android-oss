@@ -13,7 +13,7 @@ class PaymentIncrementFactory {
             paymentIncrementableId: String,
             paymentIncrementableType: String,
             scheduledCollection: DateTime,
-            state : PaymentIncrement.State,
+            state: PaymentIncrement.State,
             stateReason: String?,
         ): PaymentIncrement {
             return PaymentIncrement.builder()
@@ -40,7 +40,7 @@ class PaymentIncrementFactory {
 
         fun incrementUsdUncollected(dateTime: DateTime, amount: String): PaymentIncrement {
             return paymentIncrement(
-                amount = amount(amount, "$", CurrencyCode.USD ),
+                amount = amount(amount, "$", CurrencyCode.USD),
                 scheduledCollection = dateTime,
                 paymentIncrementableId = "",
                 paymentIncrementableType = "",
@@ -51,7 +51,7 @@ class PaymentIncrementFactory {
 
         fun incrementUsdCollected(dateTime: DateTime, amount: String): PaymentIncrement {
             return paymentIncrement(
-                amount = amount(amount, "$", CurrencyCode.USD ),
+                amount = amount(amount, "$", CurrencyCode.USD),
                 scheduledCollection = dateTime,
                 paymentIncrementableId = "",
                 paymentIncrementableType = "",

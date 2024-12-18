@@ -575,9 +575,10 @@ fun CheckoutScreen(
                             DateTimeUtils.mediumDate(
                                 it
                             )
-                        })
+                        }
+                    )
                 val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
-                
+
                 if (!isNoReward) {
                     ItemizedRewardListContainer(
                         ksString = ksString,

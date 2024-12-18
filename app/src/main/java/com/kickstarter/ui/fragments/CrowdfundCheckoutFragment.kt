@@ -92,6 +92,10 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val totalAmount = checkoutStates.checkoutTotal
                     val shippingRule = checkoutStates.shippingRule
                     val bonus = checkoutStates.bonusAmount
+                    val showPlotWidget = checkoutStates.showPlotWidget
+                    val plotEligible = checkoutStates.plotEligible
+                    val paymentIncrements = checkoutStates.paymentIncrements
+                    val isIncrementalPledge = checkoutStates.isIncrementalPledge
 
                     val pledgeData = viewModel.getPledgeData()
                     val pledgeReason = viewModel.getPledgeReason() ?: PledgeReason.PLEDGE
@@ -126,6 +130,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                         }
                     }
 
+                    val plotIsVisible = showPlotWidget && environment?.featureFlagClient()
+                        ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false && pledgeReason == PledgeReason.PLEDGE
+
                     KSTheme {
                         CheckoutScreen(
                             rewardsList = getRewardListAndPrices(rwList, environment, project),
@@ -155,8 +162,14 @@ class CrowdfundCheckoutFragment : Fragment() {
                             onChangedPaymentMethod = { paymentMethodSelected ->
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             },
-                            isPlotEnabled = environment.featureFlagClient()
-                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false && pledgeReason == PledgeReason.PLEDGE,
+                            ksCurrency = environment.ksCurrency(),
+                            isPlotEnabled = plotIsVisible,
+                            isPlotEligible = plotEligible,
+                            paymentIncrements = paymentIncrements,
+                            isIncrementalPledge = isIncrementalPledge,
+                            onCollectionPlanSelected = {
+                                collectionOptions ->  viewModel.collectionPlanSelected(collectionOptions)
+                            }
                         )
                     }
                 }

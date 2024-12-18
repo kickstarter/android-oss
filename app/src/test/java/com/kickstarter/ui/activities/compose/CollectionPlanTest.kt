@@ -51,7 +51,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name)
+                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL)
             }
         }
 
@@ -89,7 +89,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         val termsOfUseTextValue = context.getString(R.string.fpo_see_our_terms_of_use)
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME.name)
+                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME)
             }
         }
 
@@ -134,7 +134,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = false, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL.name)
+                CollectionPlan(isEligible = false, initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL)
             }
         }
 

@@ -68,6 +68,34 @@ class KSCurrency(private val currentConfig: CurrentConfigTypeV2) {
     }
 
     /**
+     * Returns a currency string appropriate to the user's locale and location relative to a project.
+     *
+     * @param initialValue        Value to display, local to the project's currency.
+     * @param project             The project to use to look up currency information.
+     * @param excludeCurrencyCode If true, hide the US currency code for US users only.
+     */
+    @JvmOverloads
+    fun format(
+        initialValue: Double,
+        projectCurrency: String?,
+        projectCurrentCurrency: String?,
+        excludeCurrencyCode: Boolean = true,
+        roundingMode: RoundingMode = RoundingMode.DOWN,
+        currentCurrency: Boolean = false
+    ): String {
+        val country = (if (currentCurrency) projectCurrentCurrency else projectCurrency)?.let { findByCurrencyCode(it) } ?: return ""
+        val roundedValue = getRoundedValue(initialValue, roundingMode)
+        val currencyOptions = currencyOptions(roundedValue, country, excludeCurrencyCode)
+        val numberOptions = NumberOptions.builder()
+            .currencyCode(currencyOptions.currencyCode())
+            .currencySymbol(currencyOptions.currencySymbol())
+            .roundingMode(roundingMode)
+            .precision(NumberUtils.precision(initialValue, roundingMode))
+            .build()
+        return NumberUtils.format(currencyOptions.value() ?: 0F, numberOptions).trimAllWhitespace()
+    }
+
+    /**
      * Returns a currency string appropriate to the user's locale and preferred currency.
      *
      * @param initialValue Value to convert, local to the project's currency.

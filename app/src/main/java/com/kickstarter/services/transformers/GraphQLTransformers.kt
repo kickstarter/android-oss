@@ -33,7 +33,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
-import com.kickstarter.models.Money
+import com.kickstarter.models.Amount
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentSource
@@ -1007,7 +1007,7 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
     val paymentIncrements =
         buildPaymentPlanResponse.paymentIncrements?.map {
 
-            val money = Money.builder()
+            val amount = Amount.builder()
                 .amount(it.amount.amount.amount)
                 .currencyCode(it.amount.amount.currency)
                 .currencySymbol(it.amount.amount.symbol)
@@ -1016,7 +1016,7 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
             val scheduledCollection = it.scheduledCollection
 
             PaymentIncrement.builder()
-                .amount(money)
+                .amount(amount)
                 .scheduledCollection(scheduledCollection)
                 .build()
         }

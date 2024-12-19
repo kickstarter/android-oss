@@ -50,6 +50,8 @@ enum class CollectionPlanTestTags {
     EXPANDED_DESCRIPTION_TEXT,
     TERMS_OF_USE_TEXT,
     CHARGE_ITEM,
+    RADIO_BUTTON,
+    CHARGE_SCHEDULE
 }
 
 enum class CollectionOptions {
@@ -93,9 +95,9 @@ fun PreviewPledgeOverTimeSelected() {
             initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
             paymentIncrements = listOf(
                 PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(2), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(4), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(6), "150"),
             )
         )
     }
@@ -125,6 +127,7 @@ fun CollectionPlan(
     projectCurrentCurrency: String? = null
 ) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
+    changeCollectionPlan.invoke(selectedOption)
 
     val onOptionSelected: (CollectionOptions) -> Unit = {
         selectedOption = it
@@ -195,8 +198,9 @@ fun PledgeOption(
             modifier = Modifier.padding(start = dimensions.paddingSmall)
         ) {
             Column {
+                var radioButtonModifier = if (!isSelectable) Modifier.padding(end = dimensions.paddingMediumSmall) else Modifier
                 RadioButton(
-                    modifier = if (!isSelectable) Modifier.padding(end = dimensions.paddingMediumSmall) else Modifier,
+                    modifier = radioButtonModifier.testTag(CollectionPlanTestTags.RADIO_BUTTON.name),
                     selected = selected,
                     onClick = onSelect.takeIf { isSelectable },
                     colors = RadioButtonDefaults.colors(
@@ -280,6 +284,7 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
     var count = 0
     Column(
         modifier = Modifier
+            .testTag(CollectionPlanTestTags.CHARGE_SCHEDULE.name)
             .fillMaxWidth()
             .padding(top = 12.dp)
     ) {
@@ -304,7 +309,8 @@ fun ChargeItem(title: String, date: String, amount: String) {
         Column(modifier = Modifier.padding(bottom = dimensions.paddingMediumLarge)) {
             Text(
                 modifier = Modifier.testTag(CollectionPlanTestTags.CHARGE_ITEM.name),
-                text = title, style = typography.body2Medium,
+                text = title,
+                style = typography.body2Medium,
                 color = colors.textPrimary
             )
 

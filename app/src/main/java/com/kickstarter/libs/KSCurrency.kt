@@ -70,9 +70,10 @@ class KSCurrency(private val currentConfig: CurrentConfigTypeV2) {
     /**
      * Returns a currency string appropriate to the user's locale and location relative to a project.
      *
-     * @param initialValue        Value to display, local to the project's currency.
-     * @param project             The project to use to look up currency information.
-     * @param excludeCurrencyCode If true, hide the US currency code for US users only.
+     * @param initialValue                Value to display, local to the project's currency.
+     * @param projectCurrency             The project currency.
+     * @param projectCurrenctCurrency     The project current currency.
+     * @param excludeCurrencyCode         If true, hide the US currency code for US users only.
      */
     @JvmOverloads
     fun format(

@@ -5,18 +5,30 @@ import CollectionPlan
 import CollectionPlanTestTags
 import android.content.Context
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelectable
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.utils.extensions.format
+import com.kickstarter.libs.utils.extensions.isNull
+import com.kickstarter.mock.MockCurrentConfigV2
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import org.joda.time.DateTime
 import org.junit.Before
 import org.junit.Test
 
@@ -34,16 +46,22 @@ class CollectionPlanTest : KSRobolectricTestCase() {
     private val pledgeOverTimeOption
         get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.OPTION_PLEDGE_OVER_TIME.name)
     private val descriptionText
-        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.DESCRIPTION_TEXT.name)
+        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.DESCRIPTION_TEXT.name, useUnmergedTree = true)
     private val badgeText
-        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.BADGE_TEXT.name)
+        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.BADGE_TEXT.name, useUnmergedTree = true)
     private val expandedText
-        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name)
+        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name, useUnmergedTree = true)
     private val termsText
-        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name)
+        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name, useUnmergedTree = true)
+    private val chargeItemsList
+        get() = composeTestRule.onAllNodesWithTag(CollectionPlanTestTags.CHARGE_ITEM.name, useUnmergedTree = true)
+    private val chargeSchedule
+        get() = composeTestRule.onNodeWithTag(CollectionPlanTestTags.CHARGE_SCHEDULE.name, useUnmergedTree = true)
+    private val radioButtons
+        get() = composeTestRule.onAllNodesWithTag(CollectionPlanTestTags.RADIO_BUTTON.name, useUnmergedTree = true)
 
     @Test
-    fun testPledgeInFullOptionSelected() {
+    fun `test isEligible true, pledge in full option selected`() {
         val pledgeInFullText = context.getString(R.string.fpo_pledge_in_full)
         val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
         val descriptionTextValue =
@@ -60,15 +78,15 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         // Assert "Pledge in Full" option is displayed with correct text and is selected
         pledgeInFullOption.assertIsDisplayed().assert(hasText(pledgeInFullText)).assertIsSelected()
 
-        // Assert "Pledge Over Time" option is not displayed
         // Assert "Pledge Over Time" option is displayed with correct text and is not selected
         pledgeOverTimeOption.assertIsDisplayed().assert(hasText(pledgeOverTimeText))
-            .assertIsNotSelected()
+            .assertIsNotSelected().assertIsSelectable()
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.DESCRIPTION_TEXT.name,
-            useUnmergedTree = true
-        )
+        radioButtons.assertCountEquals(2)
+        radioButtons[0].assertHasClickAction()
+        radioButtons[1].assertHasClickAction()
+
+        descriptionText
             .assertIsDisplayed()
             .assert(hasText(descriptionTextValue))
 
@@ -79,7 +97,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeOverTimeOptionSelected() {
+    fun `test isEligible true, pledge over time option selected`() {
         val pledgeInFullText = context.getString(R.string.fpo_pledge_in_full)
         val pledgeOverTimeText = context.getString(R.string.fpo_pledge_over_time)
         val descriptionTextValue =
@@ -87,9 +105,23 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         val extendedTextValue =
             context.getString(R.string.fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully)
         val termsOfUseTextValue = context.getString(R.string.fpo_see_our_terms_of_use)
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
         composeTestRule.setContent {
             KSTheme {
-                CollectionPlan(isEligible = true, initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME)
+                CollectionPlan(
+                    isEligible = true,
+                    initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
+                    ksCurrency = KSCurrency(currentConfig),
+                    paymentIncrements = listOf(
+                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
+                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
+                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
+                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
+                    )
+                )
             }
         }
 
@@ -103,26 +135,27 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         pledgeOverTimeOption.assertIsDisplayed().assert(hasText(pledgeOverTimeText))
             .assertIsSelected()
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.DESCRIPTION_TEXT.name,
-            useUnmergedTree = true
-        )
+        descriptionText
             .assertIsDisplayed()
             .assert(hasText(descriptionTextValue))
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name,
-            useUnmergedTree = true
-        )
+        expandedText
             .assertIsDisplayed()
             .assert(hasText(extendedTextValue))
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.TERMS_OF_USE_TEXT.name,
-            useUnmergedTree = true
-        )
+        termsText
             .assertIsDisplayed()
             .assert(hasText(termsOfUseTextValue))
+
+        chargeSchedule
+            .assertIsDisplayed()
+
+        radioButtons.assertCountEquals(2)
+        radioButtons[0].assertHasClickAction()
+        radioButtons[1].assertHasClickAction()
+
+        chargeItemsList.assertCountEquals(4)
+        chargeItemsList[0].assert(hasText(context.getString(R.string.fpo_charge_count).format(key1 = "number", value1 = "1")))
 
         // Not eligible badge should not be displayed
         badgeText.assertIsNotDisplayed()
@@ -147,29 +180,23 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         pledgeOverTimeOption.assertIsDisplayed().assert(hasText(pledgeOverTimeText))
             .assertIsNotSelected()
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.DESCRIPTION_TEXT.name,
-            useUnmergedTree = true
-        )
+        descriptionText
             .assertIsNotDisplayed()
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name,
-            useUnmergedTree = true
-        )
+        expandedText
             .isNotDisplayed()
 
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.TERMS_OF_USE_TEXT.name,
-            useUnmergedTree = true
-        )
+        termsText
             .isNotDisplayed()
+
+        chargeItemsList[0].isNull()
+
+        radioButtons.assertCountEquals(2)
+        radioButtons[0].assertHasClickAction()
+        radioButtons[1].assertHasNoClickAction()
 
         // Assert that other elements are not displayed
-        composeTestRule.onNodeWithTag(
-            CollectionPlanTestTags.BADGE_TEXT.name,
-            useUnmergedTree = true
-        )
+        badgeText
             .isDisplayed()
     }
 }

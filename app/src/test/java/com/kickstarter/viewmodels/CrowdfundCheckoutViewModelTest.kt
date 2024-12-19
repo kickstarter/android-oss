@@ -27,7 +27,6 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.BuildPaymentPlanData
 import com.kickstarter.models.Checkout
-import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -164,7 +163,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
-@Test
+    @Test
     fun `test new pledge, when user switched to plot, ui state should have true incremental value`() = runTest {
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
         val reward = RewardFactory.rewardWithShipping().toBuilder()
@@ -245,7 +244,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(uiState.size, 3)
 
-        //default incremental value should be false
+        // default incremental value should be false
         assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
         assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
         assertEquals(uiState.last().bonusAmount, 3.0)
@@ -276,7 +275,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(uiState.last().userEmail, "hola@ksr.com")
         assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
         assertEquals(uiState.last().isIncrementalPledge, true)
-}
+    }
 
     @Test
     fun `test user hits pledges button with rw + addOns + bonus support with shipping`() = runTest {
@@ -454,7 +453,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         }
         advanceUntilIdle()
 
-        //default incremental value should be false
+        // default incremental value should be false
         assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
         assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
         assertEquals(uiState.last().bonusAmount, 3.0)
@@ -549,7 +548,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         }
         advanceUntilIdle()
 
-        //default incremental value should be false
+        // default incremental value should be false
         assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
         assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
         assertEquals(uiState.last().bonusAmount, 3.0)

@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import CollectionOptions
 import android.os.Bundle
 import android.util.Pair
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,9 @@ import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.models.Backing
+import com.kickstarter.models.BuildPaymentPlanData
 import com.kickstarter.models.Location
+import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -58,7 +61,11 @@ data class CheckoutUIState(
     val isPledgeButtonEnabled: Boolean = true,
     val selectedPaymentMethod: StoredCard = StoredCard.builder().build(),
     val bonusAmount: Double = 0.0,
-    val shippingRule: ShippingRule? = null
+    val shippingRule: ShippingRule? = null,
+    val showPlotWidget: Boolean = false,
+    val plotEligible: Boolean = false,
+    val isIncrementalPledge: Boolean = false,
+    val paymentIncrements: List<PaymentIncrement>? = null
 )
 
 data class PaymentSheetPresenterState(val setupClientId: String = "")
@@ -85,6 +92,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     private var totalAmount = 0.0
     private var bonusAmount = 0.0
     private var thirdPartyEventSent = Pair(false, "")
+    private var incrementalPledge = false
+    private var showPlotWidget: Boolean = false
+    private var plotEligible: Boolean = false
+    private var paymentIncrements: List<PaymentIncrement>? = null
 
     private var errorAction: (message: String?) -> Unit = {}
 
@@ -171,6 +182,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
             collectUserInformation()
             sendPageViewedEvent()
+            buildPaymentPlan()
         }
     }
 
@@ -252,6 +264,24 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         }
     }
 
+    private fun buildPaymentPlan() {
+        scope.launch(dispatcher) {
+            apolloClient.buildPaymentPlan(BuildPaymentPlanData(pledgeData?.projectData()?.project()?.slug() ?: "", pledgeData?.checkoutTotalAmount().toString() ?: "")).asFlow()
+                .onStart {
+                    emitCurrentState(isLoading = true)
+                }.catch {
+                    errorAction.invoke(it.message)
+                    emitCurrentState(isLoading = false)
+                }
+                .collectLatest {
+                    showPlotWidget = it.projectIsPledgeOverTimeAllowed
+                    plotEligible = it.amountIsPledgeOverTimeEligible
+                    paymentIncrements = it.paymentIncrements
+                    emitCurrentState(isLoading = false)
+                }
+        }
+    }
+
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
     }
@@ -300,7 +330,11 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                 isPledgeButtonEnabled = !isLoading,
                 selectedPaymentMethod = selectedPaymentMethod,
                 bonusAmount = bonusAmount,
-                shippingRule = shippingRule
+                shippingRule = shippingRule,
+                plotEligible = plotEligible,
+                showPlotWidget = showPlotWidget,
+                paymentIncrements = paymentIncrements,
+                isIncrementalPledge = incrementalPledge
             )
         )
     }
@@ -327,6 +361,18 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             scope.launch {
                 emitCurrentState(isLoading = true)
             }
+        }
+    }
+
+    fun collectionPlanSelected(collectionOption: CollectionOptions) {
+        incrementalPledge =
+            when (collectionOption) {
+                CollectionOptions.PLEDGE_IN_FULL -> false
+                CollectionOptions.PLEDGE_OVER_TIME -> true
+            }
+
+        scope.launch {
+            emitCurrentState(isLoading = false)
         }
     }
 
@@ -386,7 +432,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             amount = pledgeData?.checkoutTotalAmount().toString(),
             locationId = if (shouldNotSendId) null else locationID,
             rewards = RewardUtils.extendAddOns(pledgeData?.rewardsAndAddOnsList() ?: emptyList<Reward>()),
-            cookieRefTag = refTag
+            cookieRefTag = refTag,
+            incremental = incrementalPledge
         )
 
         this.apolloClient.createBacking(backingData).asFlow()

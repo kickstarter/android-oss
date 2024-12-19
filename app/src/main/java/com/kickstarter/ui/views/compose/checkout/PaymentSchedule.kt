@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
-import com.kickstarter.models.Money
+import com.kickstarter.models.Amount
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -48,7 +48,7 @@ enum class PaymentScheduleTestTags {
 
 val samplePaymentIncrements = listOf(
     PaymentIncrement(
-        amount = Money.builder().amount("34.00").build(),
+        amount = Amount.builder().amount("34.00").build(),
         state = PaymentIncrement.State.UNATTEMPTED,
         paymentIncrementableId = "1",
         paymentIncrementableType = "pledge",
@@ -56,7 +56,7 @@ val samplePaymentIncrements = listOf(
         stateReason = ""
     ),
     PaymentIncrement(
-        amount = Money.builder().amount("25.00").build(),
+        amount = Amount.builder().amount("25.00").build(),
         state = PaymentIncrement.State.COLLECTED,
         paymentIncrementableId = "2",
         paymentIncrementableType = "pledge",
@@ -64,7 +64,7 @@ val samplePaymentIncrements = listOf(
         stateReason = ""
     ),
     PaymentIncrement(
-        amount = Money.builder().amount("45.00").build(),
+        amount = Amount.builder().amount("45.00").build(),
         state = PaymentIncrement.State.UNATTEMPTED,
         paymentIncrementableId = "3",
         paymentIncrementableType = "pledge",
@@ -72,7 +72,7 @@ val samplePaymentIncrements = listOf(
         stateReason = ""
     ),
     PaymentIncrement(
-        amount = Money.builder().amount("52.00").build(),
+        amount = Amount.builder().amount("52.00").build(),
         state = PaymentIncrement.State.COLLECTED,
         paymentIncrementableId = "4",
         paymentIncrementableType = "pledge",

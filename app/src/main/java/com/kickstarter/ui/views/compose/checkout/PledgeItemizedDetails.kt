@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -315,7 +316,7 @@ fun ItemizedRewardListContainer(
                 }
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DISCLAIMER_TEXT.name),
-                    text = stringResource(id = R.string.fpo_charged_as_4_payments),
+                    text = stringResource(id = R.string.fpo_charged_as_4_payments).format(key1 = "number", value1 = "4"),
                     style = typography.footnote,
                     color = colors.textPrimary
                 )

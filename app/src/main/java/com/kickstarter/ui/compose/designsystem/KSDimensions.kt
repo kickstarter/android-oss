@@ -58,7 +58,9 @@ data class KSDimensions(
     val countryInputWidth: Dp = Dp.Unspecified,
     val storedCardImageHeight: Dp = Dp.Unspecified,
     val storedCardImageWidth: Dp = Dp.Unspecified,
-    val alertIconSize: Dp = Dp.Unspecified
+    val alertIconSize: Dp = Dp.Unspecified,
+    val plotChargeItemWidth: Dp = Dp.Unspecified,
+
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -116,5 +118,6 @@ val KSStandardDimensions = KSDimensions(
     countryInputWidth = 164.dp,
     storedCardImageHeight = 40.dp,
     storedCardImageWidth = 64.dp,
-    alertIconSize = 14.dp
+    alertIconSize = 14.dp,
+    plotChargeItemWidth = 100.dp
 )

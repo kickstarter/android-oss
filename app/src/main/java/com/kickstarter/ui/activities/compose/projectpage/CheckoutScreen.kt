@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
+import CollectionOptions
 import CollectionPlan
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -51,16 +51,20 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.acceptedCardType
+import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -180,6 +184,7 @@ fun CheckoutScreen(
     project: Project,
     email: String?,
     ksString: KSString? = null,
+    ksCurrency: KSCurrency? = null,
     selectedRewardsAndAddOns: List<Reward> = listOf(),
     rewardsList: List<Pair<String, String>> = listOf(),
     shippingAmount: Double = 0.0,
@@ -194,7 +199,11 @@ fun CheckoutScreen(
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
     onChangedPaymentMethod: (StoredCard?) -> Unit = {},
-    isPlotEnabled: Boolean
+    onCollectionPlanSelected: (CollectionOptions) -> Unit = {},
+    isPlotEnabled: Boolean = false,
+    isPlotEligible: Boolean = false,
+    isIncrementalPledge: Boolean = false,
+    paymentIncrements: List<PaymentIncrement>? = null,
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -361,7 +370,6 @@ fun CheckoutScreen(
             }
             Column(
                 modifier = Modifier
-                    .systemBarsPadding()
                     .verticalScroll(rememberScrollState())
                     .padding(padding)
             ) {
@@ -376,7 +384,7 @@ fun CheckoutScreen(
                     color = colors.kds_black,
                 )
 
-                Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                 if (isPlotEnabled) {
                     Text(
                         modifier = Modifier.padding(
@@ -389,7 +397,14 @@ fun CheckoutScreen(
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-                    CollectionPlan(isEligible = true)
+                    CollectionPlan(
+                        isEligible = isPlotEligible,
+                        changeCollectionPlan = onCollectionPlanSelected,
+                        paymentIncrements = paymentIncrements,
+                        ksCurrency = ksCurrency,
+                        projectCurrency = project.currency(),
+                        projectCurrentCurrency = project.currentCurrency()
+                    )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                     Text(
                         modifier = Modifier.padding(
@@ -552,8 +567,18 @@ fun CheckoutScreen(
                     "project_deadline", project.deadline()?.let { DateTimeUtils.longDate(it) }
                 ) ?: ""
                 val plotDisclaimerText =
-                    stringResource(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge)
+                    stringResource(R.string.fpo_if_the_project_reaches_its_funding_goal_the_first_charge_of_first_charge_will_be_collected_on_date).format(
+                        key1 = "amount",
+                        ksCurrency?.let { RewardViewUtils.styleCurrency(value = paymentIncrements?.first()?.amount?.amount.parseToDouble(), projectCurrency = project.currency(), projectCurrentCurrency = project.currentCurrency(), ksCurrency = it).toString() },
+                        key2 = "project_deadline",
+                        paymentIncrements?.first()?.scheduledCollection?.let {
+                            DateTimeUtils.mediumDate(
+                                it
+                            )
+                        }
+                    )
                 val isNoReward = selectedReward?.let { RewardUtils.isNoReward(it) } ?: false
+
                 if (!isNoReward) {
                     ItemizedRewardListContainer(
                         ksString = ksString,
@@ -567,8 +592,8 @@ fun CheckoutScreen(
                         totalBonusSupport = totalBonusSupportString,
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
-                        disclaimerText = if (isPlotEnabled) plotDisclaimerText else disclaimerText,
-                        plotSelected = false
+                        disclaimerText = if (isIncrementalPledge) plotDisclaimerText else disclaimerText,
+                        plotSelected = isIncrementalPledge
                     )
                 } else {
                     // - For noReward, totalAmount = bonusAmount as there is no reward
@@ -578,8 +603,8 @@ fun CheckoutScreen(
                         initialBonusSupport = initialBonusSupportString,
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
-                        disclaimerText = if (isPlotEnabled) plotDisclaimerText else disclaimerText,
-                        plotSelected = false
+                        disclaimerText = if (isIncrementalPledge) plotDisclaimerText else disclaimerText,
+                        plotSelected = isIncrementalPledge
                     )
                 }
 

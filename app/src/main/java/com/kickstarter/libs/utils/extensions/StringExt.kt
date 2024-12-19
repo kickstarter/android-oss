@@ -239,6 +239,16 @@ fun String.format(key1: String, value1: String?): String {
     }
     return this.replace(substitutions)
 }
+
+fun String.format(key1: String, value1: String?, key2: String, value2: String?): String {
+    val substitutions: HashMap<String, String?> = object : HashMap<String, String?>() {
+        init {
+            put(key1, value1)
+            put(key2, value2)
+        }
+    }
+    return this.replace(substitutions)
+}
 fun String.replace(substitutions: Map<String, String?>): String {
     val builder = StringBuilder()
     for (key in substitutions.keys) {

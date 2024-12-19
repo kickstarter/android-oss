@@ -30,7 +30,8 @@ fun StoredCard.getBackingData(
     amount: String,
     locationId: String?,
     rewards: List<Reward>,
-    cookieRefTag: RefTag?
+    cookieRefTag: RefTag?,
+    incremental: Boolean? = null,
 ): CreateBackingData {
     return if (this.isFromPaymentSheet()) {
         CreateBackingData(
@@ -40,7 +41,8 @@ fun StoredCard.getBackingData(
             locationId = locationId,
             rewardsIds = rewards,
             refTag = if (cookieRefTag?.tag()?.isNotEmpty() == true) cookieRefTag else null,
-            stripeCardId = this.stripeCardId()
+            stripeCardId = this.stripeCardId(),
+            incremental = incremental
         )
     } else {
         CreateBackingData(
@@ -50,7 +52,8 @@ fun StoredCard.getBackingData(
             locationId = locationId,
             rewardsIds = rewards,
             refTag = if (cookieRefTag?.tag()?.isNotEmpty() == true) cookieRefTag else null,
-            stripeCardId = this.stripeCardId()
+            stripeCardId = this.stripeCardId(),
+            incremental = incremental
         )
     }
 }

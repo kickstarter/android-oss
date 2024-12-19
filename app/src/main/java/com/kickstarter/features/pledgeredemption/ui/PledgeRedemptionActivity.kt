@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.kickstarter.features.pledgeredemption.viewmodels.PledgeRedemptionViewModel
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.mock.factories.RewardFactory
@@ -65,8 +64,6 @@ class PledgeRedemptionActivity : ComponentActivity() {
                         newPaymentMethodClicked = { },
                         onDisclaimerItemClicked = {},
                         onAccountabilityLinkClicked = {},
-                        isPlotEnabled = env.featureFlagClient()
-                            ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false,
                     )
                 }
             }

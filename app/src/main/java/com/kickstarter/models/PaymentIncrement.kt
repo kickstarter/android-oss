@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 
 @Parcelize
 data class PaymentIncrement(
-    val amount: Money,
+    val amount: Amount,
     val paymentIncrementableId: String,
     val paymentIncrementableType: String,
     val scheduledCollection: DateTime,
@@ -22,14 +22,14 @@ data class PaymentIncrement(
 
     @Parcelize
     data class Builder(
-        private var amount: Money = Money.builder().build(),
+        private var amount: Amount = Amount.builder().build(),
         private var paymentIncrementableId: String = "",
         private var paymentIncrementableType: String = "",
         private var scheduledCollection: DateTime = DateTime.now(),
         private var state: State = State.UNKNOWN,
         private var stateReason: String? = null
     ) : Parcelable {
-        fun amount(amount: Money) = apply { this.amount = amount }
+        fun amount(amount: Amount) = apply { this.amount = amount }
         fun paymentIncrementableId(paymentIncrementableId: String) = apply { this.paymentIncrementableId = paymentIncrementableId }
         fun paymentIncrementableType(paymentIncrementableType: String) = apply { this.paymentIncrementableType = paymentIncrementableType }
         fun scheduledCollection(scheduledCollection: DateTime) = apply { this.scheduledCollection = scheduledCollection }

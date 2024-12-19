@@ -31,7 +31,7 @@ fun StoredCard.getBackingData(
     locationId: String?,
     rewards: List<Reward>,
     cookieRefTag: RefTag?,
-    incremental: Boolean?,
+    incremental: Boolean? = null,
 ): CreateBackingData {
     return if (this.isFromPaymentSheet()) {
         CreateBackingData(

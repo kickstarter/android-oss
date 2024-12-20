@@ -5,10 +5,16 @@ import android.os.Bundle
 import android.text.Html
 import android.util.Pair
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
@@ -30,7 +36,6 @@ import com.kickstarter.ui.adapters.MessagesAdapter
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startActivityWithTransition
-import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.MessagesViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -52,12 +57,38 @@ class MessagesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Set the window to allow drawing under the system bars (status, nav bars),
+        // making them transparent, and enabling edge-to-edge display.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         binding = MessagesLayoutBinding.inflate(layoutInflater)
-        WindowInsetsUtil.manageEdgeToEdge(
-            window,
-            binding.root
-        )
         setContentView(binding.root)
+
+        // Listen for window insets (which represent system UI like status and navigation bars)
+        // and apply those insets to the view's layout parameters.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            // Extract the insets that represent the system bars (status and navigation bars)
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Update the view's layout margins with the insets so the content avoids overlapping
+            // with system bars. You can choose to apply top, left, bottom, and right insets as needed.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                // Apply the left, right, top, and bottom margins based on the insets
+                leftMargin = insets.left
+                bottomMargin = insets.bottom
+                rightMargin = insets.right
+                topMargin = insets.top
+            }
+
+            val imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+
+            v.updatePadding(bottom = imeInsets.bottom)
+
+            // Return CONSUMED to indicate that the window insets have been handled and
+            // should not be passed down to child views. If you want child views to handle insets,
+            // you can return the windowInsets instead.
+            WindowInsetsCompat.CONSUMED
+        }
 
         setUpConnectivityStatusCheck(lifecycle)
 

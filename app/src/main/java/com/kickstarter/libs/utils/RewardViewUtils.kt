@@ -89,6 +89,31 @@ object RewardViewUtils {
     }
 
     /**
+     * Returns a SpannableString representing currency that shrinks currency symbol if it's necessary.
+     * Special case: US people looking at US currency just get the currency symbol.
+     *
+     */
+    fun styleCurrency(value: Double, projectCurrency: String?, projectCurrentCurrency: String?, ksCurrency: KSCurrency): SpannableString {
+        val formattedCurrency = ksCurrency.format(initialValue = value, projectCurrency = projectCurrency, projectCurrentCurrency = projectCurrentCurrency, roundingMode = RoundingMode.HALF_UP)
+        val spannableString = SpannableString(formattedCurrency)
+
+        val country = projectCurrency?.let {
+            Country.findByCurrencyCode(it) ?: return spannableString
+        } ?: return spannableString
+
+        val currencyNeedsCode = ksCurrency.currencyNeedsCode(country, true)
+        val currencySymbolToDisplay = ksCurrency.getCurrencySymbol(country, true).trimAllWhitespace()
+
+        if (currencyNeedsCode) {
+            val startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay)
+            val endOfSymbol = startOfSymbol + currencySymbolToDisplay.length
+            spannableString.setSpan(RelativeSizeSpan(.7f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+
+        return spannableString
+    }
+
+    /**
      * Returns a String representing currency based on given currency code and symbol ex. $12 USD
      */
     fun formatCurrency(

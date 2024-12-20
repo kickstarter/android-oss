@@ -112,13 +112,13 @@ class StoredCardTest : TestCase() {
     @Test
     fun getBackingDataFromPaymentInfo() {
         val storedCard = StoredCardFactory.visa()
-        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null, false)
 
         assertEquals(backingData.setupIntentClientSecret, null)
         assertEquals(backingData.paymentSourceId, storedCard.id())
 
         val storedCardFromPaymentSheet = StoredCardFactory.fromPaymentSheetCard()
-        val backingDataFromPaymentSheet = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
+        val backingDataFromPaymentSheet = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null, false)
         assertEquals(backingDataFromPaymentSheet.setupIntentClientSecret, storedCardFromPaymentSheet.clientSetupId())
         assertEquals(backingDataFromPaymentSheet.paymentSourceId, null)
     }
@@ -126,7 +126,7 @@ class StoredCardTest : TestCase() {
     @Test
     fun getBackingDataRefTagEmpty() {
         val storedCard = StoredCardFactory.visa()
-        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = RefTag.Builder().build())
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = RefTag.Builder().build(), false)
 
         assertEquals(backingData.refTag, null)
     }
@@ -134,7 +134,7 @@ class StoredCardTest : TestCase() {
     @Test
     fun getBackingDataRefTagWithValue() {
         val storedCard = StoredCardFactory.visa()
-        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = RefTag.Builder().tag("Tag").build())
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = RefTag.Builder().tag("Tag").build(), false)
 
         assertEquals(backingData.refTag, "Tag")
     }

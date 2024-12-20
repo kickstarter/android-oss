@@ -5,7 +5,7 @@ import com.kickstarter.type.CurrencyCode
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Money(
+data class Amount(
     val amount: String?,
     val currencyCode: CurrencyCode?,
     val currencySymbol: String?,
@@ -24,7 +24,7 @@ data class Money(
         fun amount(amount: String?) = apply { this.amount = amount }
         fun currencyCode(currencyCode: CurrencyCode?) = apply { this.currencyCode = currencyCode }
         fun currencySymbol(currencySymbol: String?) = apply { this.currencySymbol = currencySymbol }
-        fun build() = Money(
+        fun build() = Amount(
             amount = amount,
             currencyCode = currencyCode,
             currencySymbol = currencySymbol
@@ -33,7 +33,7 @@ data class Money(
 
     override fun equals(obj: Any?): Boolean {
         var equals = super.equals(obj)
-        if (obj is Money) {
+        if (obj is Amount) {
             equals = amount() == obj.amount() &&
                 currencyCode() == obj.currencyCode() &&
                 currencySymbol() == obj.currencySymbol()

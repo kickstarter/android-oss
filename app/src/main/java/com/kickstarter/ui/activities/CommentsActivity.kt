@@ -36,7 +36,6 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
-import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.CommentsViewModel.CommentsViewModel
 import com.kickstarter.viewmodels.CommentsViewModel.Factory
 import io.reactivex.disposables.CompositeDisposable

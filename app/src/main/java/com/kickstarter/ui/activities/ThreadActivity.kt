@@ -28,7 +28,6 @@ import com.kickstarter.ui.adapters.RepliesStatusAdapter
 import com.kickstarter.ui.adapters.RootCommentAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
-import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.ThreadViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

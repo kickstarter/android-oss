@@ -3,10 +3,16 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.ConcatAdapter
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
@@ -30,7 +36,6 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
-import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.CommentsViewModel.CommentsViewModel
 import com.kickstarter.viewmodels.CommentsViewModel.Factory
 import io.reactivex.disposables.CompositeDisposable
@@ -56,14 +61,27 @@ class CommentsActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCommentsLayoutBinding.inflate(layoutInflater)
-        WindowInsetsUtil.manageEdgeToEdge(
-            window,
-            binding.root
-        )
-        val view: View = binding.root
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        binding = ActivityCommentsLayoutBinding.inflate(layoutInflater)
+        val view: View = binding.root
         setContentView(view)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                // Apply the left, right, top, and bottom margins based on the insets
+                leftMargin = insets.left
+                bottomMargin = insets.bottom
+                rightMargin = insets.right
+                topMargin = insets.top
+            }
+
+            val imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            v.updatePadding(bottom = imeInsets.bottom)
+
+            WindowInsetsCompat.CONSUMED
+        }
 
         setUpConnectivityStatusCheck(lifecycle)
 

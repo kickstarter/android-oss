@@ -402,7 +402,6 @@ fun CheckoutScreen(
                         changeCollectionPlan = onCollectionPlanSelected,
                         paymentIncrements = paymentIncrements,
                         ksCurrency = ksCurrency,
-                        projectCurrency = project.currency(),
                         projectCurrentCurrency = project.currentCurrency()
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -569,7 +568,7 @@ fun CheckoutScreen(
                 val plotDisclaimerText =
                     stringResource(R.string.If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline).format(
                         key1 = "amount",
-                        ksCurrency?.let { RewardViewUtils.styleCurrency(value = paymentIncrements?.first()?.amount?.amount.parseToDouble(), projectCurrency = project.currency(), projectCurrentCurrency = project.currentCurrency(), ksCurrency = it).toString() },
+                        ksCurrency?.let { RewardViewUtils.styleCurrency(value = paymentIncrements?.first()?.amount?.amount.parseToDouble(), projectCurrency = paymentIncrements?.first()?.amount?.currencyCode().toString(), projectCurrentCurrency = project.currentCurrency(), ksCurrency = it).toString() },
                         key2 = "project_deadline",
                         paymentIncrements?.first()?.scheduledCollection?.let {
                             DateTimeUtils.mediumDate(

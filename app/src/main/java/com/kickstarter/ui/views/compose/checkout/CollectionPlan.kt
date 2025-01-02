@@ -121,7 +121,6 @@ fun CollectionPlan(
     paymentIncrements: List<PaymentIncrement>? = null,
     plotMinimum: String? = null,
     ksCurrency: KSCurrency? = null,
-    projectCurrency: String? = null,
     projectCurrentCurrency: String? = null
 ) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
@@ -153,7 +152,6 @@ fun CollectionPlan(
             paymentIncrements = paymentIncrements,
             plotMinimum = plotMinimum,
             ksCurrency = ksCurrency,
-            projectCurrency = projectCurrency,
             projectCurrentCurrency = projectCurrentCurrency,
         )
     }
@@ -172,7 +170,6 @@ fun PledgeOption(
     plotMinimum: String? = null,
     paymentIncrements: List<PaymentIncrement>? = null,
     ksCurrency: KSCurrency? = null,
-    projectCurrency: String? = null,
     projectCurrentCurrency: String? = null,
 ) {
     Column(
@@ -243,7 +240,7 @@ fun PledgeOption(
                         color = colors.textAccentGreen
                     )
                     if (!paymentIncrements.isNullOrEmpty()) {
-                        ChargeSchedule(paymentIncrements, ksCurrency, projectCurrency, projectCurrentCurrency)
+                        ChargeSchedule(paymentIncrements, ksCurrency, projectCurrentCurrency)
                     }
                 }
             }
@@ -276,7 +273,7 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
 }
 
 @Composable
-fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurrency?, projectCurrency: String? = null, projectCurrentCurrency: String? = null) {
+fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurrency?, projectCurrentCurrency: String? = null) {
     var count = 0
     Column(
         modifier = Modifier
@@ -286,8 +283,13 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
         paymentIncrements.forEach { paymentIncrement ->
             ksCurrency?.let {
                 count++
+<<<<<<< Updated upstream
                 val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = projectCurrency, projectCurrentCurrency = projectCurrentCurrency).toString()
                 val chargeString = stringResource(R.string.Charge_number).format(key1 = "number", value1 = count.toString())
+=======
+                val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount.currencyCode().toString(), projectCurrentCurrency = projectCurrentCurrency).toString()
+                val chargeString = stringResource(R.string.fpo_charge_count).format(key1 = "number", value1 = count.toString())
+>>>>>>> Stashed changes
                 ChargeItem(title = chargeString, date = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection), amount = formattedAmount)
             }
         }

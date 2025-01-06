@@ -95,5 +95,6 @@
   <string name="fpo_collected">Collected</string>
   <string name="fpo_unattempted">Unattempted</string>
   <string name="fpo_payment_schedule">Payment schedule</string>
+  <string name="fpo_the_first_charge_will_occur_when_the_project_ends_successfully">The first charge will occur when the project ends successfully, then every 2 weeks until fully paid. When this option is selected no further edits can be made to your pledge.</string>
 
 </resources>

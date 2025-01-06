@@ -79,6 +79,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var selectedReward: Reward? = null
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
 
+    private var paymentIntent: String? = null
+
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
     val onPledgeSuccess: SharedFlow<Boolean>
         get() = mutableOnPledgeSuccessAction
@@ -205,7 +207,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
         this.pledgeData?.let {
             val project = it.projectData().project()
-            createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
+            if (paymentIntent != null) {
+                viewModelScope.launch {
+                    selectedCard?.let { validateCheckout(clientSecret = paymentIntent!!, selectedCard = it) }
+                }
+            } else {
+                createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
+            }
         }
     }
 
@@ -231,6 +239,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     ).asFlow().onStart {
                         emitCurrentState(isLoading = true)
                     }.map { clientSecret ->
+                        paymentIntent = clientSecret
                         selectedCard?.let {
                             checkoutId?.let {
                                 validateCheckout(
@@ -246,11 +255,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             errorAction.invoke(null)
                         }
                     }.catch {
+                        paymentIntent = null
                         emitCurrentState()
                         errorAction.invoke(null)
                     }.collect()
                 }
             } ?: run {
+                paymentIntent = null
                 emitCurrentState()
                 errorAction.invoke(null)
             }

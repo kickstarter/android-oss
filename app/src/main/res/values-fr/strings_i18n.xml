@@ -716,6 +716,7 @@ n\'ont rien soutenu.</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">Le contributeur a annulé son engagement.</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">Ce projet a été annulé par le créateur, donc votre moyen de paiement n\'a pas été débité.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>
+  <string name="The_first_charge_will_occur_when_the_project_ends_successfully" formatted="false">Le premier prélèvement interviendra après la fin de la campagne, si l\'objectif de celle-ci est atteint. Les prélèvements suivants auront lieu toutes les deux semaines, jusqu\'au règlement intégral du montant dû. Si vous sélectionnez cette option, votre engagement devient non modifiable.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Échec de connexion à la diffusion en direct</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Diffusion en direct interrompue</string>
   <string name="The_live_stream_will_start_soon" formatted="false">La diffusion en direct va bientôt commencer</string>

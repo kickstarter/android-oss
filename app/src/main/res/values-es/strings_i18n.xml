@@ -716,6 +716,7 @@ Toca para intentar de nuevo.</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">El patrocinador canceló su contribución a este proyecto.</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">El creador canceló el proyecto, así que tu método de pago nunca recibió ningún cargo.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">Esta cuenta de correo electrónico ya está asociada a otro usuario de Kickstarter.</string>
+  <string name="The_first_charge_will_occur_when_the_project_ends_successfully" formatted="false">El primer pago se hará cuando el proyecto finalice con éxito, luego cada 2 semanas hasta el monto total de la contribución. Cuando se selecciona esta opción, no se pueden realizar más modificaciones en tu contribución.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">No se pudo conectar la transmisión en directo</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Transmisión en vivo fue interrumpida</string>
   <string name="The_live_stream_will_start_soon" formatted="false">Transmisión en vivo comienza en breve</string>

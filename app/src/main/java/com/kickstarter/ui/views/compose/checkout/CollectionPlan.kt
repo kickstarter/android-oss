@@ -228,7 +228,7 @@ fun PledgeOption(
                 if (isExpanded) {
                     Text(
                         modifier = Modifier.testTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name),
-                        text = stringResource(id = R.string.You_will_be_charged_for_your_pledge_over_four_payments_expanded_description),
+                        text = stringResource(id = R.string.The_first_charge_will_occur_when_the_project_ends_successfully),
                         style = typography.caption2,
                         color = colors.textSecondary
                     )
@@ -283,13 +283,8 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
         paymentIncrements.forEach { paymentIncrement ->
             ksCurrency?.let {
                 count++
-<<<<<<< Updated upstream
-                val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = projectCurrency, projectCurrentCurrency = projectCurrentCurrency).toString()
                 val chargeString = stringResource(R.string.Charge_number).format(key1 = "number", value1 = count.toString())
-=======
                 val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount.currencyCode().toString(), projectCurrentCurrency = projectCurrentCurrency).toString()
-                val chargeString = stringResource(R.string.fpo_charge_count).format(key1 = "number", value1 = count.toString())
->>>>>>> Stashed changes
                 ChargeItem(title = chargeString, date = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection), amount = formattedAmount)
             }
         }

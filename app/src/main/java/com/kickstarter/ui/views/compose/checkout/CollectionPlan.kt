@@ -37,6 +37,7 @@ import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.activities.ClickableText
+import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -126,7 +127,8 @@ fun CollectionPlan(
     plotMinimum: String? = null,
     ksCurrency: KSCurrency? = null,
     projectCurrency: String? = null,
-    projectCurrentCurrency: String? = null
+    projectCurrentCurrency: String? = null,
+    termsOfUseCallback: (DisclaimerItems) -> Unit = {}
 ) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
     changeCollectionPlan.invoke(selectedOption)
@@ -160,6 +162,7 @@ fun CollectionPlan(
             ksCurrency = ksCurrency,
             projectCurrency = projectCurrency,
             projectCurrentCurrency = projectCurrentCurrency,
+            termsOfUseCallback = termsOfUseCallback,
         )
     }
 }
@@ -179,6 +182,7 @@ fun PledgeOption(
     ksCurrency: KSCurrency? = null,
     projectCurrency: String? = null,
     projectCurrentCurrency: String? = null,
+    termsOfUseCallback: (DisclaimerItems) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -245,7 +249,7 @@ fun PledgeOption(
                     KSClickableText(
                         modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name),
                         resourceId = R.string.fpo_see_our_terms_of_use,
-                        clickCallback = 
+                        clickCallback = { termsOfUseCallback.invoke(DisclaimerItems.TERMS) }
                     )
                     if (!paymentIncrements.isNullOrEmpty()) {
                         ChargeSchedule(paymentIncrements, ksCurrency, projectCurrency, projectCurrentCurrency)

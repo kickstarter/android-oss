@@ -548,6 +548,23 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     }
 
     /**
+     * Required to present the Stripe PaymentSheet to the user
+     */
+    fun openDisclaimer() {
+        scope.launch(dispatcher) {
+            apolloClient.createSetupIntent(project).asFlow()
+                .onStart { emitCurrentState(isLoading = true) }
+                .catch {
+                    emitCurrentState(isLoading = false)
+                    errorAction.invoke(it.message)
+                }
+                .collectLatest {
+                    _presentPaymentSheet.emit(PaymentSheetPresenterState(it))
+                }
+        }
+    }
+
+    /**
      * If @param = PaymentSheetResult.Failed or PaymentSheetResult.Canceled
      * reload remove the payment methods added via payment sheet and keep only those
      * obtained via `apolloClient.getStoredCards()`. PaymentSheetResult.Canceled will be produce

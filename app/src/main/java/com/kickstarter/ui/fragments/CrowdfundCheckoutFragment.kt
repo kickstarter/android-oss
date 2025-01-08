@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +15,13 @@ import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
 import com.kickstarter.ui.activities.compose.projectpage.getRewardListAndPrices
@@ -163,7 +166,9 @@ class CrowdfundCheckoutFragment : Fragment() {
                             onDisclaimerItemClicked = { disclaimerItem ->
                                     openDisclaimerScreen(disclaimerItem, environment)
                             },
-                            onAccountabilityLinkClicked = {},
+                            onAccountabilityLinkClicked = {
+                                showAccountabilityPage(environment)
+                            },
                             onChangedPaymentMethod = { paymentMethodSelected ->
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             },
@@ -227,6 +232,32 @@ class CrowdfundCheckoutFragment : Fragment() {
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun showAccountabilityPage(environment: Environment?) {
+        activity?.let { activity ->
+            context?.let { context ->
+                environment?.let { env ->
+                    env.webEndpoint().let { endpoint ->
+                    val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+                    ChromeTabsHelperActivity.openCustomTab(
+                        activity,
+                        UrlUtils.baseCustomTabsIntent(context),
+                        Uri.parse(trustUrl),
+                        null
+                    )
+                }
+            } ?: binding?.composeView?.let { view ->
+                activity.runOnUiThread {
+                    showErrorToast(
+                        context,
+                        view,
+                        getString(R.string.general_error_something_wrong)
+                    )
+                }
+            }
             }
         }
     }

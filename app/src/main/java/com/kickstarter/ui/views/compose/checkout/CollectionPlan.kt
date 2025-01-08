@@ -36,6 +36,8 @@ import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.ui.activities.ClickableText
+import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -240,11 +242,10 @@ fun PledgeOption(
                         color = colors.textSecondary
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-                    Text(
+                    KSClickableText(
                         modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name),
-                        text = stringResource(id = R.string.fpo_see_our_terms_of_use),
-                        style = typography.caption2,
-                        color = colors.textAccentGreen
+                        resourceId = R.string.fpo_see_our_terms_of_use,
+                        clickCallback = 
                     )
                     if (!paymentIncrements.isNullOrEmpty()) {
                         ChargeSchedule(paymentIncrements, ksCurrency, projectCurrency, projectCurrentCurrency)

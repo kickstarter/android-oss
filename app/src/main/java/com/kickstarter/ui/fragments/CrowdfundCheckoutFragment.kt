@@ -164,7 +164,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 viewModel.getSetupIntent()
                             },
                             onDisclaimerItemClicked = { disclaimerItem ->
-                                    openDisclaimerScreen(disclaimerItem, environment)
+                                openDisclaimerScreen(disclaimerItem, environment)
                             },
                             onAccountabilityLinkClicked = {
                                 showAccountabilityPage(environment)
@@ -241,23 +241,23 @@ class CrowdfundCheckoutFragment : Fragment() {
             context?.let { context ->
                 environment?.let { env ->
                     env.webEndpoint().let { endpoint ->
-                    val trustUrl = UrlUtils.appendPath(endpoint, "trust")
-                    ChromeTabsHelperActivity.openCustomTab(
-                        activity,
-                        UrlUtils.baseCustomTabsIntent(context),
-                        Uri.parse(trustUrl),
-                        null
-                    )
+                        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+                        ChromeTabsHelperActivity.openCustomTab(
+                            activity,
+                            UrlUtils.baseCustomTabsIntent(context),
+                            Uri.parse(trustUrl),
+                            null
+                        )
+                    }
+                } ?: binding?.composeView?.let { view ->
+                    activity.runOnUiThread {
+                        showErrorToast(
+                            context,
+                            view,
+                            getString(R.string.general_error_something_wrong)
+                        )
+                    }
                 }
-            } ?: binding?.composeView?.let { view ->
-                activity.runOnUiThread {
-                    showErrorToast(
-                        context,
-                        view,
-                        getString(R.string.general_error_something_wrong)
-                    )
-                }
-            }
             }
         }
     }

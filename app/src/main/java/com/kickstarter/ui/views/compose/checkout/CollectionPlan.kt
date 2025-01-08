@@ -36,7 +36,6 @@ import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
-import com.kickstarter.ui.activities.ClickableText
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme

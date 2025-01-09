@@ -235,12 +235,11 @@ interface DiscoveryViewModel {
             val paramsFromIntent = intentObservable
                 .map { it }
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
-                .compose(Transformers.neverErrorV2())
 
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
                 .filter { it.isNotNull() }
-                .switchMap { apiClient.verifyEmail(it).compose(Transformers.neverErrorV2()) }
+                .switchMap { apiClient.verifyEmail(it) }
                 .materialize()
                 .share()
                 .distinctUntilChanged()

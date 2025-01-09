@@ -26,6 +26,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -80,6 +81,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
 
     private var paymentIntent: String? = null
+    private var cratePaymentIntentJob: Job? = null
 
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
     val onPledgeSuccess: SharedFlow<Boolean>
@@ -206,13 +208,18 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
         this.pledgeData?.let {
-            val project = it.projectData().project()
-            if (paymentIntent != null) {
-                viewModelScope.launch {
-                    selectedCard?.let { validateCheckout(clientSecret = paymentIntent!!, selectedCard = it) }
+            viewModelScope.launch {
+                val project = it.projectData().project()
+                if (paymentIntent != null) {
+                    selectedCard?.let {
+                        validateCheckout(
+                            clientSecret = paymentIntent!!,
+                            selectedCard = it
+                        )
+                    }
+                } else {
+                    createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
                 }
-            } else {
-                createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
             }
         }
     }
@@ -226,7 +233,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         project: Project,
         totalAmount: Double
     ) {
-        viewModelScope.launch {
+        cratePaymentIntentJob?.cancel()
+        cratePaymentIntentJob = viewModelScope.launch {
             checkoutId?.let { cId ->
                 backing?.let { b ->
                     apolloClient.createPaymentIntent(

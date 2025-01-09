@@ -428,9 +428,7 @@ interface ProjectPageViewModel {
             mappedProjectValues
                 .subscribe {
                     if (it.showLatePledgeFlow()) {
-                        val isFFEnabled =
-                            featureFlagClient.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES)
-                        this.showLatePledgeFlow.onNext(it.showLatePledgeFlow() && isFFEnabled)
+                        this.showLatePledgeFlow.onNext(it.showLatePledgeFlow())
                     }
 
                     if (it.displayPrelaunch().isTrue()) {

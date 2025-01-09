@@ -403,7 +403,8 @@ fun CheckoutScreen(
                         paymentIncrements = paymentIncrements,
                         ksCurrency = ksCurrency,
                         projectCurrency = project.currency(),
-                        projectCurrentCurrency = project.currentCurrency()
+                        projectCurrentCurrency = project.currentCurrency(),
+                        termsOfUseCallback = onDisclaimerItemClicked
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                     Text(

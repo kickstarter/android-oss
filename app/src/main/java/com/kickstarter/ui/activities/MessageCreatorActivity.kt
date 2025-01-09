@@ -2,10 +2,16 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityMessageCreatorBinding
 import com.kickstarter.libs.KSString
@@ -19,7 +25,6 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.MessageCreatorViewModel.Factory
 import com.kickstarter.viewmodels.MessageCreatorViewModel.MessageCreatorViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,12 +40,25 @@ class MessageCreatorActivity : AppCompatActivity() {
     private var disposables = CompositeDisposable()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         binding = ActivityMessageCreatorBinding.inflate(layoutInflater)
-        WindowInsetsUtil.manageEdgeToEdge(
-            window,
-            binding.root
-        )
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                bottomMargin = insets.bottom
+                rightMargin = insets.right
+                topMargin = insets.top
+            }
+
+            val imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            v.updatePadding(bottom = imeInsets.bottom)
+
+            WindowInsetsCompat.CONSUMED
+        }
 
         setUpConnectivityStatusCheck(lifecycle)
 

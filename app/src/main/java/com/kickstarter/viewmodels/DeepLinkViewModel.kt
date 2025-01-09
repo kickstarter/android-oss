@@ -327,10 +327,7 @@ interface DeepLinkViewModel {
         }
 
         private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {
-            if (
-                it.second.displayPrelaunch() == true &&
-                ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
-            ) {
+            if (it.second.displayPrelaunch() == true) {
                 startPreLaunchProjectActivity.onNext(Pair(it.first, it.second))
             } else {
                 startProjectPage.onNext(it.first)

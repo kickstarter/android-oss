@@ -268,9 +268,7 @@ interface SearchViewModel {
 
             selectedProject.subscribe {
                 val epochDateTime = DateTime(0)
-                if (it.first.launchedAt() == epochDateTime &&
-                    ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
-                ) {
+                if (it.first.launchedAt() == epochDateTime) {
                     startPreLaunchProjectActivity.onNext(it)
                 } else {
                     startProjectActivity.onNext(it)

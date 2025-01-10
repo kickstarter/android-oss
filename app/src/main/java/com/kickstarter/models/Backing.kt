@@ -24,6 +24,7 @@ class Backing private constructor(
     private val locationId: Long?,
     private val locationName: String?,
     private val paymentSource: PaymentSource?,
+    val paymentIncrements: List<PaymentIncrement>?,
     private val pledgedAt: DateTime?,
     private val project: Project?,
     private val projectId: Long,
@@ -53,6 +54,7 @@ class Backing private constructor(
     fun locationId() = this.locationId
     fun locationName() = this.locationName
     fun paymentSource() = this.paymentSource
+    fun paymentIncrements() = this.paymentIncrements
     fun pledgedAt() = this.pledgedAt
     fun project() = this.project
     fun projectId() = this.projectId
@@ -84,6 +86,7 @@ class Backing private constructor(
         private var locationId: Long? = null,
         private var locationName: String? = null,
         private var paymentSource: PaymentSource? = null,
+        private var paymentIncrements: List<PaymentIncrement>? = null,
         private var pledgedAt: DateTime? = null,
         private var project: Project? = null,
         private var projectId: Long = 0L,
@@ -113,6 +116,7 @@ class Backing private constructor(
         fun locationId(locationId: Long?) = apply { this.locationId = locationId }
         fun locationName(locationName: String?) = apply { this.locationName = locationName }
         fun paymentSource(paymentSource: PaymentSource?) = apply { this.paymentSource = paymentSource }
+        fun paymentIncrements(paymentIncrements: List<PaymentIncrement>?) = apply { this.paymentIncrements = paymentIncrements }
         fun pledgedAt(pledgedAt: DateTime?) = apply { this.pledgedAt = pledgedAt }
         fun project(project: Project?) = apply { this.project = project }
         fun projectId(projectId: Long?) = apply { this.projectId = projectId ?: 0L }
@@ -151,7 +155,8 @@ class Backing private constructor(
             status = status,
             addOns = addOns,
             bonusAmount = bonusAmount,
-            isPostCampaign = isPostCampaign
+            isPostCampaign = isPostCampaign,
+            paymentIncrements = paymentIncrements
         )
     }
 
@@ -172,6 +177,7 @@ class Backing private constructor(
         locationId = locationId,
         locationName = locationName,
         paymentSource = paymentSource,
+        paymentIncrements = paymentIncrements,
         pledgedAt = pledgedAt,
         project = project,
         projectId = projectId,
@@ -204,6 +210,7 @@ class Backing private constructor(
                 locationId() == other.locationId() &&
                 locationName() == other.locationName() &&
                 paymentSource() == other.paymentSource() &&
+                paymentIncrements() == other.paymentIncrements() &&
                 pledgedAt() == other.pledgedAt() &&
                 project() == other.project() &&
                 projectId() == other.projectId() &&

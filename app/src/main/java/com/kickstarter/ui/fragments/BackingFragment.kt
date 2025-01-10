@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments
 
+import PaymentSchedule
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -11,6 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,6 +32,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
@@ -235,6 +241,20 @@ class BackingFragment : Fragment() {
 
             val boldPortionLength = text.toString().split(".").first().length
             setBoldSpanOnTextView(boldPortionLength, this, resources.getColor(R.color.kds_support_400, null))
+
+            binding?.paymentScheduleComposeView?.setContent {
+                KSTheme {
+                    val paymentIncrements by viewModel.outputs.paymentIncrements()
+                        .subscribeAsState(initial = emptyList())
+                    val isExpanded = remember { mutableStateOf(false) }
+
+                    PaymentSchedule(
+                        isExpanded = isExpanded.value,
+                        onExpandChange = { isExpanded.value = it },
+                        paymentIncrements = paymentIncrements
+                    )
+                }
+            }
         }
 
         binding?.backingSwipeRefreshLayout?.setColorSchemeResources(R.color.kds_create_700, R.color.kds_create_500, R.color.kds_create_300)
@@ -386,7 +406,15 @@ class BackingFragment : Fragment() {
                         )
                     }
                 }
-
+                R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of -> {
+                    this.viewModel.ksString?.let { ksString ->
+                        ksString.format(
+                            getString(it),
+                            "amount", pledgeStatusData.plotAmount,
+                            "date", pledgeStatusData.plotFirstScheduleCollection
+                        )
+                    }
+                }
                 else -> getString(it)
             }
         }

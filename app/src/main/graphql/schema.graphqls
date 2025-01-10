@@ -569,6 +569,11 @@ type User implements Node {
   userRestrictions: [UserRestriction!]
 
   """
+  List of VAT ids used by the user
+  """
+  vatNumbers: [String!]!
+
+  """
   A user's websites
   """
   websites: [UserUrl]
@@ -702,8 +707,6 @@ enum Feature {
 
   se_currency_selector
 
-  projects_on_project_page
-
   datalake_fe_events
 
   creator_demographics_survey
@@ -767,6 +770,8 @@ enum Feature {
   copy_rewards
 
   pledge_redemption_v1
+
+  pledge_redemption_vat
 
   survey_reward_questions_2024
 
@@ -1219,9 +1224,14 @@ type Project implements Node & Commentable {
   aiDisclosure: AiDisclosure
 
   """
-  The total amount collected for shipping during pledge redemption
+  The total amount collected for add-ons in the pledge manager
   """
-  amountCollectedForShipping: Int!
+  amountCollectedForPledgeManagerAddons: String!
+
+  """
+  The total amount collected for shipping in the pledge manager
+  """
+  amountCollectedForShipping: String!
 
   """
   Available card types.
@@ -1269,7 +1279,7 @@ type Project implements Node & Commentable {
   backersCount: Int!
 
   """
-  The number of backers who have yet to go through pledge redemption
+  The number of backers who have yet to go through the pledge manager
   """
   backersRemainingForPledgeRedemption: Int!
 
@@ -1671,6 +1681,11 @@ type Project implements Node & Commentable {
   name: String!
 
   """
+  Whether the project's shipping rules designate no vat collection
+  """
+  noVatCollection: Boolean!
+
+  """
   A Stripe account identifier
   """
   onBehalfOf: String
@@ -1893,6 +1908,11 @@ type Project implements Node & Commentable {
   taxCategories: [TaxCategory!]!
 
   """
+  Whether or not the project has configured a deposit account address and vat id
+  """
+  taxInformationCompletionStatus: PrereqCompletionStatus!
+
+  """
   The timeline of project events, including updates and milestones.
   """
   timeline("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Makes any pinned post the first item in the timeline" withPinnedFirst: Boolean): ProjectTimelineConnection
@@ -1926,6 +1946,11 @@ type Project implements Node & Commentable {
   Was the current user removed from this project?
   """
   userWasRemoved: Boolean!
+
+  """
+  The project's VAT number.
+  """
+  vatNumber: String
 
   """
   Name of user on verified account
@@ -3979,6 +4004,8 @@ Tax configuration data related to an item
 type ItemTaxConfig {
   id: ID!
 
+  item: RewardItem!
+
   """
   Value of item pre any bundling discounts
   """
@@ -4613,6 +4640,11 @@ type Order implements Node {
   The total tax amount for the order, formatted
   """
   totalTaxFormatted: String
+
+  """
+  Whether or not the location is in the EU or UK (uses VAT)
+  """
+  vatLocation: Boolean!
 }
 
 """
@@ -4742,11 +4774,6 @@ Adjustment to an order, created to issue a refund.
 """
 type Adjustment {
   """
-  ID of backing that adjustment is associated with
-  """
-  backingId: String!
-
-  """
   Timestamp at which adjustment was created
   """
   createdAt: ISO8601DateTime!
@@ -4757,54 +4784,19 @@ type Adjustment {
   id: String!
 
   """
-  optional message from creator issuing adjustment
-  """
-  message: String
-
-  """
   Metadata for the adjustment, including refunds and removals
   """
   metadata: AdjustmentMetadata!
 
   """
-  Status of adjustment
-  """
-  status: AdjustmentStatusType!
-
-  """
   Rosie Stripe transaction ID
   """
-  transactionId: String
+  transactionKey: String
 
   """
   Timestamp at which adjustment was last updated
   """
   updatedAt: ISO8601DateTime!
-}
-
-"""
-Status of an adjustment
-"""
-enum AdjustmentStatusType {
-  """
-  Adjustment is pending (default status on creation)
-  """
-  PENDING
-
-  """
-  Adjustment has successfully been processed
-  """
-  COMPLETED
-
-  """
-  Failure in processing adjustment
-  """
-  FAILED
-
-  """
-  Adjustment was cancelled before it could be processed
-  """
-  CANCELLED
 }
 
 """
@@ -4904,7 +4896,7 @@ enum RefundAdjustmentType {
   """
   refund for bonus support
   """
-  BONUS_SUPPORT
+  BONUS_AMOUNT
 
   """
   refund for shipping fees
@@ -4954,7 +4946,7 @@ type AdjustedSummary {
   """
   current bonus amount for backing
   """
-  bonusAmount: Int
+  bonusAmount: AdjustmentAmount
 
   """
   items in backing and their quantities
@@ -4964,12 +4956,32 @@ type AdjustedSummary {
   """
   current shipping amount for backing
   """
-  shippingAmount: Int
+  shippingAmount: AdjustmentAmount
 
   """
   current backing status
   """
   status: BackingState!
+}
+
+"""
+A hash containing the original, refunded, and remaining amounts.
+"""
+type AdjustmentAmount {
+  """
+  the original total amount
+  """
+  originalTotal: Int!
+
+  """
+  the refunded total amount
+  """
+  refundedTotal: Int!
+
+  """
+  the remaining total amount
+  """
+  remainingTotal: Int!
 }
 
 """
@@ -4992,7 +5004,7 @@ type AdjustmentReward {
   remainingTotal: Int!
 
   """
-  id of reward to be refunded
+   graphql id of reward to be refunded
   """
   rewardId: ID!
 }
@@ -5002,14 +5014,14 @@ An item in a backing that might be modified (removal, change in quantity) by an 
 """
 type AdjustmentItem {
   """
-  id of item in backing
+  graphql id of item in backing
   """
   itemId: ID!
 
   """
   quantity of item in backing
   """
-  itemQuantity: ID!
+  quantity: ID!
 }
 
 """
@@ -10956,6 +10968,11 @@ type Mutation {
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
 
   """
+  Creates/updates a VAT config
+  """
+  createOrUpdateVatConfig(input: CreateOrUpdateVatConfigInput!): CreateOrUpdateVatConfigPayload
+
+  """
   Create a Stripe PaymentIntent in order to collect an on-session payment via the Stripe PaymentElement
   """
   createPaymentIntent(input: CreatePaymentIntentInput!): CreatePaymentIntentPayload
@@ -14363,12 +14380,12 @@ input SubmitRefundCheckoutInput {
 Autogenerated return type of CreateAdjustment
 """
 type CreateAdjustmentPayload {
+  adjustedSummary: AdjustedSummary!
+
   """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-
-  refundCheckout: RefundCheckout!
 }
 
 """
@@ -14390,6 +14407,8 @@ input CreateAdjustmentInput {
   Stripe SetupIntent client secret
   """
   intentClientSecret: String
+
+  paymentSourceId: String
 
   """
   A unique identifier for the client performing the mutation.
@@ -14424,7 +14443,7 @@ input RemovalInput {
   """
   id of object to be removed
   """
-  id: ID!
+  id: Int!
 
   """
   type of object to be removed (reward, reward item, or order item)
@@ -14439,7 +14458,7 @@ input RefundInput {
   """
   id of object to be refunded
   """
-  id: ID!
+  id: Int
 
   """
   type of refund
@@ -16397,9 +16416,9 @@ type CreateOrUpdateItemTaxConfigPayload {
   clientMutationId: String
 
   """
-  Success if item tax config was created or updated successfully
+  The item for the ID that was passed in
   """
-  success: Boolean!
+  item: RewardItem!
 }
 
 """
@@ -16599,6 +16618,38 @@ input BulkEditStockLocationMappingsInput {
   stockLocationId: ID!
 
   locationIds: [ID!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateVatConfig
+"""
+type CreateOrUpdateVatConfigPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Project associated with the VAT Config
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateVatConfig
+"""
+input CreateOrUpdateVatConfigInput {
+  """
+  The project id
+  """
+  projectId: ID!
+
+  vatNumber: String!
 
   """
   A unique identifier for the client performing the mutation.
@@ -17079,14 +17130,14 @@ Autogenerated return type of LockAddresses
 """
 type LockAddressesPayload {
   """
-  Returns the address lockout date if successful.
-  """
-  addressLockoutDate: DateTime
-
-  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  Returns the updated project if successful.
+  """
+  project: Project!
 }
 
 """

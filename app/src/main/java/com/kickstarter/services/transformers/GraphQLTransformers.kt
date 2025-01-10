@@ -774,10 +774,24 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
 
     val isPostCampaign = backingGr?.isPostCampaign ?: false
     val incremental = backingGr?.incremental ?: false
+    val paymentIncrements = backingGr?.paymentIncrements?.map {
+     val amount = Amount.builder()
+         .amount(it.paymentIncrement.amount.amount.amount)
+         .currencyCode(it.paymentIncrement.amount.amount.currency)
+         .currencySymbol(it.paymentIncrement.amount.amount.symbol)
+         .build()
+        val scheduleCollection = it.paymentIncrement.scheduledCollection
+        PaymentIncrement.builder()
+            .amount(amount)
+            .scheduledCollection(scheduleCollection)
+            .build()
+    }
+
     return Backing.builder()
         .amount(backingGr?.amount?.amount?.amount?.toDouble() ?: 0.0)
         .bonusAmount(backingGr?.bonusAmount?.amount?.amount?.toDouble() ?: 0.0)
         .paymentSource(payment)
+        .paymentIncrements(paymentIncrements)
         .backerId(backerId)
         .backerUrl(backerData?.imageUrl)
         .backerName(nameBacker)

@@ -74,7 +74,6 @@ enum class FlagKey(val key: String) {
     ANDROID_CAPI_INTEGRATION("android_capi_integration"),
     ANDROID_GOOGLE_ANALYTICS("android_google_analytics"),
     ANDROID_DARK_MODE_ENABLED("android_dark_mode_enabled"),
-    ANDROID_OAUTH("android_oauth"),
     ANDROID_ENCRYPT("android_encrypt_token"),
     ANDROID_STRIPE_LINK("android_stripe_link"),
     ANDROID_PLEDGED_PROJECTS_OVERVIEW("android_pledged_projects_overview"),

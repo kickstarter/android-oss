@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag

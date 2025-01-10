@@ -31,7 +31,6 @@ class ChangePasswordActivity : ComponentActivity() {
     private val viewModel: ChangePasswordViewModel by viewModels {
         viewModelFactory
     }
-    private var oAuthIsEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +44,6 @@ class ChangePasswordActivity : ComponentActivity() {
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
                 ?: AppThemes.MATCH_SYSTEM.ordinal
-
-            oAuthIsEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_OAUTH) ?: false
         }
 
         setContent {

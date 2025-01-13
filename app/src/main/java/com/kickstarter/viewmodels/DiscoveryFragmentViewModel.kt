@@ -295,9 +295,7 @@ interface DiscoveryFragmentViewModel {
             )
 
             startProject.subscribe {
-                if (it.first.displayPrelaunch() == true &&
-                    ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
-                ) {
+                if (it.first.displayPrelaunch() == true) {
                     startPreLaunchProjectActivity.onNext(it)
                 } else {
                     startProjectActivity.onNext(it)

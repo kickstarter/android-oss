@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.ApiPaginatorV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.RefTagUtils
@@ -268,9 +267,7 @@ interface SearchViewModel {
 
             selectedProject.subscribe {
                 val epochDateTime = DateTime(0)
-                if (it.first.launchedAt() == epochDateTime &&
-                    ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
-                ) {
+                if (it.first.launchedAt() == epochDateTime) {
                     startPreLaunchProjectActivity.onNext(it)
                 } else {
                     startProjectActivity.onNext(it)

@@ -247,10 +247,8 @@ class ProjectPageActivity :
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
-                val fFLatePledge = environment?.featureFlagClient()
-                    ?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES) ?: false
 
-                if (fFLatePledge && it.project().showLatePledgeFlow()) {
+                if (it.project().showLatePledgeFlow()) {
                     rewardsSelectionViewModel.provideProjectData(it)
                     addOnsViewModel.provideProjectData(it)
                 }
@@ -1137,15 +1135,7 @@ class ProjectPageActivity :
         val pledgeData = checkoutDataAndProjectData.second
         val projectData = pledgeData.projectData()
 
-        val fFLatePledge =
-            getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_POST_CAMPAIGN_PLEDGES)
-                ?: false
-
-        if (clearFragmentBackStack() || (
-            projectData.project()
-                .showLatePledgeFlow() && fFLatePledge
-            )
-        ) {
+        if (clearFragmentBackStack() || (projectData.project().showLatePledgeFlow())) {
             startActivity(
                 Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project().reduceProjectPayload())

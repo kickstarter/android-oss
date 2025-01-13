@@ -103,7 +103,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         val descriptionTextValue =
             context.getString(R.string.You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description)
         val extendedTextValue =
-            context.getString(R.string.You_will_be_charged_for_your_pledge_over_four_payments_expanded_description)
+            context.getString(R.string.The_first_charge_will_occur_when_the_project_ends_successfully)
         val termsOfUseTextValue = context.getString(R.string.See_our_terms_of_use)
         val config = ConfigFactory.configForUSUser()
         val currentConfig = MockCurrentConfigV2()

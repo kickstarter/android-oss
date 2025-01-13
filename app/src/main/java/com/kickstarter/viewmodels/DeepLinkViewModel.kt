@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
@@ -327,10 +326,7 @@ interface DeepLinkViewModel {
         }
 
         private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {
-            if (
-                it.second.displayPrelaunch() == true &&
-                ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
-            ) {
+            if (it.second.displayPrelaunch() == true) {
                 startPreLaunchProjectActivity.onNext(Pair(it.first, it.second))
             } else {
                 startProjectPage.onNext(it.first)

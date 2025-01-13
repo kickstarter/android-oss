@@ -161,20 +161,20 @@ fun PaymentSchedule(
                 tint = colors.textSecondary,
             )
         }
-            if (isExpanded) {
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-                paymentIncrements.forEach { paymentIncrement ->
-                    PaymentRow(paymentIncrement)
-                }
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-                KSClickableText(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
-                    resourceId = R.string.fpo_terms_of_use,
-                    clickCallback = { onDisclaimerClicked.invoke(DisclaimerItems.TERMS) }
-                )
+        if (isExpanded) {
+            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+            paymentIncrements.forEach { paymentIncrement ->
+                PaymentRow(paymentIncrement)
             }
+            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+            KSClickableText(
+                modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
+                resourceId = R.string.fpo_terms_of_use,
+                clickCallback = { onDisclaimerClicked.invoke(DisclaimerItems.TERMS) }
+            )
         }
     }
+}
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement) {

@@ -182,7 +182,6 @@ fun PaymentSchedule(
             )
         }
     }
-}
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement) {

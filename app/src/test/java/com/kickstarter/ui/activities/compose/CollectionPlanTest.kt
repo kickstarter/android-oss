@@ -155,7 +155,7 @@ class CollectionPlanTest : KSRobolectricTestCase() {
         radioButtons[1].assertHasClickAction()
 
         chargeItemsList.assertCountEquals(4)
-        chargeItemsList[0].assert(hasText(context.getString(R.string.fpo_charge_count).format(key1 = "number", value1 = "1")))
+        chargeItemsList[0].assert(hasText(context.getString(R.string.Charge_number).format(key1 = "number", value1 = "1")))
 
         // Not eligible badge should not be displayed
         badgeText.assertIsNotDisplayed()

@@ -641,15 +641,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabled_shouldEmitPelaunchProjectPageActivity() {
         val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
-                }
-            }
+
         setUpEnvironment(
             environment().toBuilder().currentUserV2(currentUser)
-                .featureFlagClient(mockFeatureFlagClient)
                 .schedulerV2(testScheduler)
                 .build()
         )
@@ -666,36 +660,6 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         startPreLaunchProjectActivity.assertValueCount(1)
         assertEquals(startPreLaunchProjectActivity.values().first().first, project)
         assertEquals(startPreLaunchProjectActivity.values().first().second, discovery())
-    }
-
-    @Test
-    fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabledAndFeatureFlagDisabled_shouldEmitPelaunchProjectPageActivity() {
-        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return false
-                }
-            }
-        setUpEnvironment(
-            environment().toBuilder()
-                .currentUserV2(currentUser)
-                .featureFlagClient(mockFeatureFlagClient)
-                .schedulerV2(testScheduler)
-                .build()
-        )
-
-        // Load initial params and root categories from activity.
-        setUpInitialHomeAllProjectsParams()
-        vm.inputs.fragmentLifeCycle(Lifecycle.State.RESUMED)
-        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
-
-        // Click on project
-        val project = prelaunchProject("")
-        vm.inputs.projectCardViewHolderClicked(project)
-        startProjectActivity.assertValueCount(1)
-        startPreLaunchProjectActivity.assertValueCount(0)
-        assertEquals(startProjectActivity.values().first(), Pair(project, discovery()))
     }
 
     @Test

@@ -14,6 +14,8 @@ import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.PaymentIncrementFactory
+import com.kickstarter.mock.factories.PaymentPlanFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -23,7 +25,9 @@ import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.BuildPaymentPlanData
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -49,6 +53,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.joda.time.DateTime
 import org.junit.Test
 import org.mockito.Mockito
 
@@ -159,6 +164,120 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test new pledge, when user switched to plot, ui state should have true incremental value`() = runTest {
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+            .shippingRules(shippingRules = shippingRules)
+            .build()
+
+        val addOns1 = RewardFactory.rewardWithShipping()
+            .toBuilder()
+            .isAddOn(true)
+            .build()
+
+        val addOn2 = RewardFactory.addOn()
+            .toBuilder()
+            .shippingRules(shippingRules)
+            .build()
+
+        val addOnsList = listOf(addOns1, addOn2)
+
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward))
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+            addOnsList,
+            ShippingRuleFactory.usShippingRule(),
+            bonusAmount = 3.0
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("", "hola@ksr.com", true, true, true, true, "USD")
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiState = mutableListOf<CheckoutUIState>()
+
+        var errorActionCount = 0
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideErrorAction {
+                errorActionCount++
+            }
+            viewModel.provideBundle(bundle)
+
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+
+        assertEquals(uiState.size, 3)
+
+        // default incremental value should be false
+        assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
+        assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
+        assertEquals(uiState.last().bonusAmount, 3.0)
+        assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
+        assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().userEmail, "hola@ksr.com")
+        assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
+        assertEquals(uiState.last().isIncrementalPledge, false)
+
+        assertEquals(errorActionCount, 0)
+
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.collectionPlanSelected(CollectionOptions.PLEDGE_OVER_TIME)
+            viewModel.pledgeOrUpdatePledge()
+
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+
+        assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
+        assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
+        assertEquals(uiState.last().bonusAmount, 3.0)
+        assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
+        assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().userEmail, "hola@ksr.com")
+        assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
+        assertEquals(uiState.last().isIncrementalPledge, true)
+    }
+
+    @Test
     fun `test user hits pledges button with rw + addOns + bonus support with shipping`() = runTest {
         // - The test reward with shipping
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
@@ -256,6 +375,191 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         // - PledgeData
         assertEquals(checkoutState.last().second, pledgeData)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun `test ui state when pledge amount does not meet PLOT minimum`() = runTest {
+        // - The test reward with shipping
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+            .pledgeAmount(10.0)
+            .shippingRules(shippingRules = shippingRules)
+            .build()
+
+        val addOns1 = RewardFactory.rewardWithShipping()
+            .toBuilder()
+            .pledgeAmount(10.0)
+            .isAddOn(true)
+            .build()
+
+        // - AddOns shipping same as the reward
+        val addOnsList = listOf(addOns1)
+
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward))
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+            addOnsList,
+            ShippingRuleFactory.usShippingRule(),
+            bonusAmount = 3.0
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        // - Network mocks
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun buildPaymentPlan(buildPaymentPlanData: BuildPaymentPlanData): Observable<PaymentPlan> {
+                    return Observable.just(
+                        PaymentPlanFactory
+                            .ineligibleAllowedPaymentPlan()
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val uiState = mutableListOf<CheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+
+        // default incremental value should be false
+        assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
+        assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
+        assertEquals(uiState.last().bonusAmount, 3.0)
+        assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
+        assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
+        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().plotEligible, false)
+        assertEquals(uiState.last().showPlotWidget, true)
+    }
+
+    @Test
+    fun `test ui state when pledge amount meets PLOT minimum`() = runTest {
+        // - The test reward with shipping
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+            .pledgeAmount(10.0)
+            .shippingRules(shippingRules = shippingRules)
+            .build()
+
+        val addOns1 = RewardFactory.rewardWithShipping()
+            .toBuilder()
+            .pledgeAmount(10.0)
+            .isAddOn(true)
+            .build()
+
+        // - AddOns shipping same as the reward
+        val addOnsList = listOf(addOns1)
+
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward))
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+            addOnsList,
+            ShippingRuleFactory.usShippingRule(),
+            bonusAmount = 3.0
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        val paymentPlan = PaymentPlanFactory
+            .eligibleAllowedPaymentPlan(
+                listOf(
+                    PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00"),
+                    PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00")
+                )
+            )
+        // - Network mocks
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun buildPaymentPlan(buildPaymentPlanData: BuildPaymentPlanData): Observable<PaymentPlan> {
+                    return Observable.just(
+                        paymentPlan
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val uiState = mutableListOf<CheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+
+        // default incremental value should be false
+        assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
+        assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
+        assertEquals(uiState.last().bonusAmount, 3.0)
+        assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
+        assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
+        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().plotEligible, true)
+        assertEquals(uiState.last().showPlotWidget, true)
+        assertEquals(uiState.last().paymentIncrements, paymentPlan.paymentIncrements)
     }
 
     @Test

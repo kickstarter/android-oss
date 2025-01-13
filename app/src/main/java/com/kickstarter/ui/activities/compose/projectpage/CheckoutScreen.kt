@@ -402,7 +402,9 @@ fun CheckoutScreen(
                         changeCollectionPlan = onCollectionPlanSelected,
                         paymentIncrements = paymentIncrements,
                         ksCurrency = ksCurrency,
-                        projectCurrentCurrency = project.currentCurrency()
+                        projectCurrency = project.currency(),
+                        projectCurrentCurrency = project.currentCurrency(),
+                        termsOfUseCallback = onDisclaimerItemClicked
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                     Text(

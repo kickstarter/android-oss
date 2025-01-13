@@ -36,6 +36,8 @@ import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.ui.activities.DisclaimerItems
+import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -50,6 +52,8 @@ enum class CollectionPlanTestTags {
     EXPANDED_DESCRIPTION_TEXT,
     TERMS_OF_USE_TEXT,
     CHARGE_ITEM,
+    RADIO_BUTTON,
+    CHARGE_SCHEDULE
 }
 
 enum class CollectionOptions {
@@ -93,9 +97,9 @@ fun PreviewPledgeOverTimeSelected() {
             initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
             paymentIncrements = listOf(
                 PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(2), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(4), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(6), "150"),
             )
         )
     }
@@ -121,9 +125,12 @@ fun CollectionPlan(
     paymentIncrements: List<PaymentIncrement>? = null,
     plotMinimum: String? = null,
     ksCurrency: KSCurrency? = null,
-    projectCurrentCurrency: String? = null
+    projectCurrency: String? = null,
+    projectCurrentCurrency: String? = null,
+    termsOfUseCallback: (DisclaimerItems) -> Unit = {}
 ) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
+    changeCollectionPlan.invoke(selectedOption)
 
     val onOptionSelected: (CollectionOptions) -> Unit = {
         selectedOption = it
@@ -152,7 +159,9 @@ fun CollectionPlan(
             paymentIncrements = paymentIncrements,
             plotMinimum = plotMinimum,
             ksCurrency = ksCurrency,
+            projectCurrency = projectCurrency,
             projectCurrentCurrency = projectCurrentCurrency,
+            termsOfUseCallback = termsOfUseCallback,
         )
     }
 }
@@ -170,7 +179,9 @@ fun PledgeOption(
     plotMinimum: String? = null,
     paymentIncrements: List<PaymentIncrement>? = null,
     ksCurrency: KSCurrency? = null,
+    projectCurrency: String? = null,
     projectCurrentCurrency: String? = null,
+    termsOfUseCallback: (DisclaimerItems) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -192,8 +203,9 @@ fun PledgeOption(
             modifier = Modifier.padding(start = dimensions.paddingSmall)
         ) {
             Column {
+                var radioButtonModifier = if (!isSelectable) Modifier.padding(end = dimensions.paddingMediumSmall) else Modifier
                 RadioButton(
-                    modifier = if (!isSelectable) Modifier.padding(end = dimensions.paddingMediumSmall) else Modifier,
+                    modifier = radioButtonModifier.testTag(CollectionPlanTestTags.RADIO_BUTTON.name),
                     selected = selected,
                     onClick = onSelect.takeIf { isSelectable },
                     colors = RadioButtonDefaults.colors(
@@ -233,14 +245,13 @@ fun PledgeOption(
                         color = colors.textSecondary
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-                    Text(
+                    KSClickableText(
                         modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name),
-                        text = stringResource(id = R.string.See_our_terms_of_use),
-                        style = typography.caption2,
-                        color = colors.textAccentGreen
+                        resourceId = R.string.See_our_terms_of_use,
+                        clickCallback = { termsOfUseCallback.invoke(DisclaimerItems.TERMS) }
                     )
                     if (!paymentIncrements.isNullOrEmpty()) {
-                        ChargeSchedule(paymentIncrements, ksCurrency, projectCurrentCurrency)
+                        ChargeSchedule(paymentIncrements, ksCurrency, projectCurrency, projectCurrentCurrency)
                     }
                 }
             }
@@ -273,18 +284,19 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
 }
 
 @Composable
-fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurrency?, projectCurrentCurrency: String? = null) {
+fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurrency?, projectCurrency: String? = null, projectCurrentCurrency: String? = null) {
     var count = 0
     Column(
         modifier = Modifier
+            .testTag(CollectionPlanTestTags.CHARGE_SCHEDULE.name)
             .fillMaxWidth()
             .padding(top = 12.dp)
     ) {
         paymentIncrements.forEach { paymentIncrement ->
             ksCurrency?.let {
                 count++
-                val chargeString = stringResource(R.string.Charge_number).format(key1 = "number", value1 = count.toString())
                 val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount.currencyCode().toString(), projectCurrentCurrency = projectCurrentCurrency).toString()
+                val chargeString = stringResource(R.string.Charge_number).format(key1 = "number", value1 = count.toString())
                 ChargeItem(title = chargeString, date = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection), amount = formattedAmount)
             }
         }
@@ -301,7 +313,8 @@ fun ChargeItem(title: String, date: String, amount: String) {
         Column(modifier = Modifier.padding(bottom = dimensions.paddingMediumLarge)) {
             Text(
                 modifier = Modifier.testTag(CollectionPlanTestTags.CHARGE_ITEM.name),
-                text = title, style = typography.body2Medium,
+                text = title,
+                style = typography.body2Medium,
                 color = colors.textPrimary
             )
 

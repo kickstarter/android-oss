@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +12,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
+import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
 import com.kickstarter.ui.activities.compose.projectpage.getRewardListAndPrices
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.extensions.showErrorToast
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.ui.fragments.PledgeFragment.PledgeDelegate
 import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
@@ -157,8 +163,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                             newPaymentMethodClicked = {
                                 viewModel.getSetupIntent()
                             },
-                            onDisclaimerItemClicked = {},
-                            onAccountabilityLinkClicked = {},
+                            onDisclaimerItemClicked = { disclaimerItem ->
+                                openDisclaimerScreen(disclaimerItem, environment)
+                            },
+                            onAccountabilityLinkClicked = {
+                                showAccountabilityPage(environment)
+                            },
                             onChangedPaymentMethod = { paymentMethodSelected ->
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             },
@@ -206,6 +216,50 @@ class CrowdfundCheckoutFragment : Fragment() {
             }
         }
         this.viewModel.paymentSheetPresented(success)
+    }
+
+    private fun openDisclaimerScreen(disclaimerItem: DisclaimerItems, environment: Environment?) {
+        activity?.let { activity ->
+            environment?.let {
+                activity.startDisclaimerChromeTab(disclaimerItem, environment)
+            } ?: binding?.composeView?.let { view ->
+                context?.let {
+                    activity.runOnUiThread {
+                        showErrorToast(
+                            it,
+                            view,
+                            getString(R.string.general_error_something_wrong)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showAccountabilityPage(environment: Environment?) {
+        activity?.let { activity ->
+            context?.let { context ->
+                environment?.let { env ->
+                    env.webEndpoint().let { endpoint ->
+                        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+                        ChromeTabsHelperActivity.openCustomTab(
+                            activity,
+                            UrlUtils.baseCustomTabsIntent(context),
+                            Uri.parse(trustUrl),
+                            null
+                        )
+                    }
+                } ?: binding?.composeView?.let { view ->
+                    activity.runOnUiThread {
+                        showErrorToast(
+                            context,
+                            view,
+                            getString(R.string.general_error_something_wrong)
+                        )
+                    }
+                }
+            }
+        }
     }
 
     // TODO: explore this piece to be more generic/reusable between crowdfund/late pledges/pledge redemption,

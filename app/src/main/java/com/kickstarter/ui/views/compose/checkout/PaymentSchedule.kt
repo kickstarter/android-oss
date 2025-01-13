@@ -29,6 +29,8 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Amount
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.ui.activities.DisclaimerItems
+import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -129,6 +131,7 @@ fun PaymentSchedule(
     isExpanded: Boolean = false,
     onExpandChange: (Boolean) -> Unit = {},
     paymentIncrements: List<PaymentIncrement> = listOf(),
+    onDisclaimerClicked: (DisclaimerItems) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -158,11 +161,17 @@ fun PaymentSchedule(
                 tint = colors.textSecondary,
             )
         }
-
-        if (isExpanded) {
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-            paymentIncrements.forEach { paymentIncrement ->
-                PaymentRow(paymentIncrement)
+            if (isExpanded) {
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                paymentIncrements.forEach { paymentIncrement ->
+                    PaymentRow(paymentIncrement)
+                }
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                KSClickableText(
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
+                    resourceId = R.string.fpo_terms_of_use,
+                    clickCallback = { onDisclaimerClicked.invoke(DisclaimerItems.TERMS) }
+                )
             }
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
             Text(

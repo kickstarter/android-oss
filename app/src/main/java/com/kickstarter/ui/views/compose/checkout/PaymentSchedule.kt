@@ -173,13 +173,6 @@ fun PaymentSchedule(
                     clickCallback = { onDisclaimerClicked.invoke(DisclaimerItems.TERMS) }
                 )
             }
-            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-            Text(
-                modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
-                text = stringResource(id = R.string.fpo_terms_of_use),
-                style = typography.subheadline,
-                color = colors.textAccentGreen
-            )
         }
     }
 

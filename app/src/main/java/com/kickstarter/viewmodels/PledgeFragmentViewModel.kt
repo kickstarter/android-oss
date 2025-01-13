@@ -1285,7 +1285,7 @@ interface PledgeFragmentViewModel {
                 extendedListForCheckOut,
                 cookieRefTag
             ) { proj, amount, paymentMethod, locationId, rewards, cookieRefTag ->
-                paymentMethod.getBackingData(proj, amount, locationId, rewards, cookieRefTag, false)
+                paymentMethod.getBackingData(proj, amount, locationId, rewards, cookieRefTag)
             }
                 .compose<CreateBackingData>(takeWhenV2(pledgeButtonClicked))
                 .switchMap {

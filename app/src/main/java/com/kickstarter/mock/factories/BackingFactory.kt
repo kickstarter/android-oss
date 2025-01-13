@@ -49,6 +49,7 @@ object BackingFactory {
             .sequence(1)
             .shippingAmount(0.0f)
             .status(Backing.STATUS_PLEDGED)
+            .paymentIncrements(PaymentIncrementFactory.samplePaymentIncrements())
             .build()
     }
 
@@ -72,6 +73,7 @@ object BackingFactory {
             .sequence(1)
             .shippingAmount(0.0f)
             .status(Backing.STATUS_PLEDGED)
+            .paymentIncrements(null)
             .build()
     }
 

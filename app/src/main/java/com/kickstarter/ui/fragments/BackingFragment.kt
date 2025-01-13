@@ -244,15 +244,19 @@ class BackingFragment : Fragment() {
 
             binding?.paymentScheduleComposeView?.setContent {
                 KSTheme {
-                    val paymentIncrements by viewModel.outputs.paymentIncrements()
-                        .subscribeAsState(initial = emptyList())
-                    val isExpanded = remember { mutableStateOf(false) }
+                    val pledgeIsPlot by viewModel.outputs.pledgeIsPlot()
+                        .subscribeAsState(initial = false)
+                    if (pledgeIsPlot) {
+                        val paymentIncrements by viewModel.outputs.paymentIncrements()
+                            .subscribeAsState(initial = emptyList())
+                        val isExpanded = remember { mutableStateOf(false) }
 
-                    PaymentSchedule(
-                        isExpanded = isExpanded.value,
-                        onExpandChange = { isExpanded.value = it },
-                        paymentIncrements = paymentIncrements
-                    )
+                        PaymentSchedule(
+                            isExpanded = isExpanded.value,
+                            onExpandChange = { isExpanded.value = it },
+                            paymentIncrements = paymentIncrements
+                        )
+                    }
                 }
             }
         }
@@ -410,8 +414,8 @@ class BackingFragment : Fragment() {
                     this.viewModel.ksString?.let { ksString ->
                         ksString.format(
                             getString(it),
-                            "amount", pledgeStatusData.plotAmount,
-                            "date", pledgeStatusData.plotFirstScheduleCollection
+                            "amount", pledgeStatusData.plotData?.plotAmount,
+                            "date", pledgeStatusData.plotData?.plotFirstScheduleCollection
                         )
                     }
                 }

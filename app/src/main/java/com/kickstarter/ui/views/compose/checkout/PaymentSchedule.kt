@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
-import com.kickstarter.models.Amount
+import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSClickableText
@@ -35,7 +35,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import org.joda.time.DateTime
 import java.util.Locale
 
 enum class PaymentScheduleTestTags {
@@ -46,41 +45,6 @@ enum class PaymentScheduleTestTags {
     BADGE_TEXT,
     TERMS_OF_USE_TEXT
 }
-
-val samplePaymentIncrements = listOf(
-    PaymentIncrement(
-        amount = Amount.builder().amount("34.00").build(),
-        state = PaymentIncrement.State.UNATTEMPTED,
-        paymentIncrementableId = "1",
-        paymentIncrementableType = "pledge",
-        scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-        stateReason = ""
-    ),
-    PaymentIncrement(
-        amount = Amount.builder().amount("25.00").build(),
-        state = PaymentIncrement.State.COLLECTED,
-        paymentIncrementableId = "2",
-        paymentIncrementableType = "pledge",
-        scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-        stateReason = ""
-    ),
-    PaymentIncrement(
-        amount = Amount.builder().amount("45.00").build(),
-        state = PaymentIncrement.State.UNATTEMPTED,
-        paymentIncrementableId = "3",
-        paymentIncrementableType = "pledge",
-        scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-        stateReason = ""
-    ),
-    PaymentIncrement(
-        amount = Amount.builder().amount("52.00").build(),
-        state = PaymentIncrement.State.COLLECTED,
-        paymentIncrementableId = "4",
-        paymentIncrementableType = "pledge",
-        scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-        stateReason = ""
-    )
-)
 
 @Preview(
     name = "Dark Collapsed State", uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -107,7 +71,7 @@ fun PreviewExpandedPaymentSchedule() {
         PaymentSchedule(
             isExpanded = true,
             onExpandChange = {},
-            paymentIncrements = samplePaymentIncrements
+            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements()
         )
     }
 }
@@ -120,8 +84,7 @@ fun InteractivePaymentSchedulePreview() {
         PaymentSchedule(
             isExpanded = isExpanded,
             onExpandChange = { isExpanded = it },
-            paymentIncrements = samplePaymentIncrements
-
+            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements()
         )
     }
 }

@@ -36,6 +36,7 @@ import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CreditCardTypes
 import com.kickstarter.ui.data.PledgeStatusData
+import com.kickstarter.ui.data.PlotData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
@@ -162,6 +163,9 @@ interface BackingFragmentViewModel {
 
         /** Emits the payment increments **/
         fun paymentIncrements(): Observable<List<PaymentIncrement>>
+
+        /** Emits whether the pledge is a PLOT pledge. */
+        fun pledgeIsPlot(): Observable<Boolean>
     }
 
     class BackingFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -204,6 +208,7 @@ interface BackingFragmentViewModel {
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
         private val paymentIncrements = BehaviorSubject.create<List<PaymentIncrement>>()
+        private val pledgeIsPlot = BehaviorSubject.create<Boolean>()
         private val apiClient = requireNotNull(this.environment.apiClientV2())
         private val apolloClient = requireNotNull(this.environment.apolloClientV2())
         private val ksCurrency = requireNotNull(this.environment.ksCurrency())
@@ -258,6 +263,12 @@ interface BackingFragmentViewModel {
                 .map { it.paymentIncrements ?: emptyList() }
                 .distinctUntilChanged()
                 .subscribe { this.paymentIncrements.onNext(it) }
+                .addToDisposable(disposables)
+
+            backing
+                .map { !it.paymentIncrements.isNullOrEmpty() } // Check if payment increments exist so it means that the pledge was PLOT selected or not
+                .distinctUntilChanged()
+                .subscribe { this.pledgeIsPlot.onNext(it) }
                 .addToDisposable(disposables)
 
             backing
@@ -604,27 +615,31 @@ interface BackingFragmentViewModel {
                     }
                 }
             }
-
+            val isPlot = !backing.paymentIncrements().isNullOrEmpty()
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
             val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
-            val plotAmountString = RewardViewUtils.styleCurrency(
-                value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(),
-                ksCurrency = this.ksCurrency,
-                projectCurrency = backing.paymentIncrements()
-                    ?.first()?.amount?.currencyCode.toString(),
-                projectCurrentCurrency = project.currentCurrency()
-            ).toString()
-            // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
-            // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
-            val plotFirstScheduleCollection = backing.paymentIncrements()
-                ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) }
+            val plotData = if (isPlot) {
+                val plotAmountString = RewardViewUtils.styleCurrency(
+                    value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(),
+                    ksCurrency = this.ksCurrency,
+                    projectCurrency = backing.paymentIncrements()?.first()?.amount?.currencyCode.toString(),
+                    projectCurrentCurrency = project.currentCurrency()
+                ).toString()
+                // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
+                // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
+                val plotFirstScheduleCollection = backing.paymentIncrements()
+                    ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) }
+                PlotData(plotAmount = plotAmountString, plotFirstScheduleCollection = plotFirstScheduleCollection)
+            } else {
+                null
+            }
+
             return PledgeStatusData(
                 statusStringRes,
                 pledgeTotalString,
                 projectDeadline,
-                plotAmountString,
-                plotFirstScheduleCollection
+                plotData
             )
         }
 
@@ -725,6 +740,8 @@ interface BackingFragmentViewModel {
 
         override fun paymentIncrements(): Observable<List<PaymentIncrement>> =
             this.paymentIncrements
+
+        override fun pledgeIsPlot(): Observable<Boolean> = this.pledgeIsPlot
 
         override fun onCleared() {
             apolloClient.cleanDisposables()

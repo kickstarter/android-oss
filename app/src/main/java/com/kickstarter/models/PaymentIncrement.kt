@@ -79,8 +79,8 @@ data class PaymentIncrement(
 
         companion object {
             fun fromRawValue(value: String): State {
-                return values().find { it.rawValue == value }
-                    ?: throw IllegalArgumentException("Unknown raw value: $value")
+                // Return the matched state or UNKNOWN for unrecognized values
+                return values().find { it.rawValue == value } ?: UNKNOWN
             }
         }
     }

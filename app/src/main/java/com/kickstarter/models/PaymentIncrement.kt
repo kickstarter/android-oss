@@ -72,9 +72,16 @@ data class PaymentIncrement(
         fun builder() = Builder()
     }
 
-    enum class State {
-        COLLECTED,
-        UNATTEMPTED,
-        UNKNOWN,
+    enum class State(val rawValue: String) {
+        COLLECTED("collected"),
+        UNATTEMPTED("unattempted"),
+        UNKNOWN("unknown");
+
+        companion object {
+            fun fromRawValue(value: String): State {
+                return values().find { it.rawValue == value }
+                    ?: throw IllegalArgumentException("Unknown raw value: $value")
+            }
+        }
     }
 }

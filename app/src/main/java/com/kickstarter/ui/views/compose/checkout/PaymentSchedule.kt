@@ -131,12 +131,6 @@ fun PaymentSchedule(
     onExpandChange: (Boolean) -> Unit = {},
     paymentIncrements: List<PaymentIncrement> = listOf(),
 ) {
-    Card(
-        elevation = 0.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimensions.paddingMedium)
-    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -181,7 +175,7 @@ fun PaymentSchedule(
             }
         }
     }
-}
+
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement) {

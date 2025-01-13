@@ -182,45 +182,14 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowLatePledgeFlow_ProjectEnabled_WhenFFOff() {
-        val project = ProjectFactory.project().toBuilder()
-            .isInPostCampaignPledgingPhase(true)
-            .postCampaignPledgingEnabled(true)
-            .build()
-
-        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return false
-            }
-        }
-
-        val environment = environment()
-            .toBuilder()
-            .featureFlagClient(mockFeatureFlagClient)
-            .build()
-
-        setUpEnvironment(environment)
-
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
-        this.postCampaignPledgingEnabled.assertValue(false)
-    }
-
-    @Test
-    fun testShowLatePledgeFlow_ProjectDisabled_WhenFFOn() {
+    fun testShowLatePledgeFlow_ProjectDisabled() {
         val project = ProjectFactory.project().toBuilder()
             .isInPostCampaignPledgingPhase(false)
             .postCampaignPledgingEnabled(true)
             .build()
 
-        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return true
-            }
-        }
-
         val environment = environment()
             .toBuilder()
-            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(environment)
@@ -230,21 +199,14 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowLatePledgeFlow_ProjectEnabled_WhenFFOn() {
+    fun testShowLatePledgeFlow_ProjectEnabled() {
         val project = ProjectFactory.project().toBuilder()
             .isInPostCampaignPledgingPhase(true)
             .postCampaignPledgingEnabled(true)
             .build()
 
-        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return true
-            }
-        }
-
         val environment = environment()
             .toBuilder()
-            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(environment)

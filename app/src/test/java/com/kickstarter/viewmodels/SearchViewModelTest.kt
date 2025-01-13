@@ -320,17 +320,10 @@ class SearchViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
             }
         }
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
-                }
-            }
 
         val env = environment().toBuilder()
             .schedulerV2(scheduler)
             .apiClientV2(apiClient)
-            .featureFlagClient(mockFeatureFlagClient)
             .build()
         setUpEnvironment(env)
 
@@ -344,42 +337,6 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         goToProject.assertValueCount(0)
         startPreLaunchProjectActivity.assertValueCount(1)
         // assertEquals(startPreLaunchProjectActivity.onNextEvents[0].first, projects[2]) TODO: check this out to migrate this assert
-    }
-
-    @Test
-    fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabledAndFeatureFlagDisabled_shouldEmitPelaunchProjectPageActivity() {
-        val scheduler = TestScheduler()
-        val projects = listOf(
-            allTheWayProject(),
-            almostCompletedProject(),
-            ProjectFactory.prelaunchProject(""),
-        )
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return false
-                }
-            }
-        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
-            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
-                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
-            }
-        }
-        val env = environment().toBuilder()
-            .schedulerV2(scheduler)
-            .featureFlagClient(mockFeatureFlagClient)
-            .apiClientV2(apiClient)
-            .build()
-        setUpEnvironment(env)
-
-        // populate search and overcome debounce
-        vm.inputs.search("")
-        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
-
-        vm.inputs.projectClicked(projects[2])
-
-        goToProject.assertValues(projects[2])
-        startPreLaunchProjectActivity.assertValueCount(0)
     }
 
     @Test

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -131,55 +130,55 @@ fun PaymentSchedule(
     onExpandChange: (Boolean) -> Unit = {},
     paymentIncrements: List<PaymentIncrement> = listOf(),
 ) {
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensions.paddingMedium)
+    ) {
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimensions.paddingMedium)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
+            Text(
+                modifier = Modifier.testTag(PaymentScheduleTestTags.PAYMENT_SCHEDULE_TITLE.name),
+                text = stringResource(id = R.string.fpo_payment_schedule),
+                style = typography.body2Medium,
+            )
+            Icon(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.PAYMENT_SCHEDULE_TITLE.name),
-                    text = stringResource(id = R.string.fpo_payment_schedule),
-                    style = typography.body2Medium,
-                )
-                Icon(
-                    modifier = Modifier
-                        .testTag(PaymentScheduleTestTags.EXPAND_ICON.name)
-                        .clickable { onExpandChange(!isExpanded) },
-                    painter =
-                    if (isExpanded) painterResource(id = R.drawable.ic_arrow_up) else painterResource(
-                        id = R.drawable.ic_arrow_down
-                    ),
-                    contentDescription = "Expand",
-                    tint = colors.textSecondary,
-                )
-            }
+                    .testTag(PaymentScheduleTestTags.EXPAND_ICON.name)
+                    .clickable { onExpandChange(!isExpanded) },
+                painter =
+                if (isExpanded) painterResource(id = R.drawable.ic_arrow_up) else painterResource(
+                    id = R.drawable.ic_arrow_down
+                ),
+                contentDescription = "Expand",
+                tint = colors.textSecondary,
+            )
+        }
 
-            if (isExpanded) {
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-                paymentIncrements.forEach { paymentIncrement ->
-                    PaymentRow(paymentIncrement)
-                }
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_terms_of_use),
-                    style = typography.subheadline,
-                    color = colors.textAccentGreen
-                )
+        if (isExpanded) {
+            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+            paymentIncrements.forEach { paymentIncrement ->
+                PaymentRow(paymentIncrement)
             }
+            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+            Text(
+                modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
+                text = stringResource(id = R.string.fpo_terms_of_use),
+                style = typography.subheadline,
+                color = colors.textAccentGreen
+            )
         }
     }
-
+}
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement) {
-    val formattedAmount = String.format(Locale.US, "%.2f", paymentIncrement.amount.amount.parseToDouble())
+    val formattedAmount =
+        String.format(Locale.US, "%.2f", paymentIncrement.amount.amount.parseToDouble())
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -243,6 +242,7 @@ fun StatusBadge(state: PaymentIncrement.State) {
                 )
             }
         }
+
         PaymentIncrement.State.UNKNOWN -> {}
     }
 }

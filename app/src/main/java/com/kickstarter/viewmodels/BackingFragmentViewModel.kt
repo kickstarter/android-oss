@@ -45,7 +45,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -163,7 +162,6 @@ interface BackingFragmentViewModel {
 
         /** Emits the payment increments **/
         fun paymentIncrements(): Observable<List<PaymentIncrement>>
-
     }
 
     class BackingFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -508,8 +506,6 @@ interface BackingFragmentViewModel {
             isCreator
                 .subscribe { this.deliveryDisclaimerSectionIsGone.onNext(it) }
                 .addToDisposable(disposables)
-
-
         }
 
         private fun shouldHideShipping(it: Backing) =
@@ -539,7 +535,14 @@ interface BackingFragmentViewModel {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
-                CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type() ?: "")))
+                CreditCardPaymentType.CREDIT_CARD -> Either.Left(
+                    StoredCard.issuer(
+                        CreditCardTypes.safeValueOf(
+                            paymentSource.type() ?: ""
+                        )
+                    )
+                )
+
                 else -> Either.Left(CardBrand.Unknown.code)
             }
         }
@@ -573,7 +576,8 @@ interface BackingFragmentViewModel {
                         Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
                         Backing.STATUS_PLEDGED -> {
                             if (environment.featureFlagClient()
-                                    ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements().isNullOrEmpty()
+                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements()
+                                    .isNullOrEmpty()
                             ) {
                                 R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of
                             } else {
@@ -604,13 +608,25 @@ interface BackingFragmentViewModel {
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
             val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
-            val plotAmountString = RewardViewUtils.styleCurrency(value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), ksCurrency = this.ksCurrency , projectCurrency = backing.paymentIncrements()?.first()?.amount?.currencyCode.toString(), projectCurrentCurrency = project.currentCurrency()).toString()
-            //TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
-            //val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
-            val plotFirstScheduleCollection = backing.paymentIncrements()?.first()?.scheduledCollection?.let {DateTimeUtils.longDate(it)}
-            return PledgeStatusData(statusStringRes, pledgeTotalString, projectDeadline, plotAmountString, plotFirstScheduleCollection)
+            val plotAmountString = RewardViewUtils.styleCurrency(
+                value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(),
+                ksCurrency = this.ksCurrency,
+                projectCurrency = backing.paymentIncrements()
+                    ?.first()?.amount?.currencyCode.toString(),
+                projectCurrentCurrency = project.currentCurrency()
+            ).toString()
+            // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
+            // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
+            val plotFirstScheduleCollection = backing.paymentIncrements()
+                ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) }
+            return PledgeStatusData(
+                statusStringRes,
+                pledgeTotalString,
+                projectDeadline,
+                plotAmountString,
+                plotFirstScheduleCollection
+            )
         }
-
 
         override fun configureWith(projectData: ProjectData) {
             this.projectDataInput.onNext(projectData)
@@ -707,8 +723,8 @@ interface BackingFragmentViewModel {
         override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> =
             this.deliveryDisclaimerSectionIsGone
 
-        override fun paymentIncrements(): Observable<List<PaymentIncrement>> = this.paymentIncrements
-
+        override fun paymentIncrements(): Observable<List<PaymentIncrement>> =
+            this.paymentIncrements
 
         override fun onCleared() {
             apolloClient.cleanDisposables()

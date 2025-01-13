@@ -775,11 +775,11 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
     val isPostCampaign = backingGr?.isPostCampaign ?: false
     val incremental = backingGr?.incremental ?: false
     val paymentIncrements = backingGr?.paymentIncrements?.map {
-     val amount = Amount.builder()
-         .amount(it.paymentIncrement.amount.amount.amount)
-         .currencyCode(it.paymentIncrement.amount.amount.currency)
-         .currencySymbol(it.paymentIncrement.amount.amount.symbol)
-         .build()
+        val amount = Amount.builder()
+            .amount(it.paymentIncrement.amount.amount.amount)
+            .currencyCode(it.paymentIncrement.amount.amount.currency)
+            .currencySymbol(it.paymentIncrement.amount.amount.symbol)
+            .build()
         val scheduleCollection = it.paymentIncrement.scheduledCollection
         PaymentIncrement.builder()
             .amount(amount)
@@ -929,11 +929,19 @@ fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThir
         userId = if (eventInput.isNull()) Optional.absent() else Optional.present(eventInput.userId),
         eventName = eventInput.eventName,
         deviceId = eventInput.deviceId,
-        firebaseScreen = if (eventInput.firebaseScreen.isNull()) Optional.absent() else Optional.present(eventInput.firebaseScreen),
-        firebasePreviousScreen = if (eventInput.firebasePreviousScreen.isNull()) Optional.absent() else Optional.present(eventInput.firebasePreviousScreen),
+        firebaseScreen = if (eventInput.firebaseScreen.isNull()) Optional.absent() else Optional.present(
+            eventInput.firebaseScreen
+        ),
+        firebasePreviousScreen = if (eventInput.firebasePreviousScreen.isNull()) Optional.absent() else Optional.present(
+            eventInput.firebasePreviousScreen
+        ),
         projectId = eventInput.projectId,
-        pledgeAmount = if (eventInput.pledgeAmount.isNull()) Optional.absent() else Optional.present(eventInput.pledgeAmount),
-        shipping = if (eventInput.shipping.isNull()) Optional.absent() else Optional.present(eventInput.shipping),
+        pledgeAmount = if (eventInput.pledgeAmount.isNull()) Optional.absent() else Optional.present(
+            eventInput.pledgeAmount
+        ),
+        shipping = if (eventInput.shipping.isNull()) Optional.absent() else Optional.present(
+            eventInput.shipping
+        ),
         appData = if (graphAppData.isNull()) Optional.absent() else Optional.present(graphAppData),
         items = if (items.isNull()) Optional.absent() else Optional.present(items),
         transactionId = if (eventInput.isNull()) Optional.absent() else Optional.present(eventInput.transactionId)
@@ -944,7 +952,10 @@ fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThir
  * From KS dataModel CreateAttributionEventData, transform it into
  * GraphQL defined mutation CreateAttributionEventMutation
  */
-fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gson: Gson): CreateAttributionEventMutation {
+fun getCreateAttributionEventMutation(
+    eventInput: CreateAttributionEventData,
+    gson: Gson
+): CreateAttributionEventMutation {
 
     // Use gson to convert map -> JSON type to match mutation
     val eventPropertiesJson = gson.toJson(eventInput.eventProperties)
@@ -952,7 +963,9 @@ fun getCreateAttributionEventMutation(eventInput: CreateAttributionEventData, gs
     val input = CreateAttributionEventInput(
         eventName = eventInput.eventName,
         eventProperties = if (eventPropertiesJson.isPresent()) Optional.present(eventPropertiesJson) else Optional.absent(),
-        projectId = if (eventInput.projectId.isNullOrBlank()) Optional.absent() else Optional.present(eventInput.projectId)
+        projectId = if (eventInput.projectId.isNullOrBlank()) Optional.absent() else Optional.present(
+            eventInput.projectId
+        )
     )
     return CreateAttributionEventMutation(input = input)
 }

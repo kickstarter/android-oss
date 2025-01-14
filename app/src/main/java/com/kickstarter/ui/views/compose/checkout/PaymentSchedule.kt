@@ -28,7 +28,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement

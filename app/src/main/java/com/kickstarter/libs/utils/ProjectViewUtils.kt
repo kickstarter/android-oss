@@ -149,7 +149,6 @@ object ProjectViewUtils {
         return styledCurrency.trim()
     }
 
-
     /**
      * Returns a CharSequence representing a value in a project's currency based on a user's locale.
      * The precision is shrunken and centered if the number is not whole.

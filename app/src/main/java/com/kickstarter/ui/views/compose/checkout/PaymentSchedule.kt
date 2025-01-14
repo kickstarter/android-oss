@@ -25,7 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
@@ -35,7 +37,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import java.util.Locale
 
 enum class PaymentScheduleTestTags {
     PAYMENT_SCHEDULE_TITLE,
@@ -94,7 +95,9 @@ fun PaymentSchedule(
     isExpanded: Boolean = false,
     onExpandChange: (Boolean) -> Unit = {},
     paymentIncrements: List<PaymentIncrement> = listOf(),
-    onDisclaimerClicked: (DisclaimerItems) -> Unit = {}
+    onDisclaimerClicked: (DisclaimerItems) -> Unit = {},
+    ksCurrency: KSCurrency? = null,
+    projectCurrentCurrency: String? = "",
 ) {
     Column(
         modifier = Modifier
@@ -127,7 +130,7 @@ fun PaymentSchedule(
         if (isExpanded) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
             paymentIncrements.forEach { paymentIncrement ->
-                PaymentRow(paymentIncrement)
+                PaymentRow(paymentIncrement, ksCurrency = ksCurrency, projectCurrentCurrency = projectCurrentCurrency)
             }
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
             KSClickableText(
@@ -140,9 +143,10 @@ fun PaymentSchedule(
 }
 
 @Composable
-fun PaymentRow(paymentIncrement: PaymentIncrement) {
-    val formattedAmount =
-        String.format(Locale.US, "%.2f", paymentIncrement.amount.amount.parseToDouble())
+fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, projectCurrentCurrency: String?) {
+    val formattedAmount = ksCurrency?.let {
+        ProjectViewUtils.styleCurrency(value = paymentIncrement.amount().amountAsFloat.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount().currencyCode, projectCurrentCurrency = projectCurrentCurrency)
+    }.toString()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -162,7 +166,7 @@ fun PaymentRow(paymentIncrement: PaymentIncrement) {
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            text = "USD$ $formattedAmount",
+            text = formattedAmount,
             style = typography.title3
         )
     }

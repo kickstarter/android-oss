@@ -60,7 +60,6 @@ import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
@@ -570,7 +569,7 @@ fun CheckoutScreen(
                 val plotDisclaimerText =
                     stringResource(R.string.If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline).format(
                         key1 = "amount",
-                        ksCurrency?.let { RewardViewUtils.styleCurrency(value = paymentIncrements?.first()?.amount?.amount.parseToDouble(), projectCurrency = paymentIncrements?.first()?.amount?.currencyCode().toString(), projectCurrentCurrency = project.currentCurrency(), ksCurrency = it).toString() },
+                        paymentIncrements?.first()?.paymentIncrementAmount?.formattedAmount,
                         key2 = "project_deadline",
                         paymentIncrements?.first()?.scheduledCollection?.let {
                             DateTimeUtils.mediumDate(

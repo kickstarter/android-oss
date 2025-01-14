@@ -207,7 +207,7 @@ query BuildPaymentPlan($slug: String!, $amount: String!) {
       amountIsPledgeOverTimeEligible
       paymentIncrements {
         amount {
-          ...amount
+          ...paymentIncrementAmount
         }
         scheduledCollection
       }

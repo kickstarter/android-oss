@@ -116,10 +116,10 @@ class CollectionPlanTest : KSRobolectricTestCase() {
                     initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
                     ksCurrency = KSCurrency(currentConfig),
                     paymentIncrements = listOf(
-                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
-                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
-                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
-                        PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "$50"),
+                        PaymentIncrementFactory.incrementUsdUncollected(dateTime = DateTime.now(), formattedAmount = "$50.00",),
+                        PaymentIncrementFactory.incrementUsdUncollected(dateTime = DateTime.now(), formattedAmount = "$50.00",),
+                        PaymentIncrementFactory.incrementUsdUncollected(dateTime = DateTime.now(), formattedAmount = "$50.00",),
+                        PaymentIncrementFactory.incrementUsdUncollected(dateTime = DateTime.now(), formattedAmount = "$50.00",),
                     )
                 )
             }

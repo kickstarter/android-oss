@@ -777,9 +777,9 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
     val paymentIncrements = backingGr?.paymentIncrements?.map {
         val paymentIncrementAmount = PaymentIncrementAmount.builder()
             .amountAsCents(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
-            .amountAsFloat(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
-            .formattedAmount(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
-            .formattedAmountWithCode(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
+            .amountAsFloat(it.paymentIncrement.amount.paymentIncrementAmount.amountAsFloat)
+            .formattedAmount(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+            .formattedAmountWithCode(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
             .currencyCode(it.paymentIncrement.amount.paymentIncrementAmount.currency)
             .build()
         val scheduleCollection = it.paymentIncrement.scheduledCollection

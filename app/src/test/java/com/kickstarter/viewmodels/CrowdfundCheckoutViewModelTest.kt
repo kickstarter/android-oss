@@ -58,7 +58,7 @@ import org.junit.Test
 import org.mockito.Mockito
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class  CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
+class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
     private lateinit var viewModel: CrowdfundCheckoutViewModel
 
     private fun setUpEnvironment(environment: Environment, bundle: Bundle? = null) {

@@ -183,7 +183,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
             collectUserInformation()
             sendPageViewedEvent()
-            if(project.isPledgeOverTimeAllowed().isTrue()) {
+            if (project.isPledgeOverTimeAllowed().isTrue()) {
                 buildPaymentPlan()
             }
         }

@@ -12,9 +12,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrement.State
+import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.joda.time.DateTime
 import org.junit.Before

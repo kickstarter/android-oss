@@ -26,7 +26,6 @@ import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
-import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -35,6 +34,7 @@ import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Photo

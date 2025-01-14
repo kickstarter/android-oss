@@ -31,9 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.format
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.activities.DisclaimerItems

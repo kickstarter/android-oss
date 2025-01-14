@@ -1,7 +1,7 @@
 package com.kickstarter.mock.factories
 
-import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.type.CurrencyCode
 import org.joda.time.DateTime
 

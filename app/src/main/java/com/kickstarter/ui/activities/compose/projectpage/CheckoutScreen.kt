@@ -60,7 +60,6 @@ import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory

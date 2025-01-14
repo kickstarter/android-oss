@@ -1,7 +1,6 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import com.kickstarter.type.CurrencyCode
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -45,9 +44,9 @@ data class PaymentIncrementAmount(
         var equals = super.equals(obj)
         if (obj is PaymentIncrementAmount) {
             equals = amountAsCents() == obj.amountAsCents() &&
-                    amountAsFloat() == obj.amountAsFloat() &&
-                    formattedAmount() == obj.formattedAmount() &&
-                    formattedAmountWithCode() == obj.formattedAmountWithCode() &&
+                amountAsFloat() == obj.amountAsFloat() &&
+                formattedAmount() == obj.formattedAmount() &&
+                formattedAmountWithCode() == obj.formattedAmountWithCode() &&
                 currencyCode() == obj.currencyCode()
         }
         return equals

@@ -15,15 +15,18 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -33,6 +36,7 @@ import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CreditCardTypes
 import com.kickstarter.ui.data.PledgeStatusData
+import com.kickstarter.ui.data.PlotData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
@@ -156,6 +160,12 @@ interface BackingFragmentViewModel {
 
         /** Emits a boolean determining if the delivery disclaimer section is visible **/
         fun deliveryDisclaimerSectionIsGone(): Observable<Boolean>
+
+        /** Emits the payment increments **/
+        fun paymentIncrements(): Observable<List<PaymentIncrement>>
+
+        /** Emits whether the pledge is a PLOT pledge. */
+        fun pledgeIsPlot(): Observable<Boolean>
     }
 
     class BackingFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -197,7 +207,8 @@ interface BackingFragmentViewModel {
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
-
+        private val paymentIncrements = BehaviorSubject.create<List<PaymentIncrement>>()
+        private val pledgeIsPlot = BehaviorSubject.create<Boolean>()
         private val apiClient = requireNotNull(this.environment.apiClientV2())
         private val apolloClient = requireNotNull(this.environment.apolloClientV2())
         private val ksCurrency = requireNotNull(this.environment.ksCurrency())
@@ -205,7 +216,6 @@ interface BackingFragmentViewModel {
         val ksString: KSString? = this.environment.ksString()
         private val currentUser = requireNotNull(this.environment.currentUserV2())
         private val disposables = CompositeDisposable()
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -248,6 +258,18 @@ interface BackingFragmentViewModel {
                 Pair(user, project)
             }
                 .map { it.second.userIsCreator(it.first.getValue()) }
+
+            backing
+                .map { it.paymentIncrements ?: emptyList() }
+                .distinctUntilChanged()
+                .subscribe { this.paymentIncrements.onNext(it) }
+                .addToDisposable(disposables)
+
+            backing
+                .map { !it.paymentIncrements.isNullOrEmpty() } // Check if payment increments exist so it means that the pledge was PLOT selected or not
+                .distinctUntilChanged()
+                .subscribe { this.pledgeIsPlot.onNext(it) }
+                .addToDisposable(disposables)
 
             backing
                 .filter { it.backerName().isNotNull() }
@@ -524,7 +546,14 @@ interface BackingFragmentViewModel {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
-                CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type() ?: "")))
+                CreditCardPaymentType.CREDIT_CARD -> Either.Left(
+                    StoredCard.issuer(
+                        CreditCardTypes.safeValueOf(
+                            paymentSource.type() ?: ""
+                        )
+                    )
+                )
+
                 else -> Either.Left(CardBrand.Unknown.code)
             }
         }
@@ -547,6 +576,7 @@ interface BackingFragmentViewModel {
             var statusStringRes: Int?
 
             if (!project.userIsCreator(user)) {
+
                 statusStringRes = when (project.state()) {
                     Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
                     Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged
@@ -556,9 +586,9 @@ interface BackingFragmentViewModel {
                         Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
                         Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
                         Backing.STATUS_PLEDGED -> {
-                            if (project.isPledgeOverTimeAllowed() == true &&
-                                environment.featureFlagClient()
-                                    ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true
+                            if (environment.featureFlagClient()
+                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements()
+                                    .isNullOrEmpty()
                             ) {
                                 R.string.You_have_selected_pledge_over_time
                             } else {
@@ -585,12 +615,32 @@ interface BackingFragmentViewModel {
                     }
                 }
             }
-
+            val isPlot = !backing.paymentIncrements().isNullOrEmpty()
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
             val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
+            val plotData = if (isPlot) {
+                val plotAmountString = RewardViewUtils.styleCurrency(
+                    value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(),
+                    ksCurrency = this.ksCurrency,
+                    projectCurrency = backing.paymentIncrements()?.first()?.amount?.currencyCode.toString(),
+                    projectCurrentCurrency = project.currentCurrency()
+                ).toString()
+                // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
+                // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
+                val plotFirstScheduleCollection = backing.paymentIncrements()
+                    ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) }
+                PlotData(plotAmount = plotAmountString, plotFirstScheduleCollection = plotFirstScheduleCollection)
+            } else {
+                null
+            }
 
-            return PledgeStatusData(statusStringRes, pledgeTotalString, projectDeadline)
+            return PledgeStatusData(
+                statusStringRes,
+                pledgeTotalString,
+                projectDeadline,
+                plotData
+            )
         }
 
         override fun configureWith(projectData: ProjectData) {
@@ -687,6 +737,11 @@ interface BackingFragmentViewModel {
 
         override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> =
             this.deliveryDisclaimerSectionIsGone
+
+        override fun paymentIncrements(): Observable<List<PaymentIncrement>> =
+            this.paymentIncrements
+
+        override fun pledgeIsPlot(): Observable<Boolean> = this.pledgeIsPlot
 
         override fun onCleared() {
             apolloClient.cleanDisposables()

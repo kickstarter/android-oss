@@ -570,7 +570,7 @@ fun CheckoutScreen(
                 val plotDisclaimerText =
                     stringResource(R.string.fpo_if_the_project_reaches_its_funding_goal_the_first_charge_of_first_charge_will_be_collected_on_date).format(
                         key1 = "amount",
-                        ksCurrency?.let { RewardViewUtils.styleCurrency(value = paymentIncrements?.first()?.amount?.amount.parseToDouble(), projectCurrency = project.currency(), projectCurrentCurrency = project.currentCurrency(), ksCurrency = it).toString() },
+                        paymentIncrements?.first()?.paymentIncrementAmount?.formattedAmountWithCode,
                         key2 = "project_deadline",
                         paymentIncrements?.first()?.scheduledCollection?.let {
                             DateTimeUtils.mediumDate(

@@ -293,9 +293,8 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
             .padding(top = 12.dp)
     ) {
         paymentIncrements.forEach { paymentIncrement ->
-            ksCurrency?.let {
+            paymentIncrement.paymentIncrementAmount.formattedAmount?.let { formattedAmount ->
                 count++
-                val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = projectCurrency, projectCurrentCurrency = projectCurrentCurrency).toString()
                 val chargeString = stringResource(R.string.fpo_charge_count).format(key1 = "number", value1 = count.toString())
                 ChargeItem(title = chargeString, date = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection), amount = formattedAmount)
             }

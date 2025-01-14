@@ -26,7 +26,7 @@ import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.AiDisclosure
-import com.kickstarter.models.Amount
+import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -775,14 +775,16 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
     val isPostCampaign = backingGr?.isPostCampaign ?: false
     val incremental = backingGr?.incremental ?: false
     val paymentIncrements = backingGr?.paymentIncrements?.map {
-        val amount = Amount.builder()
-            .amount(it.paymentIncrement.amount.amount.amount)
-            .currencyCode(it.paymentIncrement.amount.amount.currency)
-            .currencySymbol(it.paymentIncrement.amount.amount.symbol)
+        val paymentIncrementAmount = PaymentIncrementAmount.builder()
+            .amountAsCents(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
+            .amountAsFloat(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
+            .formattedAmount(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
+            .formattedAmountWithCode(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
+            .currencyCode(it.paymentIncrement.amount.paymentIncrementAmount.currency)
             .build()
         val scheduleCollection = it.paymentIncrement.scheduledCollection
         PaymentIncrement.builder()
-            .amount(amount)
+            .amount(paymentIncrementAmount)
             .scheduledCollection(scheduleCollection)
             .state(PaymentIncrement.State.fromRawValue(it.paymentIncrement.state))
             .build()
@@ -1035,16 +1037,18 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
     val paymentIncrements =
         buildPaymentPlanResponse.paymentIncrements?.map {
 
-            val amount = Amount.builder()
-                .amount(it.amount.amount.amount)
-                .currencyCode(it.amount.amount.currency)
-                .currencySymbol(it.amount.amount.symbol)
+            val paymentIncrementAmount = PaymentIncrementAmount.builder()
+                .amountAsFloat(it.amount.paymentIncrementAmount.amountAsFloat)
+                .amountAsCents(it.amount.paymentIncrementAmount.amountAsCents)
+                .formattedAmount(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                .formattedAmountWithCode(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+                .currencyCode(it.amount.paymentIncrementAmount.currency)
                 .build()
 
             val scheduledCollection = it.scheduledCollection
 
             PaymentIncrement.builder()
-                .amount(amount)
+                .amount(paymentIncrementAmount)
                 .scheduledCollection(scheduledCollection)
                 .build()
         }

@@ -620,12 +620,7 @@ interface BackingFragmentViewModel {
             val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
             val plotData = if (isPlot) {
-                val plotAmountString = RewardViewUtils.styleCurrency(
-                    value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(),
-                    ksCurrency = this.ksCurrency,
-                    projectCurrency = backing.paymentIncrements()?.first()?.amount?.currencyCode.toString(),
-                    projectCurrentCurrency = project.currentCurrency()
-                ).toString()
+                val plotAmountString = backing.paymentIncrements()?.first()?.paymentIncrementAmount?.formattedAmount
                 // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
                 // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
                 val plotFirstScheduleCollection = backing.paymentIncrements()

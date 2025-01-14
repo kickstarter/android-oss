@@ -12,7 +12,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.models.Amount
+import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrement.State
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -46,7 +46,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
     private val samplePaymentIncrements = listOf(
         PaymentIncrement(
-            amount = Amount.builder().amount("3400").build(),
+            paymentIncrementAmount = PaymentIncrementAmount.builder().amount("3400").build(),
             state = State.UNATTEMPTED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -54,7 +54,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             stateReason = ""
         ),
         PaymentIncrement(
-            amount = Amount.builder().amount("2500").build(),
+            paymentIncrementAmount = PaymentIncrementAmount.builder().amount("2500").build(),
             state = State.COLLECTED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -62,7 +62,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             stateReason = ""
         ),
         PaymentIncrement(
-            amount = Amount.builder().amount("4500").build(),
+            paymentIncrementAmount = PaymentIncrementAmount.builder().amount("4500").build(),
             state = State.UNATTEMPTED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -70,7 +70,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             stateReason = ""
         ),
         PaymentIncrement(
-            amount = Amount.builder().amount("5200").build(),
+            paymentIncrementAmount = PaymentIncrementAmount.builder().amount("5200").build(),
             state = State.COLLECTED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",

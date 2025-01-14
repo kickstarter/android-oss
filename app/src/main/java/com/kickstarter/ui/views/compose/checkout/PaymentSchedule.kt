@@ -141,8 +141,7 @@ fun PaymentSchedule(
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement) {
-    val formattedAmount =
-        String.format(Locale.US, "%.2f", paymentIncrement.amount.amount.parseToDouble())
+    val formattedAmount = paymentIncrement.paymentIncrementAmount.formattedAmount
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -860,10 +860,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                 plotData = PlotData(
                     plotAmount = RewardViewUtils.styleCurrency(
                         value = backing.paymentIncrements()
-                            ?.first()?.amount?.amount.parseToDouble(),
+                            ?.first()?.paymentIncrementAmount?.amount.parseToDouble(),
                         ksCurrency = KSCurrency(currentConfig),
                         projectCurrency = backing.paymentIncrements()
-                            ?.first()?.amount?.currencyCode.toString(),
+                            ?.first()?.paymentIncrementAmount?.currencyCode.toString(),
                         projectCurrentCurrency = ""
                     ).toString(),
                     plotFirstScheduleCollection = backing.paymentIncrements()

@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.locationId
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
@@ -81,7 +82,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
 
     private var paymentIntent: String? = null
-    private var cratePaymentIntentJob: Job? = null
+    private var pledgeButtonClickedJob: Job? = null
 
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
     val onPledgeSuccess: SharedFlow<Boolean>
@@ -127,12 +128,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 if (it.isPresent()) {
                     apolloClient.userPrivacy().asFlow()
                         .onStart {
-                            buttonEnabled = false
                             emitCurrentState(isLoading = true)
                         }.map { userPrivacy ->
                             userEmail = userPrivacy.email
                         }.onCompletion {
-                            buttonEnabled = true
                             emitCurrentState()
                         }.catch {
                             errorAction.invoke(null)
@@ -159,13 +158,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             apolloClient.createSetupIntent(
                 project = project,
             ).asFlow().onStart {
-                buttonEnabled = false
                 emitCurrentState(isLoading = true)
             }.map { clientSecret ->
                 clientSecretForNewCard = clientSecret
                 mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
             }.onCompletion {
-                buttonEnabled = true
                 emitCurrentState()
             }.catch {
                 errorAction.invoke(null)
@@ -181,14 +178,17 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     intentClientSecret = clientSecretForNewCard
                 )
             ).asFlow().onStart {
-                buttonEnabled = false
                 emitCurrentState(isLoading = true)
             }.map {
                 refreshUserCards()
             }.catch {
                 emitCurrentState()
                 errorAction.invoke(null)
-            }.collect()
+            }
+                .onCompletion {
+                    emitCurrentState()
+                }
+                .collect()
         }
     }
 
@@ -205,7 +205,6 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.map { cards ->
                 storedCards = cards
             }.onCompletion {
-                buttonEnabled = true
                 emitCurrentState()
             }.catch {
                 errorAction.invoke(null)
@@ -213,8 +212,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
+        // - Avoid launching any other coroutine call while previous coroutine active
+        if (pledgeButtonClickedJob?.isActive.isTrue()) return
+
         this.pledgeData?.let {
-            viewModelScope.launch {
+            pledgeButtonClickedJob = viewModelScope.launch {
                 val project = it.projectData().project()
                 createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
             }
@@ -225,25 +227,24 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.errorAction = errorAction
     }
 
-    private fun createPaymentIntentForCheckout(
+    private suspend fun createPaymentIntentForCheckout(
         selectedCard: StoredCard?,
         project: Project,
         totalAmount: Double
     ) {
-
-        if (cratePaymentIntentJob?.isActive == true) return
-        cratePaymentIntentJob = viewModelScope.launch {
-            checkoutId?.let { cId ->
-                backing?.let { b ->
-                    apolloClient.createPaymentIntent(
-                        CreatePaymentIntentInput(
-                            project = project,
-                            amount = totalAmount.toString(),
-                            checkoutId = cId,
-                            backing = b
-                        )
-                    ).asFlow()
+        if (paymentIntent.isNotNull()) return
+        checkoutId?.let { cId ->
+            backing?.let { b ->
+                apolloClient.createPaymentIntent(
+                    CreatePaymentIntentInput(
+                        project = project,
+                        amount = totalAmount.toString(),
+                        checkoutId = cId,
+                        backing = b
+                    )
+                ).asFlow()
                     .onStart {
+                        // - Once a payment Intend has been called once, disable button, user should not be create more than one payment Intent by session
                         buttonEnabled = false
                         emitCurrentState(isLoading = true)
                     }.map { clientSecret ->
@@ -263,16 +264,18 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             errorAction.invoke(null)
                         }
                     }.catch {
+                        // - Enable button only if any error happens when calling create payment Intent
+                        buttonEnabled = true
                         paymentIntent = null
                         emitCurrentState()
                         errorAction.invoke(null)
                     }.collect()
-                }
-            } ?: run {
-                paymentIntent = null
-                emitCurrentState()
-                errorAction.invoke(null)
             }
+        } ?: run {
+            buttonEnabled = true
+            paymentIntent = null
+            emitCurrentState()
+            errorAction.invoke(null)
         }
     }
 
@@ -396,7 +399,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 selectedRewards = selectedRewards.toList(),
                 shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
                 checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
-                isPledgeButtonEnabled = buttonEnabled,
+                isPledgeButtonEnabled = buttonEnabled && !isLoading,
             )
         )
     }

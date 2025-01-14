@@ -170,6 +170,9 @@ fragment backing on Backing {
     paymentSource {
         ... payment
     }
+    paymentIncrements {
+        ...paymentIncrement
+    }
     shippingAmount {
         ... amount
     }
@@ -479,4 +482,12 @@ fragment post on Postable {
 fragment updateFreeformPost on FreeformPost {
     commentsCount(withReplies:true)
     body
+}
+fragment paymentIncrement on PaymentIncrement {
+    id
+    amount {
+        ...amount
+    }
+    state
+    scheduledCollection
 }

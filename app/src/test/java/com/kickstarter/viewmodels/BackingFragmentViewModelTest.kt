@@ -6,14 +6,20 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.parseToDouble
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -21,9 +27,11 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
+import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
+import com.kickstarter.ui.data.PlotData
 import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.CardBrand
 import io.reactivex.Observable
@@ -69,36 +77,70 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = BackingFragmentViewModel.Factory(environment).create(BackingFragmentViewModel.BackingFragmentViewModel::class.java)
-        this.vm.outputs.backerAvatar().subscribe { this.backerAvatar.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.backerName().subscribe { this.backerName.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.backerNumber().subscribe { this.backerNumber.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.cardExpiration().subscribe { this.cardExpiration.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.cardIssuer().subscribe { this.cardIssuer.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.cardLastFour().subscribe { this.cardLastFour.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.cardLogo().subscribe { this.cardLogo.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.fixPaymentMethodButtonIsGone().subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.fixPaymentMethodMessageIsGone().subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.notifyDelegateToRefreshProject().subscribe { this.notifyDelegateToRefreshProject.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.notifyDelegateToShowFixPledge().subscribe { this.notifyDelegateToShowFixPledge.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.paymentMethodIsGone().subscribe { this.paymentMethodIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe { this.pledgeAmount.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.pledgeDate().subscribe { this.pledgeDate.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.pledgeStatusData().subscribe { this.pledgeStatusData.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.pledgeSummaryIsGone().subscribe { this.pledgeSummaryIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.projectDataAndReward().subscribe { this.projectDataAndReward.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.receivedCheckboxChecked().subscribe { this.receivedCheckboxChecked.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.receivedSectionIsGone().subscribe { this.receivedSectionIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.receivedSectionCreatorIsGone().subscribe { this.receivedSectionCreatorIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.shippingAmount().map { it.toString() }.subscribe { this.shippingAmount.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.shippingLocation().subscribe { this.shippingLocation.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.shippingSummaryIsGone().subscribe { this.shippingSummaryIsGone.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.showUpdatePledgeSuccess().subscribe { this.showUpdatePledgeSuccess.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.swipeRefresherProgressIsVisible().subscribe { this.swipeRefresherProgressIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.totalAmount().map { it.toString() }.subscribe { this.totalAmount.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.projectDataAndAddOns().subscribe { this.listAddOns.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.bonusSupport().map { it.toString() }.subscribe { this.bonusAmount.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.deliveryDisclaimerSectionIsGone().subscribe { this.disclaimerSectionIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm = BackingFragmentViewModel.Factory(environment)
+            .create(BackingFragmentViewModel.BackingFragmentViewModel::class.java)
+        this.vm.outputs.backerAvatar().subscribe { this.backerAvatar.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.backerName().subscribe { this.backerName.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.backerNumber().subscribe { this.backerNumber.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.cardExpiration().subscribe { this.cardExpiration.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.cardIssuer().subscribe { this.cardIssuer.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.cardLastFour().subscribe { this.cardLastFour.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.cardLogo().subscribe { this.cardLogo.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.fixPaymentMethodButtonIsGone()
+            .subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.fixPaymentMethodMessageIsGone()
+            .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.notifyDelegateToRefreshProject()
+            .subscribe { this.notifyDelegateToRefreshProject.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.notifyDelegateToShowFixPledge()
+            .subscribe { this.notifyDelegateToShowFixPledge.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.paymentMethodIsGone().subscribe { this.paymentMethodIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.pledgeAmount().map { it.toString() }
+            .subscribe { this.pledgeAmount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.pledgeDate().subscribe { this.pledgeDate.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.pledgeStatusData().subscribe { this.pledgeStatusData.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.pledgeSummaryIsGone().subscribe { this.pledgeSummaryIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.projectDataAndReward().subscribe { this.projectDataAndReward.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.receivedCheckboxChecked()
+            .subscribe { this.receivedCheckboxChecked.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.receivedSectionIsGone().subscribe { this.receivedSectionIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.receivedSectionCreatorIsGone()
+            .subscribe { this.receivedSectionCreatorIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.shippingAmount().map { it.toString() }
+            .subscribe { this.shippingAmount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.shippingLocation().subscribe { this.shippingLocation.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.shippingSummaryIsGone().subscribe { this.shippingSummaryIsGone.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.showUpdatePledgeSuccess()
+            .subscribe { this.showUpdatePledgeSuccess.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.swipeRefresherProgressIsVisible()
+            .subscribe { this.swipeRefresherProgressIsVisible.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.totalAmount().map { it.toString() }
+            .subscribe { this.totalAmount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.projectDataAndAddOns().subscribe { this.listAddOns.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.bonusSupport().map { it.toString() }
+            .subscribe { this.bonusAmount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.deliveryDisclaimerSectionIsGone()
+            .subscribe { this.disclaimerSectionIsGone.onNext(it) }.addToDisposable(disposables)
     }
 
     @After
@@ -163,7 +205,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             .apolloClientV2(mockApolloClientForBacking(BackingFactory.backingNull()))
             .build()
         setUpEnvironment(environment)
-        val project = ProjectFactory.backedProject().toBuilder().backing(BackingFactory.backingNull()).build()
+        val project =
+            ProjectFactory.backedProject().toBuilder().backing(BackingFactory.backingNull()).build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
         this.backerName.assertNoValues()
@@ -599,13 +642,15 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             .apolloClientV2(mockApolloClientForBacking(backing))
             .build()
         setUpEnvironment(environment)
+
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
                 R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null,
             )
         )
     }
@@ -626,13 +671,15 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
+
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
                 R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -652,13 +699,15 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
+
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
                 R.string.You_canceled_your_pledge_for_this_project,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -685,7 +734,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             PledgeStatusData(
                 R.string.We_collected_your_pledge_for_this_project,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -712,7 +762,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             PledgeStatusData(
                 R.string.Your_pledge_was_dropped_because_of_payment_errors,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -739,7 +790,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             PledgeStatusData(
                 R.string.We_cant_process_your_pledge_Please_update_your_payment_method,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -765,7 +817,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             PledgeStatusData(
                 R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -777,7 +830,9 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                 return true
             }
         }
-        val backing = backingWithStatus(Backing.STATUS_PLEDGED)
+
+        val backing =
+            backingWithPaymentIncrements(PaymentIncrementFactory.samplePaymentIncrements())
         val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
         val backedProject = ProjectFactory.backedProjectWithPlotSelected()
             .toBuilder()
@@ -791,13 +846,29 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
                 R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = PlotData(
+                    plotAmount = RewardViewUtils.styleCurrency(
+                        value = backing.paymentIncrements()
+                            ?.first()?.amount?.amount.parseToDouble(),
+                        ksCurrency = KSCurrency(currentConfig),
+                        projectCurrency = backing.paymentIncrements()
+                            ?.first()?.amount?.currencyCode.toString(),
+                        projectCurrentCurrency = ""
+                    ).toString(),
+                    plotFirstScheduleCollection = backing.paymentIncrements()
+                        ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) },
+                ),
             )
         )
     }
@@ -823,7 +894,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             PledgeStatusData(
                 R.string.We_re_processing_your_pledge_pull_to_refresh,
                 expectedCurrency(environment, backedProject, 20.0),
-                DateTimeUtils.longDate(deadline)
+                DateTimeUtils.longDate(deadline),
+                plotData = null
             )
         )
     }
@@ -1392,6 +1464,17 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .amount(20.0)
             .status(backingStatus)
+            .paymentIncrements(
+                null
+            )
+            .build()
+    }
+
+    private fun backingWithPaymentIncrements(paymentIncrements: List<PaymentIncrement>): Backing {
+        return BackingFactory.backing()
+            .toBuilder()
+            .amount(20.0)
+            .paymentIncrements(paymentIncrements)
             .build()
     }
 
@@ -1403,6 +1486,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         }
     }
 
-    private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
+    private fun expectedCurrency(
+        environment: Environment,
+        project: Project,
+        amount: Double
+    ): String =
         requireNotNull(environment.ksCurrency()).format(amount, project, RoundingMode.HALF_UP)
 }

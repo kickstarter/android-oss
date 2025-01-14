@@ -10,7 +10,6 @@ import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient

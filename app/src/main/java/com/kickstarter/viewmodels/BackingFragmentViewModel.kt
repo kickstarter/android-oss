@@ -590,7 +590,7 @@ interface BackingFragmentViewModel {
                             ) {
                                 R.string.You_have_selected_pledge_over_time
                             } else if (environment.featureFlagClient()
-                                    ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements()
+                                ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements()
                                     .isNullOrEmpty() && !project.isLive
                             ) {
                                 R.string.We_collected_your_pledge_for_this_project

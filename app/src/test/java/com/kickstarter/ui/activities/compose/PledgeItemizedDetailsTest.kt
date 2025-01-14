@@ -299,6 +299,6 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
             }
         }
         plotSelectedBadge.assertIsDisplayed()
-        plotSelectedBadge.assertTextEquals(context.getString(R.string.fpo_pledge_over_time))
+        plotSelectedBadge.assertTextEquals(context.getString(R.string.Pledge_Over_Time))
     }
 }

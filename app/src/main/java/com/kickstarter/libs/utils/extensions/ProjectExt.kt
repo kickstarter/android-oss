@@ -299,6 +299,7 @@ fun Project.reduce(): Project {
         .currencyTrailingCode(this.currencyTrailingCode())
         .sendThirdPartyEvents(this.sendThirdPartyEvents())
         .isBacking(this.isBacking())
+        .isPledgeOverTimeAllowed(this.isPledgeOverTimeAllowed())
         .backing(backing())
         .availableCardTypes(this.availableCardTypes())
         .category(this.category())
@@ -340,6 +341,7 @@ fun Project.reduceProjectPayload(): Project {
         .isInPostCampaignPledgingPhase(this.isInPostCampaignPledgingPhase())
         .postCampaignPledgingEnabled(this.postCampaignPledgingEnabled())
         .sendThirdPartyEvents(this.sendThirdPartyEvents())
+        .isPledgeOverTimeAllowed(this.isPledgeOverTimeAllowed())
         .state(this.state())
         .build()
 }

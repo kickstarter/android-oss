@@ -308,7 +308,7 @@ fun ItemizedRewardListContainer(
                     Text(
                         modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.PLOT_SELECTED_BADGE.name),
                         text = stringResource(
-                            id = R.string.fpo_pledge_over_time
+                            id = R.string.Pledge_Over_Time
                         ),
                         style = typography.body2Medium,
                         color = colors.kds_create_700
@@ -316,7 +316,7 @@ fun ItemizedRewardListContainer(
                 }
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DISCLAIMER_TEXT.name),
-                    text = stringResource(id = R.string.fpo_charged_as_4_payments).format(key1 = "number", value1 = "4"),
+                    text = stringResource(id = R.string.Charged_as_number_of_payments).format(key1 = "number", value1 = "4"),
                     style = typography.footnote,
                     color = colors.textPrimary
                 )

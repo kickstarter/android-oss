@@ -66,7 +66,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var checkoutId: String? = null
     private var backing: Backing? = null
     private val selectedRewards = mutableListOf<Reward>()
-    private var buttonEnabled = true
+    private var buttonEnabled = false
 
     private var stripe: Stripe = requireNotNull(environment.stripe())
 
@@ -127,10 +127,12 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 if (it.isPresent()) {
                     apolloClient.userPrivacy().asFlow()
                         .onStart {
+                            buttonEnabled = false
                             emitCurrentState(isLoading = true)
                         }.map { userPrivacy ->
                             userEmail = userPrivacy.email
                         }.onCompletion {
+                            buttonEnabled = true
                             emitCurrentState()
                         }.catch {
                             errorAction.invoke(null)
@@ -157,11 +159,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             apolloClient.createSetupIntent(
                 project = project,
             ).asFlow().onStart {
+                buttonEnabled = false
                 emitCurrentState(isLoading = true)
             }.map { clientSecret ->
                 clientSecretForNewCard = clientSecret
                 mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
             }.onCompletion {
+                buttonEnabled = true
                 emitCurrentState()
             }.catch {
                 errorAction.invoke(null)
@@ -177,6 +181,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     intentClientSecret = clientSecretForNewCard
                 )
             ).asFlow().onStart {
+                buttonEnabled = false
                 emitCurrentState(isLoading = true)
             }.map {
                 refreshUserCards()
@@ -200,6 +205,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.map { cards ->
                 storedCards = cards
             }.onCompletion {
+                buttonEnabled = true
                 emitCurrentState()
             }.catch {
                 errorAction.invoke(null)
@@ -210,16 +216,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.pledgeData?.let {
             viewModelScope.launch {
                 val project = it.projectData().project()
-                if (paymentIntent != null) {
-                    selectedCard?.let {
-                        validateCheckout(
-                            clientSecret = paymentIntent!!,
-                            selectedCard = it
-                        )
-                    }
-                } else {
-                    createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
-                }
+                createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
             }
         }
     }
@@ -233,7 +230,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         project: Project,
         totalAmount: Double
     ) {
-        cratePaymentIntentJob?.cancel()
+
+        if (cratePaymentIntentJob?.isActive == true) return
         cratePaymentIntentJob = viewModelScope.launch {
             checkoutId?.let { cId ->
                 backing?.let { b ->
@@ -244,7 +242,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             checkoutId = cId,
                             backing = b
                         )
-                    ).asFlow().onStart {
+                    ).asFlow()
+                    .onStart {
+                        buttonEnabled = false
                         emitCurrentState(isLoading = true)
                     }.map { clientSecret ->
                         paymentIntent = clientSecret

@@ -204,6 +204,7 @@ fun CheckoutScreen(
     isPlotEligible: Boolean = false,
     isIncrementalPledge: Boolean = false,
     paymentIncrements: List<PaymentIncrement>? = null,
+    isPledgeButtonEnabled: Boolean = false
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -270,7 +271,7 @@ fun CheckoutScreen(
                                     .padding(bottom = dimensions.paddingMediumSmall)
                                     .fillMaxWidth(),
                                 onClickAction = { onPledgeCtaClicked(selectedOption.value) },
-                                isEnabled = project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false,
+                                isEnabled = (project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false) && isPledgeButtonEnabled,
                                 text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(
                                     id = R.string.Pledge
                                 ) + " $totalAmountString" else stringResource(

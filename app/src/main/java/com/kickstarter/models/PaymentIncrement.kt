@@ -6,14 +6,14 @@ import org.joda.time.DateTime
 
 @Parcelize
 data class PaymentIncrement(
-    val amount: Amount,
+    val paymentIncrementAmount: PaymentIncrementAmount,
     val paymentIncrementableId: String,
     val paymentIncrementableType: String,
     val scheduledCollection: DateTime,
     val state: State,
     val stateReason: String?
 ) : Parcelable {
-    fun amount() = this.amount
+    fun amount() = this.paymentIncrementAmount
     fun paymentIncrementableId() = this.paymentIncrementableId
     fun paymentIncrementableType() = this.paymentIncrementableType
     fun scheduledCollection() = this.scheduledCollection
@@ -22,21 +22,21 @@ data class PaymentIncrement(
 
     @Parcelize
     data class Builder(
-        private var amount: Amount = Amount.builder().build(),
+        private var paymentIncrementAmount: PaymentIncrementAmount = PaymentIncrementAmount.builder().build(),
         private var paymentIncrementableId: String = "",
         private var paymentIncrementableType: String = "",
         private var scheduledCollection: DateTime = DateTime.now(),
         private var state: State = State.UNKNOWN,
         private var stateReason: String? = null
     ) : Parcelable {
-        fun amount(amount: Amount) = apply { this.amount = amount }
+        fun amount(paymentIncrementAmount: PaymentIncrementAmount) = apply { this.paymentIncrementAmount = paymentIncrementAmount }
         fun paymentIncrementableId(paymentIncrementableId: String) = apply { this.paymentIncrementableId = paymentIncrementableId }
         fun paymentIncrementableType(paymentIncrementableType: String) = apply { this.paymentIncrementableType = paymentIncrementableType }
         fun scheduledCollection(scheduledCollection: DateTime) = apply { this.scheduledCollection = scheduledCollection }
         fun state(state: State) = apply { this.state = state }
         fun stateReason(stateReason: String?) = apply { this.stateReason = stateReason }
         fun build() = PaymentIncrement(
-            amount = amount,
+            paymentIncrementAmount = paymentIncrementAmount,
             paymentIncrementableId = paymentIncrementableId,
             paymentIncrementableType = paymentIncrementableType,
             scheduledCollection = scheduledCollection,
@@ -59,7 +59,7 @@ data class PaymentIncrement(
     }
 
     fun toBuilder() = Builder(
-        amount = amount,
+        paymentIncrementAmount = paymentIncrementAmount,
         paymentIncrementableId = paymentIncrementableId,
         paymentIncrementableType = paymentIncrementableType,
         scheduledCollection = scheduledCollection,

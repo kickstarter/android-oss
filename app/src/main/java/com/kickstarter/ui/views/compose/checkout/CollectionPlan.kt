@@ -31,9 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.format
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.ui.activities.DisclaimerItems
@@ -293,9 +291,8 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
             .padding(top = 12.dp)
     ) {
         paymentIncrements.forEach { paymentIncrement ->
-            ksCurrency?.let {
+            paymentIncrement.paymentIncrementAmount.formattedAmount?.let { formattedAmount ->
                 count++
-                val formattedAmount = RewardViewUtils.styleCurrency(value = paymentIncrement.amount.amount.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount.currencyCode().toString(), projectCurrentCurrency = projectCurrentCurrency).toString()
                 val chargeString = stringResource(R.string.Charge_number).format(key1 = "number", value1 = count.toString())
                 ChargeItem(title = chargeString, date = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection), amount = formattedAmount)
             }

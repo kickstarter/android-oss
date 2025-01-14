@@ -69,8 +69,9 @@ class BackingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        this.context?.getEnvironment()?.let { env ->
+        val env = this.context?.getEnvironment()?.let { env ->
             viewModelFactory = BackingFragmentViewModel.Factory(env)
+            env
         }
 
         this.viewModel.outputs.backerAvatar()
@@ -254,7 +255,8 @@ class BackingFragment : Fragment() {
                         PaymentSchedule(
                             isExpanded = isExpanded.value,
                             onExpandChange = { isExpanded.value = it },
-                            paymentIncrements = paymentIncrements
+                            paymentIncrements = paymentIncrements,
+                            ksCurrency = env?.ksCurrency(),
                         )
                     }
                 }

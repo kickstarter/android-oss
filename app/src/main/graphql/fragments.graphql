@@ -420,6 +420,14 @@ fragment amount on Money {
     symbol
 }
 
+fragment paymentIncrementAmount on PaymentIncrementAmount {
+    amountAsCents
+    amountAsFloat
+    amountFormattedInProjectNativeCurrency
+    amountFormattedInProjectNativeCurrencyWithCurrencyCode
+    currency
+}
+
 fragment location on Location {
     displayableName
     country
@@ -483,10 +491,11 @@ fragment updateFreeformPost on FreeformPost {
     commentsCount(withReplies:true)
     body
 }
+
 fragment paymentIncrement on PaymentIncrement {
     id
     amount {
-        ...amount
+        ...paymentIncrementAmount
     }
     state
     scheduledCollection

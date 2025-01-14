@@ -15,14 +15,12 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
@@ -625,12 +623,7 @@ interface BackingFragmentViewModel {
             val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
             val plotData = if (isPlot) {
-                val plotAmountString = RewardViewUtils.styleCurrency(
-                    value = backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(),
-                    ksCurrency = this.ksCurrency,
-                    projectCurrency = backing.paymentIncrements()?.first()?.amount?.currencyCode.toString(),
-                    projectCurrentCurrency = project.currentCurrency()
-                ).toString()
+                val plotAmountString = backing.paymentIncrements()?.first()?.paymentIncrementAmount?.formattedAmount
                 // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
                 // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
                 val plotFirstScheduleCollection = backing.paymentIncrements()

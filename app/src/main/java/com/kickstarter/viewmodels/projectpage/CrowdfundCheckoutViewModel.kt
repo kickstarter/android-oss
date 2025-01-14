@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.expandedRewardsAndAddOnsList
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
 import com.kickstarter.libs.utils.extensions.shippingCostIfShipping
@@ -182,7 +183,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
             collectUserInformation()
             sendPageViewedEvent()
-            buildPaymentPlan()
+            if (project.isPledgeOverTimeAllowed().isTrue()) {
+                buildPaymentPlan()
+            }
         }
     }
 

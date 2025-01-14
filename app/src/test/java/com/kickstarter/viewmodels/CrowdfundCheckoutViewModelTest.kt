@@ -378,6 +378,97 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test when plot is not allowed on project, should not call build payment plan query`() = runTest {
+        // - The test reward with shipping
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+            .pledgeAmount(10.0)
+            .shippingRules(shippingRules = shippingRules)
+            .build()
+
+        val addOns1 = RewardFactory.rewardWithShipping()
+            .toBuilder()
+            .pledgeAmount(10.0)
+            .isAddOn(true)
+            .build()
+
+        // - AddOns shipping same as the reward
+        val addOnsList = listOf(addOns1)
+
+        val project = ProjectFactory.project().toBuilder()
+            .rewards(listOf(reward))
+            .isPledgeOverTimeAllowed(false)
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
+
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        val bundle = Bundle()
+
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE),
+            projectData,
+            reward,
+            addOnsList,
+            ShippingRuleFactory.usShippingRule(),
+            bonusAmount = 3.0
+        )
+
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            pledgeData
+        )
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+
+        // - Network mocks
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cards)
+                }
+
+                override fun buildPaymentPlan(buildPaymentPlanData: BuildPaymentPlanData): Observable<PaymentPlan> {
+                    return Observable.just(
+                        PaymentPlanFactory
+                            .ineligibleAllowedPaymentPlan()
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val uiState = mutableListOf<CheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+
+            viewModel.crowdfundCheckoutUIState.toList(uiState)
+        }
+        advanceUntilIdle()
+
+        // default incremental value should be false
+        assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
+        assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
+        assertEquals(uiState.last().bonusAmount, 3.0)
+        assertEquals(uiState.last().shippingRule, pledgeData.shippingRule())
+        assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
+        assertEquals(uiState.last().storeCards, cards)
+        assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
+        assertEquals(uiState.last().paymentIncrements, null)
+        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().plotEligible, false)
+        assertEquals(uiState.last().showPlotWidget, false)
+    }
+
+    @Test
     fun `test ui state when pledge amount does not meet PLOT minimum`() = runTest {
         // - The test reward with shipping
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
@@ -397,6 +488,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
 
         val project = ProjectFactory.project().toBuilder()
             .rewards(listOf(reward))
+            .isPledgeOverTimeAllowed(true)
             .build()
 
         val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())
@@ -486,6 +578,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
 
         val project = ProjectFactory.project().toBuilder()
             .rewards(listOf(reward))
+            .isPledgeOverTimeAllowed(true)
             .build()
 
         val cards = listOf(StoredCardFactory.visa(), StoredCardFactory.discoverCard(), StoredCardFactory.fromPaymentSheetCard())

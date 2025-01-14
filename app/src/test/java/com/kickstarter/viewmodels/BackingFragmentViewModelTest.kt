@@ -6,14 +6,11 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
@@ -859,14 +856,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                 expectedCurrency(environment, backedProject, 20.0),
                 DateTimeUtils.longDate(deadline),
                 plotData = PlotData(
-                    plotAmount = RewardViewUtils.styleCurrency(
-                        value = backing.paymentIncrements()
-                            ?.first()?.amount?.amount.parseToDouble(),
-                        ksCurrency = KSCurrency(currentConfig),
-                        projectCurrency = backing.paymentIncrements()
-                            ?.first()?.amount?.currencyCode.toString(),
-                        projectCurrentCurrency = ""
-                    ).toString(),
+                    plotAmount = backing.paymentIncrements()
+                        ?.first()?.paymentIncrementAmount?.formattedAmount(),
                     plotFirstScheduleCollection = backing.paymentIncrements()
                         ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) },
                 ),

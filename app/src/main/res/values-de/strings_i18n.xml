@@ -58,7 +58,9 @@
   <string name="Ask_the_project_creator_directly" formatted="false">Wende dich bitte direkt an den Projektgründer.</string>
   <string name="Authenticate_card" formatted="false">Karte authentifizieren</string>
   <string name="Authentication_failed_please_try_again" formatted="false">Authentifizierung fehlgeschlagen. Bitte versuch es noch einmal.</string>
+  <string name="Authentication_required" formatted="false">Authentifizierung erforderlich</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">Authentifizierung erfolgreich. Bitte ziehe, um die Seite zu aktualisieren.</string>
+  <string name="Available_for_pledges_over" formatted="false">Für Beiträge über %{amount}</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Kann noch %{time} %{units} angesehen werden</string>
   <string name="Back" formatted="false">Zurück</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Du glaubst an dieses Projekt. Unterstütze es.</string>
@@ -120,6 +122,8 @@ Unterstützer</string>
   <string name="Change_password" formatted="false">Passwort ändern</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Um fortzufahren, ändere dein Versandziel oder überspringe Add-ons.</string>
+  <string name="Charge_number" formatted="false">Transaktion %{number}</string>
+  <string name="Charged_as_number_of_payments" formatted="false">zahlbar in %{number} Raten</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Der Fortschritt des Exports wird in Kürze verfügbar sein- schau später noch einmal vorbei.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Sieh dir dieses speziell für dich ausgesuchten Projekte an.</string>
@@ -136,6 +140,7 @@ Unterstützer</string>
   <string name="Closes_project" formatted="false">Schließt das Projekt.</string>
   <string name="Collaborator" formatted="false">Mitarbeiter</string>
   <string name="Collapses_subcategories" formatted="false">Reduziert die Anzeige der Unterkategorien.</string>
+  <string name="Collection_plan" formatted="false">Zahlungsplan</string>
   <string name="Collections" formatted="false">Sammlungen</string>
   <string name="Coming_soon" formatted="false">Demnächst</string>
   <string name="Comment_reply_digest" formatted="false">Tägliche Zusammenfassung Kommentare</string>
@@ -335,6 +340,7 @@ Antippen und erneut versuchen</string>
   <string name="I_plan_to_use_AI_generated_content" formatted="false">Ich plane, bei meinem Projekt KI-generierte Inhalte zu nutzen.</string>
   <string name="I_understand" formatted="false">Verstanden</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
+  <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">Wenn das Projekt sein Finanzierungsziel erreicht, wird die erste Rate in Höhe von %{amount} am %{project_deadline} eingezogen.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am %{project_deadline} belastet.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Wenn das Projekt sein Finanzierungsziel erreicht, wird am %{project_deadline} deine Zahlung in Höhe von %{total} eingezogen. Du erhältst einen Nachweis über den Finanzierungsbeitrag, der einlösbar ist, wenn das Projekt finanziert ist und der Projektgründer seine kreative Idee erfolgreich umgesetzt hat.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
@@ -480,6 +486,7 @@ Antippen und erneut versuchen</string>
   <string name="Password_visibility" formatted="false">Passwort-Anzeige</string>
   <string name="Passwords_matching_message" formatted="false">Neues Passwort stimmt nicht überein.</string>
   <string name="Past_live_stream" formatted="false">Früherer Live-Stream</string>
+  <string name="Payment" formatted="false">Zahlung</string>
   <string name="Payment_failure" formatted="false">Zahlung fehlgeschlagen</string>
   <string name="Payment_method" formatted="false">Zahlungsmethode</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
@@ -492,11 +499,13 @@ Antippen und erneut versuchen</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Bitte melde dich an oder registriere dich, um an diesem Live-Stream teilzunehmen.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Bitte melde dich an oder registriere dich, um diesen Live-Stream zu abonnieren.</string>
   <string name="Pledge" formatted="false">Beitrag leisten</string>
+  <string name="Pledge_Over_Time" formatted="false">Ratenzahlung</string>
   <string name="Pledge_activity" formatted="false">Finanzierungsbeiträge</string>
   <string name="Pledge_amount" formatted="false">Beitragshöhe</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} beigetragen</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Du kannst jeden beliebigen Betrag eingeben, um das Projekt zu unterstützen.</string>
   <string name="Pledge_details" formatted="false">Dein Finanzierungsbeitrag</string>
+  <string name="Pledge_in_full" formatted="false">Sofortzahlung</string>
   <string name="Pledge_management" formatted="false">Beitragsverwaltung</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Unterstütze Projekte und sehe alle deine Projekte auf einen Blick.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Unterstütze deine Favoriten - alle von dir unterstützten Projekte werden hier angezeigt.</string>
@@ -608,10 +617,12 @@ Antippen und erneut versuchen</string>
   <string name="Saved_projects" formatted="false">Gespeicherte Projekte</string>
   <string name="Saves_project" formatted="false">Speichert dieses Projekt.</string>
   <string name="Say_something_kind" formatted="false">Sag etwas Nettes ...</string>
+  <string name="Scheduled" formatted="false">Geplant</string>
   <string name="Security_code" formatted="false">Sicherheitscode</string>
   <string name="See_all_backed__projects" formatted="false">Alle unterstützten Projekte ansehen</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
   <string name="See_our_suggestions" formatted="false">Unsere Empfehlungen ansehen ▸</string>
+  <string name="See_our_terms_of_use" formatted="false">Weitere Informationen findest du in unseren Nutzungsbedingungen</string>
   <string name="See_rewards" formatted="false">Belohnungen ansehen</string>
   <string name="See_the_rewards" formatted="false">Belohnungen einblenden</string>
   <string name="Select" formatted="false">Auswählen</string>
@@ -704,6 +715,7 @@ Antippen und erneut versuchen</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">Der Unterstützer hat den Finanzierungsbeitrag zurückgezogen.</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">Der Projektgründer hat das Projekt abgebrochen. Daher wurde deine Zahlungsmethode nicht belastet.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">Diese E-Mail-Adresse ist bereits einem anderen Kickstarter-Nutzer zugeordnet.</string>
+  <string name="The_first_charge_will_occur_when_the_project_ends_successfully" formatted="false">Die erste Rate wird nach erfolgreichem Ende des Projekts eingezogen. Die weiteren Raten werden alle 2 Wochen eingezogen, bis der Finanzierungsbeitrag komplett bezahlt wurde. Wenn du dich für diese Option entscheidest, kannst du keine weiteren Änderungen an deinem Beitrag vornehmen.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Keine Verbindungn zu Live-Stream</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Live-Stream wurde unterbrochen</string>
   <string name="The_live_stream_will_start_soon" formatted="false">Live-Stream started in Kürze</string>
@@ -834,6 +846,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">Du hast dieses Projekt abgebrochen. Daher wurde die Zahlungsmethode des Unterstützers nicht belastet.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Du hast den Finanzierungsbeitrag für dieses Projekt zurückgezogen.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Diese Karte kann nicht verwendet werden, um ein Projekt aus dem folgenden Land zu unterstützen: %{project_country}.</string>
+  <string name="You_have_selected_pledge_over_time" formatted="false">Du hast dich für die Ratenzahlung entschieden. Wenn das Projekt sein Finanzierungsziel erreicht, wird die erste Rate in Höhe von %{amount} am %{date} eingezogen.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>
   <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>Du hast &lt;b>%{project_name}&lt;/b> mit deinem Beitrag erfolgreich unterstützt. Dein Beitrag in Höhe von &lt;b>%{pledge_total}&lt;/b> wurde eingezogen.&lt;/p>\n
 &lt;p>Du erhältst eine E-Mail an %{user_email}, wenn deine Belohnungen zur Erfüllung bereit sind, damit du alles finalisieren und für Versand und Steuern zahlen kannst.&lt;/p>\n
@@ -844,6 +857,8 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Unterstützt ohne Belohnung</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">Dein Finanzierungsbeitrag wird dir in vier Raten belastet. Dir entstehen dadurch keine zusätzlichen Kosten.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">Die erste Rate wird 24 Stunden nach erfolgreichem Ende des Projekts eingezogen. Die weiteren Raten werden alle 2 Wochen eingezogen, bis der Finanzierungsbeitrag komplett bezahlt wurde. Wenn du dich für diese Option entscheidest, kannst du keine weiteren Änderungen an deinem Beitrag vornehmen.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Wenn du diese Seite verlässt, wird dein Kommentar gelöscht.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">Dein Finanzierungsbeitrag wird nur abgebucht, wenn das Projekt sein Finanzierungsziel erreichte.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>

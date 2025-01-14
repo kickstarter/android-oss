@@ -588,7 +588,7 @@ interface BackingFragmentViewModel {
                                 ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements()
                                     .isNullOrEmpty()
                             ) {
-                                R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of
+                                R.string.You_have_selected_pledge_over_time
                             } else {
                                 R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline
                             }

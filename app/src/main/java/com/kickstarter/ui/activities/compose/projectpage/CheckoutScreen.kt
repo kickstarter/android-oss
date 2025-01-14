@@ -390,7 +390,7 @@ fun CheckoutScreen(
                             start = dimensions.paddingMediumLarge,
                             end = dimensions.paddingMediumLarge
                         ),
-                        text = stringResource(id = R.string.fpo_collection_plan),
+                        text = stringResource(id = R.string.Collection_plan),
                         style = typography.headline,
                         color = colors.kds_black,
                     )
@@ -411,7 +411,7 @@ fun CheckoutScreen(
                             start = dimensions.paddingMediumLarge,
                             end = dimensions.paddingMediumLarge
                         ),
-                        text = stringResource(id = R.string.fpo_payment),
+                        text = stringResource(id = R.string.Payment),
                         style = typography.headline,
                         color = colors.kds_black,
                     )
@@ -567,7 +567,7 @@ fun CheckoutScreen(
                     "project_deadline", project.deadline()?.let { DateTimeUtils.longDate(it) }
                 ) ?: ""
                 val plotDisclaimerText =
-                    stringResource(R.string.fpo_if_the_project_reaches_its_funding_goal_the_first_charge_of_first_charge_will_be_collected_on_date).format(
+                    stringResource(R.string.If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline).format(
                         key1 = "amount",
                         paymentIncrements?.first()?.paymentIncrementAmount?.formattedAmount,
                         key2 = "project_deadline",

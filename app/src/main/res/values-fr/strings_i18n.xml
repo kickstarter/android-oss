@@ -58,7 +58,9 @@
   <string name="Ask_the_project_creator_directly" formatted="false">Veuillez adresser votre question au créateur.</string>
   <string name="Authenticate_card" formatted="false">Authentifier la carte</string>
   <string name="Authentication_failed_please_try_again" formatted="false">Authentification échouée. Veuillez réessayer.</string>
+  <string name="Authentication_required" formatted="false">Authentification nécessaire</string>
   <string name="Authentication_success_please_pull_to_refresh" formatted="false">Authentification réussie. Veuillez tirer la page vers le bas pour l\'actualiser.</string>
+  <string name="Available_for_pledges_over" formatted="false">Engagements supérieurs à %{amount}</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Plus que %{time}%{units} pour regarder cette diffusion</string>
   <string name="Back" formatted="false">Retour</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Ce projet ne décollera pas sans vous.</string>
@@ -120,6 +122,8 @@ contributeurs</string>
   <string name="Change_password" formatted="false">Changer de mot de passe</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
   <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Changez de lieu de livraison ou ignorez les compléments pour continuer.</string>
+  <string name="Charge_number" formatted="false">Transaction %{number}</string>
+  <string name="Charged_as_number_of_payments" formatted="false">prélévé en %{number} fois</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Repassez plus tard pour suivre la préparation de votre exportation.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Voici quelques projets sélectionnés rien que pour vous.</string>
@@ -136,6 +140,7 @@ contributeurs</string>
   <string name="Closes_project" formatted="false">Ferme le projet.</string>
   <string name="Collaborator" formatted="false">Collaborateur</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
+  <string name="Collection_plan" formatted="false">Calendrier des prélèvements</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Coming_soon" formatted="false">Bientôt disponible</string>
   <string name="Comment_reply_digest" formatted="false">Résumé des réponses aux commentaires</string>
@@ -335,6 +340,7 @@ Cliquez pour réessayer.</string>
   <string name="I_plan_to_use_AI_generated_content" formatted="false">Je prévois d\'utiliser du contenu généré par une IA dans mon projet.</string>
   <string name="I_understand" formatted="false">Je comprends</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">Si l\'objectif de financement du projet est atteint, le premier prélèvement de %{amount} sera effectué le %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité le %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Si l\'objectif de financement du projet est atteint, vous serez débité de %{total} le %{project_deadline}. Vous recevrez une preuve d\'engagement qui sera échangeable si le projet est intégralement financé et si le créateur mène son projet à bien.</string>
   <string name="If_you_turn_following_off" formatted="false">Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.</string>
@@ -481,6 +487,7 @@ n\'ont rien soutenu.</string>
   <string name="Password_visibility" formatted="false">Visibilité du mot de passe</string>
   <string name="Passwords_matching_message" formatted="false">Le nouveau mot de passe doit être identique.</string>
   <string name="Past_live_stream" formatted="false">Diffusion en direct passée</string>
+  <string name="Payment" formatted="false">Paiement</string>
   <string name="Payment_failure" formatted="false">Échec du paiement</string>
   <string name="Payment_method" formatted="false">Moyen de paiement </string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Le moyen de paiement a bien été débité.</string>
@@ -493,11 +500,13 @@ n\'ont rien soutenu.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Veuillez vous connecter ou vous inscrire pour participer au chat de cette diffusion en direct.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Veuillez vous connecter ou vous inscrire pour vous abonner à cette diffusion en direct.</string>
   <string name="Pledge" formatted="false">Je m\'engage</string>
+  <string name="Pledge_Over_Time" formatted="false">Engagement étalé dans le temps</string>
   <string name="Pledge_activity" formatted="false">Mes engagements</string>
   <string name="Pledge_amount" formatted="false">Montant engagé</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} engagés</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_details" formatted="false">Détails de mon engagement</string>
+  <string name="Pledge_in_full" formatted="false">Engagement intégral</string>
   <string name="Pledge_management" formatted="false">Gestion des engagements</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Soutenez des projets et consultez la liste de vos projets enregistrés et soutenus.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Engagez-vous à soutenir vos préférés, puis redécouvrez-les tous ici.</string>
@@ -609,10 +618,12 @@ n\'ont rien soutenu.</string>
   <string name="Saved_projects" formatted="false">Projets enregistrés</string>
   <string name="Saves_project" formatted="false">Enregistre le projet.</string>
   <string name="Say_something_kind" formatted="false">Un petit mot sympa...</string>
+  <string name="Scheduled" formatted="false">Prévu</string>
   <string name="Security_code" formatted="false">Code de sécurité</string>
   <string name="See_all_backed__projects" formatted="false">Afficher tous les engagements</string>
   <string name="See_all_category_name_projects" formatted="false">Tous les projets de la catégorie %{category_name}</string>
   <string name="See_our_suggestions" formatted="false">Voir nos suggestions ▸</string>
+  <string name="See_our_terms_of_use" formatted="false">Consulter nos Conditions d\'utilisation</string>
   <string name="See_rewards" formatted="false">Afficher les récompenses</string>
   <string name="See_the_rewards" formatted="false">Afficher les récompenses</string>
   <string name="Select" formatted="false">Sélectionner</string>
@@ -705,6 +716,7 @@ n\'ont rien soutenu.</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">Le contributeur a annulé son engagement.</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">Ce projet a été annulé par le créateur, donc votre moyen de paiement n\'a pas été débité.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>
+  <string name="The_first_charge_will_occur_when_the_project_ends_successfully" formatted="false">Le premier prélèvement interviendra après la fin de la campagne, si l\'objectif de celle-ci est atteint. Les prélèvements suivants auront lieu toutes les deux semaines, jusqu\'au règlement intégral du montant dû. Si vous sélectionnez cette option, votre engagement devient non modifiable.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Échec de connexion à la diffusion en direct</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Diffusion en direct interrompue</string>
   <string name="The_live_stream_will_start_soon" formatted="false">La diffusion en direct va bientôt commencer</string>
@@ -835,6 +847,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">Vous avez annulé ce projet, donc le moyen de paiement du contributeur n\'a pas été débité.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Vous avez annulé votre engagement.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Impossible d\'accepter cette carte pour soutenir un projet depuis le pays suivant : %{project_country}.</string>
+  <string name="You_have_selected_pledge_over_time" formatted="false">Vous avez choisi d\'étaler votre engagement dans le temps. Si l\'objectif de financement du projet est atteint, le premier prélèvement de %{amount} interviendra le %{date}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Vous vous êtes engagé à soutenir le projet &lt;b>%{project_name}&lt;/b>. Ce projet se rapproche tout doucement de son objectif grâce à vous. Parlez-en à votre entourage !</string>
   <string name="You_have_successfully_pledged_to_project_post_campaign_html" formatted="false">&lt;p>Vous venez de vous engager à soutenir le projet &lt;b>%{project_name}&lt;/b>. Votre contribution de &lt;b>%{pledge_total}&lt;/b> a bien été prélevée.&lt;/p>\n
 &lt;p>Vous recevrez une confirmation à l\'adresse %{user_email} dès que votre récompense sera prête à être expédiée. Il vous sera alors demandé de régler les taxes et frais de port.&lt;/p>\n
@@ -845,6 +858,8 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Engagement sans récompense</string>
   <string name="You_saved_this_project" formatted="false">Vous avez enregistré ce projet.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">Votre engagement sera étalé en quatre prélèvements, sans frais supplémentaires.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">Le premier prélèvement interviendra 24 heures après la fin de la campagne, si l\'objectif de celle-ci est atteint. Les prélèvements suivants auront lieu toutes les deux semaines, jusqu\'au règlement intégral du montant dû. Si vous sélectionnez cette option, votre engagement devient non modifiable.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Si vous quittez cette page, votre commentaire sera perdu.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">Vous ne serez débité que si le créateur atteint son objectif de financement.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Dès que votre téléchargement sera prêt, vous recevrez un e-mail à l\'adresse %{email}.</string>

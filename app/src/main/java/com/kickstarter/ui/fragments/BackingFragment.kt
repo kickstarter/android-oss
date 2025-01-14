@@ -412,7 +412,7 @@ class BackingFragment : Fragment() {
                         )
                     }
                 }
-                R.string.fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of -> {
+                R.string.You_have_selected_pledge_over_time -> {
                     this.viewModel.ksString?.let { ksString ->
                         ksString.format(
                             getString(it),

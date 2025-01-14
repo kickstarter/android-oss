@@ -91,21 +91,9 @@
   <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
 
   <!-- PLOT STRINGS-->
-  <string name="fpo_pledge_in_full">Pledge in Full</string>
-  <string name="fpo_pledge_over_time">Pledge Over Time</string>
-  <string name="fpo_collection_plan">Collection Plan</string>
-  <string name="fpo_payment">Payment</string>
-  <string name="fpo_charge_count">Charge %{number}</string>
-  <string name="fpo_available_for_pledges_over_amount">Available for pledges over %{amount}</string>
-  <string name="fpo_see_our_terms_of_use">See our Terms of Use</string>
-  <string name="fpo_you_will_be_charged_for_your_pledge_over_four_payments_at_no_extra_cost">You will be charged for your pledge over four payments, at no extra cost.  </string>
-  <string name="fpo_the_first_charge_will_be_24_hours_after_the_project_ends_successfully">The first charge will be 24 hours after the project ends successfully, then every 2 weeks until fully paid. When this option is selected no further edits can be made to your pledge.</string>
-  <string name="fpo_charged_as_4_payments">Charged as 4 payments</string>
-  <string name="fpo_if_the_project_reaches_its_funding_goal_the_first_charge_of_first_charge_will_be_collected_on_date">If the project reaches its funding goal, the first charge of %{amount} will be collected on %{project_deadline}.</string>
   <string name="fpo_terms_of_use">Terms of Use</string>
   <string name="fpo_collected">Collected</string>
   <string name="fpo_unattempted">Unattempted</string>
   <string name="fpo_payment_schedule">Payment schedule</string>
-  <string name="fpo_you_have_selected_pledge_over_time_if_the_project_reaches_its_funding_goal_the_first_charge_of">You have selected Pledge Over Time. If the project reaches its funding goal, the first charge of %{amount} will be collected on %{date}.</string>
 
 </resources>

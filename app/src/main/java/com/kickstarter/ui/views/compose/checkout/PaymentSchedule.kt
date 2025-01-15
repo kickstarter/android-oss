@@ -293,7 +293,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             }
         }
 
-        PaymentIncrementState.CANCELLED -> TODO()
-        PaymentIncrementState.UNKNOWN__ -> TODO()
+        PaymentIncrementState.CANCELLED -> {}
+        PaymentIncrementState.UNKNOWN__ -> {}
     }
 }

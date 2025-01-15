@@ -196,9 +196,9 @@ private fun paymentIncrementStyledCurrency(
     ksCurrency: KSCurrency?
 ): AnnotatedString {
     val country = Country.findByCurrencyCode(paymentIncrement.amount().currencyCode ?: "")
-    val currencyAndSymbol = country?.let { ksCurrency?.getCurrencySymbol(it, true) } ?: ""
+    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, true) } ?: ""
 
-    val currencyToFormat = "$currencyAndSymbol ${paymentIncrement.amount().amountAsFloat}"
+    val currencyToFormat = "$country$currencySymbol ${paymentIncrement.amount().amountAsFloat}"
     val annotatedString = currencyToFormat.let {
         return@let buildAnnotatedString {
             val currencySymbolIndex = it.findCurrencySymbolIndex()

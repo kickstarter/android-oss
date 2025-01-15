@@ -163,6 +163,45 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         )
     )
 
+    private val samplePaymentIncrementsWithCancelledState = listOf(
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "1",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "2",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "3",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "4",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        )
+    )
+
     private val samplePaymentIncrementsWithErroredStateAndRequiresActionStateReason = listOf(
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -324,7 +363,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_schedulled)))
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_scheduled)))
     }
 
     @Test
@@ -359,5 +398,22 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
         badgeText.assertAll(hasText(context.getString(R.string.fpo_errored_payment)))
+    }
+
+    @Test
+    fun testCancelledBadge() {
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = samplePaymentIncrementsWithCancelledState
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_cancelled)))
     }
 }

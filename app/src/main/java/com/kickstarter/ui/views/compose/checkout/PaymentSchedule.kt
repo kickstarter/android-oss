@@ -303,14 +303,38 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_schedulled),
+                    text = stringResource(id = R.string.fpo_scheduled),
                     style = typography.caption1Medium,
                     color = colors.kds_support_400
                 )
             }
         }
 
-        PaymentIncrementState.CANCELLED -> {}
+        PaymentIncrementState.CANCELLED -> {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = colors.kds_support_200,
+                        shape = RoundedCornerShape(
+                            topStart = dimensions.radiusSmall,
+                            topEnd = dimensions.radiusSmall,
+                            bottomStart = dimensions.radiusSmall,
+                            bottomEnd = dimensions.radiusSmall
+                        ),
+                    )
+                    .padding(
+                        horizontal = dimensions.paddingSmall,
+                        vertical = dimensions.paddingXSmall
+                    )
+            ) {
+                Text(
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+                    text = stringResource(id = R.string.fpo_cancelled),
+                    style = typography.caption1Medium,
+                    color = colors.kds_support_400
+                )
+            }
+        }
         PaymentIncrementState.UNKNOWN__ -> {}
     }
 }

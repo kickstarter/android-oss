@@ -498,5 +498,6 @@ fragment paymentIncrement on PaymentIncrement {
         ...paymentIncrementAmount
     }
     state
+    stateReason
     scheduledCollection
 }

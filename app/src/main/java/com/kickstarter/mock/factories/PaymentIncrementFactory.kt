@@ -3,6 +3,8 @@ package com.kickstarter.mock.factories
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.type.CurrencyCode
+import com.kickstarter.type.PaymentIncrementState
+import com.kickstarter.type.PaymentIncrementStateReason
 import org.joda.time.DateTime
 
 class PaymentIncrementFactory {
@@ -13,8 +15,8 @@ class PaymentIncrementFactory {
             paymentIncrementableId: String,
             paymentIncrementableType: String,
             scheduledCollection: DateTime,
-            state: PaymentIncrement.State,
-            stateReason: String?,
+            state: PaymentIncrementState,
+            stateReason: PaymentIncrementStateReason?,
         ): PaymentIncrement {
             return PaymentIncrement.builder()
                 .amount(paymentIncrementAmount)
@@ -48,8 +50,8 @@ class PaymentIncrementFactory {
                 scheduledCollection = dateTime,
                 paymentIncrementableId = "",
                 paymentIncrementableType = "",
-                state = PaymentIncrement.State.UNATTEMPTED,
-                stateReason = ""
+                state = PaymentIncrementState.UNATTEMPTED,
+                stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
             )
         }
 
@@ -59,8 +61,8 @@ class PaymentIncrementFactory {
                 scheduledCollection = dateTime,
                 paymentIncrementableId = "",
                 paymentIncrementableType = "",
-                state = PaymentIncrement.State.COLLECTED,
-                stateReason = ""
+                state = PaymentIncrementState.COLLECTED,
+                stateReason = PaymentIncrementStateReason.UNKNOWN__
             )
         }
 
@@ -70,35 +72,35 @@ class PaymentIncrementFactory {
             return listOf(
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue),
-                    state = PaymentIncrement.State.UNATTEMPTED,
+                    state = PaymentIncrementState.UNATTEMPTED,
                     paymentIncrementableId = "1",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(15),
-                    stateReason = ""
+                    stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue),
-                    state = PaymentIncrement.State.COLLECTED,
+                    state = PaymentIncrementState.COLLECTED,
                     paymentIncrementableId = "2",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(30),
-                    stateReason = ""
+                    stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue),
-                    state = PaymentIncrement.State.UNATTEMPTED,
+                    state = PaymentIncrementState.ERRORED,
                     paymentIncrementableId = "3",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(45),
-                    stateReason = ""
+                    stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue),
-                    state = PaymentIncrement.State.COLLECTED,
+                    state = PaymentIncrementState.ERRORED,
                     paymentIncrementableId = "4",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(60),
-                    stateReason = ""
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__
                 )
             )
         }

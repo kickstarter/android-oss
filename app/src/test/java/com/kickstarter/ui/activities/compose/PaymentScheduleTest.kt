@@ -13,8 +13,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.models.PaymentIncrement
-import com.kickstarter.models.PaymentIncrement.State
 import com.kickstarter.models.PaymentIncrementAmount
+import com.kickstarter.type.PaymentIncrementState
+import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.joda.time.DateTime
 import org.junit.Before
@@ -47,35 +48,35 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
     private val samplePaymentIncrements = listOf(
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.UNATTEMPTED,
+            state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.COLLECTED,
+            state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.UNATTEMPTED,
+            state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.COLLECTED,
+            state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         )
     )
 
@@ -129,4 +130,5 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         termsOfUseText
             .assertIsDisplayed().assert(hasText(context.getString(R.string.fpo_terms_of_use)))
     }
+
 }

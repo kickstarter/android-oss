@@ -93,7 +93,10 @@
   <!-- PLOT STRINGS-->
   <string name="fpo_terms_of_use">Terms of Use</string>
   <string name="fpo_collected">Collected</string>
-  <string name="fpo_unattempted">Unattempted</string>
+  <string name="fpo_schedulled">Scheduled</string>
+  <string name="fpo_authentication_required">Authentication required</string>
+  <string name="fpo_errored_payment">Errored payment</string>
+
   <string name="fpo_payment_schedule">Payment schedule</string>
 
 </resources>

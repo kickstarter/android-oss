@@ -31,6 +31,8 @@ import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.type.PaymentIncrementState
+import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -162,10 +164,11 @@ fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, proj
                 text = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection),
                 style = typography.body2Medium,
             )
-            StatusBadge(paymentIncrement.state)
+            paymentIncrement.stateReason?.let { StatusBadge(paymentIncrement.state, it) }
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
+            //text = paymentIncrement.amount().formattedAmountWithCode().toString(),
             text = formattedAmount,
             style = typography.title3
         )
@@ -173,27 +176,45 @@ fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, proj
 }
 
 @Composable
-fun StatusBadge(state: PaymentIncrement.State) {
+fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason) {
     when (state) {
-        PaymentIncrement.State.UNATTEMPTED -> {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = colors.backgroundAccentOrangeSubtle,
-                        shape = RoundedCornerShape(8.dp)
+        PaymentIncrementState.ERRORED -> {
+            if(stateReason == PaymentIncrementStateReason.REQUIRES_ACTION){
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = colors.backgroundAccentOrangeSubtle,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+                        text = stringResource(id = R.string.fpo_authentication_required),
+                        style = typography.caption1Medium,
+                        color = colors.kds_support_400
                     )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_unattempted),
-                    style = typography.caption1Medium,
-                    color = colors.textSecondary
-                )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = colors.backgroundDangerSubtleHovered,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+                        text = stringResource(id = R.string.fpo_errored_payment),
+                        style = typography.caption1Medium,
+                        color = colors.textAccentRed
+                    )
+                }
             }
         }
 
-        PaymentIncrement.State.COLLECTED -> {
+        PaymentIncrementState.COLLECTED -> {
             Box(
                 modifier = Modifier
                     .background(
@@ -210,7 +231,24 @@ fun StatusBadge(state: PaymentIncrement.State) {
                 )
             }
         }
-
-        PaymentIncrement.State.UNKNOWN -> {}
+        PaymentIncrementState.UNATTEMPTED -> {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = colors.backgroundAccentGrayBold.copy(alpha = 0.03f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+                    text = stringResource(id = R.string.fpo_schedulled),
+                    style = typography.caption1Medium,
+                    color = colors.kds_support_400
+                )
+            }
+        }
+        PaymentIncrementState.CANCELLED -> TODO()
+        PaymentIncrementState.UNKNOWN__ -> TODO()
     }
 }

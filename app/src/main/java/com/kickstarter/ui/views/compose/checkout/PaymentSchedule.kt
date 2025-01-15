@@ -66,6 +66,20 @@ fun PreviewCollapsedPaymentScheduleWhite() {
 }
 
 // Expanded State Preview
+@Preview(showBackground = true, name = "Expanded State", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewExpandedPaymentScheduleDark() {
+    KSTheme {
+        PaymentSchedule(
+            isExpanded = true,
+            onExpandChange = {},
+            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements()
+        )
+    }
+}
+
+
+// Expanded State Preview
 @Preview(showBackground = true, name = "Expanded State")
 @Composable
 fun PreviewExpandedPaymentSchedule() {
@@ -103,6 +117,7 @@ fun PaymentSchedule(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = colors.kds_support_100)
             .padding(dimensions.paddingMedium)
     ) {
         Row(
@@ -115,6 +130,7 @@ fun PaymentSchedule(
                 modifier = Modifier.testTag(PaymentScheduleTestTags.PAYMENT_SCHEDULE_TITLE.name),
                 text = stringResource(id = R.string.fpo_payment_schedule),
                 style = typography.body2Medium,
+                color = colors.textPrimary
             )
             Icon(
                 modifier = Modifier
@@ -175,13 +191,15 @@ fun PaymentRow(
                 modifier = Modifier.testTag(PaymentScheduleTestTags.DATE_TEXT.name),
                 text = DateTimeUtils.mediumDate(paymentIncrement.scheduledCollection),
                 style = typography.body2Medium,
+                color = colors.textPrimary
             )
             paymentIncrement.stateReason?.let { StatusBadge(paymentIncrement.state, it) }
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
             text = formattedAmount,
-            style = typography.title3
+            style = typography.title3,
+            color = colors.textPrimary
         )
     }
 }
@@ -271,7 +289,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             Box(
                 modifier = Modifier
                     .background(
-                        color = colors.backgroundAccentGrayBold.copy(alpha = 0.03f),
+                        color = colors.backgroundScheduledTag,
                         shape = RoundedCornerShape(
                             topStart = dimensions.radiusSmall,
                             topEnd = dimensions.radiusSmall,

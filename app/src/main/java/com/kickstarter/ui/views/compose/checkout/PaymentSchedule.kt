@@ -78,7 +78,6 @@ fun PreviewExpandedPaymentScheduleDark() {
     }
 }
 
-
 // Expanded State Preview
 @Preview(showBackground = true, name = "Expanded State")
 @Composable

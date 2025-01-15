@@ -236,7 +236,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 Box(
                     modifier = Modifier
                         .background(
-                            color = colors.backgroundDangerSubtleHovered,
+                            color = colors.backgroundDangerSubtle,
                             shape = RoundedCornerShape(
                                 topStart = dimensions.radiusSmall,
                                 topEnd = dimensions.radiusSmall,
@@ -253,7 +253,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
                         text = stringResource(id = R.string.fpo_errored_payment),
                         style = typography.caption1Medium,
-                        color = colors.textAccentRed
+                        color = colors.textAccentRedBold
                     )
                 }
             }
@@ -289,7 +289,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             Box(
                 modifier = Modifier
                     .background(
-                        color = colors.backgroundScheduledTag,
+                        color = colors.kds_support_200,
                         shape = RoundedCornerShape(
                             topStart = dimensions.radiusSmall,
                             topEnd = dimensions.radiusSmall,

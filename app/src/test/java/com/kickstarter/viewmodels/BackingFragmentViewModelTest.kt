@@ -821,7 +821,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeStatusData_whenPlotIsAllowed() {
+    fun testPledgeStatusData_whenPlotIsAllowedAndProjectLive() {
         val mockFeatureFlagClient = object : MockFeatureFlagClient() {
             override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
@@ -834,6 +834,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val backedProject = ProjectFactory.backedProjectWithPlotSelected()
             .toBuilder()
             .deadline(deadline)
+            .state(Project.STATE_LIVE)
             .build()
 
         val environment = environment()
@@ -852,6 +853,51 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
                 R.string.You_have_selected_pledge_over_time,
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline),
+                plotData = PlotData(
+                    plotAmount = backing.paymentIncrements()
+                        ?.first()?.paymentIncrementAmount?.formattedAmount(),
+                    plotFirstScheduleCollection = backing.paymentIncrements()
+                        ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) },
+                ),
+            )
+        )
+    }
+
+    @Test
+    fun testPledgeStatusData_whenPlotIsAllowedAndProjectEnded() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val backing =
+            backingWithPaymentIncrements(PaymentIncrementFactory.samplePaymentIncrements())
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProjectWithPlotSelected()
+            .toBuilder()
+            .deadline(deadline)
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .apolloClientV2(mockApolloClientForBacking(backing))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.pledgeStatusData.assertValue(
+            PledgeStatusData(
+                R.string.We_collected_your_pledge_for_this_project,
                 expectedCurrency(environment, backedProject, 20.0),
                 DateTimeUtils.longDate(deadline),
                 plotData = PlotData(

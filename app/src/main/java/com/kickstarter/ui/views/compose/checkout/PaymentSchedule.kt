@@ -144,9 +144,11 @@ fun PaymentSchedule(
 
 @Composable
 fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, projectCurrentCurrency: String?) {
-    val formattedAmount = ksCurrency?.let {
-        ProjectViewUtils.styleCurrency(value = paymentIncrement.amount().amountAsFloat.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount().currencyCode, projectCurrentCurrency = projectCurrentCurrency)
-    }.toString()
+    //TODO: stylize currency to match PLOT designs, as outlined in ticket MBL-1992. Will use the formatted amount with code instead for now
+//    val formattedAmount = ksCurrency?.let {
+//        ProjectViewUtils.styleCurrency(value = paymentIncrement.amount().amountAsFloat.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount().currencyCode, projectCurrentCurrency = projectCurrentCurrency)
+//    }.toString()
+    val formattedAmount = paymentIncrement.amount().formattedAmountWithCode() ?: paymentIncrement.amount().formattedAmount()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,11 +166,13 @@ fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, proj
             )
             StatusBadge(paymentIncrement.state)
         }
-        Text(
-            modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            text = formattedAmount,
-            style = typography.title3
-        )
+        if (!formattedAmount.isNullOrEmpty()) {
+            Text(
+                modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
+                text = formattedAmount,
+                style = typography.title3
+            )
+        }
     }
 }
 

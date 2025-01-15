@@ -134,6 +134,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                         }.onCompletion {
                             emitCurrentState()
                         }.catch {
+                            emitCurrentState()
                             errorAction.invoke(null)
                         }.collect()
 
@@ -184,11 +185,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.catch {
                 emitCurrentState()
                 errorAction.invoke(null)
+            }.onCompletion {
+                emitCurrentState()
             }
-                .onCompletion {
-                    emitCurrentState()
-                }
-                .collect()
+            .collect()
         }
     }
 

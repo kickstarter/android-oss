@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -204,7 +203,10 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                                 bottomEnd = dimensions.radiusSmall
                             ),
                         )
-                        .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+                        .padding(
+                            horizontal = dimensions.paddingSmall,
+                            vertical = dimensions.paddingXSmall
+                        )
                 ) {
                     Text(
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
@@ -225,7 +227,10 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                                 bottomEnd = dimensions.radiusSmall
                             ),
                         )
-                        .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+                        .padding(
+                            horizontal = dimensions.paddingSmall,
+                            vertical = dimensions.paddingXSmall
+                        )
                 ) {
                     Text(
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
@@ -247,8 +252,12 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                             topEnd = dimensions.radiusSmall,
                             bottomStart = dimensions.radiusSmall,
                             bottomEnd = dimensions.radiusSmall
-                        ),                    )
-                    .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+                        ),
+                    )
+                    .padding(
+                        horizontal = dimensions.paddingSmall,
+                        vertical = dimensions.paddingXSmall
+                    )
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
@@ -269,8 +278,12 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                             topEnd = dimensions.radiusSmall,
                             bottomStart = dimensions.radiusSmall,
                             bottomEnd = dimensions.radiusSmall
-                        ),                    )
-                    .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+                        ),
+                    )
+                    .padding(
+                        horizontal = dimensions.paddingSmall,
+                        vertical = dimensions.paddingXSmall
+                    )
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),

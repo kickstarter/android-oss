@@ -132,7 +132,11 @@ fun PaymentSchedule(
         if (isExpanded) {
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
             paymentIncrements.forEach { paymentIncrement ->
-                PaymentRow(paymentIncrement, ksCurrency = ksCurrency, projectCurrentCurrency = projectCurrentCurrency)
+                PaymentRow(
+                    paymentIncrement,
+                    ksCurrency = ksCurrency,
+                    projectCurrentCurrency = projectCurrentCurrency
+                )
             }
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
             KSClickableText(
@@ -145,9 +149,18 @@ fun PaymentSchedule(
 }
 
 @Composable
-fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, projectCurrentCurrency: String?) {
+fun PaymentRow(
+    paymentIncrement: PaymentIncrement,
+    ksCurrency: KSCurrency?,
+    projectCurrentCurrency: String?
+) {
     val formattedAmount = ksCurrency?.let {
-        ProjectViewUtils.styleCurrency(value = paymentIncrement.amount().amountAsFloat.parseToDouble(), ksCurrency = it, projectCurrency = paymentIncrement.amount().currencyCode, projectCurrentCurrency = projectCurrentCurrency)
+        ProjectViewUtils.styleCurrency(
+            value = paymentIncrement.amount().amountAsFloat.parseToDouble(),
+            ksCurrency = it,
+            projectCurrency = paymentIncrement.amount().currencyCode,
+            projectCurrentCurrency = projectCurrentCurrency
+        )
     }.toString()
     Row(
         modifier = Modifier
@@ -168,7 +181,7 @@ fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, proj
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            //text = paymentIncrement.amount().formattedAmountWithCode().toString(),
+            // text = paymentIncrement.amount().formattedAmountWithCode().toString(),
             text = formattedAmount,
             style = typography.title3
         )
@@ -179,7 +192,7 @@ fun PaymentRow(paymentIncrement: PaymentIncrement, ksCurrency: KSCurrency?, proj
 fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason) {
     when (state) {
         PaymentIncrementState.ERRORED -> {
-            if(stateReason == PaymentIncrementStateReason.REQUIRES_ACTION){
+            if (stateReason == PaymentIncrementStateReason.REQUIRES_ACTION) {
                 Box(
                     modifier = Modifier
                         .background(
@@ -231,6 +244,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 )
             }
         }
+
         PaymentIncrementState.UNATTEMPTED -> {
             Box(
                 modifier = Modifier
@@ -248,6 +262,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 )
             }
         }
+
         PaymentIncrementState.CANCELLED -> TODO()
         PaymentIncrementState.UNKNOWN__ -> TODO()
     }

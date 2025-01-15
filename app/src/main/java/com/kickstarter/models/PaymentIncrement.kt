@@ -49,8 +49,8 @@ data class PaymentIncrement(
             if (stateReason != null) {
                 this.stateReason = stateReason
             }
-
         }
+
         fun build() = PaymentIncrement(
             paymentIncrementAmount = paymentIncrementAmount,
             paymentIncrementableId = paymentIncrementableId,
@@ -65,24 +65,24 @@ data class PaymentIncrement(
         var equals = super.equals(obj)
         if (obj is PaymentIncrement) {
             equals = amount() == obj.amount() &&
-                    paymentIncrementableId() == obj.paymentIncrementableId() &&
-                    paymentIncrementableType() == obj.paymentIncrementableType() &&
-                    scheduledCollection() == obj.scheduledCollection() &&
-                    state() == obj.state() &&
-                    stateReason() == obj.stateReason()
+                paymentIncrementableId() == obj.paymentIncrementableId() &&
+                paymentIncrementableType() == obj.paymentIncrementableType() &&
+                scheduledCollection() == obj.scheduledCollection() &&
+                state() == obj.state() &&
+                stateReason() == obj.stateReason()
         }
         return equals
     }
 
     fun toBuilder() = stateReason?.let {
         Builder(
-        paymentIncrementAmount = paymentIncrementAmount,
-        paymentIncrementableId = paymentIncrementableId,
-        paymentIncrementableType = paymentIncrementableType,
-        scheduledCollection = scheduledCollection,
-        state = state,
-        stateReason = stateReason,
-    )
+            paymentIncrementAmount = paymentIncrementAmount,
+            paymentIncrementableId = paymentIncrementableId,
+            paymentIncrementableType = paymentIncrementableType,
+            scheduledCollection = scheduledCollection,
+            state = state,
+            stateReason = stateReason,
+        )
     }
 
     companion object {

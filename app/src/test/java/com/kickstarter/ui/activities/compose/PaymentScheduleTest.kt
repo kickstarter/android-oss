@@ -130,5 +130,4 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         termsOfUseText
             .assertIsDisplayed().assert(hasText(context.getString(R.string.fpo_terms_of_use)))
     }
-
 }

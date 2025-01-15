@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingBinding
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -31,12 +32,15 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.BackingActivity
+import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
+import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -59,7 +63,11 @@ class BackingFragment : Fragment() {
         fun showFixPaymentMethod()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentBackingBinding.inflate(inflater, container, false)
         return binding?.root
@@ -138,7 +146,9 @@ class BackingFragment : Fragment() {
 
         this.viewModel.outputs.pledgeAmount()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
+            .subscribe {
+                binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeDate()
@@ -168,7 +178,9 @@ class BackingFragment : Fragment() {
 
         this.viewModel.outputs.receivedSectionIsGone()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it }
+            .subscribe {
+                binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.receivedSectionCreatorIsGone()
@@ -178,27 +190,41 @@ class BackingFragment : Fragment() {
 
         this.viewModel.outputs.shippingAmount()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
+            .subscribe {
+                binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingLocation()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+            .subscribe {
+                binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text =
+                    String.format("%s: %s", getString(R.string.Shipping), it)
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingSummaryIsGone()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it }
+            .subscribe {
+                binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+            .subscribe {
+                showSnackbar(
+                    view,
+                    getString(R.string.Got_it_your_changes_have_been_saved)
+                )
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.totalAmount()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
+            .subscribe {
+                binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it
+            }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.projectDataAndAddOns()
@@ -241,7 +267,11 @@ class BackingFragment : Fragment() {
             text = sb.toString()
 
             val boldPortionLength = text.toString().split(".").first().length
-            setBoldSpanOnTextView(boldPortionLength, this, resources.getColor(R.color.kds_support_400, null))
+            setBoldSpanOnTextView(
+                boldPortionLength,
+                this,
+                resources.getColor(R.color.kds_support_400, null)
+            )
 
             binding?.paymentScheduleComposeView?.setContent {
                 KSTheme {
@@ -257,13 +287,20 @@ class BackingFragment : Fragment() {
                             onExpandChange = { isExpanded.value = it },
                             paymentIncrements = paymentIncrements,
                             ksCurrency = env?.ksCurrency(),
+                            onDisclaimerClicked = { disclaimerItem ->
+                                openDisclaimerScreen(disclaimerItem, env)
+                            },
                         )
                     }
                 }
             }
         }
 
-        binding?.backingSwipeRefreshLayout?.setColorSchemeResources(R.color.kds_create_700, R.color.kds_create_500, R.color.kds_create_300)
+        binding?.backingSwipeRefreshLayout?.setColorSchemeResources(
+            R.color.kds_create_700,
+            R.color.kds_create_500,
+            R.color.kds_create_300
+        )
 
         binding?.backingSwipeRefreshLayout?.setOnRefreshListener {
             this.viewModel.inputs.refreshProject()
@@ -295,7 +332,11 @@ class BackingFragment : Fragment() {
                 "title", text.toString(),
                 "estimated_delivery_data", it
             )
-            setBoldSpanOnTextView(totalCharacters, this, resources.getColor(R.color.kds_support_400, null))
+            setBoldSpanOnTextView(
+                totalCharacters,
+                this,
+                resources.getColor(R.color.kds_support_400, null)
+            )
         }
 
         binding?.estimatedDeliveryLabel2?.apply {
@@ -318,7 +359,12 @@ class BackingFragment : Fragment() {
 
     private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView, spanColor: Int) {
         val spannable = SpannableString(textView.text)
-        spannable.setSpan(ForegroundColorSpan(spanColor), 0, numCharacters, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.setSpan(
+            ForegroundColorSpan(spanColor),
+            0,
+            numCharacters,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         spannable.setSpan(
             StyleSpan(Typeface.BOLD),
             0, numCharacters,
@@ -362,20 +408,26 @@ class BackingFragment : Fragment() {
     }
 
     private fun setBackerNumberText(it: String?) {
-        binding?.backerNumber?.text = this.viewModel.ksString?.format(getString(R.string.backer_modal_backer_number), "backer_number", it)
+        binding?.backerNumber?.text = this.viewModel.ksString?.format(
+            getString(R.string.backer_modal_backer_number),
+            "backer_number",
+            it
+        )
     }
 
     private fun setCardExpirationText(expiration: String) {
-        binding?.rewardCardDetails?.rewardCardExpirationDate?.text = this.viewModel.ksString?.format(
-            getString(R.string.Credit_card_expiration),
-            "expiration_date", expiration
-        )
+        binding?.rewardCardDetails?.rewardCardExpirationDate?.text =
+            this.viewModel.ksString?.format(
+                getString(R.string.Credit_card_expiration),
+                "expiration_date", expiration
+            )
     }
 
     private fun setCardIssuerContentDescription(cardIssuerOrStringRes: Either<String, Int>) {
         val cardIssuer = cardIssuerOrStringRes.left()
         val stringRes = cardIssuerOrStringRes.right()
-        binding?.rewardCardDetails?.rewardCardLogo?.contentDescription = stringRes?.let { getString(it) } ?: cardIssuer
+        binding?.rewardCardDetails?.rewardCardLogo?.contentDescription =
+            stringRes?.let { getString(it) } ?: cardIssuer
     }
 
     private fun setCardLastFourText(lastFour: String) {
@@ -387,7 +439,11 @@ class BackingFragment : Fragment() {
     }
 
     private fun setPledgeDateText(pledgeDate: String) {
-        binding?.backingDate?.text = this.viewModel.ksString?.format(getString(R.string.As_of_pledge_date), "pledge_date", pledgeDate)
+        binding?.backingDate?.text = this.viewModel.ksString?.format(
+            getString(R.string.As_of_pledge_date),
+            "pledge_date",
+            pledgeDate
+        )
     }
 
     private fun setPledgeStatusText(pledgeStatusData: PledgeStatusData) {
@@ -412,6 +468,7 @@ class BackingFragment : Fragment() {
                         )
                     }
                 }
+
                 R.string.You_have_selected_pledge_over_time -> {
                     this.viewModel.ksString?.let { ksString ->
                         ksString.format(
@@ -421,6 +478,7 @@ class BackingFragment : Fragment() {
                         )
                     }
                 }
+
                 else -> getString(it)
             }
         }
@@ -428,7 +486,12 @@ class BackingFragment : Fragment() {
         pledgeStatusText?.let { statusText ->
             val spannablePledgeStatus = SpannableString(statusText)
             pledgeStatusData.pledgeTotal?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
-            pledgeStatusData.projectDeadline?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
+            pledgeStatusData.projectDeadline?.let {
+                ViewUtils.addBoldSpan(
+                    spannablePledgeStatus,
+                    it
+                )
+            }
 
             binding?.backerPledgeStatus?.text = spannablePledgeStatus
         } ?: run {
@@ -443,8 +506,27 @@ class BackingFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        binding?.rewardAddOnRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding?.rewardAddOnRecycler?.layoutManager =
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding?.rewardAddOnRecycler?.adapter = rewardsAndAddOnsAdapter
+    }
+
+    private fun openDisclaimerScreen(disclaimerItem: DisclaimerItems, environment: Environment?) {
+        environment?.let {
+            activity?.startDisclaimerChromeTab(disclaimerItem, it)
+        } ?: run {
+            context?.let {
+                activity?.runOnUiThread {
+                    binding?.root?.let { rootView ->
+                        showErrorToast(
+                            it,
+                            rootView,
+                            getString(R.string.general_error_something_wrong)
+                        )
+                    }
+                }
+            }
+        }
     }
 
     override fun onDetach() {

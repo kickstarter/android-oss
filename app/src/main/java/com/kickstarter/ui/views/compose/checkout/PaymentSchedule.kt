@@ -34,6 +34,7 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.extensions.findCurrencySymbolIndex
+import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.PaymentIncrementFactory
@@ -196,9 +197,9 @@ private fun paymentIncrementStyledCurrency(
     ksCurrency: KSCurrency?
 ): AnnotatedString {
     val country = Country.findByCurrencyCode(paymentIncrement.amount().currencyCode ?: "")
-    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, true) } ?: ""
+    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, false) } ?: ""
 
-    val currencyToFormat = "$country$currencySymbol ${paymentIncrement.amount().amountAsFloat}"
+    val currencyToFormat = "${currencySymbol.trimAllWhitespace()} ${paymentIncrement.amount().amountAsFloat}"
     val annotatedString = currencyToFormat.let {
         return@let buildAnnotatedString {
             val currencySymbolIndex = it.findCurrencySymbolIndex()

@@ -787,6 +787,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .amount(paymentIncrementAmount)
             .scheduledCollection(scheduleCollection)
             .state(it.paymentIncrement.state)
+            .stateReason(it.paymentIncrement.stateReason)
             .build()
     }
 

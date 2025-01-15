@@ -197,9 +197,14 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                     modifier = Modifier
                         .background(
                             color = colors.backgroundAccentOrangeSubtle,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(
+                                topStart = dimensions.radiusSmall,
+                                topEnd = dimensions.radiusSmall,
+                                bottomStart = dimensions.radiusSmall,
+                                bottomEnd = dimensions.radiusSmall
+                            ),
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
                 ) {
                     Text(
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
@@ -213,9 +218,14 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                     modifier = Modifier
                         .background(
                             color = colors.backgroundDangerSubtleHovered,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(
+                                topStart = dimensions.radiusSmall,
+                                topEnd = dimensions.radiusSmall,
+                                bottomStart = dimensions.radiusSmall,
+                                bottomEnd = dimensions.radiusSmall
+                            ),
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
                 ) {
                     Text(
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
@@ -232,9 +242,13 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 modifier = Modifier
                     .background(
                         color = colors.textAccentGreen.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                        shape = RoundedCornerShape(
+                            topStart = dimensions.radiusSmall,
+                            topEnd = dimensions.radiusSmall,
+                            bottomStart = dimensions.radiusSmall,
+                            bottomEnd = dimensions.radiusSmall
+                        ),                    )
+                    .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
@@ -250,9 +264,13 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 modifier = Modifier
                     .background(
                         color = colors.backgroundAccentGrayBold.copy(alpha = 0.03f),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                        shape = RoundedCornerShape(
+                            topStart = dimensions.radiusSmall,
+                            topEnd = dimensions.radiusSmall,
+                            bottomStart = dimensions.radiusSmall,
+                            bottomEnd = dimensions.radiusSmall
+                        ),                    )
+                    .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),

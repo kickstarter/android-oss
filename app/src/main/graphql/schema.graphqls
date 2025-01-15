@@ -224,6 +224,11 @@ type User implements Node {
   backedProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackedProjectsConnection
 
   """
+  Count of pledges with pending action
+  """
+  backingActionCount: Int
+
+  """
   A user's backings.
   """
   backings("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filter backings to only those with this status" status: BackingState): UserBackingsConnection
@@ -739,8 +744,6 @@ enum Feature {
 
   web_braze
 
-  ccp_search_projects
-
   global_nav_2023
 
   late_pledges_learn_more_cta
@@ -789,8 +792,6 @@ enum Feature {
 
   backers_can_choose_plot_v1
 
-  backer_survey_intro_2024
-
   sepa_debit_payment_element
 
   trust_and_safety_project_banner
@@ -806,6 +807,10 @@ enum Feature {
   react_backed_projects
 
   copy_addons
+
+  KDS_messages_app
+
+  pledge_management_refunds
 }
 
 """
@@ -1709,6 +1714,11 @@ type Project implements Node & Commentable {
   The project's pid.
   """
   pid: Int!
+
+  """
+  The minimum pledge amount to be eligible for PLOT, localized to the project currency and backer language
+  """
+  pledgeOverTimeMinimumExplanation: String
 
   """
   How much money is pledged to the project.
@@ -4727,7 +4737,10 @@ enum CheckoutStateEnum {
 }
 
 type PaymentIncrement {
-  amount: Money!
+  """
+  The payment increment amount represented in various formats
+  """
+  amount: PaymentIncrementAmount!
 
   id: ID
 
@@ -4746,6 +4759,36 @@ type PaymentIncrement {
 An ISO 8601-encoded datetime
 """
 scalar ISO8601DateTime
+
+"""
+Representations of the payment increment amount with cents, float, and currency variations
+"""
+type PaymentIncrementAmount {
+  """
+  The increment amount in the smallest denomination of the currency, ie 3750 for the USD currency
+  """
+  amountAsCents: String!
+
+  """
+  The increment amount represented as a float, ie 37.50 for the USD currency
+  """
+  amountAsFloat: String!
+
+  """
+  The increment amount represented as a float with the currency symbol, ie $37.50
+  """
+  amountFormattedInProjectNativeCurrency: String!
+
+  """
+  The increment amount represented as a float with the currency symbol and three-letter currency code, ie $37.50 USD
+  """
+  amountFormattedInProjectNativeCurrencyWithCurrencyCode: String!
+
+  """
+  A three-letter currency code for the increment (ie the currency of the project)
+  """
+  currency: String!
+}
 
 """
 An adjustment summary.
@@ -4789,14 +4832,27 @@ type Adjustment {
   metadata: AdjustmentMetadata!
 
   """
-  Rosie Stripe transaction ID
+  State of associated refund checkout
   """
-  transactionKey: String
+  refundCheckoutState: RefundCheckoutState
 
   """
   Timestamp at which adjustment was last updated
   """
   updatedAt: ISO8601DateTime!
+}
+
+"""
+All available states for a refund checkout
+"""
+enum RefundCheckoutState {
+  AUTHORIZING
+
+  SUCCESSFUL
+
+  ERRORED
+
+  FAILED
 }
 
 """
@@ -9265,19 +9321,6 @@ type RefundCheckout {
   The full URL to redirect to after payment setup via Stripe in refunds
   """
   stripePaymentSetupRedirectUrl: String!
-}
-
-"""
-All available states for a refund checkout
-"""
-enum RefundCheckoutState {
-  AUTHORIZING
-
-  SUCCESSFUL
-
-  ERRORED
-
-  FAILED
 }
 
 """

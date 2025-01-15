@@ -180,7 +180,6 @@ fun PaymentRow(
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            // text = paymentIncrement.amount().formattedAmountWithCode().toString(),
             text = formattedAmount,
             style = typography.title3
         )

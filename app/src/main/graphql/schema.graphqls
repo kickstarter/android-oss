@@ -744,15 +744,11 @@ enum Feature {
 
   web_braze
 
-  global_nav_2023
-
   late_pledges_learn_more_cta
 
   post_campaign_backings_2024
 
   ckeditor_project_updates
-
-  backer_discovery_features_2023
 
   payments_stripe_link_on_checkout
 
@@ -2332,6 +2328,11 @@ type Backing implements Node {
   Payment source used on a backing.
   """
   paymentSource: PaymentSource
+
+  """
+  If the payout for the backing has happened
+  """
+  payoutStarted: Boolean!
 
   """
   When the backing was created
@@ -4750,15 +4751,44 @@ type PaymentIncrement {
 
   scheduledCollection: ISO8601DateTime!
 
-  state: String!
+  state: PaymentIncrementState!
 
-  stateReason: String
+  stateReason: PaymentIncrementStateReason
 }
 
 """
 An ISO 8601-encoded datetime
 """
 scalar ISO8601DateTime
+
+enum PaymentIncrementState {
+  """
+  The initial state of the payment increment; payment source has not been charged
+  """
+  UNATTEMPTED
+
+  """
+  Payment source was successfully charged
+  """
+  COLLECTED
+
+  """
+  Payment source could not be charged due to an errored payment source or authentication being required
+  """
+  ERRORED
+
+  """
+  Payment increment is cancelled by user action or is an abandoned increment due to failure to complete payment
+  """
+  CANCELLED
+}
+
+enum PaymentIncrementStateReason {
+  """
+  The payment source has attempted to be charged, but issuer requires additional authentication to complete the payment
+  """
+  REQUIRES_ACTION
+}
 
 """
 Representations of the payment increment amount with cents, float, and currency variations
@@ -14451,7 +14481,10 @@ input CreateAdjustmentInput {
   """
   intentClientSecret: String
 
-  paymentSourceId: String
+  """
+  Stripe Payment Source ID
+  """
+  paymentSourceId: ID
 
   """
   A unique identifier for the client performing the mutation.

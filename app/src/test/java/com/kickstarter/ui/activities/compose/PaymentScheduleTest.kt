@@ -13,6 +13,10 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.mock.MockCurrentConfigV2
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.type.PaymentIncrementState
@@ -415,5 +419,30 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
         badgeText.assertAll(hasText(context.getString(R.string.fpo_cancelled)))
+    }
+
+    @Test
+    fun testPaymentScheduleAmountsText() {
+        composeTestRule.setContent {
+            KSTheme {
+                val config = ConfigFactory.configForUSUser()
+
+                val currentConfig = MockCurrentConfigV2()
+                currentConfig.config(config)
+                val mockCurrency = KSCurrency(currentConfig)
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements(),
+                    ksCurrency = mockCurrency
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        amountText.assertCountEquals(5)
+
+        // Assert Currency text
+        amountText.assertAll(hasText("US$ 99.75", ignoreCase = true))
     }
 }

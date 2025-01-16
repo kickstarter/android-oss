@@ -22,12 +22,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ProjectViewUtils
-import com.kickstarter.libs.utils.extensions.parseToDouble
+import com.kickstarter.libs.utils.extensions.findCurrencySymbolIndex
+import com.kickstarter.libs.utils.extensions.trimAllWhitespace
+import com.kickstarter.mock.MockCurrentConfigV2
+import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.type.PaymentIncrementState
@@ -65,6 +73,16 @@ fun PreviewCollapsedPaymentScheduleWhite() {
     }
 }
 
+private fun getMockKSCurrencyForUS(): KSCurrency {
+    val config = ConfigFactory.configForUSUser()
+
+    val currentConfig = MockCurrentConfigV2()
+    currentConfig.config(config)
+    val mockCurrency = KSCurrency(currentConfig)
+
+    return mockCurrency
+}
+
 // Expanded State Preview
 @Preview(showBackground = true, name = "Expanded State", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -73,7 +91,8 @@ fun PreviewExpandedPaymentScheduleDark() {
         PaymentSchedule(
             isExpanded = true,
             onExpandChange = {},
-            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements()
+            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements(),
+            ksCurrency = getMockKSCurrencyForUS()
         )
     }
 }
@@ -86,7 +105,8 @@ fun PreviewExpandedPaymentSchedule() {
         PaymentSchedule(
             isExpanded = true,
             onExpandChange = {},
-            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements()
+            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements(),
+            ksCurrency = getMockKSCurrencyForUS()
         )
     }
 }
@@ -99,7 +119,8 @@ fun InteractivePaymentSchedulePreview() {
         PaymentSchedule(
             isExpanded = isExpanded,
             onExpandChange = { isExpanded = it },
-            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements()
+            paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements(),
+            ksCurrency = getMockKSCurrencyForUS()
         )
     }
 }
@@ -148,8 +169,7 @@ fun PaymentSchedule(
             paymentIncrements.forEach { paymentIncrement ->
                 PaymentRow(
                     paymentIncrement,
-                    ksCurrency = ksCurrency,
-                    projectCurrentCurrency = projectCurrentCurrency
+                    ksCurrency = ksCurrency
                 )
             }
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
@@ -165,17 +185,8 @@ fun PaymentSchedule(
 @Composable
 fun PaymentRow(
     paymentIncrement: PaymentIncrement,
-    ksCurrency: KSCurrency?,
-    projectCurrentCurrency: String?
+    ksCurrency: KSCurrency?
 ) {
-    val formattedAmount = ksCurrency?.let {
-        ProjectViewUtils.styleCurrency(
-            value = paymentIncrement.amount().amountAsFloat.parseToDouble(),
-            ksCurrency = it,
-            projectCurrency = paymentIncrement.amount().currencyCode,
-            projectCurrentCurrency = projectCurrentCurrency
-        )
-    }.toString()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -196,11 +207,53 @@ fun PaymentRow(
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            text = formattedAmount,
+            text = paymentIncrementStyledCurrency(paymentIncrement, ksCurrency),
             style = typography.title3,
             color = colors.textPrimary
         )
     }
+}
+
+@Composable
+private fun paymentIncrementStyledCurrency(
+    paymentIncrement: PaymentIncrement,
+    ksCurrency: KSCurrency?
+): AnnotatedString {
+    val country = Country.findByCurrencyCode(paymentIncrement.amount().currencyCode ?: "")
+    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, false) } ?: ""
+
+    val currencyToFormat = "${currencySymbol.trimAllWhitespace()} ${paymentIncrement.amount().amountAsFloat}"
+    val annotatedString = currencyToFormat.let {
+        return@let buildAnnotatedString {
+            val currencySymbolIndex = it.findCurrencySymbolIndex()
+            val dotIndex = it.indexOf('.')
+
+            if (currencySymbolIndex != null && dotIndex != -1) {
+                // Append "USD $" with smaller size and top alignment
+                withStyle(
+                    style = SpanStyle(
+                        fontSize = typography.title3.fontSize * 0.6f, // Relative to typography style
+                        baselineShift = BaselineShift(0.25f) // Align on top
+                    )
+                ) {
+                    append(it.substring(0, currencySymbolIndex + 1))
+                }
+                append(it.substring(currencySymbolIndex + 1, dotIndex))
+                // Append ".75" with smaller size and top alignment
+                withStyle(
+                    style = SpanStyle(
+                        fontSize = typography.title3.fontSize * 0.6f, // Relative to typography style
+                        baselineShift = BaselineShift(0.25f) // Align on top
+                    )
+                ) {
+                    append(it.substring(dotIndex))
+                }
+            } else {
+                append(it)
+            }
+        }
+    }
+    return annotatedString
 }
 
 @Composable

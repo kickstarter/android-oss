@@ -175,6 +175,7 @@ data class KSCustomColors(
     val backgroundAccentGraySubtle: Color = Color.Unspecified,
     val backgroundWarningBold: Color = Color.Unspecified,
     val backgroundWarningSubtle: Color = Color.Unspecified,
+    val backgroundScheduledTag: Color = Color.Unspecified,
 
     // Border Colors
     val borderAccentBlueBold: Color = Color.Unspecified,
@@ -288,6 +289,7 @@ val KSLightCustomColors = KSCustomColors(
     backgroundAccentGraySubtle = grey_02,
     backgroundWarningBold = yellow_06,
     backgroundWarningSubtle = yellow_02,
+    backgroundScheduledTag = grey_04,
 
     // Border Colors
     borderAccentBlueBold = blue_08,
@@ -398,6 +400,7 @@ val KSDarkCustomColors = KSCustomColors(
     backgroundAccentGraySubtle = grey_09,
     backgroundWarningBold = yellow_05,
     backgroundWarningSubtle = yellow_10,
+    backgroundScheduledTag = grey_07,
 
     // Border Colors
     borderAccentBlueBold = blue_03,

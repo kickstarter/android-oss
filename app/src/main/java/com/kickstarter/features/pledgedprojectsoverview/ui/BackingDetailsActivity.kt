@@ -1,9 +1,15 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -13,12 +19,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.BackingDetailsViewModel
 import kotlinx.coroutines.launch
-import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
+
 const val REFRESH = "refresh"
 
 class BackingDetailsActivity : AppCompatActivity() {

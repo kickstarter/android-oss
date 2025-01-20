@@ -148,41 +148,4 @@ object ProjectViewUtils {
 
         return styledCurrency.trim()
     }
-
-    /**
-     * Returns a CharSequence representing a value in a project's currency based on a user's locale.
-     * The precision is shrunken and centered if the number is not whole.
-     * The currency symbol is shrunken and centered.
-     * Special case: US people looking at US currency just get the currency symbol.
-     */
-    fun styleCurrency(
-        value: Double,
-        projectCurrency: String?,
-        projectCurrentCurrency: String?,
-        ksCurrency: KSCurrency,
-    ): CharSequence {
-        val spannedDigits = styleCurrency(value)
-
-        val formattedCurrency = ksCurrency.format(initialValue = value, projectCurrency = projectCurrency, projectCurrentCurrency = projectCurrentCurrency, roundingMode = RoundingMode.HALF_UP)
-
-        val country = projectCurrency?.let { Country.findByCurrencyCode(it) }
-            ?: return SpannableStringBuilder()
-
-        val currencySymbolToDisplay = ksCurrency.getCurrencySymbol(country, true)
-
-        val spannedCurrencySymbol = SpannableString(currencySymbolToDisplay)
-
-        val startOfSymbol = 0
-        val endOfSymbol = currencySymbolToDisplay.length
-        spannedCurrencySymbol.setSpan(RelativeSizeSpan(.6f), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannedCurrencySymbol.setSpan(CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        val styledCurrency = if (formattedCurrency.startsWith(currencySymbolToDisplay.trimAllWhitespace())) {
-            TextUtils.concat(spannedCurrencySymbol, spannedDigits)
-        } else {
-            TextUtils.concat(spannedDigits, spannedCurrencySymbol)
-        }
-
-        return styledCurrency.trim()
-    }
 }

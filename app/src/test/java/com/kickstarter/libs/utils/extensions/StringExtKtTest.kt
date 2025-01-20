@@ -266,6 +266,20 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertNull(null.toInteger())
     }
 
+    @Test
+    fun findCurrencySymbolIndex_whenCurrencySymbolIsMultiple_returnsFirstIndex() {
+        val text = "USD $123.45 €"
+        val index = text.findCurrencySymbolIndex()
+        assertEquals(index, 4)
+    }
+
+    @Test
+    fun findCurrencySymbolIndex_whenNoCurrencySymbolIsPresent_returnsNull() {
+        val text = "123.45"
+        val index = text.findCurrencySymbolIndex()
+        assertNull(index)
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val VALID_GIF_URL = "https://i.kickstarter.com/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?origin=ugc-qa&q=92&sig=C1dWB6NvmlwKGw4lty6s4FGU6Dn3rzNv%2F3p%2B4bhSpzk%3D"

@@ -1,6 +1,8 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
+import com.kickstarter.type.PaymentIncrementState
+import com.kickstarter.type.PaymentIncrementStateReason
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
@@ -10,8 +12,8 @@ data class PaymentIncrement(
     val paymentIncrementableId: String,
     val paymentIncrementableType: String,
     val scheduledCollection: DateTime,
-    val state: State,
-    val stateReason: String?
+    val state: PaymentIncrementState,
+    val stateReason: PaymentIncrementStateReason?
 ) : Parcelable {
     fun amount() = this.paymentIncrementAmount
     fun paymentIncrementableId() = this.paymentIncrementableId
@@ -22,19 +24,33 @@ data class PaymentIncrement(
 
     @Parcelize
     data class Builder(
-        private var paymentIncrementAmount: PaymentIncrementAmount = PaymentIncrementAmount.builder().build(),
+        private var paymentIncrementAmount: PaymentIncrementAmount = PaymentIncrementAmount.builder()
+            .build(),
         private var paymentIncrementableId: String = "",
         private var paymentIncrementableType: String = "",
         private var scheduledCollection: DateTime = DateTime.now(),
-        private var state: State = State.UNKNOWN,
-        private var stateReason: String? = null
+        private var state: PaymentIncrementState = PaymentIncrementState.UNKNOWN__,
+        private var stateReason: PaymentIncrementStateReason = PaymentIncrementStateReason.UNKNOWN__,
     ) : Parcelable {
-        fun amount(paymentIncrementAmount: PaymentIncrementAmount) = apply { this.paymentIncrementAmount = paymentIncrementAmount }
-        fun paymentIncrementableId(paymentIncrementableId: String) = apply { this.paymentIncrementableId = paymentIncrementableId }
-        fun paymentIncrementableType(paymentIncrementableType: String) = apply { this.paymentIncrementableType = paymentIncrementableType }
-        fun scheduledCollection(scheduledCollection: DateTime) = apply { this.scheduledCollection = scheduledCollection }
-        fun state(state: State) = apply { this.state = state }
-        fun stateReason(stateReason: String?) = apply { this.stateReason = stateReason }
+        fun amount(paymentIncrementAmount: PaymentIncrementAmount) =
+            apply { this.paymentIncrementAmount = paymentIncrementAmount }
+
+        fun paymentIncrementableId(paymentIncrementableId: String) =
+            apply { this.paymentIncrementableId = paymentIncrementableId }
+
+        fun paymentIncrementableType(paymentIncrementableType: String) =
+            apply { this.paymentIncrementableType = paymentIncrementableType }
+
+        fun scheduledCollection(scheduledCollection: DateTime) =
+            apply { this.scheduledCollection = scheduledCollection }
+
+        fun state(state: PaymentIncrementState) = apply { this.state = state }
+        fun stateReason(stateReason: PaymentIncrementStateReason?) = apply {
+            if (stateReason != null) {
+                this.stateReason = stateReason
+            }
+        }
+
         fun build() = PaymentIncrement(
             paymentIncrementAmount = paymentIncrementAmount,
             paymentIncrementableId = paymentIncrementableId,
@@ -58,30 +74,19 @@ data class PaymentIncrement(
         return equals
     }
 
-    fun toBuilder() = Builder(
-        paymentIncrementAmount = paymentIncrementAmount,
-        paymentIncrementableId = paymentIncrementableId,
-        paymentIncrementableType = paymentIncrementableType,
-        scheduledCollection = scheduledCollection,
-        state = state,
-        stateReason = stateReason,
-    )
+    fun toBuilder() = stateReason?.let {
+        Builder(
+            paymentIncrementAmount = paymentIncrementAmount,
+            paymentIncrementableId = paymentIncrementableId,
+            paymentIncrementableType = paymentIncrementableType,
+            scheduledCollection = scheduledCollection,
+            state = state,
+            stateReason = stateReason,
+        )
+    }
 
     companion object {
         @JvmStatic
         fun builder() = Builder()
-    }
-
-    enum class State(val rawValue: String) {
-        COLLECTED("collected"),
-        UNATTEMPTED("unattempted"),
-        UNKNOWN("unknown");
-
-        companion object {
-            fun fromRawValue(value: String): State {
-                // Return the matched state or UNKNOWN for unrecognized values
-                return values().find { it.rawValue == value } ?: UNKNOWN
-            }
-        }
     }
 }

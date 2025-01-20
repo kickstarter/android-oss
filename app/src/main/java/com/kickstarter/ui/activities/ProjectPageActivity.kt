@@ -652,7 +652,7 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
-                        isLoading = addOnsIsLoading || checkoutLoading || rewardLoading,
+                        isLoading = addOnsIsLoading || rewardLoading,
                         onAddOnsContinueClicked = {
                             // - if user not logged at this point, start login Flow, and provide after login completed callback
                             checkoutFlowViewModel.onContinueClicked(
@@ -1360,7 +1360,10 @@ class ProjectPageActivity :
                 override fun onSuccess(result: PaymentIntentResult) {
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
                         latePledgeCheckoutViewModel.completeOnSessionCheckoutFor3DS()
-                    } else showToastError()
+                    } else {
+                        latePledgeCheckoutViewModel.clear3DSValues()
+                        showToastError()
+                    }
                 }
 
                 override fun onError(e: Exception) {

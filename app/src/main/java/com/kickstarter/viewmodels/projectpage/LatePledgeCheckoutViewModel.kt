@@ -221,6 +221,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             pledgeButtonClickedJob = viewModelScope.launch {
                 val project = it.projectData().project()
 
+                buttonEnabled = false
+                emitCurrentState(isLoading = true)
+
                 if (paymentIntent == null)
                     createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
 
@@ -259,10 +262,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     )
                 )
                     .asFlow()
-                    .onStart {
-                        buttonEnabled = false
-                        emitCurrentState(isLoading = true)
-                    }.map { clientSecret ->
+                    .map { clientSecret ->
                         paymentIntent = clientSecret
                         selectedCard?.let {
                             checkoutId?.let {
@@ -370,14 +370,16 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     paymentIntentClientSecret = clientSecretFor3DSVerification,
                     paymentSourceId = if (selectedCardFor3DSVerification == newStoredCard) null else selectedCardFor3DSVerification?.id() ?: "",
                     paymentSourceReusable = true
-                ).asFlow().map { iDRequiresActionPair ->
+                ).asFlow()
+                .onStart {
+                    emitCurrentState(isLoading = true)
+                }
+                .map { iDRequiresActionPair ->
                     if (iDRequiresActionPair.second) {
                         mutablePaymentRequiresAction.emit(clientSecretFor3DSVerification)
                     } else {
                         mutableOnPledgeSuccessAction.emit(true)
                     }
-                }.onStart {
-                    emitCurrentState(isLoading = true)
                 }.onCompletion {
                     emitCurrentState()
                 }.catch {
@@ -392,8 +394,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun clear3DSValues() {
+        buttonEnabled = true
         clientSecretFor3DSVerification = ""
         selectedCardFor3DSVerification = null
+
+        viewModelScope.launch {
+            emitCurrentState()
+        }
     }
 
     private fun createCheckoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout? = null): CheckoutData {

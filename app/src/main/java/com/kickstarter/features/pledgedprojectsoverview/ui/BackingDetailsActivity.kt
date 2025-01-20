@@ -14,12 +14,9 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.BackingDetailsViewModel
 import kotlinx.coroutines.launch
 import android.view.ViewGroup
-import androidx.activity.addCallback
-import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 const val REFRESH = "refresh"
@@ -45,7 +42,6 @@ class BackingDetailsActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                // Apply the left, right, top, and bottom margins based on the insets
                 leftMargin = insets.left
                 bottomMargin = insets.bottom
                 rightMargin = insets.right

@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
@@ -130,17 +129,15 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     apolloClient.userPrivacy().asFlow()
                         .onStart {
                             emitCurrentState(isLoading = true)
-                        }
-                        .combine(apolloClient.getStoredCards().asFlow()) { userPrivacy, cards ->
+                        }.map { userPrivacy ->
                             userEmail = userPrivacy.email
-                            storedCards = cards
-                        }
-                        .onCompletion {
+                        }.onCompletion {
                             emitCurrentState()
                         }.catch {
-                            emitCurrentState()
                             errorAction.invoke(null)
                         }.collect()
+
+                    refreshUserCards()
                 }
             }?.catch {
                 errorAction.invoke(null)
@@ -371,21 +368,21 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     paymentSourceId = if (selectedCardFor3DSVerification == newStoredCard) null else selectedCardFor3DSVerification?.id() ?: "",
                     paymentSourceReusable = true
                 ).asFlow()
-                .onStart {
-                    emitCurrentState(isLoading = true)
-                }
-                .map { iDRequiresActionPair ->
-                    if (iDRequiresActionPair.second) {
-                        mutablePaymentRequiresAction.emit(clientSecretFor3DSVerification)
-                    } else {
-                        mutableOnPledgeSuccessAction.emit(true)
+                    .onStart {
+                        emitCurrentState(isLoading = true)
                     }
-                }.onCompletion {
-                    emitCurrentState()
-                }.catch {
-                    errorAction.invoke(null)
-                    clear3DSValues()
-                }.collect()
+                    .map { iDRequiresActionPair ->
+                        if (iDRequiresActionPair.second) {
+                            mutablePaymentRequiresAction.emit(clientSecretFor3DSVerification)
+                        } else {
+                            mutableOnPledgeSuccessAction.emit(true)
+                        }
+                    }.onCompletion {
+                        emitCurrentState()
+                    }.catch {
+                        errorAction.invoke(null)
+                        clear3DSValues()
+                    }.collect()
             } else {
                 errorAction.invoke(null)
                 clear3DSValues()

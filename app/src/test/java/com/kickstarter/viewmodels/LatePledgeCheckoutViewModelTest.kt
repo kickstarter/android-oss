@@ -42,7 +42,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test_when_loading_called_then_state_shows_loading`() = runTest {
+    fun `test loading() with emmit isLoading = true and isPledgeButtonEnabled= false`() = runTest {
         setUpEnvironment(environment())
 
         val state = mutableListOf<LatePledgeCheckoutUIState>()
@@ -51,10 +51,14 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         }
 
         viewModel.loading()
+
+        advanceUntilIdle()
+        assertEquals(state.size, 2)
         assertEquals(
             state.last(),
             LatePledgeCheckoutUIState(
-                isLoading = true
+                isLoading = true,
+                isPledgeButtonEnabled = false
             )
         )
     }
@@ -667,6 +671,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(state.last().storeCards.first(), cardsList.first())
         assertEquals(state.last().storeCards.last(), cardsList.last())
         assertEquals(state.last().isLoading, false)
+        assertEquals(state.last().isPledgeButtonEnabled, true)
     }
 
     @Test

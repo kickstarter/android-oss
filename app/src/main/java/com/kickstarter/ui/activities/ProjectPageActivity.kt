@@ -652,7 +652,7 @@ class ProjectPageActivity :
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
-                        isLoading = addOnsIsLoading || rewardLoading || checkoutLoading,
+                        isLoading = addOnsIsLoading || checkoutLoading || rewardLoading,
                         onAddOnsContinueClicked = {
                             // - if user not logged at this point, start login Flow, and provide after login completed callback
                             checkoutFlowViewModel.onContinueClicked(

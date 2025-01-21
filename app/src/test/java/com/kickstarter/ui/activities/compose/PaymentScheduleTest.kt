@@ -299,7 +299,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         composeTestRule.waitForIdle()
 
         // Assert title and expand icon are displayed
-        title.assertIsDisplayed().assert(hasText(context.getString(R.string.fpo_payment_schedule)))
+        title.assertIsDisplayed().assert(hasText(context.getString(R.string.Payment_schedule)))
         expandIcon.assertIsDisplayed()
 
         // Assert that payment details and terms of use are not displayed
@@ -323,7 +323,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         composeTestRule.waitForIdle()
 
         // Assert title and expand icon are displayed
-        title.assertIsDisplayed().assert(hasText(context.getString(R.string.fpo_payment_schedule)))
+        title.assertIsDisplayed().assert(hasText(context.getString(R.string.Payment_schedule)))
         expandIcon.assertIsDisplayed()
 
         // Assert that payment details are displayed
@@ -332,7 +332,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         badgeText.assertCountEquals(samplePaymentIncrements.size)
 
         termsOfUseText
-            .assertIsDisplayed().assert(hasText(context.getString(R.string.fpo_terms_of_use)))
+            .assertIsDisplayed().assert(hasText(context.getString(R.string.profile_settings_about_terms)))
     }
 
     @Test
@@ -350,7 +350,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_collected)))
+        badgeText.assertAll(hasText(context.getString(R.string.project_view_pledge_status_collected)))
     }
 
     @Test
@@ -367,7 +367,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_scheduled)))
+        badgeText.assertAll(hasText(context.getString(R.string.Scheduled)))
     }
 
     @Test
@@ -384,7 +384,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_authentication_required)))
+        badgeText.assertAll(hasText(context.getString(R.string.Authentication_required)))
     }
 
     @Test
@@ -401,7 +401,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_errored_payment)))
+        badgeText.assertAll(hasText(context.getString(R.string.Errored_payment)))
     }
 
     @Test
@@ -418,7 +418,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_cancelled)))
+        badgeText.assertAll(hasText(context.getString(R.string.project_view_pledge_status_canceled)))
     }
 
     @Test

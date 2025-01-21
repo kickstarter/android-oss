@@ -400,8 +400,11 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             }
             advanceUntilIdle()
 
+            assertEquals(state.size, 5)
+            assertEquals(state[3].isPledgeButtonEnabled, false)
             assertEquals(state.last().storeCards, cardList)
             assertEquals(state.last().userEmail, "some@email.com")
+            assertEquals(state.last().isPledgeButtonEnabled, false)
 
             // Stripe will give an error since this is mock data
             assertEquals(errorActionCount, 1)

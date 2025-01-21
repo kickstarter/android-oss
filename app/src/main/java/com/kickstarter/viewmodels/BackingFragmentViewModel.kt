@@ -598,8 +598,8 @@ interface BackingFragmentViewModel {
                                 R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline
                             }
                         }
-
                         Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
+                        Backing.STATUS_AUTHENTICATION_REQUIRED -> R.string.fpo_authentication_required_backing_state
                         else -> null
                     }
                 }

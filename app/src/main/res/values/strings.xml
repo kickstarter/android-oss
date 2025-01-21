@@ -97,7 +97,11 @@
   <string name="fpo_authentication_required">Authentication required</string>
   <string name="fpo_errored_payment">Errored payment</string>
   <string name="fpo_cancelled">Cancelled</string>
-
   <string name="fpo_payment_schedule">Payment schedule</string>
+
+  <!--TODO: Get design fot this string for Backing state authentication_required-->
+  <string name="fpo_authentication_required_backing_state">We can\'t process your pledge. Authentication is required.</string>
+
+
 
 </resources>

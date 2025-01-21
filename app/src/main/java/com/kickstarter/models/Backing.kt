@@ -236,7 +236,8 @@ class Backing private constructor(
         STATUS_DROPPED,
         STATUS_ERRORED,
         STATUS_PLEDGED,
-        STATUS_PREAUTH
+        STATUS_PREAUTH,
+        STATUS_AUTHENTICATION_REQUIRED
     )
     annotation class Status
 
@@ -250,5 +251,6 @@ class Backing private constructor(
         const val STATUS_ERRORED = "errored"
         const val STATUS_PLEDGED = "pledged"
         const val STATUS_PREAUTH = "preauth"
+        const val STATUS_AUTHENTICATION_REQUIRED = "authentication_required"
     }
 }

@@ -148,7 +148,7 @@ fun PaymentSchedule(
         ) {
             Text(
                 modifier = Modifier.testTag(PaymentScheduleTestTags.PAYMENT_SCHEDULE_TITLE.name),
-                text = stringResource(id = R.string.fpo_payment_schedule),
+                text = stringResource(id = R.string.Payment_schedule),
                 style = typography.body2Medium,
                 color = colors.textPrimary
             )
@@ -175,7 +175,7 @@ fun PaymentSchedule(
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
             KSClickableText(
                 modifier = Modifier.testTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name),
-                resourceId = R.string.fpo_terms_of_use,
+                resourceId = R.string.profile_settings_about_terms,
                 clickCallback = { onDisclaimerClicked.invoke(DisclaimerItems.TERMS) }
             )
         }
@@ -279,7 +279,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 ) {
                     Text(
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                        text = stringResource(id = R.string.fpo_authentication_required),
+                        text = stringResource(id = R.string.Authentication_required),
                         style = typography.caption1Medium,
                         color = colors.kds_support_400
                     )
@@ -303,7 +303,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
                 ) {
                     Text(
                         modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                        text = stringResource(id = R.string.fpo_errored_payment),
+                        text = stringResource(id = R.string.Errored_payment),
                         style = typography.caption1Medium,
                         color = colors.textAccentRedBold
                     )
@@ -330,7 +330,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_collected),
+                    text = stringResource(id = R.string.project_view_pledge_status_collected),
                     style = typography.caption1Medium,
                     color = colors.textAccentGreen
                 )
@@ -356,7 +356,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_scheduled),
+                    text = stringResource(id = R.string.Scheduled),
                     style = typography.caption1Medium,
                     color = colors.kds_support_400
                 )
@@ -382,7 +382,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_cancelled),
+                    text = stringResource(id = R.string.project_view_pledge_status_canceled),
                     style = typography.caption1Medium,
                     color = colors.kds_support_400
                 )

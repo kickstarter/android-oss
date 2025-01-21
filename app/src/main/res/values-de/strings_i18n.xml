@@ -241,6 +241,7 @@ Antippen und erneut versuchen</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Gib einen Betrag unter %{max_pledge} ein.</string>
   <string name="Environmental_commitments" formatted="false">Verpflichtung zum Umweltschutz</string>
   <string name="Environmentally_friendly_factories" formatted="false">Umweltfreundliche Fertigungsanlagen</string>
+  <string name="Errored_payment" formatted="false">Fehlerhafte Zahlung</string>
   <string name="Estimated_Shipping" formatted="false">Geschätzte Versandkosten</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_colon" formatted="false">Voraussichtliche Lieferung:</string>
@@ -491,6 +492,7 @@ Antippen und erneut versuchen</string>
   <string name="Payment_method" formatted="false">Zahlungsmethode</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Payment_methods" formatted="false">Zahlungsmethoden</string>
+  <string name="Payment_schedule" formatted="false">Zahlungsübersicht</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Bitte gebe einen Betrag zwischen %{min} und %{max} ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Bitte gib einen Finanzierungsbeitrag von %{amount} oder weniger ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Bitte gib einen Finanzierungsbeitrag von mindestens %{amount} ein.</string>

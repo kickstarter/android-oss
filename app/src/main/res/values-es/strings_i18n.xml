@@ -241,6 +241,7 @@ Toca para intentar de nuevo.</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Ingresa una cantidad inferior a %{max_pledge}.</string>
   <string name="Environmental_commitments" formatted="false">Compromisos medioambientales</string>
   <string name="Environmentally_friendly_factories" formatted="false">Fábricas ecológicas</string>
+  <string name="Errored_payment" formatted="false">Pago fallido</string>
   <string name="Estimated_Shipping" formatted="false">Costo de envío estimado</string>
   <string name="Estimated_delivery" formatted="false">Entrega estimada:</string>
   <string name="Estimated_delivery_colon" formatted="false">Entrega estimada:</string>
@@ -492,6 +493,7 @@ Toca para intentar de nuevo.</string>
   <string name="Payment_method" formatted="false">Método de pago</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
   <string name="Payment_methods" formatted="false">Métodos de pago</string>
+  <string name="Payment_schedule" formatted="false">Calendario de pagos</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Por favor ingresa un monto de contribución entre %{min} y %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Ingresa un monto de contribución de %{amount} o menor.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Ingresa un monto de contribución de %{amount} o más.</string>

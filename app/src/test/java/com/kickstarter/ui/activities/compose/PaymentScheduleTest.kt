@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities.compose
 import PaymentSchedule
 import android.content.Context
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -12,9 +13,14 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.mock.MockCurrentConfigV2
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
-import com.kickstarter.models.PaymentIncrement.State
 import com.kickstarter.models.PaymentIncrementAmount
+import com.kickstarter.type.PaymentIncrementState
+import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.joda.time.DateTime
 import org.junit.Before
@@ -46,36 +52,235 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
     private val samplePaymentIncrements = listOf(
         PaymentIncrement(
-            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.UNATTEMPTED,
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         ),
         PaymentIncrement(
-            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.COLLECTED,
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         ),
         PaymentIncrement(
-            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.UNATTEMPTED,
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
         ),
         PaymentIncrement(
-            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25").build(),
-            state = State.COLLECTED,
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = ""
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        )
+    )
+
+    private val samplePaymentIncrementsWithCollectedState = listOf(
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.COLLECTED,
+            paymentIncrementableId = "1",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.COLLECTED,
+            paymentIncrementableId = "2",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.COLLECTED,
+            paymentIncrementableId = "3",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.COLLECTED,
+            paymentIncrementableId = "4",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        )
+    )
+
+    private val samplePaymentIncrementsWithUnattemptedState = listOf(
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.UNATTEMPTED,
+            paymentIncrementableId = "1",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.UNATTEMPTED,
+            paymentIncrementableId = "2",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.UNATTEMPTED,
+            paymentIncrementableId = "3",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.UNATTEMPTED,
+            paymentIncrementableId = "4",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        )
+    )
+
+    private val samplePaymentIncrementsWithCancelledState = listOf(
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "1",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "2",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "3",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.CANCELLED,
+            paymentIncrementableId = "4",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        )
+    )
+
+    private val samplePaymentIncrementsWithErroredStateAndRequiresActionStateReason = listOf(
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "1",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "2",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "3",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "4",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+        )
+    )
+
+    private val samplePaymentIncrementsWithErroredStateAndUnkownStateReason = listOf(
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "1",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
+            stateReason = PaymentIncrementStateReason.UNKNOWN__
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "2",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
+            stateReason = PaymentIncrementStateReason.UNKNOWN__
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "3",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
+            stateReason = PaymentIncrementStateReason.UNKNOWN__
+        ),
+        PaymentIncrement(
+            paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                .build(),
+            state = PaymentIncrementState.ERRORED,
+            paymentIncrementableId = "4",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
+            stateReason = PaymentIncrementStateReason.UNKNOWN__
         )
     )
 
@@ -122,11 +327,122 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         expandIcon.assertIsDisplayed()
 
         // Assert that payment details are displayed
-        dateText.assertCountEquals(4)
-        amountText.assertCountEquals(4)
-        badgeText.assertCountEquals(4)
+        dateText.assertCountEquals(samplePaymentIncrements.size)
+        amountText.assertCountEquals(samplePaymentIncrements.size)
+        badgeText.assertCountEquals(samplePaymentIncrements.size)
 
         termsOfUseText
             .assertIsDisplayed().assert(hasText(context.getString(R.string.fpo_terms_of_use)))
+    }
+
+    @Test
+    fun testCollectedBadge() {
+
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = samplePaymentIncrementsWithCollectedState
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_collected)))
+    }
+
+    @Test
+    fun testScheduledBadge() {
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = samplePaymentIncrementsWithUnattemptedState
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_scheduled)))
+    }
+
+    @Test
+    fun testAuthenticationRequiredBadge() {
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = samplePaymentIncrementsWithErroredStateAndRequiresActionStateReason
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_authentication_required)))
+    }
+
+    @Test
+    fun testErroredBadge() {
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = samplePaymentIncrementsWithErroredStateAndUnkownStateReason
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_errored_payment)))
+    }
+
+    @Test
+    fun testCancelledBadge() {
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = samplePaymentIncrementsWithCancelledState
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        badgeText.assertCountEquals(samplePaymentIncrementsWithCollectedState.size)
+        badgeText.assertAll(hasText(context.getString(R.string.fpo_cancelled)))
+    }
+
+    @Test
+    fun testPaymentScheduleAmountsText() {
+        composeTestRule.setContent {
+            KSTheme {
+                val config = ConfigFactory.configForUSUser()
+
+                val currentConfig = MockCurrentConfigV2()
+                currentConfig.config(config)
+                val mockCurrency = KSCurrency(currentConfig)
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = PaymentIncrementFactory.samplePaymentIncrements(),
+                    ksCurrency = mockCurrency
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        amountText.assertCountEquals(5)
+
+        // Assert Currency text
+        amountText.assertAll(hasText("US$ 99.75", ignoreCase = true))
     }
 }

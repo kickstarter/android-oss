@@ -140,7 +140,7 @@ backers</string>
   <string name="Closes_project" formatted="false">Closes project.</string>
   <string name="Collaborator" formatted="false">Collaborator</string>
   <string name="Collapses_subcategories" formatted="false">Collapses subcategories.</string>
-  <string name="Collection_plan" formatted="false">Collection Plan</string>
+  <string name="Collection_plan" formatted="false">Collection plan</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Coming_soon" formatted="false">Coming soon</string>
   <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
@@ -241,6 +241,7 @@ Tap to retry</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Enter an amount less than %{max_pledge}.</string>
   <string name="Environmental_commitments" formatted="false">Environmental commitments</string>
   <string name="Environmentally_friendly_factories" formatted="false">Environmentally friendly factories</string>
+  <string name="Errored_payment" formatted="false">Errored payment</string>
   <string name="Estimated_Shipping" formatted="false">Estimated Shipping</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="Estimated_delivery_colon" formatted="false">Estimated delivery:</string>
@@ -493,6 +494,7 @@ from friends yet.</string>
   <string name="Payment_method" formatted="false">Payment method</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
   <string name="Payment_methods" formatted="false">Payment methods</string>
+  <string name="Payment_schedule" formatted="false">Payment schedule</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Please enter a pledge amount between %{min} and %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Please enter an amount of %{amount} or less.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Please enter an amount of %{amount} or more.</string>

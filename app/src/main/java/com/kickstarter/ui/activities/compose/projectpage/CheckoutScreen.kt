@@ -203,7 +203,7 @@ fun CheckoutScreen(
     isPlotEligible: Boolean = false,
     isIncrementalPledge: Boolean = false,
     paymentIncrements: List<PaymentIncrement>? = null,
-    isPledgeButtonEnabled: Boolean = false
+    isPledgeButtonEnabled: Boolean = true
 ) {
     val selectedOption = remember {
         mutableStateOf(

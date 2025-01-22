@@ -506,12 +506,11 @@ class BackingFragment : Fragment() {
                     }
                 }
 
-                // Special case for clickable link in the text
                 R.string.fpo_we_cant_process_your_pledge_over_time_please_view_your_pledge_on_a_web_browser_and_log_in_to_fix_your_payment -> {
-                    getString(it) // Return the string without modification for this case
+                    getString(it)
                 }
 
-                else -> getString(it) // Default for other cases
+                else -> getString(it)
             }
         }
 
@@ -533,10 +532,8 @@ class BackingFragment : Fragment() {
                         clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
-                    // Set the spannable text with the clickable part
                     binding?.backerPledgeStatus?.text = spannablePledgeStatus
 
-                    // Make sure the TextView is clickable
                     binding?.backerPledgeStatus?.movementMethod = LinkMovementMethod.getInstance()
                 }
             } else {

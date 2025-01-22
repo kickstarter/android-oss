@@ -595,7 +595,7 @@ interface BackingFragmentViewModel {
                             ) {
                                 R.string.We_collected_your_pledge_for_this_project
                             } else {
-                                R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline
+                                R.string.fpo_if_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
                             }
                         }
                         Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh

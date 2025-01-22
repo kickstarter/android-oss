@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.isErroredWithPLOT
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.negate
@@ -89,6 +90,9 @@ interface BackingFragmentViewModel {
 
         /** Emits the card brand drawable to display. */
         fun cardLogo(): Observable<Int>
+
+        /** Emits a boolean determining if the beta badge should be visible. */
+        fun betaBadgeIsGone(): Observable<Boolean>
 
         /** Emits a boolean determining if the fix payment method button should be visible. */
         fun fixPaymentMethodButtonIsGone(): Observable<Boolean>
@@ -184,6 +188,7 @@ interface BackingFragmentViewModel {
         private val cardLogo = BehaviorSubject.create<Int>()
         private val fixPaymentMethodButtonIsGone = BehaviorSubject.create<Boolean>()
         private val fixPaymentMethodMessageIsGone = BehaviorSubject.create<Boolean>()
+        private val betaBadgeIsGone = BehaviorSubject.create<Boolean>()
         private val notifyDelegateToRefreshProject = PublishSubject.create<Unit>()
         private val notifyDelegateToShowFixPledge = PublishSubject.create<Unit>()
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
@@ -401,8 +406,16 @@ interface BackingFragmentViewModel {
                 .subscribe { this.cardLogo.onNext(it) }
                 .addToDisposable(disposables)
 
+            val backingIsErroredWithPlot = backing
+                .map { it.isErroredWithPLOT() }
+                .distinctUntilChanged()
+                .map { it.negate() }
+
+            backingIsErroredWithPlot.subscribe { this.betaBadgeIsGone.onNext(it) }
+                .addToDisposable(disposables)
+
             val backingIsNotErrored = backing
-                .map { it.isErrored() }
+                .map { it.isErrored() && !it.isErroredWithPLOT() }
                 .distinctUntilChanged()
                 .map { it.negate() }
 
@@ -582,7 +595,16 @@ interface BackingFragmentViewModel {
                         Backing.STATUS_CANCELED -> R.string.You_canceled_your_pledge_for_this_project
                         Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
                         Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
-                        Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
+                        Backing.STATUS_ERRORED -> {
+                            if (!backing.paymentIncrements()
+                                .isNullOrEmpty() && !project.isLive
+                            ) {
+                                R.string.fpo_we_cant_process_your_pledge_over_time_please_view_your_pledge_on_a_web_browser_and_log_in_to_fix_your_payment
+                            } else {
+                                R.string.We_cant_process_your_pledge_Please_update_your_payment_method
+                            }
+                        }
+
                         Backing.STATUS_PLEDGED -> {
                             if (environment.featureFlagClient()
                                 ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) == true && !backing.paymentIncrements()
@@ -598,6 +620,7 @@ interface BackingFragmentViewModel {
                                 R.string.fpo_if_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
                             }
                         }
+
                         Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
                         Backing.STATUS_AUTHENTICATION_REQUIRED -> R.string.fpo_authentication_required_backing_state
                         else -> null
@@ -623,12 +646,20 @@ interface BackingFragmentViewModel {
             val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
             val plotData = if (isPlot) {
-                val plotAmountString = backing.paymentIncrements()?.first()?.paymentIncrementAmount?.formattedAmount
+                val plotAmountString =
+                    backing.paymentIncrements()?.first()?.paymentIncrementAmount?.formattedAmount
                 // TODO: VERIFY IF WE WANT TO SHOW DECIMALS OR NOT
                 // val plotAmountString = this.ksCurrency.format(backing.paymentIncrements()?.first()?.amount?.amount.parseToDouble(), project, RoundingMode.UNNECESSARY)
                 val plotFirstScheduleCollection = backing.paymentIncrements()
                     ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) }
-                PlotData(plotAmount = plotAmountString, plotFirstScheduleCollection = plotFirstScheduleCollection)
+                val fixPledgeUrl =
+                    "${environment.webEndpoint()}/projects/${project.slug()}/backing/details"
+
+                PlotData(
+                    plotAmount = plotAmountString,
+                    plotFirstScheduleCollection = plotFirstScheduleCollection,
+                    fixPledgeUrl = fixPledgeUrl
+                )
             } else {
                 null
             }
@@ -686,6 +717,9 @@ interface BackingFragmentViewModel {
 
         override fun fixPaymentMethodMessageIsGone(): Observable<Boolean> =
             this.fixPaymentMethodMessageIsGone
+
+        override fun betaBadgeIsGone(): Observable<Boolean> =
+            this.betaBadgeIsGone
 
         override fun notifyDelegateToRefreshProject(): Observable<Unit> =
             this.notifyDelegateToRefreshProject

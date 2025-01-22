@@ -14,6 +14,8 @@ fun Backing.isBacked(reward: Reward): Boolean {
 
 fun Backing.isErrored(): Boolean = this.status() == Backing.STATUS_ERRORED
 
+fun Backing.isErroredWithPLOT(): Boolean = this.status() == Backing.STATUS_ERRORED && !this.paymentIncrements().isNullOrEmpty()
+
 fun Backing.isShippable(): Boolean {
     val reward = this.reward() ?: return false
     return isShippable(reward)

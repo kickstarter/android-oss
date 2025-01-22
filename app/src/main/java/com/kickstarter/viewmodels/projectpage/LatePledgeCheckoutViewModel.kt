@@ -529,10 +529,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment, private val disp
         }
     }
 
-    class Factory(private val environment: Environment, private val dispatcher: CoroutineDispatcher = Dispatchers.IO) :
+    class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return LatePledgeCheckoutViewModel(environment, dispatcher) as T
+            return LatePledgeCheckoutViewModel(environment) as T
         }
     }
 }

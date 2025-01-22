@@ -590,6 +590,7 @@ class ProjectPageActivity :
                     val checkoutLoading = latePledgeCheckoutUIState.isLoading
                     val shippingAmount = latePledgeCheckoutUIState.shippingAmount
                     val checkoutTotal = latePledgeCheckoutUIState.checkoutTotal
+                    val isPledgeButtonEnabled = latePledgeCheckoutUIState.isPledgeButtonEnabled
 
                     latePledgeCheckoutViewModel.provideErrorAction { message ->
                         showToastError(message)
@@ -714,7 +715,8 @@ class ProjectPageActivity :
                         },
                         onAccountabilityLinkClicked = {
                             showAccountabilityPage()
-                        }
+                        },
+                        isPledgeButtonEnabled = isPledgeButtonEnabled
                     )
 
                     val successfulPledge =
@@ -1358,7 +1360,10 @@ class ProjectPageActivity :
                 override fun onSuccess(result: PaymentIntentResult) {
                     if (result.outcome == StripeIntentResult.Outcome.SUCCEEDED) {
                         latePledgeCheckoutViewModel.completeOnSessionCheckoutFor3DS()
-                    } else showToastError()
+                    } else {
+                        latePledgeCheckoutViewModel.clear3DSValues()
+                        showToastError()
+                    }
                 }
 
                 override fun onError(e: Exception) {

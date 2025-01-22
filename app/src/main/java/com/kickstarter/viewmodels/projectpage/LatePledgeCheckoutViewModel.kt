@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.locationId
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.libs.utils.extensions.rewardsAndAddOnsList
@@ -26,6 +27,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -78,6 +80,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var selectedReward: Reward? = null
     private var mutableLatePledgeCheckoutUIState = MutableStateFlow(LatePledgeCheckoutUIState())
+
+    private var paymentIntent: String? = null
+    private var pledgeButtonClickedJob: Job? = null
 
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
     val onPledgeSuccess: SharedFlow<Boolean>
@@ -155,6 +160,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             ).asFlow().onStart {
                 emitCurrentState(isLoading = true)
             }.map { clientSecret ->
+                buttonEnabled = true
                 clientSecretForNewCard = clientSecret
                 mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
             }.onCompletion {
@@ -177,9 +183,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.map {
                 refreshUserCards()
             }.catch {
-                emitCurrentState()
                 errorAction.invoke(null)
-            }.collect()
+            }.onCompletion {
+                emitCurrentState()
+            }
+                .collect()
         }
     }
 
@@ -203,9 +211,30 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
+        // - Avoid launching any other coroutine call while previous coroutine active
+        if (pledgeButtonClickedJob?.isActive.isTrue()) return
+
         this.pledgeData?.let {
-            val project = it.projectData().project()
-            createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
+            pledgeButtonClickedJob = viewModelScope.launch {
+                val project = it.projectData().project()
+
+                buttonEnabled = false
+                emitCurrentState(isLoading = true)
+
+                if (paymentIntent == null)
+                    createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
+
+                else {
+                    paymentIntent?.let { pi ->
+                        selectedCard?.let { card ->
+                            validateCheckout(
+                                clientSecret = pi,
+                                selectedCard = card
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -213,24 +242,25 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.errorAction = errorAction
     }
 
-    private fun createPaymentIntentForCheckout(
+    private suspend fun createPaymentIntentForCheckout(
         selectedCard: StoredCard?,
         project: Project,
         totalAmount: Double
     ) {
-        viewModelScope.launch {
-            checkoutId?.let { cId ->
-                backing?.let { b ->
-                    apolloClient.createPaymentIntent(
-                        CreatePaymentIntentInput(
-                            project = project,
-                            amount = totalAmount.toString(),
-                            checkoutId = cId,
-                            backing = b
-                        )
-                    ).asFlow().onStart {
-                        emitCurrentState(isLoading = true)
-                    }.map { clientSecret ->
+        if (paymentIntent.isNotNull()) return
+        checkoutId?.let { cId ->
+            backing?.let { b ->
+                apolloClient.createPaymentIntent(
+                    CreatePaymentIntentInput(
+                        project = project,
+                        amount = totalAmount.toString(),
+                        checkoutId = cId,
+                        backing = b
+                    )
+                )
+                    .asFlow()
+                    .map { clientSecret ->
+                        paymentIntent = clientSecret
                         selectedCard?.let {
                             checkoutId?.let {
                                 validateCheckout(
@@ -246,14 +276,16 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             errorAction.invoke(null)
                         }
                     }.catch {
-                        emitCurrentState()
+                        // - Clean up states if error happens when creating payment intent
+                        paymentIntent = null
                         errorAction.invoke(null)
-                    }.collect()
-                }
-            } ?: run {
-                emitCurrentState()
-                errorAction.invoke(null)
+                    }.collect() // - No completation block, will continue on validateCheckout
             }
+        } ?: run {
+            buttonEnabled = true
+            paymentIntent = null
+            emitCurrentState()
+            errorAction.invoke(null)
         }
     }
 
@@ -268,18 +300,21 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 stripeConfirmPaymentIntent(clientSecret = clientSecret, selectedCard = selectedCard)
             } else {
                 // User validation.messages for displaying an error
-                if (validation.messages.isNotEmpty()) {
-                    emitCurrentState()
-                    errorAction.invoke(validation.messages.first())
+                val error = if (validation.messages.isNotEmpty()) {
+                    validation.messages.first()
                 } else {
-                    emitCurrentState()
-                    errorAction.invoke(null)
+                    null
                 }
+                emitCurrentState()
+                errorAction.invoke(error)
             }
         }.catch {
-            emitCurrentState()
             errorAction.invoke(null)
-        }.collect()
+        }
+            .onCompletion {
+                emitCurrentState()
+            }
+            .collect()
     }
 
     private suspend fun stripeConfirmPaymentIntent(clientSecret: String, selectedCard: StoredCard) {
@@ -332,20 +367,22 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     paymentIntentClientSecret = clientSecretFor3DSVerification,
                     paymentSourceId = if (selectedCardFor3DSVerification == newStoredCard) null else selectedCardFor3DSVerification?.id() ?: "",
                     paymentSourceReusable = true
-                ).asFlow().map { iDRequiresActionPair ->
-                    if (iDRequiresActionPair.second) {
-                        mutablePaymentRequiresAction.emit(clientSecretFor3DSVerification)
-                    } else {
-                        mutableOnPledgeSuccessAction.emit(true)
+                ).asFlow()
+                    .onStart {
+                        emitCurrentState(isLoading = true)
                     }
-                }.onStart {
-                    emitCurrentState(isLoading = true)
-                }.onCompletion {
-                    emitCurrentState()
-                }.catch {
-                    errorAction.invoke(null)
-                    clear3DSValues()
-                }.collect()
+                    .map { iDRequiresActionPair ->
+                        if (iDRequiresActionPair.second) {
+                            mutablePaymentRequiresAction.emit(clientSecretFor3DSVerification)
+                        } else {
+                            mutableOnPledgeSuccessAction.emit(true)
+                        }
+                    }.onCompletion {
+                        emitCurrentState()
+                    }.catch {
+                        errorAction.invoke(null)
+                        clear3DSValues()
+                    }.collect()
             } else {
                 errorAction.invoke(null)
                 clear3DSValues()
@@ -354,8 +391,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun clear3DSValues() {
+        buttonEnabled = true
         clientSecretFor3DSVerification = ""
         selectedCardFor3DSVerification = null
+
+        viewModelScope.launch {
+            emitCurrentState()
+        }
     }
 
     private fun createCheckoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout? = null): CheckoutData {
@@ -377,7 +419,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 selectedRewards = selectedRewards.toList(),
                 shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
                 checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
-                isPledgeButtonEnabled = buttonEnabled,
+                isPledgeButtonEnabled = buttonEnabled && !isLoading,
             )
         )
     }
@@ -438,16 +480,17 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                             )
                         )
                             .asFlow()
+                            .onStart {
+                                emitCurrentState(isLoading = false)
+                            }
                             .map { checkoutPayment ->
-                                buttonEnabled = true
                                 mutableCheckoutPayment.emit(checkoutPayment)
                             }
                             .catch {
-                                buttonEnabled = false
                                 errorAction.invoke(it.message)
                             }
                             .onCompletion {
-                                emitCurrentState(isLoading = false)
+                                emitCurrentState()
                             }
                             .collect()
                     }
@@ -468,7 +511,6 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 selectedRewards.addAll(addOns)
             }
 
-            emitCurrentState(isLoading = true)
             createCheckout()
         }
     }

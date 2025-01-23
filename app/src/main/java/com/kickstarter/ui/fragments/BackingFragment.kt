@@ -1,15 +1,11 @@
 package com.kickstarter.ui.fragments
 
 import PaymentSchedule
-import android.content.Intent
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Pair

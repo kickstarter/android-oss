@@ -860,6 +860,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                         ?.first()?.paymentIncrementAmount?.formattedAmount(),
                     plotFirstScheduleCollection = backing.paymentIncrements()
                         ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) },
+                    fixPledgeUrl = "https://www.kickstarter.com/projects/slug-1/backing/details"
                 ),
             )
         )
@@ -905,6 +906,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                         ?.first()?.paymentIncrementAmount?.formattedAmount(),
                     plotFirstScheduleCollection = backing.paymentIncrements()
                         ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) },
+                    fixPledgeUrl = "https://www.kickstarter.com/projects/slug-1/backing/details"
                 ),
             )
         )

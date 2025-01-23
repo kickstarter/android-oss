@@ -80,20 +80,44 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/backer_pledge_status"
-                        style="@style/BodyPrimary"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/grid_4"
+                        android:orientation="vertical"
                         android:background="@color/kds_support_200"
-                        android:gravity="center"
                         android:paddingStart="@dimen/grid_4"
                         android:paddingTop="@dimen/grid_2"
                         android:paddingEnd="@dimen/grid_4"
-                        android:paddingBottom="@dimen/grid_2"
-                        tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
+                        android:paddingBottom="@dimen/grid_2">
+                        <LinearLayout
+                            android:id="@+id/beta_badge_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/grid_2"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            >
+                        <androidx.compose.ui.platform.ComposeView
+                            android:id="@+id/beta_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/backer_pledge_status"
+                                style="@style/BodyPrimary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
+                        </LinearLayout>
+                    </LinearLayout>
                     <include
                         android:id="@+id/fragment_pledge_section_summary_pledge"
                         layout="@layout/fragment_pledge_section_summary_pledge"

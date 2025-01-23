@@ -383,7 +383,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun completeOnSessionCheckoutFor3DS() {
-        viewModelScope.launch(dispatcher) {
+        scope.launch(dispatcher) {
             if (clientSecretFor3DSVerification.isNotEmpty() && selectedCardFor3DSVerification.isNotNull()) {
                 apolloClient.completeOnSessionCheckout(
                     checkoutId = checkoutId ?: "",
@@ -418,7 +418,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         clientSecretFor3DSVerification = ""
         selectedCardFor3DSVerification = null
 
-        viewModelScope.launch {
+        scope.launch {
             emitCurrentState()
         }
     }
@@ -476,7 +476,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun loading() {
-        viewModelScope.launch {
+        scope.launch {
             emitCurrentState(isLoading = true)
         }
     }
@@ -492,7 +492,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     .postCampaignPledgingEnabled() == true && projectData.project()
                         .isInPostCampaignPledgingPhase() == true
                 ) {
-                    viewModelScope.launch(dispatcher) {
+                    scope.launch(dispatcher) {
                         apolloClient.createCheckout(
                             CreateCheckoutData(
                                 project = projectData.project(),
@@ -544,7 +544,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             selectedRewards.addAll(addOns)
         }
 
-        viewModelScope.launch(dispatcher) {
+        scope.launch(dispatcher) {
             loadUserInfo()
             createCheckout()
         }

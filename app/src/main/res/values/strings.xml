@@ -90,7 +90,7 @@
   <!-- TODO: Get translations for this and put it in i18n, then remove  -->
   <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
   <string name="fpo_if_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">  If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.</string>
-
+  <string name="fpo_we_cant_process_your_pledge_over_time_please_view_your_pledge_on_a_web_browser_and_log_in_to_fix_your_payment" formatted="false">We can’t process your Pledge Over Time payment. Please view your pledge on a web browser and log in to fix your payment.</string>
   <!--TODO: Get design fot this string for Backing state authentication_required-->
   <string name="fpo_authentication_required_backing_state">We can\'t process your pledge. Authentication is required.</string>
 

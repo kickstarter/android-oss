@@ -207,6 +207,10 @@ fun Uri.isDiscoverSortParam(): Boolean {
         getQueryParameter("sort").isNotNull()
 }
 
+fun Uri.isBackingDetailsUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) && PROJECT_BACKING_DETAILS_URL.matcher(path()).matches()
+}
+
 private const val VERIFICATION = "/profile/verify_email"
 private const val KSDOMAIN = "kickstarter.com"
 
@@ -312,4 +316,9 @@ private val USER_SURVEY = Pattern.compile(
 
 private val MAIN_PAGE_OPEN_BUTTON_QUERYPARAMS = Pattern.compile(
     "\\Aapp_banner=1&ref=nav\\z"
+)
+
+//  /projects/:creator_param/:project_param/backing/details
+private val PROJECT_BACKING_DETAILS_URL = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/details\\z"
 )

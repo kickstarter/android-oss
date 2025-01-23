@@ -2,6 +2,7 @@ package com.kickstarter.services
 
 import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.extensions.isBackingDetailsUri
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
@@ -52,6 +53,7 @@ class UriExtTest : KSRobolectricTestCase() {
     private val discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest")
     private val newGuestCheckoutUri = Uri.parse("https://www.ksr.com/checkouts/1/guest/new")
     private val projectUri = Uri.parse("https://www.ksr.com/projects/creator/project")
+    private val projectDetailUri = Uri.parse("https://www.ksr.com/projects/creator/project/backing/details")
     private val signUpUri = Uri.parse("https://www.ksr.com/signup")
     private val verificationEmail = Uri.parse("https://www.ksr.com/profile/verify_email")
     private val projectPreviewUri =
@@ -210,6 +212,11 @@ class UriExtTest : KSRobolectricTestCase() {
     fun testUri_isSignupUri() {
         assertFalse(projectUri.isSignupUri(webEndpoint))
         assertTrue(signUpUri.isSignupUri(webEndpoint))
+    }
+
+    @Test
+    fun testUri_isProjectIsBackingDetailsUri() {
+        assertTrue(projectDetailUri.isBackingDetailsUri(webEndpoint))
     }
 
     @Test

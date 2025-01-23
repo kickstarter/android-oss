@@ -369,6 +369,7 @@
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "If the project reaches its funding goal, the first charge of %{amount} will be collected on %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "If the project reaches its funding goal, you will be charged on %{project_deadline}.",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}. You will receive a proof of pledge that will be redeemable if the project is funded and the creator is successful at completing the creative venture.",
       "If_you_turn_following_off": "If you turn following off, you won't be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.",
       "If_your_profile_is_private": "If your profile is private, others can see your name and picture.",
@@ -904,7 +905,9 @@
       "We_cant_process_your_pledge": "We can't process your pledge.",
       "We_cant_process_your_pledge_for": "We can't process your pledge for:",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "We can’t process this pledge because of a problem with the backer’s payment method.",
+      "We_cant_process_your_Pledge_Over_Time_payment": "We can’t process your Pledge Over Time payment. Please <a href=\"%{view_your_pledge_link}\">view your pledge</a> on a web browser and log in to fix your payment.",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "We can’t process your pledge. Please update your payment method.",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "We can’t process your pledge. Visit the Project Alerts dashboard to authenticate your card.",
       "We_collected_the_backers_pledge_for_this_project": "We collected the backer’s pledge for this project.",
       "We_collected_your_pledge_for_this_project": "We collected your pledge for this project.",
       "We_couldnt_find_anything_for_search_term": "We couldn't find anything for “%{search_term}”.",
@@ -1746,6 +1749,12 @@
         "disclaimer": {
           "goal_reached": "This project will be funded on %{deadline}.",
           "goal_not_reached": "This project will only be funded if at least %{goal_currency} is pledged by %{deadline}."
+        },
+        "project_notices": {
+          "header": "Kickstarter has restricted this creator",
+          "notice_intro": "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator.",
+          "notice_cta": "Learn more",
+          "notice_sheet_cta": "Learn more about creator accountability"
         },
         "friends_backing": {
           "title": {
@@ -2917,6 +2926,7 @@
       "Id_just_like_to_support_the_project": "Ich möchte das Projekt einfach nur unterstützen.",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "Wenn das Projekt sein Finanzierungsziel erreicht, wird die erste Rate in Höhe von %{amount} am %{project_deadline} eingezogen.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am %{project_deadline} belastet.",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "Wenn dieses Projekt das Finanzierungsziel erreicht, wird deine Karte am %{project_deadline} mit %{total} belastet.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "Wenn das Projekt sein Finanzierungsziel erreicht, wird am %{project_deadline} deine Zahlung in Höhe von %{total} eingezogen. Du erhältst einen Nachweis über den Finanzierungsbeitrag, der einlösbar ist, wenn das Projekt finanziert ist und der Projektgründer seine kreative Idee erfolgreich umgesetzt hat.",
       "If_you_turn_following_off": "Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.",
       "If_your_profile_is_private": "Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.",
@@ -3452,7 +3462,9 @@
       "We_cant_process_your_pledge": "Wir können deine Zahlung leider nicht bearbeiten.",
       "We_cant_process_your_pledge_for": "Wir können deine Zahlung aus folgendem Grund leider nicht bearbeiten:",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "Dieser Finanzierungsbeitrag konnte aufgrund eines Problems mit der Zahlungsmethode des Unterstützers nicht bearbeitet werden.",
+      "We_cant_process_your_Pledge_Over_Time_payment": "Wir können deine Ratenzahlung nicht verarbeiten. Bitte <a href=\"%{view_your_pledge_link}\">sieh dir deinen Finanzierungsbeitrag in einem Webbrowser an</a> und melde dich an, um den Fehler mit deiner Zahlung zu beheben.",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "Dein Finanzierungsbeitrag kann nicht bearbeitet werden. Bitte aktualisiere deine Zahlungsmethode.",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "Wir können deinen Beitrag nicht verarbeiten. Besuche das Dashboard für Projekthinweise, um deine Karte zu authentifizieren.",
       "We_collected_the_backers_pledge_for_this_project": "Der Finanzierungsbeitrag dieses Unterstützers wurde abgebucht.",
       "We_collected_your_pledge_for_this_project": "Dein Finanzierungsbeitrag für dieses Projekt wurde abgebucht.",
       "We_couldnt_find_anything_for_search_term": "Es wurden keine Ergebnisse für die Suche \"%{search_term}\" gefunden.",
@@ -4294,6 +4306,12 @@
         "disclaimer": {
           "goal_reached": "Dieses Projekt wird am %{deadline} finanziert.",
           "goal_not_reached": "Dieses Projekt wird nur finanziert, wenn bis %{deadline} mindestens %{goal_currency} zusammenkommen."
+        },
+        "project_notices": {
+          "header": "Kickstarter hat diesen Projektgründer eingeschränkt",
+          "notice_intro": "Das Kickstarter-Team für Vertrauen und Sicherheit hat Meldungen von Nutzern zu diesem Projekt und/oder dem Projektgründer untersucht.",
+          "notice_cta": "Weitere Info",
+          "notice_sheet_cta": "Weitere Informationen zur Rechenschaftspflicht von Projektgründern"
         },
         "friends_backing": {
           "title": {
@@ -5465,6 +5483,7 @@
       "Id_just_like_to_support_the_project": "Sólo quiero apoyar este proyecto.",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "Si el proyecto alcanza la meta, el primer cargo de %{amount} se cobrará el %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "Si el proyecto alcanza su meta de financiamiento, se te cobrará el %{project_deadline}.",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "Si el proyecto alcanza su meta de financiamiento, se te cobrará %{total} el %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "Si el proyecto alcanza la meta de financiamiento, te cobraremos %{total} el %{project_deadline}. Recibirás un comprobante por la contribución que podrás canjear si el proyecto se financia con éxito y el creador logra completar su iniciativa.",
       "If_you_turn_following_off": "Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.",
       "If_your_profile_is_private": "Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n",
@@ -6000,7 +6019,9 @@
       "We_cant_process_your_pledge": "No podemos procesar tu contribución.",
       "We_cant_process_your_pledge_for": "No podemos procesar tu contribución para:",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "No podemos procesar esta contribución por un problema con el método de pago del patrocinador.",
+      "We_cant_process_your_Pledge_Over_Time_payment": "No podemos procesar el pago de tu contribución en cuotas. Es necesario que <a href=\"%{view_your_pledge_link}\">revises tu contribución</a> en un navegador web e inicies sesión para arreglar el pago.",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "No podemos procesar la contribución. Por favor actualiza tu método de pago.",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "No podemos procesar tu contribución. Visita el panel de alertas del proyecto para autenticar tu tarjeta.",
       "We_collected_the_backers_pledge_for_this_project": "Hemos recolectado la contribución del patrocinador a este proyecto.",
       "We_collected_your_pledge_for_this_project": "Hemos recolectado tu contribución a este proyecto.",
       "We_couldnt_find_anything_for_search_term": "La búsqueda \"%{search_term}\" no dio resultados.",
@@ -6842,6 +6863,12 @@
         "disclaimer": {
           "goal_reached": "Este proyecto será financiado el %{deadline}.",
           "goal_not_reached": "Este proyecto será financiado únicamente si se contribuye por lo menos %{goal_currency} hasta %{deadline}."
+        },
+        "project_notices": {
+          "header": "Creador restringido por Kickstarter",
+          "notice_intro": "El equipo de confianza y seguridad de Kickstarter analizó los informes recibidos de los usuarios en relación con este proyecto o su creador.",
+          "notice_cta": "Más información",
+          "notice_sheet_cta": "Más información sobre las responsabilidades del creador"
         },
         "friends_backing": {
           "title": {
@@ -8013,6 +8040,7 @@
       "Id_just_like_to_support_the_project": "Je souhaite simplement soutenir le projet.",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "Si l'objectif de financement du projet est atteint, le premier prélèvement de %{amount} sera effectué le %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "Si l'objectif de financement est atteint, vous serez débité le %{project_deadline}.",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "Si l'objectif de financement est atteint, vous serez débité de %{total} le %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "Si l'objectif de financement du projet est atteint, vous serez débité de %{total} le %{project_deadline}. Vous recevrez une preuve d'engagement qui sera échangeable si le projet est intégralement financé et si le créateur mène son projet à bien.",
       "If_you_turn_following_off": "Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.",
       "If_your_profile_is_private": "Si votre profil est privé, seuls votre nom et votre photo seront visibles.",
@@ -8548,7 +8576,9 @@
       "We_cant_process_your_pledge": "Impossible de traiter votre engagement.",
       "We_cant_process_your_pledge_for": "Impossible de traiter votre engagement pour :",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "Impossible de traiter cet engagement en raison d'un problème survenu au niveau du moyen de paiement du contributeur.",
+      "We_cant_process_your_Pledge_Over_Time_payment": "Impossible de traiter le règlement de votre engagement étalé dans le temps. Veuillez vous connecter et <a href=\"%{view_your_pledge_link}\">consulter votre engagement</a> sur un navigateur Web pour régler le problème.",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "Impossible de traiter votre engagement. Veuillez mettre à jour votre moyen de paiement.",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "Impossible de traiter votre engagement. Veuillez authentifier votre carte dans le tableau de bord des alertes de projet.",
       "We_collected_the_backers_pledge_for_this_project": "L'engagement de ce contributeur a été débité.",
       "We_collected_your_pledge_for_this_project": "Votre engagement a été débité.",
       "We_couldnt_find_anything_for_search_term": "Pas de résultats pour « %{search_term} ».",
@@ -9390,6 +9420,12 @@
         "disclaimer": {
           "goal_reached": "Ce projet sera financé le %{deadline}.",
           "goal_not_reached": "Ce projet ne sera financé que si au moins %{goal_currency} sont engagés avant le %{deadline}."
+        },
+        "project_notices": {
+          "header": "Créateur restreint par Kickstarter",
+          "notice_intro": "Le service Confiance et sécurité de Kickstarter a enquêté sur les signalements reçus à propos de ce projet ou de son créateur.",
+          "notice_cta": "En savoir plus",
+          "notice_sheet_cta": "En savoir plus sur les responsabilités du créateur"
         },
         "friends_backing": {
           "title": {
@@ -10561,6 +10597,7 @@
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "If the project reaches its funding goal, the first charge of %{amount} will be collected on %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "If the project reaches its funding goal, you will be charged on %{project_deadline}.",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}. You will receive a proof of pledge that will be redeemable if the project is funded and the creator is successful at completing the creative venture.",
       "If_you_turn_following_off": "If you turn following off, you won't be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.",
       "If_your_profile_is_private": "If your profile is private, others can see your name and picture.",
@@ -11096,7 +11133,9 @@
       "We_cant_process_your_pledge": "We can't process your pledge.",
       "We_cant_process_your_pledge_for": "We can't process your pledge for:",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "We can’t process this pledge because of a problem with the backer’s payment method.",
+      "We_cant_process_your_Pledge_Over_Time_payment": "We can’t process your Pledge Over Time payment. Please <a href=\"%{view_your_pledge_link}\">view your pledge</a> on a web browser and log in to fix your payment.",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "We can’t process your pledge. Please update your payment method.",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "We can’t process your pledge. Visit the Project Alerts dashboard to authenticate your card.",
       "We_collected_the_backers_pledge_for_this_project": "We collected the backer’s pledge for this project.",
       "We_collected_your_pledge_for_this_project": "We collected your pledge for this project.",
       "We_couldnt_find_anything_for_search_term": "We couldn't find anything for “%{search_term}”.",
@@ -11938,6 +11977,12 @@
         "disclaimer": {
           "goal_reached": "This project will be funded on %{deadline}.",
           "goal_not_reached": "This project will only be funded if at least %{goal_currency} is pledged by %{deadline}."
+        },
+        "project_notices": {
+          "header": "Kickstarter has restricted this creator",
+          "notice_intro": "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator.",
+          "notice_cta": "Learn more",
+          "notice_sheet_cta": "Learn more about creator accountability"
         },
         "friends_backing": {
           "title": {
@@ -13109,6 +13154,7 @@
       "Id_just_like_to_support_the_project": "プロジェクトをサポートしたい",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "プロジェクトがファンディングゴールに到達すると、バッカーへの最初の請求（%{amount}）が%{project_deadline}に行われます。",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "プロジェクトがファンディングゴールに到達すると、%{project_deadline} に請求されます。",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "プロジェクトがファンディングゴールに到達すると、%{project_deadline} に %{total} の請求が行われます。",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "プロジェクトがファンディングゴールに到達すると、%{project_deadline}に%{total}が請求されます。プロジェクトの資金が集まりクリエイターがその取り組み全体に成功した場合に引き換え可能となるプレッジ証明が届きます。",
       "If_you_turn_following_off": "フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。",
       "If_your_profile_is_private": "プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。",
@@ -13644,7 +13690,9 @@
       "We_cant_process_your_pledge": "プレッジを処理することができません。",
       "We_cant_process_your_pledge_for": "以下のプレッジを処理することが出来ません:",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "バッカーのお支払い方法で問題があったためこのプレッジを処理することができません。",
+      "We_cant_process_your_Pledge_Over_Time_payment": "経時プレッジのお支払いを処理できませんでした。ウェブブラウザから<a href=\"%{view_your_pledge_link}\">プレッジを確認</a>し、ログインしてお支払い方法を修正してください。",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "プレッジを処理できません。お支払い方法を更新してください。",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "プレッジを処理できません。プロジェクト通知のダッシュボードにアクセスしてカードを認証してください。",
       "We_collected_the_backers_pledge_for_this_project": "このプロジェクトへのこのバッカーからのプレッジを請求しました。",
       "We_collected_your_pledge_for_this_project": "このプロジェクトへのあなたのプレッジを請求しました。",
       "We_couldnt_find_anything_for_search_term": "「%{search_term}」に一致するものがありませんでした。",
@@ -14486,6 +14534,12 @@
         "disclaimer": {
           "goal_reached": "%{deadline} までにファンド達成できるでしょう。",
           "goal_not_reached": "%{deadline} までに %{goal_currency} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。"
+        },
+        "project_notices": {
+          "header": "このクリエイターは Kickstarter によってアクセス制限されています",
+          "notice_intro": "Kickstarter の「トラスト＆セーフティ」チームが、このプロジェクトおよび/またはそのクリエイターに関するユーザーからの報告を調査しました。",
+          "notice_cta": "もっとくわしく",
+          "notice_sheet_cta": "クリエイターのアカウンタビリティ（説明責任）について詳しく見る"
         },
         "friends_backing": {
           "title": {
@@ -15657,6 +15711,7 @@
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
       "If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline": "If the project reaches its funding goal, the first charge of %{amount} will be collected on %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline": "If the project reaches its funding goal, you will be charged on %{project_deadline}.",
+      "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline": "If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.",
       "If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge": "If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}. You will receive a proof of pledge that will be redeemable if the project is funded and the creator is successful at completing the creative venture.",
       "If_you_turn_following_off": "If you turn following off, you won't be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.",
       "If_your_profile_is_private": "If your profile is private, others can see your name and picture.",
@@ -16192,7 +16247,9 @@
       "We_cant_process_your_pledge": "We can't process your pledge.",
       "We_cant_process_your_pledge_for": "We can't process your pledge for:",
       "We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method": "We can’t process this pledge because of a problem with the backer’s payment method.",
+      "We_cant_process_your_Pledge_Over_Time_payment": "We can’t process your Pledge Over Time payment. Please <a href=\"%{view_your_pledge_link}\">view your pledge</a> on a web browser and log in to fix your payment.",
       "We_cant_process_your_pledge_Please_update_your_payment_method": "We can’t process your pledge. Please update your payment method.",
+      "We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate": "We can’t process your pledge. Visit the Project Alerts dashboard to authenticate your card.",
       "We_collected_the_backers_pledge_for_this_project": "We collected the backer’s pledge for this project.",
       "We_collected_your_pledge_for_this_project": "We collected your pledge for this project.",
       "We_couldnt_find_anything_for_search_term": "We couldn't find anything for “%{search_term}”.",
@@ -17034,6 +17091,12 @@
         "disclaimer": {
           "goal_reached": "This project will be funded on %{deadline}.",
           "goal_not_reached": "This project will only be funded if at least %{goal_currency} is pledged by %{deadline}."
+        },
+        "project_notices": {
+          "header": "Kickstarter has restricted this creator",
+          "notice_intro": "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator.",
+          "notice_cta": "Learn more",
+          "notice_sheet_cta": "Learn more about creator accountability"
         },
         "friends_backing": {
           "title": {
@@ -18583,6 +18646,6 @@
       ]
     }
   },
-  "country_code": "DE",
+  "country_code": "CA",
   "locale": "en"
 }

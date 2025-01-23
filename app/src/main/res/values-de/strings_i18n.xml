@@ -343,6 +343,7 @@ Antippen und erneut versuchen</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
   <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">Wenn das Projekt sein Finanzierungsziel erreicht, wird die erste Rate in Höhe von %{amount} am %{project_deadline} eingezogen.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am %{project_deadline} belastet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Wenn dieses Projekt das Finanzierungsziel erreicht, wird deine Karte am %{project_deadline} mit %{total} belastet.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Wenn das Projekt sein Finanzierungsziel erreicht, wird am %{project_deadline} deine Zahlung in Höhe von %{total} eingezogen. Du erhältst einen Nachweis über den Finanzierungsbeitrag, der einlösbar ist, wenn das Projekt finanziert ist und der Projektgründer seine kreative Idee erfolgreich umgesetzt hat.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
   <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.</string>
@@ -799,9 +800,11 @@ Antippen und erneut versuchen</string>
   <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">Wir können deine Zahlungsmethode nicht authentifizieren. Ziehe nach unten, um die Seite zu aktualisieren und eine andere Zahlungsmethode auszuwählen.</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">Wir können dich nicht mehr über Facebook anmelden. Bitte melde dich mit deinem Kickstarter-Passwort an oder leg für deine Facebook-E-Mail-Adresse ein neues Passwort fest.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Dieser Finanzierungsbeitrag konnte aufgrund eines Problems mit der Zahlungsmethode des Unterstützers nicht bearbeitet werden.</string>
+  <string name="We_cant_process_your_Pledge_Over_Time_payment" formatted="false">Wir können deine Ratenzahlung nicht verarbeiten. Bitte &lt;a href="%{view_your_pledge_link}">sieh dir deinen Finanzierungsbeitrag in einem Webbrowser an&lt;/a> und melde dich an, um den Fehler mit deiner Zahlung zu beheben.</string>
   <string name="We_cant_process_your_pledge" formatted="false">Wir können deine Zahlung leider nicht bearbeiten.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">Dein Finanzierungsbeitrag kann nicht bearbeitet werden. Bitte aktualisiere deine Zahlungsmethode.</string>
   <string name="We_cant_process_your_pledge_for" formatted="false">Wir können deine Zahlung aus folgendem Grund leider nicht bearbeiten:</string>
+  <string name="We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate" formatted="false">Wir können deinen Beitrag nicht verarbeiten. Besuche das Dashboard für Projekthinweise, um deine Karte zu authentifizieren.</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">Der Finanzierungsbeitrag dieses Unterstützers wurde abgebucht.</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">Dein Finanzierungsbeitrag für dieses Projekt wurde abgebucht.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
@@ -1739,6 +1742,10 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_menu_buttons_updates" formatted="false">Updates</string>
   <string name="project_menu_created_by" formatted="false">Erstellt von</string>
   <string name="project_menu_explore_this_project" formatted="false">Projekt erkunden</string>
+  <string name="project_project_notices_header" formatted="false">Kickstarter hat diesen Projektgründer eingeschränkt</string>
+  <string name="project_project_notices_notice_cta" formatted="false">Weitere Info</string>
+  <string name="project_project_notices_notice_intro" formatted="false">Das Kickstarter-Team für Vertrauen und Sicherheit hat Meldungen von Nutzern zu diesem Projekt und/oder dem Projektgründer untersucht.</string>
+  <string name="project_project_notices_notice_sheet_cta" formatted="false">Weitere Informationen zur Rechenschaftspflicht von Projektgründern</string>
   <string name="project_share_twitter_message" formatted="false">%{project_title}, via @Kickstarter</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} und %{second_friend_name} unterstützen dieses Projekt.</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} unterstützt dieses Projekt.</string>

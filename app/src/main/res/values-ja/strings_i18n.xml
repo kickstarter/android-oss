@@ -341,6 +341,7 @@
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、バッカーへの最初の請求（%{amount}）が%{project_deadline}に行われます。</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に請求されます。</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に %{total} の請求が行われます。</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline}に%{total}が請求されます。プロジェクトの資金が集まりクリエイターがその取り組み全体に成功した場合に引き換え可能となるプレッジ証明が届きます。</string>
   <string name="If_you_turn_following_off" formatted="false">フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。</string>
   <string name="If_your_profile_is_private" formatted="false">プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。</string>
@@ -798,9 +799,11 @@
   <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">お支払い方法を認証できませんでした。プルダウンしてページを更新し、別のお支払い方法をお選びください。</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">Facebook を介したログインはできなくなりました。Kickstarter のパスワードを使ってログインするか、Facebook のメールアドレスを使って新しいパスワードを設定してください。</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">バッカーのお支払い方法で問題があったためこのプレッジを処理することができません。</string>
+  <string name="We_cant_process_your_Pledge_Over_Time_payment" formatted="false">経時プレッジのお支払いを処理できませんでした。ウェブブラウザから&lt;a href="%{view_your_pledge_link}">プレッジを確認&lt;/a>し、ログインしてお支払い方法を修正してください。</string>
   <string name="We_cant_process_your_pledge" formatted="false">プレッジを処理することができません。</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">プレッジを処理できません。お支払い方法を更新してください。</string>
   <string name="We_cant_process_your_pledge_for" formatted="false">以下のプレッジを処理することが出来ません:</string>
+  <string name="We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate" formatted="false">プレッジを処理できません。プロジェクト通知のダッシュボードにアクセスしてカードを認証してください。</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">このプロジェクトへのこのバッカーからのプレッジを請求しました。</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">このプロジェクトへのあなたのプレッジを請求しました。</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
@@ -1740,6 +1743,10 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_menu_buttons_updates" formatted="false">アップデート</string>
   <string name="project_menu_created_by" formatted="false">製作者</string>
   <string name="project_menu_explore_this_project" formatted="false">このプロジェクトをさらに知る</string>
+  <string name="project_project_notices_header" formatted="false">このクリエイターは Kickstarter によってアクセス制限されています</string>
+  <string name="project_project_notices_notice_cta" formatted="false">もっとくわしく</string>
+  <string name="project_project_notices_notice_intro" formatted="false">Kickstarter の「トラスト＆セーフティ」チームが、このプロジェクトおよび/またはそのクリエイターに関するユーザーからの報告を調査しました。</string>
+  <string name="project_project_notices_notice_sheet_cta" formatted="false">クリエイターのアカウンタビリティ（説明責任）について詳しく見る</string>
   <string name="project_share_twitter_message" formatted="false">%{project_title} (@Kickstarter_JP より)</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} と%{second_friend_name} がバッカー</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} がバッカー</string>

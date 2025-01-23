@@ -812,7 +812,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeStatusData.assertValue(
             PledgeStatusData(
-                R.string.fpo_if_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline,
+                R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline,
                 expectedCurrency(environment, backedProject, 20.0),
                 DateTimeUtils.longDate(deadline),
                 plotData = null

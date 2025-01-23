@@ -1,15 +1,11 @@
 package com.kickstarter.ui.fragments
 
 import PaymentSchedule
-import android.content.Intent
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Pair
@@ -21,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.core.text.HtmlCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -496,7 +493,7 @@ class BackingFragment : Fragment() {
                     }
                 }
 
-                R.string.fpo_if_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline -> {
+                R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline -> {
                     this.viewModel.ksString?.let { ksString ->
                         ksString.format(
                             getString(it),
@@ -506,8 +503,14 @@ class BackingFragment : Fragment() {
                     }
                 }
 
-                R.string.fpo_we_cant_process_your_pledge_over_time_please_view_your_pledge_on_a_web_browser_and_log_in_to_fix_your_payment -> {
-                    getString(it)
+                R.string.We_cant_process_your_Pledge_Over_Time_payment -> {
+                    val url = pledgeStatusData.plotData?.fixPledgeUrl
+                    if (url != null) {
+                        val linkText = "<a href=\"$url\"</a>"
+                        getString(it).replace("%{view_your_pledge_link}", linkText)
+                    } else {
+                        getString(it)
+                    }
                 }
 
                 else -> getString(it)
@@ -515,27 +518,11 @@ class BackingFragment : Fragment() {
         }
 
         pledgeStatusText?.let { statusText ->
-            if (pledgeStatusData.statusStringRes == R.string.fpo_we_cant_process_your_pledge_over_time_please_view_your_pledge_on_a_web_browser_and_log_in_to_fix_your_payment) {
-                val spannablePledgeStatus = SpannableString(statusText)
-                val clickableText = "view your pledge"
-                val startIndex = statusText.indexOf(clickableText)
-                if (startIndex != -1) {
-                    val endIndex = startIndex + clickableText.length
-                    val clickableSpan = object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            val url = pledgeStatusData.plotData?.fixPledgeUrl
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            startActivity(intent)
-                        }
-                    }
-                    spannablePledgeStatus.setSpan(
-                        clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-
-                    binding?.backerPledgeStatus?.text = spannablePledgeStatus
-
-                    binding?.backerPledgeStatus?.movementMethod = LinkMovementMethod.getInstance()
-                }
+            if (pledgeStatusData.statusStringRes == R.string.We_cant_process_your_Pledge_Over_Time_payment) {
+                binding?.backerPledgeStatus?.text = HtmlCompat.fromHtml(
+                    statusText, HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding?.backerPledgeStatus?.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 val spannablePledgeStatus = SpannableString(statusText)
 

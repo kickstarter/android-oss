@@ -600,7 +600,7 @@ interface BackingFragmentViewModel {
                             if (!backing.paymentIncrements()
                                 .isNullOrEmpty() && !project.isLive
                             ) {
-                                R.string.fpo_we_cant_process_your_pledge_over_time_please_view_your_pledge_on_a_web_browser_and_log_in_to_fix_your_payment
+                                R.string.We_cant_process_your_Pledge_Over_Time_payment
                             } else {
                                 R.string.We_cant_process_your_pledge_Please_update_your_payment_method
                             }
@@ -618,7 +618,7 @@ interface BackingFragmentViewModel {
                             ) {
                                 R.string.We_collected_your_pledge_for_this_project
                             } else {
-                                R.string.fpo_if_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
+                                R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
                             }
                         }
 

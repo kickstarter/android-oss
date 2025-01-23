@@ -343,6 +343,7 @@ Tap to retry</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
   <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">If the project reaches its funding goal, the first charge of %{amount} will be collected on %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on %{project_deadline}.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}. You will receive a proof of pledge that will be redeemable if the project is funded and the creator is successful at completing the creative venture.</string>
   <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
   <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
@@ -803,9 +804,11 @@ catch your eye?</string>
   <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">We are unable to authenticate your payment method. Please pull to refresh and choose a different payment method.</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">We can no longer log you in through Facebook. Please log in with your Kickstarter password, or set a new password with your Facebook email.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
+  <string name="We_cant_process_your_Pledge_Over_Time_payment" formatted="false">We can’t process your Pledge Over Time payment. Please &lt;a href="%{view_your_pledge_link}">view your pledge&lt;/a> on a web browser and log in to fix your payment.</string>
   <string name="We_cant_process_your_pledge" formatted="false">We can\'t process your pledge.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">We can’t process your pledge. Please update your payment method.</string>
   <string name="We_cant_process_your_pledge_for" formatted="false">We can\'t process your pledge for:</string>
+  <string name="We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate" formatted="false">We can’t process your pledge. Visit the Project Alerts dashboard to authenticate your card.</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">We collected the backer’s pledge for this project.</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">We collected your pledge for this project.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>
@@ -1746,6 +1749,10 @@ Thank you for your support!</string>
   <string name="project_menu_buttons_updates" formatted="false">Updates</string>
   <string name="project_menu_created_by" formatted="false">Created by</string>
   <string name="project_menu_explore_this_project" formatted="false">Explore this project</string>
+  <string name="project_project_notices_header" formatted="false">Kickstarter has restricted this creator</string>
+  <string name="project_project_notices_notice_cta" formatted="false">Learn more</string>
+  <string name="project_project_notices_notice_intro" formatted="false">Kickstarter\'s Trust &amp; Safety team has investigated user reports associated with this project and/or its creator.</string>
+  <string name="project_project_notices_notice_sheet_cta" formatted="false">Learn more about creator accountability</string>
   <string name="project_share_twitter_message" formatted="false">%{project_title}, via @Kickstarter</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} is a backer.</string>

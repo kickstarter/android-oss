@@ -1767,6 +1767,11 @@ type Project implements Node & Commentable {
   profile: ProjectProfile
 
   """
+  The text of the currently applied project notice, empty if there is no notice
+  """
+  projectNotice: String
+
+  """
   When this project was Project of the Day.
   """
   projectOfTheDayAt: DateTime
@@ -5055,17 +5060,17 @@ A hash containing the original, refunded, and remaining amounts.
 """
 type AdjustmentAmount {
   """
-  the original total amount
+  original total amount
   """
   originalTotal: Int!
 
   """
-  the refunded total amount
+  amount that has been refunded after all adjustments are applied
   """
   refundedTotal: Int!
 
   """
-  the remaining total amount
+  amount remaining after all adjustments are applied
   """
   remainingTotal: Int!
 }
@@ -5075,9 +5080,14 @@ A reward that is modified by an adjustment.
 """
 type AdjustmentReward {
   """
-  original total for reward
+  original total amount
   """
   originalTotal: Int!
+
+  """
+  uuid for the refund item
+  """
+  refundItemId: ID!
 
   """
   amount that has been refunded after all adjustments are applied
@@ -5092,7 +5102,7 @@ type AdjustmentReward {
   """
    graphql id of reward to be refunded
   """
-  rewardId: ID!
+  rewardId: String!
 }
 
 """
@@ -7080,6 +7090,11 @@ enum FlaggingKind {
   prototype-misrepresentation
   """
   PROTOTYPE_MISREPRESENTATION
+
+  """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
 
   """
   misrep-support-impersonation
@@ -9108,6 +9123,8 @@ enum UserRestrictionKind {
   edit_spotlight_pages
 
   phone
+
+  prelaunch_early
 }
 
 """
@@ -14517,9 +14534,14 @@ An object removed as part of an adjustment
 """
 input RemovalInput {
   """
+  id of the reward associated with the removal
+  """
+  rewardId: Int!
+
+  """
   id of object to be removed
   """
-  id: Int!
+  refundItemId: ID!
 
   """
   type of object to be removed (reward, reward item, or order item)
@@ -14534,7 +14556,7 @@ input RefundInput {
   """
   id of object to be refunded
   """
-  id: Int
+  refundItemId: ID
 
   """
   type of refund
@@ -14964,6 +14986,11 @@ enum NonDeprecatedFlaggingKind {
   prototype-misrepresentation
   """
   PROTOTYPE_MISREPRESENTATION
+
+  """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
 
   """
   misrep-support-impersonation

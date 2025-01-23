@@ -328,6 +328,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
     val photoUrl = projectFragment?.full?.image?.url
     val photo = getPhoto(photoUrl)
+    val projectNotice = projectFragment?.projectNotice
     val tags = mutableListOf<String>()
     projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
     projectFragment?.tagsDiscovery?.tags?.map { tags.add(it?.id ?: "") }

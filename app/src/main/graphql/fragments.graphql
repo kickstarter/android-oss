@@ -80,6 +80,7 @@ fragment fullProject on Project {
     currency
     canComment
     prelaunchActivated
+    projectNotice
     projectOfTheDayAt
     friends {
         nodes {

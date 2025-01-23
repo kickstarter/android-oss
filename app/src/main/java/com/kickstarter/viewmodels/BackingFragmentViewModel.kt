@@ -595,6 +595,7 @@ interface BackingFragmentViewModel {
                         Backing.STATUS_CANCELED -> R.string.You_canceled_your_pledge_for_this_project
                         Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
                         Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
+                        Backing.STATUS_AUTHENTICATION_REQUIRED,
                         Backing.STATUS_ERRORED -> {
                             if (!backing.paymentIncrements()
                                 .isNullOrEmpty() && !project.isLive
@@ -622,7 +623,7 @@ interface BackingFragmentViewModel {
                         }
 
                         Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
-                        Backing.STATUS_AUTHENTICATION_REQUIRED -> R.string.fpo_authentication_required_backing_state
+
                         else -> null
                     }
                 }

@@ -42,7 +42,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test_when_loading_called_then_state_shows_loading`() = runTest {
+    fun `test loading() with emmit isLoading = true and isPledgeButtonEnabled= false`() = runTest {
         setUpEnvironment(environment())
 
         val state = mutableListOf<LatePledgeCheckoutUIState>()
@@ -51,10 +51,14 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         }
 
         viewModel.loading()
+
+        advanceUntilIdle()
+        assertEquals(state.size, 2)
         assertEquals(
             state.last(),
             LatePledgeCheckoutUIState(
-                isLoading = true
+                isLoading = true,
+                isPledgeButtonEnabled = false
             )
         )
     }
@@ -309,6 +313,104 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             assertEquals(state.last().userEmail, "some@email.com")
 
             assertEquals(errorActionCount, 1)
+        }
+
+    @Test
+    fun `test when pledge_clicked for second time no new payment intent is created but using previous one`() =
+        runTest {
+            val user = UserFactory.user()
+            val currentUserV2 = MockCurrentUserV2(initialUser = user)
+            val cardList = mutableListOf(StoredCardFactory.visa(), StoredCardFactory.fromPaymentSheetCard())
+
+            var paymentIntentCalled = 0
+            var validateCheckoutCalled = 0
+
+            val environment = environment().toBuilder()
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(cardList)
+                    }
+
+                    override fun createCheckout(createCheckoutData: CreateCheckoutData): Observable<CheckoutPayment> {
+                        return Observable.just(CheckoutPayment(100L, backing = Backing.builder().id(101L).build(), paymentUrl = ""))
+                    }
+                    override fun createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput): Observable<String> {
+                        paymentIntentCalled++
+                        return Observable.just("paymentIntent")
+                    }
+
+                    override fun validateCheckout(
+                        checkoutId: String,
+                        paymentIntentClientSecret: String,
+                        paymentSourceId: String
+                    ): Observable<PaymentValidationResponse> {
+                        validateCheckoutCalled++
+                        return Observable.just(
+                            PaymentValidationResponse(
+                                isValid = true,
+                                messages = listOf()
+                            )
+                        )
+                    }
+
+                    override fun completeOnSessionCheckout(
+                        checkoutId: String,
+                        paymentIntentClientSecret: String,
+                        paymentSourceId: String?,
+                        paymentSourceReusable: Boolean
+                    ): Observable<Pair<String, Boolean>> {
+                        return Observable.just(Pair("Success", false))
+                    }
+                })
+                .currentUserV2(currentUserV2)
+                .build()
+
+            val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(34.0).build()
+            val project = ProjectFactory.project().toBuilder()
+                .isInPostCampaignPledgingPhase(true)
+                .postCampaignPledgingEnabled(true)
+                .isBacking(false)
+                .rewards(listOf(rw)).build()
+
+            val addOns = listOf(rw, rw, rw)
+            val rule = ShippingRuleFactory.germanyShippingRule().toBuilder().cost(3.0).build()
+            val bonusAmount = 5.0
+
+            val projectData = ProjectDataFactory.project(project = project)
+            val pledgeData = PledgeData.with(PledgeFlowContext.LATE_PLEDGES, projectData, rw, addOns = addOns, bonusAmount = bonusAmount, shippingRule = rule)
+
+            var errorActionCount = 0
+            val state = mutableListOf<LatePledgeCheckoutUIState>()
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                setUpEnvironment(environment)
+
+                viewModel.provideErrorAction {
+                    errorActionCount++
+                }
+
+                viewModel.providePledgeData(pledgeData)
+                viewModel.provideCheckoutIdAndBacking(100L, Backing.builder().id(101L).build())
+
+                viewModel.onPledgeButtonClicked(cardList.first())
+                // - Simulating a second call to the complete a pledge, 1 Payment Intent created should remain
+                viewModel.onPledgeButtonClicked(cardList.last())
+
+                viewModel.latePledgeCheckoutUIState.toList(state)
+            }
+            advanceUntilIdle()
+
+            assertEquals(state.size, 5)
+            assertEquals(state[3].isPledgeButtonEnabled, false)
+            assertEquals(state.last().storeCards, cardList)
+            assertEquals(state.last().userEmail, "some@email.com")
+            assertEquals(state.last().isPledgeButtonEnabled, false)
+
+            // Stripe will give an error since this is mock data
+            assertEquals(errorActionCount, 1)
+            assertEquals(validateCheckoutCalled, 1)
+            // One payment Intent created, despite being called twice `onPledgeButtonClicked`
+            assertEquals(paymentIntentCalled, 1)
         }
 
     @Test
@@ -572,6 +674,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(state.last().storeCards.first(), cardsList.first())
         assertEquals(state.last().storeCards.last(), cardsList.last())
         assertEquals(state.last().isLoading, false)
+        assertEquals(state.last().isPledgeButtonEnabled, true)
     }
 
     @Test

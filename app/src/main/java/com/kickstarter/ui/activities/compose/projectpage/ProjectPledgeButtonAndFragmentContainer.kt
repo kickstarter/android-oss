@@ -148,7 +148,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
     onAddPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
-    onAccountabilityLinkClicked: () -> Unit
+    onAccountabilityLinkClicked: () -> Unit,
+    isPledgeButtonEnabled: Boolean = false
 ) {
     Column(modifier = Modifier.systemBarsPadding()) {
         Surface(
@@ -293,6 +294,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                                         isLoading = isLoading,
                                         onDisclaimerItemClicked = onDisclaimerItemClicked,
                                         onAccountabilityLinkClicked = onAccountabilityLinkClicked,
+                                        isPledgeButtonEnabled = isPledgeButtonEnabled
                                     )
                                 }
                             }

@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,10 @@ import com.kickstarter.ui.data.PledgeData
 import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +42,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -55,6 +64,7 @@ data class LatePledgeCheckoutUIState(
     val isPledgeButtonEnabled: Boolean = true
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var pledgeData: PledgeData? = null
@@ -83,6 +93,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var paymentIntent: String? = null
     private var pledgeButtonClickedJob: Job? = null
+
+    private var scope = viewModelScope
+    private var dispatcher = Dispatchers.IO
 
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
     val onPledgeSuccess: SharedFlow<Boolean>
@@ -122,27 +135,38 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     val paymentRequiresAction: SharedFlow<String>
         get() = mutablePaymentRequiresAction.asSharedFlow()
 
-    init {
-        viewModelScope.launch {
-            environment.currentUserV2()?.observable()?.asFlow()?.distinctUntilChanged()?.map {
-                if (it.isPresent()) {
-                    apolloClient.userPrivacy().asFlow()
-                        .onStart {
-                            emitCurrentState(isLoading = true)
-                        }.map { userPrivacy ->
-                            userEmail = userPrivacy.email
-                        }.onCompletion {
-                            emitCurrentState()
-                        }.catch {
-                            errorAction.invoke(null)
-                        }.collect()
+    private val currentUser = requireNotNull(
+        environment.currentUserV2()?.loggedInUser()?.asFlow()
+    )
 
-                    refreshUserCards()
-                }
-            }?.catch {
-                errorAction.invoke(null)
-            }?.collect()
+    private suspend fun loadUserInfo() {
+
+        val privacyAndCardsFlow = combine(
+            apolloClient.userPrivacy().asFlow(),
+            apolloClient.getStoredCards().asFlow()
+        ) { userPrivacy, cards ->
+            Pair(userPrivacy, cards)
         }
+
+        currentUser
+            .filter {
+                it.isNotNull()
+            }
+            .distinctUntilChanged()
+            .flatMapConcat {
+                privacyAndCardsFlow
+            }
+            .onStart {
+                emitCurrentState(isLoading = true)
+            }
+            .catch {
+                errorAction.invoke(null)
+            }
+            .collectLatest { privacyAndCards ->
+                userEmail = privacyAndCards.first.email
+                storedCards = privacyAndCards.second
+                emitCurrentState()
+            }
     }
 
     fun getCheckoutData() = checkoutData
@@ -154,7 +178,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onAddNewCardClicked(project: Project) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             apolloClient.createSetupIntent(
                 project = project,
             ).asFlow().onStart {
@@ -172,7 +196,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onNewCardSuccessfullyAdded() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             apolloClient.savePaymentMethod(
                 SavePaymentMethodData(
                     reusable = true,
@@ -215,7 +239,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         if (pledgeButtonClickedJob?.isActive.isTrue()) return
 
         this.pledgeData?.let {
-            pledgeButtonClickedJob = viewModelScope.launch {
+            pledgeButtonClickedJob = viewModelScope.launch(dispatcher) {
                 val project = it.projectData().project()
 
                 buttonEnabled = false
@@ -360,7 +384,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun completeOnSessionCheckoutFor3DS() {
-        viewModelScope.launch {
+        scope.launch(dispatcher) {
             if (clientSecretFor3DSVerification.isNotEmpty() && selectedCardFor3DSVerification.isNotNull()) {
                 apolloClient.completeOnSessionCheckout(
                     checkoutId = checkoutId ?: "",
@@ -395,7 +419,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         clientSecretFor3DSVerification = ""
         selectedCardFor3DSVerification = null
 
-        viewModelScope.launch {
+        scope.launch {
             emitCurrentState()
         }
     }
@@ -453,7 +477,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun loading() {
-        viewModelScope.launch {
+        scope.launch {
             emitCurrentState(isLoading = true)
         }
     }
@@ -469,7 +493,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     .postCampaignPledgingEnabled() == true && projectData.project()
                         .isInPostCampaignPledgingPhase() == true
                 ) {
-                    viewModelScope.launch {
+                    scope.launch(dispatcher) {
                         apolloClient.createCheckout(
                             CreateCheckoutData(
                                 project = projectData.project(),
@@ -501,16 +525,29 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    /**
+     * For testing, by default run in
+     * scope: viewModelScope
+     * dispatcher: Dispatchers.IO
+     *
+     */
+    @VisibleForTesting
+    internal fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
+        this.scope = scope
+        this.dispatcher = dispatcher
+    }
+
     fun providePledgeData(pledgeData: PledgeData) {
         this.pledgeData = pledgeData
         this.checkoutData = createCheckoutData(pledgeData.shippingCostIfShipping(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())
-        viewModelScope.launch {
-            selectedRewards.clear()
-            pledgeData.addOns()?.let { addOns ->
-                selectedRewards.add(pledgeData.reward())
-                selectedRewards.addAll(addOns)
-            }
+        selectedRewards.clear()
+        pledgeData.addOns()?.let { addOns ->
+            selectedRewards.add(pledgeData.reward())
+            selectedRewards.addAll(addOns)
+        }
 
+        scope.launch(dispatcher) {
+            loadUserInfo()
             createCheckout()
         }
     }

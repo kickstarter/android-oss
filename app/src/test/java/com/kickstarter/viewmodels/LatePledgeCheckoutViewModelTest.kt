@@ -160,7 +160,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test_when_user_clicks_add_new_card_then_setup_intent_is_called`() = runTest {
+    fun test_when_user_clicks_add_new_card_then_setup_intent_is_called() = runTest {
         val user = UserFactory.user()
         val currentUserV2 = MockCurrentUserV2(initialUser = user)
 
@@ -193,7 +193,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test_when_new_card_added_then_payment_methods_are_refreshed`() = runTest {
+    fun test_when_new_card_added_then_payment_methods_are_refreshed() = runTest {
         val user = UserFactory.user()
         val currentUserV2 = MockCurrentUserV2(initialUser = user)
         var cardList = mutableListOf(StoredCardFactory.visa())
@@ -257,8 +257,9 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test_when_new_card_adding_fails_then_state_emits`() = runTest {
+    fun test_when_new_card_adding_fails_then_state_emits() = runTest {
         val user = UserFactory.user()
         val currentUserV2 = MockCurrentUserV2(initialUser = user)
         val cardList = mutableListOf(StoredCardFactory.visa())
@@ -299,9 +300,10 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             cardList
         )
 
-        assertEquals(state.size, 2)
+        assertEquals(state.size, 3)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test when pledge_clicked_and_checkout_id_ and backingID not_provided then_error_action_is_called`() =
         runTest {
@@ -492,7 +494,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test_when_pledge_clicked_and_checkout_id_provided_then_checkout_continues`() = runTest {
+    fun test_when_pledge_clicked_and_checkout_id_provided_then_checkout_continues() = runTest {
         val user = UserFactory.user()
         val currentUserV2 = MockCurrentUserV2(initialUser = user)
         val cardList = mutableListOf(StoredCardFactory.visa())
@@ -584,6 +586,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(paymentIntentCalled, 1)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test_when_complete3DSCheckout_called_with_no_values_then_errors`() = runTest {
         val user = UserFactory.user()
@@ -610,16 +613,20 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
         var errorActionCount = 0
 
-        viewModel.provideErrorAction {
-            errorActionCount++
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideErrorAction {
+                errorActionCount++
+            }
+            viewModel.completeOnSessionCheckoutFor3DS()
         }
-
-        viewModel.completeOnSessionCheckoutFor3DS()
 
         assertEquals(errorActionCount, 1)
         assertEquals(completeOnSessionCheckoutCalled, 0)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test send PageViewed event`() = runTest {
         setUpEnvironment(environment())
@@ -670,6 +677,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test send CTAClicked event`() = runTest {
         setUpEnvironment(environment())

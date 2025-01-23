@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -530,7 +531,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
      * dispatcher: Dispatchers.IO
      *
      */
-    fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
+    @VisibleForTesting
+    internal fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
         this.scope = scope
         this.dispatcher = dispatcher
     }

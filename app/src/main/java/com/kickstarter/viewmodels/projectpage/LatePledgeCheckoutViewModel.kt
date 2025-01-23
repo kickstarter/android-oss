@@ -28,6 +28,7 @@ import com.stripe.android.Stripe
 import com.stripe.android.confirmPaymentIntent
 import com.stripe.android.model.ConfirmPaymentIntentParams
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -43,6 +44,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
@@ -62,7 +64,7 @@ data class LatePledgeCheckoutUIState(
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LatePledgeCheckoutViewModel(val environment: Environment, private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
+class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var pledgeData: PledgeData? = null
     private var checkoutData: CheckoutData? = null
@@ -90,6 +92,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment, private val disp
 
     private var paymentIntent: String? = null
     private var pledgeButtonClickedJob: Job? = null
+
+    private var scope = viewModelScope
+    private var dispatcher = Dispatchers.IO
 
     private var mutableOnPledgeSuccessAction = MutableSharedFlow<Boolean>()
     val onPledgeSuccess: SharedFlow<Boolean>
@@ -143,6 +148,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment, private val disp
         }
 
         currentUser
+            .filter {
+                it.isNotNull()
+            }
             .distinctUntilChanged()
             .flatMapConcat {
                 privacyAndCardsFlow
@@ -150,7 +158,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment, private val disp
             .onStart {
                 emitCurrentState(isLoading = true)
             }
-            .catch { errorAction.invoke(null) }
+            .catch {
+                errorAction.invoke(null)
+            }
             .collectLatest { privacyAndCards ->
                 userEmail = privacyAndCards.first.email
                 storedCards = privacyAndCards.second
@@ -512,6 +522,17 @@ class LatePledgeCheckoutViewModel(val environment: Environment, private val disp
                 }
             }
         }
+    }
+
+    /**
+     * For testing, by default run in
+     * scope: viewModelScope
+     * dispatcher: Dispatchers.IO
+     *
+     */
+    fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
+        this.scope = scope
+        this.dispatcher = dispatcher
     }
 
     fun providePledgeData(pledgeData: PledgeData) {

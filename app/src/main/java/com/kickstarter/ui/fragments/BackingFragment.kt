@@ -506,8 +506,12 @@ class BackingFragment : Fragment() {
                 R.string.We_cant_process_your_Pledge_Over_Time_payment -> {
                     val url = pledgeStatusData.plotData?.fixPledgeUrl
                     if (url != null) {
-                        val linkText = "<a href=\"$url\"</a>"
-                        getString(it).replace("%{view_your_pledge_link}", linkText)
+                        this.viewModel.ksString?.let { ksString ->
+                            ksString.format(
+                                getString(it),
+                                "view_your_pledge_link", url
+                            )
+                        }
                     } else {
                         getString(it)
                     }

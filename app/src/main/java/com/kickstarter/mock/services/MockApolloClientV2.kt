@@ -147,6 +147,9 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just("")
     }
 
+    override suspend fun _getStoredCards(): List<StoredCard> =
+        Collections.singletonList(StoredCardFactory.discoverCard())
+
     override fun getStoredCards(): io.reactivex.Observable<List<StoredCard>> {
         return io.reactivex.Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
     }

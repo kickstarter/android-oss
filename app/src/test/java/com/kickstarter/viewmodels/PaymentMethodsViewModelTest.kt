@@ -12,10 +12,17 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
 import org.junit.Test
 import java.util.Collections
+import kotlinx.coroutines.test.runTest
 
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalStdlibApi::class)
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PaymentMethodsViewModel
@@ -31,9 +38,9 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private val successSaving = TestSubscriber<String>()
     private val compositeDisposable = CompositeDisposable()
 
-    private fun setUpEnvironment(environment: Environment) {
+    private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher? = null) {
 
-        this.vm = PaymentMethodsViewModel.Factory(environment).create(PaymentMethodsViewModel::class.java)
+        this.vm = PaymentMethodsViewModel.Factory(environment, dispatcher).create(PaymentMethodsViewModel::class.java)
 
         compositeDisposable.add(this.vm.outputs.error().subscribe { this.error.onNext(it) })
         compositeDisposable.add(this.vm.outputs.cards().subscribe { this.cards.onNext(it) })
@@ -52,18 +59,34 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCards() {
+    fun testRefreshCards() {
+        setUpEnvironment(environment())
+        this.vm.inputs.refreshCards()
+        this.cards.assertValueCount(2)
+    }
+
+    @Test
+    fun testCards() = runTest {
+        val dispatcher = coroutineContext[CoroutineDispatcher]
+
         val card = StoredCardFactory.discoverCard()
 
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun _getStoredCards(): List<StoredCard> {
+                    delay(1000)
+                    return Collections.singletonList(card)
+                }
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.singletonList(card))
                 }
-            }).build()
+            }).build(),
+            dispatcher
         )
 
-        this.cards.assertValue(Collections.singletonList(card))
+        advanceUntilIdle()
+
+        this@PaymentMethodsViewModelTest.cards.assertValue(Collections.singletonList(card))
     }
 
     @Test

@@ -507,7 +507,7 @@ class BackingFragment : Fragment() {
                     val url = pledgeStatusData.plotData?.fixPledgeUrl
                     if (url != null) {
                         val linkText = "<a href=\"$url\"</a>"
-                        getString(it).replace("%{view_your_pledge_link}", linkText)
+                        getString(it).replace("%{view_your_pledge_link}>", linkText)
                     } else {
                         getString(it)
                     }

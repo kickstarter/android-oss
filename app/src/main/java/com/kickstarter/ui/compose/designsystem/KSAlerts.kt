@@ -2,7 +2,9 @@ package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Snackbar
@@ -22,8 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import com.kickstarter.libs.utils.safeLet
@@ -187,6 +193,55 @@ fun AlertDialogPreview() {
                 bodyText = "Apparently we had reached a great height in the atmosphere for the...",
                 leftButtonText = "BUTTON",
                 rightButtonText = "BUTTON"
+            )
+        }
+    }
+}
+
+
+@Composable
+fun RestrictedCreatorCard() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .border(
+                width = 2.dp,
+                color = Color.Red,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .background(
+                color = Color(0xFFFFF5F5), // Light pink background
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "Kickstarter has restricted this creator",
+                style = typography.subheadlineMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color.Black
+                )
+            )
+            Text(
+                text = "Kickstarter’s Trust & Safety team has investigated user reports associated with this project and/or its creator.",
+                style = typography.subheadline.copy(
+                    fontSize = 14.sp,
+                    color = Color.Black
+                )
+            )
+            Text(
+                text = "Learn more",
+                style = typography.subheadline.copy(
+                    fontSize = 14.sp,
+                    color = Color(0xFF007BFF), // Blue text for the link
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }

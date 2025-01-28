@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
@@ -472,6 +473,26 @@ fun KSSmallButton(
             color = if (isEnabled) textColor else colors.textAccentGrey,
             style = typography.buttonText
         )
+    }
+}
+
+
+@Composable
+fun KSOutlinedButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    backgroundColor: Color,
+    text: String,
+    textColor: Color = colors.textAccentGrey
+){
+    OutlinedButton(
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            contentColor = textColor
+        ),
+        onClick = { onClickAction.invoke() }
+    ) {
+        Text(text)
     }
 }
 

@@ -2,6 +2,7 @@ package com.kickstarter.ui.fragments.projectpage
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
@@ -21,27 +23,36 @@ import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.Configure
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setClickableHtml
+import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.views.KSModalBottomSheet
+import com.kickstarter.ui.views.compose.KSImageTextCtaBanner
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
@@ -202,6 +213,43 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 binding.projectName.text = it
             }
             .addToDisposable(disposables)
+
+        binding.composeViewBanner.setContent {
+            KSTheme {
+
+//                val projectNotice by viewModel.outputs.projectProjectNotice()
+//                    .subscribeAsState(initial = "")
+
+                // TODO: YC - Remove temporary hardcode
+                val greeting = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers."
+                val observable = Observable.just(greeting)
+                val projectNotice = observable
+                    .subscribeAsState("")
+
+                if (projectNotice != null) {
+
+                    val modalBottomSheet = KSModalBottomSheet(
+                        bodyText = projectNotice.value,
+                        onCtaClicked = { showAccountabilityPage(this.context?.getEnvironment()) }
+                    )
+                    val openBottomSheet = {
+                        modalBottomSheet.show(parentFragmentManager, KSModalBottomSheet.TAG)
+                    }
+
+                    KSImageTextCtaBanner(
+                        imageResToDisplay = R.drawable.ic_alert_diamond,
+                        titleResToDisplay = R.string.Add_ons_unavailable,
+                        textResToDisplay = R.string.Address_confirmed_need_to_change_your_address_before_it_locks,
+                        textColorRes = R.color.text_primary,
+                        backgroundColor = colors.backgroundDangerSubtle,
+                        highlightColorRes = R.color.kds_alert,
+                        onClickAction = openBottomSheet
+                    )
+                }
+            }
+        }
+
+
 
         viewModel.outputs.projectSocialTextViewFriends()
             .observeOn(AndroidSchedulers.mainThread())
@@ -387,6 +435,31 @@ class ProjectOverviewFragment : Fragment(), Configure {
         }
     }
 
+    private fun showAccountabilityPage(environment: Environment?) {
+        activity?.let { activity ->
+            context?.let { context ->
+                environment?.let { env ->
+                    env.webEndpoint().let { endpoint ->
+                        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+                        ChromeTabsHelperActivity.openCustomTab(
+                            activity,
+                            UrlUtils.baseCustomTabsIntent(context),
+                            Uri.parse(trustUrl),
+                            null
+                        )
+                    }
+                } ?: binding.root.parent.let { view ->
+                    activity.runOnUiThread {
+                        showErrorToast(
+                            context,
+                            view as ViewGroup,
+                            getString(R.string.general_error_something_wrong)
+                        )
+                    }
+                }
+            }
+        }
+    }
     private fun setAvatar(url: String) {
         binding.avatar.loadCircleImage(url)
     }

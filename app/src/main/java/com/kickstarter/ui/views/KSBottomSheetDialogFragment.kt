@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -47,17 +46,14 @@ class KSBottomSheetDialogFragment(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 KSTheme {
-                    Column {
+                    Column(modifier = Modifier.padding(dimensions.paddingLarge)) {
                         Row(
                             modifier = Modifier
-                                .padding(
-                                    top = dimensions.paddingMediumLarge,
-                                )
                                 .background(
                                     color = colors.backgroundAccentGrayBold,
                                     shape = shapes.small
                                 )
-                                .width(dimensions.paddingLarge)
+                                .width(dimensions.paddingXXLarge)
                                 .height(dimensions.paddingXSmall)
                                 .align(Alignment.CenterHorizontally)
 

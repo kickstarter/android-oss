@@ -95,7 +95,7 @@ fun KSBottomSheetContent(
 
         KSPrimaryBlackButton(
             modifier = Modifier
-                .padding(top = dimensions.paddingMedium, bottom = dimensions.paddingMediumSmall)
+                .padding(top = dimensions.paddingMedium)
                 .fillMaxWidth(),
             onClickAction = { onClose() },
             isEnabled = true,

@@ -63,7 +63,7 @@ fun KSImageTextCtaBanner(
                 )
             )
             .padding(
-                start = 10.dp
+                start = dimensions.paddingXSmall
             )
             .background(
                 color = backgroundColor,
@@ -75,7 +75,7 @@ fun KSImageTextCtaBanner(
                     bottomEnd = 6.dp
                 )
             )
-            .padding(10.dp)
+            .padding(dimensions.paddingMedium)
     ) {
         Image(
             painter = painterResource(id = imageResToDisplay),

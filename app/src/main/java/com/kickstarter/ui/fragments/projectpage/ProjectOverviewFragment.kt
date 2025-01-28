@@ -14,7 +14,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
@@ -33,6 +37,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
@@ -40,6 +45,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setClickableHtml
@@ -49,7 +55,7 @@ import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
-import com.kickstarter.ui.views.KSModalBottomSheet
+import com.kickstarter.ui.views.KSBottomSheetDialogFragment
 import com.kickstarter.ui.views.compose.KSImageTextCtaBanner
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
 import io.reactivex.Observable
@@ -224,27 +230,29 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 val greeting = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers."
                 val observable = Observable.just(greeting)
                 val projectNotice = observable
-                    .subscribeAsState("")
+                    .subscribeAsState(null)
 
-                if (projectNotice != null) {
+                if (projectNotice.isNotNull()) {
 
-                    val modalBottomSheet = KSModalBottomSheet(
+                    val modalBottomSheet = KSBottomSheetDialogFragment(
                         bodyText = projectNotice.value,
                         onCtaClicked = { showAccountabilityPage(this.context?.getEnvironment()) }
                     )
                     val openBottomSheet = {
-                        modalBottomSheet.show(parentFragmentManager, KSModalBottomSheet.TAG)
+                        modalBottomSheet.show(parentFragmentManager, KSBottomSheetDialogFragment.TAG)
                     }
-
-                    KSImageTextCtaBanner(
-                        imageResToDisplay = R.drawable.ic_alert_diamond,
-                        titleResToDisplay = R.string.Add_ons_unavailable,
-                        textResToDisplay = R.string.Address_confirmed_need_to_change_your_address_before_it_locks,
-                        textColorRes = R.color.text_primary,
-                        backgroundColor = colors.backgroundDangerSubtle,
-                        highlightColorRes = R.color.kds_alert,
-                        onClickAction = openBottomSheet
-                    )
+                    Column {
+                        KSImageTextCtaBanner(
+                            imageResToDisplay = R.drawable.ic_alert_diamond,
+                            titleResToDisplay = R.string.Add_ons_unavailable,
+                            textResToDisplay = R.string.Address_confirmed_need_to_change_your_address_before_it_locks,
+                            textColorRes = R.color.text_primary,
+                            backgroundColor = colors.backgroundDangerSubtle,
+                            highlightColorRes = R.color.kds_alert,
+                            onClickAction = openBottomSheet
+                        )
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    }
                 }
             }
         }

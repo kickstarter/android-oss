@@ -5,5 +5,5 @@
   <padding
     android:left="@dimen/grid_2"
     android:right="@dimen/grid_2" />
-  <corners android:topRightRadius="@dimen/grid_2" android:topLeftRadius="@dimen/grid_2"/>
+  <corners android:topRightRadius="@dimen/grid_9_half" android:topLeftRadius="@dimen/grid_9_half"/>
 </shape>

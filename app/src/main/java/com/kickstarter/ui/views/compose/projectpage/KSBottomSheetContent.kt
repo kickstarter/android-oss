@@ -1,7 +1,9 @@
 package com.kickstarter.ui.views.compose.projectpage
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
@@ -10,35 +12,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
+import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import com.kickstarter.ui.compose.designsystem.kds_white
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun KSBottomSheetContentPreview() {
+    KSTheme {
+        KSBottomSheetContent(
+            title = "Hello world",
+            body = "Body of text",
+            onLinkClicked = { },
+            onClose = { }
+        )
+    }
+}
 
 @Composable
 fun KSBottomSheetContent(
-    text: String?,
+    title: String,
+    body: String?,
     onLinkClicked: () -> Unit,
     onClose: () -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(vertical = dimensions.paddingMedium)
+    ) {
         Text(
-            text = "Kickstarter has restricted this creator",
-            style = typography.subheadlineMedium
+            text = title,
+            style = typography.calloutMedium
         )
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-        text?.let {
+        body?.let {
             Text(
-                text = text,
-                style = typography.subheadline
+                text = body,
+                style = typography.callout
             )
         }
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -52,7 +71,9 @@ fun KSBottomSheetContent(
             )
             withStyle(
                 style = SpanStyle(
-                    color = colors.kds_create_700,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.textPrimary,
+                    textDecoration = TextDecoration.Underline
                 )
             ) {
                 append(text)
@@ -60,15 +81,7 @@ fun KSBottomSheetContent(
             pop()
         }
         ClickableText(
-            modifier = Modifier.padding(bottom = dimensions.paddingMedium),
             text = annotatedText,
-            style = TextStyle(
-                fontWeight = FontWeight(400),
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.25.sp,
-                color = colors.kds_support_400
-            ),
             onClick = {
                 annotatedText.getStringAnnotations(
                     tag = annotation, start = it,
@@ -80,9 +93,12 @@ fun KSBottomSheetContent(
             }
         )
 
-        KSOutlinedButton(
+        KSPrimaryBlackButton(
+            modifier = Modifier
+                .padding(top = dimensions.paddingMedium, bottom = dimensions.paddingMediumSmall)
+                .fillMaxWidth(),
             onClickAction = { onClose() },
-            backgroundColor = kds_white,
+            isEnabled = true,
             text = stringResource(R.string.general_alert_buttons_ok)
         )
     }

@@ -5,15 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,8 +25,6 @@ import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
-import com.kickstarter.ui.compose.designsystem.red_02
-import com.kickstarter.ui.views.KSModalBottomSheet
 
 
 @Preview
@@ -55,87 +50,62 @@ fun KSImageTextCtaBanner(
     highlightColorRes: Int,
     onClickAction: (() -> Unit)? = null
 ) {
-    Row(
+    Row (
         modifier = Modifier
-            .fillMaxWidth()
-//            .background(
-//                color = red_02,
-//                shape = RoundedCornerShape(
-//                    // TODO: YC - Add actual dimensions
-//                    topStart = 6.dp,
-//                    topEnd = 6.dp,
-//                    bottomStart = 6.dp,
-//                    bottomEnd = 6.dp
-//                )
-//            )
-        ,
-
-        verticalAlignment = Alignment.Top   ,
-    ) {
-
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(20.dp)
-                .background(
-                    color = backgroundColor
-//                    shape = RoundedCornerShape(
-//                        // TODO: YC - Add actual dimensions
-//                        topStart = 6.dp,
-//                        topEnd = 0.dp,
-//                        bottomStart = 6.dp,
-//                        bottomEnd = 0.dp
-//                    )
+            .background(
+                color = colorResource(highlightColorRes),
+                shape = RoundedCornerShape(
+                    // TODO: YC - Add actual dimensions
+                    topStart = 6.dp,
+                    topEnd = 6.dp,
+                    bottomStart = 6.dp,
+                    bottomEnd = 6.dp
                 )
+            )
+            .padding(
+                start = 10.dp
+            )
+            .background(
+                color = backgroundColor,
+                shape = RoundedCornerShape(
+                    // TODO: YC - Add actual dimensions
+                    topStart = 0.dp,
+                    topEnd = 6.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 6.dp
+                )
+            )
+            .padding(10.dp)
+    ) {
+        Image(
+            painter = painterResource(id = imageResToDisplay),
+            colorFilter = ColorFilter.tint(color = colorResource(highlightColorRes)),
+            contentDescription = stringResource(id = titleResToDisplay),
+            modifier = Modifier
+                .padding(end = dimensionResource(id = R.dimen.grid_2))
+                .size(20.dp)
         )
 
-        Row (
-            modifier = Modifier
-                .background(
-                    color = red_02,
-                    shape = RoundedCornerShape(
-                        // TODO: YC - Add actual dimensions
-                        topStart = 0.dp,
-                        topEnd = 6.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 6.dp
-                    )
-                )
-                .padding(all = dimensionResource(id = R.dimen.grid_2))
-        ) {
-            Image(
-                painter = painterResource(id = imageResToDisplay),
-                colorFilter = ColorFilter.tint(color = colorResource(highlightColorRes)),
-                contentDescription = stringResource(id = titleResToDisplay),
-                modifier = Modifier.padding(end = dimensionResource(id = R.dimen.grid_2))
+        Column {
+            Text(
+                text = stringResource(id = titleResToDisplay),
+                color = colorResource(id = textColorRes),
+                style = typography.subheadlineMedium
             )
 
+            Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
+            Text(
+                text = stringResource(id = textResToDisplay),
+                color = colorResource(id = textColorRes),
+                style = typography.subheadline
+            )
 
-            Column {
-                Text(
-                    text = stringResource(id = titleResToDisplay),
-                    color = colorResource(id = textColorRes),
-                    style = typography.subheadlineMedium
-                )
-
-                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
-
-                Text(
-                    text = stringResource(id = textResToDisplay),
-                    color = colorResource(id = textColorRes),
-                    style = typography.subheadline
-                )
-
-                KSOutlinedButton(
-                    backgroundColor = backgroundColor,
-                    text = "Learn more",
-                    onClickAction = { onClickAction?.invoke() }
-                )
-            }
-
-
+            KSOutlinedButton(
+                backgroundColor = backgroundColor,
+                text = "Learn more",
+                onClickAction = { onClickAction?.invoke() }
+            )
         }
-
     }
 }

@@ -534,6 +534,8 @@ class BackingFragment : Fragment() {
                 pledgeStatusData.projectDeadline?.let {
                     ViewUtils.addBoldSpan(spannablePledgeStatus, it)
                 }
+                pledgeStatusData.plotData?.plotAmount?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
+                pledgeStatusData.plotData?.plotFirstScheduleCollection?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
 
                 binding?.backerPledgeStatus?.text = spannablePledgeStatus
             }

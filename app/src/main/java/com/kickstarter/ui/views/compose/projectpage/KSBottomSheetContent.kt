@@ -32,6 +32,7 @@ private fun KSBottomSheetContentPreview() {
         KSBottomSheetContent(
             title = "Hello world",
             body = "Body of text",
+            linkText = "Click to learn more",
             onLinkClicked = { },
             onClose = { }
         )
@@ -42,6 +43,7 @@ private fun KSBottomSheetContentPreview() {
 fun KSBottomSheetContent(
     title: String,
     body: String?,
+    linkText: String?,
     onLinkClicked: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -61,37 +63,37 @@ fun KSBottomSheetContent(
             )
         }
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-        val annotation = "http://www.kickstarter.com"
-        val text = "Learn more about creator accountability"
-        val annotatedText = buildAnnotatedString {
-            pushStringAnnotation(
-                tag = annotation,
-                annotation = text
+        if (linkText != null) {
+            val annotation = "http://www.kickstarter.com"
+            val annotatedText = buildAnnotatedString {
+                pushStringAnnotation(
+                    tag = annotation,
+                    annotation = linkText
+                )
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = colors.textPrimary,
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append(linkText)
+                }
+                pop()
+            }
+            ClickableText(
+                text = annotatedText,
+                onClick = {
+                    annotatedText.getStringAnnotations(
+                        tag = annotation, start = it,
+                        end = it
+                    )
+                        .firstOrNull()?.let { annotation ->
+                            onLinkClicked()
+                        } ?: onLinkClicked()
+                }
             )
-            withStyle(
-                style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = colors.textPrimary,
-                    textDecoration = TextDecoration.Underline
-                )
-            ) {
-                append(text)
-            }
-            pop()
         }
-        ClickableText(
-            text = annotatedText,
-            onClick = {
-                annotatedText.getStringAnnotations(
-                    tag = annotation, start = it,
-                    end = it
-                )
-                    .firstOrNull()?.let { annotation ->
-                        onLinkClicked()
-                    } ?: onLinkClicked()
-            }
-        )
 
         KSPrimaryBlackButton(
             modifier = Modifier

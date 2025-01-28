@@ -32,8 +32,9 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 fun KSImageTextCtaBannerPreview() {
     KSImageTextCtaBanner(
         imageResToDisplay = R.drawable.ic_alert_diamond,
-        titleResToDisplay = R.string.Add_ons_unavailable,
-        textResToDisplay = R.string.Address_confirmed_need_to_change_your_address_before_it_locks,
+        titleResToDisplay = R.string.project_project_notices_header,
+        textResToDisplay = R.string.project_project_notices_notice_intro,
+        buttonTextResToDisplay = R.string.project_project_notices_notice_cta,
         textColorRes = R.color.text_primary,
         backgroundColor = colors.backgroundDangerSubtle,
         highlightColorRes = R.color.kds_alert,
@@ -45,6 +46,7 @@ fun KSImageTextCtaBanner(
     imageResToDisplay: Int,
     titleResToDisplay: Int,
     textResToDisplay: Int,
+    buttonTextResToDisplay: Int,
     textColorRes: Int,
     backgroundColor: Color,
     highlightColorRes: Int,
@@ -103,7 +105,7 @@ fun KSImageTextCtaBanner(
 
             KSOutlinedButton(
                 backgroundColor = backgroundColor,
-                text = "Learn more",
+                text = stringResource(buttonTextResToDisplay),
                 onClickAction = { onClickAction?.invoke() }
             )
         }

@@ -25,7 +25,9 @@ import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.views.compose.projectpage.KSBottomSheetContent
 
 class KSBottomSheetDialogFragment(
+    val titleText: String,
     val bodyText: String?,
+    val linkText: String?,
     val onCtaClicked: () -> Unit
 ) : BottomSheetDialogFragment() {
 
@@ -60,8 +62,9 @@ class KSBottomSheetDialogFragment(
                         ) { }
 
                         KSBottomSheetContent(
-                            title = "Kickstarter has restricted this creator",
+                            title = titleText,
                             body = bodyText,
+                            linkText = linkText,
                             onLinkClicked = onCtaClicked,
                             onClose = { close() }
                         )

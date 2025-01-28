@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
@@ -235,7 +236,9 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 if (projectNotice.isNotNull()) {
 
                     val modalBottomSheet = KSBottomSheetDialogFragment(
+                        titleText = stringResource(R.string.project_project_notices_header),
                         bodyText = projectNotice.value,
+                        linkText = stringResource(R.string.project_project_notices_notice_sheet_cta),
                         onCtaClicked = { showAccountabilityPage(this.context?.getEnvironment()) }
                     )
                     val openBottomSheet = {
@@ -244,8 +247,9 @@ class ProjectOverviewFragment : Fragment(), Configure {
                     Column {
                         KSImageTextCtaBanner(
                             imageResToDisplay = R.drawable.ic_alert_diamond,
-                            titleResToDisplay = R.string.Add_ons_unavailable,
-                            textResToDisplay = R.string.Address_confirmed_need_to_change_your_address_before_it_locks,
+                            titleResToDisplay = R.string.project_project_notices_header,
+                            textResToDisplay = R.string.project_project_notices_notice_intro,
+                            buttonTextResToDisplay = R.string.project_project_notices_notice_cta,
                             textColorRes = R.color.text_primary,
                             backgroundColor = colors.backgroundDangerSubtle,
                             highlightColorRes = R.color.kds_alert,

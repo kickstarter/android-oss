@@ -343,6 +343,7 @@ Toca para intentar de nuevo.</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
   <string name="If_the_project_reaches_its_funding_goal_the_first_charge_will_be_collected_on_project_deadline" formatted="false">Si el proyecto alcanza la meta, el primer cargo de %{amount} se cobrará el %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el %{project_deadline}.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará %{total} el %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline_and_receive_proof_of_pledge" formatted="false">Si el proyecto alcanza la meta de financiamiento, te cobraremos %{total} el %{project_deadline}. Recibirás un comprobante por la contribución que podrás canjear si el proyecto se financia con éxito y el creador logra completar su iniciativa.</string>
   <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
@@ -800,9 +801,11 @@ Toca para intentar de nuevo.</string>
   <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">No podemos autenticar tu método de pago. Desliza para actualizar la página y elegir otro.</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">Ya no admitimos el inicio de sesión a través de Facebook. Inicia sesión con tu contraseña de Kickstarter o configura una nueva contraseña con tu correo electrónico de Facebook.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">No podemos procesar esta contribución por un problema con el método de pago del patrocinador.</string>
+  <string name="We_cant_process_your_Pledge_Over_Time_payment" formatted="false">No podemos procesar el pago de tu contribución en cuotas. Es necesario que &lt;a href="%{view_your_pledge_link}">revises tu contribución&lt;/a> en un navegador web e inicies sesión para arreglar el pago.</string>
   <string name="We_cant_process_your_pledge" formatted="false">No podemos procesar tu contribución.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">No podemos procesar la contribución. Por favor actualiza tu método de pago.</string>
   <string name="We_cant_process_your_pledge_for" formatted="false">No podemos procesar tu contribución para:</string>
+  <string name="We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate" formatted="false">No podemos procesar tu contribución. Visita el panel de alertas del proyecto para autenticar tu tarjeta.</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">Hemos recolectado la contribución del patrocinador a este proyecto.</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">Hemos recolectado tu contribución a este proyecto.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
@@ -1741,6 +1744,10 @@ Si tienes un momento, ¿podrías calificar tu experiencia?\n
   <string name="project_menu_buttons_updates" formatted="false">Actualizaciones</string>
   <string name="project_menu_created_by" formatted="false">Creado por</string>
   <string name="project_menu_explore_this_project" formatted="false">Explorar este proyecto</string>
+  <string name="project_project_notices_header" formatted="false">Creador restringido por Kickstarter</string>
+  <string name="project_project_notices_notice_cta" formatted="false">Más información</string>
+  <string name="project_project_notices_notice_intro" formatted="false">El equipo de confianza y seguridad de Kickstarter analizó los informes recibidos de los usuarios en relación con este proyecto o su creador.</string>
+  <string name="project_project_notices_notice_sheet_cta" formatted="false">Más información sobre las responsabilidades del creador</string>
   <string name="project_share_twitter_message" formatted="false">%{project_title}, via @Kickstarter</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} y %{second_friend_name} patrocinan este proyecto.</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} patrocina este proyecto.</string>

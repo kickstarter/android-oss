@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -48,19 +49,11 @@ class KSBottomSheetDialogFragment(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 KSTheme {
-                    Column(modifier = Modifier.padding(dimensions.paddingLarge)) {
-                        Row(
-                            modifier = Modifier
-                                .background(
-                                    color = colors.backgroundAccentGrayBold,
-                                    shape = shapes.small
-                                )
-                                .width(dimensions.paddingXXLarge)
-                                .height(dimensions.paddingXSmall)
-                                .align(Alignment.CenterHorizontally)
-
-                        ) { }
-
+                    Column(
+                        modifier = Modifier.padding(top = dimensions.paddingMedium),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        KSBottomSheetDragHandle()
                         KSBottomSheetContent(
                             title = titleText,
                             body = bodyText,
@@ -69,16 +62,27 @@ class KSBottomSheetDialogFragment(
                             onClose = { close() }
                         )
                     }
-
-
                 }
             }
         }
         return binding.root
     }
 
-    fun close() = this.dismiss()
+    private fun close() = this.dismiss()
 
+    @Composable
+    fun KSBottomSheetDragHandle() {
+        Row(
+            modifier = Modifier
+                .background(
+                    color = colors.backgroundAccentGrayBold,
+                    shape = shapes.small,
+                )
+                .width(dimensions.paddingXXLarge)
+                .height(dimensions.paddingXSmall)
+
+        ) { }
+    }
     companion object {
         const val TAG = "BottomSheetDialogFragment"
     }

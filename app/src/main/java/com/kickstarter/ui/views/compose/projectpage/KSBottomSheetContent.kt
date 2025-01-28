@@ -48,7 +48,7 @@ fun KSBottomSheetContent(
     onClose: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(vertical = dimensions.paddingMedium)
+        modifier = Modifier.padding(dimensions.paddingLarge)
     ) {
         Text(
             text = title,

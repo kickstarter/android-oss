@@ -760,17 +760,11 @@ enum Feature {
 
   reset_backer_survey_2024
 
-  disable_shipping_at_pledge
-
   pledge_projects_overview_2024
 
   pledge_projects_overview_ios_2024
 
   copy_rewards
-
-  pledge_redemption_v1
-
-  pledge_redemption_vat
 
   survey_reward_questions_2024
 
@@ -796,10 +790,6 @@ enum Feature {
 
   notification_banner_update_2024
 
-  multiple_shipfrom_locations_2024
-
-  pledge_redemption_unified_creator_ui
-
   react_backed_projects
 
   copy_addons
@@ -807,6 +797,12 @@ enum Feature {
   KDS_messages_app
 
   pledge_management_refunds
+
+  discover_ui_2025
+
+  pledge_management_beta
+
+  creator_experience_2025
 }
 
 """
@@ -1765,6 +1761,11 @@ type Project implements Node & Commentable {
   The project's profile.
   """
   profile: ProjectProfile
+
+  """
+  The text of the currently applied project notice, empty if there is no notice
+  """
+  projectNotice: String
 
   """
   When this project was Project of the Day.
@@ -5055,27 +5056,7 @@ A hash containing the original, refunded, and remaining amounts.
 """
 type AdjustmentAmount {
   """
-  the original total amount
-  """
-  originalTotal: Int!
-
-  """
-  the refunded total amount
-  """
-  refundedTotal: Int!
-
-  """
-  the remaining total amount
-  """
-  remainingTotal: Int!
-}
-
-"""
-A reward that is modified by an adjustment.
-"""
-type AdjustmentReward {
-  """
-  original total for reward
+  original total amount
   """
   originalTotal: Int!
 
@@ -5090,9 +5071,44 @@ type AdjustmentReward {
   remainingTotal: Int!
 
   """
+  whether the reward has been removed from the backing
+  """
+  removed: Boolean
+}
+
+"""
+A reward that is modified by an adjustment.
+"""
+type AdjustmentReward {
+  """
+  original total amount
+  """
+  originalTotal: Int!
+
+  """
+  uuid for the refund item
+  """
+  refundItemId: ID!
+
+  """
+  amount that has been refunded after all adjustments are applied
+  """
+  refundedTotal: Int!
+
+  """
+  amount remaining after all adjustments are applied
+  """
+  remainingTotal: Int!
+
+  """
+  whether the reward has been removed from the backing
+  """
+  removed: Boolean
+
+  """
    graphql id of reward to be refunded
   """
-  rewardId: ID!
+  rewardId: String!
 }
 
 """
@@ -7082,6 +7098,11 @@ enum FlaggingKind {
   PROTOTYPE_MISREPRESENTATION
 
   """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
+
+  """
   misrep-support-impersonation
   """
   MISREP_SUPPORT_IMPERSONATION
@@ -8441,11 +8462,6 @@ type PaymentPlan {
   amountIsPledgeOverTimeEligible: Boolean!
 
   paymentIncrements: [PaymentIncrement!]
-
-  """
-  Whether the project permits pledge over time pledges
-  """
-  projectIsPledgeOverTimeAllowed: Boolean!
 }
 
 """
@@ -9108,6 +9124,8 @@ enum UserRestrictionKind {
   edit_spotlight_pages
 
   phone
+
+  prelaunch_early
 }
 
 """
@@ -14517,9 +14535,14 @@ An object removed as part of an adjustment
 """
 input RemovalInput {
   """
+  id of the reward associated with the removal
+  """
+  rewardId: Int!
+
+  """
   id of object to be removed
   """
-  id: Int!
+  refundItemId: ID!
 
   """
   type of object to be removed (reward, reward item, or order item)
@@ -14534,7 +14557,7 @@ input RefundInput {
   """
   id of object to be refunded
   """
-  id: Int
+  refundItemId: ID
 
   """
   type of refund
@@ -14964,6 +14987,11 @@ enum NonDeprecatedFlaggingKind {
   prototype-misrepresentation
   """
   PROTOTYPE_MISREPRESENTATION
+
+  """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
 
   """
   misrep-support-impersonation

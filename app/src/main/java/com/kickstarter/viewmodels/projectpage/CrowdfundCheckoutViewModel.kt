@@ -277,7 +277,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                     emitCurrentState(isLoading = false)
                 }
                 .collectLatest {
-                    showPlotWidget = !it.paymentIncrements.isNullOrEmpty()
+                    showPlotWidget = project.isPledgeOverTimeAllowed() == true
                     plotEligible = it.amountIsPledgeOverTimeEligible
                     paymentIncrements = it.paymentIncrements
                     emitCurrentState(isLoading = false)

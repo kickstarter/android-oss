@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -23,6 +24,13 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+
+enum class KSBottomSheetContentTestTag() {
+    TITLE,
+    BODY,
+    LINK,
+    CLOSE_BUTTON
+}
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -42,7 +50,7 @@ private fun KSBottomSheetContentPreview() {
 @Composable
 fun KSBottomSheetContent(
     title: String,
-    body: String?,
+    body: String,
     linkText: String?,
     onLinkClicked: () -> Unit,
     onClose: () -> Unit,
@@ -52,16 +60,17 @@ fun KSBottomSheetContent(
     ) {
         Text(
             text = title,
-            style = typography.calloutMedium
+            style = typography.calloutMedium,
+            modifier = Modifier.testTag(KSBottomSheetContentTestTag.TITLE.name)
         )
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-        body?.let {
-            Text(
-                text = body,
-                style = typography.callout
-            )
-        }
+        Text(
+            text = body,
+            style = typography.callout,
+            modifier = Modifier.testTag(KSBottomSheetContentTestTag.BODY.name)
+        )
+
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
         if (linkText != null) {
             val annotation = "http://www.kickstarter.com"
@@ -82,6 +91,7 @@ fun KSBottomSheetContent(
                 pop()
             }
             ClickableText(
+                modifier = Modifier.testTag(KSBottomSheetContentTestTag.LINK.name),
                 text = annotatedText,
                 onClick = {
                     annotatedText.getStringAnnotations(
@@ -98,7 +108,8 @@ fun KSBottomSheetContent(
         KSPrimaryBlackButton(
             modifier = Modifier
                 .padding(top = dimensions.paddingMedium)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+               .testTag(KSBottomSheetContentTestTag.CLOSE_BUTTON.name),
             onClickAction = { onClose() },
             isEnabled = true,
             text = stringResource(R.string.general_alert_buttons_ok)

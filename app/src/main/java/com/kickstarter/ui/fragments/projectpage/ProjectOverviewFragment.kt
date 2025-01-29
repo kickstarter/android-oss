@@ -228,7 +228,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
 //                    .subscribeAsState(initial = "")
 
                 // TODO: YC - Remove temporary hardcode
-                val greeting = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers."
+                val greeting = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers. As the creator has not responded or provided updates in over 90 days, we have restricted the creator's account from launching future projects on Kickstarter. Thank you to everyone who sent in reports."
                 val observable = Observable.just(greeting)
                 val projectNotice = observable
                     .subscribeAsState(null)
@@ -260,8 +260,6 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 }
             }
         }
-
-
 
         viewModel.outputs.projectSocialTextViewFriends()
             .observeOn(AndroidSchedulers.mainThread())

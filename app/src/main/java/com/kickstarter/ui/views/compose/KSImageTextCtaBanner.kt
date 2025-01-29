@@ -26,7 +26,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
-
 @Preview
 @Composable
 fun KSImageTextCtaBannerPreview() {
@@ -52,7 +51,7 @@ fun KSImageTextCtaBanner(
     highlightColorRes: Int,
     onClickAction: (() -> Unit)? = null
 ) {
-    Row (
+    Row(
         modifier = Modifier
             .background(
                 color = colorResource(highlightColorRes),

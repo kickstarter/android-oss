@@ -476,7 +476,6 @@ fun KSSmallButton(
     }
 }
 
-
 @Composable
 fun KSOutlinedButton(
     modifier: Modifier = Modifier,
@@ -484,7 +483,7 @@ fun KSOutlinedButton(
     backgroundColor: Color,
     text: String,
     textColor: Color = colors.textAccentGrey
-){
+) {
     OutlinedButton(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,

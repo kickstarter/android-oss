@@ -419,6 +419,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .pledged(pledged)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
+        .projectNotice(projectNotice)
         .sendMetaCapiEvents(sendMetaCapiEvents)
         .sendThirdPartyEvents(sendThirdPartyEvents)
         .tags(tags)
@@ -574,6 +575,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
     val name = projectFragment?.name
     val photoUrl = projectFragment?.full?.image?.url
     val photo = getPhoto(photoUrl)
+    val projectNotice = projectFragment?.projectNotice
     val slug = projectFragment?.slug
     val staffPicked = projectFragment?.isProjectWeLove ?: false
     val state = projectFragment?.state?.name?.lowercase()
@@ -611,6 +613,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .name(name)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
+        .projectNotice(projectNotice)
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)

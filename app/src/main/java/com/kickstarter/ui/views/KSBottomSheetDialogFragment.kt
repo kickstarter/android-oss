@@ -27,7 +27,7 @@ import com.kickstarter.ui.views.compose.projectpage.KSBottomSheetContent
 
 class KSBottomSheetDialogFragment(
     val titleText: String,
-    val bodyText: String?,
+    val bodyText: String,
     val linkText: String?,
     val onCtaClicked: () -> Unit
 ) : BottomSheetDialogFragment() {

@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -223,21 +224,20 @@ class ProjectOverviewFragment : Fragment(), Configure {
 
         binding.composeViewBanner.setContent {
             KSTheme {
-
-//                val projectNotice by viewModel.outputs.projectProjectNotice()
-//                    .subscribeAsState(initial = "")
+                val projectNotice by viewModel.outputs.projectProjectNotice()
+                    .subscribeAsState(initial = null)
 
                 // TODO: YC - Remove temporary hardcode
-                val greeting = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers. As the creator has not responded or provided updates in over 90 days, we have restricted the creator's account from launching future projects on Kickstarter. Thank you to everyone who sent in reports."
-                val observable = Observable.just(greeting)
-                val projectNotice = observable
-                    .subscribeAsState(null)
+//                val hardcodedValue = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers. As the creator has not responded or provided updates in over 90 days, we have restricted the creator's account from launching future projects on Kickstarter. Thank you to everyone who sent in reports."
+//                val observable = Observable.just(hardcodedValue)
+//                val projectNotice by observable
+//                    .subscribeAsState(initial = null)
 
                 if (projectNotice.isNotNull()) {
 
                     val modalBottomSheet = KSBottomSheetDialogFragment(
                         titleText = stringResource(R.string.project_project_notices_header),
-                        bodyText = projectNotice.value,
+                        bodyText = projectNotice ?: "",
                         linkText = stringResource(R.string.project_project_notices_notice_sheet_cta),
                         onCtaClicked = { showAccountabilityPage(this.context?.getEnvironment()) }
                     )

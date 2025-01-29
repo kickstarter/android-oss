@@ -18,6 +18,7 @@ fragment projectCard on Project {
         ... user
     }
     prelaunchActivated
+    projectNotice
     projectOfTheDayAt
     friends(first:3) {
         nodes {

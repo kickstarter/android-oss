@@ -37,11 +37,14 @@ fun KSTheme(
 
     val typography = KSCustomTypography
 
+    val typographyV2 = KSCustomTypographyV2
+
     val dimensions = KSStandardDimensions
 
     CompositionLocalProvider(
         LocalKSCustomColors provides colors,
         LocalKSCustomTypography provides typography,
+        LocalKSCustomTypographyV2 provides typographyV2,
         LocalKSCustomDimensions provides dimensions,
         content = content
     )
@@ -59,4 +62,8 @@ object KSTheme {
     val dimensions: KSDimensions
         @Composable
         get() = LocalKSCustomDimensions.current
+
+    val typographyV2: KSTypographyV2
+        @Composable
+        get() = LocalKSCustomTypographyV2.current
 }

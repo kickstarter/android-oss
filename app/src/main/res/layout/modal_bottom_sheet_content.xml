@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--  style="@style/Widget.Demo.BottomSheet"-->
-
 <FrameLayout android:id="@+id/bottom_sheet"
   style="?attr/bottomSheetStyle"
   android:layout_width="match_parent"

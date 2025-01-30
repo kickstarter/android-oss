@@ -58,9 +58,8 @@ import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.views.KSBottomSheetDialogFragment
-import com.kickstarter.ui.views.compose.KSImageTextCtaBanner
+import com.kickstarter.ui.views.compose.KSColorAccentedBanner
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
@@ -245,14 +244,15 @@ class ProjectOverviewFragment : Fragment(), Configure {
                         modalBottomSheet.show(parentFragmentManager, KSBottomSheetDialogFragment.TAG)
                     }
                     Column {
-                        KSImageTextCtaBanner(
+                        KSColorAccentedBanner(
                             imageResToDisplay = R.drawable.ic_alert_diamond,
                             titleResToDisplay = R.string.project_project_notices_header,
                             textResToDisplay = R.string.project_project_notices_notice_intro,
                             buttonTextResToDisplay = R.string.project_project_notices_notice_cta,
-                            textColorRes = R.color.text_primary,
+                            textColor = colors.textPrimary,
                             backgroundColor = colors.backgroundDangerSubtle,
-                            highlightColorRes = R.color.kds_alert,
+                            iconColor = colors.iconDanger,
+                            accentColor = colors.backgroundDangerBoldPressed,
                             onClickAction = openBottomSheet
                         )
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))

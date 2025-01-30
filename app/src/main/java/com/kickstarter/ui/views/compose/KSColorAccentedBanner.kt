@@ -14,12 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -28,39 +25,37 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 @Preview
 @Composable
-fun KSImageTextCtaBannerPreview() {
-    KSImageTextCtaBanner(
+fun KSColorAccentedBannerPreview() {
+    KSColorAccentedBanner(
         imageResToDisplay = R.drawable.ic_alert_diamond,
         titleResToDisplay = R.string.project_project_notices_header,
         textResToDisplay = R.string.project_project_notices_notice_intro,
         buttonTextResToDisplay = R.string.project_project_notices_notice_cta,
-        textColorRes = R.color.text_primary,
+        textColor = colors.textPrimary,
         backgroundColor = colors.backgroundDangerSubtle,
-        highlightColorRes = R.color.kds_alert,
+        iconColor = colors.iconDanger,
+        accentColor = colors.backgroundDangerBoldPressed
     )
 }
 
 @Composable
-fun KSImageTextCtaBanner(
+fun KSColorAccentedBanner(
     imageResToDisplay: Int,
     titleResToDisplay: Int,
     textResToDisplay: Int,
     buttonTextResToDisplay: Int,
-    textColorRes: Int,
+    textColor: Color,
     backgroundColor: Color,
-    highlightColorRes: Int,
+    iconColor: Color,
+    accentColor: Color,
     onClickAction: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .background(
-                color = colorResource(highlightColorRes),
+                color = accentColor,
                 shape = RoundedCornerShape(
-                    // TODO: YC - Add actual dimensions
-                    topStart = 6.dp,
-                    topEnd = 6.dp,
-                    bottomStart = 6.dp,
-                    bottomEnd = 6.dp
+                    dimensions.radiusSmall
                 )
             )
             .padding(
@@ -69,38 +64,45 @@ fun KSImageTextCtaBanner(
             .background(
                 color = backgroundColor,
                 shape = RoundedCornerShape(
-                    // TODO: YC - Add actual dimensions
-                    topStart = 0.dp,
-                    topEnd = 6.dp,
-                    bottomStart = 0.dp,
-                    bottomEnd = 6.dp
+                    topStart = dimensions.none,
+                    topEnd = dimensions.radiusSmall,
+                    bottomStart = dimensions.none,
+                    bottomEnd = dimensions.radiusSmall
                 )
             )
-            .padding(dimensions.paddingMedium)
+            .padding(
+                start = dimensions.paddingMediumSmall, // accounts for accent width
+                top = dimensions.paddingMedium,
+                bottom = dimensions.paddingMediumSmall, // due to built-in button margins
+                end = dimensions.paddingMedium
+            )
     ) {
         Image(
             painter = painterResource(id = imageResToDisplay),
-            colorFilter = ColorFilter.tint(color = colorResource(highlightColorRes)),
+            colorFilter = ColorFilter.tint(color = iconColor),
             contentDescription = stringResource(id = titleResToDisplay),
             modifier = Modifier
-                .padding(end = dimensionResource(id = R.dimen.grid_2))
-                .size(20.dp)
+                .size(dimensions.iconSizeMedium)
         )
 
-        Column {
+        Column(
+            modifier = Modifier.padding(start = dimensions.paddingSmall)
+        ) {
             Text(
                 text = stringResource(id = titleResToDisplay),
-                color = colorResource(id = textColorRes),
-                style = typography.subheadlineMedium
+                color = textColor,
+                style = typography.body2Medium
             )
 
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
             Text(
                 text = stringResource(id = textResToDisplay),
-                color = colorResource(id = textColorRes),
-                style = typography.subheadline
+                color = textColor,
+                style = typography.body2
             )
+
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
             KSOutlinedButton(
                 backgroundColor = backgroundColor,

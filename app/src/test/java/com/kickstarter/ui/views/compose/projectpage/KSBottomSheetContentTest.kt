@@ -12,7 +12,7 @@ class KSBottomSheetContentTest : KSRobolectricTestCase() {
     private val title = composeTestRule.onNodeWithTag(KSBottomSheetContentTestTag.TITLE.name)
     private val body = composeTestRule.onNodeWithTag(KSBottomSheetContentTestTag.BODY.name)
     private val link = composeTestRule.onNodeWithTag(KSBottomSheetContentTestTag.LINK.name)
-    private val close_button = composeTestRule.onNodeWithTag(KSBottomSheetContentTestTag.CLOSE_BUTTON.name)
+    private val closeButton = composeTestRule.onNodeWithTag(KSBottomSheetContentTestTag.CLOSE_BUTTON.name)
 
     @Test
     fun verifyInitState() {
@@ -31,6 +31,6 @@ class KSBottomSheetContentTest : KSRobolectricTestCase() {
         title.assertTextEquals(context().getString(R.string.project_project_notices_header))
         body.assertTextEquals(projectNotice)
         link.assertTextEquals(context().getString(R.string.project_project_notices_notice_sheet_cta))
-        close_button.assertTextEquals(context().getString(R.string.general_alert_buttons_ok))
+        closeButton.assertTextEquals(context().getString(R.string.general_alert_buttons_ok))
     }
 }

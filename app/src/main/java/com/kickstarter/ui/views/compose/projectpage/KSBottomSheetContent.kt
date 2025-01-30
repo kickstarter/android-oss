@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -60,7 +61,8 @@ fun KSBottomSheetContent(
     ) {
         Text(
             text = title,
-            style = typography.calloutMedium,
+            style = typography.title3Bold,
+            color = colors.textPrimary,
             modifier = Modifier.testTag(KSBottomSheetContentTestTag.TITLE.name)
         )
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -68,6 +70,7 @@ fun KSBottomSheetContent(
         Text(
             text = body,
             style = typography.callout,
+            color = colors.textPrimary,
             modifier = Modifier.testTag(KSBottomSheetContentTestTag.BODY.name)
         )
 
@@ -81,7 +84,8 @@ fun KSBottomSheetContent(
                 )
                 withStyle(
                     style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp,
                         color = colors.textPrimary,
                         textDecoration = TextDecoration.Underline
                     )
@@ -109,7 +113,7 @@ fun KSBottomSheetContent(
             modifier = Modifier
                 .padding(top = dimensions.paddingMedium)
                 .fillMaxWidth()
-               .testTag(KSBottomSheetContentTestTag.CLOSE_BUTTON.name),
+                .testTag(KSBottomSheetContentTestTag.CLOSE_BUTTON.name),
             onClickAction = { onClose() },
             isEnabled = true,
             text = stringResource(R.string.general_alert_buttons_ok)

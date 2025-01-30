@@ -1,6 +1,7 @@
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -489,9 +490,14 @@ fun KSOutlinedButton(
             backgroundColor = backgroundColor,
             contentColor = textColor
         ),
+        border = BorderStroke(dimensions.borderThickness, colors.borderBold),
         onClick = { onClickAction.invoke() }
     ) {
-        Text(text)
+        Text(
+            style = typography.buttonText,
+            color = colors.textPrimary,
+            text = text
+        )
     }
 }
 

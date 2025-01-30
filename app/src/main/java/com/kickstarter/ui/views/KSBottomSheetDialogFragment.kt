@@ -75,10 +75,10 @@ class KSBottomSheetDialogFragment(
         Row(
             modifier = Modifier
                 .background(
-                    color = colors.backgroundAccentGrayBold,
+                    color = colors.iconSubtle,
                     shape = shapes.small,
                 )
-                .width(dimensions.paddingXXLarge)
+                .width(dimensions.paddingXLarge)
                 .height(dimensions.paddingXSmall)
 
         ) { }

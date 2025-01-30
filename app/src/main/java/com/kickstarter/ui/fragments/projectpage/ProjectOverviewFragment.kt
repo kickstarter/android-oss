@@ -437,51 +437,6 @@ class ProjectOverviewFragment : Fragment(), Configure {
         }
     }
 
-//     fun showAccountabilityPage(environment: Environment?, activity: Activity) {
-//        environment?.webEndpoint()?.let { endpoint ->
-//            val trustUrl = UrlUtils.appendPath(endpoint, "trust")
-//            ChromeTabsHelperActivity.openCustomTab(
-//                requireActivity(),
-//                UrlUtils.baseCustomTabsIntent(requireActivity()),
-//                Uri.parse(trustUrl),
-//                null
-//            )
-//        } ?: run {
-//            requireActivity().runOnUiThread {
-//                showErrorToast(
-//                    requireActivity(),
-//                    view as ViewGroup,
-//                    getString(R.string.general_error_something_wrong)
-//                )
-//            }
-//        }
-//    }
-//
-////    private fun showAccountabilityPage(environment: Environment?) {
-////        activity?.let { activity ->
-////            context?.let { context ->
-////                environment?.let { env ->
-////                    env.webEndpoint().let { endpoint ->
-////                        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
-////                        ChromeTabsHelperActivity.openCustomTab(
-////                            activity,
-////                            UrlUtils.baseCustomTabsIntent(context),
-////                            Uri.parse(trustUrl),
-////                            null
-////                        )
-////                    }
-////                } ?: binding.root.parent.let { view ->
-////                    activity.runOnUiThread {
-////                        showErrorToast(
-////                            context,
-////                            view as ViewGroup,
-////                            getString(R.string.general_error_something_wrong)
-////                        )
-////                    }
-////                }
-////            }
-////        }
-////    }
     private fun setAvatar(url: String) {
         binding.avatar.loadCircleImage(url)
     }

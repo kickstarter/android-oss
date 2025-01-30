@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
-import com.kickstarter.libs.featureflag.FeatureFlagClientType
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.ui.ArgumentsKey
@@ -99,8 +97,7 @@ class BackingAddOnsFragment : Fragment() {
                                     viewModelC.getPledgeDataAndReason()?.let { pDataAndReason ->
                                         showPledgeFragment(
                                             pledgeData = pDataAndReason.first,
-                                            pledgeReason = pDataAndReason.second,
-                                            ffClient = ffClient
+                                            pledgeReason = pDataAndReason.second
                                         )
                                     }
                                 } else {
@@ -123,11 +120,9 @@ class BackingAddOnsFragment : Fragment() {
 
     private fun showPledgeFragment(
         pledgeData: PledgeData,
-        pledgeReason: PledgeReason,
-        ffClient: FeatureFlagClientType
+        pledgeReason: PledgeReason
     ) {
-        val ffEnabled = ffClient.getBoolean(FlagKey.ANDROID_FIX_PLEDGE_REFACTOR)
-        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, ffEnabled)
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason)
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)

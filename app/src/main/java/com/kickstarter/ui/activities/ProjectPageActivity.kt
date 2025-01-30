@@ -751,7 +751,7 @@ class ProjectPageActivity :
         startDisclaimerChromeTab(disclaimerItem, environment)
     }
 
-    private fun showAccountabilityPage() {
+    fun showAccountabilityPage() {
         getEnvironment()?.webEndpoint()?.let { endpoint ->
             val trustUrl = UrlUtils.appendPath(endpoint, "trust")
             ChromeTabsHelperActivity.openCustomTab(

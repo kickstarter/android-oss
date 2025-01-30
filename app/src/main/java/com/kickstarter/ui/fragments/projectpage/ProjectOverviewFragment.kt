@@ -2,7 +2,6 @@ package com.kickstarter.ui.fragments.projectpage
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
@@ -29,21 +28,19 @@ import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.Configure
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
-import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
-import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -51,7 +48,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setClickableHtml
-import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
@@ -232,7 +228,9 @@ class ProjectOverviewFragment : Fragment(), Configure {
                         titleText = stringResource(R.string.project_project_notices_header),
                         bodyText = projectNotice ?: "",
                         linkText = stringResource(R.string.project_project_notices_notice_sheet_cta),
-                        onCtaClicked = { showAccountabilityPage(this.context?.getEnvironment()) }
+                        onCtaClicked = {
+                            (activity as ProjectPageActivity).showAccountabilityPage()
+                        }
                     )
                     val openBottomSheet = {
                         modalBottomSheet.show(parentFragmentManager, KSBottomSheetDialogFragment.TAG)
@@ -439,31 +437,51 @@ class ProjectOverviewFragment : Fragment(), Configure {
         }
     }
 
-    private fun showAccountabilityPage(environment: Environment?) {
-        activity?.let { activity ->
-            context?.let { context ->
-                environment?.let { env ->
-                    env.webEndpoint().let { endpoint ->
-                        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
-                        ChromeTabsHelperActivity.openCustomTab(
-                            activity,
-                            UrlUtils.baseCustomTabsIntent(context),
-                            Uri.parse(trustUrl),
-                            null
-                        )
-                    }
-                } ?: binding.root.parent.let { view ->
-                    activity.runOnUiThread {
-                        showErrorToast(
-                            context,
-                            view as ViewGroup,
-                            getString(R.string.general_error_something_wrong)
-                        )
-                    }
-                }
-            }
-        }
-    }
+//     fun showAccountabilityPage(environment: Environment?, activity: Activity) {
+//        environment?.webEndpoint()?.let { endpoint ->
+//            val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+//            ChromeTabsHelperActivity.openCustomTab(
+//                requireActivity(),
+//                UrlUtils.baseCustomTabsIntent(requireActivity()),
+//                Uri.parse(trustUrl),
+//                null
+//            )
+//        } ?: run {
+//            requireActivity().runOnUiThread {
+//                showErrorToast(
+//                    requireActivity(),
+//                    view as ViewGroup,
+//                    getString(R.string.general_error_something_wrong)
+//                )
+//            }
+//        }
+//    }
+//
+////    private fun showAccountabilityPage(environment: Environment?) {
+////        activity?.let { activity ->
+////            context?.let { context ->
+////                environment?.let { env ->
+////                    env.webEndpoint().let { endpoint ->
+////                        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+////                        ChromeTabsHelperActivity.openCustomTab(
+////                            activity,
+////                            UrlUtils.baseCustomTabsIntent(context),
+////                            Uri.parse(trustUrl),
+////                            null
+////                        )
+////                    }
+////                } ?: binding.root.parent.let { view ->
+////                    activity.runOnUiThread {
+////                        showErrorToast(
+////                            context,
+////                            view as ViewGroup,
+////                            getString(R.string.general_error_something_wrong)
+////                        )
+////                    }
+////                }
+////            }
+////        }
+////    }
     private fun setAvatar(url: String) {
         binding.avatar.loadCircleImage(url)
     }

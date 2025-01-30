@@ -1061,7 +1061,6 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
     return PaymentPlan.builder()
         .paymentIncrements(paymentIncrements)
         .amountIsPledgeOverTimeEligible(buildPaymentPlanResponse.amountIsPledgeOverTimeEligible)
-        .projectIsPledgeOverTimeAllowed(buildPaymentPlanResponse.projectIsPledgeOverTimeAllowed)
         .build()
 }
 

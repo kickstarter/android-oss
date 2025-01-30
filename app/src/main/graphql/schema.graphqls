@@ -760,17 +760,11 @@ enum Feature {
 
   reset_backer_survey_2024
 
-  disable_shipping_at_pledge
-
   pledge_projects_overview_2024
 
   pledge_projects_overview_ios_2024
 
   copy_rewards
-
-  pledge_redemption_v1
-
-  pledge_redemption_vat
 
   survey_reward_questions_2024
 
@@ -796,10 +790,6 @@ enum Feature {
 
   notification_banner_update_2024
 
-  multiple_shipfrom_locations_2024
-
-  pledge_redemption_unified_creator_ui
-
   react_backed_projects
 
   copy_addons
@@ -807,6 +797,12 @@ enum Feature {
   KDS_messages_app
 
   pledge_management_refunds
+
+  discover_ui_2025
+
+  pledge_management_beta
+
+  creator_experience_2025
 }
 
 """
@@ -5073,6 +5069,11 @@ type AdjustmentAmount {
   amount remaining after all adjustments are applied
   """
   remainingTotal: Int!
+
+  """
+  whether the reward has been removed from the backing
+  """
+  removed: Boolean
 }
 
 """
@@ -5098,6 +5099,11 @@ type AdjustmentReward {
   amount remaining after all adjustments are applied
   """
   remainingTotal: Int!
+
+  """
+  whether the reward has been removed from the backing
+  """
+  removed: Boolean
 
   """
    graphql id of reward to be refunded
@@ -8456,11 +8462,6 @@ type PaymentPlan {
   amountIsPledgeOverTimeEligible: Boolean!
 
   paymentIncrements: [PaymentIncrement!]
-
-  """
-  Whether the project permits pledge over time pledges
-  """
-  projectIsPledgeOverTimeAllowed: Boolean!
 }
 
 """

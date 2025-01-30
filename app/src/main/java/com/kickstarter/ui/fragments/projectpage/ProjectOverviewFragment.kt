@@ -226,12 +226,6 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 val projectNotice by viewModel.outputs.projectProjectNotice()
                     .subscribeAsState(initial = null)
 
-                // TODO: YC - Remove temporary hardcode
-//                val hardcodedValue = "Kickstarter's Trust & Safety team has investigated user reports associated with this project and/or its creator. We have reached out to the creator multiple times requesting project updates and communication with backers. As the creator has not responded or provided updates in over 90 days, we have restricted the creator's account from launching future projects on Kickstarter. Thank you to everyone who sent in reports."
-//                val observable = Observable.just(hardcodedValue)
-//                val projectNotice by observable
-//                    .subscribeAsState(initial = null)
-
                 if (projectNotice.isNotNull()) {
 
                     val modalBottomSheet = KSBottomSheetDialogFragment(

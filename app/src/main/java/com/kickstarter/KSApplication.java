@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import android.text.TextUtils;
 
+import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.FirebaseHelper;
@@ -26,6 +27,7 @@ import androidx.annotation.CallSuper;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
+import io.reactivex.exceptions.OnErrorNotImplementedException;
 import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.plugins.RxJavaPlugins;
 import timber.log.Timber;
@@ -116,15 +118,25 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
   }
 
   private void createErrorHandler() {
-    RxJavaPlugins.setErrorHandler(e -> {
-      if (e instanceof UndeliverableException) {
-        Timber.w(e, "Undeliverable Exception");
-        if (e.getMessage() != null) {
-          FirebaseCrashlytics.getInstance().setCustomKey("Undeliverable Exception", e.getMessage());
+    RxJavaPlugins.setErrorHandler(t -> {
+      if (t instanceof OnErrorNotImplementedException
+              && t.getCause() != null
+              && t.getCause() instanceof ApolloHttpException
+              && ((ApolloHttpException) t.getCause()).getStatusCode() == 429) {
+        Timber.e(t, "RxJavaPlugins.setErrorHandler");
+        final ApolloHttpException apolloHttpException = (ApolloHttpException) t.getCause();
+        final String value = apolloHttpException.getMessage() != null ? apolloHttpException.getMessage() : "";
+        FirebaseCrashlytics.getInstance().setCustomKey("ApolloHttpException (429)", value);
+        FirebaseCrashlytics.getInstance().recordException(t);
+      } else if (t instanceof UndeliverableException) {
+        Timber.w(t, "Undeliverable Exception");
+        if (t.getMessage() != null) {
+          FirebaseCrashlytics.getInstance().setCustomKey("Undeliverable Exception", t.getMessage());
         }
-        FirebaseCrashlytics.getInstance().recordException(e);
+        FirebaseCrashlytics.getInstance().recordException(t);
       } else {
-        Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+        Timber.e(t, "RxJavaPlugins.setErrorHandler");
+        FirebaseCrashlytics.getInstance().recordException(t);
       }
     });
   }

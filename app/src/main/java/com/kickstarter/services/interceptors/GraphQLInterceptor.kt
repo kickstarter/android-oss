@@ -22,7 +22,7 @@ class GraphQLInterceptor(
         val builder = original.newBuilder().method(original.method, original.body)
 
         this.currentUser.accessToken?.let { token ->
-            if (token.isNotEmpty()) builder.addHeader("Authorization", "token $token")
+            if (token.isNotBlank()) builder.addHeader("Authorization", "token $token")
         }
 
         builder.addHeader("User-Agent", WebUtils.userAgent(this.build))

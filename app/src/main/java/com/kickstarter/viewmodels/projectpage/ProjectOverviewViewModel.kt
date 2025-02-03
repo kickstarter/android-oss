@@ -178,6 +178,7 @@ interface ProjectOverviewViewModel {
         fun shouldShowReportProject(): Observable<Boolean>
         fun shouldShowProjectFlagged(): Observable<Boolean>
         fun openExternallyWithUrl(): Observable<String>
+        fun projectProjectNotice(): Observable<String?>
     }
 
     class ProjectOverviewViewModel(
@@ -225,6 +226,7 @@ interface ProjectOverviewViewModel {
         private val projectLaunchDateIsGone: Observable<Boolean>
         private val projectNameTextViewText: Observable<String>
         private val projectOutput: Observable<Project>
+        private val projectProjectNotice: Observable<String?>
         private val projectSocialImageViewIsGone: Observable<Boolean>
         private val projectSocialImageViewUrl: Observable<String>
         private val projectSocialTextViewFriends: Observable<List<User>>
@@ -364,6 +366,10 @@ interface ProjectOverviewViewModel {
 
         override fun projectOutput(): Observable<Project> {
             return projectOutput
+        }
+
+        override fun projectProjectNotice(): Observable<String?> {
+            return projectProjectNotice
         }
 
         override fun projectSocialImageViewIsGone(): Observable<Boolean> {
@@ -573,6 +579,10 @@ interface ProjectOverviewViewModel {
                 .map { it.name() }
 
             projectOutput = project
+
+            projectProjectNotice = project
+                .filter { it.projectNotice().isNotNull() }
+                .map { it.projectNotice() }
 
             projectSocialTextViewFriends = project
                 .filter { it.isFriendBacking }

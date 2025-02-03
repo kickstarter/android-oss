@@ -99,6 +99,11 @@
 
         </FrameLayout>
 
+        <androidx.compose.ui.platform.ComposeView
+          android:id="@+id/compose_view_banner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/blurb_view"
             android:layout_width="match_parent"

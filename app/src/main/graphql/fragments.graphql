@@ -210,6 +210,7 @@ fragment rewardItems on RewardItemsConnection {
 fragment full on Project {
     image {
         url(width: 1024)
+        altText
     }
 }
 
@@ -314,6 +315,10 @@ fragment reward on Reward {
     }
     localReceiptLocation {
         ... location
+    }
+    image {
+        url(width: 1024)
+        altText
     }
 }
 

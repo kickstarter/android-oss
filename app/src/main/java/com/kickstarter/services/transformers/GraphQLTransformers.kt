@@ -177,6 +177,9 @@ fun rewardTransformer(
             } ?: emptyList()
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
+    val photoUrl = rewardGr.image?.url
+    val altText = rewardGr.image?.altText
+    val photo = getPhoto(photoUrl, altText)
 
     return Reward.builder()
         .title(title)
@@ -202,6 +205,7 @@ fun rewardTransformer(
         .isAvailable(available)
         .backersCount(backersCount)
         .localReceiptLocation(localReceiptLocation)
+        .image(photo)
         .build()
 }
 
@@ -327,7 +331,8 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     }
     val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
     val photoUrl = projectFragment?.full?.image?.url
-    val photo = getPhoto(photoUrl)
+    val altText = projectFragment?.full?.image?.altText
+    val photo = getPhoto(photoUrl, altText)
     val projectNotice = projectFragment?.projectNotice
     val tags = mutableListOf<String>()
     projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
@@ -574,7 +579,8 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
     val location = locationTransformer(projectFragment?.location?.location)
     val name = projectFragment?.name
     val photoUrl = projectFragment?.full?.image?.url
-    val photo = getPhoto(photoUrl)
+    val altText = projectFragment?.full?.image?.altText
+    val photo = getPhoto(photoUrl, altText)
     val projectNotice = projectFragment?.projectNotice
     val slug = projectFragment?.slug
     val staffPicked = projectFragment?.isProjectWeLove ?: false
@@ -622,7 +628,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .build()
 }
 
-private fun getPhoto(photoUrl: @Nullable String?): Photo? {
+private fun getPhoto(photoUrl: @Nullable String?, altText: String?): Photo? {
     val photo = photoUrl?.let {
         Photo.builder()
             .ed(photoUrl)
@@ -631,6 +637,7 @@ private fun getPhoto(photoUrl: @Nullable String?): Photo? {
             .med(photoUrl)
             .small(photoUrl)
             .thumb(photoUrl)
+            .altText(altText)
             .build()
     }
 

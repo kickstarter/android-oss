@@ -1,7 +1,10 @@
 package com.kickstarter.ui.views.compose.projectpage
 
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -32,5 +35,27 @@ class KSBottomSheetContentTest : KSRobolectricTestCase() {
         body.assertTextEquals(projectNotice)
         link.assertTextEquals(context().getString(R.string.project_project_notices_notice_sheet_cta))
         closeButton.assertTextEquals(context().getString(R.string.general_alert_buttons_ok))
+    }
+
+    @Test
+    fun verifyOnClickAction() {
+        var linkClickedCount = 0
+        var closeButtonClickedCount = 0
+        val projectNotice = "More info on this project notice served from backend"
+        composeTestRule.setContent {
+            KSTheme {
+                KSBottomSheetContent(
+                    title = context().getString(R.string.project_project_notices_header),
+                    body = projectNotice,
+                    linkText = context().getString(R.string.project_project_notices_notice_sheet_cta),
+                    onLinkClicked = { linkClickedCount++ },
+                    onClose = { closeButtonClickedCount++ }
+                )
+            }
+        }
+        link.performClick()
+        assertEquals(1, linkClickedCount)
+        closeButton.performClick()
+        assertEquals(1, closeButtonClickedCount)
     }
 }

@@ -1,8 +1,6 @@
 package com.kickstarter.ui.views.compose.projectpage
 
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase

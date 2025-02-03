@@ -1,6 +1,7 @@
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
@@ -471,6 +473,30 @@ fun KSSmallButton(
             text = text,
             color = if (isEnabled) textColor else colors.textAccentGrey,
             style = typography.buttonText
+        )
+    }
+}
+
+@Composable
+fun KSOutlinedButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    backgroundColor: Color,
+    text: String,
+    textColor: Color = colors.textAccentGrey
+) {
+    OutlinedButton(
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            contentColor = textColor
+        ),
+        border = BorderStroke(dimensions.borderThickness, colors.borderBold),
+        onClick = { onClickAction.invoke() }
+    ) {
+        Text(
+            style = typography.buttonText,
+            color = colors.textPrimary,
+            text = text
         )
     }
 }

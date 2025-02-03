@@ -13,6 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
@@ -29,10 +36,15 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectSocialActivity
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.setClickableHtml
@@ -41,6 +53,8 @@ import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.views.KSBottomSheetDialogFragment
+import com.kickstarter.ui.views.compose.KSColorAccentedBanner
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -202,6 +216,42 @@ class ProjectOverviewFragment : Fragment(), Configure {
                 binding.projectName.text = it
             }
             .addToDisposable(disposables)
+
+        binding.composeViewBanner.setContent {
+            KSTheme {
+                val projectNotice by viewModel.outputs.projectProjectNotice()
+                    .subscribeAsState(initial = null)
+
+                if (projectNotice.isNotNull()) {
+
+                    val modalBottomSheet = KSBottomSheetDialogFragment(
+                        titleText = stringResource(R.string.project_project_notices_header),
+                        bodyText = projectNotice ?: "",
+                        linkText = stringResource(R.string.project_project_notices_notice_sheet_cta),
+                        onCtaClicked = {
+                            (activity as ProjectPageActivity).showAccountabilityPage()
+                        }
+                    )
+                    val openBottomSheet = {
+                        modalBottomSheet.show(parentFragmentManager, KSBottomSheetDialogFragment.TAG)
+                    }
+                    Column {
+                        KSColorAccentedBanner(
+                            imageResToDisplay = R.drawable.ic_alert_diamond,
+                            titleResToDisplay = R.string.project_project_notices_header,
+                            textResToDisplay = R.string.project_project_notices_notice_intro,
+                            buttonTextResToDisplay = R.string.project_project_notices_notice_cta,
+                            textColor = colors.textPrimary,
+                            backgroundColor = colors.backgroundDangerSubtle,
+                            iconColor = colors.iconDanger,
+                            accentColor = colors.backgroundDangerBoldPressed,
+                            onClickAction = openBottomSheet
+                        )
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    }
+                }
+            }
+        }
 
         viewModel.outputs.projectSocialTextViewFriends()
             .observeOn(AndroidSchedulers.mainThread())

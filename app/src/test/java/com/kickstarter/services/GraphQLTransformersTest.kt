@@ -275,6 +275,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         RewardType.base,
         AllowedAddons(listOf(Reward.Node("UmV3YXJkLTk3MDA2NjA"))),
         null,
+        Reward.Image("https://www.kickstarter.com", "")
     )
 
     @Test

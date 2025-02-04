@@ -41,6 +41,10 @@ query FetchProjectRewards($slug: String!) {
           locationId
           locationName
         }
+        image {
+          url(width: 1024)
+          altText
+        }
       }
     }
   }

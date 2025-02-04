@@ -214,6 +214,13 @@ fragment full on Project {
     }
 }
 
+fragment rewardImage on Reward {
+    image {
+        url(width: 1024)
+        altText
+    }
+}
+
 fragment video on Video {
     previewImageUrl
     videoSources {

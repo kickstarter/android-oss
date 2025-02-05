@@ -20,6 +20,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' } // statsig
         maven { url 'https://s3-us-west-2.amazonaws.com/si-mobile-sdks/android/' }
         maven {
             url 'http://appboy.github.io/appboy-android-sdk/sdk'

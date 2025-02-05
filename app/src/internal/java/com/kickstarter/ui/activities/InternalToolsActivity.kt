@@ -65,7 +65,7 @@ class InternalToolsActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        (applicationContext as KSApplication).component().inject(this)
+        (applicationContext as KSApplication).component()?.inject(this)
 
         setupBuildInformationSection()
 

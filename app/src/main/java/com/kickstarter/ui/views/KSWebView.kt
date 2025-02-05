@@ -47,7 +47,7 @@ class KSWebView@JvmOverloads constructor(
     private fun initWebView(context: Context) {
 
         if (!isInEditMode) {
-            (context.applicationContext as KSApplication).component().inject(this)
+            (context.applicationContext as KSApplication).component()?.inject(this)
             binding.internalWebView.webViewClient = this.client
             binding.internalWebView.webChromeClient = WebChromeClient()
             binding.internalWebView.settings.javaScriptEnabled = true

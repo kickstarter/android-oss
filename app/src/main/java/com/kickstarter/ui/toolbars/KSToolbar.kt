@@ -47,7 +47,7 @@ open class KSToolbar @JvmOverloads constructor(
     }
 
     protected fun environment(): Environment {
-        return (context.applicationContext as KSApplication).component().environment()
+        return (context.applicationContext as KSApplication).component()?.environment()!!
     }
 
     /**

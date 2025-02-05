@@ -41,6 +41,7 @@ query FetchProjectRewards($slug: String!) {
           locationId
           locationName
         }
+        ...rewardImage
       }
     }
   }
@@ -79,6 +80,7 @@ query GetProjectAddOns($slug: String!, $locationId: ID!) {
         items {
           ... rewardItems
         }
+        ...rewardImage
       }
     }
   }

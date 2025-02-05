@@ -210,6 +210,14 @@ fragment rewardItems on RewardItemsConnection {
 fragment full on Project {
     image {
         url(width: 1024)
+        altText
+    }
+}
+
+fragment rewardImage on Reward {
+    image {
+        url(width: 1024)
+        altText
     }
 }
 

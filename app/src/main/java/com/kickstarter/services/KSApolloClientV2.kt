@@ -723,7 +723,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                                     rewardGr = rwGr,
                                     allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
                                     rewardItems = complexRewardItemsTransformer(it.items?.rewardItems),
-                                    simpleShippingRules = it.simpleShippingRulesExpanded.filterNotNull()
+                                    simpleShippingRules = it.simpleShippingRulesExpanded.filterNotNull(),
+                                    rewardImage = it.rewardImage
                                 )
                             }
                         } ?: emptyList<Reward>()
@@ -779,7 +780,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             rewardTransformer(
                 requireNotNull(node?.reward),
                 shippingRulesExpanded = shippingRulesGr,
-                addOnItems = complexRewardItemsTransformer(node?.items?.rewardItems)
+                addOnItems = complexRewardItemsTransformer(node?.items?.rewardItems),
+                rewardImage = node?.rewardImage
             )
         }?.toList() ?: emptyList()
     }

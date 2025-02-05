@@ -13,6 +13,7 @@ class Reward private constructor(
     private val description: String?,
     private val endsAt: DateTime?,
     private val id: Long,
+    private val image: Photo?,
     private val limit: Int?,
     private val minimum: Double,
     private val pledgeAmount: Double,
@@ -57,6 +58,7 @@ class Reward private constructor(
     fun description() = this.description
     fun endsAt() = this.endsAt
     override fun id() = this.id
+    fun image() = this.image
     fun limit() = this.limit
     fun minimum() = this.minimum
     fun pledgeAmount() = this.pledgeAmount
@@ -87,6 +89,7 @@ class Reward private constructor(
         private var description: String? = null,
         private var endsAt: DateTime? = null,
         private var id: Long = 0L,
+        private var image: Photo? = null,
         private var limit: Int? = null,
         private var minimum: Double = 0.0,
         private var pledgeAmount: Double = 0.0,
@@ -114,6 +117,7 @@ class Reward private constructor(
         fun endsAt(endsAt: DateTime?) = apply { this.endsAt = endsAt }
         fun startsAt(startsAt: DateTime?) = apply { this.startsAt = startsAt }
         fun id(id: Long?) = apply { this.id = id ?: -1L }
+        fun image(image: Photo?) = apply { this.image = image }
         fun limit(limit: Int?) = apply { this.limit = limit }
         fun minimum(minimum: Double?) = apply { this.minimum = minimum ?: 0.0 }
         fun pledgeAmount(pledgeAmount: Double?) = apply { this.pledgeAmount = pledgeAmount ?: 0.0 }
@@ -142,6 +146,7 @@ class Reward private constructor(
             endsAt = endsAt,
             startsAt = startsAt,
             id = id,
+            image = image,
             limit = limit,
             minimum = minimum,
             pledgeAmount = pledgeAmount,
@@ -181,6 +186,7 @@ class Reward private constructor(
         endsAt = endsAt,
         startsAt = startsAt,
         id = id,
+        image = image,
         limit = limit,
         minimum = minimum,
         pledgeAmount = pledgeAmount,
@@ -211,6 +217,7 @@ class Reward private constructor(
                 endsAt() == other.endsAt() &&
                 startsAt() == other.startsAt() &&
                 id() == other.id() &&
+                image() == other.image() &&
                 limit() == other.limit() &&
                 minimum() == other.minimum() &&
                 pledgeAmount() == other.pledgeAmount() &&

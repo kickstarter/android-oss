@@ -591,6 +591,7 @@ fun Dividers() {
 @Composable
 fun TypographyVisuals() {
     Column {
+        // NEW DESIGN SYSTEM
         Text(text = "Heading2XL", style = typographyV2.heading2XL, color = colors.kds_support_700)
         Text(text = "HeadingXL", style = typographyV2.headingXL, color = colors.kds_support_700)
         Text(text = "HeadingLG", style = typographyV2.headingLG, color = colors.kds_support_700)
@@ -620,8 +621,23 @@ fun TypographyVisuals() {
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Text(text = "LinkLG", style = typographyV2.linkLG, color = colors.kds_support_700)
-        Text(text = "inkMD", style = typographyV2.linkMD, color = colors.kds_support_700)
+        Text(text = "LinkMD", style = typographyV2.linkMD, color = colors.kds_support_700)
         Text(text = "LinkSM", style = typographyV2.linkSM, color = colors.kds_support_700)
         Text(text = "LinkXS", style = typographyV2.linkXS, color = colors.kds_support_700)
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        // OLD DESIGN SYSTEM
+        Text(text = "Title1", style = typographyV2.title1, color = colors.kds_support_700)
+        Text(text = "Title1Bold", style = typographyV2.title1Bold, color = colors.kds_support_700)
+        Text(text = "Title2", style = typographyV2.title2, color = colors.kds_support_700)
+        Text(text = "Title2Bold", style = typographyV2.title2Bold, color = colors.kds_support_700)
+        Text(text = "TitleRewardBold", style = typographyV2.titleRewardBold, color = colors.kds_support_700)
+        Text(text = "Headline", style = typographyV2.headLine, color = colors.kds_support_700)
+        Text(text = "Body", style = typographyV2.body, color = colors.kds_support_700)
+        Text(text = "Footnote", style = typographyV2.footNote, color = colors.kds_support_700)
+        Text(text = "FootnoteMedium", style = typographyV2.footNoteMedium, color = colors.kds_support_700)
+        Text(text = "SubHeadline", style = typographyV2.subHeadline, color = colors.kds_support_700)
+        Text(text = "SubHeadlineMedium", style = typographyV2.subHeadlineMedium, color = colors.kds_support_700)
     }
 }

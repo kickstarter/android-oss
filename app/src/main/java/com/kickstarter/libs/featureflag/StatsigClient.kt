@@ -11,7 +11,6 @@ import com.kickstarter.models.User
 import com.statsig.androidsdk.Statsig
 import com.statsig.androidsdk.StatsigUser
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -38,19 +37,17 @@ class StatsigClient(
         scope?.launch {
 
             if (context.isKSApplication()) {
-                async {
-                    Statsig.initialize(
-                        application = context as KSApplication,
-                        sdkKey =
-                        if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
-                        else Secrets.Statsig.STAGING,
-                        // TODO: Build the user adding the rest of the information required
-                        // userAgent, locale ...
-                        user = if (loggedInUser.isNotNull()) StatsigUser(
-                            userID = loggedInUser?.id().toString()
-                        ) else null
-                    )
-                }.await()
+                Statsig.initialize(
+                    application = context as KSApplication,
+                    sdkKey =
+                    if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
+                    else Secrets.Statsig.STAGING,
+                    // TODO: Build the user adding the rest of the information required
+                    // userAgent, locale ...
+                    user = if (loggedInUser.isNotNull()) StatsigUser(
+                        userID = loggedInUser?.id().toString()
+                    ) else null
+                )
             }
 
             currentUser.loggedInUser().asFlow().distinctUntilChanged().collectLatest {

@@ -15,7 +15,7 @@ import com.kickstarter.libs.PushNotifications
 import com.kickstarter.libs.SegmentTrackingClient
 import com.kickstarter.libs.braze.RemotePushClientType
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
-import com.kickstarter.libs.featureflag.StatsigClient
+import com.kickstarter.libs.featureflag.StatsigClientType
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil
 import com.kickstarter.libs.utils.Secrets
 import io.reactivex.exceptions.OnErrorNotImplementedException
@@ -24,6 +24,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import org.joda.time.DateTime
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
@@ -58,11 +59,14 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
     @Inject
     lateinit var ffClient: FeatureFlagClientType
 
+    @Inject
+    lateinit var statsigClient: StatsigClientType
+
     /**
      * - A CoroutineScope tied to the Application lifecycle
      *  used to initialize dependencies that require coroutines and early on network calls.
-     *  Will operate on Main Thread, as this scope will kickoff feature flagging
-     *  and experiments dependencies potentially affecting DiscoveryActivity
+     *  Will operate on Main dispatcher, as this scope will kickoff feature flagging
+     *  and experiments dependencies potentially affecting launch activities (Discovery/ProjectPage)
      */
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -76,6 +80,11 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
         if (!isInUnitTests) {
             initApplication()
         }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        applicationScope.cancel()
     }
 
     override fun getComponent(): ApplicationComponent {
@@ -95,21 +104,14 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
 
         createErrorHandler()
         initialize(applicationContext, ffClient) { this.initializeDependencies() }
-        val client = StatsigClient(
-            build, this, currentUser
-        )
 
-        client.initialize(applicationScope)
-
-        if (client.isInitialized()) {
-            client.checkGate("")
-        }
+        statsigClient.initialize(applicationScope)
     }
 
     // - Returns Boolean because incompatible Java "void" type with kotlin "Void" type for the lambda declaration
     private fun initializeDependencies(): Boolean {
         setVisitorCookie()
-        pushNotifications!!.initialize()
+        pushNotifications.initialize()
 
         val appUtil = ApplicationLifecycleUtil(this)
         registerActivityLifecycleCallbacks(appUtil)
@@ -145,8 +147,8 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
         cookie.secure = true
         val webUri = URI.create(Secrets.WebEndpoint.PRODUCTION)
         val apiUri = URI.create(ApiEndpoint.PRODUCTION.url())
-        cookieManager!!.cookieStore.add(webUri, cookie)
-        cookieManager!!.cookieStore.add(apiUri, cookie)
+        cookieManager.cookieStore.add(webUri, cookie)
+        cookieManager.cookieStore.add(apiUri, cookie)
         CookieHandler.setDefault(this.cookieManager)
     }
 
@@ -159,7 +161,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
                 Timber.e(t, "RxJavaPlugins.setErrorHandler")
                 val apolloHttpException = t.cause as ApolloHttpException?
                 val value =
-                    if (apolloHttpException!!.message != null) apolloHttpException.message else ""
+                    if (apolloHttpException?.message != null) apolloHttpException.message else ""
                 FirebaseCrashlytics.getInstance().setCustomKey("ApolloHttpException (429)", value!!)
                 FirebaseCrashlytics.getInstance().recordException(t)
             } else if (t is UndeliverableException) {
@@ -167,7 +169,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
                 if (t.message != null) {
                     FirebaseCrashlytics.getInstance().setCustomKey(
                         "Undeliverable Exception",
-                        t.message!!
+                        t.message ?: ""
                     )
                 }
                 FirebaseCrashlytics.getInstance().recordException(t)

@@ -32,6 +32,7 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 /**
  * Screen representing the UI loading on [com.kickstarter.ui.fragments.projectpage.ProjectRiskFragment]
@@ -56,7 +57,7 @@ fun RisksScreen(
     ) {
         Text(
             text = stringResource(id = R.string.Risks_and_challenges),
-            style = typography.title1Bold.copy(
+            style = typographyV2.title1Bold.copy(
                 fontWeight = FontWeight.ExtraBold,
                 color = colors.kds_support_700
             ),

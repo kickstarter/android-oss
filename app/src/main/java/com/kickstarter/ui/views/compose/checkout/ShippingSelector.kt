@@ -42,6 +42,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -81,7 +82,7 @@ fun ShippingSelector(
 
         Text(
             text = stringResource(id = R.string.Your_shipping_location),
-            style = typography.subheadlineMedium,
+            style = typographyV2.subHeadlineMedium,
             color = colors.textSecondary
         )
 
@@ -137,7 +138,7 @@ fun CountryInputWithDropdown(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                textStyle = typography.subheadlineMedium.copy(color = colors.textAccentGreenBold),
+                textStyle = typographyV2.subHeadlineMedium.copy(color = colors.textAccentGreenBold),
                 singleLine = false
             ) { innerTextField ->
                 TextFieldDefaults.TextFieldDecorationBox(
@@ -194,7 +195,7 @@ fun CountryInputWithDropdown(
                         ) {
                             Text(
                                 text = rule.location()?.displayableName() ?: "",
-                                style = typography.subheadlineMedium,
+                                style = typographyV2.subHeadlineMedium,
                                 color = colors.textAccentGreenBold
                             )
                         }
@@ -213,7 +214,7 @@ fun CountryInputWithDropdown(
                         ) {
                             Text(
                                 text = rule.location()?.displayableName() ?: "",
-                                style = typography.subheadlineMedium,
+                                style = typographyV2.subHeadlineMedium,
                                 color = colors.textAccentGreenBold
                             )
                         }

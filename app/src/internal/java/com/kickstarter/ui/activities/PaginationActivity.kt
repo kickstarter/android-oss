@@ -174,7 +174,7 @@ fun UpdateCard(update: Update, index: Int) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 text = "Index: $index | publishedAt: ${update.publishedAt()} |update ID: ${update.id()} | update title: ${update.title()}",
-                style = KSTheme.typography.title2,
+                style = KSTheme.typographyV2.title2,
                 textAlign = TextAlign.Start
             )
             Text(

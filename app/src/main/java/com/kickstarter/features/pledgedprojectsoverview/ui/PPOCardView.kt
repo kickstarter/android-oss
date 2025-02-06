@@ -50,6 +50,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSWarningBadge
 import com.kickstarter.ui.compose.designsystem.shapes
 
@@ -254,7 +255,7 @@ fun ProjectPledgeSummaryView(
             Text(
                 text = projectName ?: "",
                 color = colors.textPrimary,
-                style = typography.footnoteMedium,
+                style = typographyV2.footNoteMedium,
                 overflow = TextOverflow.Ellipsis,
                 minLines = 1,
                 maxLines = 2

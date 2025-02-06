@@ -42,6 +42,7 @@ import com.kickstarter.type.FlaggingKind
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.ReportProjectViewModel
 
 @Composable
@@ -214,7 +215,7 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
         ) {
             Text(
                 text = rule.first.parseHtmlTag(),
-                style = typography.subheadline.copy(
+                style = typographyV2.subHeadline.copy(
                     fontWeight = FontWeight.Bold,
                     color = colors.kds_support_700
                 )
@@ -280,7 +281,7 @@ fun CategoryRow(
             ) {
                 Text(
                     text = category.first,
-                    style = typography.headline.copy(
+                    style = typographyV2.headLine.copy(
                         fontWeight = FontWeight.Bold,
                         color = colors.kds_support_700
                     )

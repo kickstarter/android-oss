@@ -33,6 +33,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -110,7 +111,7 @@ fun KSRewardCard(
                 ) {
                     Text(
                         text = stringResource(id = R.string.Your_selection),
-                        style = typography.subheadline,
+                        style = typographyV2.subHeadline,
                         color = colors.kds_white,
                     )
                 }
@@ -128,7 +129,7 @@ fun KSRewardCard(
                 }
 
                 if (!conversion.isNullOrEmpty()) {
-                    Text(text = conversion, style = typography.footnote, color = colors.textAccentGreenBold)
+                    Text(text = conversion, style = typographyV2.footNote, color = colors.textAccentGreenBold)
                 }
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))

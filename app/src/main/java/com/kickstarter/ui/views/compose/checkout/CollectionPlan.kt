@@ -40,6 +40,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import org.joda.time.DateTime
 
 enum class CollectionPlanTestTags {
@@ -218,7 +219,7 @@ fun PledgeOption(
                         top = if (isSelectable) dimensions.paddingMedium else dimensions.dialogButtonSpacing,
                     ),
                     text = optionText,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = if (isSelectable) colors.textPrimary else colors.textDisabled
                 )
                 if (showBadge) {
@@ -316,8 +317,8 @@ fun ChargeItem(title: String, date: String, amount: String) {
             )
 
             Row(modifier = Modifier.padding(top = dimensions.paddingXSmall)) {
-                Text(modifier = Modifier.width(dimensions.plotChargeItemWidth), text = date, color = colors.textSecondary, style = typography.footnote)
-                Text(text = amount, color = colors.textSecondary, style = typography.footnote)
+                Text(modifier = Modifier.width(dimensions.plotChargeItemWidth), text = date, color = colors.textSecondary, style = typographyV2.footNote)
+                Text(text = amount, color = colors.textSecondary, style = typographyV2.footNote)
             }
         }
     }

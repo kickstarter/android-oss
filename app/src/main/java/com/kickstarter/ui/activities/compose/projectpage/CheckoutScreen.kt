@@ -80,6 +80,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.data.PledgeReason
@@ -392,7 +393,7 @@ fun CheckoutScreen(
                             end = dimensions.paddingMediumLarge
                         ),
                         text = stringResource(id = R.string.Collection_plan),
-                        style = typography.headline,
+                        style = typographyV2.headLine,
                         color = colors.kds_black,
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -413,7 +414,7 @@ fun CheckoutScreen(
                             end = dimensions.paddingMediumLarge
                         ),
                         text = stringResource(id = R.string.Payment),
-                        style = typography.headline,
+                        style = typographyV2.headLine,
                         color = colors.kds_black,
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -502,7 +503,7 @@ fun CheckoutScreen(
                         Text(
                             modifier = Modifier.padding(start = dimensions.paddingSmall),
                             color = colors.textAccentGreen,
-                            style = typography.subheadlineMedium,
+                            style = typographyV2.subHeadlineMedium,
                             text = stringResource(id = R.string.New_payment_method)
                         )
                     }

@@ -30,6 +30,7 @@ import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 // Snackbars
 @Composable
@@ -438,7 +439,7 @@ fun KsTooltip(
             bodyText = bodyText,
             bodyStyle = typography.body2,
             headline = headlineText,
-            headlineStyle = typography.headline,
+            headlineStyle = typographyV2.headLine,
             headlineSpacing = dimensions.paddingSmall
         )
     }

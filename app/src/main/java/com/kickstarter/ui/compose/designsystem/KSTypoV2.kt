@@ -43,10 +43,19 @@ fun KSTextPreviewV2() {
             Text(text = "linkMD", style = KSTheme.typographyV2.linkMD)
             Text(text = "linkSM", style = KSTheme.typographyV2.linkSM)
             Text(text = "linkXS", style = KSTheme.typographyV2.linkXS)
+            // OLD DESIGN SYSTEM
+            Text(text = "title1", style = KSTheme.typographyV2.title1)
+            Text(text = "title1Bold", style = KSTheme.typographyV2.title1Bold)
+            Text(text = "title2", style = KSTheme.typographyV2.title2)
+            Text(text = "title2Bold", style = KSTheme.typographyV2.title2Bold)
+            Text(text = "headLine", style = KSTheme.typographyV2.headLine)
+            Text(text = "footNote", style = KSTheme.typographyV2.footNote)
+            Text(text = "footNoteMedium", style = KSTheme.typographyV2.footNoteMedium)
+            Text(text = "subHeadline", style = KSTheme.typographyV2.subHeadline)
+            Text(text = "subHeadlineMedium", style = KSTheme.typographyV2.subHeadlineMedium)
         }
     }
 }
-
 
 @Immutable
 data class KSTypographyV2(
@@ -73,19 +82,32 @@ data class KSTypographyV2(
     val linkMD: TextStyle = TextStyle.Default,
     val linkSM: TextStyle = TextStyle.Default,
     val linkXS: TextStyle = TextStyle.Default,
+    //old design system
+    val title1: TextStyle = TextStyle.Default,
+    val title1Bold: TextStyle = TextStyle.Default,
+    val title2: TextStyle = TextStyle.Default,
+    val title2Bold: TextStyle = TextStyle.Default,
+    val headLine: TextStyle = TextStyle.Default,
+    val footNote: TextStyle = TextStyle.Default,
+    val footNoteMedium: TextStyle = TextStyle.Default,
+    val subHeadline: TextStyle = TextStyle.Default,
+    val subHeadlineMedium: TextStyle = TextStyle.Default,
 )
+
 
 val LocalKSCustomTypographyV2 = staticCompositionLocalOf {
     KSTypographyV2()
 }
 
 val KSCustomTypographyV2 = KSTypographyV2(
+    /*
+     * NEW DESIGN SYSTEM
+     */
     heading2XL = TextStyle(
         fontWeight = FontWeight(500),
         fontSize = 24.sp,
         lineHeight = 28.sp,
         letterSpacing = (-0.8).sp,
-
         color = kds_support_700
     ),
     headingXL = TextStyle(
@@ -164,7 +186,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         fontSize = 12.sp,
         lineHeight = 16.sp,
         color = kds_support_700
-        ),
+    ),
     bodyBoldSM = TextStyle(
         fontWeight = FontWeight(500),
         fontSize = 12.sp,
@@ -232,4 +254,73 @@ val KSCustomTypographyV2 = KSTypographyV2(
         textDecoration = TextDecoration.Underline,
         color = kds_support_700
     ),
+
+    /*
+     * OLD DESIGN SYSTEM
+     * Not matches with new design system so some values were changed to match with new design system.
+     * For any doubt check with design team.
+     */
+    title1 = TextStyle(
+        fontWeight = FontWeight(400),
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp,
+        color = kds_support_700
+    ),
+    title1Bold = TextStyle(
+        fontWeight = FontWeight(500),
+        fontSize = 28.sp,
+        lineHeight = 32.sp,
+        letterSpacing = (-0.85).sp,
+        color = kds_support_700
+    ),
+    title2 = TextStyle(
+        fontWeight = FontWeight(400),
+        fontSize = 22.sp,
+        lineHeight = 30.sp,
+        letterSpacing = 0.sp,
+        color = kds_support_700
+    ),
+    title2Bold = TextStyle(
+        fontWeight = FontWeight(500),
+        fontSize = 22.sp,
+        lineHeight = 26.sp,
+        letterSpacing = (-0.75).sp,
+        color = kds_support_700
+    ),
+    headLine = TextStyle(
+        fontWeight = FontWeight(500),
+        fontSize = 18.sp,
+        lineHeight = 22.sp,
+        letterSpacing = (-0.5).sp,
+        color = kds_support_700
+    ),
+    footNote = TextStyle(
+        fontWeight = FontWeight(400),
+        fontSize = 13.sp,
+        lineHeight = 17.sp,
+        letterSpacing = 0.sp,
+        color = kds_support_700
+    ),
+    footNoteMedium = TextStyle(
+        fontWeight = FontWeight(500),
+        fontSize = 13.sp,
+        lineHeight = 17.sp,
+        letterSpacing = (-0.23).sp,
+        color = kds_support_700
+    ),
+    subHeadline = TextStyle(
+        fontWeight = FontWeight(400),
+        fontSize = 15.sp,
+        lineHeight = 21.sp,
+        letterSpacing = 0.sp,
+        color = kds_support_700
+    ),
+    subHeadlineMedium = TextStyle(
+        fontWeight = FontWeight(500),
+        fontSize = 15.sp,
+        lineHeight = 17.sp,
+        letterSpacing = (-0.34).sp,
+        color = kds_support_700
+    )
 )

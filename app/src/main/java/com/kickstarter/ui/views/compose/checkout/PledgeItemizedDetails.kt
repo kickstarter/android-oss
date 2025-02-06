@@ -27,6 +27,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -146,7 +147,7 @@ fun ItemizedRewardListContainer(
         Text(
             modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.PAGE_TITLE.name),
             text = stringResource(id = R.string.Your_pledge),
-            style = typography.headline,
+            style = typographyV2.headLine,
             color = colors.textPrimary
         )
 
@@ -172,7 +173,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.ITEM_NAME.name),
                     text = it.first,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textSecondary
                 )
 
@@ -181,7 +182,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.ITEM_COST.name),
                     text = it.second,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textSecondary
                 )
             }
@@ -202,7 +203,7 @@ fun ItemizedRewardListContainer(
                         "country",
                         initialShippingLocation
                     ) ?: "Shipping: $initialShippingLocation",
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textSecondary
                 )
 
@@ -211,7 +212,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.SHIPPING_AMOUNT.name),
                     text = shippingAmountString,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textSecondary
                 )
             }
@@ -232,7 +233,7 @@ fun ItemizedRewardListContainer(
                         if (rewardsList.isNotEmpty()) R.string.Bonus_support
                         else R.string.Pledge_without_a_reward
                     ),
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textSecondary
                 )
 
@@ -241,7 +242,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.BONUS_SUPPORT.name),
                     text = totalBonusSupport,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textSecondary
                 )
             }
@@ -267,7 +268,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.TOTAL_AMOUNT.name),
                     text = totalAmount,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.textPrimary
                 )
 
@@ -277,7 +278,7 @@ fun ItemizedRewardListContainer(
                     Text(
                         modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.CURRENCY_CONVERSION.name),
                         text = totalAmountCurrencyConverted,
-                        style = typography.footnote,
+                        style = typographyV2.footNote,
                         color = colors.textPrimary
                     )
                 }
@@ -317,7 +318,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DISCLAIMER_TEXT.name),
                     text = stringResource(id = R.string.Charged_as_number_of_payments).format(key1 = "number", value1 = "4"),
-                    style = typography.footnote,
+                    style = typographyV2.footNote,
                     color = colors.textPrimary
                 )
             }
@@ -329,7 +330,7 @@ fun ItemizedRewardListContainer(
                 Text(
                     modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DISCLAIMER_TEXT.name),
                     text = disclaimerText,
-                    style = typography.footnote,
+                    style = typographyV2.footNote,
                     color = colors.textPrimary
                 )
             }

@@ -198,7 +198,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 @Composable
 fun AlertsVisuals() {
     Column {
-        Text(text = "Alerts", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Alerts", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -292,7 +292,7 @@ fun AlertsVisuals() {
 @Composable
 fun ButtonsVisuals() {
     Column {
-        Text(text = "Buttons", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Buttons", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -349,7 +349,7 @@ fun ButtonsVisuals() {
 @Composable
 fun BadgesVisuals() {
     Column {
-        Text(text = "Badges", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Badges", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -364,7 +364,7 @@ fun BadgesVisuals() {
 @Composable
 fun ControlsVisuals() {
     Column {
-        Text(text = "Controls", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Controls", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -479,7 +479,7 @@ fun ControlsVisuals() {
 @Composable
 fun InputsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = "Inputs", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Inputs", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -509,7 +509,7 @@ fun ProgressIndicatorsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Progress Indicators",
-            style = typography.title1Bold,
+            style = typographyV2.title1Bold,
             color = colors.kds_support_700
         )
 
@@ -545,7 +545,7 @@ fun ProgressIndicatorsVisuals() {
 @Composable
 fun FootersVisuals() {
     Column {
-        Text(text = "Footers", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Footers", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -565,7 +565,7 @@ fun FootersVisuals() {
 @Composable
 fun ClickableText() {
     Column {
-        Text(text = "Clickable Text", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Clickable Text", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -580,7 +580,7 @@ fun ClickableText() {
 @Composable
 fun Dividers() {
     Column {
-        Text(text = "Dividers", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Dividers", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 

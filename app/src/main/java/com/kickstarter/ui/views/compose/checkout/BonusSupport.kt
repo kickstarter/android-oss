@@ -36,6 +36,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.shapes
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -101,7 +102,7 @@ fun BonusSupportContainer(
         Text(
             text = if (isNoReward) stringResource(id = R.string.Your_pledge_amount)
             else stringResource(id = R.string.Bonus_support),
-            style = typography.subheadlineMedium,
+            style = typographyV2.subHeadlineMedium,
             color = colors.textPrimary
         )
 
@@ -165,7 +166,7 @@ fun BonusSupportContainer(
                     onValueChange = {
                         if (it.length <= bonusAmountMaxDigits) onBonusSupportInputted(it.parseToDouble())
                     },
-                    textStyle = typography.title1.copy(color = colors.textAccentGreen),
+                    textStyle = typographyV2.title1.copy(color = colors.textAccentGreen),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -193,7 +194,7 @@ fun BonusSupportContainer(
             Text(
                 text = maxInputString,
                 textAlign = TextAlign.Right,
-                style = typography.footnoteMedium,
+                style = typographyV2.footNoteMedium,
                 color = colors.textAccentRed,
                 modifier = Modifier
                     .fillMaxWidth()

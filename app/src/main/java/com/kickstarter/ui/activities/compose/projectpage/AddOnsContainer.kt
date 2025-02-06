@@ -34,6 +34,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.shapes
 
 @Composable
@@ -88,7 +89,7 @@ fun AddOnsContainer(
                 .padding(dimensions.paddingMediumLarge)
         ) {
 
-            Text(text = title, style = typography.title2Bold, color = colors.kds_black)
+            Text(text = title, style = typographyV2.title2Bold, color = colors.kds_black)
 
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
@@ -108,7 +109,7 @@ fun AddOnsContainer(
                 Text(
                     modifier = Modifier.padding(top = dimensions.paddingXSmall),
                     text = conversionAmount,
-                    style = typography.footnoteMedium,
+                    style = typographyV2.footNoteMedium,
                     color = colors.textSecondary
                 )
             }

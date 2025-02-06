@@ -45,7 +45,7 @@ fun KSTheme(
         LocalKSCustomColors provides colors,
         LocalKSCustomTypography provides typography,
         LocalKSCustomTypographyV2
-                provides typographyV2,
+            provides typographyV2,
         LocalKSCustomDimensions provides dimensions,
         content = content
     )

@@ -21,7 +21,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -49,7 +49,7 @@ fun SearchEmptyView(
 
         Text(
             text = stringResource(id = R.string.No_Results),
-            style = typography.body,
+            style = typographyV2.body,
             color = colors.textSecondary
         )
 
@@ -66,7 +66,7 @@ fun SearchEmptyView(
                     "search_term",
                     currentSearchTerm
                 ),
-                style = typography.body2,
+                style = typographyV2.bodyMD,
                 color = colors.textSecondary
             )
         }

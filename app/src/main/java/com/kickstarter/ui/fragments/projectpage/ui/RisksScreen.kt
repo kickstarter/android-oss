@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 /**
@@ -71,7 +70,7 @@ fun RisksScreen(
         )
         Text(
             text = riskDescState.value,
-            style = typography.body2,
+            style = typographyV2.bodyMD,
             color = colors.kds_support_700,
             modifier = Modifier
                 .paddingFromBaseline(

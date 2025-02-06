@@ -36,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
@@ -219,7 +218,7 @@ fun KSStringDropdown(
                         expanded = false
                     }
                 ) {
-                    Text(text = item, style = typography.body2, color = colors.kds_support_700)
+                    Text(text = item, style = typographyV2.bodyMD, color = colors.kds_support_700)
                 }
             }
         }

@@ -35,7 +35,6 @@ import com.kickstarter.ui.compose.designsystem.KSStepper
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.shapes
 
@@ -92,7 +91,7 @@ fun BonusSupportContainer(
         if (isNoReward) {
             Text(
                 text = stringResource(id = R.string.Customize_your_reward),
-                style = typography.title3Bold,
+                style = typographyV2.headingXL,
                 color = colors.textPrimary
             )
 
@@ -111,7 +110,7 @@ fun BonusSupportContainer(
         if (!isNoReward && !selectedReward.hasAddons()) {
             Text(
                 text = stringResource(id = R.string.A_little_extra_to_help),
-                style = typography.body2,
+                style = typographyV2.bodyMD,
                 color = colors.textSecondary
             )
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
@@ -135,7 +134,7 @@ fun BonusSupportContainer(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
+            Text(text = "+", style = typographyV2.headingLG, color = colors.textSecondary)
 
             Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
 

@@ -179,7 +179,7 @@ fun UpdateCard(update: Update, index: Int) {
             )
             Text(
                 text = " * ${update.truncatedBody()}",
-                style = KSTheme.typography.body,
+                style = KSTheme.typographyV2.body,
             )
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
         }

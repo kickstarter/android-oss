@@ -29,7 +29,6 @@ import androidx.compose.ui.window.Popup
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 // Snackbars
@@ -367,13 +366,13 @@ fun KSAlertDialogNoHeadline(
                     ),
                 setShowDialog = setShowDialog,
                 bodyText = bodyText,
-                bodyStyle = typography.callout,
+                bodyStyle = typographyV2.bodyLG,
                 leftButtonText = leftButtonText,
                 leftButtonAction = leftButtonAction,
-                leftButtonTextStyle = typography.buttonText,
+                leftButtonTextStyle = typographyV2.buttonLabel,
                 rightButtonText = rightButtonText,
                 rightButtonAction = rightButtonAction,
-                rightButtonTextStyle = typography.buttonText
+                rightButtonTextStyle = typographyV2.buttonLabel
             )
         }
     )
@@ -404,16 +403,16 @@ fun KSAlertDialog(
                     ),
                 setShowDialog = setShowDialog,
                 headline = headlineText,
-                headlineStyle = typography.title3Bold,
+                headlineStyle = typographyV2.headingXL,
                 headlineSpacing = dimensions.paddingMedium,
                 bodyText = bodyText,
-                bodyStyle = typography.callout,
+                bodyStyle = typographyV2.bodyLG,
                 leftButtonText = leftButtonText,
                 leftButtonAction = leftButtonAction,
-                leftButtonTextStyle = typography.buttonText,
+                leftButtonTextStyle = typographyV2.buttonLabel,
                 rightButtonText = rightButtonText,
                 rightButtonAction = rightButtonAction,
-                rightButtonTextStyle = typography.buttonText
+                rightButtonTextStyle = typographyV2.buttonLabel
             )
         }
     )
@@ -437,7 +436,7 @@ fun KsTooltip(
                 .padding(dimensions.paddingLarge),
             setShowDialog = { },
             bodyText = bodyText,
-            bodyStyle = typography.body2,
+            bodyStyle = typographyV2.bodyMD,
             headline = headlineText,
             headlineStyle = typographyV2.headLine,
             headlineSpacing = dimensions.paddingSmall
@@ -471,15 +470,15 @@ fun KSIntercept(
                 ),
             setShowDialog = {},
             bodyText = bodyText,
-            bodyStyle = typography.calloutMedium,
+            bodyStyle = typographyV2.headingLG,
             leftButtonText = leftButtonText,
             leftButtonAction = leftButtonAction,
-            leftButtonTextStyle = typography.buttonText,
+            leftButtonTextStyle = typographyV2.buttonLabel,
             leftButtonTextColor = facebook_blue,
             leftButtonColor = colors.kds_support_100,
             rightButtonText = rightButtonText,
             rightButtonAction = rightButtonAction,
-            rightButtonTextStyle = typography.buttonText,
+            rightButtonTextStyle = typographyV2.buttonLabel,
             rightButtonTextColor = colors.kds_white,
             rightButtonColor = colors.kds_trust_500,
             additionalButtonSpacing = dimensions.paddingSmall

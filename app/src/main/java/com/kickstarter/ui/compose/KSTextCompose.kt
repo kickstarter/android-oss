@@ -99,7 +99,7 @@ fun TextBody1Title(
 ) {
     Text(
         text = text,
-        style = typography.body.copy(
+        style = typographyV2.body.copy(
             fontSize = fontSizeUnit
         ),
         color = textColor,
@@ -116,7 +116,7 @@ fun TextBody2Style(
 ) {
     Text(
         text = text,
-        style = typography.body2,
+        style = typographyV2.bodyMD,
         color = textColor,
         modifier = modifier
     )
@@ -146,7 +146,7 @@ fun TextCaptionStyle(
 ) {
     Text(
         text = text,
-        style = typography.body.copy(
+        style = typographyV2.body.copy(
             fontSize = dimensionResource(id = R.dimen.caption_1).value.sp,
             fontFamily = FontFamily(
                 Font(DeviceFontFamilyName("sans-serif-medium"))

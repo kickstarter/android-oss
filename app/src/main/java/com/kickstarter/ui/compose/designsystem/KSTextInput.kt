@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -134,7 +134,7 @@ fun KSTextInput(
                     color =
                     if (isError) colors.kds_alert
                     else colors.kds_black.copy(alpha = 0.6f),
-                    style = typography.caption1
+                    style = typographyV2.bodySM
                 )
             }
         }

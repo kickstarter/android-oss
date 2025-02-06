@@ -46,6 +46,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 enum class PaymentScheduleTestTags {
     PAYMENT_SCHEDULE_TITLE,
@@ -208,7 +209,7 @@ fun PaymentRow(
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
             text = paymentIncrementStyledCurrency(paymentIncrement, ksCurrency),
-            style = typography.title3,
+            style = typographyV2.bodyXL,
             color = colors.textPrimary
         )
     }
@@ -232,7 +233,7 @@ private fun paymentIncrementStyledCurrency(
                 // Append "USD $" with smaller size and top alignment
                 withStyle(
                     style = SpanStyle(
-                        fontSize = typography.title3.fontSize * 0.6f, // Relative to typography style
+                        fontSize = typographyV2.bodyXL.fontSize * 0.6f, // Relative to typography style
                         baselineShift = BaselineShift(0.25f) // Align on top
                     )
                 ) {
@@ -242,7 +243,7 @@ private fun paymentIncrementStyledCurrency(
                 // Append ".75" with smaller size and top alignment
                 withStyle(
                     style = SpanStyle(
-                        fontSize = typography.title3.fontSize * 0.6f, // Relative to typography style
+                        fontSize = typographyV2.bodyXL.fontSize * 0.6f, // Relative to typography style
                         baselineShift = BaselineShift(0.25f) // Align on top
                     )
                 ) {

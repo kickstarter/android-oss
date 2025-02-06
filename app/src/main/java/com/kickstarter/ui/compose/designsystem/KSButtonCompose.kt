@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -104,7 +104,7 @@ fun KsButton(
         }
         Text(
             text = buttonText,
-            style = typography.body.copy(
+            style = typographyV2.body.copy(
                 fontSize = dimensionResource(id = R.dimen.callout).value.sp,
                 fontFamily = FontFamily(
                     Font(DeviceFontFamilyName("sans-serif-medium"))

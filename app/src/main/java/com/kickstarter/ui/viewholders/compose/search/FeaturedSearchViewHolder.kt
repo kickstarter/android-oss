@@ -26,7 +26,6 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
@@ -92,7 +91,7 @@ fun FeaturedSearchViewHolder(
             modifier = Modifier
                 .padding(start = dimensions.paddingSmall, end = dimensions.paddingSmall)
                 .fillMaxWidth(),
-            style = typography.title3Bold,
+            style = typographyV2.headingXL,
             color = colors.kds_black
         )
 

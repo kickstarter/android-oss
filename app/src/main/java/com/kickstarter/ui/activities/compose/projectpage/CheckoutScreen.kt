@@ -381,7 +381,7 @@ fun CheckoutScreen(
                         top = dimensions.paddingMediumLarge
                     ),
                     text = stringResource(id = R.string.Checkout),
-                    style = typography.title3Bold,
+                    style = typographyV2.headingXL,
                     color = colors.kds_black,
                 )
 
@@ -952,7 +952,7 @@ fun KSEstimatedShippingCheckoutView(
                         top = dimensions.paddingMedium
                     ),
                     text = stringResource(id = R.string.Estimated_Shipping),
-                    style = typography.calloutMedium,
+                    style = typographyV2.headingLG,
                     color = colors.textPrimary
                 )
 
@@ -978,7 +978,7 @@ fun KSEstimatedShippingCheckoutView(
                         top = dimensions.paddingMedium
                     ),
                     text = estimatedShippingRange,
-                    style = typography.calloutMedium,
+                    style = typographyV2.headingLG,
                     color = colors.textPrimary
                 )
 

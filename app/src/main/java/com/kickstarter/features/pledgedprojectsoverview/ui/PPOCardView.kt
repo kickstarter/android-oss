@@ -418,7 +418,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             onClickAction = { onEditAddressClicked.invoke() },
             text = stringResource(id = R.string.Edit),
             isEnabled = true,
-            textStyle = typography.buttonText
+            textStyle = typographyV2.buttonLabel
         )
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
@@ -428,7 +428,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             onClickAction = { onConfirmAddressClicked.invoke() },
             text = stringResource(id = R.string.Confirm),
             isEnabled = isConfirmButtonEnabled,
-            textStyle = typography.buttonText
+            textStyle = typographyV2.buttonLabel
         )
     }
 }
@@ -440,7 +440,7 @@ fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
         onClickAction = { onFixPaymentClicked.invoke() },
         text = stringResource(id = R.string.Fix_payment),
         isEnabled = true,
-        textStyle = typography.buttonText
+        textStyle = typographyV2.buttonLabel
     )
 }
 
@@ -451,7 +451,7 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = stringResource(id = R.string.Authenticate_card),
         isEnabled = true,
-        textStyle = typography.buttonText
+        textStyle = typographyV2.buttonLabel
     )
 }
 
@@ -462,7 +462,7 @@ fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = stringResource(id = R.string.Take_survey),
         isEnabled = true,
-        textStyle = typography.buttonText
+        textStyle = typographyV2.buttonLabel
     )
 }
 

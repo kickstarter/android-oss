@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
@@ -215,6 +214,6 @@ fun KSBetaBadge() {
             ),
         text = stringResource(R.string.Beta).uppercase(),
         color = colors.textAccentGreen,
-        style = typography.caption2Medium
+        style = typographyV2.headingXS
     )
 }

@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,7 +73,6 @@ import com.kickstarter.ui.compose.designsystem.KSTextInput
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
@@ -464,7 +462,7 @@ fun ControlsVisuals() {
 
             Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
-            Text(text = "$$count", style = typography.body)
+            Text(text = "$$count", style = typographyV2.body)
         }
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
@@ -625,7 +623,5 @@ fun TypographyVisuals() {
         Text(text = "inkMD", style = typographyV2.linkMD, color = colors.kds_support_700)
         Text(text = "LinkSM", style = typographyV2.linkSM, color = colors.kds_support_700)
         Text(text = "LinkXS", style = typographyV2.linkXS, color = colors.kds_support_700)
-
-
     }
 }

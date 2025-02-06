@@ -258,7 +258,7 @@ fun ItemizedRewardListContainer(
             Text(
                 modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.PLEDGE_AMOUNT_TITLE.name),
                 text = stringResource(id = R.string.Pledge_amount),
-                style = typography.calloutMedium,
+                style = typographyV2.headingLG,
                 color = colors.textPrimary
             )
 

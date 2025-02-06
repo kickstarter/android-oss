@@ -41,7 +41,6 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)

@@ -57,6 +57,8 @@ class DeepLinkActivity : AppCompatActivity() {
 
         this.getEnvironment()?.let {
             viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
+
+            it.statsigClient()?.updateExperimentUser()
         }
 
         viewModel.outputs.startBrowser()

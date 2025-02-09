@@ -15,7 +15,7 @@ import com.kickstarter.libs.PushNotifications
 import com.kickstarter.libs.SegmentTrackingClient
 import com.kickstarter.libs.braze.RemotePushClientType
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
-import com.kickstarter.libs.featureflag.StatsigClientType
+import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil
 import com.kickstarter.libs.utils.Secrets
 import io.reactivex.exceptions.OnErrorNotImplementedException
@@ -60,15 +60,14 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
     lateinit var ffClient: FeatureFlagClientType
 
     @Inject
-    lateinit var statsigClient: StatsigClientType
+    lateinit var statsigClient: StatsigClient
 
     /**
      * - A CoroutineScope tied to the Application lifecycle
      *  used to initialize dependencies that require coroutines and early on network calls.
-     *  Will operate on Main dispatcher, as this scope will kickoff feature flagging
      *  and experiments dependencies potentially affecting launch activities (Discovery/ProjectPage)
      */
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     @CallSuper
     override fun onCreate() {
@@ -104,8 +103,6 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
 
         createErrorHandler()
         initialize(applicationContext, ffClient) { this.initializeDependencies() }
-
-        statsigClient.initialize(applicationScope)
     }
 
     // - Returns Boolean because incompatible Java "void" type with kotlin "Void" type for the lambda declaration
@@ -124,6 +121,14 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
 
         // - Register lifecycle callback for Braze
         remotePushClientType.registerActivityLifecycleCallbacks(this)
+
+        // - Initialize Statsig SDK
+        statsigClient.initialize(
+            scope = applicationScope,
+            errorCallback = { exception ->
+                FirebaseCrashlytics.getInstance().recordException(exception)
+            }
+        )
 
         return true
     }

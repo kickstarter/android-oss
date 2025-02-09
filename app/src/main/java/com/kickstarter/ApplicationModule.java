@@ -76,6 +76,7 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.type.Date;
 import com.kickstarter.ui.SharedPreferenceKey;
+import com.statsig.androidsdk.InitializationDetails;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
 
@@ -89,10 +90,12 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
+import kotlin.coroutines.Continuation;
 import okhttp3.CookieJar;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
@@ -134,7 +137,7 @@ public class ApplicationModule {
     final @NonNull Stripe stripe,
     final @NonNull @WebEndpoint String webEndpoint,
     final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType,
-    final @NonNull StatsigClientType statsigClientType,
+    final @NonNull StatsigClient statsigClient,
     final @NonNull FeatureFlagClientType featureFlagClient) {
 
     return Environment.builder()
@@ -162,7 +165,7 @@ public class ApplicationModule {
       .webEndpoint(webEndpoint)
       .firebaseAnalyticsClient(firebaseAnalyticsClientType)
       .featureFlagClient(featureFlagClient)
-      .statsigClient(statsigClientType)
+      .statsigClient(statsigClient)
       .build();
   }
 
@@ -393,7 +396,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  StatsigClientType provideStatsigTypeClient(
+  StatsigClient provideStatsigClient(
           final @ApplicationContext @NonNull Context context,
           final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build

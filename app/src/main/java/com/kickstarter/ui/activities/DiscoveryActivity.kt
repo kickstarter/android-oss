@@ -21,7 +21,7 @@ import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.featureflag.StatsigClientType
+import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkPermissions
@@ -43,7 +43,6 @@ import com.kickstarter.viewmodels.DiscoveryViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
 class DiscoveryActivity : AppCompatActivity() {
@@ -51,7 +50,7 @@ class DiscoveryActivity : AppCompatActivity() {
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
     private lateinit var consentManagementDialogFragment: ConsentManagementDialogFragment
-    private lateinit var statsigClient: StatsigClientType
+    private lateinit var statsigClient: StatsigClient
     private var internalTools: InternalToolsType? = null
     private lateinit var binding: DiscoveryLayoutBinding
     private lateinit var viewModelFactory: DiscoveryViewModel.Factory
@@ -79,6 +78,8 @@ class DiscoveryActivity : AppCompatActivity() {
 
             internalTools = env.internalTools()
             statsigClient = requireNotNull(env.statsigClient())
+
+            statsigClient.updateExperimentUser()
         }
 
         viewModel.provideIntent(intent)

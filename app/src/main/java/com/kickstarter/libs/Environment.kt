@@ -3,7 +3,7 @@ package com.kickstarter.libs
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
-import com.kickstarter.libs.featureflag.StatsigClientType
+import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.preferences.IntPreferenceType
 import com.kickstarter.libs.utils.PlayServicesCapability
@@ -37,7 +37,7 @@ class Environment private constructor(
     private val webEndpoint: String,
     private val firebaseAnalyticsClient: FirebaseAnalyticsClientType?,
     private val featureFlagClient: FeatureFlagClientType?,
-    private val statsigClient: StatsigClientType?,
+    private val statsigClient: StatsigClient?,
 ) {
     fun activitySamplePreference() = this.activitySamplePreference
     fun apiClientV2() = this.apiClientV2
@@ -90,7 +90,7 @@ class Environment private constructor(
         private var webEndpoint: String = "",
         private var firebaseAnalyticsClient: FirebaseAnalyticsClientType? = null,
         private var featureFlagClient: FeatureFlagClientType? = null,
-        private var statsigClient: StatsigClientType? = null
+        private var statsigClient: StatsigClient? = null
     ) {
         fun activitySamplePreference(activitySamplePreference: IntPreferenceType) = apply { this.activitySamplePreference = activitySamplePreference }
         fun apiClientV2(apiClientV2: ApiClientTypeV2) = apply { this.apiClientV2 = apiClientV2 }
@@ -116,7 +116,7 @@ class Environment private constructor(
         fun webEndpoint(webEndpoint: String) = apply { this.webEndpoint = webEndpoint }
         fun firebaseAnalyticsClient(firebaseAnalyticsClient: FirebaseAnalyticsClientType) = apply { this.firebaseAnalyticsClient = firebaseAnalyticsClient }
         fun featureFlagClient(featureFlag: FeatureFlagClientType) = apply { this.featureFlagClient = featureFlag }
-        fun statsigClient(statsigClient: StatsigClientType) = apply { this.statsigClient = statsigClient }
+        fun statsigClient(statsigClient: StatsigClient) = apply { this.statsigClient = statsigClient }
 
         fun build() = Environment(
             activitySamplePreference = activitySamplePreference,
@@ -171,7 +171,8 @@ class Environment private constructor(
         stripe = stripe,
         webEndpoint = webEndpoint,
         firebaseAnalyticsClient = firebaseAnalyticsClient,
-        featureFlagClient = featureFlagClient
+        featureFlagClient = featureFlagClient,
+        statsigClient = statsigClient
     )
 
     companion object {

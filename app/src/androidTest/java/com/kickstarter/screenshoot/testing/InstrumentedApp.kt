@@ -7,17 +7,12 @@ import com.kickstarter.screenshoot.testing.di.AndroidTestApplicationModule
 
 class InstrumentedApp : KSApplication() {
 
-    override fun onCreate() {
-        super.onCreate()
-    }
+    override val isInUnitTests: Boolean
+        get() = true
 
     override fun getComponent(): ApplicationComponent {
         return DaggerApplicationComponent.builder()
             .applicationModule(AndroidTestApplicationModule(this))
             .build()
     }
-
-//    override fun isInUnitTests(): Boolean {
-//        return true
-//    }
 }

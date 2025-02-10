@@ -17,7 +17,7 @@ class InstrumentedApp : KSApplication() {
             .build()
     }
 
-    override fun isInUnitTests(): Boolean {
-        return true
-    }
+//    override fun isInUnitTests(): Boolean {
+//        return true
+//    }
 }

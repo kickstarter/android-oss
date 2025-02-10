@@ -4,6 +4,7 @@ import android.content.Context
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserTypeV2
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.statsig.androidsdk.InitializationDetails
@@ -36,9 +37,9 @@ open class StatsigClient(
 
     lateinit var scope: CoroutineScope
 
-    override fun getSDKKey() = ""
-//        if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
-//        else Secrets.Statsig.STAGING
+    override fun getSDKKey() =
+        if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
+        else Secrets.Statsig.STAGING
 
     fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Exception) -> Unit) {
         this.scope = scope
@@ -59,23 +60,26 @@ open class StatsigClient(
     }
 
     fun updateExperimentUser(dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Exception) -> Unit = {}) {
-        scope.launch(dispatcher) {
-            // TODO: Ideally concatenate with userprivacy to obtain email and other user details not available on V1
-            currentUser.observable().asFlow().distinctUntilChanged()
-                .catch {
-                    errorCallback.invoke(Exception(it))
-                }
-                .collectLatest { user ->
-                    if (isInitialized()) {
-                        try {
-                            if (user?.isPresent().isTrue())
-                                updateUser(user?.getValue()?.id().toString())
-                            else updateUser(getStableId()) // Logged out user use StableID from SDK to identify session
-                        } catch (e: Exception) {
-                            errorCallback.invoke(e)
+        // TODO: updateExperimentUser might be called before SDK gets initialized add queue for requests to this method happening before initialization
+        if (isInitialized()) {
+            scope.launch(dispatcher) {
+                // TODO: Ideally concatenate with userprivacy to obtain email and other user details not available on V1
+                currentUser.observable().asFlow().distinctUntilChanged()
+                    .catch {
+                        errorCallback.invoke(Exception(it))
+                    }
+                    .collectLatest { user ->
+                        if (isInitialized()) {
+                            try {
+                                if (user?.isPresent().isTrue())
+                                    updateUser(user?.getValue()?.id().toString())
+                                else updateUser(getStableId()) // Logged out user use StableID from SDK to identify session
+                            } catch (e: Exception) {
+                                errorCallback.invoke(e)
+                            }
                         }
                     }
-                }
+            }
         }
     }
 }

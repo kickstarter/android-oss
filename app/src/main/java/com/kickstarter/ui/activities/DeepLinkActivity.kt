@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils.commentId
@@ -37,6 +38,8 @@ class DeepLinkActivity : AppCompatActivity() {
 
     private var disposables = CompositeDisposable()
 
+    private lateinit var statsigClient: StatsigClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpConnectivityStatusCheck(lifecycle)
@@ -57,8 +60,9 @@ class DeepLinkActivity : AppCompatActivity() {
 
         this.getEnvironment()?.let {
             viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
-
-            it.statsigClient()?.updateExperimentUser()
+            it.statsigClient()?.let { stClient ->
+                statsigClient = stClient
+            }
         }
 
         viewModel.outputs.startBrowser()
@@ -132,6 +136,8 @@ class DeepLinkActivity : AppCompatActivity() {
                     startLoginForSurveys(uri.toString())
                 }
             }.addToDisposable(disposables)
+
+        statsigClient.updateExperimentUser()
     }
 
     private fun projectIntent(uri: Uri): Intent {

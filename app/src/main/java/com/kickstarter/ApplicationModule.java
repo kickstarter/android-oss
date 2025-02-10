@@ -41,7 +41,6 @@ import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.featureflag.FeatureFlagClient;
 import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.featureflag.StatsigClient;
-import com.kickstarter.libs.featureflag.StatsigClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -76,7 +75,6 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.type.Date;
 import com.kickstarter.ui.SharedPreferenceKey;
-import com.statsig.androidsdk.InitializationDetails;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
 
@@ -90,12 +88,10 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
-import kotlin.coroutines.Continuation;
 import okhttp3.CookieJar;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;

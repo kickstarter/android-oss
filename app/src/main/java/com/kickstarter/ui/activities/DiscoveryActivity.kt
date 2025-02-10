@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -78,8 +77,6 @@ class DiscoveryActivity : AppCompatActivity() {
 
             internalTools = env.internalTools()
             statsigClient = requireNotNull(env.statsigClient())
-
-            statsigClient.updateExperimentUser()
         }
 
         viewModel.provideIntent(intent)
@@ -248,15 +245,8 @@ class DiscoveryActivity : AppCompatActivity() {
             .compose(Transformers.observeForUIV2())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
             .addToDisposable(disposables)
-    }
 
-    override fun onResume() {
-        val experiment = statsigClient.getExperiment("test_experiment_android")
-        if (experiment.getIsExperimentActive()) {
-            val toast = Toast.makeText(this, "Group: ${experiment.getGroupName()}", Toast.LENGTH_LONG)
-            toast.show()
-        }
-        super.onResume()
+        statsigClient.updateExperimentUser()
     }
 
     private fun activateFeatureFlags(environment: Environment) {

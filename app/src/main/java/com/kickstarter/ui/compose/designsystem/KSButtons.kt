@@ -494,7 +494,7 @@ fun KSOutlinedButton(
         onClick = { onClickAction.invoke() }
     ) {
         Text(
-            style = typography.buttonText,
+            style = typographyV2.buttonLabel,
             color = colors.textPrimary,
             text = text
         )

@@ -12,6 +12,7 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.fromJson
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
@@ -34,6 +35,7 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
@@ -67,9 +69,47 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val showNotifPermissionRequest = TestSubscriber<Unit>()
     private val showConsentManagementDialog = TestSubscriber<Unit>()
     private val darkThemeEnabled = TestSubscriber<Boolean>()
+    private val exceptions = TestSubscriber<Throwable>()
     private val disposables = CompositeDisposable()
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryViewModel.DiscoveryViewModel(environment)
+    }
+    // In the future, this can be dynamic and moved to the base class
+    private fun setUpRxJavaPluginsErrorHandler() {
+        RxJavaPlugins.setErrorHandler { t: Throwable ->
+            exceptions.onNext(t)
+        }
+    }
+    private fun tearDownRxJavaPluginsErrorHandler() {
+        RxJavaPlugins.setErrorHandler(null)
+    }
+
+    @Test
+    fun `test null Intent without error handling`() {
+        setUpRxJavaPluginsErrorHandler()
+
+        // Emulate V1 API deserialization of a response that does not adhere to expected schema
+        val emailVerificationEnvelope = environment().gson()?.fromJson<EmailVerificationEnvelope>("{}")!!
+
+        val url = "https://*.kickstarter.com/profile/verify_email"
+        val intentWithUrl = Intent().setData(Uri.parse(url))
+        val mockApiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun verifyEmail(token: String): Observable<EmailVerificationEnvelope> {
+                return Observable.just(emailVerificationEnvelope)
+            }
+        }
+        val mockedClientEnvironment = environment().toBuilder()
+            .apiClientV2(mockApiClient)
+            .build()
+        setUpEnvironment(mockedClientEnvironment)
+
+        vm.outputs.showSuccessMessage().subscribe { showSuccessMessage.onNext(it) }.addToDisposable(disposables)
+        vm.provideIntent(intentWithUrl)
+        showSuccessMessage.assertNoValues()
+
+        exceptions.assertValueCount(1)
+
+        tearDownRxJavaPluginsErrorHandler()
     }
 
     @Test

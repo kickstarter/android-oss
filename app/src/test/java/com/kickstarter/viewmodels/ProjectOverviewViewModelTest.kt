@@ -64,6 +64,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val projectLaunchDateIsGone = TestSubscriber<Boolean>()
     private val projectNameTextViewText = TestSubscriber<String>()
     private val projectOutput = TestSubscriber<Project>()
+    private val projectProjectNotice = TestSubscriber<String?>()
     private val projectSocialImageViewIsGone = TestSubscriber<Boolean>()
     private val projectSocialImageViewUrl = TestSubscriber<String>()
     private val projectSocialTextViewFriends = TestSubscriber<List<User>>()
@@ -119,6 +120,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.projectLaunchDateIsGone().subscribe { projectLaunchDateIsGone.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectNameTextViewText().subscribe { projectNameTextViewText.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectOutput().subscribe { projectOutput.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.projectProjectNotice().subscribe { projectProjectNotice.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectSocialImageViewIsGone().subscribe { projectSocialImageViewIsGone.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectSocialImageViewUrl().subscribe { projectSocialImageViewUrl.onNext(it) }.addToDisposable(disposables)
         vm.outputs.projectSocialTextViewFriends().subscribe { projectSocialTextViewFriends.onNext(it) }.addToDisposable(disposables)
@@ -247,6 +249,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .category(category)
             .location(location)
             .updatesCount(10)
+            .projectNotice("Warning! This is a restricted creator!")
             .build()
         setUpEnvironment(environment(), project(project))
         blurbTextViewText.assertValues(project.blurb())
@@ -257,6 +260,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         pledgedTextViewText.assertValueCount(1)
         projectNameTextViewText.assertValues(project.name())
         projectOutput.assertValues(project)
+        projectProjectNotice.assertValues(project.projectNotice())
         updatesCountTextViewText.assertValues("10")
     }
 

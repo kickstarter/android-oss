@@ -44,6 +44,7 @@ class Project private constructor(
     private val pledged: Double,
     private val photo: Photo?,
     private val prelaunchActivated: Boolean?,
+    private val projectNotice: String?,
     private val tags: List<String>?,
     private val rewards: List<Reward>?,
     private val slug: String?,
@@ -101,6 +102,7 @@ class Project private constructor(
     fun pledged() = this.pledged
     fun photo() = this.photo
     fun prelaunchActivated() = this.prelaunchActivated
+    fun projectNotice() = this.projectNotice
     fun sendMetaCapiEvents() = this.sendMetaCapiEvents
     fun sendThirdPartyEvents() = this.sendThirdPartyEvents
     fun tags() = this.tags
@@ -161,6 +163,7 @@ class Project private constructor(
         private var pledged: Double = 0.0,
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,
+        private var projectNotice: String? = null,
         private var sendMetaCapiEvents: Boolean? = null,
         private var sendThirdPartyEvents: Boolean? = null,
         private var tags: List<String>? = emptyList(),
@@ -222,6 +225,7 @@ class Project private constructor(
         fun pledged(pledged: Double?) = apply { this.pledged = pledged ?: 0.0 }
         fun photo(photo: Photo?) = apply { this.photo = photo }
         fun prelaunchActivated(prelaunchActivated: Boolean?) = apply { this.prelaunchActivated = prelaunchActivated }
+        fun projectNotice(projectNotice: String?) = apply { this.projectNotice = projectNotice }
         fun sendMetaCapiEvents(sendMetaCapiEvents: Boolean?) = apply { this.sendMetaCapiEvents = sendMetaCapiEvents }
         fun sendThirdPartyEvents(sendThirdPartyEvents: Boolean?) = apply { this.sendThirdPartyEvents = sendThirdPartyEvents }
         fun tags(tags: List<String>?) = apply { this.tags = tags ?: emptyList() }
@@ -278,6 +282,7 @@ class Project private constructor(
             pledged = pledged,
             photo = photo,
             prelaunchActivated = prelaunchActivated,
+            projectNotice = projectNotice,
             sendMetaCapiEvents = sendMetaCapiEvents,
             sendThirdPartyEvents = sendThirdPartyEvents,
             tags = tags,
@@ -339,6 +344,7 @@ class Project private constructor(
         pledged = pledged,
         photo = photo,
         prelaunchActivated = prelaunchActivated,
+        projectNotice = projectNotice,
         sendMetaCapiEvents = sendMetaCapiEvents,
         sendThirdPartyEvents = sendThirdPartyEvents,
         tags = tags,
@@ -513,6 +519,7 @@ class Project private constructor(
                 pledged() == other.pledged() &&
                 photo() == other.photo() &&
                 prelaunchActivated() == other.prelaunchActivated() &&
+                projectNotice() == other.projectNotice() &&
                 sendMetaCapiEvents() == other.sendMetaCapiEvents() &&
                 sendThirdPartyEvents() == other.sendThirdPartyEvents() &&
                 rewards() == other.rewards() &&

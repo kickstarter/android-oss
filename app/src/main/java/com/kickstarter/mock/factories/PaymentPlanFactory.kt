@@ -10,12 +10,10 @@ class PaymentPlanFactory {
         fun paymentPlan(
             paymentIncrements: List<PaymentIncrement>?,
             amountIsPledgeOverTimeEligible: Boolean,
-            projectIsPledgeOverTimeAllowed: Boolean,
         ): PaymentPlan {
             return builder()
                 .paymentIncrements(paymentIncrements)
                 .amountIsPledgeOverTimeEligible(amountIsPledgeOverTimeEligible)
-                .projectIsPledgeOverTimeAllowed(projectIsPledgeOverTimeAllowed)
                 .build()
         }
 
@@ -23,7 +21,6 @@ class PaymentPlanFactory {
             return this.paymentPlan(
                 paymentIncrements = paymentIncrements,
                 amountIsPledgeOverTimeEligible = true,
-                projectIsPledgeOverTimeAllowed = true
             )
         }
 
@@ -31,7 +28,6 @@ class PaymentPlanFactory {
             return this.paymentPlan(
                 paymentIncrements = null,
                 amountIsPledgeOverTimeEligible = false,
-                projectIsPledgeOverTimeAllowed = true
             )
         }
     }

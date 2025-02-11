@@ -401,7 +401,7 @@ fun CheckoutScreen(
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                     CollectionPlan(
-                        isEligible = isPlotEligible,
+                        isEligible = isPlotEligible && !project.pledgeOverTimeMinimumExplanation().isNullOrEmpty(),
                         changeCollectionPlan = onCollectionPlanSelected,
                         paymentIncrements = paymentIncrements,
                         ksCurrency = ksCurrency,

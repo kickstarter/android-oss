@@ -59,7 +59,6 @@ enum class CollectionOptions {
     PLEDGE_OVER_TIME,
 }
 
-private const val PLOT_MINIMUM_AMOUNT = "$125"
 
 @Preview(
     name = "Light Eligible - Pledge in Full Selected",
@@ -272,12 +271,14 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
                 bottom = dimensions.paddingXSmall,
             )
     ) {
-        Text(
-            modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
-            text = stringResource(id = R.string.Available_for_pledges_over).format("amount", plotMinimum ?:  PLOT_MINIMUM_AMOUNT),
-            style = typography.body2Medium,
-            color = colors.textDisabled
-        )
+        if (plotMinimum != null) {
+            Text(
+                modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
+                text = plotMinimum,
+                style = typography.body2Medium,
+                color = colors.textDisabled
+            )
+        }
     }
 }
 

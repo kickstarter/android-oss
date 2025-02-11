@@ -336,7 +336,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val tags = mutableListOf<String>()
     projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
     projectFragment?.tagsDiscovery?.tags?.map { tags.add(it?.id ?: "") }
-
+    val pledgeOverTimeMinimumExplanation = projectFragment?.pledgeOverTimeMinimumExplanation
     val minPledge = projectFragment?.minPledge?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards?.nodes?.map {
@@ -449,6 +449,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .watchesCount(watchesCount)
         .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
         .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
+        .pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation)
         .build()
 }
 

@@ -59,7 +59,6 @@ enum class CollectionOptions {
     PLEDGE_OVER_TIME,
 }
 
-
 @Preview(
     name = "Light Eligible - Pledge in Full Selected",
     uiMode = Configuration.UI_MODE_NIGHT_NO,

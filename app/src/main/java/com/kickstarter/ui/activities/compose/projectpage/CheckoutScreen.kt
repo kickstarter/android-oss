@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.projectpage
 import CollectionOptions
 import CollectionPlan
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -226,8 +225,6 @@ fun CheckoutScreen(
             it
         ).toString()
     } ?: ""
-
-
 
     // - After adding new payment method, selected card should be updated to the newly added
     UpdateSelectedCardIfNewCardAdded(

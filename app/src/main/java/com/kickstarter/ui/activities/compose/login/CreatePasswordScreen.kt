@@ -172,7 +172,7 @@ fun CreatePasswordScreen(
                 text = stringResource(
                     id = R.string.Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password
                 ),
-                style = KSTheme.typography.body2,
+                style = KSTheme.typographyV2.bodyMD,
                 color = KSTheme.colors.kds_support_700
             )
 
@@ -223,7 +223,7 @@ fun CreatePasswordScreen(
                         .padding(KSTheme.dimensions.paddingMedium)
                         .testTag(CreatePasswordScreenTestTag.WARNING_TEXT.name),
                     text = warningText,
-                    style = KSTheme.typography.body2,
+                    style = KSTheme.typographyV2.bodyMD,
                     color = KSTheme.colors.kds_support_700
                 )
             }

@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -87,7 +87,7 @@ fun KSGreenBadge(
         Text(
             text = text,
             color = textColor,
-            style = typography.footnoteMedium
+            style = typographyV2.footNoteMedium
         )
     }
 }
@@ -116,7 +116,7 @@ fun KSCoralBadge(
         Text(
             text = text,
             color = textColor,
-            style = typography.footnoteMedium
+            style = typographyV2.footNoteMedium
         )
     }
 }
@@ -154,7 +154,7 @@ fun KSAlertBadge(
             Text(
                 text = message,
                 color = colors.textAccentRedBold,
-                style = typography.footnoteMedium
+                style = typographyV2.footNoteMedium
             )
         }
     }
@@ -192,7 +192,7 @@ fun KSWarningBadge(
             Text(
                 text = message,
                 color = colors.textSecondary,
-                style = typography.footnoteMedium
+                style = typographyV2.footNoteMedium
             )
         }
     }
@@ -214,6 +214,6 @@ fun KSBetaBadge() {
             ),
         text = stringResource(R.string.Beta).uppercase(),
         color = colors.textAccentGreen,
-        style = typography.caption2Medium
+        style = typographyV2.headingXS
     )
 }

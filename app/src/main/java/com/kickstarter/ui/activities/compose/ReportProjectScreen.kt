@@ -41,7 +41,7 @@ import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
 import com.kickstarter.type.FlaggingKind
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.ReportProjectViewModel
 
 @Composable
@@ -214,14 +214,14 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
         ) {
             Text(
                 text = rule.first.parseHtmlTag(),
-                style = typography.subheadline.copy(
+                style = typographyV2.subHeadline.copy(
                     fontWeight = FontWeight.Bold,
                     color = colors.kds_support_700
                 )
             )
             Text(
                 text = rule.second.parseHtmlTag(),
-                style = typography.body2,
+                style = typographyV2.bodyMD,
                 color = colors.kds_support_700
             )
         }
@@ -280,7 +280,7 @@ fun CategoryRow(
             ) {
                 Text(
                     text = category.first,
-                    style = typography.headline.copy(
+                    style = typographyV2.headLine.copy(
                         fontWeight = FontWeight.Bold,
                         color = colors.kds_support_700
                     )
@@ -289,7 +289,7 @@ fun CategoryRow(
                     val text = category.second.parseHtmlTag()
                     Text(
                         text = text,
-                        style = typography.body,
+                        style = typographyV2.body,
                         color = colors.kds_support_700
                     )
                 } else {
@@ -395,7 +395,7 @@ fun TextWithClickableLink(
 
         ClickableText(
             text = annotatedText,
-            style = typography.body.copy(color = colors.kds_support_700),
+            style = typographyV2.body.copy(color = colors.kds_support_700),
             onClick = {
                 annotatedText.getStringAnnotations(
                     tag = annotation, start = it,

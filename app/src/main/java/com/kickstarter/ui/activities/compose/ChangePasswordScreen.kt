@@ -44,7 +44,7 @@ import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 
 @Composable
@@ -172,7 +172,7 @@ fun ChangePasswordScreen(
                 text = stringResource(
                     id = R.string.Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password
                 ),
-                style = typography.body2,
+                style = typographyV2.bodyMD,
                 color = colors.kds_support_700
             )
 
@@ -234,7 +234,7 @@ fun ChangePasswordScreen(
                 Text(
                     modifier = Modifier.padding(dimensions.paddingMedium).testTag(ChangePasswordScreenTestTag.WARNING_TEXT.name),
                     text = warningText,
-                    style = typography.body2,
+                    style = typographyV2.bodyMD,
                     color = colors.kds_support_700
                 )
             }

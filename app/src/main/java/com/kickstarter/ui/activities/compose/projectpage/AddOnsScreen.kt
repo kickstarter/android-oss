@@ -40,7 +40,7 @@ import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.views.compose.checkout.BonusSupportContainer
 import java.math.RoundingMode
 
@@ -140,7 +140,7 @@ fun AddOnsScreen(
                                 Row(modifier = Modifier.fillMaxWidth()) {
                                     Text(
                                         text = stringResource(id = R.string.Total_amount),
-                                        style = typography.subheadlineMedium,
+                                        style = typographyV2.subHeadlineMedium,
                                         color = colors.textPrimary
                                     )
 
@@ -148,7 +148,7 @@ fun AddOnsScreen(
 
                                     Text(
                                         text = totalAmountString,
-                                        style = typography.subheadlineMedium,
+                                        style = typographyV2.subHeadlineMedium,
                                         color = colors.textPrimary
                                     )
                                 }
@@ -203,7 +203,7 @@ fun AddOnsScreen(
                     if (addOns.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.Customize_your_reward_with_optional_addons),
-                            style = typography.title3Bold,
+                            style = typographyV2.headingXL,
                             color = colors.textPrimary
                         )
                     }

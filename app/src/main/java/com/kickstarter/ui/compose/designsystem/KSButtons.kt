@@ -30,7 +30,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -169,7 +169,7 @@ fun KSPrimaryGreenButton(
     leadingIcon: @Composable () -> Unit = {},
     onClickAction: () -> Unit,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
@@ -192,7 +192,7 @@ fun KSPrimaryBlueButton(
     leadingIcon: @Composable () -> Unit = {},
     onClickAction: () -> Unit,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
@@ -215,7 +215,7 @@ fun KSPrimaryBlackButton(
     leadingIcon: @Composable () -> Unit = {},
     onClickAction: () -> Unit,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
@@ -238,7 +238,7 @@ fun KSSecondaryGreyButton(
     leadingIcon: @Composable () -> Unit = {},
     onClickAction: () -> Unit,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
@@ -261,7 +261,7 @@ fun KSSecondaryRedButton(
     leadingIcon: @Composable () -> Unit = {},
     onClickAction: () -> Unit,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
@@ -284,7 +284,7 @@ fun KSSecondaryWhiteButton(
     leadingIcon: @Composable () -> Unit = {},
     onClickAction: () -> Unit,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeGrey) {
@@ -378,7 +378,7 @@ fun KSIconButton(
                 Text(
                     text = copy,
                     color = if (isEnabled) color else colors.textAccentGrey,
-                    style = typography.body
+                    style = typographyV2.body
                 )
             }
         }
@@ -472,7 +472,7 @@ fun KSSmallButton(
         Text(
             text = text,
             color = if (isEnabled) textColor else colors.textAccentGrey,
-            style = typography.buttonText
+            style = typographyV2.buttonLabel
         )
     }
 }
@@ -494,7 +494,7 @@ fun KSOutlinedButton(
         onClick = { onClickAction.invoke() }
     ) {
         Text(
-            style = typography.buttonText,
+            style = typographyV2.buttonLabel,
             color = colors.textPrimary,
             text = text
         )
@@ -509,7 +509,7 @@ fun KSButton(
     isEnabled: Boolean,
     backgroundColor: Color,
     text: String,
-    textStyle: TextStyle = typography.body,
+    textStyle: TextStyle = typographyV2.body,
     textColor: Color,
 ) {
     Button(

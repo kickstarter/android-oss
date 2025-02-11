@@ -26,6 +26,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -87,7 +88,7 @@ fun ProjectSearchViewHolder(
         Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
 
         Column {
-            Text(text = title, style = typography.calloutMedium, color = colors.kds_support_700)
+            Text(text = title, style = typographyV2.headingLG, color = colors.kds_support_700)
 
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
@@ -100,7 +101,7 @@ fun ProjectSearchViewHolder(
                     )
                     Text(
                         text = " " + stringResource(id = R.string.discovery_baseball_card_stats_funded),
-                        style = typography.body2,
+                        style = typographyV2.bodyMD,
                         color = colors.kds_support_500
                     )
 

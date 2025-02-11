@@ -44,7 +44,7 @@ import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.viewholders.compose.search.FeaturedSearchViewHolder
 import com.kickstarter.ui.viewholders.compose.search.ProjectSearchViewHolder
 import com.kickstarter.ui.views.compose.search.SearchEmptyView
@@ -166,7 +166,7 @@ fun SearchScreen(
                                 .testTag(SearchScreenTestTag.POPULAR_PROJECTS_TITLE.name)
                                 .fillMaxWidth(),
                             text = stringResource(id = R.string.Popular_Projects),
-                            style = typography.title2,
+                            style = typographyV2.title2,
                             color = colors.kds_support_700,
                             textAlign = TextAlign.Start
                         )

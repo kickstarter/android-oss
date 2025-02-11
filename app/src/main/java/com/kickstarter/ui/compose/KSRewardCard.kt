@@ -32,7 +32,7 @@ import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -110,7 +110,7 @@ fun KSRewardCard(
                 ) {
                     Text(
                         text = stringResource(id = R.string.Your_selection),
-                        style = typography.subheadline,
+                        style = typographyV2.subHeadline,
                         color = colors.kds_white,
                     )
                 }
@@ -124,11 +124,11 @@ fun KSRewardCard(
             ) {
 
                 if (!amount.isNullOrEmpty()) {
-                    Text(text = amount, style = typography.titleRewardMedium, color = colors.textAccentGreenBold)
+                    Text(text = amount, style = typographyV2.heading2XL, color = colors.textAccentGreenBold)
                 }
 
                 if (!conversion.isNullOrEmpty()) {
-                    Text(text = conversion, style = typography.footnote, color = colors.textAccentGreenBold)
+                    Text(text = conversion, style = typographyV2.footNote, color = colors.textAccentGreenBold)
                 }
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -136,7 +136,7 @@ fun KSRewardCard(
                 if (!title.isNullOrEmpty()) {
                     Text(
                         text = title,
-                        style = typography.titleRewardBold,
+                        style = typographyV2.titleRewardBold,
                         color = colors.kds_black
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -153,14 +153,14 @@ fun KSRewardCard(
                     Text(
                         text = stringResource(id = R.string.Description),
                         color = colors.kds_support_400,
-                        style = typography.calloutMedium
+                        style = typographyV2.headingLG
                     )
 
                     Text(
                         modifier = Modifier.padding(top = dimensions.textInputTopPadding),
                         text = description,
                         color = colors.kds_support_700,
-                        style = typography.body2
+                        style = typographyV2.bodyMD
                     )
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
@@ -170,7 +170,7 @@ fun KSRewardCard(
                     Text(
                         text = stringResource(id = R.string.rewards_info_includes),
                         color = colors.kds_support_400,
-                        style = typography.calloutMedium
+                        style = typographyV2.headingLG
                     )
 
                     includes.forEachIndexed { index, itemDescription ->
@@ -186,7 +186,7 @@ fun KSRewardCard(
 
                             Text(
                                 text = itemDescription,
-                                style = typography.body2,
+                                style = typographyV2.bodyMD,
                                 color = colors.textPrimary
                             )
 
@@ -201,14 +201,14 @@ fun KSRewardCard(
                     Text(
                         text = stringResource(id = R.string.Estimated_Shipping),
                         color = colors.kds_support_400,
-                        style = typography.calloutMedium
+                        style = typographyV2.headingLG
                     )
 
                     Text(
                         modifier = Modifier.padding(top = dimensions.radiusSmall),
                         text = estimatedShippingCost,
                         color = colors.kds_support_700,
-                        style = typography.body2
+                        style = typographyV2.bodyMD
                     )
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
@@ -218,14 +218,14 @@ fun KSRewardCard(
                     Text(
                         text = stringResource(id = R.string.Estimated_delivery),
                         color = colors.kds_support_400,
-                        style = typography.calloutMedium
+                        style = typographyV2.headingLG
                     )
 
                     Text(
                         modifier = Modifier.padding(top = dimensions.radiusSmall),
                         text = estimatedDelivery,
                         color = colors.kds_support_700,
-                        style = typography.body2
+                        style = typographyV2.bodyMD
                     )
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
@@ -235,14 +235,14 @@ fun KSRewardCard(
                     Text(
                         text = stringResource(id = R.string.Reward_location),
                         color = colors.kds_support_400,
-                        style = typography.calloutMedium
+                        style = typographyV2.headingLG
                     )
 
                     Text(
                         modifier = Modifier.padding(top = dimensions.radiusSmall),
                         text = localPickup,
                         color = colors.kds_support_700,
-                        style = typography.body2
+                        style = typographyV2.bodyMD
                     )
 
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))

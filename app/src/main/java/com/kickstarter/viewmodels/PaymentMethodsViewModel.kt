@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -18,6 +19,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 interface Inputs {
 
@@ -69,7 +73,17 @@ interface Outputs {
     fun successSaving(): Observable<String>
 }
 
-class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
+class PaymentMethodsViewModel(
+    environment: Environment,
+    testDispatcher: CoroutineDispatcher? = null
+) : ViewModel(),
+    PaymentMethodsAdapter.Delegate,
+    Inputs,
+    Outputs {
+
+    private val scope = testDispatcher?.let {
+        CoroutineScope(viewModelScope.coroutineContext + it)
+    } ?: viewModelScope
 
     private val confirmDeleteCardClicked = PublishSubject.create<Unit>()
     private val deleteCardClicked = PublishSubject.create<String>()
@@ -96,10 +110,22 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
     init {
 
-        compositeDisposable.add(
-            getListOfStoredCards()
-                .subscribe { this.cards.onNext(it) }
-        )
+        scope.launch {
+            apolloClient
+                .runCatching {
+                    this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                    val ret = _getStoredCards()
+                    ret
+                }
+                .onSuccess {
+                    this@PaymentMethodsViewModel.progressBarIsVisible.onNext(false)
+                    this@PaymentMethodsViewModel.cards.onNext(it)
+                }
+                .onFailure {
+                    this@PaymentMethodsViewModel.progressBarIsVisible.onNext(false)
+                    // log `it`
+                }
+        }
 
         compositeDisposable.add(
             this.cards
@@ -140,9 +166,24 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
         )
 
         compositeDisposable.add(
-            this.refreshCards
-                .switchMap { getListOfStoredCards() }
-                .subscribe { this.cards.onNext(it) }
+            this.refreshCards.subscribe {
+                scope.launch {
+                    apolloClient
+                        .runCatching {
+                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                            val ret = _getStoredCards()
+                            ret
+                        }
+                        .onSuccess {
+                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                            this@PaymentMethodsViewModel.cards.onNext(it)
+                        }
+                        .onFailure {
+                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                            // log `it`
+                        }
+                }
+            }
         )
 
         val shouldPresentPaymentSheet = this.newCardButtonPressed
@@ -235,13 +276,6 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             .materialize()
             .share()
 
-    private fun getListOfStoredCards(): Observable<List<StoredCard>> {
-        return this.apolloClient.getStoredCards()
-            .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-            .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-            .compose(neverErrorV2())
-    }
-
     private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return this.apolloClient.deletePaymentSource(paymentSourceId)
             .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
@@ -298,9 +332,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     override fun successSaving(): Observable<String> =
         this.successSaving
 
-    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val dispatcher: CoroutineDispatcher? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PaymentMethodsViewModel(environment) as T
+            return PaymentMethodsViewModel(environment, dispatcher) as T
         }
     }
 }

@@ -4,6 +4,7 @@ import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.rx2.rxFlowable
 import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
@@ -115,6 +116,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.rx2.asObservable
 import java.nio.charset.Charset
 
 interface ApolloClientTypeV2 {
@@ -123,6 +127,7 @@ interface ApolloClientTypeV2 {
     fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope>
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
+    suspend fun _getStoredCards(): List<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
     fun createFlagging(
@@ -231,6 +236,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun cleanDisposables() {
         disposables.clear()
     }
+
+    private fun <T : Any> emitAsObservable(block: suspend () -> T): Observable<T> =
+        flow { emit(block()) }.asObservable()
 
     override fun getProject(project: Project): Observable<Project> {
         return getProject(project.slug() ?: "")
@@ -380,41 +388,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
-    override fun getStoredCards(): Observable<List<StoredCard>> {
-        return Observable.defer {
-            val ps = PublishSubject.create<List<StoredCard>>()
+    override suspend fun _getStoredCards(): List<StoredCard> {
+        val query = UserPaymentsQuery()
+        var ret = listOf<StoredCard>()
+        try {
+            // `single()` vs `singleOrNull()`
+            val response = this.service.query(query).toFlow().single()
 
-            val query = UserPaymentsQuery()
-            this.service
-                .query(query)
-                .rxSingle()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    } else {
-                        val cardsList = mutableListOf<StoredCard>()
-                        response.data?.me?.storedCards?.nodes?.map {
-                            it?.let { cardData ->
-                                val card = StoredCard.builder()
-                                    .expiration(cardData.expirationDate)
-                                    .id(cardData.id)
-                                    .lastFourDigits(cardData.lastFour)
-                                    .type(it.type)
-                                    .stripeCardId(it.stripeCardId)
-                                    .build()
-                                cardsList.add(card)
-                            }
-                        }
-                        ps.onNext(cardsList)
-                    }
-                    ps.onComplete()
-                }.addToDisposable(disposables)
-            return@defer ps
+            ret = response.data?.me?.storedCards?.nodes?.filterNotNull()?.map { cardData ->
+                StoredCard.builder()
+                    .expiration(cardData.expirationDate)
+                    .id(cardData.id)
+                    .lastFourDigits(cardData.lastFour)
+                    .type(cardData.type)
+                    .stripeCardId(cardData.stripeCardId)
+                    .build()
+            } ?: listOf()
+        } catch (apolloException: ApolloException) {
+            // parse network errors into specific type
+        } catch (e: Exception) {
+            // for `singleOrNull()` et al.
         }
+        return ret
     }
+
+    override fun getStoredCards(): Observable<List<StoredCard>> =
+        emitAsObservable { _getStoredCards() }
 
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.defer {

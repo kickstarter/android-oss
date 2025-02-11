@@ -50,6 +50,7 @@ class Project private constructor(
     private val slug: String?,
     private val staffPick: Boolean?,
     private val canComment: Boolean?,
+    private val pledgeOverTimeMinimumExplanation: String?,
     @State
     private val state: String,
     private val stateChangedAt: DateTime?,
@@ -110,6 +111,7 @@ class Project private constructor(
     fun slug() = this.slug
     fun staffPick() = this.staffPick
     fun canComment() = this.canComment
+    fun pledgeOverTimeMinimumExplanation() = this.pledgeOverTimeMinimumExplanation
     fun state() = this.state
     fun stateChangedAt() = this.stateChangedAt
     fun staticUsdRate() = this.staticUsdRate
@@ -171,6 +173,7 @@ class Project private constructor(
         private var slug: String? = null,
         private var staffPick: Boolean? = null,
         private var canComment: Boolean? = null,
+        private var pledgeOverTimeMinimumExplanation: String? = "",
         @State
         private var state: String = STATE_STARTED,
         private var stateChangedAt: DateTime? = null,
@@ -208,6 +211,7 @@ class Project private constructor(
         fun currencyTrailingCode(currencyTrailingCode: Boolean?) = apply { this.currencyTrailingCode = currencyTrailingCode ?: false }
         fun displayPrelaunch(displayPrelaunch: Boolean?) = apply { this.displayPrelaunch = displayPrelaunch }
         fun canComment(canComment: Boolean?) = apply { this.canComment = canComment ?: false }
+        fun pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation: String?) = apply { this.pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation }
         fun deadline(deadline: DateTime?) = apply { this.deadline = deadline }
         fun featuredAt(featuredAt: DateTime?) = apply { this.featuredAt = featuredAt }
         fun friends(friends: List<User>?) = apply { this.friends = friends ?: emptyList() }
@@ -290,6 +294,7 @@ class Project private constructor(
             slug = slug,
             staffPick = staffPick,
             canComment = canComment,
+            pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation,
             state = state,
             stateChangedAt = stateChangedAt,
             staticUsdRate = staticUsdRate,
@@ -352,6 +357,7 @@ class Project private constructor(
         slug = slug,
         staffPick = staffPick,
         canComment = canComment,
+        pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation,
         state = state,
         stateChangedAt = stateChangedAt,
         staticUsdRate = staticUsdRate,
@@ -527,6 +533,7 @@ class Project private constructor(
                 staffPick() == other.staffPick() &&
                 slug() == other.slug() &&
                 canComment() == other.canComment() &&
+                pledgeOverTimeMinimumExplanation() == other.pledgeOverTimeMinimumExplanation() &&
                 state() == other.state() &&
                 stateChangedAt() == other.stateChangedAt() &&
                 staticUsdRate() == other.staticUsdRate() &&

@@ -57,6 +57,7 @@ fragment fullProject on Project {
     backersCount
     description
     minPledge
+    pledgeOverTimeMinimumExplanation
     isLaunched
     isPledgeOverTimeAllowed
     sendMetaCapiEvents

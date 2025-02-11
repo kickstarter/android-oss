@@ -300,6 +300,7 @@ fun Project.reduce(): Project {
         .sendThirdPartyEvents(this.sendThirdPartyEvents())
         .isBacking(this.isBacking())
         .isPledgeOverTimeAllowed(this.isPledgeOverTimeAllowed())
+        .pledgeOverTimeMinimumExplanation(this.pledgeOverTimeMinimumExplanation())
         .backing(backing())
         .availableCardTypes(this.availableCardTypes())
         .category(this.category())
@@ -342,6 +343,7 @@ fun Project.reduceProjectPayload(): Project {
         .postCampaignPledgingEnabled(this.postCampaignPledgingEnabled())
         .sendThirdPartyEvents(this.sendThirdPartyEvents())
         .isPledgeOverTimeAllowed(this.isPledgeOverTimeAllowed())
+        .pledgeOverTimeMinimumExplanation(this.pledgeOverTimeMinimumExplanation())
         .state(this.state())
         .build()
 }

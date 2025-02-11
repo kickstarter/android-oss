@@ -175,7 +175,7 @@ fun ResetPasswordScreen(
                         )
                         .testTag(ResetPasswordTestTag.HINT_TEXT.name),
                     text = hintText,
-                    style = KSTheme.typography.body2,
+                    style = KSTheme.typographyV2.bodyMD,
                     color = KSTheme.colors.kds_support_700
                 )
 

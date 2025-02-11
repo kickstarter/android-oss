@@ -26,7 +26,7 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -91,7 +91,7 @@ fun FeaturedSearchViewHolder(
             modifier = Modifier
                 .padding(start = dimensions.paddingSmall, end = dimensions.paddingSmall)
                 .fillMaxWidth(),
-            style = typography.title3Bold,
+            style = typographyV2.headingXL,
             color = colors.kds_black
         )
 
@@ -102,12 +102,12 @@ fun FeaturedSearchViewHolder(
                 Text(
                     text = "$fundedAmount%",
                     modifier = Modifier.padding(start = dimensions.paddingSmall),
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.kds_create_700
                 )
                 Text(
                     text = " " + stringResource(id = R.string.discovery_baseball_card_stats_funded),
-                    style = typography.subheadline,
+                    style = typographyV2.subHeadline,
                     color = colors.kds_support_500
                 )
 
@@ -116,7 +116,7 @@ fun FeaturedSearchViewHolder(
                 Text(
                     text = timeRemainingString,
                     modifier = Modifier.padding(start = dimensions.paddingSmall),
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = colors.kds_support_700
                 )
             }
@@ -124,7 +124,7 @@ fun FeaturedSearchViewHolder(
             Text(
                 text = stringResource(id = R.string.Coming_soon),
                 modifier = Modifier.padding(start = dimensions.paddingSmall),
-                style = typography.subheadlineMedium,
+                style = typographyV2.subHeadlineMedium,
                 color = colors.kds_create_700
             )
         }

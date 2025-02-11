@@ -33,7 +33,7 @@ import com.kickstarter.ui.compose.designsystem.KSStepper
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.shapes
 
 @Composable
@@ -88,17 +88,17 @@ fun AddOnsContainer(
                 .padding(dimensions.paddingMediumLarge)
         ) {
 
-            Text(text = title, style = typography.title2Bold, color = colors.kds_black)
+            Text(text = title, style = typographyV2.title2Bold, color = colors.kds_black)
 
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
             Row {
-                Text(text = amount, style = typography.callout, color = colors.textAccentGreen)
+                Text(text = amount, style = typographyV2.bodyLG, color = colors.textAccentGreen)
 
                 if (!shippingAmount.isNullOrEmpty()) {
                     Text(
                         text = shippingAmount,
-                        style = typography.callout,
+                        style = typographyV2.bodyLG,
                         color = colors.textAccentGreen
                     )
                 }
@@ -108,14 +108,14 @@ fun AddOnsContainer(
                 Text(
                     modifier = Modifier.padding(top = dimensions.paddingXSmall),
                     text = conversionAmount,
-                    style = typography.footnoteMedium,
+                    style = typographyV2.footNoteMedium,
                     color = colors.textSecondary
                 )
             }
 
             Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
 
-            Text(text = description, style = typography.body2, color = colors.textPrimary)
+            Text(text = description, style = typographyV2.bodyMD, color = colors.textPrimary)
 
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
@@ -126,7 +126,7 @@ fun AddOnsContainer(
             if (includesList.isNotEmpty()) {
                 Text(
                     text = stringResource(id = R.string.project_view_pledge_includes),
-                    style = typography.calloutMedium,
+                    style = typographyV2.headingLG,
                     color = colors.textSecondary
                 )
 
@@ -147,7 +147,7 @@ fun AddOnsContainer(
                                 bottom = dimensions.paddingXSmall
                             ),
                             text = itemDescription,
-                            style = typography.body2,
+                            style = typographyV2.bodyMD,
                             color = colors.textPrimary
                         )
 
@@ -163,14 +163,14 @@ fun AddOnsContainer(
                 Text(
                     text = stringResource(id = R.string.Estimated_Shipping),
                     color = colors.kds_support_400,
-                    style = typography.calloutMedium
+                    style = typographyV2.headingLG
                 )
 
                 Text(
                     modifier = Modifier.padding(top = dimensions.radiusSmall),
                     text = estimatedShippingCost,
                     color = colors.kds_support_700,
-                    style = typography.body2
+                    style = typographyV2.bodyMD
                 )
             }
 
@@ -228,7 +228,7 @@ fun AddOnsContainer(
                         ) {
                             Text(
                                 text = "$count",
-                                style = typography.callout,
+                                style = typographyV2.bodyLG,
                                 color = colors.textPrimary
                             )
                         }

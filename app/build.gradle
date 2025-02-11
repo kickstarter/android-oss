@@ -210,6 +210,9 @@ dependencies {
     // Chrome Tabs library
     implementation 'androidx.browser:browser:1.7.0'
 
+    // Fonts
+    implementation 'androidx.compose.ui:ui-text-google-fonts:1.7.7'
+
     // Architecture components
     def lifecycle_version = "2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"

@@ -57,7 +57,7 @@ import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import kotlinx.coroutines.flow.flowOf
 
@@ -236,7 +236,7 @@ fun PledgedProjectsOverviewScreen(
                         if (!totalAlerts.isNullOrZero()) {
                             Text(
                                 text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
-                                style = typography.title3Bold,
+                                style = typographyV2.headingXL,
                                 color = colors.textPrimary
                             )
                         }
@@ -339,7 +339,7 @@ fun PPOScreenEmptyState(
         Text(
             color = colors.textPrimary,
             text = stringResource(id = R.string.Youre_all_caught_up),
-            style = typography.title3Bold,
+            style = typographyV2.headingXL,
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
@@ -347,7 +347,7 @@ fun PPOScreenEmptyState(
         Text(
             color = colors.textPrimary,
             text = stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
-            style = typography.body,
+            style = typographyV2.body,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
@@ -388,7 +388,7 @@ fun PPOScreenErrorState() {
         Text(
             color = colors.textPrimary,
             text = (stringResource(id = R.string.Something_went_wrong_pull_to_refresh_no_period)),
-            style = typography.body,
+            style = typographyV2.body,
             textAlign = TextAlign.Center
         )
     }

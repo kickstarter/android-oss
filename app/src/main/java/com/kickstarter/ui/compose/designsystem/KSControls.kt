@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -187,7 +187,7 @@ fun KSStringDropdown(
             Text(
                 text = selectedItem.second,
                 color = colors.kds_create_700,
-                style = typography.subheadlineMedium,
+                style = typographyV2.subHeadlineMedium,
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -218,7 +218,7 @@ fun KSStringDropdown(
                         expanded = false
                     }
                 ) {
-                    Text(text = item, style = typography.body2, color = colors.kds_support_700)
+                    Text(text = item, style = typographyV2.bodyMD, color = colors.kds_support_700)
                 }
             }
         }

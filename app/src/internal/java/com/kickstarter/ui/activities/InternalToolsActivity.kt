@@ -32,6 +32,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.WorkUtils
 import com.kickstarter.services.firebase.ResetDeviceIdWorker
+import com.kickstarter.utils.WindowInsetsUtil
 import org.joda.time.format.DateTimeFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -62,7 +63,7 @@ class InternalToolsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = InternalToolsLayoutBinding.inflate(layoutInflater)
-
+        WindowInsetsUtil.manageEdgeToEdge(window, binding.root)
         setContentView(binding.root)
 
         (applicationContext as KSApplication).component()?.inject(this)

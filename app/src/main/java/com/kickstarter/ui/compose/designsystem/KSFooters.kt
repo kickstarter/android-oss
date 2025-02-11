@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -75,12 +75,12 @@ fun KSSmallButtonFooter(
             Column {
                 Text(
                     text = titleText,
-                    style = typography.calloutMedium,
+                    style = typographyV2.headingXL,
                     color = colors.kds_support_700
                 )
                 Text(
                     text = subtitleText,
-                    style = typography.caption1Medium,
+                    style = typographyV2.headingSM,
                     color = colors.kds_support_700
                 )
             }

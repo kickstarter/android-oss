@@ -98,40 +98,29 @@ fun KSRewardCard(
         Column(
             modifier = Modifier.background(colors.kds_white)
         ) {
-<<<<<<< Updated upstream
-            if (yourSelectionIsVisible) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = colors.kds_trust_500,
-                            shape = RoundedCornerShape(
-                                topStart = dimensions.radiusMediumSmall,
-                                bottomEnd = dimensions.radiusMediumSmall
-                            )
-                        )
-                        .padding(
-                            top = dimensions.paddingSmall,
-                            bottom = dimensions.paddingSmall,
-                            start = dimensions.paddingMediumLarge,
-                            end = dimensions.paddingMediumLarge
-                        ),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.Your_selection),
-                        style = typographyV2.subHeadline,
-                        color = colors.kds_white,
+            Box {
+                if (image != null) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(image.full())
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = image.altText(),
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
                     )
                 }
+                if (yourSelectionIsVisible) {
+                    YourSelectionTag()
+                }
             }
-=======
->>>>>>> Stashed changes
 
             Column(
                 Modifier
                     .verticalScroll(rememberScrollState())
+                    .padding(dimensions.paddingMediumLarge)
                     .weight(weight = 1f, fill = false)
             ) {
-<<<<<<< Updated upstream
 
                 if (!amount.isNullOrEmpty()) {
                     Text(text = amount, style = typographyV2.heading2XL, color = colors.textAccentGreenBold)
@@ -202,26 +191,11 @@ fun KSRewardCard(
 
                             Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
                         }
-=======
-                Box {
-                    if (image != null) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(image.full())
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = image.altText(),
-                            modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.FillWidth
-                        )
                     }
-                    if (yourSelectionIsVisible) {
-                        YourSelectionTag()
->>>>>>> Stashed changes
-                    }
+
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 }
 
-<<<<<<< Updated upstream
                 if (!estimatedShippingCost.isNullOrEmpty()) {
                     Text(
                         text = stringResource(id = R.string.Estimated_Shipping),
@@ -276,183 +250,32 @@ fun KSRewardCard(
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp),
-=======
-                Column(
-                    modifier = Modifier.padding(dimensions.paddingMediumLarge)
->>>>>>> Stashed changes
                 ) {
-                    if (!amount.isNullOrEmpty()) {
-                        Text(
-                            text = amount,
-                            style = typography.titleRewardMedium,
-                            color = colors.textAccentGreenBold
-                        )
-                    }
 
-                    if (!conversion.isNullOrEmpty()) {
-                        Text(
-                            text = conversion,
-                            style = typography.footnote,
-                            color = colors.textAccentGreenBold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-
-                    if (!title.isNullOrEmpty()) {
-                        Text(
-                            text = title,
-                            style = typography.titleRewardBold,
-                            color = colors.kds_black
-                        )
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-                    }
-
-                    if (!backerCountBadgeText.isNullOrEmpty()) {
+                    if (!expirationDateText.isNullOrEmpty()) {
                         KSGreenBadge(
-                            text = backerCountBadgeText
+                            text = expirationDateText
                         )
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                     }
 
-                    if (!description.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.Description),
-                            color = colors.kds_support_400,
-                            style = typography.calloutMedium
+                    if (!remainingText.isNullOrEmpty()) {
+                        KSGreenBadge(
+                            text = remainingText
                         )
-
-                        Text(
-                            modifier = Modifier.padding(top = dimensions.textInputTopPadding),
-                            text = description,
-                            color = colors.kds_support_700,
-                            style = typography.body2
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                     }
 
-                    if (includes.isNotEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.rewards_info_includes),
-                            color = colors.kds_support_400,
-                            style = typography.calloutMedium
+                    if (!shippingSummaryText.isNullOrEmpty()) {
+                        KSGreenBadge(
+                            text = shippingSummaryText
                         )
-
-                        includes.forEachIndexed { index, itemDescription ->
-                            Row(
-                                modifier = Modifier.padding(
-                                    top = dimensions.radiusSmall,
-                                    bottom = dimensions.radiusSmall
-                                ),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
-
-                                Box(
-                                    modifier = Modifier
-                                        .padding(end = dimensions.paddingSmall)
-                                        .size(dimensions.paddingXSmall)
-                                        .background(
-                                            color = colors.kds_support_400,
-                                            shape = CircleShape
-                                        ),
-                                )
-
-                                Text(
-                                    text = itemDescription,
-                                    style = typography.body2,
-                                    color = colors.textPrimary
-                                )
-
-                                Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                     }
 
-                    if (!estimatedShippingCost.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.Estimated_Shipping),
-                            color = colors.kds_support_400,
-                            style = typography.calloutMedium
-                        )
-
-                        Text(
-                            modifier = Modifier.padding(top = dimensions.radiusSmall),
-                            text = estimatedShippingCost,
-                            color = colors.kds_support_700,
-                            style = typography.body2
+                    if (addonsPillVisible) {
+                        KSGreenBadge(
+                            text = stringResource(id = R.string.Add_ons)
                         )
 
                         Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                    }
-
-                    if (!estimatedDelivery.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.Estimated_delivery),
-                            color = colors.kds_support_400,
-                            style = typography.calloutMedium
-                        )
-
-                        Text(
-                            modifier = Modifier.padding(top = dimensions.radiusSmall),
-                            text = estimatedDelivery,
-                            color = colors.kds_support_700,
-                            style = typography.body2
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                    }
-
-                    if (!localPickup.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.Reward_location),
-                            color = colors.kds_support_400,
-                            style = typography.calloutMedium
-                        )
-
-                        Text(
-                            modifier = Modifier.padding(top = dimensions.radiusSmall),
-                            text = localPickup,
-                            color = colors.kds_support_700,
-                            style = typography.body2
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                    }
-
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-
-                        if (!expirationDateText.isNullOrEmpty()) {
-                            KSGreenBadge(
-                                text = expirationDateText
-                            )
-                        }
-
-                        if (!remainingText.isNullOrEmpty()) {
-                            KSGreenBadge(
-                                text = remainingText
-                            )
-                        }
-
-                        if (!shippingSummaryText.isNullOrEmpty()) {
-                            KSGreenBadge(
-                                text = shippingSummaryText
-                            )
-                        }
-
-                        if (addonsPillVisible) {
-                            KSGreenBadge(
-                                text = stringResource(id = R.string.Add_ons)
-                            )
-
-                            Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                        }
                     }
                 }
             }
@@ -495,7 +318,7 @@ fun YourSelectionTag() {
     ) {
         Text(
             text = stringResource(id = R.string.Your_selection),
-            style = typography.subheadline,
+            style = typographyV2.subHeadline,
             color = colors.kds_white,
         )
     }

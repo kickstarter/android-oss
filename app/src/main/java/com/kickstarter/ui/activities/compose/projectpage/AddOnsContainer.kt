@@ -92,21 +92,6 @@ fun AddOnsContainer(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-
-<<<<<<< Updated upstream
-            Text(text = title, style = typographyV2.title2Bold, color = colors.kds_black)
-
-            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-
-            Row {
-                Text(text = amount, style = typographyV2.bodyLG, color = colors.textAccentGreen)
-
-                if (!shippingAmount.isNullOrEmpty()) {
-                    Text(
-                        text = shippingAmount,
-                        style = typographyV2.bodyLG,
-                        color = colors.textAccentGreen
-=======
             if (image != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -119,125 +104,37 @@ fun AddOnsContainer(
                 )
             }
             Column(
-                modifier = Modifier
-                    .padding(
-                        dimensions.paddingMediumLarge
->>>>>>> Stashed changes
-                    )
+                modifier = Modifier.padding(dimensions.paddingMediumLarge)
             ) {
 
-<<<<<<< Updated upstream
-            if (!conversionAmount.isNullOrEmpty()) {
-                Text(
-                    modifier = Modifier.padding(top = dimensions.paddingXSmall),
-                    text = conversionAmount,
-                    style = typographyV2.footNoteMedium,
-                    color = colors.textSecondary
-                )
-            }
-=======
-                Text(text = title, style = typography.title2Bold, color = colors.kds_black)
->>>>>>> Stashed changes
+                Text(text = title, style = typographyV2.title2Bold, color = colors.kds_black)
 
                 Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
-<<<<<<< Updated upstream
-            Text(text = description, style = typographyV2.bodyMD, color = colors.textPrimary)
-
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            KSDividerLineGrey()
-
-            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-            if (includesList.isNotEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.project_view_pledge_includes),
-                    style = typographyV2.headingLG,
-                    color = colors.textSecondary
-                )
-
-                includesList.forEachIndexed { index, itemDescription ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
-
-                        Box(
-                            modifier = Modifier
-                                .padding(end = dimensions.paddingSmall)
-                                .size(dimensions.dottedListDotSize)
-                                .background(color = colors.textPrimary, shape = CircleShape),
-                        )
-=======
                 Row {
-                    Text(text = amount, style = typography.callout, color = colors.textAccentGreen)
->>>>>>> Stashed changes
+                    Text(text = amount, style = typographyV2.bodyLG, color = colors.textAccentGreen)
 
                     if (!shippingAmount.isNullOrEmpty()) {
                         Text(
-<<<<<<< Updated upstream
-                            modifier = Modifier.padding(
-                                top = dimensions.paddingXSmall,
-                                bottom = dimensions.paddingXSmall
-                            ),
-                            text = itemDescription,
-                            style = typographyV2.bodyMD,
-                            color = colors.textPrimary
-=======
                             text = shippingAmount,
-                            style = typography.callout,
+                            style = typographyV2.bodyLG,
                             color = colors.textAccentGreen
->>>>>>> Stashed changes
                         )
                     }
                 }
 
-<<<<<<< Updated upstream
-            if (!estimatedShippingCost.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                Text(
-                    text = stringResource(id = R.string.Estimated_Shipping),
-                    color = colors.kds_support_400,
-                    style = typographyV2.headingLG
-                )
-
-                Text(
-                    modifier = Modifier.padding(top = dimensions.radiusSmall),
-                    text = estimatedShippingCost,
-                    color = colors.kds_support_700,
-                    style = typographyV2.bodyMD
-                )
-            }
-
-            if (limit > 0) {
-                Spacer(Modifier.height(dimensions.paddingMedium))
-                KSCoralBadge(text = "Limit $limit")
-            }
-
-            Spacer(Modifier.height(dimensions.paddingLarge))
-
-            when (count) {
-                0 -> {
-                    KSPrimaryBlackButton(
-                        onClickAction = {
-                            count++
-                            onItemAddedOrRemoved(count, rewardId)
-                        },
-                        text = buttonText,
-                        isEnabled = buttonEnabled
-=======
                 if (!conversionAmount.isNullOrEmpty()) {
                     Text(
                         modifier = Modifier.padding(top = dimensions.paddingXSmall),
                         text = conversionAmount,
-                        style = typography.footnoteMedium,
+                        style = typographyV2.footNoteMedium,
                         color = colors.textSecondary
->>>>>>> Stashed changes
                     )
                 }
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
 
-                Text(text = description, style = typography.body2, color = colors.textPrimary)
+                Text(text = description, style = typographyV2.bodyMD, color = colors.textPrimary)
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
@@ -248,7 +145,7 @@ fun AddOnsContainer(
                 if (includesList.isNotEmpty()) {
                     Text(
                         text = stringResource(id = R.string.project_view_pledge_includes),
-                        style = typography.calloutMedium,
+                        style = typographyV2.headingLG,
                         color = colors.textSecondary
                     )
 
@@ -269,7 +166,7 @@ fun AddOnsContainer(
                                     bottom = dimensions.paddingXSmall
                                 ),
                                 text = itemDescription,
-                                style = typography.body2,
+                                style = typographyV2.bodyMD,
                                 color = colors.textPrimary
                             )
 
@@ -285,14 +182,14 @@ fun AddOnsContainer(
                     Text(
                         text = stringResource(id = R.string.Estimated_Shipping),
                         color = colors.kds_support_400,
-                        style = typography.calloutMedium
+                        style = typographyV2.headingLG
                     )
 
                     Text(
                         modifier = Modifier.padding(top = dimensions.radiusSmall),
                         text = estimatedShippingCost,
                         color = colors.kds_support_700,
-                        style = typography.body2
+                        style = typographyV2.bodyMD
                     )
                 }
 
@@ -321,12 +218,6 @@ fun AddOnsContainer(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-<<<<<<< Updated upstream
-                            Text(
-                                text = "$count",
-                                style = typographyV2.bodyLG,
-                                color = colors.textPrimary
-=======
                             KSStepper(
                                 onPlusClicked = {
                                     count++
@@ -338,7 +229,6 @@ fun AddOnsContainer(
                                     onItemAddedOrRemoved(count, rewardId)
                                 },
                                 isMinusEnabled = true
->>>>>>> Stashed changes
                             )
 
                             Box(
@@ -357,7 +247,7 @@ fun AddOnsContainer(
                             ) {
                                 Text(
                                     text = "$count",
-                                    style = typography.callout,
+                                    style = typographyV2.bodyLG,
                                     color = colors.textPrimary
                                 )
                             }

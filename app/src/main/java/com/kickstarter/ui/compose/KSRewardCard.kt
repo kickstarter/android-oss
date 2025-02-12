@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -92,7 +93,7 @@ fun KSRewardCard(
 
     Card(
         modifier = Modifier
-            .width(294.dp),
+            .width(dimensions.cardWidth),
         shape = RoundedCornerShape(dimensions.radiusMediumSmall),
     ) {
         Column(
@@ -106,7 +107,11 @@ fun KSRewardCard(
                             .crossfade(true)
                             .build(),
                         contentDescription = image.altText(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .width(dimensions.cardWidth)
+                            .height(dimensions.cardImageHeight)
+                            .fillMaxWidth(),
+                        placeholder = ColorPainter(color = colors.backgroundDisabled),
                         contentScale = ContentScale.FillWidth
                     )
                 }

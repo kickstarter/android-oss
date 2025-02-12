@@ -32,8 +32,10 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
         this.viewModel.outputs.imageForReward()
             .compose(observeForUIV2())
             .subscribe {
+                binding.addOnImageView.visibility = View.VISIBLE
                 binding.addOnImageView.load(it.full()) {
                     precision(Precision.EXACT)
+                    placeholder(R.color.soft_grey_disable)
                 }
             }
             .addToDisposable(disposables)

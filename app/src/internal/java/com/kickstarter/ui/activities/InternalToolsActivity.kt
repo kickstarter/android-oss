@@ -66,7 +66,7 @@ class InternalToolsActivity : AppCompatActivity() {
         WindowInsetsUtil.manageEdgeToEdge(window, binding.root)
         setContentView(binding.root)
 
-        (applicationContext as KSApplication).component().inject(this)
+        (applicationContext as KSApplication).component()?.inject(this)
 
         setupBuildInformationSection()
 

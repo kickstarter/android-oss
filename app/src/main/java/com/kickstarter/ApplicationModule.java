@@ -40,6 +40,7 @@ import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.featureflag.FeatureFlagClient;
 import com.kickstarter.libs.featureflag.FeatureFlagClientType;
+import com.kickstarter.libs.featureflag.StatsigClient;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -132,6 +133,7 @@ public class ApplicationModule {
     final @NonNull Stripe stripe,
     final @NonNull @WebEndpoint String webEndpoint,
     final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType,
+    final @NonNull StatsigClient statsigClient,
     final @NonNull FeatureFlagClientType featureFlagClient) {
 
     return Environment.builder()
@@ -159,6 +161,7 @@ public class ApplicationModule {
       .webEndpoint(webEndpoint)
       .firebaseAnalyticsClient(firebaseAnalyticsClientType)
       .featureFlagClient(featureFlagClient)
+      .statsigClient(statsigClient)
       .build();
   }
 
@@ -385,6 +388,16 @@ public class ApplicationModule {
           final @NonNull CurrentConfigTypeV2 currentConfig,
           final @NonNull FeatureFlagClientType featureFlagClient) {
     return new SegmentTrackingClient(build, context, currentConfig, currentUser, featureFlagClient, PreferenceManager.getDefaultSharedPreferences(context));
+  }
+
+  @Provides
+  @Singleton
+  StatsigClient provideStatsigClient(
+          final @ApplicationContext @NonNull Context context,
+          final @NonNull CurrentUserTypeV2 currentUser,
+          final @NonNull Build build
+  ) {
+    return new StatsigClient(build, context, currentUser);
   }
 
   @Provides

@@ -25,7 +25,9 @@ class CommentCardShotTest : ScreenshotTest {
         // - Test Application
         val app = getInstrumentation().targetContext.applicationContext as InstrumentedApp
         // - Test Dagger component for injecting on environment Mock Objects
-        component = app.component()
+        app.component()?.let {
+            component = it
+        }
 
         commentCard = (LayoutInflater.from(getInstrumentation().targetContext).inflate(R.layout.item_comment_card, null) as ConstraintLayout)
             .findViewById(R.id.comments_card_view)

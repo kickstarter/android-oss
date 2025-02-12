@@ -306,7 +306,9 @@ fun CreatorNameSendMessageView(
         )
         
     Image(
-        modifier = Modifier.padding(start = dimensions.paddingSmall),
+        modifier = Modifier
+            .padding(start = dimensions.paddingSmall)
+            .clickable { sendAMessageClickAction.invoke() },
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_envelope),
         contentDescription = null,
         colorFilter = ColorFilter.tint(color = colors.textSecondary)

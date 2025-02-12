@@ -304,16 +304,16 @@ fun CreatorNameSendMessageView(
             style = typography.caption2Medium,
             maxLines = 1
         )
-        
-    Image(
-        modifier = Modifier
-            .padding(start = dimensions.paddingSmall)
-            .clickable { sendAMessageClickAction.invoke() },
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_envelope),
-        contentDescription = null,
-        colorFilter = ColorFilter.tint(color = colors.textSecondary)
-    )
-}
+
+        Image(
+            modifier = Modifier
+                .padding(start = dimensions.paddingSmall)
+                .clickable { sendAMessageClickAction.invoke() },
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_envelope),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(color = colors.textSecondary)
+        )
+    }
 
 //        Row(
 //            modifier = Modifier

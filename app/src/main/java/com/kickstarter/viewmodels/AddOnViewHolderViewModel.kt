@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
@@ -28,6 +29,9 @@ interface AddOnViewHolderViewModel {
     }
 
     interface Outputs {
+
+        /** Emits Photo of reward  */
+        fun imageForReward(): Observable<Photo>
 
         /** Emits `true` if the title for addons should be hidden, `false` otherwise.  */
         fun isAddonTitleGone(): Observable<Boolean>
@@ -84,6 +88,7 @@ interface AddOnViewHolderViewModel {
         private val conversionIsGone = BehaviorSubject.create<Boolean>()
         private val descriptionForNoReward = BehaviorSubject.create<Int>()
         private val titleForNoReward = BehaviorSubject.create<Int>()
+        private val imageForReward = BehaviorSubject.create<Photo>()
         private val descriptionForReward = BehaviorSubject.create<String?>()
         private val minimumAmountTitle = PublishSubject.create<String>()
         private val rewardItems = BehaviorSubject.create<List<RewardsItem>>()
@@ -173,6 +178,13 @@ interface AddOnViewHolderViewModel {
                 .addToDisposable(disposables)
 
             reward
+                .filter { it.image().isNotNull() }
+                .map { it.image() }
+                .map { it }
+                .subscribe { this.imageForReward.onNext(it) }
+                .addToDisposable(disposables)
+
+            reward
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
                     RewardUtils.isLocalPickup(it)
@@ -223,6 +235,8 @@ interface AddOnViewHolderViewModel {
         }
 
         override fun configureWith(projectData: ProjectData, reward: Reward) = this.projectDataAndReward.onNext(Pair.create(projectData, reward))
+
+        override fun imageForReward(): Observable<Photo> = this.imageForReward
 
         override fun isAddonTitleGone(): Observable<Boolean> = this.isAddonTitleGone
 

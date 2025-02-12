@@ -4,6 +4,8 @@ import android.util.Pair
 import android.view.View
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.size.Precision
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemAddOnBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
@@ -26,6 +28,15 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
 
     init {
         val rewardItemAdapter = setUpItemAdapter()
+
+        this.viewModel.outputs.imageForReward()
+            .compose(observeForUIV2())
+            .subscribe {
+                binding.addOnImageView.load(it.full()) {
+                    precision(Precision.EXACT)
+                }
+            }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.conversionIsGone()
             .compose(observeForUIV2())

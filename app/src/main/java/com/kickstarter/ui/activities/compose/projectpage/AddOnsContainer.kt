@@ -23,9 +23,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.kickstarter.R
+import com.kickstarter.models.Photo
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -61,6 +66,7 @@ private fun AddOnsContainerPreview() {
 @Composable
 fun AddOnsContainer(
     rewardId: Long = 0,
+    image: Photo? = null,
     title: String,
     amount: String,
     conversionAmount: String? = null,
@@ -85,9 +91,9 @@ fun AddOnsContainer(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensions.paddingMediumLarge)
         ) {
 
+<<<<<<< Updated upstream
             Text(text = title, style = typographyV2.title2Bold, color = colors.kds_black)
 
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
@@ -100,10 +106,27 @@ fun AddOnsContainer(
                         text = shippingAmount,
                         style = typographyV2.bodyLG,
                         color = colors.textAccentGreen
-                    )
-                }
+=======
+            if (image != null) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(image.full())
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = image.altText(),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
             }
+            Column(
+                modifier = Modifier
+                    .padding(
+                        dimensions.paddingMediumLarge
+>>>>>>> Stashed changes
+                    )
+            ) {
 
+<<<<<<< Updated upstream
             if (!conversionAmount.isNullOrEmpty()) {
                 Text(
                     modifier = Modifier.padding(top = dimensions.paddingXSmall),
@@ -112,9 +135,13 @@ fun AddOnsContainer(
                     color = colors.textSecondary
                 )
             }
+=======
+                Text(text = title, style = typography.title2Bold, color = colors.kds_black)
+>>>>>>> Stashed changes
 
-            Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
+<<<<<<< Updated upstream
             Text(text = description, style = typographyV2.bodyMD, color = colors.textPrimary)
 
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -140,8 +167,14 @@ fun AddOnsContainer(
                                 .size(dimensions.dottedListDotSize)
                                 .background(color = colors.textPrimary, shape = CircleShape),
                         )
+=======
+                Row {
+                    Text(text = amount, style = typography.callout, color = colors.textAccentGreen)
+>>>>>>> Stashed changes
 
+                    if (!shippingAmount.isNullOrEmpty()) {
                         Text(
+<<<<<<< Updated upstream
                             modifier = Modifier.padding(
                                 top = dimensions.paddingXSmall,
                                 bottom = dimensions.paddingXSmall
@@ -149,15 +182,16 @@ fun AddOnsContainer(
                             text = itemDescription,
                             style = typographyV2.bodyMD,
                             color = colors.textPrimary
+=======
+                            text = shippingAmount,
+                            style = typography.callout,
+                            color = colors.textAccentGreen
+>>>>>>> Stashed changes
                         )
-
-                        Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
                     }
-
-                    if (index != includesList.lastIndex) KSDividerLineGrey()
                 }
-            }
 
+<<<<<<< Updated upstream
             if (!estimatedShippingCost.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                 Text(
@@ -190,47 +224,143 @@ fun AddOnsContainer(
                         },
                         text = buttonText,
                         isEnabled = buttonEnabled
+=======
+                if (!conversionAmount.isNullOrEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(top = dimensions.paddingXSmall),
+                        text = conversionAmount,
+                        style = typography.footnoteMedium,
+                        color = colors.textSecondary
+>>>>>>> Stashed changes
                     )
                 }
 
-                else -> {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        KSStepper(
-                            onPlusClicked = {
+                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+
+                Text(text = description, style = typography.body2, color = colors.textPrimary)
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                KSDividerLineGrey()
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                if (includesList.isNotEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.project_view_pledge_includes),
+                        style = typography.calloutMedium,
+                        color = colors.textSecondary
+                    )
+
+                    includesList.forEachIndexed { index, itemDescription ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = dimensions.paddingSmall)
+                                    .size(dimensions.dottedListDotSize)
+                                    .background(color = colors.textPrimary, shape = CircleShape),
+                            )
+
+                            Text(
+                                modifier = Modifier.padding(
+                                    top = dimensions.paddingXSmall,
+                                    bottom = dimensions.paddingXSmall
+                                ),
+                                text = itemDescription,
+                                style = typography.body2,
+                                color = colors.textPrimary
+                            )
+
+                            Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
+                        }
+
+                        if (index != includesList.lastIndex) KSDividerLineGrey()
+                    }
+                }
+
+                if (!estimatedShippingCost.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                    Text(
+                        text = stringResource(id = R.string.Estimated_Shipping),
+                        color = colors.kds_support_400,
+                        style = typography.calloutMedium
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(top = dimensions.radiusSmall),
+                        text = estimatedShippingCost,
+                        color = colors.kds_support_700,
+                        style = typography.body2
+                    )
+                }
+
+                if (limit > 0) {
+                    Spacer(Modifier.height(dimensions.paddingMedium))
+                    KSCoralBadge(text = "Limit $limit")
+                }
+
+                Spacer(Modifier.height(dimensions.paddingLarge))
+
+                when (count) {
+                    0 -> {
+                        KSPrimaryBlackButton(
+                            onClickAction = {
                                 count++
                                 onItemAddedOrRemoved(count, rewardId)
                             },
-                            isPlusEnabled = count < limit,
-                            onMinusClicked = {
-                                count--
-                                onItemAddedOrRemoved(count, rewardId)
-                            },
-                            isMinusEnabled = true
+                            text = buttonText,
+                            isEnabled = buttonEnabled
                         )
+                    }
 
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    width = dimensions.dividerThickness,
-                                    color = colors.textSecondary,
-                                    shape = shapes.small
-                                )
-                                .padding(
-                                    top = dimensions.paddingSmall,
-                                    bottom = dimensions.paddingSmall,
-                                    start = dimensions.paddingMedium,
-                                    end = dimensions.paddingMedium
-                                )
+                    else -> {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
+<<<<<<< Updated upstream
                             Text(
                                 text = "$count",
                                 style = typographyV2.bodyLG,
                                 color = colors.textPrimary
+=======
+                            KSStepper(
+                                onPlusClicked = {
+                                    count++
+                                    onItemAddedOrRemoved(count, rewardId)
+                                },
+                                isPlusEnabled = count < limit,
+                                onMinusClicked = {
+                                    count--
+                                    onItemAddedOrRemoved(count, rewardId)
+                                },
+                                isMinusEnabled = true
+>>>>>>> Stashed changes
                             )
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        width = dimensions.dividerThickness,
+                                        color = colors.textSecondary,
+                                        shape = shapes.small
+                                    )
+                                    .padding(
+                                        top = dimensions.paddingSmall,
+                                        bottom = dimensions.paddingSmall,
+                                        start = dimensions.paddingMedium,
+                                        end = dimensions.paddingMedium
+                                    )
+                            ) {
+                                Text(
+                                    text = "$count",
+                                    style = typography.callout,
+                                    color = colors.textPrimary
+                                )
+                            }
                         }
                     }
                 }

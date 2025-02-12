@@ -264,6 +264,7 @@ fun RewardCarouselScreen(
                                     )
                                 }
                             },
+                            image = reward.image(),
                             isCTAButtonEnabled = ctaButtonEnabled,
                             includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
                                 .isNullOrEmpty() && environment.ksString().isNotNull()

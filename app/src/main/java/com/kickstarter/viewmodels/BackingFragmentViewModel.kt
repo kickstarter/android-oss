@@ -545,6 +545,7 @@ interface BackingFragmentViewModel {
 
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.reward()
+                ?: projectData.project().backing()?.reward()
                 ?: projectData.project().backing()?.backedReward(projectData.project())
                 ?: RewardFactory.noReward().toBuilder()
                     .minimum(projectData.backing()?.amount() ?: 1.0)

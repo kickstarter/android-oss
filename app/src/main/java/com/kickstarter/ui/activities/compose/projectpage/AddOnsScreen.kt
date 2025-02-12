@@ -239,6 +239,7 @@ fun AddOnsScreen(
 
                     AddOnsContainer(
                         rewardId = reward.id(),
+                        image = reward.image(),
                         title = reward.title() ?: "",
                         amount = environment.ksCurrency()?.format(
                             reward.minimum(),

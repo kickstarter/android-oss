@@ -50,7 +50,7 @@ fun KSRewardCardPreview() {
             conversion = "about $400",
             title = "Deck of cards",
             backerCountBadgeText = "23 backers",
-            image = Photo.builder().altText("").full("https://i.kickstarter.com/Superbacker_Lock-up-0e9d240.png").build(),
+            image = Photo.builder().altText("").full("").build(),
             description = "this is a description",
             isCTAButtonEnabled = true,
             estimatedDelivery = "June 10th, 2026",

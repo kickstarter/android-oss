@@ -23,6 +23,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.activities.DisclaimerItems
+import com.kickstarter.ui.activities.PledgeDelegate
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
 import com.kickstarter.ui.activities.compose.projectpage.getRewardListAndPrices
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -30,7 +31,6 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
-import com.kickstarter.ui.fragments.PledgeFragment.PledgeDelegate
 import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel.Factory

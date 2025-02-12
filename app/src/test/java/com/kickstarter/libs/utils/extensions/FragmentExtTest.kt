@@ -11,26 +11,12 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.CrowdfundCheckoutFragment
-import com.kickstarter.ui.fragments.PledgeFragment
 import org.junit.Test
 
 class FragmentExtTest : KSRobolectricTestCase() {
 
-    fun `test fragment is PledgeFragment when fix_pledge and ff disabled`() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-
-        val pledgeData = PledgeData.builder()
-            .pledgeFlowContext(PledgeFlowContext.FIX_ERRORED_PLEDGE)
-            .projectData(projectData)
-            .build()
-
-        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.FIX_PLEDGE, false)
-        assertTrue(fragment is PledgeFragment)
-    }
-
     @Test
-    fun `test fragment is CrowdfundCheckoutFragment when fix_pledge and ff enabled`() {
+    fun `test fragment is CrowdfundCheckoutFragment when fix_pledge`() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)
 
@@ -39,7 +25,7 @@ class FragmentExtTest : KSRobolectricTestCase() {
             .projectData(projectData)
             .build()
 
-        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.FIX_PLEDGE, true)
+        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.FIX_PLEDGE)
         assertTrue(fragment is CrowdfundCheckoutFragment)
     }
 
@@ -116,7 +102,7 @@ class FragmentExtTest : KSRobolectricTestCase() {
 
         val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.FIX_PLEDGE)
 
-        assertTrue(fragment is PledgeFragment)
+        assertTrue(fragment is CrowdfundCheckoutFragment)
 
         val arg1 = fragment.arguments?.get(ArgumentsKey.PLEDGE_PLEDGE_DATA) as? PledgeData
         val arg2 = fragment.arguments?.get(ArgumentsKey.PLEDGE_PLEDGE_REASON)

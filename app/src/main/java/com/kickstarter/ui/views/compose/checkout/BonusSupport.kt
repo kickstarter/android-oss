@@ -35,7 +35,7 @@ import com.kickstarter.ui.compose.designsystem.KSStepper
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.shapes
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -91,7 +91,7 @@ fun BonusSupportContainer(
         if (isNoReward) {
             Text(
                 text = stringResource(id = R.string.Customize_your_reward),
-                style = typography.title3Bold,
+                style = typographyV2.headingXL,
                 color = colors.textPrimary
             )
 
@@ -101,7 +101,7 @@ fun BonusSupportContainer(
         Text(
             text = if (isNoReward) stringResource(id = R.string.Your_pledge_amount)
             else stringResource(id = R.string.Bonus_support),
-            style = typography.subheadlineMedium,
+            style = typographyV2.subHeadlineMedium,
             color = colors.textPrimary
         )
 
@@ -110,7 +110,7 @@ fun BonusSupportContainer(
         if (!isNoReward && !selectedReward.hasAddons()) {
             Text(
                 text = stringResource(id = R.string.A_little_extra_to_help),
-                style = typography.body2,
+                style = typographyV2.bodyMD,
                 color = colors.textSecondary
             )
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
@@ -134,7 +134,7 @@ fun BonusSupportContainer(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(text = "+", style = typography.calloutMedium, color = colors.textSecondary)
+            Text(text = "+", style = typographyV2.headingLG, color = colors.textSecondary)
 
             Spacer(modifier = Modifier.width(dimensions.paddingMediumSmall))
 
@@ -165,7 +165,7 @@ fun BonusSupportContainer(
                     onValueChange = {
                         if (it.length <= bonusAmountMaxDigits) onBonusSupportInputted(it.parseToDouble())
                     },
-                    textStyle = typography.title1.copy(color = colors.textAccentGreen),
+                    textStyle = typographyV2.title1.copy(color = colors.textAccentGreen),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -193,7 +193,7 @@ fun BonusSupportContainer(
             Text(
                 text = maxInputString,
                 textAlign = TextAlign.Right,
-                style = typography.footnoteMedium,
+                style = typographyV2.footNoteMedium,
                 color = colors.textAccentRed,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -37,6 +37,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.projectpage.ProjectAIViewModel
 
 @Composable
@@ -103,7 +104,7 @@ fun AiDisclosureScreen(
 
         Text(
             text = stringResource(id = R.string.Use_of_ai),
-            style = typography.title2Bold,
+            style = typographyV2.title2Bold,
             color = colors.kds_support_700,
             modifier = Modifier
                 .testTag(TestTag.TILE_TAG.name)
@@ -132,7 +133,7 @@ private fun InvolvesOtherSection(state: ProjectAIViewModel.UiState) {
     if (otherDetails.isNotEmpty()) {
         Text(
             text = stringResource(id = R.string.I_am_incorporating_AI_in_my_project),
-            style = typography.headline,
+            style = typographyV2.headLine,
             color = colors.kds_support_700,
             modifier = Modifier
                 .testTag(TestTag.OTHER_SECTION_TITLE.name)
@@ -140,7 +141,7 @@ private fun InvolvesOtherSection(state: ProjectAIViewModel.UiState) {
 
         Text(
             text = otherDetails,
-            style = typography.footnote,
+            style = typographyV2.footNote,
             color = colors.kds_support_700,
             modifier = Modifier
                 .testTag(TestTag.OTHER_SECTION_DETAILS.name)
@@ -160,7 +161,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
     if (details.isNotEmpty() || consent.isNotEmpty()) {
         Text(
             text = stringResource(id = R.string.I_plan_to_use_AI_generated_content),
-            style = typography.headline,
+            style = typographyV2.headLine,
             color = colors.kds_support_700,
             modifier = Modifier
                 .testTag(TestTag.GENERATION_SECTION_TITLE.name)
@@ -188,7 +189,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
 
             Text(
                 text = details,
-                style = typography.footnote,
+                style = typographyV2.footNote,
                 color = colors.kds_support_700,
                 modifier = Modifier
                     .testTag(TestTag.GENERATION_SECTION_DETAILS.name)
@@ -217,7 +218,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
 
             Text(
                 text = consent,
-                style = typography.footnote,
+                style = typographyV2.footNote,
                 color = colors.kds_support_700,
                 modifier = Modifier
                     .testTag(TestTag.GENERATION_SECTION_CONSENT.name)
@@ -245,7 +246,7 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
     if (fundingAiAttr || fundingAiConsent || fundingAiOption) {
         Text(
             text = stringResource(id = R.string.My_project_seeks_funding_for_AI_technology),
-            style = typography.headline,
+            style = typographyV2.headLine,
             color = colors.kds_support_700,
             modifier = Modifier
                 .testTag(TestTag.FOUNDING_SECTION_TITLE.name)
@@ -298,7 +299,7 @@ fun AiDisclosureRow(
         )
         Text(
             text = stringResource(id = stringResId),
-            style = typography.footnote,
+            style = typographyV2.footNote,
             color = colors.kds_support_700,
             modifier = Modifier.testTag(testTag)
         )

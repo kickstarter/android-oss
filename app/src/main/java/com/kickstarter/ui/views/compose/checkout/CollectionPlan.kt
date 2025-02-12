@@ -40,6 +40,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import org.joda.time.DateTime
 
 enum class CollectionPlanTestTags {
@@ -58,8 +59,6 @@ enum class CollectionOptions {
     PLEDGE_IN_FULL,
     PLEDGE_OVER_TIME,
 }
-
-private val PLOT_MINIMUM_AMOUNT = "$125"
 
 @Preview(
     name = "Light Eligible - Pledge in Full Selected",
@@ -218,7 +217,7 @@ fun PledgeOption(
                         top = if (isSelectable) dimensions.paddingMedium else dimensions.dialogButtonSpacing,
                     ),
                     text = optionText,
-                    style = typography.subheadlineMedium,
+                    style = typographyV2.subHeadlineMedium,
                     color = if (isSelectable) colors.textPrimary else colors.textDisabled
                 )
                 if (showBadge) {
@@ -272,12 +271,14 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
                 bottom = dimensions.paddingXSmall,
             )
     ) {
-        Text(
-            modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
-            text = stringResource(id = R.string.Available_for_pledges_over).format("amount", plotMinimum ?: PLOT_MINIMUM_AMOUNT),
-            style = typography.body2Medium,
-            color = colors.textDisabled
-        )
+        if (plotMinimum != null) {
+            Text(
+                modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
+                text = plotMinimum,
+                style = typography.body2Medium,
+                color = colors.textDisabled
+            )
+        }
     }
 }
 
@@ -316,8 +317,8 @@ fun ChargeItem(title: String, date: String, amount: String) {
             )
 
             Row(modifier = Modifier.padding(top = dimensions.paddingXSmall)) {
-                Text(modifier = Modifier.width(dimensions.plotChargeItemWidth), text = date, color = colors.textSecondary, style = typography.footnote)
-                Text(text = amount, color = colors.textSecondary, style = typography.footnote)
+                Text(modifier = Modifier.width(dimensions.plotChargeItemWidth), text = date, color = colors.textSecondary, style = typographyV2.footNote)
+                Text(text = amount, color = colors.textSecondary, style = typographyV2.footNote)
             }
         }
     }

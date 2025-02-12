@@ -99,7 +99,7 @@ type Query {
   """
   Provides an overview of pledge projects
   """
-  pledgeProjectsOverview: PledgeProjectsOverview
+  pledgeProjectsOverview("Sort option as a string." sort: BackingsDashboardSortOptions = RELEVANCY): PledgeProjectsOverview
 
   """
   Fetches a post given its ID.
@@ -760,21 +760,13 @@ enum Feature {
 
   reset_backer_survey_2024
 
-  disable_shipping_at_pledge
-
   pledge_projects_overview_2024
 
   pledge_projects_overview_ios_2024
 
   copy_rewards
 
-  pledge_redemption_v1
-
-  pledge_redemption_vat
-
   survey_reward_questions_2024
-
-  address_collection_for_digital_rewards_2024
 
   prelaunch_story_editor
 
@@ -796,17 +788,25 @@ enum Feature {
 
   notification_banner_update_2024
 
-  multiple_shipfrom_locations_2024
-
-  pledge_redemption_unified_creator_ui
-
   react_backed_projects
 
   copy_addons
 
   KDS_messages_app
 
+  KDS_messages_app_backer_filter
+
   pledge_management_refunds
+
+  discover_ui_2025
+
+  pledge_management_beta
+
+  creator_experience_2025
+
+  backings_dash_v2_2025
+
+  secret_rewards_2025
 }
 
 """
@@ -1767,6 +1767,11 @@ type Project implements Node & Commentable {
   profile: ProjectProfile
 
   """
+  The text of the currently applied project notice, empty if there is no notice
+  """
+  projectNotice: String
+
+  """
   When this project was Project of the Day.
   """
   projectOfTheDayAt: DateTime
@@ -2241,6 +2246,16 @@ type Backing implements Node {
   Extra amount the backer pledged on top of the minimum.
   """
   bonusAmount: Money!
+
+  """
+  Whether or not the creator can perform a partial refund now
+  """
+  canAcceptPartialRefund: Boolean!
+
+  """
+  Whether or not the creator can perform a pledge manager refund now
+  """
+  canAcceptPledgeManagerRefund: Boolean!
 
   """
   If the backing can be cancelled
@@ -3371,6 +3386,11 @@ type Reward implements Node {
   amount: Money!
 
   """
+  Data related to who can view/access this reward
+  """
+  audienceData: ResourceAudience!
+
+  """
   Whether or not the reward is available for new pledges
   """
   available: Boolean!
@@ -4010,6 +4030,45 @@ type OrderableConfig {
 }
 
 """
+Data related to the audience for a particular resource
+"""
+type ResourceAudience {
+  audience: AudienceEnum!
+
+  """
+  True if the resource has access restricted by an access rule
+  """
+  secret: Boolean!
+
+  """
+  Url for sharing reward (absent if accessible to all)
+  """
+  shareUrl: String
+
+  token: String
+}
+
+"""
+The audience for the resource
+"""
+enum AudienceEnum {
+  """
+  everyone
+  """
+  everyone
+
+  """
+  link
+  """
+  link
+
+  """
+  restricted
+  """
+  restricted
+}
+
+"""
 Tax configuration data related to an item
 """
 type ItemTaxConfig {
@@ -4596,6 +4655,16 @@ type Order implements Node {
   crossSells: [OrderCrossSell!]!
 
   """
+  The cross-sells total amount for the order
+  """
+  crossSellsTotal: Int!
+
+  """
+  The cross-sells total amount for the order, formatted
+  """
+  crossSellsTotalFormatted: String!
+
+  """
   The currency of the order
   """
   currency: CurrencyCode!
@@ -4609,6 +4678,11 @@ type Order implements Node {
   Whether or not the order was finalized but non-exempt.
   """
   finalizedAndNotExempt: Boolean!
+
+  """
+  Whether or not the order has been fully refunded
+  """
+  fullyRefunded: Boolean!
 
   id: ID!
 
@@ -4626,6 +4700,11 @@ type Order implements Node {
   The project associated with the order
   """
   project: Project!
+
+  """
+  The cost of shipping
+  """
+  shippingAmount: Int
 
   """
   The cost of shipping, formatted
@@ -4646,6 +4725,11 @@ type Order implements Node {
   The total cost for the order including taxes and shipping, formatted
   """
   totalFormatted: String
+
+  """
+  The total tax amount for the order
+  """
+  totalTax: Int
 
   """
   The total tax amount for the order, formatted
@@ -4686,6 +4770,11 @@ enum OrderStateEnum {
   dropped
   """
   dropped
+
+  """
+  refunded
+  """
+  refunded
 }
 
 """
@@ -4706,6 +4795,11 @@ type OrderCrossSell {
 
   """
   The total price of the cross-sell
+  """
+  totalPrice: Int!
+
+  """
+  The total price of the cross-sell, formatted
   """
   totalPriceFormatted: String!
 
@@ -4830,7 +4924,7 @@ type AdjustmentSummary implements Node {
   adjustable: Backing!
 
   """
-  current state of backing
+  The current state of the backing or order
   """
   adjustedSummary: AdjustedSummary
 
@@ -4840,6 +4934,11 @@ type AdjustmentSummary implements Node {
   adjustments: [Adjustment!]!
 
   id: ID!
+
+  """
+  The sum of all refunded amounts on the adjustable
+  """
+  refundedAmount: Int
 }
 
 """
@@ -4902,12 +5001,12 @@ type AdjustmentMetadata {
   """
   Refunds to be issued in adjustment
   """
-  refunds: [Refund!]!
+  refunds: [AdjustmentRefund!]!
 
   """
   Objects to be removed from order in adjustment
   """
-  removals: [Removal!]!
+  removals: [AdjustmentRemoval!]!
 }
 
 """
@@ -4948,7 +5047,7 @@ enum RefundReasonType {
 """
 An object removed as part of an adjustment.
 """
-type Removal {
+type AdjustmentRemoval {
   """
   id of object to be removed
   """
@@ -4998,7 +5097,7 @@ enum RefundAdjustmentType {
 """
 A refund issued as part of an adjustment.
 """
-type Refund {
+type AdjustmentRefund {
   """
   amount to be refunded
   """
@@ -5035,11 +5134,6 @@ type AdjustedSummary {
   bonusAmount: AdjustmentAmount
 
   """
-  items in backing and their quantities
-  """
-  itemCounts: [AdjustmentItem!]!
-
-  """
   current shipping amount for backing
   """
   shippingAmount: AdjustmentAmount
@@ -5055,27 +5149,7 @@ A hash containing the original, refunded, and remaining amounts.
 """
 type AdjustmentAmount {
   """
-  the original total amount
-  """
-  originalTotal: Int!
-
-  """
-  the refunded total amount
-  """
-  refundedTotal: Int!
-
-  """
-  the remaining total amount
-  """
-  remainingTotal: Int!
-}
-
-"""
-A reward that is modified by an adjustment.
-"""
-type AdjustmentReward {
-  """
-  original total for reward
+  original total amount
   """
   originalTotal: Int!
 
@@ -5090,24 +5164,44 @@ type AdjustmentReward {
   remainingTotal: Int!
 
   """
-   graphql id of reward to be refunded
+  whether the reward has been removed from the backing
   """
-  rewardId: ID!
+  removed: Boolean
 }
 
 """
-An item in a backing that might be modified (removal, change in quantity) by an adjustment.
+A reward that is modified by an adjustment.
 """
-type AdjustmentItem {
+type AdjustmentReward {
   """
-  graphql id of item in backing
+  original total amount
   """
-  itemId: ID!
+  originalTotal: Int!
 
   """
-  quantity of item in backing
+  uuid for the refund item
   """
-  quantity: ID!
+  refundItemId: ID!
+
+  """
+  amount that has been refunded after all adjustments are applied
+  """
+  refundedTotal: Int!
+
+  """
+  amount remaining after all adjustments are applied
+  """
+  remainingTotal: Int!
+
+  """
+  whether the reward has been removed from the backing
+  """
+  removed: Boolean
+
+  """
+   graphql id of reward to be refunded
+  """
+  rewardId: String!
 }
 
 """
@@ -7082,6 +7176,11 @@ enum FlaggingKind {
   PROTOTYPE_MISREPRESENTATION
 
   """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
+
+  """
   misrep-support-impersonation
   """
   MISREP_SUPPORT_IMPERSONATION
@@ -9009,7 +9108,7 @@ enum UserNotificationFrequency {
 }
 
 """
-A subsciption a user has to a particular newsletter.
+A subscription a user has to a particular newsletter.
 """
 type NewsletterSubscriptions {
   """
@@ -9051,6 +9150,11 @@ type NewsletterSubscriptions {
   The subscription to the InventNewsletter newsletter
   """
   inventNewsletter: Boolean!
+
+  """
+  The subscription to the LearningLabNewsletter newsletter
+  """
+  learningLabNewsletter: Boolean!
 
   """
   The subscription to the MusicNewsletter newsletter
@@ -9108,6 +9212,8 @@ enum UserRestrictionKind {
   edit_spotlight_pages
 
   phone
+
+  prelaunch_early
 }
 
 """
@@ -10798,6 +10904,11 @@ type PledgeProjectsOverview {
   List of pledged projects
   """
   pledges("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): PledgedProjectsOverviewPledgesConnection
+
+  """
+  List of sort options
+  """
+  sortOptions: [SortOptionGroup!]
 }
 
 """
@@ -10875,6 +10986,53 @@ type PledgedProjectsOverviewPledgeFlags {
   Flag type, e.g. warning, alert, etc.
   """
   type: String
+}
+
+"""
+sort option group
+"""
+type SortOptionGroup {
+  """
+  List of sort option groups
+  """
+  items: [SortOptionGroupItem!]
+
+  """
+  Title of the sort option group
+  """
+  title: String!
+}
+
+"""
+sort option group
+"""
+type SortOptionGroupItem {
+  """
+  Label for sort option
+  """
+  label: String!
+
+  """
+  Value for sort option
+  """
+  value: String!
+}
+
+enum BackingsDashboardSortOptions {
+  """
+  Sort by relevancy
+  """
+  RELEVANCY
+
+  """
+  Sort by oldest first
+  """
+  OLDEST_FIRST
+
+  """
+  Sort by newest first
+  """
+  NEWEST_FIRST
 }
 
 """
@@ -11255,6 +11413,11 @@ type Mutation {
   inviteProjectCollaborator(input: InviteProjectCollaboratorInput!): InviteProjectCollaboratorPayload
 
   """
+  Issue a refund for a backer. Can include the refunding of both the pledge and the PM transactions.
+  """
+  issueRefund(input: IssueRefundInput!): IssueRefundPayload
+
+  """
   Launch a Kickstarter project.
   """
   launchProject(input: LaunchProjectInput!): LaunchProjectPayload
@@ -11559,6 +11722,11 @@ type Mutation {
   Updates a question
   """
   updateQuestion(input: UpdateQuestionInput!): UpdateQuestionPayload
+
+  """
+  Updates audience for a specified resource
+  """
+  updateResourceAudience(input: UpdateResourceAudienceInput!): UpdateResourceAudiencePayload
 
   """
   Update a reward on a Kickstarter project.
@@ -14450,104 +14618,6 @@ input SubmitRefundCheckoutInput {
 }
 
 """
-Autogenerated return type of CreateAdjustment
-"""
-type CreateAdjustmentPayload {
-  adjustedSummary: AdjustedSummary!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated input type of CreateAdjustment
-"""
-input CreateAdjustmentInput {
-  """
-  ID of associated adjustable
-  """
-  adjustableId: ID!
-
-  adjustmentParams: AdjustmentInput!
-
-  amount: Int
-
-  message: String
-
-  """
-  Stripe SetupIntent client secret
-  """
-  intentClientSecret: String
-
-  """
-  Stripe Payment Source ID
-  """
-  paymentSourceId: ID
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Parameters to create adjustment to a backing's order, created when issuing a refund.
-"""
-input AdjustmentInput {
-  """
-  Reason for adjustment
-  """
-  reason: RefundReasonType!
-
-  """
-  Objects to be removed from order
-  """
-  removals: [RemovalInput!]!
-
-  """
-  Refunds to be issued
-  """
-  refunds: [RefundInput!]!
-}
-
-"""
-An object removed as part of an adjustment
-"""
-input RemovalInput {
-  """
-  id of object to be removed
-  """
-  id: Int!
-
-  """
-  type of object to be removed (reward, reward item, or order item)
-  """
-  type: RefundAdjustmentType!
-}
-
-"""
-An amount to be refunded as part of an adjustment.
-"""
-input RefundInput {
-  """
-  id of object to be refunded
-  """
-  id: Int
-
-  """
-  type of refund
-  """
-  type: RefundAdjustmentType!
-
-  """
-  amount to be refunded
-  """
-  amount: Int!
-}
-
-"""
 Autogenerated return type of CreateReward
 """
 type CreateRewardPayload {
@@ -14604,6 +14674,8 @@ input CreateRewardInput {
   startCondition: Int
 
   endCondition: Int
+
+  audienceData: AudienceInput
 
   """
   A unique identifier for the client performing the mutation.
@@ -14663,6 +14735,15 @@ input ShippingRuleInput {
   estimatedMin: Int
 
   estimatedMax: Int
+}
+
+"""
+Input related to setting the resource audience
+"""
+input AudienceInput {
+  audience: AudienceEnum!
+
+  token: String
 }
 
 """
@@ -14749,6 +14830,8 @@ input UpdateRewardInput {
   startCondition: Int
 
   endCondition: Int
+
+  audienceData: AudienceInput
 
   """
   A unique identifier for the client performing the mutation.
@@ -14964,6 +15047,11 @@ enum NonDeprecatedFlaggingKind {
   prototype-misrepresentation
   """
   PROTOTYPE_MISREPRESENTATION
+
+  """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
 
   """
   misrep-support-impersonation
@@ -17282,6 +17370,227 @@ input UpdateBackerSurveyIntroInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+"""
+Autogenerated return type of UpdateResourceAudience
+"""
+type UpdateResourceAudiencePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  resource: SecretResource!
+}
+
+union SecretResource = Reward
+
+"""
+Autogenerated input type of UpdateResourceAudience
+"""
+input UpdateResourceAudienceInput {
+  """
+  The resource id
+  """
+  resourceId: ID!
+
+  removeRestrictions: Boolean
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateAdjustment
+"""
+type CreateAdjustmentPayload {
+  adjustedSummary: AdjustedSummary!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated input type of CreateAdjustment
+"""
+input CreateAdjustmentInput {
+  """
+  ID of associated adjustable
+  """
+  adjustableId: ID!
+
+  adjustmentParams: AdjustmentInput!
+
+  amount: Int
+
+  message: String
+
+  """
+  Stripe SetupIntent client secret
+  """
+  intentClientSecret: String
+
+  """
+  Stripe Payment Source ID
+  """
+  paymentSourceId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Parameters to create adjustment to a backing's order, created when issuing a refund.
+"""
+input AdjustmentInput {
+  """
+  Reason for adjustment
+  """
+  reason: RefundReasonType!
+
+  """
+  Objects to be removed from order
+  """
+  removals: [RemovalInput!]!
+
+  """
+  Refunds to be issued
+  """
+  refunds: [RefundInput!]!
+}
+
+"""
+An object removed as part of an adjustment
+"""
+input RemovalInput {
+  """
+  id of the reward associated with the removal
+  """
+  rewardId: Int!
+
+  """
+  id of object to be removed
+  """
+  refundItemId: ID!
+
+  """
+  type of object to be removed (reward, reward item, or order item)
+  """
+  type: RefundAdjustmentType!
+}
+
+"""
+An amount to be refunded as part of an adjustment.
+"""
+input RefundInput {
+  """
+  id of object to be refunded
+  """
+  refundItemId: ID
+
+  """
+  type of refund
+  """
+  type: RefundAdjustmentType!
+
+  """
+  amount to be refunded
+  """
+  amount: Int!
+}
+
+"""
+Autogenerated return type of IssueRefund
+"""
+type IssueRefundPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  errors: [String!]!
+
+  refund: Refund!
+}
+
+"""
+A refund.
+"""
+type Refund implements Node {
+  """
+  The associated backing
+  """
+  backing: Backing!
+
+  id: ID!
+
+  """
+  message from the creator associated with this refund
+  """
+  message: String
+
+  """
+  reason for the refund
+  """
+  reason: RefundReasonType!
+}
+
+"""
+Autogenerated input type of IssueRefund
+"""
+input IssueRefundInput {
+  """
+  ID of associated backing
+  """
+  backingId: ID!
+
+  """
+  Reason for adjustment
+  """
+  reason: RefundReasonType!
+
+  message: String
+
+  """
+  Stripe SetupIntent client secret
+  """
+  intentClientSecret: String
+
+  """
+  Stripe Payment Source ID
+  """
+  creatorPaymentSourceId: ID
+
+  """
+  Parameters to refund a pledge. Leave blank to not refund the pledge.
+  """
+  refundPledgeInput: RefundPledgeInput
+
+  """
+  Whether or not the refund the order
+  """
+  refundOrder: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Required parameters in order to refund a pledge.
+"""
+input RefundPledgeInput {
+  amount: Int
+
+  adjustmentParams: AdjustmentInput!
 }
 
 """

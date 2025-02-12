@@ -186,7 +186,7 @@ fun SetPasswordScreen(
                         .padding(KSTheme.dimensions.paddingMedium)
                         .testTag(SetPasswordScreenTestTag.PAGE_DISCLAIMER.name),
                     text = headline,
-                    style = KSTheme.typography.body2,
+                    style = KSTheme.typographyV2.bodyMD,
                     color = KSTheme.colors.kds_support_700
                 )
             }
@@ -237,7 +237,7 @@ fun SetPasswordScreen(
                             .padding(KSTheme.dimensions.paddingMedium)
                             .testTag(SetPasswordScreenTestTag.WARNING_TEXT.name),
                         text = warningText,
-                        style = KSTheme.typography.body2,
+                        style = KSTheme.typographyV2.bodyMD,
                         color = KSTheme.colors.kds_support_700
                     )
                 }

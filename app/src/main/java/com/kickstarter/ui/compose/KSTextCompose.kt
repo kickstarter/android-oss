@@ -30,6 +30,7 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.kds_create_700
 import com.kickstarter.ui.compose.designsystem.kds_white
 
@@ -82,7 +83,7 @@ fun TextH6ExtraBoldTitle(
 ) {
     Text(
         text = text,
-        style = typography.subheadline,
+        style = typographyV2.subHeadline,
         color = textColor,
         modifier = modifier
     )
@@ -98,7 +99,7 @@ fun TextBody1Title(
 ) {
     Text(
         text = text,
-        style = typography.body.copy(
+        style = typographyV2.body.copy(
             fontSize = fontSizeUnit
         ),
         color = textColor,
@@ -115,7 +116,7 @@ fun TextBody2Style(
 ) {
     Text(
         text = text,
-        style = typography.body2,
+        style = typographyV2.bodyMD,
         color = textColor,
         modifier = modifier
     )
@@ -145,7 +146,7 @@ fun TextCaptionStyle(
 ) {
     Text(
         text = text,
-        style = typography.body.copy(
+        style = typographyV2.body.copy(
             fontSize = dimensionResource(id = R.dimen.caption_1).value.sp,
             fontFamily = FontFamily(
                 Font(DeviceFontFamilyName("sans-serif-medium"))

@@ -44,11 +44,13 @@ class Project private constructor(
     private val pledged: Double,
     private val photo: Photo?,
     private val prelaunchActivated: Boolean?,
+    private val projectNotice: String?,
     private val tags: List<String>?,
     private val rewards: List<Reward>?,
     private val slug: String?,
     private val staffPick: Boolean?,
     private val canComment: Boolean?,
+    private val pledgeOverTimeMinimumExplanation: String?,
     @State
     private val state: String,
     private val stateChangedAt: DateTime?,
@@ -101,6 +103,7 @@ class Project private constructor(
     fun pledged() = this.pledged
     fun photo() = this.photo
     fun prelaunchActivated() = this.prelaunchActivated
+    fun projectNotice() = this.projectNotice
     fun sendMetaCapiEvents() = this.sendMetaCapiEvents
     fun sendThirdPartyEvents() = this.sendThirdPartyEvents
     fun tags() = this.tags
@@ -108,6 +111,7 @@ class Project private constructor(
     fun slug() = this.slug
     fun staffPick() = this.staffPick
     fun canComment() = this.canComment
+    fun pledgeOverTimeMinimumExplanation() = this.pledgeOverTimeMinimumExplanation
     fun state() = this.state
     fun stateChangedAt() = this.stateChangedAt
     fun staticUsdRate() = this.staticUsdRate
@@ -161,6 +165,7 @@ class Project private constructor(
         private var pledged: Double = 0.0,
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,
+        private var projectNotice: String? = null,
         private var sendMetaCapiEvents: Boolean? = null,
         private var sendThirdPartyEvents: Boolean? = null,
         private var tags: List<String>? = emptyList(),
@@ -168,6 +173,7 @@ class Project private constructor(
         private var slug: String? = null,
         private var staffPick: Boolean? = null,
         private var canComment: Boolean? = null,
+        private var pledgeOverTimeMinimumExplanation: String? = "",
         @State
         private var state: String = STATE_STARTED,
         private var stateChangedAt: DateTime? = null,
@@ -205,6 +211,7 @@ class Project private constructor(
         fun currencyTrailingCode(currencyTrailingCode: Boolean?) = apply { this.currencyTrailingCode = currencyTrailingCode ?: false }
         fun displayPrelaunch(displayPrelaunch: Boolean?) = apply { this.displayPrelaunch = displayPrelaunch }
         fun canComment(canComment: Boolean?) = apply { this.canComment = canComment ?: false }
+        fun pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation: String?) = apply { this.pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation }
         fun deadline(deadline: DateTime?) = apply { this.deadline = deadline }
         fun featuredAt(featuredAt: DateTime?) = apply { this.featuredAt = featuredAt }
         fun friends(friends: List<User>?) = apply { this.friends = friends ?: emptyList() }
@@ -222,6 +229,7 @@ class Project private constructor(
         fun pledged(pledged: Double?) = apply { this.pledged = pledged ?: 0.0 }
         fun photo(photo: Photo?) = apply { this.photo = photo }
         fun prelaunchActivated(prelaunchActivated: Boolean?) = apply { this.prelaunchActivated = prelaunchActivated }
+        fun projectNotice(projectNotice: String?) = apply { this.projectNotice = projectNotice }
         fun sendMetaCapiEvents(sendMetaCapiEvents: Boolean?) = apply { this.sendMetaCapiEvents = sendMetaCapiEvents }
         fun sendThirdPartyEvents(sendThirdPartyEvents: Boolean?) = apply { this.sendThirdPartyEvents = sendThirdPartyEvents }
         fun tags(tags: List<String>?) = apply { this.tags = tags ?: emptyList() }
@@ -278,6 +286,7 @@ class Project private constructor(
             pledged = pledged,
             photo = photo,
             prelaunchActivated = prelaunchActivated,
+            projectNotice = projectNotice,
             sendMetaCapiEvents = sendMetaCapiEvents,
             sendThirdPartyEvents = sendThirdPartyEvents,
             tags = tags,
@@ -285,6 +294,7 @@ class Project private constructor(
             slug = slug,
             staffPick = staffPick,
             canComment = canComment,
+            pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation,
             state = state,
             stateChangedAt = stateChangedAt,
             staticUsdRate = staticUsdRate,
@@ -339,6 +349,7 @@ class Project private constructor(
         pledged = pledged,
         photo = photo,
         prelaunchActivated = prelaunchActivated,
+        projectNotice = projectNotice,
         sendMetaCapiEvents = sendMetaCapiEvents,
         sendThirdPartyEvents = sendThirdPartyEvents,
         tags = tags,
@@ -346,6 +357,7 @@ class Project private constructor(
         slug = slug,
         staffPick = staffPick,
         canComment = canComment,
+        pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation,
         state = state,
         stateChangedAt = stateChangedAt,
         staticUsdRate = staticUsdRate,
@@ -513,6 +525,7 @@ class Project private constructor(
                 pledged() == other.pledged() &&
                 photo() == other.photo() &&
                 prelaunchActivated() == other.prelaunchActivated() &&
+                projectNotice() == other.projectNotice() &&
                 sendMetaCapiEvents() == other.sendMetaCapiEvents() &&
                 sendThirdPartyEvents() == other.sendThirdPartyEvents() &&
                 rewards() == other.rewards() &&
@@ -520,6 +533,7 @@ class Project private constructor(
                 staffPick() == other.staffPick() &&
                 slug() == other.slug() &&
                 canComment() == other.canComment() &&
+                pledgeOverTimeMinimumExplanation() == other.pledgeOverTimeMinimumExplanation() &&
                 state() == other.state() &&
                 stateChangedAt() == other.stateChangedAt() &&
                 staticUsdRate() == other.staticUsdRate() &&

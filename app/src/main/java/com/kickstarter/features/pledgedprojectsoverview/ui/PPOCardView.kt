@@ -50,6 +50,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSWarningBadge
 import com.kickstarter.ui.compose.designsystem.shapes
 
@@ -254,7 +255,7 @@ fun ProjectPledgeSummaryView(
             Text(
                 text = projectName ?: "",
                 color = colors.textPrimary,
-                style = typography.footnoteMedium,
+                style = typographyV2.footNoteMedium,
                 overflow = TextOverflow.Ellipsis,
                 minLines = 1,
                 maxLines = 2
@@ -417,7 +418,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             onClickAction = { onEditAddressClicked.invoke() },
             text = stringResource(id = R.string.Edit),
             isEnabled = true,
-            textStyle = typography.buttonText
+            textStyle = typographyV2.buttonLabel
         )
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
@@ -427,7 +428,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClic
             onClickAction = { onConfirmAddressClicked.invoke() },
             text = stringResource(id = R.string.Confirm),
             isEnabled = isConfirmButtonEnabled,
-            textStyle = typography.buttonText
+            textStyle = typographyV2.buttonLabel
         )
     }
 }
@@ -439,7 +440,7 @@ fun FixPaymentButtonView(onFixPaymentClicked: () -> Unit) {
         onClickAction = { onFixPaymentClicked.invoke() },
         text = stringResource(id = R.string.Fix_payment),
         isEnabled = true,
-        textStyle = typography.buttonText
+        textStyle = typographyV2.buttonLabel
     )
 }
 
@@ -450,7 +451,7 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = stringResource(id = R.string.Authenticate_card),
         isEnabled = true,
-        textStyle = typography.buttonText
+        textStyle = typographyV2.buttonLabel
     )
 }
 
@@ -461,7 +462,7 @@ fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
         onClickAction = { onAuthenticateCardClicked.invoke() },
         text = stringResource(id = R.string.Take_survey),
         isEnabled = true,
-        textStyle = typography.buttonText
+        textStyle = typographyV2.buttonLabel
     )
 }
 

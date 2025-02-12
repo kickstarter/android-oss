@@ -80,6 +80,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.compose.designsystem.shapes
 import com.kickstarter.ui.data.PledgeReason
@@ -380,7 +381,7 @@ fun CheckoutScreen(
                         top = dimensions.paddingMediumLarge
                     ),
                     text = stringResource(id = R.string.Checkout),
-                    style = typography.title3Bold,
+                    style = typographyV2.headingXL,
                     color = colors.kds_black,
                 )
 
@@ -392,19 +393,20 @@ fun CheckoutScreen(
                             end = dimensions.paddingMediumLarge
                         ),
                         text = stringResource(id = R.string.Collection_plan),
-                        style = typography.headline,
+                        style = typographyV2.headLine,
                         color = colors.kds_black,
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
                     CollectionPlan(
-                        isEligible = isPlotEligible,
+                        isEligible = isPlotEligible && !project.pledgeOverTimeMinimumExplanation().isNullOrEmpty(),
                         changeCollectionPlan = onCollectionPlanSelected,
                         paymentIncrements = paymentIncrements,
                         ksCurrency = ksCurrency,
                         projectCurrency = project.currency(),
                         projectCurrentCurrency = project.currentCurrency(),
-                        termsOfUseCallback = onDisclaimerItemClicked
+                        termsOfUseCallback = onDisclaimerItemClicked,
+                        plotMinimum = project.pledgeOverTimeMinimumExplanation()
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                     Text(
@@ -413,7 +415,7 @@ fun CheckoutScreen(
                             end = dimensions.paddingMediumLarge
                         ),
                         text = stringResource(id = R.string.Payment),
-                        style = typography.headline,
+                        style = typographyV2.headLine,
                         color = colors.kds_black,
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -502,7 +504,7 @@ fun CheckoutScreen(
                         Text(
                             modifier = Modifier.padding(start = dimensions.paddingSmall),
                             color = colors.textAccentGreen,
-                            style = typography.subheadlineMedium,
+                            style = typographyV2.subHeadlineMedium,
                             text = stringResource(id = R.string.New_payment_method)
                         )
                     }
@@ -951,7 +953,7 @@ fun KSEstimatedShippingCheckoutView(
                         top = dimensions.paddingMedium
                     ),
                     text = stringResource(id = R.string.Estimated_Shipping),
-                    style = typography.calloutMedium,
+                    style = typographyV2.headingLG,
                     color = colors.textPrimary
                 )
 
@@ -977,7 +979,7 @@ fun KSEstimatedShippingCheckoutView(
                         top = dimensions.paddingMedium
                     ),
                     text = estimatedShippingRange,
-                    style = typography.calloutMedium,
+                    style = typographyV2.headingLG,
                     color = colors.textPrimary
                 )
 

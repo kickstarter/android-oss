@@ -19,6 +19,7 @@ import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.fragment.FullProject
 import com.kickstarter.fragment.PpoCard.DeliveryAddress
 import com.kickstarter.fragment.ProjectCard
+import com.kickstarter.fragment.RewardImage
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
@@ -141,7 +142,8 @@ fun rewardTransformer(
     simpleShippingRules: List<FetchProjectRewardsQuery.SimpleShippingRulesExpanded> = emptyList(),
     allowedAddons: Boolean = false,
     rewardItems: List<RewardsItem> = emptyList(),
-    addOnItems: List<RewardsItem> = emptyList()
+    addOnItems: List<RewardsItem> = emptyList(),
+    rewardImage: RewardImage? = null
 ): Reward {
     val amount = rewardGr.amount.amount.amount?.toDouble() ?: 0.0
     val latePledgeAmount = rewardGr.latePledgeAmount.amount.amount?.toDouble() ?: 0.0
@@ -178,6 +180,8 @@ fun rewardTransformer(
 
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
+    val photo = getPhoto(rewardImage?.image?.url, rewardImage?.image?.altText)
+
     return Reward.builder()
         .title(title)
         .convertedMinimum(convertedAmount)
@@ -202,6 +206,7 @@ fun rewardTransformer(
         .isAvailable(available)
         .backersCount(backersCount)
         .localReceiptLocation(localReceiptLocation)
+        .image(photo)
         .build()
 }
 
@@ -326,12 +331,12 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         }
     }
     val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
-    val photoUrl = projectFragment?.full?.image?.url
-    val photo = getPhoto(photoUrl)
+    val photo = getPhoto(projectFragment?.full?.image?.url, projectFragment?.full?.image?.altText)
+    val projectNotice = projectFragment?.projectNotice
     val tags = mutableListOf<String>()
     projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
     projectFragment?.tagsDiscovery?.tags?.map { tags.add(it?.id ?: "") }
-
+    val pledgeOverTimeMinimumExplanation = projectFragment?.pledgeOverTimeMinimumExplanation
     val minPledge = projectFragment?.minPledge?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards?.nodes?.map {
@@ -418,6 +423,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .pledged(pledged)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
+        .projectNotice(projectNotice)
         .sendMetaCapiEvents(sendMetaCapiEvents)
         .sendThirdPartyEvents(sendThirdPartyEvents)
         .tags(tags)
@@ -443,6 +449,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .watchesCount(watchesCount)
         .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
         .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
+        .pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation)
         .build()
 }
 
@@ -571,8 +578,8 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
     val launchedAt = projectFragment?.launchedAt
     val location = locationTransformer(projectFragment?.location?.location)
     val name = projectFragment?.name
-    val photoUrl = projectFragment?.full?.image?.url
-    val photo = getPhoto(photoUrl)
+    val photo = getPhoto(projectFragment?.full?.image?.url, projectFragment?.full?.image?.altText)
+    val projectNotice = projectFragment?.projectNotice
     val slug = projectFragment?.slug
     val staffPicked = projectFragment?.isProjectWeLove ?: false
     val state = projectFragment?.state?.name?.lowercase()
@@ -610,6 +617,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .name(name)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
+        .projectNotice(projectNotice)
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)
@@ -618,7 +626,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .build()
 }
 
-private fun getPhoto(photoUrl: @Nullable String?): Photo? {
+private fun getPhoto(photoUrl: @Nullable String?, altText: String?): Photo? {
     val photo = photoUrl?.let {
         Photo.builder()
             .ed(photoUrl)
@@ -627,6 +635,7 @@ private fun getPhoto(photoUrl: @Nullable String?): Photo? {
             .med(photoUrl)
             .small(photoUrl)
             .thumb(photoUrl)
+            .altText(altText)
             .build()
     }
 
@@ -1057,7 +1066,6 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
     return PaymentPlan.builder()
         .paymentIncrements(paymentIncrements)
         .amountIsPledgeOverTimeEligible(buildPaymentPlanResponse.amountIsPledgeOverTimeEligible)
-        .projectIsPledgeOverTimeAllowed(buildPaymentPlanResponse.projectIsPledgeOverTimeAllowed)
         .build()
 }
 

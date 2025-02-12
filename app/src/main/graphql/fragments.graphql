@@ -18,6 +18,7 @@ fragment projectCard on Project {
         ... user
     }
     prelaunchActivated
+    projectNotice
     projectOfTheDayAt
     friends(first:3) {
         nodes {
@@ -56,6 +57,7 @@ fragment fullProject on Project {
     backersCount
     description
     minPledge
+    pledgeOverTimeMinimumExplanation
     isLaunched
     isPledgeOverTimeAllowed
     sendMetaCapiEvents
@@ -80,6 +82,7 @@ fragment fullProject on Project {
     currency
     canComment
     prelaunchActivated
+    projectNotice
     projectOfTheDayAt
     friends {
         nodes {
@@ -208,6 +211,14 @@ fragment rewardItems on RewardItemsConnection {
 fragment full on Project {
     image {
         url(width: 1024)
+        altText
+    }
+}
+
+fragment rewardImage on Reward {
+    image {
+        url(width: 1024)
+        altText
     }
 }
 

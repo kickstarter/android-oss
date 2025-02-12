@@ -11,6 +11,7 @@ class Photo private constructor(
     private val med: String,
     private val small: String,
     private val thumb: String,
+    private val altText: String,
 ) : Parcelable {
     fun ed() = this.ed
     fun full() = this.full
@@ -18,6 +19,7 @@ class Photo private constructor(
     fun med() = this.med
     fun small() = this.small
     fun thumb() = this.thumb
+    fun altText() = this.altText
 
     @Parcelize
     data class Builder(
@@ -27,6 +29,7 @@ class Photo private constructor(
         private var med: String = "",
         private var small: String = "",
         private var thumb: String = "",
+        private var altText: String = "",
     ) : Parcelable {
         fun ed(ed: String?) = apply { this.ed = ed ?: "" }
         fun full(full: String?) = apply { this.full = full ?: "" }
@@ -34,13 +37,15 @@ class Photo private constructor(
         fun med(med: String?) = apply { this.med = med ?: "" }
         fun small(small: String?) = apply { this.small = small ?: "" }
         fun thumb(thumb: String?) = apply { this.thumb = thumb ?: "" }
+        fun altText(altText: String?) = apply { this.altText = altText ?: "" }
         fun build() = Photo(
             ed = ed,
             full = full,
             little = little,
             med = med,
             small = small,
-            thumb = thumb
+            thumb = thumb,
+            altText = altText,
         )
     }
 
@@ -50,7 +55,8 @@ class Photo private constructor(
         little = little,
         med = med,
         small = small,
-        thumb = thumb
+        thumb = thumb,
+        altText = altText,
     )
 
     companion object {
@@ -68,7 +74,8 @@ class Photo private constructor(
                 little() == other.little() &&
                 med() == other.med() &&
                 small() == other.small() &&
-                thumb() == other.thumb()
+                thumb() == other.thumb() &&
+                altText() == other.altText()
         }
         return equals
     }

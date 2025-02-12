@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -72,15 +73,20 @@ import com.kickstarter.ui.compose.designsystem.KSTextInput
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
+import com.kickstarter.utils.WindowInsetsUtil
 
 class DesignSystemActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val rootView = window.decorView.findViewById<View>(android.R.id.content)
+        WindowInsetsUtil.manageEdgeToEdge(window, rootView)
+
         setContent {
             var darkMode = remember { mutableStateOf(false) }
             KickstarterApp(useDarkTheme = darkMode.value) {
@@ -190,7 +196,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 @Composable
 fun AlertsVisuals() {
     Column {
-        Text(text = "Alerts", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Alerts", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -284,7 +290,7 @@ fun AlertsVisuals() {
 @Composable
 fun ButtonsVisuals() {
     Column {
-        Text(text = "Buttons", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Buttons", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -341,7 +347,7 @@ fun ButtonsVisuals() {
 @Composable
 fun BadgesVisuals() {
     Column {
-        Text(text = "Badges", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Badges", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -356,7 +362,7 @@ fun BadgesVisuals() {
 @Composable
 fun ControlsVisuals() {
     Column {
-        Text(text = "Controls", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Controls", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -456,7 +462,7 @@ fun ControlsVisuals() {
 
             Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
-            Text(text = "$$count", style = typography.body)
+            Text(text = "$$count", style = typographyV2.body)
         }
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
@@ -471,7 +477,7 @@ fun ControlsVisuals() {
 @Composable
 fun InputsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = "Inputs", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Inputs", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -501,7 +507,7 @@ fun ProgressIndicatorsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Progress Indicators",
-            style = typography.title1Bold,
+            style = typographyV2.title1Bold,
             color = colors.kds_support_700
         )
 
@@ -537,7 +543,7 @@ fun ProgressIndicatorsVisuals() {
 @Composable
 fun FootersVisuals() {
     Column {
-        Text(text = "Footers", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Footers", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -557,7 +563,7 @@ fun FootersVisuals() {
 @Composable
 fun ClickableText() {
     Column {
-        Text(text = "Clickable Text", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Clickable Text", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -572,7 +578,7 @@ fun ClickableText() {
 @Composable
 fun Dividers() {
     Column {
-        Text(text = "Dividers", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "Dividers", style = typographyV2.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -585,60 +591,53 @@ fun Dividers() {
 @Composable
 fun TypographyVisuals() {
     Column {
-        Text(text = "Typography", style = typography.title1Bold, color = colors.kds_support_700)
+        // NEW DESIGN SYSTEM
+        Text(text = "Heading2XL", style = typographyV2.heading2XL, color = colors.kds_support_700)
+        Text(text = "HeadingXL", style = typographyV2.headingXL, color = colors.kds_support_700)
+        Text(text = "HeadingLG", style = typographyV2.headingLG, color = colors.kds_support_700)
+        Text(text = "HeadingMD", style = typographyV2.headingMD, color = colors.kds_support_700)
+        Text(text = "HeadingSM", style = typographyV2.headingSM, color = colors.kds_support_700)
+        Text(text = "HeadingXS", style = typographyV2.headingXS, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
-        Text(text = "Title 1", style = typography.title1, color = colors.kds_support_700)
-        Text(text = "Title 1 Bold", style = typography.title1Bold, color = colors.kds_support_700)
+        Text(text = "BodyXL", style = typographyV2.bodyXL, color = colors.kds_support_700)
+        Text(text = "BodyBoldXL", style = typographyV2.bodyBoldXL, color = colors.kds_support_700)
+        Text(text = "BodyLG", style = typographyV2.bodyLG, color = colors.kds_support_700)
+        Text(text = "BodyBoldLG", style = typographyV2.bodyBoldLG, color = colors.kds_support_700)
+        Text(text = "BodyMD", style = typographyV2.bodyMD, color = colors.kds_support_700)
+        Text(text = "BodyBoldMD", style = typographyV2.bodyBoldMD, color = colors.kds_support_700)
+        Text(text = "BodySM", style = typographyV2.bodySM, color = colors.kds_support_700)
+        Text(text = "BodyBoldSM", style = typographyV2.bodyBoldSM, color = colors.kds_support_700)
+        Text(text = "BodyXS", style = typographyV2.bodyXS, color = colors.kds_support_700)
+        Text(text = "BodyBoldXS", style = typographyV2.bodyBoldXS, color = colors.kds_support_700)
+        Text(text = "BodyXXS", style = typographyV2.bodyXXS, color = colors.kds_support_700)
+        Text(text = "BodyBoldXXS", style = typographyV2.bodyBoldXXS, color = colors.kds_support_700)
 
-        Text(text = "Title 2", style = typography.title2, color = colors.kds_support_700)
-        Text(text = "Title 2 Bold", style = typography.title2Bold, color = colors.kds_support_700)
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
-        Text(text = "Title 3", style = typography.title3, color = colors.kds_support_700)
-        Text(text = "Title  Bold", style = typography.title3Bold, color = colors.kds_support_700)
+        Text(text = "ButtonLabel", style = typographyV2.buttonLabel, color = colors.kds_support_700)
 
-        Text(text = "Headline", style = typography.headline, color = colors.kds_support_700)
-        Text(text = "Body", style = typography.body, color = colors.kds_support_700)
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
-        Text(text = "Callout", style = typography.callout, color = colors.kds_support_700)
-        Text(
-            text = "Callout Medium",
-            style = typography.calloutMedium,
-            color = colors.kds_support_700
-        )
+        Text(text = "LinkLG", style = typographyV2.linkLG, color = colors.kds_support_700)
+        Text(text = "LinkMD", style = typographyV2.linkMD, color = colors.kds_support_700)
+        Text(text = "LinkSM", style = typographyV2.linkSM, color = colors.kds_support_700)
+        Text(text = "LinkXS", style = typographyV2.linkXS, color = colors.kds_support_700)
 
-        Text(text = "Subheadline", style = typography.subheadline, color = colors.kds_support_700)
-        Text(
-            text = "Subheadline Medium",
-            style = typography.subheadlineMedium,
-            color = colors.kds_support_700
-        )
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
-        Text(text = "BUTTON TEXT", style = typography.buttonText)
-
-        Text(text = "Body 2", style = typography.body2, color = colors.kds_support_700)
-        Text(text = "Body 2 Medium", style = typography.body2Medium, color = colors.kds_support_700)
-
-        Text(text = "Footnote", style = typography.footnote, color = colors.kds_support_700)
-        Text(
-            text = "Footnote Medium",
-            style = typography.footnoteMedium,
-            color = colors.kds_support_700
-        )
-
-        Text(text = "Caption 1", style = typography.caption1, color = colors.kds_support_700)
-        Text(
-            text = "Caption 1 Medium",
-            style = typography.caption1Medium,
-            color = colors.kds_support_700
-        )
-
-        Text(text = "Caption 2", style = typography.caption2, color = colors.kds_support_700)
-        Text(
-            text = "Caption 2 Medium",
-            style = typography.caption2Medium,
-            color = colors.kds_support_700
-        )
+        // OLD DESIGN SYSTEM
+        Text(text = "Title1", style = typographyV2.title1, color = colors.kds_support_700)
+        Text(text = "Title1Bold", style = typographyV2.title1Bold, color = colors.kds_support_700)
+        Text(text = "Title2", style = typographyV2.title2, color = colors.kds_support_700)
+        Text(text = "Title2Bold", style = typographyV2.title2Bold, color = colors.kds_support_700)
+        Text(text = "TitleRewardBold", style = typographyV2.titleRewardBold, color = colors.kds_support_700)
+        Text(text = "Headline", style = typographyV2.headLine, color = colors.kds_support_700)
+        Text(text = "Body", style = typographyV2.body, color = colors.kds_support_700)
+        Text(text = "Footnote", style = typographyV2.footNote, color = colors.kds_support_700)
+        Text(text = "FootnoteMedium", style = typographyV2.footNoteMedium, color = colors.kds_support_700)
+        Text(text = "SubHeadline", style = typographyV2.subHeadline, color = colors.kds_support_700)
+        Text(text = "SubHeadlineMedium", style = typographyV2.subHeadlineMedium, color = colors.kds_support_700)
     }
 }

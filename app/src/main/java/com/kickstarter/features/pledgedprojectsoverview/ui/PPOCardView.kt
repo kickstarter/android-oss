@@ -269,6 +269,13 @@ fun ProjectPledgeSummaryView(
                 style = typography.caption2
             )
         }
+
+        Image(
+            modifier = Modifier.padding(start = dimensions.paddingSmall),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_chevron_rounded_right),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(color = colors.textSecondary)
+        )
     }
 }
 

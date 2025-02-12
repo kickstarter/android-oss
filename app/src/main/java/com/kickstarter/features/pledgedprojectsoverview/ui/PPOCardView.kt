@@ -276,7 +276,6 @@ fun ProjectPledgeSummaryView(
             contentDescription = null,
             colorFilter = ColorFilter.tint(color = colors.textSecondary)
         )
-
     }
 }
 

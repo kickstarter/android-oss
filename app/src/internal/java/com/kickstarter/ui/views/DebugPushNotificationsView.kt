@@ -27,7 +27,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
         if (isInEditMode) {
             return
         }
-        (context.applicationContext as KSApplication).component().inject(this)
+        (context.applicationContext as KSApplication).component()?.inject(this)
 
         findViewById<Button>(R.id.register_device_button).setOnClickListener {
             registerDeviceButtonClick()

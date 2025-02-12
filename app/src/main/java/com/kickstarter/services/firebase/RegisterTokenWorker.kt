@@ -27,7 +27,7 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
     private val token = this.params.inputData.getString(IntentKey.PUSH_TOKEN) as String
 
     override fun doWork(): Result {
-        (applicationContext as KSApplication).component().inject(this)
+        (applicationContext as KSApplication).component()?.inject(this)
         val refreshHandler = object : RefreshPushToken {}
         var result: Result = Result.failure()
         refreshHandler.invoke(

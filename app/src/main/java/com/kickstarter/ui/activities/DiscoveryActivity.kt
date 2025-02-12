@@ -20,6 +20,7 @@ import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
+import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkPermissions
@@ -48,6 +49,7 @@ class DiscoveryActivity : AppCompatActivity() {
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
     private lateinit var consentManagementDialogFragment: ConsentManagementDialogFragment
+    private lateinit var statsigClient: StatsigClient
     private var internalTools: InternalToolsType? = null
     private lateinit var binding: DiscoveryLayoutBinding
     private lateinit var viewModelFactory: DiscoveryViewModel.Factory
@@ -74,6 +76,7 @@ class DiscoveryActivity : AppCompatActivity() {
             }
 
             internalTools = env.internalTools()
+            statsigClient = requireNotNull(env.statsigClient())
         }
 
         viewModel.provideIntent(intent)
@@ -242,6 +245,8 @@ class DiscoveryActivity : AppCompatActivity() {
             .compose(Transformers.observeForUIV2())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
             .addToDisposable(disposables)
+
+        statsigClient.updateExperimentUser()
     }
 
     private fun activateFeatureFlags(environment: Environment) {

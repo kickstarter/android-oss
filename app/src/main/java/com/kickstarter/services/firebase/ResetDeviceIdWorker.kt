@@ -18,7 +18,7 @@ class ResetDeviceIdWorker(@ApplicationContext applicationContext: Context, param
     lateinit var build: Build
 
     override fun doWork(): Result {
-        (applicationContext as KSApplication).component().inject(this)
+        (applicationContext as KSApplication).component()?.inject(this)
         return try {
             FirebaseHelper.delete()
             logSuccess()

@@ -20,7 +20,7 @@ import com.stripe.android.paymentsheet.PaymentSheet
 fun Context.isKSApplication() = (this is KSApplication) && !this.isInUnitTests
 
 fun Context.getEnvironment(): Environment? {
-    return (this.applicationContext as KSApplication).component().environment()
+    return (this.applicationContext as KSApplication).component()?.environment()
 }
 
 @Composable

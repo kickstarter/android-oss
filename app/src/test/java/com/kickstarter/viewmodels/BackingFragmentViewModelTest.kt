@@ -974,11 +974,36 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectDataAndReward() {
+    fun testProjectDataAndRewardForRewardOnBacking() {
         val reward = RewardFactory.reward()
         val backing = BackingFactory.backing()
             .toBuilder()
-            .rewardId(reward.id())
+            .reward(reward) // backing has reward
+            .build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(mockApolloClientForBacking(backing))
+            .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectDataFactory.project(backedProject)
+        this.vm.inputs.configureWith(projectData)
+        this.projectDataAndReward.assertValue(Pair(projectData, reward))
+    }
+
+    @Test
+    fun testProjectDataAndRewardForRewardIdOnBacking() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .reward(null)
+            .rewardId(reward.id()) // backing only has rewardId
             .build()
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()

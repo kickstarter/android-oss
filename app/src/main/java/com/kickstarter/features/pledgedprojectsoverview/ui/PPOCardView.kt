@@ -93,7 +93,7 @@ fun PPOCardPreview() {
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
                     flags = listOf(Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address").type("warning").icon("time").build()),
-                    )
+                )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
             }

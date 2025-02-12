@@ -68,7 +68,7 @@ class MessageService : FirebaseMessagingService() {
 
     override fun onCreate() {
         super.onCreate()
-        (applicationContext as KSApplication).component().inject(this)
+        (applicationContext as KSApplication).component()?.inject(this)
     }
 
     /**

@@ -22,7 +22,9 @@ class AddOnTagShotTest : ScreenshotTest {
         val app =
             InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentedApp
         // - Test Dagger component for injecting on environment Mock Objects
-        component = app.component()
+        app.component()?.let {
+            component = it
+        }
 
         addOnTagComponent =
             (

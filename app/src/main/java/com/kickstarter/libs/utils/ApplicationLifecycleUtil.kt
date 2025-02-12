@@ -48,7 +48,7 @@ class ApplicationLifecycleUtil(private val application: KSApplication) :
     private val disposables = CompositeDisposable()
 
     init {
-        application.component().inject(this)
+        application.component()?.inject(this)
     }
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}

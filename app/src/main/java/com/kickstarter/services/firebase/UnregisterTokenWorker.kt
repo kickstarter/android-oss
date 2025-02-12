@@ -20,7 +20,7 @@ class UnregisterTokenWorker(@ApplicationContext applicationContext: Context, pri
     lateinit var build: Build
 
     override fun doWork(): Result {
-        (applicationContext as KSApplication).component().inject(this)
+        (applicationContext as KSApplication).component()?.inject(this)
         return try {
             FirebaseMessaging.getInstance().deleteToken()
             logSuccess()

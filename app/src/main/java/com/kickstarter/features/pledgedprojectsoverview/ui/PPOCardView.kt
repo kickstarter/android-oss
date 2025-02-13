@@ -321,7 +321,6 @@ fun CreatorNameSendMessageView(
                 colorFilter = ColorFilter.tint(color = colors.textSecondary)
             )
         }
-
     }
     KSDividerLineGrey()
 }

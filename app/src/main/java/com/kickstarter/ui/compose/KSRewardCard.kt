@@ -112,7 +112,7 @@ fun KSRewardCard(
                             .height(dimensions.cardImageHeight)
                             .fillMaxWidth(),
                         placeholder = ColorPainter(color = colors.backgroundDisabled),
-                        contentScale = ContentScale.FillWidth
+                        contentScale = ContentScale.Crop
                     )
                 }
                 if (yourSelectionIsVisible) {

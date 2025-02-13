@@ -1020,7 +1020,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .imageUrl(ppoBackingData?.project?.full?.image?.url)
                 .creatorName(ppoBackingData?.project?.creator?.name)
                 .creatorID(ppoBackingData?.project?.creator?.id)
-                .viewType(getTierType(it?.node?.tierType))
+                .viewType(PPOCardViewType.CONFIRM_ADDRESS)
                 .surveyID(ppoBackingData?.project?.backerSurvey?.id)
                 .flags(flags)
                 .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress))
@@ -1072,14 +1072,14 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
 fun getDeliveryAddress(deliveryAddress: DeliveryAddress?): com.kickstarter.features.pledgedprojectsoverview.data.DeliveryAddress? {
     deliveryAddress?.let { address ->
         return com.kickstarter.features.pledgedprojectsoverview.data.DeliveryAddress.builder()
-            .addressId(address.id)
-            .addressLine1(address.addressLine1)
-            .addressLine2(address.addressLine2)
-            .city(address.city)
-            .region(address.region)
-            .postalCode(address.postalCode)
-            .phoneNumber(address.phoneNumber)
-            .recipientName(address.recipientName)
+            .addressId("1231432")
+            .addressLine1("address.addressLine1")
+            .addressLine2("address.addressLine2")
+            .city("address.city")
+            .region("address.region")
+            .postalCode("address.postalCode")
+            .phoneNumber("address.phoneNumber")
+            .recipientName("address.recipientName")
             .build()
     } ?: return null
 }

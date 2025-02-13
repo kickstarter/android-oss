@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -197,16 +198,17 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
-                if (viewType == PPOCardViewType.CONFIRM_ADDRESS && !shippingAddress.isNullOrEmpty()) {
+                if (viewType == PPOCardViewType.CONFIRM_ADDRESS) {
                     Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
                     ShippingAddressView(
-                        shippingAddress = shippingAddress
+                        shippingAddress = shippingAddress,
+                        onEditAddressClicked = onSecondaryActionButtonClicked
                     )
                 }
 
                 when (viewType) {
-                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(!shippingAddress.isNullOrEmpty(), onActionButtonClicked, onSecondaryActionButtonClicked)
+                    PPOCardViewType.CONFIRM_ADDRESS -> ConfirmAddressButtonsView(!shippingAddress.isNullOrEmpty(), onActionButtonClicked)
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
                     PPOCardViewType.OPEN_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
@@ -346,7 +348,8 @@ fun CreatorNameSendMessageView(
 
 @Composable
 fun ShippingAddressView(
-    shippingAddress: String? = null
+    shippingAddress: String? = null,
+    onEditAddressClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -354,28 +357,46 @@ fun ShippingAddressView(
             .padding(dimensions.paddingSmall)
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
-        Text(
-            text = stringResource(id = R.string.Shipping_address),
-            modifier = Modifier
-                .weight(0.25f)
-                .height(dimensions.clickableButtonHeight)
-                .clip(shapes.small),
-            color = colors.textPrimary,
-            style = typography.caption1Medium,
-        )
+        if(!shippingAddress.isNullOrEmpty()) {
+            Text(
+                text = stringResource(id = R.string.Shipping_address),
+                modifier = Modifier
+                    .weight(0.25f)
+                    .height(dimensions.clickableButtonHeight)
+                    .clip(shapes.small),
+                color = colors.textPrimary,
+                style = typography.caption1Medium,
+            )
+        }
 
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
-        Text(
-            text = shippingAddress ?: "",
-            modifier = Modifier
-                .weight(0.75f),
-            color = colors.textPrimary,
-            style = typography.caption1,
-            overflow = TextOverflow.Ellipsis,
-            minLines = 4,
-            maxLines = 6
-        )
+        Row(
+            modifier = Modifier.weight(0.75f)
+        ) {
+            if(!shippingAddress.isNullOrEmpty()) {
+                Text(
+                    text = shippingAddress ?: "",
+                    color = colors.textPrimary,
+                    style = typography.caption1,
+                    overflow = TextOverflow.Ellipsis,
+                    minLines = 4,
+                    maxLines = 6
+                )
+            }
+
+            Spacer(modifier = Modifier.width(dimensions.paddingSmall).weight(1f))
+            Box(
+                modifier = Modifier.width(dimensions.minButtonHeight).height(dimensions.minButtonHeight).clickable { onEditAddressClicked.invoke() }
+            ) {
+                Image(
+                    modifier = Modifier.padding(start = dimensions.paddingSmall),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_pencil),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(color = colors.textSecondary)
+                )
+            }
+        }
     }
 }
 
@@ -412,26 +433,16 @@ fun AlertFlagsView(flags: List<Flag?>) {
 }
 
 @Composable
-fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onEditAddressClicked: () -> Unit, onConfirmAddressClicked: () -> Unit) {
+fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onConfirmAddressClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
             .testTag(PPOCardViewTestTag.CONFIRM_ADDRESS_BUTTONS_VIEW.name)
     ) {
-        KSPrimaryBlackButton(
-            modifier = Modifier
-                .weight(0.5f),
-            onClickAction = { onEditAddressClicked.invoke() },
-            text = stringResource(id = R.string.Edit),
-            isEnabled = true,
-            textStyle = typographyV2.buttonLabel
-        )
-        Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
         KSPrimaryGreenButton(
             modifier = Modifier
-                .weight(0.5f),
+                .weight(0.5f).padding(dimensions.paddingMediumSmall),
             onClickAction = { onConfirmAddressClicked.invoke() },
             text = stringResource(id = R.string.Confirm),
             isEnabled = isConfirmButtonEnabled,

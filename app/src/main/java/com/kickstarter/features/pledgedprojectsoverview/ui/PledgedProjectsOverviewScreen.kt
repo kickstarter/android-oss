@@ -170,7 +170,7 @@ fun PledgedProjectsOverviewScreen(
     pullRefreshCallback: () -> Unit = {},
     analyticEvents: AnalyticEvents? = null,
 ) {
-    val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
+    val  openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
@@ -263,10 +263,7 @@ fun PledgedProjectsOverviewScreen(
                                 sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
                                 shippingAddress = it.deliveryAddress()?.getFormattedAddress() ?: "",
                                 onActionButtonClicked = {
-                                    onPrimaryActionButtonClicked(it)
-                                },
-                                onSecondaryActionButtonClicked = {
-                                    when (it.viewType()) {
+                                    when(it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
                                             analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
                                             confirmedAddress = it.deliveryAddress()?.getFormattedAddress() ?: ""
@@ -276,9 +273,12 @@ fun PledgedProjectsOverviewScreen(
                                             openConfirmAddressAlertDialog.value = true
                                         }
                                         else -> {
-                                            onSecondaryActionButtonClicked(it)
+                                            onPrimaryActionButtonClicked(it)
                                         }
                                     }
+                                },
+                                onSecondaryActionButtonClicked = {
+                                    onSecondaryActionButtonClicked(it)
                                 },
                             )
                         }

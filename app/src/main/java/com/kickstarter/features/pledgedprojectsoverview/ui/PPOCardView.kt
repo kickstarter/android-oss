@@ -293,7 +293,7 @@ fun CreatorNameSendMessageView(
             .fillMaxWidth()
             .padding(
                 start = dimensions.paddingMediumSmall,
-                end = dimensions.paddingSmall
+                end = dimensions.paddingXSmall
             )
     ) {
         Text(

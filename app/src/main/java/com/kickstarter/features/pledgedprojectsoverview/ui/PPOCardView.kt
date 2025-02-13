@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -291,10 +292,8 @@ fun CreatorNameSendMessageView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                top = dimensions.paddingSmall,
-                bottom = dimensions.paddingSmall,
                 start = dimensions.paddingMediumSmall,
-                end = dimensions.paddingMediumSmall
+                end = dimensions.paddingSmall
             )
     ) {
         Text(
@@ -312,14 +311,17 @@ fun CreatorNameSendMessageView(
             maxLines = 1
         )
 
-        Image(
-            modifier = Modifier
-                .padding(start = dimensions.paddingSmall)
-                .clickable { sendAMessageClickAction.invoke() },
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_envelope),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(color = colors.textSecondary)
-        )
+        Box(
+            modifier = Modifier.width(dimensions.minButtonHeight).height(dimensions.minButtonHeight).clickable { sendAMessageClickAction.invoke() },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_envelope),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(color = colors.textSecondary)
+            )
+        }
+
     }
 
 //        Row(

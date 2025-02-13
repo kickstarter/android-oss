@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Badge
@@ -23,6 +23,7 @@ import androidx.compose.material.BadgedBox
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -287,60 +288,40 @@ fun CreatorNameSendMessageView(
     KSDividerLineGrey()
 
     Row(
-        Modifier
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
             .fillMaxWidth()
+            .padding(
+                start = dimensions.paddingMediumSmall,
+                end = dimensions.paddingXSmall
+            )
     ) {
+        Text(
+            text = stringResource(id = R.string.project_menu_created_by),
+            color = colors.textSecondary,
+            style = typography.caption2
+        )
 
-        Row(
-            modifier = Modifier
-                .weight(0.7f)
-                .padding(
-                    top = dimensions.paddingMediumSmall,
-                    bottom = dimensions.paddingMediumSmall,
-                    start = dimensions.paddingMediumSmall,
-                    end = dimensions.paddingSmall
-                )
+        Text(
+            modifier = Modifier.weight(1f),
+            text = " ${creatorName.orEmpty()}",
+            overflow = TextOverflow.Ellipsis,
+            color = colors.textSecondary,
+            style = typography.caption2Medium,
+            maxLines = 1
+        )
+
+        Box(
+            modifier = Modifier.width(dimensions.minButtonHeight).height(dimensions.minButtonHeight).clickable { sendAMessageClickAction.invoke() },
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = stringResource(id = R.string.project_menu_created_by),
-                color = colors.textSecondary,
-                style = typography.caption2
-            )
-
-            Text(
-                text = " ${creatorName.orEmpty()}",
-                overflow = TextOverflow.Ellipsis,
-                color = colors.textSecondary,
-                style = typography.caption2Medium,
-                maxLines = 1
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .weight(0.3f)
-                .padding(
-                    end = dimensions.paddingMediumSmall,
-                    top = dimensions.paddingMediumSmall,
-                    bottom = dimensions.paddingMediumSmall
-                )
-                .clickable { sendAMessageClickAction.invoke() }
-        ) {
-            Text(
-                text = stringResource(id = R.string.Send_a_message),
-                color = colors.textAccentGreen,
-                style = typography.caption2
-            )
-
             Image(
-                modifier = Modifier.size(dimensions.paddingMediumSmall),
-                imageVector = ImageVector.vectorResource(id = R.drawable.chevron_right),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_envelope),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(color = colors.textAccentGreen)
+                colorFilter = ColorFilter.tint(color = colors.textSecondary)
             )
         }
     }
-
     KSDividerLineGrey()
 }
 

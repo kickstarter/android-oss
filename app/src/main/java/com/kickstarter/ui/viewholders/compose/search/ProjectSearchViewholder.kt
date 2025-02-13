@@ -25,7 +25,6 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Composable
@@ -96,7 +95,7 @@ fun ProjectSearchViewHolder(
                 Row {
                     Text(
                         text = "$fundedAmount%",
-                        style = typography.body2Medium,
+                        style = typographyV2.bodyBoldMD,
                         color = colors.kds_create_700
                     )
                     Text(
@@ -109,14 +108,14 @@ fun ProjectSearchViewHolder(
 
                     Text(
                         text = timeRemainingString,
-                        style = typography.body2Medium,
+                        style = typographyV2.bodyBoldMD,
                         color = colors.kds_support_700
                     )
                 }
             } else {
                 Text(
                     text = stringResource(id = R.string.Coming_soon),
-                    style = typography.body2Medium,
+                    style = typographyV2.bodyBoldMD,
                     color = colors.kds_create_700
                 )
             }

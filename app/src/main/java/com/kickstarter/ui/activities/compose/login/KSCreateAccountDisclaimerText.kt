@@ -107,7 +107,7 @@ fun LogInSignUpClickableDisclaimerText(
     ClickableText(
         modifier = Modifier.testTag(LoginToutTestTag.TOU_PP_COOKIE_DISCLAIMER.name),
         text = annotatedLinkString,
-        style = KSTheme.typography.caption1.copy(
+        style = KSTheme.typographyV2.bodySM.copy(
             color = KSTheme.colors.kds_support_400,
             textAlign = TextAlign.Center
         ),

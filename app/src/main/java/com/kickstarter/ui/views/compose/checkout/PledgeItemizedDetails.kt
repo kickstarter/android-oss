@@ -26,7 +26,6 @@ import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -157,7 +156,7 @@ fun ItemizedRewardListContainer(
             Text(
                 modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DELIVERY_DATE.name),
                 text = deliveryDateString,
-                style = typography.caption1,
+                style = typographyV2.bodySM,
                 color = colors.textSecondary
             )
         }
@@ -311,7 +310,7 @@ fun ItemizedRewardListContainer(
                         text = stringResource(
                             id = R.string.Pledge_Over_Time
                         ),
-                        style = typography.body2Medium,
+                        style = typographyV2.bodyBoldMD,
                         color = colors.kds_create_700
                     )
                 }

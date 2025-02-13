@@ -21,7 +21,7 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 @Preview
 @Composable
@@ -91,7 +91,7 @@ fun KSColorAccentedBanner(
             Text(
                 text = stringResource(id = titleResToDisplay),
                 color = textColor,
-                style = typography.body2Medium
+                style = typographyV2.bodyBoldMD
             )
 
             Spacer(modifier = Modifier.height(dimensions.paddingSmall))
@@ -99,7 +99,7 @@ fun KSColorAccentedBanner(
             Text(
                 text = stringResource(id = textResToDisplay),
                 color = textColor,
-                style = typography.body2
+                style = typographyV2.bodyMD
             )
 
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))

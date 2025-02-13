@@ -585,10 +585,12 @@ class BackingFragment : Fragment() {
             .crossfade(true)
             .build()
         for (reward in rewards) {
-            val request = ImageRequest.Builder(requireContext())
-                .data(reward.image()?.full())
-                .build()
-            imageLoader.enqueue(request)
+            reward.image()?.let {
+                val request = ImageRequest.Builder(requireContext())
+                    .data(reward.image()?.full())
+                    .build()
+                imageLoader.enqueue(request)
+            }
         }
     }
 

@@ -323,31 +323,6 @@ fun CreatorNameSendMessageView(
         }
 
     }
-
-//        Row(
-//            modifier = Modifier
-//                .weight(0.3f)
-//                .padding(
-//                    end = dimensions.paddingMediumSmall,
-//                    top = dimensions.paddingMediumSmall,
-//                    bottom = dimensions.paddingMediumSmall
-//                )
-//                .clickable { sendAMessageClickAction.invoke() }
-//        ) {
-//            Text(
-//                text = stringResource(id = R.string.Send_a_message),
-//                color = colors.textAccentGreen,
-//                style = typography.caption2
-//            )
-//
-//            Image(
-//                modifier = Modifier.size(dimensions.paddingMediumSmall),
-//                imageVector = ImageVector.vectorResource(id = R.drawable.chevron_right),
-//                contentDescription = null,
-//                colorFilter = ColorFilter.tint(color = colors.textAccentGreen)
-//            )
-//        }
-
     KSDividerLineGrey()
 }
 

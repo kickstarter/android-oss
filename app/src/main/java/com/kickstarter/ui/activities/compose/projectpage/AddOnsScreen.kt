@@ -115,13 +115,13 @@ fun AddOnsScreen(
         ).toString()
     } ?: ""
 
-    // Prefetch add ons images asynchronously
+    // Preload add ons images asynchronously
+    val imageLoader = ImageLoader.Builder(context)
+        .crossfade(true)
+        .build()
     for (reward in addOns) {
         val request = ImageRequest.Builder(context)
             .data(reward.image()?.full())
-            .build()
-        val imageLoader = ImageLoader.Builder(context)
-            .crossfade(true)
             .build()
         imageLoader.enqueue(request)
     }

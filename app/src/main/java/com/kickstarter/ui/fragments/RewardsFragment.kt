@@ -71,13 +71,13 @@ class RewardsFragment : Fragment() {
                         val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                         val rewards = shippingUIState.filteredRw
 
-                        // Prefetch reward images asynchronously
+                        // Preload reward images asynchronously
+                        val imageLoader = ImageLoader.Builder(context)
+                            .crossfade(true)
+                            .build()
                         for (reward in rewards) {
                             val request = ImageRequest.Builder(context)
                                 .data(reward.image()?.full())
-                                .build()
-                            val imageLoader = ImageLoader.Builder(context)
-                                .crossfade(true)
                                 .build()
                             imageLoader.enqueue(request)
                         }

@@ -60,6 +60,9 @@ data class KSDimensions(
     val storedCardImageWidth: Dp = Dp.Unspecified,
     val alertIconSize: Dp = Dp.Unspecified,
     val plotChargeItemWidth: Dp = Dp.Unspecified,
+    val cardWidth: Dp = Dp.Unspecified,
+    val cardImageHeight: Dp = Dp.Unspecified,
+    val cardImageAspectRatio: Float = Float.NaN,
 
 )
 
@@ -119,5 +122,8 @@ val KSStandardDimensions = KSDimensions(
     storedCardImageHeight = 40.dp,
     storedCardImageWidth = 64.dp,
     alertIconSize = 14.dp,
-    plotChargeItemWidth = 100.dp
+    plotChargeItemWidth = 100.dp,
+    cardWidth = 294.dp,
+    cardImageHeight = 196.dp,
+    cardImageAspectRatio = 3f / 2f
 )

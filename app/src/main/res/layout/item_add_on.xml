@@ -22,82 +22,99 @@
             app:cardElevation="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/add_on_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/grid_3"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/add_on_minimum_text_view"
-                    style="@style/Title2Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/kds_create_700"
-                    android:textSize="@dimen/title_reward"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="$20" />
+                <ImageView
+                  android:id="@+id/add_on_image_view"
+                  android:layout_width="0dp"
+                  android:layout_height="0dp"
+                  android:contentDescription="@null"
+                  android:visibility="gone"
+                  android:scaleType="centerCrop"
+                  app:layout_constraintDimensionRatio="@string/reward_card_image_aspect_ratio"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/add_on_conversion_text_view"
-                    style="@style/FootnotePrimaryMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/grid_1_half"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_minimum_text_view"
-                    tools:text="About $15 USD"
-                    tools:visibility="visible"/>
-
-                <include
-                    android:id="@+id/title_container"
-                    layout="@layout/add_on_title"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_on_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_marginTop="@dimen/grid_2"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_conversion_text_view"
+                    android:orientation="vertical"
+                    android:padding="@dimen/grid_3"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_on_image_view">
 
-                <include
-                    android:id="@+id/add_on_items_container"
-                    layout="@layout/add_on_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_marginTop="@dimen/grid_5_half"
-                    app:layout_constraintTop_toBottomOf="@id/title_container"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    <TextView
+                        android:id="@+id/add_on_minimum_text_view"
+                        style="@style/Title2Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/kds_create_700"
+                        android:textSize="@dimen/title_reward"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="$20" />
 
-                <TextView
-                    android:id="@+id/add_on_description_text_view"
-                    style="@style/BodyPrimary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/grid_3_half"
-                    android:layout_marginBottom="@dimen/grid_2"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_items_container"
-                    tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+                    <TextView
+                        android:id="@+id/add_on_conversion_text_view"
+                        style="@style/FootnotePrimaryMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_1_half"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/add_on_minimum_text_view"
+                        tools:text="About $15 USD"
+                        tools:visibility="visible"/>
 
-                <include
-                    android:id="@+id/reward_item_local_pickup_container"
-                    layout="@layout/reward_item_local_pickup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_description_text_view"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    <include
+                        android:id="@+id/title_container"
+                        layout="@layout/add_on_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:layout_marginTop="@dimen/grid_2"
+                        app:layout_constraintTop_toBottomOf="@id/add_on_conversion_text_view"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
 
+                    <include
+                        android:id="@+id/add_on_items_container"
+                        layout="@layout/add_on_items"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:layout_marginTop="@dimen/grid_5_half"
+                        app:layout_constraintTop_toBottomOf="@id/title_container"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/add_on_description_text_view"
+                        style="@style/BodyPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_3_half"
+                        android:layout_marginBottom="@dimen/grid_2"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/add_on_items_container"
+                        tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+
+                    <include
+                        android:id="@+id/reward_item_local_pickup_container"
+                        layout="@layout/reward_item_local_pickup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintTop_toBottomOf="@id/add_on_description_text_view"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
     </androidx.core.widget.NestedScrollView>

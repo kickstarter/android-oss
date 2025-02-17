@@ -9,13 +9,12 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.apollographql.apollo3.api.variable
 import com.kickstarter.R
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -106,23 +105,23 @@ val LocalKSCustomTypographyV2 = staticCompositionLocalOf {
     KSTypographyV2()
 }
 val interFontFamily = FontFamily(
-    Font(R.font.inter_variable, FontWeight.Thin),       // 100
-    Font(R.font.inter_variable, FontWeight.Light),      // 300
-    Font(R.font.inter_variable, FontWeight.Normal),     // 400
-    Font(R.font.inter_variable, FontWeight.Medium),     // 500
-    Font(R.font.inter_variable, FontWeight.SemiBold),   // 600
-    Font(R.font.inter_variable, FontWeight.Bold),       // 700
-    Font(R.font.inter_variable, FontWeight.ExtraBold)   // 800
+    Font(R.font.inter_variable, FontWeight.Thin), // 100
+    Font(R.font.inter_variable, FontWeight.Light), // 300
+    Font(R.font.inter_variable, FontWeight.Normal), // 400
+    Font(R.font.inter_variable, FontWeight.Medium), // 500
+    Font(R.font.inter_variable, FontWeight.SemiBold), // 600
+    Font(R.font.inter_variable, FontWeight.Bold), // 700
+    Font(R.font.inter_variable, FontWeight.ExtraBold) // 800
 )
 
 var interFontFamilyItalic = FontFamily(
-    Font(R.font.inter_variable_italic, FontWeight.Thin),       // 100
-    Font(R.font.inter_variable_italic, FontWeight.Light),      // 300
-    Font(R.font.inter_variable_italic, FontWeight.Normal),     // 400
-    Font(R.font.inter_variable_italic, FontWeight.Medium),     // 500
-    Font(R.font.inter_variable_italic, FontWeight.SemiBold),   // 600
-    Font(R.font.inter_variable_italic, FontWeight.Bold),       // 700
-    Font(R.font.inter_variable_italic, FontWeight.ExtraBold)   // 800
+    Font(R.font.inter_variable_italic, FontWeight.Thin), // 100
+    Font(R.font.inter_variable_italic, FontWeight.Light), // 300
+    Font(R.font.inter_variable_italic, FontWeight.Normal), // 400
+    Font(R.font.inter_variable_italic, FontWeight.Medium), // 500
+    Font(R.font.inter_variable_italic, FontWeight.SemiBold), // 600
+    Font(R.font.inter_variable_italic, FontWeight.Bold), // 700
+    Font(R.font.inter_variable_italic, FontWeight.ExtraBold) // 800
 )
 
 val KSCustomTypographyV2 = KSTypographyV2(

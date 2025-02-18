@@ -69,16 +69,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val dispatcher = coroutineContext[CoroutineDispatcher]
 
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun _getStoredCards(): List<StoredCard> {
-                    delay(1000)
-                    return Collections.singletonList(StoredCardFactory.discoverCard())
-                }
-
-                override fun getStoredCards(): Observable<List<StoredCard>> {
-                    return Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
-                }
-            }).build(),
+            environment(),
             dispatcher
         )
 

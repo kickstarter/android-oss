@@ -395,6 +395,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             // `single()` vs `singleOrNull()`
             val response = this.service.query(query).toFlow().single()
 
+            if (response.hasErrors()) {
+                // parse API errors into specific type
+                throw Exception(response.errors?.first()?.message)
+            }
+
             ret = response.data?.me?.storedCards?.nodes?.filterNotNull()?.map { cardData ->
                 StoredCard.builder()
                     .expiration(cardData.expirationDate)
@@ -407,7 +412,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         } catch (apolloException: ApolloException) {
             // parse network errors into specific type
         } catch (e: Exception) {
-            // for `singleOrNull()` et al.
+            // Exceptions created for API errors, thrown from `single()`, etc.
         }
         return ret
     }

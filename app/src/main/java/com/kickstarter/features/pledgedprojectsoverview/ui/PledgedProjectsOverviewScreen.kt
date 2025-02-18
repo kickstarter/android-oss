@@ -199,7 +199,7 @@ fun PledgedProjectsOverviewScreen(
         },
         topBar = {
             TopToolBar(
-                title = if(v2Enabled) stringResource(id = R.string.fpo_backings) else stringResource(id = R.string.Project_alerts),
+                title = if (v2Enabled) stringResource(id = R.string.fpo_backings) else stringResource(id = R.string.Project_alerts),
                 titleColor = colors.textPrimary,
                 leftOnClickAction = onBackPressed,
                 leftIconColor = colors.icon,
@@ -340,7 +340,7 @@ fun PPOScreenEmptyState(
     ) {
         Text(
             color = colors.textPrimary,
-            text = if(v2Enabled) stringResource(id = R.string.fpo_no_funded_backings) else stringResource(id = R.string.Youre_all_caught_up),
+            text = if (v2Enabled) stringResource(id = R.string.fpo_no_funded_backings) else stringResource(id = R.string.Youre_all_caught_up),
             style = typographyV2.headingXL,
         )
 
@@ -348,7 +348,7 @@ fun PPOScreenEmptyState(
 
         Text(
             color = colors.textPrimary,
-            text = if(v2Enabled) stringResource(id = R.string.fpo_when_projects_youve_backed_have_successfully_funded) else stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
+            text = if (v2Enabled) stringResource(id = R.string.fpo_when_projects_youve_backed_have_successfully_funded) else stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
             style = typographyV2.body,
             textAlign = TextAlign.Center
         )

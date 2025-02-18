@@ -154,7 +154,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                             }
                         },
                         onSecondaryActionButtonClicked = { PPOCard -> },
-                        v2Enabled =  env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
+                        v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
                     )
                 }
 

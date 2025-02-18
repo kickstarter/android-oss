@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,10 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
@@ -425,13 +428,8 @@ fun FBLoginButton(
     Button(
         onClick = { onClickAction.invoke() },
         modifier = modifier
-            .width(208.dp)
-            .height(40.dp)
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(size = FBLoginButtonVariables.ButtonCornerRadius)
-            )
-            .padding(0.dp),
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
         shape = RoundedCornerShape(size = FBLoginButtonVariables.ButtonCornerRadius)
     ) {
@@ -440,35 +438,30 @@ fun FBLoginButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Row(
-                modifier = Modifier.wrapContentWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.com_facebook_button_icon),
-                    contentDescription = "Facebook Logo",
-                    contentScale = ContentScale.None,
-                    modifier = Modifier
-                        .width(24.dp)
-                        .height(24.dp)
-                )
-                Text(
-                    text = text,
-                    color = FBLoginButtonVariables.ButtonTextColor,
-                    style = typographyV2.buttonLabel
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.com_facebook_button_icon),
+                contentDescription = "Facebook Logo",
+                contentScale = ContentScale.None,
+                modifier = Modifier
+                    .width(24.dp)
+                    .height(24.dp)
+            )
+            Text(
+                text = text,
+                color = FBLoginButtonVariables.ButtonTextColor,
+                style = typographyV2.buttonLabel,
+            )
         }
     }
 }
+
 
 @Preview
 @Composable
 fun KSFilledButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth().background(colors.kds_white),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSFilledButton(onClickAction = {}, text = "Filled")
@@ -484,7 +477,7 @@ fun KSFilledButtonPreview() {
 fun KSGreenButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSGreenButton(onClickAction = {}, text = "Green")
@@ -500,7 +493,7 @@ fun KSGreenButtonPreview() {
 fun KSFilledInvertedButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSFilledInvertedButton(onClickAction = {}, text = "Inverted")
@@ -516,7 +509,7 @@ fun KSFilledInvertedButtonPreview() {
 fun KSFilledDestructiveButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSFilledDestructiveButton(onClickAction = {}, text = "Destructive")
@@ -532,7 +525,7 @@ fun KSFilledDestructiveButtonPreview() {
 fun KSBorderlessButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSBorderlessButton(onClickAction = {}, text = "Borderless")
@@ -548,7 +541,7 @@ fun KSBorderlessButtonPreview() {
 fun KSOutlinedButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSOutlinedButton(onClickAction = {}, text = "Outlined")
@@ -564,7 +557,7 @@ fun KSOutlinedButtonPreview() {
 fun KSOutlinedDestructiveButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSOutlinedDestructiveButton(onClickAction = {}, text = "Destructive")
@@ -580,7 +573,7 @@ fun KSOutlinedDestructiveButtonPreview() {
 fun KSBorderlessDestructiveButtonPreview() {
     KSTheme {
         Column(
-            Modifier.padding(all = dimensions.paddingSmall),
+            Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
             KSBorderlessDestructiveButton(onClickAction = {}, text = "Borderless")
@@ -595,7 +588,7 @@ fun KSBorderlessDestructiveButtonPreview() {
 fun FBLoginButtonPreview() {
     KSTheme {
         Column(
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxWidth().background(colors.kds_white).padding(all = dimensions.paddingSmall),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

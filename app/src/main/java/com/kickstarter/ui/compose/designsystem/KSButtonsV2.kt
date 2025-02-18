@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -116,10 +117,19 @@ object FBLoginButtonVariables {
     val ButtonPressedColor: Color = Color(0xFF135ABE)
 }
 
+data class ButtonColors(
+    val backgroundColor: Color,
+    val pressedColor: Color,
+    val disabledColor: Color,
+    val textColor: Color,
+    val disabledTextColor: Color,
+    val loadingSpinnerColor: Color
+)
+
+
 @Composable
 fun BaseButton(
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
     onClickAction: () -> Unit,
     text: String,
     backgroundColor: Color,
@@ -128,192 +138,271 @@ fun BaseButton(
     textColor: Color,
     disabledTextColor: Color,
     loadingSpinnerColor: Color,
+    imageId: Int? = null,
+    imageContentDescription: String? = null,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
-    isPressed: Boolean = false
+    isPressed: Boolean = false,
+    isBorderless: Boolean = false  // New parameter to detect borderless buttons
 ) {
-    val currentBackgroundColor by remember(isPressed, isEnabled, isLoading) {
-        mutableStateOf(
-            when {
-                !isEnabled -> disabledColor
-                isPressed -> pressedColor
-                else -> backgroundColor
-            }
-        )
+    val currentBackgroundColor = when {
+        !isEnabled -> disabledColor
+        isPressed -> pressedColor
+        else -> backgroundColor
     }
 
-    val currentTextColor by remember(isEnabled) {
-        mutableStateOf(if (isEnabled) textColor else disabledTextColor)
-    }
+    val currentTextColor = if (isEnabled) textColor else disabledTextColor
 
     Button(
         modifier = modifier
-            .width(100.dp)
-            .height(40.dp)
-            .background(color = currentBackgroundColor, shape = RoundedCornerShape(size = ButtonVariables.ButtonCornerRadius))
-            .padding(0.dp),
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = currentBackgroundColor,
             disabledBackgroundColor = disabledColor
         ),
         onClick = { onClickAction.invoke() },
         enabled = isEnabled && !isLoading,
-        shape = RoundedCornerShape(size = ButtonVariables.ButtonCornerRadius)
+        shape = RoundedCornerShape(size = ButtonVariables.ButtonCornerRadius),
+        elevation = if (isBorderless) ButtonDefaults.elevation(0.dp) else ButtonDefaults.elevation()  // Removes shadow if borderless
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Box(contentAlignment = Alignment.Center) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (imageId != null) {
+                    Image(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(id = imageId),
+                        contentDescription = imageContentDescription
+                    )
+                }
+                Text(
+                    text = text,
+                    color = currentTextColor,
+                    style = typographyV2.buttonLabel,
+                    modifier = Modifier.padding(start = if (imageId != null) 8.dp else 0.dp)
+                )
+            }
             if (isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(20.dp),
                     color = loadingSpinnerColor,
                     strokeWidth = 2.dp
                 )
-            }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                leadingIcon?.invoke()
-                Text(text = text, color = currentTextColor, style = typographyV2.buttonLabel)
             }
         }
     }
 }
 
+
+@Composable
+fun CreateButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    text: String,
+    colors: ButtonColors,
+    imageId: Int? = null,
+    imageContentDescription: String? = null,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    isPressed: Boolean = false,
+    isBorderless: Boolean = false
+) {
+    BaseButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        text = text,
+        backgroundColor = colors.backgroundColor,
+        pressedColor = colors.pressedColor,
+        disabledColor = colors.disabledColor,
+        textColor = colors.textColor,
+        disabledTextColor = colors.disabledTextColor,
+        loadingSpinnerColor = colors.loadingSpinnerColor,
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        isPressed = isPressed,
+        isBorderless = isBorderless
+    )
+}
+
+
 @Composable
 fun KSFilledButton(
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
-    isPressed: Boolean = false
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
 ) {
-    BaseButton(
-        modifier, leadingIcon, onClickAction, text,
-        FilledButtonVariables.ColorBackgroundAction,
-        FilledButtonVariables.ColorBackgroundActionPressed,
-        FilledButtonVariables.ColorBackgroundActionDisabled,
-        Color.White,
-        FilledButtonVariables.ColorTextInverseDisabled,
-        FilledButtonVariables.ColorLoadingSpinner,
-        isEnabled, isLoading, isPressed
-    )
-}
-
-@Composable
-fun KSGreenButton(
-    modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    onClickAction: () -> Unit,
-    text: String,
-    isEnabled: Boolean = true,
-    isLoading: Boolean = false,
-    isPressed: Boolean = false
-) {
-    BaseButton(
-        modifier, leadingIcon, onClickAction, text,
-        GreenButtonVariables.ColorBackgroundAccentGreenBold,
-        GreenButtonVariables.ColorBackgroundAccentGreenBoldPressed,
-        GreenButtonVariables.ColorBackgroundAccentGreenDisabled,
-        Color.White,
-        GreenButtonVariables.ColorTextDisabled,
-        GreenButtonVariables.ColorLoadingSpinner,
-        isEnabled, isLoading, isPressed
-    )
-}
-
-@Composable
-fun KSFilledInvertedButton(
-    modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    onClickAction: () -> Unit,
-    text: String,
-    isEnabled: Boolean = true,
-    isLoading: Boolean = false,
-    isPressed: Boolean = false
-) {
-    BaseButton(
-        modifier, leadingIcon, onClickAction, text,
-        FilledInvertedButtonVariables.ColorBackgroundSurfacePrimary,
-        FilledInvertedButtonVariables.ColorBackgroundInversePressed,
-        FilledInvertedButtonVariables.ColorBackgroundInverseDisabled,
-        FilledInvertedButtonVariables.ColorTextPrimary,
-        FilledInvertedButtonVariables.ColorTextDisabled,
-        FilledInvertedButtonVariables.ColorLoadingSpinner,
-        isEnabled, isLoading, isPressed
-    )
-}
-
-@Composable
-fun KSFilledDestructiveButton(
-    modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    onClickAction: () -> Unit,
-    text: String,
-    isEnabled: Boolean = true,
-    isLoading: Boolean = false,
-    isPressed: Boolean = false
-) {
-    BaseButton(
-        modifier, leadingIcon, onClickAction, text,
-        FilledDestructiveButtonVariables.ColorBackgroundDangerBold,
-        FilledDestructiveButtonVariables.ColorBackgroundDangerBold,
-        FilledDestructiveButtonVariables.ColorBackgroundDangerDisabled,
-        FilledDestructiveButtonVariables.ColorTextInversePrimary,
-        FilledDestructiveButtonVariables.ColorTextAccentRedInverseDisabled,
-        FilledDestructiveButtonVariables.ColorLoadingSpinner,
-        isEnabled, isLoading, isPressed
-    )
-}
-
-@Composable
-fun KSBorderlessButton(
-    modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    onClickAction: () -> Unit,
-    text: String,
-    isEnabled: Boolean = true,
-    isLoading: Boolean = false,
-    isPressed: Boolean = false
-) {
-    BaseButton(
-        modifier = modifier
-            .width(100.dp)
-            .height(40.dp)
-            .padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-        leadingIcon = leadingIcon,
+    CreateButton(
+        modifier = modifier,
         onClickAction = onClickAction,
         text = text,
-        backgroundColor = Color.Transparent,
-        pressedColor = BorderlessButtonVariables.ColorBackgroundInversePressed,
-        disabledColor = Color.Transparent,
-        textColor = BorderlessButtonVariables.ColorTextPrimary,
-        disabledTextColor = BorderlessButtonVariables.ColorTextDisabled,
-        loadingSpinnerColor = BorderlessButtonVariables.ColorLoadingSpinner,
+        colors = ButtonColors(
+            backgroundColor = FilledButtonVariables.ColorBackgroundAction,
+            pressedColor = FilledButtonVariables.ColorBackgroundActionPressed,
+            disabledColor = FilledButtonVariables.ColorBackgroundActionDisabled,
+            textColor = Color.White,
+            disabledTextColor = FilledButtonVariables.ColorTextInverseDisabled,
+            loadingSpinnerColor = FilledButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
         isEnabled = isEnabled,
         isLoading = isLoading,
         isPressed = isPressed
     )
 }
 
+
 @Composable
-fun KSOutlinedButton(
+fun KSGreenButton(
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
-    isPressed: Boolean = false
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
 ) {
-    BaseButton(
+    CreateButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        text = text,
+        colors = ButtonColors(
+            backgroundColor = GreenButtonVariables.ColorBackgroundAccentGreenBold,
+            pressedColor = GreenButtonVariables.ColorBackgroundAccentGreenBoldPressed,
+            disabledColor = GreenButtonVariables.ColorBackgroundAccentGreenDisabled,
+            textColor = Color.White,
+            disabledTextColor = GreenButtonVariables.ColorTextDisabled,
+            loadingSpinnerColor = GreenButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        isPressed = isPressed
+    )
+}
+
+
+@Composable
+fun KSFilledInvertedButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
+) {
+    CreateButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        text = text,
+        colors = ButtonColors(
+            backgroundColor = FilledInvertedButtonVariables.ColorBackgroundSurfacePrimary,
+            pressedColor = FilledInvertedButtonVariables.ColorBackgroundInversePressed,
+            disabledColor = FilledInvertedButtonVariables.ColorBackgroundInverseDisabled,
+            textColor = FilledInvertedButtonVariables.ColorTextPrimary,
+            disabledTextColor = FilledInvertedButtonVariables.ColorTextDisabled,
+            loadingSpinnerColor = FilledInvertedButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        isPressed = isPressed
+    )
+}
+
+
+@Composable
+fun KSFilledDestructiveButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
+) {
+    CreateButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        text = text,
+        colors = ButtonColors(
+            backgroundColor = FilledDestructiveButtonVariables.ColorBackgroundDangerBold,
+            pressedColor = FilledDestructiveButtonVariables.ColorBackgroundDangerBold,
+            disabledColor = FilledDestructiveButtonVariables.ColorBackgroundDangerDisabled,
+            textColor = FilledDestructiveButtonVariables.ColorTextInversePrimary,
+            disabledTextColor = FilledDestructiveButtonVariables.ColorTextAccentRedInverseDisabled,
+            loadingSpinnerColor = FilledDestructiveButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        isPressed = isPressed
+    )
+}
+
+
+@Composable
+fun KSBorderlessButton(
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
+) {
+    CreateButton(
+        onClickAction = onClickAction,
+        text = text,
+        colors = ButtonColors(
+            backgroundColor = Color.Transparent,
+            pressedColor = BorderlessButtonVariables.ColorBackgroundInversePressed,
+            disabledColor = Color.Transparent,
+            textColor = BorderlessButtonVariables.ColorTextPrimary,
+            disabledTextColor = BorderlessButtonVariables.ColorTextDisabled,
+            loadingSpinnerColor = BorderlessButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
+        isPressed = isPressed,
+        isBorderless = true
+    )
+}
+
+
+@Composable
+fun KSOutlinedButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
+) {
+    CreateButton(
         modifier = modifier
-            .width(100.dp)
-            .height(40.dp)
             .border(
                 width = 1.dp,
                 color = when {
@@ -322,37 +411,39 @@ fun KSOutlinedButton(
                     else -> OutlinedButtonVariables.ColorBorderBold
                 },
                 shape = RoundedCornerShape(size = ButtonVariables.ButtonCornerRadius)
-            )
-            .padding(0.dp),
-        leadingIcon = leadingIcon,
+            ),
         onClickAction = onClickAction,
         text = text,
-        backgroundColor = Color.Transparent,
-        pressedColor = OutlinedButtonVariables.ColorBackgroundInversePressed,
-        disabledColor = Color.Transparent,
-        textColor = OutlinedButtonVariables.ColorTextPrimary,
-        disabledTextColor = OutlinedButtonVariables.ColorTextDisabled,
-        loadingSpinnerColor = OutlinedButtonVariables.ColorLoadingSpinner,
+        colors = ButtonColors(
+            backgroundColor = Color.Transparent,
+            pressedColor = OutlinedButtonVariables.ColorBackgroundInversePressed,
+            disabledColor = Color.Transparent,
+            textColor = OutlinedButtonVariables.ColorTextPrimary,
+            disabledTextColor = OutlinedButtonVariables.ColorTextDisabled,
+            loadingSpinnerColor = OutlinedButtonVariables.ColorLoadingSpinner
+        ),
         isEnabled = isEnabled,
         isLoading = isLoading,
-        isPressed = isPressed
+        isPressed = isPressed,
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
+        isBorderless = true
     )
 }
 
 @Composable
 fun KSOutlinedDestructiveButton(
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
-    isPressed: Boolean = false
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
 ) {
-    BaseButton(
+    CreateButton(
         modifier = modifier
-            .width(100.dp)
-            .height(40.dp)
             .border(
                 width = 1.dp,
                 color = when {
@@ -365,56 +456,63 @@ fun KSOutlinedDestructiveButton(
             .background(
                 color = if (isPressed) OutlinedDestructiveButtonVariables.ColorBackgroundAccentRedSubtle else Color.Transparent,
                 shape = RoundedCornerShape(size = OutlinedDestructiveButtonVariables.ButtonCornerRadius)
-            )
-            .padding(0.dp),
-        leadingIcon = leadingIcon,
+            ),
         onClickAction = onClickAction,
         text = text,
-        backgroundColor = Color.Transparent,
-        pressedColor = OutlinedDestructiveButtonVariables.ColorBackgroundAccentRedSubtle,
-        disabledColor = Color.Transparent,
-        textColor = OutlinedDestructiveButtonVariables.ColorTextAccentRed,
-        disabledTextColor = OutlinedDestructiveButtonVariables.ColorTextAccentRedDisabled,
-        loadingSpinnerColor = OutlinedDestructiveButtonVariables.ColorLoadingSpinner,
+        colors = ButtonColors(
+            backgroundColor = Color.Transparent,
+            pressedColor = OutlinedDestructiveButtonVariables.ColorBackgroundAccentRedSubtle,
+            disabledColor = Color.Transparent,
+            textColor = OutlinedDestructiveButtonVariables.ColorTextAccentRed,
+            disabledTextColor = OutlinedDestructiveButtonVariables.ColorTextAccentRedDisabled,
+            loadingSpinnerColor = OutlinedDestructiveButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
         isEnabled = isEnabled,
         isLoading = isLoading,
-        isPressed = isPressed
+        isPressed = isPressed,
+        isBorderless = true
     )
 }
+
 
 @Composable
 fun KSBorderlessDestructiveButton(
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
     onClickAction: () -> Unit,
     text: String,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
-    isPressed: Boolean = false
+    isPressed: Boolean = false,
+    imageId: Int? = null,
+    imageContentDescription: String? = null
 ) {
-    BaseButton(
+    CreateButton(
         modifier = modifier
-            .width(100.dp)
-            .height(40.dp)
             .background(
                 color = if (isPressed) BorderlessDestructiveButtonVariables.ColorBackgroundAccentRedSubtle else Color.Transparent,
                 shape = RoundedCornerShape(size = BorderlessDestructiveButtonVariables.ButtonCornerRadius)
-            )
-            .padding(0.dp),
-        leadingIcon = leadingIcon,
+            ),
         onClickAction = onClickAction,
         text = text,
-        backgroundColor = Color.Transparent,
-        pressedColor = BorderlessDestructiveButtonVariables.ColorBackgroundAccentRedSubtle,
-        disabledColor = Color.Transparent,
-        textColor = if (isPressed) BorderlessDestructiveButtonVariables.ColorTextAccentRedBolder else BorderlessDestructiveButtonVariables.ColorTextAccentRed,
-        disabledTextColor = BorderlessDestructiveButtonVariables.ColorTextAccentRedDisabled,
-        loadingSpinnerColor = BorderlessDestructiveButtonVariables.ColorLoadingSpinner,
+        colors = ButtonColors(
+            backgroundColor = Color.Transparent,
+            pressedColor = BorderlessDestructiveButtonVariables.ColorBackgroundAccentRedSubtle,
+            disabledColor = Color.Transparent,
+            textColor = if (isPressed) BorderlessDestructiveButtonVariables.ColorTextAccentRedBolder else BorderlessDestructiveButtonVariables.ColorTextAccentRed,
+            disabledTextColor = BorderlessDestructiveButtonVariables.ColorTextAccentRedDisabled,
+            loadingSpinnerColor = BorderlessDestructiveButtonVariables.ColorLoadingSpinner
+        ),
+        imageId = imageId,
+        imageContentDescription = imageContentDescription,
         isEnabled = isEnabled,
         isLoading = isLoading,
-        isPressed = isPressed
+        isPressed = isPressed,
+        isBorderless = true
     )
 }
+
 
 @Composable
 fun FBLoginButton(
@@ -464,10 +562,10 @@ fun KSFilledButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth().background(colors.kds_white),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSFilledButton(onClickAction = {}, text = "Filled")
-            KSFilledButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSFilledButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSFilledButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSFilledButton(onClickAction = {}, text = "Filled", imageId = R.drawable.icon_eye_gray)
+            KSFilledButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSFilledButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSFilledButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -480,10 +578,10 @@ fun KSGreenButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSGreenButton(onClickAction = {}, text = "Green")
-            KSGreenButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSGreenButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSGreenButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSGreenButton(onClickAction = {}, text = "Green", imageId = R.drawable.icon_eye_gray)
+            KSGreenButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSGreenButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSGreenButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -496,10 +594,10 @@ fun KSFilledInvertedButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSFilledInvertedButton(onClickAction = {}, text = "Inverted")
-            KSFilledInvertedButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSFilledInvertedButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSFilledInvertedButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSFilledInvertedButton(onClickAction = {}, text = "Inverted", imageId = R.drawable.icon_eye_gray)
+            KSFilledInvertedButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSFilledInvertedButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSFilledInvertedButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -512,10 +610,10 @@ fun KSFilledDestructiveButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSFilledDestructiveButton(onClickAction = {}, text = "Destructive")
-            KSFilledDestructiveButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSFilledDestructiveButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSFilledDestructiveButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSFilledDestructiveButton(onClickAction = {}, text = "Destructive", imageId = R.drawable.icon_eye_gray)
+            KSFilledDestructiveButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSFilledDestructiveButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSFilledDestructiveButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -528,10 +626,10 @@ fun KSBorderlessButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSBorderlessButton(onClickAction = {}, text = "Borderless")
-            KSBorderlessButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSBorderlessButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSBorderlessButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSBorderlessButton(onClickAction = {}, text = "Borderless", imageId = R.drawable.icon_eye_gray)
+            KSBorderlessButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSBorderlessButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSBorderlessButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -544,10 +642,10 @@ fun KSOutlinedButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSOutlinedButton(onClickAction = {}, text = "Outlined")
-            KSOutlinedButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSOutlinedButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSOutlinedButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSOutlinedButton(onClickAction = {}, text = "Outlined", imageId = R.drawable.icon_eye_gray)
+            KSOutlinedButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSOutlinedButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSOutlinedButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -560,10 +658,10 @@ fun KSOutlinedDestructiveButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSOutlinedDestructiveButton(onClickAction = {}, text = "Destructive")
-            KSOutlinedDestructiveButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSOutlinedDestructiveButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSOutlinedDestructiveButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSOutlinedDestructiveButton(onClickAction = {}, text = "Destructive", imageId = R.drawable.icon_eye_gray)
+            KSOutlinedDestructiveButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSOutlinedDestructiveButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSOutlinedDestructiveButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
@@ -576,13 +674,14 @@ fun KSBorderlessDestructiveButtonPreview() {
             Modifier.padding(all = dimensions.paddingSmall).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),
         ) {
-            KSBorderlessDestructiveButton(onClickAction = {}, text = "Borderless")
-            KSBorderlessDestructiveButton(onClickAction = {}, text = "Pressed", isPressed = true)
-            KSBorderlessDestructiveButton(onClickAction = {}, text = "Disabled", isEnabled = false)
-            KSBorderlessDestructiveButton(onClickAction = {}, text = "Loading", isLoading = true)
+            KSBorderlessDestructiveButton(onClickAction = {}, text = "Borderless", imageId = R.drawable.icon_eye_gray)
+            KSBorderlessDestructiveButton(onClickAction = {}, text = "Pressed", isPressed = true, imageId = R.drawable.icon_eye_gray)
+            KSBorderlessDestructiveButton(onClickAction = {}, text = "Disabled", isEnabled = false, imageId = R.drawable.icon_eye_gray)
+            KSBorderlessDestructiveButton(onClickAction = {}, text = "Loading", isLoading = true, imageId = R.drawable.icon_eye_gray)
         }
     }
 }
+
 @Preview
 @Composable
 fun FBLoginButtonPreview() {

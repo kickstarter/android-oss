@@ -50,7 +50,6 @@ import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSWarningBadge
 import com.kickstarter.ui.compose.designsystem.shapes
@@ -267,7 +266,7 @@ fun ProjectPledgeSummaryView(
             Text(
                 text = stringResource(id = R.string.Pledge_amount_pledged).format("pledge_amount", pledgeAmount),
                 color = colors.textSecondary,
-                style = typography.caption2
+                style = typographyV2.bodyXS
             )
         }
 
@@ -299,7 +298,7 @@ fun CreatorNameSendMessageView(
         Text(
             text = stringResource(id = R.string.project_menu_created_by),
             color = colors.textSecondary,
-            style = typography.caption2
+            style = typographyV2.bodyXS
         )
 
         Text(
@@ -307,7 +306,7 @@ fun CreatorNameSendMessageView(
             text = " ${creatorName.orEmpty()}",
             overflow = TextOverflow.Ellipsis,
             color = colors.textSecondary,
-            style = typography.caption2Medium,
+            style = typographyV2.headingXS,
             maxLines = 1
         )
 
@@ -342,7 +341,7 @@ fun ShippingAddressView(
                 .height(dimensions.clickableButtonHeight)
                 .clip(shapes.small),
             color = colors.textPrimary,
-            style = typography.caption1Medium,
+            style = typographyV2.headingSM,
         )
 
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
@@ -352,7 +351,7 @@ fun ShippingAddressView(
             modifier = Modifier
                 .weight(0.75f),
             color = colors.textPrimary,
-            style = typography.caption1,
+            style = typographyV2.bodySM,
             overflow = TextOverflow.Ellipsis,
             minLines = 4,
             maxLines = 6

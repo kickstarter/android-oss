@@ -37,7 +37,7 @@ import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 
 @Composable
@@ -165,7 +165,7 @@ fun LoginToutScreen(
             Text(
                 modifier = Modifier.testTag(LoginToutTestTag.FACEBOOK_DISCLAIMER.name),
                 text = stringResource(id = R.string.Facebook_login_disclaimer_update),
-                style = typography.caption1,
+                style = typographyV2.bodySM,
                 color = colors.kds_support_400,
                 textAlign = TextAlign.Center
             )

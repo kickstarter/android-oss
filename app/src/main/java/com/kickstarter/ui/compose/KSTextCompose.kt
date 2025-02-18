@@ -29,7 +29,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.kds_create_700
 import com.kickstarter.ui.compose.designsystem.kds_white
@@ -126,7 +125,7 @@ fun TextBody2Style(
 fun TextWithKdsSupport700Bg(text: String, modifier: Modifier) {
     Text(
         text = text,
-        style = typography.caption1,
+        style = typographyV2.bodySM,
         color = kds_white,
         modifier = modifier
             .background(kds_create_700)

@@ -39,7 +39,6 @@ import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import org.joda.time.DateTime
 
@@ -230,7 +229,7 @@ fun PledgeOption(
                             .padding(bottom = dimensions.paddingMedium)
                             .testTag(CollectionPlanTestTags.DESCRIPTION_TEXT.name),
                         text = description,
-                        style = typography.caption2,
+                        style = typographyV2.bodyXS,
                         color = colors.textSecondary
                     )
                 }
@@ -238,7 +237,7 @@ fun PledgeOption(
                     Text(
                         modifier = Modifier.testTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name),
                         text = stringResource(id = R.string.The_first_charge_will_occur_when_the_project_ends_successfully),
-                        style = typography.caption2,
+                        style = typographyV2.bodyXS,
                         color = colors.textSecondary
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
@@ -275,7 +274,7 @@ fun PledgeBadge(modifier: Modifier = Modifier, plotMinimum: String?) {
             Text(
                 modifier = Modifier.testTag(CollectionPlanTestTags.BADGE_TEXT.name),
                 text = plotMinimum,
-                style = typography.body2Medium,
+                style = typographyV2.bodyBoldMD,
                 color = colors.textDisabled
             )
         }
@@ -312,7 +311,7 @@ fun ChargeItem(title: String, date: String, amount: String) {
             Text(
                 modifier = Modifier.testTag(CollectionPlanTestTags.CHARGE_ITEM.name),
                 text = title,
-                style = typography.body2Medium,
+                style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
 

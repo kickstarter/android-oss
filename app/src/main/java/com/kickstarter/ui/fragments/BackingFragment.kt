@@ -23,6 +23,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingBinding
 import com.kickstarter.libs.Either
@@ -399,6 +401,7 @@ class BackingFragment : Fragment() {
     private fun bindDataToRewardViewHolder(projectAndReward: Pair<ProjectData, Reward>) {
         val project = projectAndReward.first
         val reward = projectAndReward.second
+        preloadImages(listOf(reward))
 
         val projectAndRw = Pair(project, reward)
         rewardsAndAddOnsAdapter.populateDataForReward(projectAndRw)
@@ -407,6 +410,8 @@ class BackingFragment : Fragment() {
     private fun populateAddOns(projectAndAddOn: Pair<ProjectData, List<Reward>>) {
         val project = projectAndAddOn.first
         val addOns = projectAndAddOn.second
+        preloadImages(addOns)
+
         val listData = addOns.map {
             Pair(project, it)
         }.toList()
@@ -570,6 +575,21 @@ class BackingFragment : Fragment() {
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun preloadImages(rewards: List<Reward>) {
+        // Preload reward images asynchronously
+        val imageLoader = ImageLoader.Builder(requireContext())
+            .crossfade(true)
+            .build()
+        for (reward in rewards) {
+            reward.image()?.let {
+                val request = ImageRequest.Builder(requireContext())
+                    .data(reward.image()?.full())
+                    .build()
+                imageLoader.enqueue(request)
             }
         }
     }

@@ -22,6 +22,8 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlin.coroutines.EmptyCoroutineContext
 
 interface Inputs {
 
@@ -81,9 +83,7 @@ class PaymentMethodsViewModel(
     Inputs,
     Outputs {
 
-    private val scope = testDispatcher?.let {
-        CoroutineScope(viewModelScope.coroutineContext + it)
-    } ?: viewModelScope
+    private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
 
     private val confirmDeleteCardClicked = PublishSubject.create<Unit>()
     private val deleteCardClicked = PublishSubject.create<String>()

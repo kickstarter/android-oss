@@ -169,6 +169,7 @@ fun PledgedProjectsOverviewScreen(
     showEmptyState: Boolean = false,
     pullRefreshCallback: () -> Unit = {},
     analyticEvents: AnalyticEvents? = null,
+    v2Enabled: Boolean = false,
 ) {
     val openConfirmAddressAlertDialog = remember { mutableStateOf(false) }
     var confirmedAddress by remember { mutableStateOf("") } // TODO: This is either the original shipping address or the user-edited address
@@ -198,7 +199,7 @@ fun PledgedProjectsOverviewScreen(
         },
         topBar = {
             TopToolBar(
-                title = stringResource(id = R.string.Project_alerts),
+                title = if(v2Enabled) stringResource(id = R.string.fpo_backings) else stringResource(id = R.string.Project_alerts),
                 titleColor = colors.textPrimary,
                 leftOnClickAction = onBackPressed,
                 leftIconColor = colors.icon,
@@ -218,7 +219,7 @@ fun PledgedProjectsOverviewScreen(
             if (isErrored) {
                 PPOScreenErrorState()
             } else if (showEmptyState) {
-                PPOScreenEmptyState(onSeeAllBackedProjectsClick)
+                PPOScreenEmptyState(onSeeAllBackedProjectsClick, v2Enabled)
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -321,7 +322,8 @@ fun PledgedProjectsOverviewScreen(
 
 @Composable
 fun PPOScreenEmptyState(
-    onSeeAllBackedProjectsClick: () -> Unit
+    onSeeAllBackedProjectsClick: () -> Unit,
+    v2Enabled: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -338,7 +340,7 @@ fun PPOScreenEmptyState(
     ) {
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.Youre_all_caught_up),
+            text = if(v2Enabled) stringResource(id = R.string.fpo_no_funded_backings) else stringResource(id = R.string.Youre_all_caught_up),
             style = typographyV2.headingXL,
         )
 
@@ -346,7 +348,7 @@ fun PPOScreenEmptyState(
 
         Text(
             color = colors.textPrimary,
-            text = stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
+            text = if(v2Enabled) stringResource(id = R.string.fpo_when_projects_youve_backed_have_successfully_funded) else stringResource(id = R.string.When_projects_youve_backed_need_your_attention_youll_see_them_here),
             style = typographyV2.body,
             textAlign = TextAlign.Center
         )

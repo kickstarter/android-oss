@@ -90,6 +90,9 @@
   <!-- TODO: Get translations for this and put it in i18n, then remove  -->
   <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
 
+  <string name="fpo_no_funded_backings" formatted="false">No funded backings</string>
+  <string name="fpo_backings" formatted="false">Backings</string>
+  <string name="fpo_when_projects_youve_backed_have_successfully_funded" formatted="false">When projects you\'ve backed have successfully funded, you\'ll see them here.</string>
 
 
 </resources>

@@ -25,6 +25,7 @@ import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewViewModel
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
@@ -153,6 +154,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                             }
                         },
                         onSecondaryActionButtonClicked = { PPOCard -> },
+                        v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
                     )
                 }
 

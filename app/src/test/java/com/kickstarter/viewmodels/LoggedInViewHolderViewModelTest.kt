@@ -341,8 +341,6 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.backingsV2IsVisible.assertValue(true)
     }
 
-
-
     @After
     fun clear() {
         disposables.clear()

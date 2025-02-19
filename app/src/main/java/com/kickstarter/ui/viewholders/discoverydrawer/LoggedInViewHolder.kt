@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import android.util.Pair
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.compose.Visibility
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding

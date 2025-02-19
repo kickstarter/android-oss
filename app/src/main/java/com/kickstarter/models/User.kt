@@ -11,6 +11,7 @@ class User private constructor(
     private val artsCultureNewsletter: Boolean,
     private val avatar: Avatar,
     private val backedProjectsCount: Int,
+    private val backingActionCount: Int,
     private val createdProjectsCount: Int,
     private val draftProjectsCount: Int,
     private val erroredBackingsCount: Int,
@@ -66,6 +67,7 @@ class User private constructor(
     fun artsCultureNewsletter() = this.artsCultureNewsletter
     fun avatar() = this.avatar
     fun backedProjectsCount() = this.backedProjectsCount
+    fun backingActionCount() = this.backingActionCount
     fun createdProjectsCount() = this.createdProjectsCount
     fun draftProjectsCount() = this.draftProjectsCount
     fun erroredBackingsCount() = this.erroredBackingsCount
@@ -123,6 +125,7 @@ class User private constructor(
         private var artsCultureNewsletter: Boolean = false,
         private var avatar: Avatar = Avatar.builder().build(),
         private var backedProjectsCount: Int = 0,
+        private var backingActionCount: Int = 0,
         private var createdProjectsCount: Int = 0,
         private var draftProjectsCount: Int = 0,
         private var erroredBackingsCount: Int = 0,
@@ -178,6 +181,7 @@ class User private constructor(
         fun artsCultureNewsletter(arN: Boolean?) = apply { this.artsCultureNewsletter = arN ?: false }
         fun avatar(avatar: Avatar?) = apply { avatar?.let { this.avatar = it } }
         fun backedProjectsCount(bPC: Int?) = apply { this.backedProjectsCount = bPC ?: 0 }
+        fun backingActionCount(bPC: Int?) = apply { this.backingActionCount = bPC ?: 0 }
         fun draftProjectsCount(dPC: Int?) = apply { this.draftProjectsCount = dPC ?: 0 }
         fun createdProjectsCount(cPC: Int?) = apply { this.createdProjectsCount = cPC ?: 0 }
         fun erroredBackingsCount(eBC: Int?) = apply { this.erroredBackingsCount = eBC ?: 0 }
@@ -233,6 +237,7 @@ class User private constructor(
             artsCultureNewsletter = artsCultureNewsletter,
             avatar = avatar,
             backedProjectsCount = backedProjectsCount,
+            backingActionCount = backingActionCount,
             createdProjectsCount = createdProjectsCount,
             draftProjectsCount = draftProjectsCount,
             erroredBackingsCount = erroredBackingsCount,
@@ -299,6 +304,7 @@ class User private constructor(
         artsCultureNewsletter = artsCultureNewsletter,
         avatar = avatar,
         backedProjectsCount = backedProjectsCount,
+        backingActionCount = backingActionCount,
         createdProjectsCount = createdProjectsCount,
         draftProjectsCount = draftProjectsCount,
         erroredBackingsCount = erroredBackingsCount,
@@ -376,6 +382,7 @@ class User private constructor(
                 alumniNewsletter() == obj.alumniNewsletter() &&
                 artsCultureNewsletter() == obj.artsCultureNewsletter() &&
                 backedProjectsCount() == obj.backedProjectsCount() &&
+                backingActionCount() == obj.backingActionCount() &&
                 createdProjectsCount() == obj.createdProjectsCount() &&
                 draftProjectsCount() == obj.draftProjectsCount() &&
                 name() == obj.name() &&

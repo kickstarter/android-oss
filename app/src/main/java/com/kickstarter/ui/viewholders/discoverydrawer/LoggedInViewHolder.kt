@@ -2,7 +2,9 @@ package com.kickstarter.ui.viewholders.discoverydrawer
 
 import android.graphics.drawable.Drawable
 import android.util.Pair
+import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.compose.Visibility
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
@@ -67,9 +69,27 @@ class LoggedInViewHolder(
                 }
             }.addToDisposable(disposables)
 
+        this.viewModel.outputs.backingActionCount()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                when {
+                    it.isNullOrZero() -> binding.backingActionCount.visibility = View.GONE
+                    else -> {
+                        binding.backingActionCount.text = NumberUtils.format(it)
+                        binding.backingActionCount.visibility = View.VISIBLE
+                        binding.backingActionCount.setTextColor(ContextCompat.getColor(context(), R.color.kds_alert))
+                    }
+                }
+            }.addToDisposable(disposables)
+
         this.viewModel.outputs.pledgedProjectsIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.drawerProjectAlerts.visibility = it.toVisibility() }
+            .addToDisposable(disposables)
+
+        this.viewModel.outputs.backingsV2IsVisible()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.drawerBackings.visibility = it.toVisibility() }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgedProjectsIndicatorIsVisible()
@@ -92,6 +112,7 @@ class LoggedInViewHolder(
                 binding.drawerProfile.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
                 binding.userContainer.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
                 binding.drawerProjectAlerts.setOnClickListener { this.delegate.loggedInViewHolderPledgedProjectsClick(this) }
+                binding.drawerBackings.setOnClickListener { this.delegate.loggedInViewHolderPledgedProjectsClick(this) }
             }.addToDisposable(disposables)
 
         binding.drawerActivity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }

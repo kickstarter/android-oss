@@ -126,6 +126,49 @@
         android:visibility="gone"/>
 
   </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/drawer_backings"
+      style="@style/DrawerCountContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:contentDescription="@string/tabbar_activity"
+      android:orientation="horizontal"
+      android:visibility="gone">
+
+    <TextView
+        android:id="@+id/backings"
+        style="@style/DrawerTextViewWithCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fpo_backings"
+        app:drawableStartCompat="@drawable/ic_rectangle_stack" />
+
+    <TextView
+        android:id="@+id/backings_beta_tag"
+        style="@style/RewardPill"
+        android:padding="@dimen/grid_1"
+        android:layout_gravity="center"
+        android:textSize="@dimen/badge_superbacker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:text="@string/Beta" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:id="@+id/backing_action_count"
+        style="@style/DrawerCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2000" />
+
+  </LinearLayout>
+
   <LinearLayout
     android:id="@+id/drawer_activity"
     style="@style/DrawerCountContainer"

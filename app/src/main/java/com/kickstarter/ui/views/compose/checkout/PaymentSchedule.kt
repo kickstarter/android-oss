@@ -219,12 +219,11 @@ private fun paymentIncrementStyledCurrency(
     paymentIncrement: PaymentIncrement,
     ksCurrency: KSCurrency?
 ): AnnotatedString {
-    val currencyCode = paymentIncrement.amount().currencyCode.orEmpty()
-    val country = Country.findByCurrencyCode(currencyCode)
-    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, false) }.orEmpty()
+    val country = Country.findByCurrencyCode(paymentIncrement.amount().currencyCode ?: "")
+    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, false) } ?: ""
 
     // Construct the string to format
-    val currencyToFormat = "${currencySymbol.trim()} ${paymentIncrement.amount().amountAsFloat}"
+    val currencyToFormat = "${currencySymbol.trimAllWhitespace()} ${paymentIncrement.amount().amountAsFloat}"
 
     return buildAnnotatedString {
         val currencySymbolIndex = currencyToFormat.findCurrencySymbolIndex()

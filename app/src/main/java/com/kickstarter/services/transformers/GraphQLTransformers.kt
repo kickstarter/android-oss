@@ -791,6 +791,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .amountAsFloat(it.paymentIncrement.amount.paymentIncrementAmount.amountAsFloat)
             .formattedAmount(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
             .formattedAmountWithCode(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+            .amountFormattedInProjectNativeCurrency(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
             .currencyCode(it.paymentIncrement.amount.paymentIncrementAmount.currency)
             .build()
         val scheduleCollection = it.paymentIncrement.scheduledCollection
@@ -1054,6 +1055,7 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
                 .amountAsCents(it.amount.paymentIncrementAmount.amountAsCents)
                 .formattedAmount(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
                 .formattedAmountWithCode(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+                .amountFormattedInProjectNativeCurrency(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
                 .currencyCode(it.amount.paymentIncrementAmount.currency)
                 .build()
 

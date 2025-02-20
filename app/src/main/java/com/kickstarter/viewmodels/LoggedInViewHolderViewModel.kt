@@ -7,6 +7,7 @@ import com.kickstarter.libs.featureflag.FlipperFlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
@@ -29,6 +30,9 @@ interface LoggedInViewHolderViewModel {
         /** Emits the user's unseen activity and errored backings count. */
         fun activityCount(): Observable<Int>
 
+        /** Emits the user's backing action count. */
+        fun backingActionCount(): Observable<Int>
+
         /** Emits the color resource ID of the activity count text color. */
         fun activityCountTextColor(): Observable<Int>
 
@@ -47,6 +51,7 @@ interface LoggedInViewHolderViewModel {
         /** Emits the user to pass to delegate. */
         fun user(): Observable<User>
         fun pledgedProjectsIsVisible(): Observable<Boolean>
+        fun backingsV2IsVisible(): Observable<Boolean>
         fun pledgedProjectsIndicatorIsVisible(): Observable<Boolean>
     }
 
@@ -64,7 +69,9 @@ interface LoggedInViewHolderViewModel {
         private val unreadMessagesCount = BehaviorSubject.create<Int>()
         private val userOutput = BehaviorSubject.create<User>()
         private val pledgedProjectsIsVisible = BehaviorSubject.create<Boolean>()
+        private val backingsV2IsVisible = BehaviorSubject.create<Boolean>()
         private val pledgedProjectsIndicatorIsVisible = BehaviorSubject.create<Boolean>()
+        private val backingActionCount = BehaviorSubject.create<Int>()
 
         private val disposables = CompositeDisposable()
         val inputs: Inputs = this
@@ -115,6 +122,11 @@ interface LoggedInViewHolderViewModel {
                 .subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }
                 .addToDisposable(disposables)
 
+            this.user
+                .map { it.backingActionCount() }
+                .subscribe { this.backingActionCount.onNext(it) }
+                .addToDisposable(disposables)
+
             featureFlagClient.isBackendEnabledFlag(this.apolloClient.userPrivacy(), FlipperFlagKey.FLIPPER_PLEDGED_PROJECTS_OVERVIEW)
                 .compose(Transformers.neverErrorV2())
                 .map { ffEnabledBackend ->
@@ -122,7 +134,12 @@ interface LoggedInViewHolderViewModel {
 
                     return@map ffEnabledMobile && ffEnabledBackend
                 }
+                .filter { featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2).isFalse() }
                 .subscribe { this.pledgedProjectsIsVisible.onNext(it) }
+                .addToDisposable(disposables)
+
+            Observable.just(featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2).isTrue())
+                .subscribe { this.backingsV2IsVisible.onNext(it) }
                 .addToDisposable(disposables)
         }
 
@@ -137,6 +154,8 @@ interface LoggedInViewHolderViewModel {
 
         override fun activityCount(): Observable<Int> = this.activityCount
 
+        override fun backingActionCount(): Observable<Int> = this.backingActionCount
+
         override fun activityCountTextColor(): Observable<Int> = this.activityCountTextColor
 
         override fun avatarUrl(): Observable<String> = this.avatarUrl
@@ -150,6 +169,9 @@ interface LoggedInViewHolderViewModel {
         override fun user(): Observable<User> = this.userOutput
 
         override fun pledgedProjectsIsVisible(): Observable<Boolean> = this.pledgedProjectsIsVisible
+
+        override fun backingsV2IsVisible(): Observable<Boolean> = this.backingsV2IsVisible
+
         override fun pledgedProjectsIndicatorIsVisible(): Observable<Boolean> = this.pledgedProjectsIndicatorIsVisible
     }
 }

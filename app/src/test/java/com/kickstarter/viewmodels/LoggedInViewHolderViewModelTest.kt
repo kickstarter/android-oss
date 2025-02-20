@@ -21,12 +21,14 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoggedInViewHolderViewModel.ViewModel
     private val activityCount = TestSubscriber<Int>()
     private val activityCountTextColor = TestSubscriber<Int>()
+    private val backingActionCount = TestSubscriber<Int>()
     private val avatarUrl = TestSubscriber<String>()
     private val dashboardRowIsGone = TestSubscriber<Boolean>()
     private val name = TestSubscriber<String>()
     private val unreadMessagesCount = TestSubscriber<Int>()
     private val user = TestSubscriber<User>()
     private val pledgedProjectsIsVisible = TestSubscriber<Boolean>()
+    private val backingsV2IsVisible = TestSubscriber<Boolean>()
     private val pledgedProjectsIndicatorIsVisible = TestSubscriber<Boolean>()
     private val disposables = CompositeDisposable()
 
@@ -34,12 +36,14 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm = LoggedInViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.activityCount().subscribe { this.activityCount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.activityCountTextColor().subscribe { this.activityCountTextColor.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.backingActionCount().subscribe { this.backingActionCount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.avatarUrl().subscribe { this.avatarUrl.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.dashboardRowIsGone().subscribe { this.dashboardRowIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.name().subscribe { this.name.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.unreadMessagesCount().subscribe { this.unreadMessagesCount.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.user().subscribe { this.user.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgedProjectsIsVisible().subscribe { this.pledgedProjectsIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.backingsV2IsVisible().subscribe { this.backingsV2IsVisible.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgedProjectsIndicatorIsVisible().subscribe { this.pledgedProjectsIndicatorIsVisible.onNext(it) }.addToDisposable(disposables)
     }
 
@@ -204,7 +208,10 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         }
         val ffClient = object : MockFeatureFlagClient() {
             override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return true
+                return when (FlagKey) {
+                    com.kickstarter.libs.featureflag.FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2 -> false
+                    else -> true
+                }
             }
         }
 
@@ -216,6 +223,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         this.pledgedProjectsIsVisible.assertValue(true)
+        this.backingsV2IsVisible.assertValue(false)
     }
 
     @Test
@@ -240,7 +248,10 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         }
         val ffClient = object : MockFeatureFlagClient() {
             override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return true
+                return when (FlagKey) {
+                    com.kickstarter.libs.featureflag.FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2 -> false
+                    else -> true
+                }
             }
         }
 
@@ -252,6 +263,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         this.pledgedProjectsIsVisible.assertValue(false)
+        this.backingsV2IsVisible.assertValue(false)
     }
 
     @Test
@@ -289,6 +301,44 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         this.pledgedProjectsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun `test v2 feature flag enabled, show v2 and not v1`() {
+        val privacy = UserPrivacy(
+            "Some Name",
+            "some@email.com",
+            true,
+            true,
+            true,
+            true,
+            "USD",
+            enabledFeatures = listOf("some_key_here")
+        )
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacy> {
+                return Observable.just(
+                    privacy
+                )
+            }
+        }
+
+        val ffClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .featureFlagClient(ffClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.pledgedProjectsIsVisible.assertNoValues()
+        this.backingsV2IsVisible.assertValue(true)
     }
 
     @After

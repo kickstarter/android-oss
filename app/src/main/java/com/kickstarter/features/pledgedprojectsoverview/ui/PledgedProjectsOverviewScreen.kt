@@ -264,9 +264,6 @@ fun PledgedProjectsOverviewScreen(
                                 sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
                                 shippingAddress = it.deliveryAddress()?.getFormattedAddress() ?: "",
                                 onActionButtonClicked = {
-                                    onPrimaryActionButtonClicked(it)
-                                },
-                                onSecondaryActionButtonClicked = {
                                     when (it.viewType()) {
                                         PPOCardViewType.CONFIRM_ADDRESS -> {
                                             analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
@@ -277,9 +274,12 @@ fun PledgedProjectsOverviewScreen(
                                             openConfirmAddressAlertDialog.value = true
                                         }
                                         else -> {
-                                            onSecondaryActionButtonClicked(it)
+                                            onPrimaryActionButtonClicked(it)
                                         }
                                     }
+                                },
+                                onSecondaryActionButtonClicked = {
+                                    onSecondaryActionButtonClicked(it)
                                 },
                             )
                         }

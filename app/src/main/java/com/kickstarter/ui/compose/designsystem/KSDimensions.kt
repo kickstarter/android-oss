@@ -29,6 +29,7 @@ data class KSDimensions(
     val listItemSpacingMediumSmall: Dp = Dp.Unspecified,
     val listItemSpacingMedium: Dp = Dp.Unspecified,
     val listItemSpacingLarge: Dp = Dp.Unspecified,
+    val radiusExtraSmall: Dp = Dp.Unspecified,
     val radiusSmall: Dp = Dp.Unspecified,
     val radiusMediumSmall: Dp = Dp.Unspecified,
     val radiusMedium: Dp = Dp.Unspecified,
@@ -63,7 +64,8 @@ data class KSDimensions(
     val cardWidth: Dp = Dp.Unspecified,
     val cardImageHeight: Dp = Dp.Unspecified,
     val cardImageAspectRatio: Float = Float.NaN,
-
+    val loadingSpinnerSize: Dp = Dp.Unspecified,
+    val strokeWith: Dp = Dp.Unspecified,
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -71,6 +73,7 @@ val LocalKSCustomDimensions = staticCompositionLocalOf {
 }
 
 val KSStandardDimensions = KSDimensions(
+    strokeWith = 2.dp,
     dividerThickness = 1.dp,
     paddingXSmall = 4.dp,
     paddingSmall = 8.dp,
@@ -92,6 +95,7 @@ val KSStandardDimensions = KSDimensions(
     listItemSpacingMediumSmall = 12.dp,
     listItemSpacingMedium = 16.dp,
     listItemSpacingLarge = 24.dp,
+    radiusExtraSmall = 4.dp,
     radiusSmall = 6.dp,
     radiusMediumSmall = 9.dp,
     radiusMedium = 12.dp,
@@ -125,5 +129,6 @@ val KSStandardDimensions = KSDimensions(
     plotChargeItemWidth = 100.dp,
     cardWidth = 294.dp,
     cardImageHeight = 196.dp,
-    cardImageAspectRatio = 3f / 2f
+    cardImageAspectRatio = 3f / 2f,
+    loadingSpinnerSize = 24.dp
 )

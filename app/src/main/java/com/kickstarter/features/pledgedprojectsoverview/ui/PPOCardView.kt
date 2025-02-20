@@ -251,7 +251,6 @@ fun ProjectPledgeSummaryView(
         Column(
             modifier = Modifier
                 .weight(0.75f)
-                .height(dimensions.clickableButtonHeight)
         ) {
             Text(
                 text = projectName ?: "",

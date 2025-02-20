@@ -219,41 +219,55 @@ private fun paymentIncrementStyledCurrency(
     paymentIncrement: PaymentIncrement,
     ksCurrency: KSCurrency?
 ): AnnotatedString {
-    val country = Country.findByCurrencyCode(paymentIncrement.amount().currencyCode ?: "")
-    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, false) } ?: ""
+    val currencyCode = paymentIncrement.amount().currencyCode.orEmpty()
+    val country = Country.findByCurrencyCode(currencyCode)
+    val currencySymbol = country?.let { ksCurrency?.getCurrencySymbol(it, false) }.orEmpty()
 
-    val currencyToFormat = "${currencySymbol.trimAllWhitespace()} ${paymentIncrement.amount().amountAsFloat}"
-    val annotatedString = currencyToFormat.let {
-        return@let buildAnnotatedString {
-            val currencySymbolIndex = it.findCurrencySymbolIndex()
-            val dotIndex = it.indexOf('.')
+    // Construct the string to format
+    val currencyToFormat = "${currencySymbol.trim()} ${paymentIncrement.amount().amountAsFloat}"
 
-            if (currencySymbolIndex != null && dotIndex != -1) {
-                // Append "USD $" with smaller size and top alignment
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = typographyV2.bodyXL.fontSize * 0.6f, // Relative to typography style
-                        baselineShift = BaselineShift(0.25f) // Align on top
-                    )
-                ) {
-                    append(it.substring(0, currencySymbolIndex + 1))
-                }
-                append(it.substring(currencySymbolIndex + 1, dotIndex))
-                // Append ".75" with smaller size and top alignment
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = typographyV2.bodyXL.fontSize * 0.6f, // Relative to typography style
-                        baselineShift = BaselineShift(0.25f) // Align on top
-                    )
-                ) {
-                    append(it.substring(dotIndex))
-                }
-            } else {
-                append(it)
+    return buildAnnotatedString {
+        val currencySymbolIndex = currencyToFormat.findCurrencySymbolIndex()
+
+        // Find the last occurrence of '.' and ',' to determine the decimal separator
+        val lastDotIndex = currencyToFormat.lastIndexOf('.')
+        val lastCommaIndex = currencyToFormat.lastIndexOf(',')
+        val dotIndex = maxOf(lastDotIndex, lastCommaIndex)
+
+        // Verify that we found a valid separator and that it's after the currency symbol.
+        if (currencySymbolIndex != null && dotIndex != -1 && dotIndex > currencySymbolIndex) {
+            // Append the part with the currency symbol with smaller size and top alignment
+            withStyle(
+                style = SpanStyle(
+                    fontSize = typographyV2.bodyXL.fontSize * 0.6f,
+                    baselineShift = BaselineShift(0.25f)
+                )
+            ) {
+                append(currencyToFormat.substring(0, currencySymbolIndex + 1))
             }
+
+            // Append the integer part
+            append(currencyToFormat.substring(currencySymbolIndex + 1, dotIndex))
+
+            // Append the decimal part with smaller size and top alignment.
+            // Ensure that only the two decimal digits after the separator are styled.
+            val decimalEndIndex = (dotIndex + 3).coerceAtMost(currencyToFormat.length)
+            withStyle(
+                style = SpanStyle(
+                    fontSize = typographyV2.bodyXL.fontSize * 0.6f,
+                    baselineShift = BaselineShift(0.25f)
+                )
+            ) {
+                append(currencyToFormat.substring(dotIndex, decimalEndIndex))
+            }
+            // Append any remaining characters (if any) with the default style.
+            if (decimalEndIndex < currencyToFormat.length) {
+                append(currencyToFormat.substring(decimalEndIndex))
+            }
+        } else {
+            append(currencyToFormat)
         }
     }
-    return annotatedString
 }
 
 @Composable

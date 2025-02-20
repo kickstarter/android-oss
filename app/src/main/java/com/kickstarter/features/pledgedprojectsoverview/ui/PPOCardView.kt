@@ -44,7 +44,6 @@ import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
-import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -335,7 +334,7 @@ fun ShippingAddressView(
             .padding(dimensions.paddingSmall)
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
-        if(!shippingAddress.isNullOrEmpty()) {
+        if (!shippingAddress.isNullOrEmpty()) {
             Text(
                 text = stringResource(id = R.string.Shipping_address),
                 modifier = Modifier
@@ -352,7 +351,7 @@ fun ShippingAddressView(
         Row(
             modifier = Modifier.weight(0.75f)
         ) {
-            if(!shippingAddress.isNullOrEmpty()) {
+            if (!shippingAddress.isNullOrEmpty()) {
                 Text(
                     text = shippingAddress,
                     color = colors.textPrimary,

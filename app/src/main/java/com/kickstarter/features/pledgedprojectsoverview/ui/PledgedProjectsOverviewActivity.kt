@@ -141,6 +141,11 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     )
                                 }
 
+                                else -> { }
+                            }
+                        },
+                        onSecondaryActionButtonClicked = { PPOCard ->
+                            when (PPOCard.viewType()) {
                                 PPOCardViewType.CONFIRM_ADDRESS -> {
                                     env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
@@ -149,11 +154,9 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     )
                                 }
 
-                                else -> {
-                                }
+                                else -> { }
                             }
                         },
-                        onSecondaryActionButtonClicked = { PPOCard -> },
                         v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
                     )
                 }

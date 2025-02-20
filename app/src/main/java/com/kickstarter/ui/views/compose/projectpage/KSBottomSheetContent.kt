@@ -24,7 +24,7 @@ import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 enum class KSBottomSheetContentTestTag() {
     TITLE,
@@ -61,7 +61,7 @@ fun KSBottomSheetContent(
     ) {
         Text(
             text = title,
-            style = typography.title3Bold,
+            style = typographyV2.headingXL,
             color = colors.textPrimary,
             modifier = Modifier.testTag(KSBottomSheetContentTestTag.TITLE.name)
         )
@@ -69,7 +69,7 @@ fun KSBottomSheetContent(
 
         Text(
             text = body,
-            style = typography.callout,
+            style = typographyV2.bodyLG,
             color = colors.textPrimary,
             modifier = Modifier.testTag(KSBottomSheetContentTestTag.BODY.name)
         )

@@ -758,11 +758,13 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
     val projectId = decodeRelayId(backingGr?.project?.project?.id) ?: -1
     val shippingAmount = backingGr?.shippingAmount
     val items = backingGr?.reward?.items
+    val rewardImage = backingGr?.reward?.rewardImage
     val reward = backingGr?.reward?.reward?.let { reward ->
         return@let rewardTransformer(
             reward,
             allowedAddons = reward.allowedAddons.isNotNull(),
-            rewardItems = complexRewardItemsTransformer(items?.rewardItems)
+            rewardItems = complexRewardItemsTransformer(items?.rewardItems),
+            rewardImage = rewardImage
         )
     }
 
@@ -833,7 +835,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
  */
 fun getAddOnsList(addOns: com.kickstarter.fragment.Backing.AddOns): List<Reward> {
     val rewardsList = addOns.nodes?.mapNotNull { node ->
-        node?.let { rewardTransformer(it.reward) }
+        node?.let { rewardTransformer(it.reward, rewardImage = it.rewardImage) }
     }
 
     val mapHolder = mutableMapOf<Long, Reward>()

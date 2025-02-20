@@ -36,7 +36,6 @@ import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.projectpage.ProjectAIViewModel
 
@@ -169,7 +168,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
 
         Text(
             text = stringResource(id = R.string.What_parts_of_your_project_will_use_AI_generated_content),
-            style = typography.caption1Medium,
+            style = typographyV2.headingSM,
             color = colors.kds_support_700,
             modifier = Modifier.testTag(TestTag.GENERATION_SECTION_DETAILS_QUESTION.name)
         )
@@ -198,7 +197,7 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
 
         Text(
             text = stringResource(id = R.string.Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI),
-            style = typography.caption1Medium,
+            style = typographyV2.headingSM,
             color = colors.kds_support_700,
             modifier = Modifier.testTag(TestTag.GENERATION_SECTION_CONSENT_QUESTION.name)
         )

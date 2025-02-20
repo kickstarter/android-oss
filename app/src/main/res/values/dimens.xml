@@ -185,6 +185,7 @@
   <!-- Native Checkout -->
   <dimen name="fab_radius">@dimen/grid_5</dimen>
   <dimen name="reward_card_radius">@dimen/grid_2</dimen>
+  <string name="reward_card_image_aspect_ratio">3:2</string>
   <dimen name="circle_width">4dp</dimen>
   <dimen name="circle_radius">4dp</dimen>
   <dimen name="indicator_radius">4dp</dimen>

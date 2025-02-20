@@ -184,6 +184,7 @@ fragment backing on Backing {
         items {
             ... rewardItems
         }
+        ...rewardImage
     }
     backer {
         ... user
@@ -194,6 +195,7 @@ fragment backing on Backing {
             items {
                 ... rewardItems
             }
+            ...rewardImage
         }
     }
 }

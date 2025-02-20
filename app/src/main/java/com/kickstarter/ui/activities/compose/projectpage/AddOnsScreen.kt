@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.getCurrencySymbols
@@ -112,6 +114,19 @@ fun AddOnsScreen(
             ksCurrency = it
         ).toString()
     } ?: ""
+
+    // Preload add ons images asynchronously
+    val imageLoader = ImageLoader.Builder(context)
+        .crossfade(true)
+        .build()
+    for (reward in addOns) {
+        reward.image()?.let {
+            val request = ImageRequest.Builder(context)
+                .data(reward.image()?.full())
+                .build()
+            imageLoader.enqueue(request)
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -239,6 +254,7 @@ fun AddOnsScreen(
 
                     AddOnsContainer(
                         rewardId = reward.id(),
+                        image = reward.image(),
                         title = reward.title() ?: "",
                         amount = environment.ksCurrency()?.format(
                             reward.minimum(),

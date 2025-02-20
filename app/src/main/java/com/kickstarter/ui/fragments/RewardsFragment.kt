@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
 import com.kickstarter.libs.Environment
@@ -68,6 +70,20 @@ class RewardsFragment : Fragment() {
                         val projectData = rewardSelectionUIState.project
                         val indexOfBackedReward = rewardSelectionUIState.initialRewardIndex
                         val rewards = shippingUIState.filteredRw
+
+                        // Preload reward images asynchronously
+                        val imageLoader = ImageLoader.Builder(context)
+                            .crossfade(true)
+                            .build()
+                        for (reward in rewards) {
+                            reward.image()?.let {
+                                val request = ImageRequest.Builder(context)
+                                    .data(reward.image()?.full())
+                                    .build()
+                                imageLoader.enqueue(request)
+                            }
+                        }
+
                         val project = projectData.project()
                         val backing = projectData.backing()
 

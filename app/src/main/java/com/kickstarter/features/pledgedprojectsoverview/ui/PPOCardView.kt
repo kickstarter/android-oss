@@ -331,7 +331,7 @@ fun ShippingAddressView(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingSmall)
+            .padding(top = dimensions.paddingSmall, bottom = dimensions.paddingSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingXSmall)
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
         if (!shippingAddress.isNullOrEmpty()) {

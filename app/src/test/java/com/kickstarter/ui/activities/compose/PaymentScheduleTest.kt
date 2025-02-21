@@ -443,6 +443,6 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         amountText.assertCountEquals(5)
 
         // Assert Currency text
-        amountText.assertAll(hasText("US$ 99.75", ignoreCase = true))
+        amountText.assertAll(hasText("99.75$", ignoreCase = true))
     }
 }

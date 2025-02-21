@@ -207,7 +207,7 @@ fun PaymentRow(
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            text = paymentIncrementStyledCurrency(paymentIncrement, ksCurrency),
+            text = paymentIncrement.amount().amountFormattedInProjectNativeCurrency ?: "",
             style = typographyV2.bodyXL,
             color = colors.textPrimary
         )

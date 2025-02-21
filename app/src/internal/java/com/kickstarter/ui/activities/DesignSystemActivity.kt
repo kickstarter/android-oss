@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -38,8 +39,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.FBLoginButton
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
+import com.kickstarter.ui.compose.designsystem.KSButton
+import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSCheckbox
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSClickableText
@@ -110,6 +114,7 @@ fun DesignSystemViewPreview() {
     }
 }
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit) {
@@ -156,6 +161,10 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 ButtonsVisuals()
+
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+                NewDesignSystemButtonsVisuals()
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -341,6 +350,261 @@ fun ButtonsVisuals() {
 
             KSSmallWhiteButton(onClickAction = {}, text = "SMALL", isEnabled = true)
         }
+    }
+}
+
+@Composable
+fun NewDesignSystemButtonsVisuals() {
+    Column {
+        Text(
+            text = "New Design System Buttons",
+            style = typographyV2.title1Bold,
+            color = colors.kds_support_700
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Filled,
+            text = "Filled",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Filled,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Filled,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Filled,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Green,
+            text = "Green",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Green,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Green,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Green,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledInverted,
+            text = "Inverted",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledInverted,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledInverted,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledInverted,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledDestructive,
+            text = "Destructive",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledDestructive,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledDestructive,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.FilledDestructive,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Borderless,
+            text = "Borderless",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Borderless,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Borderless,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Borderless,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Outlined,
+            text = "Outlined",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Outlined,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Outlined,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.Outlined,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.OutlinedDestructive,
+            text = "Outlined Destructive",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.OutlinedDestructive,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.OutlinedDestructive,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.OutlinedDestructive,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.BorderlessDestructive,
+            text = "Borderless Destructive",
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.BorderlessDestructive,
+            text = "Pressed",
+            isPressed = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.BorderlessDestructive,
+            text = "Disabled",
+            isEnabled = false,
+            imageId = R.drawable.icon_eye_gray
+        )
+        KSButton(
+            onClickAction = {},
+            type = KSButtonType.BorderlessDestructive,
+            text = "Loading",
+            isLoading = true,
+            imageId = R.drawable.icon_eye_gray
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        FBLoginButton(onClickAction = {}, text = "Continue with Facebook")
+        FBLoginButton(onClickAction = {}, text = "Continue with Facebook", isPressed = true)
     }
 }
 
@@ -563,7 +827,11 @@ fun FootersVisuals() {
 @Composable
 fun ClickableText() {
     Column {
-        Text(text = "Clickable Text", style = typographyV2.title1Bold, color = colors.kds_support_700)
+        Text(
+            text = "Clickable Text",
+            style = typographyV2.title1Bold,
+            color = colors.kds_support_700
+        )
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -592,7 +860,11 @@ fun Dividers() {
 fun TypographyVisuals() {
     Column {
         // NEW DESIGN SYSTEM
-        Text(text = "Heading2XL", style = typographyV2.heading2XL, color = colors.kds_support_700)
+        Text(
+            text = "Heading2XL",
+            style = typographyV2.heading2XL,
+            color = colors.kds_support_700
+        )
         Text(text = "HeadingXL", style = typographyV2.headingXL, color = colors.kds_support_700)
         Text(text = "HeadingLG", style = typographyV2.headingLG, color = colors.kds_support_700)
         Text(text = "HeadingMD", style = typographyV2.headingMD, color = colors.kds_support_700)
@@ -602,21 +874,49 @@ fun TypographyVisuals() {
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Text(text = "BodyXL", style = typographyV2.bodyXL, color = colors.kds_support_700)
-        Text(text = "BodyBoldXL", style = typographyV2.bodyBoldXL, color = colors.kds_support_700)
+        Text(
+            text = "BodyBoldXL",
+            style = typographyV2.bodyBoldXL,
+            color = colors.kds_support_700
+        )
         Text(text = "BodyLG", style = typographyV2.bodyLG, color = colors.kds_support_700)
-        Text(text = "BodyBoldLG", style = typographyV2.bodyBoldLG, color = colors.kds_support_700)
+        Text(
+            text = "BodyBoldLG",
+            style = typographyV2.bodyBoldLG,
+            color = colors.kds_support_700
+        )
         Text(text = "BodyMD", style = typographyV2.bodyMD, color = colors.kds_support_700)
-        Text(text = "BodyBoldMD", style = typographyV2.bodyBoldMD, color = colors.kds_support_700)
+        Text(
+            text = "BodyBoldMD",
+            style = typographyV2.bodyBoldMD,
+            color = colors.kds_support_700
+        )
         Text(text = "BodySM", style = typographyV2.bodySM, color = colors.kds_support_700)
-        Text(text = "BodyBoldSM", style = typographyV2.bodyBoldSM, color = colors.kds_support_700)
+        Text(
+            text = "BodyBoldSM",
+            style = typographyV2.bodyBoldSM,
+            color = colors.kds_support_700
+        )
         Text(text = "BodyXS", style = typographyV2.bodyXS, color = colors.kds_support_700)
-        Text(text = "BodyBoldXS", style = typographyV2.bodyBoldXS, color = colors.kds_support_700)
+        Text(
+            text = "BodyBoldXS",
+            style = typographyV2.bodyBoldXS,
+            color = colors.kds_support_700
+        )
         Text(text = "BodyXXS", style = typographyV2.bodyXXS, color = colors.kds_support_700)
-        Text(text = "BodyBoldXXS", style = typographyV2.bodyBoldXXS, color = colors.kds_support_700)
+        Text(
+            text = "BodyBoldXXS",
+            style = typographyV2.bodyBoldXXS,
+            color = colors.kds_support_700
+        )
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
-        Text(text = "ButtonLabel", style = typographyV2.buttonLabel, color = colors.kds_support_700)
+        Text(
+            text = "ButtonLabel",
+            style = typographyV2.buttonLabel,
+            color = colors.kds_support_700
+        )
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
@@ -629,15 +929,39 @@ fun TypographyVisuals() {
 
         // OLD DESIGN SYSTEM
         Text(text = "Title1", style = typographyV2.title1, color = colors.kds_support_700)
-        Text(text = "Title1Bold", style = typographyV2.title1Bold, color = colors.kds_support_700)
+        Text(
+            text = "Title1Bold",
+            style = typographyV2.title1Bold,
+            color = colors.kds_support_700
+        )
         Text(text = "Title2", style = typographyV2.title2, color = colors.kds_support_700)
-        Text(text = "Title2Bold", style = typographyV2.title2Bold, color = colors.kds_support_700)
-        Text(text = "TitleRewardBold", style = typographyV2.titleRewardBold, color = colors.kds_support_700)
+        Text(
+            text = "Title2Bold",
+            style = typographyV2.title2Bold,
+            color = colors.kds_support_700
+        )
+        Text(
+            text = "TitleRewardBold",
+            style = typographyV2.titleRewardBold,
+            color = colors.kds_support_700
+        )
         Text(text = "Headline", style = typographyV2.headLine, color = colors.kds_support_700)
         Text(text = "Body", style = typographyV2.body, color = colors.kds_support_700)
         Text(text = "Footnote", style = typographyV2.footNote, color = colors.kds_support_700)
-        Text(text = "FootnoteMedium", style = typographyV2.footNoteMedium, color = colors.kds_support_700)
-        Text(text = "SubHeadline", style = typographyV2.subHeadline, color = colors.kds_support_700)
-        Text(text = "SubHeadlineMedium", style = typographyV2.subHeadlineMedium, color = colors.kds_support_700)
+        Text(
+            text = "FootnoteMedium",
+            style = typographyV2.footNoteMedium,
+            color = colors.kds_support_700
+        )
+        Text(
+            text = "SubHeadline",
+            style = typographyV2.subHeadline,
+            color = colors.kds_support_700
+        )
+        Text(
+            text = "SubHeadlineMedium",
+            style = typographyV2.subHeadlineMedium,
+            color = colors.kds_support_700
+        )
     }
 }

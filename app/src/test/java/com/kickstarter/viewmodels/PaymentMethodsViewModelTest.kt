@@ -88,9 +88,9 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun _getStoredCards(): List<StoredCard> {
+                override suspend fun _getStoredCards(): Result<List<StoredCard>> {
                     delay(1000)
-                    return Collections.singletonList(card)
+                    return Result.success(Collections.singletonList(card))
                 }
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.singletonList(card))
@@ -115,8 +115,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testDividerIsVisible_noCards() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun _getStoredCards(): List<StoredCard> {
-                    return getStoredCards().blockingSingle()
+                override suspend fun _getStoredCards(): Result<List<StoredCard>> {
+                    return getStoredCards().runCatching { blockingSingle() }
                 }
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.emptyList())
@@ -131,8 +131,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testErrorGettingCards() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun _getStoredCards(): List<StoredCard> {
-                    return getStoredCards().blockingSingle()
+                override suspend fun _getStoredCards(): Result<List<StoredCard>> {
+                    return getStoredCards().runCatching { blockingSingle() }
                 }
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.error(Exception("oops"))
@@ -247,8 +247,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(card)
                 }
 
-                override suspend fun _getStoredCards(): List<StoredCard> {
-                    return getStoredCards().blockingSingle()
+                override suspend fun _getStoredCards(): Result<List<StoredCard>> {
+                    return getStoredCards().runCatching { blockingSingle() }
                 }
 
                 override fun getStoredCards(): Observable<List<StoredCard>> {
@@ -296,8 +296,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
                     return Observable.error(Exception(errorString))
                 }
 
-                override suspend fun _getStoredCards(): List<StoredCard> {
-                    return getStoredCards().blockingSingle()
+                override suspend fun _getStoredCards(): Result<List<StoredCard>> {
+                    return getStoredCards().runCatching { blockingSingle() }
                 }
 
                 override fun getStoredCards(): Observable<List<StoredCard>> {

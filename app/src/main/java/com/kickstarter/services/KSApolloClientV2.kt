@@ -1,10 +1,15 @@
 package com.kickstarter.services
 
 import android.util.Pair
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.rx2.rxFlowable
 import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
@@ -116,9 +121,10 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.rx2.asObservable
+import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 
 interface ApolloClientTypeV2 {
@@ -127,7 +133,7 @@ interface ApolloClientTypeV2 {
     fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope>
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
-    suspend fun _getStoredCards(): List<StoredCard>
+    suspend fun _getStoredCards(): Result<List<StoredCard>>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
     fun createFlagging(
@@ -388,37 +394,89 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
-    override suspend fun _getStoredCards(): List<StoredCard> {
-        val query = UserPaymentsQuery()
-        var ret = listOf<StoredCard>()
-        try {
-            // `single()` vs `singleOrNull()`
-            val response = this.service.query(query).toFlow().single()
+    sealed class KSApolloClientV2Exception(
+        message: String? = null,
+        cause: Throwable? = null
+    ) : Exception(message, cause) {
+        class NoInternet(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class Timeout(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class TooManyRequests(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        open class ApiError(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class BadUserInput(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : ApiError(message, cause)
+    }
 
-            if (response.hasErrors()) {
-                // parse API errors into specific type
-                throw Exception(response.errors?.first()?.message)
+    private fun buildClientException(errors: List<Error>?): KSApolloClientV2Exception {
+        /* Create a strategy for transforming a list of Errors into an Exception...
+         * Here's a bad example: */
+        val first = errors?.first()
+        return if (first != null && first.message.contains("bad user input"))
+            KSApolloClientV2Exception.BadUserInput(first.message)
+        else
+            KSApolloClientV2Exception.ApiError(first?.message)
+    }
+
+    private fun ApolloException.toClientException(): Exception =
+        when (this) {
+            is ApolloNetworkException -> {
+                when (cause) {
+                    is SocketTimeoutException -> KSApolloClientV2Exception.Timeout()
+                    else -> KSApolloClientV2Exception.NoInternet()
+                }
             }
-
-            ret = response.data?.me?.storedCards?.nodes?.filterNotNull()?.map { cardData ->
-                StoredCard.builder()
-                    .expiration(cardData.expirationDate)
-                    .id(cardData.id)
-                    .lastFourDigits(cardData.lastFour)
-                    .type(cardData.type)
-                    .stripeCardId(cardData.stripeCardId)
-                    .build()
-            } ?: listOf()
-        } catch (apolloException: ApolloException) {
-            // parse network errors into specific type
-        } catch (e: Exception) {
-            // Exceptions created for API errors, thrown from `single()`, etc.
+            is ApolloHttpException -> {
+                when (statusCode) {
+                    429 -> KSApolloClientV2Exception.TooManyRequests()
+                    // ...
+                    else -> this
+                }
+            }
+            else -> this
         }
-        return ret
+
+    private suspend fun <D : Operation.Data> ApolloCall<D>.execute1(): ApolloResponse<D> =
+        try {
+            val response = this.toFlow().first()
+            if (response.hasErrors())
+                throw buildClientException(response.errors)
+            else
+                response
+        } catch (apolloException: ApolloException) {
+            throw apolloException.toClientException()
+        }
+
+    override suspend fun _getStoredCards(): Result<List<StoredCard>> = runCatching {
+        val query = UserPaymentsQuery()
+
+        val response = this.service.query(query).execute1()
+
+        response.data?.me?.storedCards?.nodes?.filterNotNull()?.map { cardData ->
+            StoredCard.builder()
+                .expiration(cardData.expirationDate)
+                .id(cardData.id)
+                .lastFourDigits(cardData.lastFour)
+                .type(cardData.type)
+                .stripeCardId(cardData.stripeCardId)
+                .build()
+        } ?: listOf()
     }
 
     override fun getStoredCards(): Observable<List<StoredCard>> =
-        emitAsObservable { _getStoredCards() }
+        emitAsObservable { _getStoredCards().getOrThrow() }
 
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.defer {

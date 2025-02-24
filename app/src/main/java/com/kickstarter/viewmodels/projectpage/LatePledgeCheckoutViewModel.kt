@@ -21,6 +21,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.services.KSApolloClientV2
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.type.CreditCardPaymentType
@@ -151,7 +152,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
                 // `userPrivacy()` should be migrated to a suspending function
                 val privacy = async { apolloClient.userPrivacy().asFlow().first() }
-                val cards = async { apolloClient._getStoredCards() }
+                val cards = async { apolloClient._getStoredCards().getOrThrow() }
 
                 // TODO: change to Pair?
                 val privacyAndCards = awaitAll(privacy, cards)
@@ -220,16 +221,23 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     private suspend fun refreshUserCards() {
-        apolloClient
-            .runCatching {
-                emitCurrentState(isLoading = true)
-                storedCards = apolloClient._getStoredCards()
-            }
+        emitCurrentState(isLoading = true)
+        apolloClient._getStoredCards()
             .onSuccess {
+                storedCards = it
                 emitCurrentState()
             }
             .onFailure {
-                errorAction.invoke(null)
+                val specificMessage = when (it) {
+                    is KSApolloClientV2.KSApolloClientV2Exception.NoInternet ->
+                        "Check your internet and try again" // <-> i18n
+                    is KSApolloClientV2.KSApolloClientV2Exception.BadUserInput ->
+                        "Don't be a bad user" // <-> i18n
+                    is KSApolloClientV2.KSApolloClientV2Exception.ApiError ->
+                        it.message
+                    else -> null
+                }
+                errorAction.invoke(specificMessage)
                 emitCurrentState()
             }
     }

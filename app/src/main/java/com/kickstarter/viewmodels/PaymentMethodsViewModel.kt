@@ -110,12 +110,8 @@ class PaymentMethodsViewModel(
     init {
 
         scope.launch {
-            apolloClient
-                .runCatching {
-                    this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
-                    val ret = _getStoredCards()
-                    ret
-                }
+            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+            apolloClient._getStoredCards()
                 .onSuccess {
                     this@PaymentMethodsViewModel.progressBarIsVisible.onNext(false)
                     this@PaymentMethodsViewModel.cards.onNext(it)
@@ -167,18 +163,14 @@ class PaymentMethodsViewModel(
         compositeDisposable.add(
             this.refreshCards.subscribe {
                 scope.launch {
-                    apolloClient
-                        .runCatching {
-                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
-                            val ret = _getStoredCards()
-                            ret
-                        }
+                    this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                    apolloClient._getStoredCards()
                         .onSuccess {
-                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(false)
                             this@PaymentMethodsViewModel.cards.onNext(it)
                         }
                         .onFailure {
-                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(true)
+                            this@PaymentMethodsViewModel.progressBarIsVisible.onNext(false)
                             // log `it`
                         }
                 }

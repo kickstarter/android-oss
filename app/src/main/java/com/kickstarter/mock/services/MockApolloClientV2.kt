@@ -147,8 +147,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just("")
     }
 
-    override suspend fun _getStoredCards(): List<StoredCard> =
-        getStoredCards().blockingSingle() // or `blockingFirst()`
+    override suspend fun _getStoredCards(): Result<List<StoredCard>> =
+        getStoredCards().runCatching { blockingSingle() } // or `blockingFirst()`
 
     override fun getStoredCards(): io.reactivex.Observable<List<StoredCard>> {
         return io.reactivex.Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))

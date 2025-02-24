@@ -270,7 +270,7 @@ fun PledgedProjectsOverviewScreen(
                             }
                         }
                     }
-        },
+                },
             )
         },
         backgroundColor = colors.backgroundSurfacePrimary

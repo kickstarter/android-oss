@@ -28,15 +28,14 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
-
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun BetaMessagingBottomSheetPreview() {
     KSTheme {
-            BetaMessagingBottomSheet(
-                onSeeAllBackedProjectsClick = {}
-            )
+        BetaMessagingBottomSheet(
+            onSeeAllBackedProjectsClick = {}
+        )
     }
 }
 
@@ -78,7 +77,7 @@ fun BetaMessagingBottomSheet(
             style = typographyV2.subHeadlineMedium,
             color = colors.textSecondary
         )
-        
+
         Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
         Column(
@@ -152,7 +151,7 @@ fun BetaMessagingBottomSheet(
         }
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
         Text(
-            text =  stringResource(id = R.string.fpo_live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab),
+            text = stringResource(id = R.string.fpo_live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab),
             style = typographyV2.bodyLG,
             color = colors.textPrimary
         )

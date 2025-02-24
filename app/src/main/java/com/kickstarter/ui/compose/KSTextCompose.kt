@@ -83,7 +83,6 @@ fun TitleTextPreview() {
                 imageVector = ImageVector.vectorResource(id = R.drawable.icon__check_green),
                 modifier = Modifier.padding()
             )
-
         }
     }
 }

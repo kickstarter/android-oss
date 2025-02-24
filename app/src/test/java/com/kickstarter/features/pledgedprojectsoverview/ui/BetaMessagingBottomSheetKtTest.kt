@@ -17,7 +17,7 @@ BetaMessagingBottomSheetKtTest : KSRobolectricTestCase() {
         var backedProjectsClickedCount = 0
         composeTestRule.setContent {
             KSTheme {
-                BetaMessagingBottomSheet (
+                BetaMessagingBottomSheet(
                     onSeeAllBackedProjectsClick = { backedProjectsClickedCount++ },
                 )
             }

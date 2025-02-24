@@ -3,14 +3,13 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,15 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_CATEGORY_NAME
-import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
-import com.kickstarter.ui.compose.TextCaptionStyleWithStartIcon
 import com.kickstarter.ui.compose.TextWithStartIcon
+import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -38,20 +34,22 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun BetaMessagingBottomSheetPreview() {
     KSTheme {
-            BetaMessagingBottomSheet()
+            BetaMessagingBottomSheet(
+                onSeeAllBackedProjectsClick = {}
+            )
     }
 }
 
 @Composable
-fun BetaMessagingBottomSheet() {
+fun BetaMessagingBottomSheet(
+    onSeeAllBackedProjectsClick: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .background(color = colors.backgroundSurfacePrimary)
-            .padding(all = dimensions.paddingMedium)
+            .padding(start = dimensions.paddingLarge, end = dimensions.paddingLarge, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
             .fillMaxWidth(),
     ) {
-        val blue = colors.backgroundAccentBlueBold
-
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
                 modifier = Modifier.align(Alignment.Center).padding(bottom = dimensions.paddingMediumSmall),
@@ -61,33 +59,115 @@ fun BetaMessagingBottomSheet() {
             )
         }
         Text(
-            text = "Introducing the Backings tab",
-            style = typographyV2.headingXL
+            text = stringResource(id = R.string.fpo_introducing_the_backings_tab),
+            style = typographyV2.headingXL,
+            color = colors.textPrimary
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
         Text(
-            text = "View and manage your backings from our new Backings dashboard! More functionality will become available as our beta evolves.",
-            style = typographyV2.bodyLG
+            text = stringResource(id = R.string.fpo_view_and_manage_your_backings_from_our_new_backings_dashboard),
+            style = typographyV2.bodyLG,
+            color = colors.textPrimary
         )
-        Spacer(modifier = Modifier.height(dimensions.paddingLarge))
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
         Text(
-            text = "Currently supported",
+            text = stringResource(id = R.string.fpo_currently_supported),
+            style = typographyV2.subHeadlineMedium,
+            color = colors.textSecondary
+        )
+        
+        Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
+        ) {
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.fpo_successfully_funded_backings),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_rounded),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+            )
+
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.fpo_important_project_alerts),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_rounded),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+            )
+
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.fpo_sorting_and_filtering),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_rounded),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+        Text(
+            text = stringResource(id = R.string.fpo_coming_soon),
             style = typographyV2.subHeadlineMedium,
             color = colors.textSecondary
         )
 
-        TextWithStartIcon(
-            modifier = Modifier
-                .testTag(PROJECT_LOCATION_NAME.name),
-            text = "Successfully funded backings",
-            imageVector = ImageVector.vectorResource(id = R.drawable.icon__check_green),
-            style = typographyV2.body,
-            textColor = colors.textPrimary,
-            iconColor = colors.iconInfo
-            
+        Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
+        ) {
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.tabbar_search),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_task_to_do),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+
+            )
+
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.fpo_live_backings),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_task_to_do),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+
+            )
+
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.fpo_unsuccessful_and_canceled_backings),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_task_to_do),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+
+            )
+        }
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+        Text(
+            text =  stringResource(id = R.string.fpo_live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab),
+            style = typographyV2.bodyLG,
+            color = colors.textPrimary
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.paddingLarge))
+
+        KSPrimaryGreenButton(
+            modifier = Modifier.testTag(BetaMessagingBottomSheetTestTag.BACKED_PROJECTS_BUTTON.name),
+            onClickAction = { onSeeAllBackedProjectsClick.invoke() },
+            text = stringResource(id = R.string.See_all_backed__projects),
+            isEnabled = true
         )
     }
+}
+
+enum class BetaMessagingBottomSheetTestTag {
+    BACKED_PROJECTS_BUTTON
 }

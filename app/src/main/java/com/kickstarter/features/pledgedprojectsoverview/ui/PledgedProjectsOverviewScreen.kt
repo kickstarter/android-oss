@@ -19,11 +19,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue.Hidden
 import androidx.compose.material.Scaffold
@@ -50,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -59,11 +56,8 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.utils.RewardViewUtils
-import com.kickstarter.libs.utils.extensions.coalesce
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
-import com.kickstarter.ui.activities.compose.login.KSLoginDropdownMenu
-import com.kickstarter.ui.activities.compose.login.SetPasswordScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -73,10 +67,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
-import com.kickstarter.ui.views.compose.projectpage.KSBottomSheetContent
-import dagger.internal.Beta
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -168,6 +159,37 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
     }
 }
 
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun PledgedProjectsOverviewScreenV2Preview() {
+    KSTheme {
+        Scaffold(
+            backgroundColor = colors.backgroundSurfacePrimary
+        ) { padding ->
+            val ppoCardList1 = (0..10).map {
+                PPOCardFactory.fixPaymentCard()
+            }
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList1)).collectAsLazyPagingItems()
+            PledgedProjectsOverviewScreen(
+                modifier = Modifier.padding(padding),
+                lazyColumnListState = rememberLazyListState(),
+                ppoCards = ppoCardPagingList,
+                totalAlerts = 10,
+                onBackPressed = {},
+                onPrimaryActionButtonClicked = {},
+                onSecondaryActionButtonClicked = {},
+                onAddressConfirmed = { backingID, addressID -> },
+                onProjectPledgeSummaryClick = {},
+                onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
+                onSeeAllBackedProjectsClick = {},
+                errorSnackBarHostState = SnackbarHostState(),
+                v2Enabled = true,
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PledgedProjectsOverviewScreen(
@@ -195,7 +217,10 @@ fun PledgedProjectsOverviewScreen(
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
     var projectID by remember { mutableStateOf("") }
-    val sheetState = rememberModalBottomSheetState(Hidden)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = Hidden,
+        skipHalfExpanded = true
+    )
     val coroutineScope = rememberCoroutineScope()
     val pullRefreshState = rememberPullRefreshState(
         isLoading,
@@ -228,19 +253,21 @@ fun PledgedProjectsOverviewScreen(
                 backgroundColor = colors.backgroundSurfacePrimary,
                 showBetaPill = true,
                 right = {
-                    IconButton(
-                        modifier = Modifier.testTag(SetPasswordScreenTestTag.OPTIONS_ICON.name),
-                        onClick = { coroutineScope.launch { sheetState.show() } },
-                        enabled = true
-                    ) {
-                        Box {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_info_new),
-                                contentDescription = stringResource(
-                                    id = R.string.general_navigation_accessibility_button_help_menu_label
-                                ),
-                                tint = colors.kds_black
-                            )
+                    if (v2Enabled) {
+                        IconButton(
+                            modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.INFO_BUTTON.name),
+                            onClick = { coroutineScope.launch { sheetState.show() } },
+                            enabled = true
+                        ) {
+                            Box {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_info_new),
+                                    contentDescription = stringResource(
+                                        id = R.string.general_navigation_accessibility_button_help_menu_label
+                                    ),
+                                    tint = colors.kds_black
+                                )
+                            }
                         }
                     }
         },
@@ -358,19 +385,18 @@ fun PledgedProjectsOverviewScreen(
     }
 
     ModalBottomSheetLayout(
-        // Bottom sheet state
+        modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name),
         sheetState = sheetState,
         sheetShape = RoundedCornerShape(
             topStart = dimensions.radiusMediumLarge,
             topEnd = dimensions.radiusMediumLarge
         ),
         sheetContent = {
-            // Content of the bottom sheet
-            BetaMessagingBottomSheet()
+            BetaMessagingBottomSheet(
+                onSeeAllBackedProjectsClick = onSeeAllBackedProjectsClick
+            )
         }
-    ) {
-        // Main content
-    }
+    ) { }
 }
 
 @Composable
@@ -451,4 +477,6 @@ fun PPOScreenErrorState() {
 
 enum class PledgedProjectsOverviewScreenTestTag {
     BACK_BUTTON,
+    INFO_BUTTON,
+    BOTTOM_SHEET,
 }

@@ -3,6 +3,8 @@ package com.kickstarter.ui.compose
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -12,11 +14,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -32,7 +34,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.kickstarter.R
-import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_CATEGORY_NAME
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
@@ -240,29 +241,22 @@ fun TextWithStartIcon(
     imageVector: ImageVector,
     modifier: Modifier,
     style: TextStyle = LocalTextStyle.current,
-    iconColor: Color = colors.kds_support_400,
+    iconColor: Color = imageVector.tintColor,
     textColor: Color = colors.kds_support_400,
+    iconHeight: Dp = dimensionResource(id = R.dimen.icon),
     iconPadding: Dp = dimensionResource(id = R.dimen.grid_1)
 ) {
-    ConstraintLayout(modifier = modifier) {
-        val (
-            icon, textElement
-        ) = createRefs()
+    Row(modifier = modifier) {
         Icon(
             imageVector = imageVector,
             contentDescription = "null",
             tint = iconColor,
-            modifier = Modifier.constrainAs(icon) {
-                top.linkTo(textElement.top)
-                bottom.linkTo(textElement.bottom)
-            }.padding(end = iconPadding)
+            modifier = Modifier.padding(end = iconPadding).height(iconHeight),
         )
 
         Text(
+            modifier = Modifier.align(Alignment.CenterVertically),
             text = text,
-            modifier = Modifier.constrainAs(textElement) {
-                start.linkTo(icon.end)
-            },
             color = textColor,
             style = style
         )

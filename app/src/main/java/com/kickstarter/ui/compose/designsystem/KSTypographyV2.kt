@@ -115,7 +115,6 @@ val interFontFamily = FontFamily(
     Font(R.font.inter_extrabold, FontWeight.ExtraBold) // 800 - ExtraBold
 )
 
-
 val KSCustomTypographyV2 = KSTypographyV2(
     /*
      * NEW DESIGN SYSTEM

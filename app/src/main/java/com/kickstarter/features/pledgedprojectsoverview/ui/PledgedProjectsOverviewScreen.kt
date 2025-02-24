@@ -17,8 +17,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue.Hidden
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
@@ -26,19 +33,24 @@ import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -47,8 +59,11 @@ import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.libs.utils.extensions.coalesce
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
+import com.kickstarter.ui.activities.compose.login.KSLoginDropdownMenu
+import com.kickstarter.ui.activities.compose.login.SetPasswordScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -58,8 +73,12 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
+import com.kickstarter.ui.views.compose.projectpage.KSBottomSheetContent
+import dagger.internal.Beta
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -176,6 +195,8 @@ fun PledgedProjectsOverviewScreen(
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
     var projectID by remember { mutableStateOf("") }
+    val sheetState = rememberModalBottomSheetState(Hidden)
+    val coroutineScope = rememberCoroutineScope()
     val pullRefreshState = rememberPullRefreshState(
         isLoading,
         pullRefreshCallback,
@@ -205,7 +226,24 @@ fun PledgedProjectsOverviewScreen(
                 leftIconColor = colors.icon,
                 leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
                 backgroundColor = colors.backgroundSurfacePrimary,
-                showBetaPill = true
+                showBetaPill = true,
+                right = {
+                    IconButton(
+                        modifier = Modifier.testTag(SetPasswordScreenTestTag.OPTIONS_ICON.name),
+                        onClick = { coroutineScope.launch { sheetState.show() } },
+                        enabled = true
+                    ) {
+                        Box {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_info_new),
+                                contentDescription = stringResource(
+                                    id = R.string.general_navigation_accessibility_button_help_menu_label
+                                ),
+                                tint = colors.kds_black
+                            )
+                        }
+                    }
+        },
             )
         },
         backgroundColor = colors.backgroundSurfacePrimary
@@ -317,6 +355,21 @@ fun PledgedProjectsOverviewScreen(
                 }
             )
         }
+    }
+
+    ModalBottomSheetLayout(
+        // Bottom sheet state
+        sheetState = sheetState,
+        sheetShape = RoundedCornerShape(
+            topStart = dimensions.radiusMediumLarge,
+            topEnd = dimensions.radiusMediumLarge
+        ),
+        sheetContent = {
+            // Content of the bottom sheet
+            BetaMessagingBottomSheet()
+        }
+    ) {
+        // Main content
     }
 }
 

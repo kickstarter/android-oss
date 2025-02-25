@@ -1,11 +1,9 @@
 package com.kickstarter.services
 
 import android.util.Pair
-import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -121,7 +119,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import java.net.SocketTimeoutException
@@ -448,21 +445,22 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             else -> this
         }
 
-    private suspend fun <D : Operation.Data> ApolloCall<D>.execute1(): ApolloResponse<D> =
+    private suspend fun <T> executeForResult(block: suspend () -> T): Result<T> =
         try {
-            val response = this.toFlow().first()
-            if (response.hasErrors())
-                throw buildClientException(response.errors)
-            else
-                response
+            Result.success(block())
         } catch (apolloException: ApolloException) {
-            throw apolloException.toClientException()
+            Result.failure(apolloException.toClientException())
+        } catch (e: Exception) {
+            Result.failure(e)
         }
 
-    override suspend fun _getStoredCards(): Result<List<StoredCard>> = runCatching {
+    override suspend fun _getStoredCards(): Result<List<StoredCard>> = executeForResult {
         val query = UserPaymentsQuery()
 
-        val response = this.service.query(query).execute1()
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
 
         response.data?.me?.storedCards?.nodes?.filterNotNull()?.map { cardData ->
             StoredCard.builder()

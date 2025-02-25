@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ fun BetaMessagingBottomSheet(
         modifier = Modifier
             .background(color = colors.backgroundSurfacePrimary)
             .padding(start = dimensions.paddingLarge, end = dimensions.paddingLarge, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
+            .navigationBarsPadding()
             .fillMaxWidth(),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {

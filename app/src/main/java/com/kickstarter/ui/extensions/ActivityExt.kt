@@ -29,6 +29,7 @@ import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
+import com.kickstarter.libs.utils.extensions.getSearchIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
@@ -72,6 +73,23 @@ fun Activity.hideKeyboard() {
             InputMethodManager.HIDE_NOT_ALWAYS
         )
         currentFocus?.clearFocus()
+    }
+}
+
+/**
+ * This function starts the Search with Transition animation included
+ * @param featureFlagEnabled
+ *
+ *  If featureFlagEnabled = true will present new Search experience
+ *  if featureFlagEnabled = false will present old Search experience
+ */
+fun Activity.presentSearchActivity(featureFlagEnabled: Boolean) {
+    val intent = Intent().getSearchIntent(this, featureFlagEnabled)
+
+    startActivity(intent)
+
+    this.let {
+        TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
     }
 }
 

@@ -14,6 +14,8 @@ import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ReportProjectActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
+import com.kickstarter.ui.activities.SearchActivity
+import com.kickstarter.ui.activities.SearchAndFilterActivity
 import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
@@ -31,6 +33,15 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
         intent.putExtra(IntentKey.PROJECT, project)
     }
     return intent
+}
+
+fun Intent.getSearchIntent(context: Context, featureFlagEnabled: Boolean): Intent {
+    if (featureFlagEnabled)
+        this.setClass(context, SearchAndFilterActivity::class.java)
+    else
+        this.setClass(context, SearchActivity::class.java)
+
+    return this
 }
 
 /**

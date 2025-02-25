@@ -80,6 +80,7 @@ enum class FlagKey(val key: String) {
     ANDROID_PLEDGE_REDEMPTION("android_pledge_redemption"),
     ANDROID_PLEDGE_OVER_TIME("android_pledge_over_time"),
     ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2("android_pledged_projects_overview_v2"),
+    ANDROID_SEARCH_FILTER("android_search_filter")
 }
 
 fun FeatureFlagClient.getFetchInterval(): Long =

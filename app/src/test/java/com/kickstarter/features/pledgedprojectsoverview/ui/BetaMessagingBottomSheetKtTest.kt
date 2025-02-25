@@ -13,17 +13,20 @@ BetaMessagingBottomSheetKtTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(BetaMessagingBottomSheetTestTag.BACKED_PROJECTS_BUTTON.name)
 
     @Test
-    fun testBackedProjectsButtonClick() {
+    fun `test tapping see all backed projects button, should register click and dismiss`() {
         var backedProjectsClickedCount = 0
+        var dismissBottomSheet = 0
         composeTestRule.setContent {
             KSTheme {
                 BetaMessagingBottomSheet(
                     onSeeAllBackedProjectsClick = { backedProjectsClickedCount++ },
+                    dismiss = { dismissBottomSheet++ }
                 )
             }
         }
 
         backedProjectsButton.performClick()
         assertEquals(1, backedProjectsClickedCount)
+        assertEquals(1, dismissBottomSheet)
     }
 }

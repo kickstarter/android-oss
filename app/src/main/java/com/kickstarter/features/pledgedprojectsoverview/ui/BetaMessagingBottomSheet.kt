@@ -42,6 +42,7 @@ private fun BetaMessagingBottomSheetPreview() {
 @Composable
 fun BetaMessagingBottomSheet(
     onSeeAllBackedProjectsClick: () -> Unit,
+    dismiss: () -> Unit = { }
 ) {
     Column(
         modifier = Modifier
@@ -160,7 +161,10 @@ fun BetaMessagingBottomSheet(
 
         KSPrimaryGreenButton(
             modifier = Modifier.testTag(BetaMessagingBottomSheetTestTag.BACKED_PROJECTS_BUTTON.name),
-            onClickAction = { onSeeAllBackedProjectsClick.invoke() },
+            onClickAction = {
+                onSeeAllBackedProjectsClick.invoke()
+                dismiss.invoke()
+            },
             text = stringResource(id = R.string.See_all_backed__projects),
             isEnabled = true
         )

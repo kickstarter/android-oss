@@ -393,7 +393,8 @@ fun PledgedProjectsOverviewScreen(
         ),
         sheetContent = {
             BetaMessagingBottomSheet(
-                onSeeAllBackedProjectsClick = onSeeAllBackedProjectsClick
+                onSeeAllBackedProjectsClick = onSeeAllBackedProjectsClick,
+                dismiss = { coroutineScope.launch { sheetState.hide() } }
             )
         }
     ) { }

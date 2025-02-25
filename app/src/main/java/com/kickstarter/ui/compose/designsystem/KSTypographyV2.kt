@@ -9,10 +9,13 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.kickstarter.R
 
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -102,36 +105,22 @@ val LocalKSCustomTypographyV2 = staticCompositionLocalOf {
     KSTypographyV2()
 }
 
-/*
- * TODO: FIX BOLD ISSUE WITH INTER FONT
-
 val interFontFamily = FontFamily(
-    Font(R.font.inter_variable, FontWeight.Thin), // 100
-    Font(R.font.inter_variable, FontWeight.Light), // 300
-    Font(R.font.inter_variable, FontWeight.Normal), // 400
-    Font(R.font.inter_variable, FontWeight.Medium), // 500
-    Font(R.font.inter_variable, FontWeight.SemiBold), // 600
-    Font(R.font.inter_variable, FontWeight.Bold), // 700
-    Font(R.font.inter_variable, FontWeight.ExtraBold) // 800
+    Font(R.font.inter_thin, FontWeight.Thin), // 100 - Thin
+    Font(R.font.inter_light, FontWeight.Light), // 300 - Light
+    Font(R.font.inter_regular, FontWeight.Normal), // 400 - Regular
+    Font(R.font.inter_medium, FontWeight.Medium), // 500 - Medium
+    Font(R.font.inter_semibold, FontWeight.SemiBold), // 600 - SemiBold
+    Font(R.font.inter_bold, FontWeight.Bold), // 700 - Bold
+    Font(R.font.inter_extrabold, FontWeight.ExtraBold) // 800 - ExtraBold
 )
-
-var interFontFamilyItalic = FontFamily(
-    Font(R.font.inter_variable_italic, FontWeight.Thin), // 100
-    Font(R.font.inter_variable_italic, FontWeight.Light), // 300
-    Font(R.font.inter_variable_italic, FontWeight.Normal), // 400
-    Font(R.font.inter_variable_italic, FontWeight.Medium), // 500
-    Font(R.font.inter_variable_italic, FontWeight.SemiBold), // 600
-    Font(R.font.inter_variable_italic, FontWeight.Bold), // 700
-    Font(R.font.inter_variable_italic, FontWeight.ExtraBold) // 800
-)
-
- */
 
 val KSCustomTypographyV2 = KSTypographyV2(
     /*
      * NEW DESIGN SYSTEM
      */
     heading2XL = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 24.sp,
         lineHeight = 28.sp,
@@ -139,6 +128,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     headingXL = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
         lineHeight = 24.sp,
@@ -146,6 +136,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     headingLG = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 20.sp,
@@ -153,6 +144,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     headingMD = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 16.sp,
@@ -160,6 +152,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     headingSM = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
@@ -167,6 +160,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     headingXS = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
@@ -174,78 +168,91 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     bodyXL = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
         lineHeight = 28.sp,
         color = kds_support_700
     ),
     bodyBoldXL = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
         lineHeight = 28.sp,
         color = kds_support_700
     ),
     bodyLG = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         color = kds_support_700
     ),
     bodyBoldLG = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         color = kds_support_700
     ),
     bodyMD = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         color = kds_support_700
     ),
     bodyBoldMD = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         color = kds_support_700
     ),
     bodySM = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         color = kds_support_700
     ),
     bodyBoldSM = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         color = kds_support_700
     ),
     bodyXS = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
         lineHeight = 14.sp,
         color = kds_support_700
     ),
     bodyBoldXS = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 14.sp,
         color = kds_support_700
     ),
     bodyXXS = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 10.sp,
         lineHeight = 13.sp,
         color = kds_support_700
     ),
     bodyBoldXXS = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 10.sp,
         lineHeight = 13.sp,
         color = kds_support_700
     ),
     buttonLabel = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 20.sp,
@@ -253,6 +260,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     linkLG = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 20.sp,
@@ -261,6 +269,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     linkMD = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
@@ -269,6 +278,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     linkSM = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
@@ -276,6 +286,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     linkXS = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 14.sp,
@@ -289,6 +300,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
      * For any doubt check with design team.
      */
     title1 = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 28.sp,
         lineHeight = 36.sp,
@@ -296,6 +308,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     title1Bold = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 28.sp,
         lineHeight = 32.sp,
@@ -303,6 +316,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     title2 = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 30.sp,
@@ -310,6 +324,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     title2Bold = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 22.sp,
         lineHeight = 26.sp,
@@ -317,6 +332,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     titleRewardBold = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 28.sp,
@@ -324,6 +340,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     headLine = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
         lineHeight = 22.sp,
@@ -331,6 +348,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     body = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         lineHeight = 21.sp,
@@ -338,6 +356,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     footNote = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 13.sp,
         lineHeight = 17.sp,
@@ -345,6 +364,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     footNoteMedium = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 13.sp,
         lineHeight = 17.sp,
@@ -352,6 +372,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     subHeadline = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp,
         lineHeight = 21.sp,
@@ -359,6 +380,7 @@ val KSCustomTypographyV2 = KSTypographyV2(
         color = kds_support_700
     ),
     subHeadlineMedium = TextStyle(
+        fontFamily = interFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,
         lineHeight = 17.sp,

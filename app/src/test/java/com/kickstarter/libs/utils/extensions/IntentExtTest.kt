@@ -12,19 +12,13 @@ class IntentExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetProjectIntent_whenFeatureFlagTrue_shouldReturnProjectPageActivity() {
-        assertEquals(
-            Intent().getProjectIntent(context()).component?.className,
-            "com.kickstarter.ui.activities.ProjectPageActivity"
-        )
+        assertEquals(Intent().getProjectIntent(context()).component?.className, "com.kickstarter.ui.activities.ProjectPageActivity")
     }
 
     @Test
     fun testPreLaunchProjectActivity_whenFeatureFlagTrue_shouldReturnProjectPageActivity() {
         val intent = Intent().getPreLaunchProjectActivity(context(), "Game")
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.ui.activities.PreLaunchProjectPageActivity"
-        )
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.PreLaunchProjectPageActivity")
         assertEquals(intent.extras?.get(IntentKey.PROJECT_PARAM), "Game")
     }
 
@@ -61,10 +55,7 @@ class IntentExtTest : KSRobolectricTestCase() {
     fun testGetCreatorBioIntent() {
         val project = ProjectFactory.project()
         val intent = Intent().getCreatorBioWebViewActivityIntent(context(), project)
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.ui.activities.CreatorBioActivity"
-        )
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.CreatorBioActivity")
         assertEquals(intent.extras?.get(IntentKey.PROJECT), project)
         assertEquals(intent.extras?.get(IntentKey.URL), project.creatorBioUrl())
     }
@@ -73,10 +64,7 @@ class IntentExtTest : KSRobolectricTestCase() {
     fun testGetProjectUpdatesIntent() {
         val projectData = ProjectDataFactory.project(ProjectFactory.project())
         val intent = Intent().getProjectUpdatesActivityIntent(context(), projectData)
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.ui.activities.ProjectUpdatesActivity"
-        )
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.ProjectUpdatesActivity")
         assertEquals(intent.extras?.get(IntentKey.PROJECT_DATA), projectData)
     }
 
@@ -97,13 +85,7 @@ class IntentExtTest : KSRobolectricTestCase() {
         val postId = "Some post id"
         val comment = "SomeCommentId"
         val isCommentForUpdate = true
-        val intent = Intent().getUpdatesActivityIntent(
-            context(),
-            project,
-            postId,
-            isCommentForUpdate,
-            comment
-        )
+        val intent = Intent().getUpdatesActivityIntent(context(), project, postId, isCommentForUpdate, comment)
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.UpdateActivity")
         assertEquals(intent.extras?.get(IntentKey.PROJECT), project)
         assertEquals(intent.extras?.get(IntentKey.UPDATE_POST_ID), postId)
@@ -114,25 +96,16 @@ class IntentExtTest : KSRobolectricTestCase() {
     @Test
     fun testResetPasswordIntent() {
         val intent = Intent().getResetPasswordIntent(context())
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.ui.activities.ResetPasswordActivity"
-        )
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), null)
 
         val intent1 = Intent().getResetPasswordIntent(context(), true)
-        assertEquals(
-            intent1.component?.className,
-            "com.kickstarter.ui.activities.ResetPasswordActivity"
-        )
+        assertEquals(intent1.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
         assertEquals(intent1.extras?.get(IntentKey.EMAIL), null)
         assertEquals(intent1.extras?.get(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN), true)
 
         val intent2 = Intent().getResetPasswordIntent(context(), email = "test@kickstarter.com")
-        assertEquals(
-            intent2.component?.className,
-            "com.kickstarter.ui.activities.ResetPasswordActivity"
-        )
+        assertEquals(intent2.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
         assertEquals(intent2.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
         assertEquals(intent2.extras?.get(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN), false)
     }
@@ -143,20 +116,13 @@ class IntentExtTest : KSRobolectricTestCase() {
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.LoginToutActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), null)
 
-        val intent1 =
-            Intent().getLoginActivityIntent(context(), loginReason = LoginReason.RESET_PASSWORD)
-        assertEquals(
-            intent1.component?.className,
-            "com.kickstarter.ui.activities.LoginToutActivity"
-        )
+        val intent1 = Intent().getLoginActivityIntent(context(), loginReason = LoginReason.RESET_PASSWORD)
+        assertEquals(intent1.component?.className, "com.kickstarter.ui.activities.LoginToutActivity")
         assertEquals(intent1.extras?.get(IntentKey.EMAIL), null)
         assertEquals(intent1.extras?.get(IntentKey.LOGIN_REASON), LoginReason.RESET_PASSWORD)
 
         val intent2 = Intent().getLoginActivityIntent(context(), email = "test@kickstarter.com")
-        assertEquals(
-            intent2.component?.className,
-            "com.kickstarter.ui.activities.LoginToutActivity"
-        )
+        assertEquals(intent2.component?.className, "com.kickstarter.ui.activities.LoginToutActivity")
         assertEquals(intent2.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
         assertEquals(intent2.extras?.get(IntentKey.LOGIN_REASON), null)
     }
@@ -164,10 +130,7 @@ class IntentExtTest : KSRobolectricTestCase() {
     @Test
     fun testSetPasswordActivity() {
         val intent = Intent().getSetPasswordActivity(context(), email = "test@kickstarter.com")
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.ui.activities.SetPasswordActivity"
-        )
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.SetPasswordActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
     }
 

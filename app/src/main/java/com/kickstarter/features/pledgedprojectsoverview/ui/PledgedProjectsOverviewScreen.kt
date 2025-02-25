@@ -388,8 +388,8 @@ fun PledgedProjectsOverviewScreen(
         modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name),
         sheetState = sheetState,
         sheetShape = RoundedCornerShape(
-            topStart = dimensions.radiusMediumLarge,
-            topEnd = dimensions.radiusMediumLarge
+            topStart = dimensions.paddingLarge,
+            topEnd = dimensions.paddingLarge
         ),
         sheetContent = {
             BetaMessagingBottomSheet(

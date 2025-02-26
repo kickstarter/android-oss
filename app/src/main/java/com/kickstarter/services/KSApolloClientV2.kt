@@ -87,6 +87,7 @@ import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
@@ -98,6 +99,7 @@ import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
 import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
+import com.kickstarter.services.transformers.getUpdateBackerCompletedMutation
 import com.kickstarter.services.transformers.paymentPlanTransformer
 import com.kickstarter.services.transformers.pledgedProjectsOverviewEnvelopeTransformer
 import com.kickstarter.services.transformers.projectTransformer
@@ -219,6 +221,7 @@ interface ApolloClientTypeV2 {
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
+    fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
     fun cleanDisposables()
 }
 
@@ -1720,6 +1723,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     response.data?.let {
                         val isSuccess = it.createOrUpdateBackingAddress?.success ?: false
                         ps.onNext(isSuccess)
+                    }
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+            return@defer ps
+        }
+    }
+
+    override fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+
+            val mutation = getUpdateBackerCompletedMutation(inputData)
+
+            service.mutation(mutation)
+                .rxSingle()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                    }
+
+                    response.data?.let {
+                        val backerCompleted = it.updateBackerCompleted?.backing?.backerCompleted ?: false
+                        ps.onNext(backerCompleted)
                     }
                     ps.onComplete()
                 }.addToDisposable(disposables)

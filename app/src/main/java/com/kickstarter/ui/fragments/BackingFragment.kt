@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
+import coil.Coil
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingBinding
@@ -580,16 +580,14 @@ class BackingFragment : Fragment() {
     }
 
     private fun preloadImages(rewards: List<Reward>) {
-        // Preload reward images asynchronously
-        val imageLoader = ImageLoader.Builder(requireContext())
-            .crossfade(true)
-            .build()
-        for (reward in rewards) {
+        val rewardsIterator = rewards.iterator()
+        while (rewardsIterator.hasNext()) {
+            val reward = rewardsIterator.next()
             reward.image()?.let {
                 val request = ImageRequest.Builder(requireContext())
                     .data(reward.image()?.full())
                     .build()
-                imageLoader.enqueue(request)
+                Coil.imageLoader(requireContext()).enqueue(request)
             }
         }
     }

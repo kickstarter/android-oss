@@ -51,6 +51,8 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -345,6 +347,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun buildPaymentPlan(inputData: BuildPaymentPlanData): io.reactivex.Observable<PaymentPlan> {
         return io.reactivex.Observable.empty()
+    }
+
+    override fun getSearchProjects(): Flow<List<Project>> {
+        return emptyFlow()
     }
 
     override fun cleanDisposables() {

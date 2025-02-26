@@ -1,12 +1,19 @@
 package com.kickstarter.services
 
 import android.util.Pair
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.rx2.rxFlowable
 import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CancelBackingMutation
@@ -51,9 +58,12 @@ import com.kickstarter.ValidateCheckoutQuery
 import com.kickstarter.WatchProjectMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.search.data.SearchEnvelope
+import com.kickstarter.features.search.data.UserSelection
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.mock.factories.RewardFactory
@@ -115,6 +125,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 
 interface ApolloClientTypeV2 {
@@ -219,6 +230,7 @@ interface ApolloClientTypeV2 {
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
+    suspend fun getSearchProjects(userSelection: UserSelection): Result<SearchEnvelope>
     fun cleanDisposables()
 }
 
@@ -311,6 +323,21 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(discoveryParams.recommended()),
             starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),
             backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean())
+        )
+    }
+
+    private fun buildFetchProjectsQuery(
+        searchUserSelection: UserSelection,
+        cursor: String?
+    ): FetchProjectsQuery {
+        return FetchProjectsQuery(
+            sort = Optional.present(searchUserSelection.sort?.toProjectSort()),
+            cursor = cursor?.let { if (it.isNotEmpty()) Optional.present(it) else Optional.absent() } ?: Optional.absent(),
+            categoryId = if (searchUserSelection.categoryId == null) Optional.absent() else Optional.present(searchUserSelection.categoryId.toString()),
+            recommended = Optional.absent(), // TODO might be added as a search filter later on
+            starred = Optional.absent(), // TODO might be added as a search filter later on
+            backed = Optional.absent(),  // TODO might be added a search filter later on
+            searchTerm = if (searchUserSelection.searchTerm == null) Optional.absent() else Optional.present(searchUserSelection.searchTerm)
         )
     }
 
@@ -1789,4 +1816,100 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
+
+    private suspend fun <D : Operation.Data> ApolloCall<D>.execute1(): ApolloResponse<D> =
+        try {
+            val response = this.execute()
+            if (response.hasErrors())
+                throw buildClientException(response.errors)
+            else
+                response
+        } catch (apolloException: ApolloException) {
+            throw apolloException.toClientException()
+        }
+
+    override suspend fun getSearchProjects(userSelection: UserSelection): Result<SearchEnvelope> = executeForResult {
+        val query = buildFetchProjectsQuery(userSelection, "")
+        val response = this.service.query(query).execute1()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            val projects = responseData.projects?.edges?.map {
+                projectTransformer(it?.node?.projectCard)
+            }
+            val pageInfoEnvelope =
+                responseData.projects?.pageInfo?.pageInfo?.let {
+                    createPageInfoObject(it)
+                }
+            SearchEnvelope(projects, pageInfoEnvelope)
+        } ?: emptyList<SearchEnvelope>()
+    }
+
+    sealed class KSApolloClientV2Exception(
+        message: String? = null,
+        cause: Throwable? = null
+    ) : Exception(message, cause) {
+
+        class NoInternet(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class Timeout(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class TooManyRequests(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        open class ApiError(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class BadUserInput(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : ApiError(message, cause)
+    }
+
+    private fun buildClientException(errors: List<Error>?): KSApolloClientV2Exception {
+        /* Create a strategy for transforming a list of Errors into an Exception...
+         * Here's a bad example: */
+        val first = errors?.first()
+        return if (first != null && first.message.contains("bad user input"))
+            KSApolloClientV2Exception.BadUserInput(first.message)
+        else
+            KSApolloClientV2Exception.ApiError(first?.message)
+    }
+
+    private suspend fun <T> executeForResult(block: suspend () -> T): Result<T> =
+        try {
+            Result.success(block())
+        } catch (apolloException: ApolloException) {
+            val exception = apolloException.toClientException()
+            FirebaseCrashlytics.getInstance().recordException(exception)
+            Result.failure(exception)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            Result.failure(e)
+        }
+
+    private fun ApolloException.toClientException(): Exception =
+        when (this) {
+            is ApolloNetworkException -> {
+                when (cause) {
+                    is SocketTimeoutException -> KSApolloClientV2Exception.Timeout()
+                    else -> KSApolloClientV2Exception.NoInternet()
+                }
+            }
+            is ApolloHttpException -> {
+                when (statusCode) {
+                    429 -> KSApolloClientV2Exception.TooManyRequests()
+                    else -> this
+                }
+            }
+            else -> this
+        }
 }

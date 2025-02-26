@@ -1,5 +1,5 @@
-query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $backed: Boolean, $recommended: Boolean, $categoryId: String, $starred: Boolean, $staffPicks: Boolean) {
-  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred, staffPicks: $staffPicks) {
+query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $backed: Boolean, $recommended: Boolean, $categoryId: String, $starred: Boolean, $staffPicks: Boolean, $searchTerm: String) {
+  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred, staffPicks: $staffPicks, term: $searchTerm) {
     edges {
       cursor
       node{
@@ -212,6 +212,26 @@ query BuildPaymentPlan($slug: String!, $amount: String!) {
         }
         scheduledCollection
       }
+    }
+  }
+}
+
+query SearchProjects($searchTerm: String) {
+  projects(
+    recommended: true,
+    term: $searchTerm,
+    state: SUCCESSFUL,
+    categoryId: "1",
+    sort: MAGIC
+  ) {
+    nodes {
+      id
+      pid
+      name
+      slug
+      currentAmountPledgedUsd
+      description
+      deadlineAt
     }
   }
 }

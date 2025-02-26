@@ -1,10 +1,11 @@
-package com.kickstarter.ui.activities
+package com.kickstarter.features.search.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.kickstarter.R
+import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
@@ -28,10 +30,14 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 
 class SearchAndFilterActivity : ComponentActivity() {
 
+    private lateinit var viewModelFactory: SearchAndFilterViewModel.Factory
+    private val viewModel: SearchAndFilterViewModel by viewModels { viewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
+            viewModelFactory = SearchAndFilterViewModel.Factory(env)
 
             setContent {
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }

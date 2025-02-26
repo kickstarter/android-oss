@@ -1,7 +1,6 @@
 package com.kickstarter.ui.fragments
 
 import PaymentSchedule
-import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -25,7 +24,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
-import coil.ImageLoader
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingBinding
@@ -582,7 +580,7 @@ class BackingFragment : Fragment() {
     }
 
     private fun preloadImages(rewards: List<Reward>) {
-        val rewardsIterator = rewards.iterator();
+        val rewardsIterator = rewards.iterator()
         while (rewardsIterator.hasNext()) {
             val reward = rewardsIterator.next()
             reward.image()?.let {

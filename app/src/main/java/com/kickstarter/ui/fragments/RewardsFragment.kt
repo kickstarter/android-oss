@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.Coil
-import coil.ImageLoader
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
@@ -122,7 +121,7 @@ class RewardsFragment : Fragment() {
     }
 
     private fun preloadImages(context: Context, rewards: List<Reward>) {
-        val rewardsIterator = rewards.iterator();
+        val rewardsIterator = rewards.iterator()
         while (rewardsIterator.hasNext()) {
             val reward = rewardsIterator.next()
             reward.image()?.let {

@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.Coil
-import coil.ImageLoader
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -330,7 +329,7 @@ fun AddOnsScreen(
 }
 
 private fun preloadImages(context: Context, rewards: List<Reward>) {
-    val rewardsIterator = rewards.iterator();
+    val rewardsIterator = rewards.iterator()
     while (rewardsIterator.hasNext()) {
         val reward = rewardsIterator.next()
         reward.image()?.let {

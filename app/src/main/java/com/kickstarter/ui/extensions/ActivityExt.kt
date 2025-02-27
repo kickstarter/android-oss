@@ -85,7 +85,6 @@ fun Activity.hideKeyboard() {
  */
 fun Activity.presentSearchActivity(featureFlagEnabled: Boolean) {
     val intent = Intent().getSearchIntent(this, featureFlagEnabled)
-    // val intent = Intent().getSearchIntent(this, false)
 
     startActivity(intent)
 

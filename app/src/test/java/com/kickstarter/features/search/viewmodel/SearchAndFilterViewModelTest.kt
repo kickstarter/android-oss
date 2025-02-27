@@ -10,7 +10,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -46,8 +45,6 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
             viewModel.searchUIState.toList(searchState)
         }
 
-        advanceUntilIdle()
-
         assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, projectList)
@@ -78,8 +75,6 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
             viewModel.getPopularProjects()
             viewModel.searchUIState.toList(searchState)
         }
-
-        advanceUntilIdle()
 
         assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
         assertEquals(searchState.size, 2)

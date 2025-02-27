@@ -1834,24 +1834,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             message: String? = null,
             cause: Throwable? = null
         ) : KSApolloClientV2Exception(message, cause)
-        open class ApiError(
+        class ApiError(
             message: String? = null,
             cause: Throwable? = null
         ) : KSApolloClientV2Exception(message, cause)
-        class BadUserInput(
-            message: String? = null,
-            cause: Throwable? = null
-        ) : ApiError(message, cause)
     }
 
     private fun buildClientException(errors: List<Error>?): KSApolloClientV2Exception {
-        /* Create a strategy for transforming a list of Errors into an Exception...
-         * Here's a bad example: */
-        val first = errors?.first()
-        return if (first != null && first.message.contains("bad user input"))
-            KSApolloClientV2Exception.BadUserInput(first.message)
-        else
-            KSApolloClientV2Exception.ApiError(first?.message)
+        return KSApolloClientV2Exception.ApiError(errors?.first()?.message)
     }
 
     private fun ApolloException.toClientException(): Exception =
@@ -1865,7 +1855,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             is ApolloHttpException -> {
                 when (statusCode) {
                     429 -> KSApolloClientV2Exception.TooManyRequests()
-                    // ...
                     else -> this
                 }
             }
@@ -1880,6 +1869,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             FirebaseCrashlytics.getInstance().recordException(exception)
             Result.failure(exception)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Result.failure(e)
         }
 }

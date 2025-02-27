@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.RefTag
@@ -23,6 +24,7 @@ import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.search.SearchScreen
@@ -39,16 +41,19 @@ class SearchAndFilterActivity : ComponentActivity() {
         this.getEnvironment()?.let { env ->
             viewModelFactory = SearchAndFilterViewModel.Factory(env)
 
+            viewModel.getPopularProjects()
             setContent {
+                val searchUIState by viewModel.searchUIState.collectAsStateWithLifecycle()
+
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
-                var popularProjects = emptyList<Project>() // TODO will come from VM
+                val popularProjects = searchUIState.popularProjectsList
 
-                var searchedProjects = emptyList<Project>() // TODO will come from VM
+                var searchedProjects = emptyList<Project>() // TODO will come from VM MBL-2135
 
-                var isLoading = false // TODO will come from VM
+                val isLoading = searchUIState.isLoading
 
-                var isTyping by remember { mutableStateOf(false) }
+                val isTyping by remember { mutableStateOf(false) }
 
                 val lazyListState = rememberLazyListState()
 
@@ -75,7 +80,12 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 currentSearchTerm = searchTerm
                         },
                         onItemClicked = { project ->
-                            // - TODO: open prelaunch or project activities
+                            // TODO extend on MBL-2135 with proper reftags & analytics for project card clicked
+                            if (project.displayPrelaunch().isTrue()) {
+                                startPreLaunchProjectActivity(project, RefTag.projectShare())
+                            } else {
+                                startProjectActivity(Pair(project, RefTag.projectShare()))
+                            }
                         }
                     )
                 }

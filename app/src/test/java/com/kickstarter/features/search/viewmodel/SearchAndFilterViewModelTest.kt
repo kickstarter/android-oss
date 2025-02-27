@@ -2,10 +2,12 @@ package com.kickstarter.features.search.viewmodel
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.search.data.SearchEnvelope
+import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -17,6 +19,11 @@ import org.junit.Test
 class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: SearchAndFilterViewModel
+
+    private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher) {
+        viewModel = SearchAndFilterViewModel.Factory(environment, dispatcher)
+            .create(SearchAndFilterViewModel::class.java)
+    }
 
     @Test
     fun `test for initial state getPopularProjects will only have sorting parameter POPULAR`() = runTest {
@@ -37,7 +44,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                     }
                 }).build()
 
-        viewModel = SearchAndFilterViewModel.Factory(environment).create(SearchAndFilterViewModel::class.java)
+        setUpEnvironment(environment, dispatcher)
 
         val searchState = mutableListOf<SearchUIState>()
         backgroundScope.launch(dispatcher) {
@@ -68,7 +75,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                     }
                 }).build()
 
-        viewModel = SearchAndFilterViewModel.Factory(environment).create(SearchAndFilterViewModel::class.java)
+        setUpEnvironment(environment, dispatcher)
 
         val searchState = mutableListOf<SearchUIState>()
         backgroundScope.launch(dispatcher) {

@@ -7,13 +7,14 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlin.coroutines.EmptyCoroutineContext
 
 data class SearchUIState(
     val isLoading: Boolean = false,
@@ -24,9 +25,10 @@ data class SearchUIState(
 
 class SearchAndFilterViewModel(
     private val environment: Environment,
-    private val dispatcher: CoroutineDispatcher,
+    private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
+    private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private val _searchUIState = MutableStateFlow(SearchUIState())
@@ -49,7 +51,7 @@ class SearchAndFilterViewModel(
      * as default when presenting SearchAndFilterActivity.
      */
     fun getPopularProjects() {
-        viewModelScope.launch {
+        scope.launch {
             // TODO trigger loading state UI will handle on MBL-2135
             _searchUIState.emit(
                 SearchUIState(
@@ -86,10 +88,10 @@ class SearchAndFilterViewModel(
 
     class Factory(
         private val environment: Environment,
-        private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        private val testDispatcher: CoroutineDispatcher? = null
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SearchAndFilterViewModel(environment, dispatcher) as T
+            return SearchAndFilterViewModel(environment, testDispatcher) as T
         }
     }
 }

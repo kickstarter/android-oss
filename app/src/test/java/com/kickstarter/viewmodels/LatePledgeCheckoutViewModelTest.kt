@@ -26,6 +26,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutUIState
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -107,10 +108,110 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        advanceUntilIdle()
         assertEquals(state.size, 3)
         assertEquals(state.last().storeCards, cardList)
         assertEquals(state.last().userEmail, "holaholi@gmail.com")
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test UserPrivacy and StoreCards are retrieved for logged in user`() = runTest {
+        val currentUserV2 = MockCurrentUserV2(UserFactory.user())
+
+        val cardList = listOf(StoredCardFactory.visa())
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> { // - mock the stored cards
+                    return Observable.just(cardList)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> { // - mock the user email and name
+                    return Observable.just(
+                        UserPrivacy("Hola holita", "holaholi@gmail.com", true, true, true, true, "MXN")
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(34.0).build()
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .isBacking(false)
+            .rewards(listOf(rw)).build()
+
+        val projectData = ProjectDataFactory.project(project = project)
+        val pledgeData = PledgeData.with(PledgeFlowContext.LATE_PLEDGES, projectData, rw)
+
+        setUpEnvironment(environment)
+
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        backgroundScope.launch(unconfinedDispatcher) {
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        @OptIn(ExperimentalStdlibApi::class)
+        val dispatcher = coroutineContext[CoroutineDispatcher]!!
+        viewModel.provideScopeAndDispatcher(this, dispatcher)
+        viewModel.providePledgeData(pledgeData)
+
+        advanceUntilIdle()
+
+        assertEquals(state.size, 3)
+        assertEquals(state.last().storeCards, cardList)
+        assertEquals(state.last().userEmail, "holaholi@gmail.com")
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test UserPrivacy and StoreCards are not retrieved for no logged in user`() = runTest {
+        val cardList = listOf(StoredCardFactory.visa())
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> { // - mock the stored cards
+                    return Observable.just(cardList)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> { // - mock the user email and name
+                    return Observable.just(
+                        UserPrivacy("Hola holita", "holaholi@gmail.com", true, true, true, true, "MXN")
+                    )
+                }
+            })
+            .build()
+
+        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(34.0).build()
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .isBacking(false)
+            .rewards(listOf(rw)).build()
+
+        val projectData = ProjectDataFactory.project(project = project)
+        val pledgeData = PledgeData.with(PledgeFlowContext.LATE_PLEDGES, projectData, rw)
+
+        setUpEnvironment(environment)
+
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        backgroundScope.launch(unconfinedDispatcher) {
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        @OptIn(ExperimentalStdlibApi::class)
+        val dispatcher = coroutineContext[CoroutineDispatcher]!!
+        viewModel.provideScopeAndDispatcher(this, dispatcher)
+        viewModel.providePledgeData(pledgeData)
+
+        advanceUntilIdle()
+
+        assertEquals(state.size, 3)
+        assertEquals(state.last().storeCards, emptyList<StoredCard>())
+        assertEquals(state.last().userEmail, "")
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -152,7 +253,6 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        advanceUntilIdle()
         assertEquals(state.size, 2)
         assertEquals(state.last().storeCards, emptyList<StoredCard>())
         assertEquals(state.last().userEmail, "")

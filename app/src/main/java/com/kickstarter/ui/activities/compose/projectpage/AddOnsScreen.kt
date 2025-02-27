@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import coil.ImageLoader
+import coil.Coil
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -115,18 +116,7 @@ fun AddOnsScreen(
         ).toString()
     } ?: ""
 
-    // Preload add ons images asynchronously
-    val imageLoader = ImageLoader.Builder(context)
-        .crossfade(true)
-        .build()
-    for (reward in addOns) {
-        reward.image()?.let {
-            val request = ImageRequest.Builder(context)
-                .data(reward.image()?.full())
-                .build()
-            imageLoader.enqueue(request)
-        }
-    }
+    preloadImages(context, addOns)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -334,6 +324,19 @@ fun AddOnsScreen(
             contentAlignment = Alignment.Center
         ) {
             KSCircularProgressIndicator()
+        }
+    }
+}
+
+private fun preloadImages(context: Context, rewards: List<Reward>) {
+    val rewardsIterator = rewards.iterator()
+    while (rewardsIterator.hasNext()) {
+        val reward = rewardsIterator.next()
+        reward.image()?.let {
+            val request = ImageRequest.Builder(context)
+                .data(reward.image()?.full())
+                .build()
+            Coil.imageLoader(context).enqueue(request)
         }
     }
 }

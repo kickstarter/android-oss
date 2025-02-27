@@ -148,7 +148,7 @@ class GetShippingRulesUseCase(
                 loading = isLoading,
                 selectedShippingRule = defaultShippingRule,
                 error = errorMessage,
-                filteredRw = filteredRewards
+                filteredRw = filteredRewards.toList()
             )
         )
     }

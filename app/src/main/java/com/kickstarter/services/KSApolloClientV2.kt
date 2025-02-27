@@ -1822,10 +1822,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         message: String? = null,
         cause: Throwable? = null
     ) : Exception(message, cause) {
-        class NoInternet(
-            message: String? = null,
-            cause: Throwable? = null
-        ) : KSApolloClientV2Exception(message, cause)
         class Timeout(
             message: String? = null,
             cause: Throwable? = null
@@ -1849,7 +1845,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             is ApolloNetworkException -> {
                 when (cause) {
                     is SocketTimeoutException -> KSApolloClientV2Exception.Timeout()
-                    else -> KSApolloClientV2Exception.NoInternet()
+                    else -> this
                 }
             }
             is ApolloHttpException -> {

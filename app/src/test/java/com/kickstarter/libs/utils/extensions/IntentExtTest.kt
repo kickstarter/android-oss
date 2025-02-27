@@ -139,7 +139,7 @@ class IntentExtTest : KSRobolectricTestCase() {
         val intent = Intent().getSearchIntent(context(), featureFlagEnabled = true)
         assertEquals(
             intent.component?.className,
-            "com.kickstarter.ui.activities.SearchAndFilterActivity"
+            "com.kickstarter.features.search.ui.SearchAndFilterActivity"
         )
     }
 

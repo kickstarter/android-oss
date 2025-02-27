@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils.extensions
 import android.content.Context
 import android.content.Intent
 import com.kickstarter.features.pledgeredemption.ui.PledgeRedemptionActivity
+import com.kickstarter.features.search.ui.SearchAndFilterActivity
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
@@ -15,7 +16,6 @@ import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ReportProjectActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
 import com.kickstarter.ui.activities.SearchActivity
-import com.kickstarter.ui.activities.SearchAndFilterActivity
 import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity

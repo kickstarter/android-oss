@@ -215,23 +215,3 @@ query BuildPaymentPlan($slug: String!, $amount: String!) {
     }
   }
 }
-
-query SearchProjects($searchTerm: String) {
-  projects(
-    recommended: true,
-    term: $searchTerm,
-    state: SUCCESSFUL,
-    categoryId: "1",
-    sort: MAGIC
-  ) {
-    nodes {
-      id
-      pid
-      name
-      slug
-      currentAmountPledgedUsd
-      description
-      deadlineAt
-    }
-  }
-}

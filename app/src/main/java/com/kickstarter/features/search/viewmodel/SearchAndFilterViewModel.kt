@@ -49,7 +49,7 @@ class SearchAndFilterViewModel(
      * as default when presenting SearchAndFilterActivity.
      */
     fun getPopularProjects() {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             // TODO trigger loading state UI will handle on MBL-2135
             _searchUIState.emit(
                 SearchUIState(

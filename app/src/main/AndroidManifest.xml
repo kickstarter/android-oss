@@ -210,7 +210,7 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/SearchActivity" />
         <activity
-            android:name=".ui.activities.SearchAndFilterActivity"
+            android:name=".features.search.ui.SearchAndFilterActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/SearchActivity" />
         <activity

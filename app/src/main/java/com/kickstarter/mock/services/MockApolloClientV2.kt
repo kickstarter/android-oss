@@ -9,6 +9,7 @@ import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CommentFactory
@@ -351,6 +352,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean> {
         return io.reactivex.Observable.empty()
+    }
+
+    override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
+        return Result.success(SearchEnvelope())
     }
 
     override fun cleanDisposables() {

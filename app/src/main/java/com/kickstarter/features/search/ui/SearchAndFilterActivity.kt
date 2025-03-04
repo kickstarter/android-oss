@@ -43,7 +43,7 @@ class SearchAndFilterActivity : ComponentActivity() {
         this.getEnvironment()?.let { env ->
             viewModelFactory = SearchAndFilterViewModel.Factory(env)
 
-            viewModel.getPopularProjects()
+            // viewModel.updateSearchResultsState(withLoading = true)
             setContent {
                 val searchUIState by viewModel.searchUIState.collectAsStateWithLifecycle()
 
@@ -79,9 +79,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                             searchedProjects.isEmpty(),
                         onSearchTermChanged = { searchTerm ->
                             currentSearchTerm = searchTerm
-                            if (searchTerm.isEmpty()) {
-                                viewModel.getPopularProjects()
-                            } else viewModel.searchTerm(searchTerm)
+                            viewModel.updateSearchTerm(searchTerm)
                         },
                         onItemClicked = { project ->
                             // TODO extend on MBL-2135 with proper reftags & analytics for project card clicked

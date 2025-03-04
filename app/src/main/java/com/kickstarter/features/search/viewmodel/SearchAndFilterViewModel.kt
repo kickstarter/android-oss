@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isNull
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,21 +14,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.text.isNotBlank
-import kotlin.text.onEach
 
 data class SearchUIState(
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
-    val popularProjectsList: List<Project> = emptyList(), // TODO MBL-2135 popular & search lists could be potentially unified
+    val popularProjectsList: List<Project> = emptyList(),
     val searchList: List<Project> = emptyList()
 )
 
@@ -49,93 +49,68 @@ class SearchAndFilterViewModel(
                 initialValue = SearchUIState()
             )
 
-    // Popular projects sorting selection
+    // - Popular projects sorting selection
     private val popularDiscoveryParam = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
-    // TODO Will be updated with the params used to call search with, private for now
-    private val listOfSearchParams = listOf(popularDiscoveryParam)
+
+    private val _params = MutableStateFlow(popularDiscoveryParam)
+    val params: StateFlow<DiscoveryParams> = _params
 
     private val debouncePeriod = 300L
     private val _searchTerm = MutableStateFlow("")
-    val searchTerm: StateFlow<String> = _searchTerm
-    private val debouncedSearch = searchTerm
-        .debounce(debouncePeriod)
-        .filter { it.isNotBlank() }
-        .onEach { debouncedTerm ->
-            val params = DiscoveryParams.builder().term(debouncedTerm).build()
+    private val searchTerm: StateFlow<String> = _searchTerm
 
-            val searchEnvelopeResult = search(params)
-
-            if (searchEnvelopeResult.isFailure) {
-                _searchUIState.emit(
-                    SearchUIState(
-                        isErrored = true,
-                    )
-                )
-            }
-
-            if (searchEnvelopeResult.isSuccess) {
-                searchEnvelopeResult.getOrNull()?.projectList?.let {
-                    _searchUIState.emit(
-                        SearchUIState(
-                            isErrored = false,
-                            isLoading = false,
-                            searchList = it,
-                            popularProjectsList = emptyList()
-                        )
-                    )
+    init {
+        scope.launch {
+            searchTerm
+                .debounce(debouncePeriod)
+                .onEach { debouncedTerm ->
+                    // - Reset to initial state in case of empty search term
+                    if (debouncedTerm.isEmpty() || debouncedTerm.isBlank()) {
+                        _params.emit(popularDiscoveryParam)
+                    } else
+                        _params.emit(DiscoveryParams.builder().term(debouncedTerm).build())
+                }.collectLatest {
+                    updateSearchResultsState()
                 }
-            }
         }
-        .launchIn(scope)
+    }
 
     /**
-     * Search screen will present the list of popular projects
-     * as default when presenting SearchAndFilterActivity.
+     * Update UIState with after executing Search query with latest params
      */
-    fun getPopularProjects() {
-        scope.launch {
-            // TODO trigger loading state UI will handle on MBL-2135
+    private suspend fun updateSearchResultsState() {
+        _searchUIState.emit(
+            SearchUIState(
+                isLoading = true,
+            )
+        )
+
+        val searchEnvelopeResult = apolloClient.getSearchProjects(params.value)
+
+        if (searchEnvelopeResult.isFailure) {
             _searchUIState.emit(
                 SearchUIState(
-                    isLoading = true,
+                    isErrored = true,
                 )
             )
+        }
 
-            val searchEnvelopeResult = search(listOfSearchParams.toList().last())
-
-            if (searchEnvelopeResult.isFailure) {
-                // TODO trigger error state UI will handle on MBL-2135
+        if (searchEnvelopeResult.isSuccess) {
+            searchEnvelopeResult.getOrNull()?.projectList?.let {
                 _searchUIState.emit(
                     SearchUIState(
-                        isErrored = true,
+                        isErrored = false,
+                        isLoading = false,
+                        popularProjectsList = if (params.value.term().isNull()) it else emptyList(),
+                        searchList = if (params.value.term()?.isNotBlank().isTrue()) it else emptyList()
                     )
                 )
-            }
-
-            if (searchEnvelopeResult.isSuccess) {
-                searchEnvelopeResult.getOrNull()?.projectList?.let {
-                    _searchUIState.emit(
-                        SearchUIState(
-                            isErrored = false,
-                            isLoading = false,
-                            popularProjectsList = it,
-                            searchList = emptyList()
-                        )
-                    )
-                }
             }
         }
     }
 
-    private suspend fun search(params: DiscoveryParams) = apolloClient.getSearchProjects(params)
-
-    fun searchTerm(searchTerm: String) {
+    fun updateSearchTerm(searchTerm: String) {
         scope.launch {
-            _searchUIState.emit(
-                SearchUIState(
-                    isLoading = true,
-                )
-            )
             _searchTerm.emit(searchTerm)
         }
     }

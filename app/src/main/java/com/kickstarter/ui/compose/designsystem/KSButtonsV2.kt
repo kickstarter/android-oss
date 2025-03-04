@@ -265,7 +265,6 @@ fun BaseButton(
 
     Button(
         modifier = modifier
-            .fillMaxWidth()
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = currentBackgroundColor,
@@ -278,7 +277,6 @@ fun BaseButton(
     ) {
         Box(contentAlignment = Alignment.Center) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -320,13 +318,11 @@ fun FBLoginButton(
     Button(
         onClick = { onClickAction.invoke() },
         modifier = modifier
-            .fillMaxWidth()
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(backgroundColor = currentBackgroundColor),
         shape = RoundedCornerShape(size = dimensions.radiusExtraSmall)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -684,7 +680,6 @@ fun FBLoginButtonPreview() {
     KSTheme {
         Column(
             Modifier
-                .fillMaxWidth()
                 .background(colors.kds_white)
                 .padding(all = dimensions.paddingSmall),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically),

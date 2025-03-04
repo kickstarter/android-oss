@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -22,7 +23,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.IconToggleButton
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -34,10 +40,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.FBLoginButton
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -48,6 +57,7 @@ import com.kickstarter.ui.compose.designsystem.KSCheckbox
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
+import com.kickstarter.ui.compose.designsystem.KSCountBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSErrorRoundedText
 import com.kickstarter.ui.compose.designsystem.KSFacebookButton
@@ -156,6 +166,8 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
             contentPadding = PaddingValues(dimensions.paddingSmall)
         ) {
             item {
+                FilterRow()
+
                 AlertsVisuals()
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
@@ -197,6 +209,10 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
                 Dividers()
+
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
+
+                FilterRow()
             }
         }
     }
@@ -962,6 +978,54 @@ fun TypographyVisuals() {
             text = "SubHeadlineMedium",
             style = typographyV2.subHeadlineMedium,
             color = colors.kds_support_700
+        )
+    }
+}
+
+@Composable
+fun FilterRow() {
+    Text(text = "FilterRow", style = typographyV2.title1Bold, color = colors.kds_support_700)
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SortButton(onClick = {})
+        Spacer(Modifier.width(8.dp))
+        FilterPillButton("Category", selectedCount = 1, onClick = {})
+    }
+}
+
+
+@Composable
+fun SortButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .border(1.dp, Color.Gray, CircleShape).size(40.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_retry_send_comment), // TODO: get actual asset
+            contentDescription = "Filter",
+            tint = Color.Black
+        )
+    }
+}
+
+@Composable
+fun FilterPillButton(text: String, selectedCount: Int, onClick: () -> Unit) {
+    OutlinedButton(
+        onClick = onClick,
+        shape = RoundedCornerShape(50)
+    ) {
+        Text(text = text, color = Color.Black, fontSize = 14.sp)
+        Spacer(modifier = Modifier.width(4.dp))
+        if (selectedCount > 0) {
+            KSCountBadge(selectedCount)
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.ic_arrow_down),
+            contentDescription = "Dropdown",
+            tint = Color.Black
         )
     }
 }

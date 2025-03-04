@@ -7,14 +7,21 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.text.isNotBlank
+import kotlin.text.onEach
 
 data class SearchUIState(
     val isLoading: Boolean = false,
@@ -23,6 +30,7 @@ data class SearchUIState(
     val searchList: List<Project> = emptyList()
 )
 
+@OptIn(FlowPreview::class)
 class SearchAndFilterViewModel(
     private val environment: Environment,
     private val testDispatcher: CoroutineDispatcher? = null
@@ -36,7 +44,7 @@ class SearchAndFilterViewModel(
         get() = _searchUIState
             .asStateFlow()
             .stateIn(
-                scope = viewModelScope,
+                scope = scope,
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = SearchUIState()
             )
@@ -45,6 +53,40 @@ class SearchAndFilterViewModel(
     private val popularDiscoveryParam = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
     // TODO Will be updated with the params used to call search with, private for now
     private val listOfSearchParams = listOf(popularDiscoveryParam)
+
+    private val debouncePeriod = 300L
+    private val _searchTerm = MutableStateFlow("")
+    val searchTerm: StateFlow<String> = _searchTerm
+    private val debouncedSearch = searchTerm
+        .debounce(debouncePeriod)
+        .filter { it.isNotBlank() }
+        .onEach { debouncedTerm ->
+            val params = DiscoveryParams.builder().term(debouncedTerm).build()
+
+            val searchEnvelopeResult = search(params)
+
+            if (searchEnvelopeResult.isFailure) {
+                _searchUIState.emit(
+                    SearchUIState(
+                        isErrored = true,
+                    )
+                )
+            }
+
+            if (searchEnvelopeResult.isSuccess) {
+                searchEnvelopeResult.getOrNull()?.projectList?.let {
+                    _searchUIState.emit(
+                        SearchUIState(
+                            isErrored = false,
+                            isLoading = false,
+                            searchList = it,
+                            popularProjectsList = emptyList()
+                        )
+                    )
+                }
+            }
+        }
+        .launchIn(scope)
 
     /**
      * Search screen will present the list of popular projects
@@ -59,7 +101,7 @@ class SearchAndFilterViewModel(
                 )
             )
 
-            val searchEnvelopeResult = search(listOfSearchParams.last())
+            val searchEnvelopeResult = search(listOfSearchParams.toList().last())
 
             if (searchEnvelopeResult.isFailure) {
                 // TODO trigger error state UI will handle on MBL-2135
@@ -76,7 +118,8 @@ class SearchAndFilterViewModel(
                         SearchUIState(
                             isErrored = false,
                             isLoading = false,
-                            popularProjectsList = it
+                            popularProjectsList = it,
+                            searchList = emptyList()
                         )
                     )
                 }
@@ -85,6 +128,17 @@ class SearchAndFilterViewModel(
     }
 
     private suspend fun search(params: DiscoveryParams) = apolloClient.getSearchProjects(params)
+
+    fun searchTerm(searchTerm: String) {
+        scope.launch {
+            _searchUIState.emit(
+                SearchUIState(
+                    isLoading = true,
+                )
+            )
+            _searchTerm.emit(searchTerm)
+        }
+    }
 
     class Factory(
         private val environment: Environment,

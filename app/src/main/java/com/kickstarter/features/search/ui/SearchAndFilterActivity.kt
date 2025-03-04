@@ -51,7 +51,7 @@ class SearchAndFilterActivity : ComponentActivity() {
 
                 val popularProjects = searchUIState.popularProjectsList
 
-                var searchedProjects = emptyList<Project>() // TODO will come from VM MBL-2135
+                val searchedProjects = searchUIState.searchList
 
                 val isLoading = searchUIState.isLoading
 
@@ -78,8 +78,10 @@ class SearchAndFilterActivity : ComponentActivity() {
                             !currentSearchTerm.isTrimmedEmpty() &&
                             searchedProjects.isEmpty(),
                         onSearchTermChanged = { searchTerm ->
-                            if (searchTerm.isEmpty()) // TODO will be handled on VM
-                                currentSearchTerm = searchTerm
+                            currentSearchTerm = searchTerm
+                            if (searchTerm.isEmpty()) {
+                                viewModel.getPopularProjects()
+                            } else viewModel.searchTerm(searchTerm)
                         },
                         onItemClicked = { project ->
                             // TODO extend on MBL-2135 with proper reftags & analytics for project card clicked

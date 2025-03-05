@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.RefTag
@@ -28,8 +31,10 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.search.SearchScreen
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import kotlinx.coroutines.launch
 
 class SearchAndFilterActivity : ComponentActivity() {
 
@@ -43,7 +48,6 @@ class SearchAndFilterActivity : ComponentActivity() {
         this.getEnvironment()?.let { env ->
             viewModelFactory = SearchAndFilterViewModel.Factory(env)
 
-            // viewModel.updateSearchResultsState(withLoading = true)
             setContent {
                 val searchUIState by viewModel.searchUIState.collectAsStateWithLifecycle()
 
@@ -59,12 +63,25 @@ class SearchAndFilterActivity : ComponentActivity() {
 
                 val lazyListState = rememberLazyListState()
 
+                val snackbarHostState = remember { SnackbarHostState() }
+
+                viewModel.provideErrorAction { message ->
+                    lifecycleScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = message ?: "Something went wrong",
+                            actionLabel = KSSnackbarTypes.KS_ERROR.name,
+                            duration = SnackbarDuration.Long
+                        )
+                    }
+                }
+
                 val darModeEnabled = this.isDarkModeEnabled(env = env)
                 KickstarterApp(useDarkTheme = darModeEnabled) {
                     SearchScreen(
                         environment = env,
                         onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                         scaffoldState = rememberScaffoldState(),
+                        errorSnackBarHostState = snackbarHostState,
                         isLoading = isLoading,
                         isPopularList = currentSearchTerm.isTrimmedEmpty(),
                         itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
@@ -82,11 +99,11 @@ class SearchAndFilterActivity : ComponentActivity() {
                             viewModel.updateSearchTerm(searchTerm)
                         },
                         onItemClicked = { project ->
-                            // TODO extend on MBL-2135 with proper reftags & analytics for project card clicked
+                            val projAndRef = viewModel.getProjectAndRefTag(project)
                             if (project.displayPrelaunch().isTrue()) {
-                                startPreLaunchProjectActivity(project, RefTag.projectShare())
+                                startPreLaunchProjectActivity(project, projAndRef.second)
                             } else {
-                                startProjectActivity(Pair(project, RefTag.projectShare()))
+                                startProjectActivity(projAndRef)
                             }
                         }
                     )

@@ -78,7 +78,7 @@ class SearchAndFilterViewModel(
                         _params.emit(
                             DiscoveryParams.builder()
                                 .term(debouncedTerm)
-                                .sort(DiscoveryParams.Sort.POPULAR) // TODO: update once sort option is ready MBL-2131, by default popular
+                                .sort(DiscoveryParams.Sort.POPULAR) // TODO: update once sort option is ready MBL-2131, by default popular in every search
                                 .build()
                         )
                 }.collectLatest {

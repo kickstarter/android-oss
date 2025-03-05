@@ -76,8 +76,7 @@ class StatsigClientTest : KSRobolectricTestCase() {
             exception = e
             eCounter++
         })
-
-        advanceUntilIdle()
+        
         assertEquals(stClient.scope, this)
         assertEquals(eCounter, 1)
         assertEquals(exception?.message, "Something went wrong")

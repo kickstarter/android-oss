@@ -358,6 +358,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return Result.success(SearchEnvelope())
     }
 
+    override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {
+        return Result.success(listOf())
+    }
+
     override fun cleanDisposables() {
         TODO("Not yet implemented")
     }

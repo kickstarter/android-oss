@@ -292,6 +292,17 @@ fragment project on Project {
     slug
 }
 
+fragment similarProject on Project {
+    id
+    pid
+    name
+    slug
+    isLaunched
+    deadlineAt
+    percentFunded
+    imageUrl(width: $imageUrlWidth)
+}
+
 fragment reward on Reward {
     id
     name

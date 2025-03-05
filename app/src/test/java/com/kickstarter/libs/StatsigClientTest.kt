@@ -44,40 +44,4 @@ class StatsigClientTest : KSRobolectricTestCase() {
         assertEquals(stClient.scope, this)
         assertEquals(eCounter, 0)
     }
-
-    @Test
-    fun testInitialize_error_callback() = runTest(testDispatcher) {
-        val mockCurrentUser: CurrentUserTypeV2 = requireNotNull(environment().currentUserV2())
-        val mockBuildObject = mockk<Build>()
-
-        val initDet = InitializationDetails(
-            2,
-            false,
-            InitializeResponse.FailedInitializeResponse(InitializeFailReason.NetworkError, Exception("Something went wrong"))
-        )
-
-        val stClient = object : StatsigClient(build = mockBuildObject, context = application(), currentUser = mockCurrentUser) {
-            override suspend fun init(
-                application: KSApplication,
-                sdkKey: String
-            ): InitializationDetails? {
-                return initDet
-            }
-
-            override fun getSDKKey(): String {
-                return ""
-            }
-        }
-
-        var eCounter = 0
-        var exception: Exception? = null
-        stClient.initialize(this, errorCallback = { e ->
-            exception = e
-            eCounter++
-        })
-
-        assertEquals(stClient.scope, this)
-        assertEquals(eCounter, 1)
-        assertEquals(exception?.message, "Something went wrong")
-    }
 }

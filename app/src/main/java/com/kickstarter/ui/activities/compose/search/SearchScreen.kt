@@ -227,7 +227,7 @@ fun SearchScreen(
                         } else {
                             KSProjectCardSmall(
                                 modifier = Modifier
-                                    .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
+                                    .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name),
                                 photo = project.photo(),
                                 title = project.name(),
                                 isLaunched = project.isLive,

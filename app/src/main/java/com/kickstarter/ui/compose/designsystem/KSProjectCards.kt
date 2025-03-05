@@ -35,7 +35,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
-
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -48,7 +47,6 @@ fun KSProjectCardsPreview() {
                 .padding(dimensions.paddingSmall)
         ) {
             KSProjectCardLarge(
-                modifier = null,
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
                 isLaunched = true,
@@ -58,7 +56,6 @@ fun KSProjectCardsPreview() {
             )
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
             KSProjectCardLarge(
-                modifier = null,
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck",
                 isLaunched = false,
@@ -70,7 +67,6 @@ fun KSProjectCardsPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSProjectCardSmall(
-                modifier = null,
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
                 isLaunched = true,
@@ -82,7 +78,6 @@ fun KSProjectCardsPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSProjectCardSmall(
-                modifier = null,
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck",
                 isLaunched = true,
@@ -96,7 +91,7 @@ fun KSProjectCardsPreview() {
 
 @Composable
 fun KSProjectCardLarge(
-    modifier: Modifier?,
+    modifier: Modifier = Modifier,
     photo: Photo? = null,
     title: String,
     isLaunched: Boolean,
@@ -105,7 +100,7 @@ fun KSProjectCardLarge(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
         backgroundColor = colors.kds_white,
@@ -152,7 +147,7 @@ fun KSProjectCardLarge(
 
 @Composable
 fun KSProjectCardSmall(
-    modifier: Modifier?,
+    modifier: Modifier = Modifier,
     photo: Photo? = null,
     title: String,
     isLaunched: Boolean,
@@ -161,7 +156,7 @@ fun KSProjectCardSmall(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .clickable { onClick() },
         backgroundColor = colors.kds_white,
         shape = shapes.small,
@@ -204,7 +199,7 @@ fun KSProjectCardSmall(
                 }
             }
             if (isLaunched) {
-                KSLinearProgressIndicator(fundedPercentage/100f)
+                KSLinearProgressIndicator(fundedPercentage / 100f)
             }
         }
     }
@@ -227,7 +222,7 @@ fun KSFundingInfoRow(
             )
             Spacer(modifier = Modifier.width(dimensions.paddingXSmall))
             Text(
-                text = "$timeRemainingString •  $fundedPercentage% "+ stringResource(id = R.string.discovery_baseball_card_stats_funded),
+                text = "$timeRemainingString •  $fundedPercentage% " + stringResource(id = R.string.discovery_baseball_card_stats_funded),
                 style = textStyle,
                 color = colors.textSecondary
             )
@@ -252,4 +247,3 @@ fun KSLinearProgressIndicator(progress: Float) {
         backgroundColor = colors.borderSubtle
     )
 }
-

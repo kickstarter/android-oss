@@ -40,6 +40,7 @@ class Project private constructor(
     private val launchedAt: DateTime?,
     private val location: Location?,
     private val name: String,
+    private val percentFunded: Int?,
     private val permissions: List<Permission?>?,
     private val pledged: Double,
     private val photo: Photo?,
@@ -99,6 +100,7 @@ class Project private constructor(
     fun launchedAt() = this.launchedAt
     fun location() = this.location
     fun name() = this.name
+    fun percentFunded() = this.percentFunded
     fun permissions() = this.permissions
     fun pledged() = this.pledged
     fun photo() = this.photo
@@ -161,6 +163,7 @@ class Project private constructor(
         private var launchedAt: DateTime? = null,
         private var location: Location? = null,
         private var name: String = "",
+        private var percentFunded: Int? = null,
         private var permissions: List<Permission?>? = null,
         private var pledged: Double = 0.0,
         private var photo: Photo? = null,
@@ -225,6 +228,7 @@ class Project private constructor(
         fun launchedAt(launchedAt: DateTime?) = apply { this.launchedAt = launchedAt }
         fun location(location: Location?) = apply { this.location = location }
         fun name(name: String?) = apply { this.name = name ?: "" }
+        fun percentFunded(percentFunded: Int?) = apply { this.percentFunded = percentFunded }
         fun permissions(permissions: List<Permission?>?) = apply { this.permissions = permissions?.filterNotNull() ?: emptyList() }
         fun pledged(pledged: Double?) = apply { this.pledged = pledged ?: 0.0 }
         fun photo(photo: Photo?) = apply { this.photo = photo }
@@ -282,6 +286,7 @@ class Project private constructor(
             launchedAt = launchedAt,
             location = location,
             name = name,
+            percentFunded = percentFunded,
             permissions = permissions,
             pledged = pledged,
             photo = photo,
@@ -345,6 +350,7 @@ class Project private constructor(
         launchedAt = launchedAt,
         location = location,
         name = name,
+        percentFunded = percentFunded,
         permissions = permissions,
         pledged = pledged,
         photo = photo,
@@ -521,6 +527,7 @@ class Project private constructor(
                 launchedAt() == other.launchedAt() &&
                 location() == other.location() &&
                 name() == other.name() &&
+                percentFunded() == other.percentFunded() &&
                 permissions() == other.permissions() &&
                 pledged() == other.pledged() &&
                 photo() == other.photo() &&

@@ -66,6 +66,8 @@ data class KSDimensions(
     val cardImageAspectRatio: Float = Float.NaN,
     val loadingSpinnerSize: Dp = Dp.Unspecified,
     val strokeWith: Dp = Dp.Unspecified,
+    val linearProgressBarHeight: Dp = Dp.Unspecified,
+    val smallProjectCardImageHeight: Dp = Dp.Unspecified,
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -130,5 +132,7 @@ val KSStandardDimensions = KSDimensions(
     cardWidth = 294.dp,
     cardImageHeight = 196.dp,
     cardImageAspectRatio = 3f / 2f,
-    loadingSpinnerSize = 24.dp
+    loadingSpinnerSize = 24.dp,
+    linearProgressBarHeight = 9.dp,
+    smallProjectCardImageHeight = 72.dp
 )

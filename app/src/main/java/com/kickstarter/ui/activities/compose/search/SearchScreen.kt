@@ -44,15 +44,15 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
-import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
+import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
+import com.kickstarter.ui.compose.designsystem.KSProjectCardSmall
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.viewholders.compose.search.FeaturedSearchViewHolder
-import com.kickstarter.ui.viewholders.compose.search.ProjectSearchViewHolder
 import com.kickstarter.ui.views.compose.search.SearchEmptyView
 import com.kickstarter.ui.views.compose.search.SearchTopBar
 import kotlinx.coroutines.launch
@@ -71,6 +71,7 @@ fun SearchScreenPreviewNonEmpty() {
                 Project.builder()
                     .name("This is a test $it")
                     .pledged((it * 2).toDouble())
+                    .photo(Photo.builder().altText("").full("").build())
                     .goal(100.0)
                     .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                     .build()
@@ -204,48 +205,44 @@ fun SearchScreen(
                         if (index == 0) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                            FeaturedSearchViewHolder(
+                            KSProjectCardLarge(
                                 modifier = Modifier
                                     .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
-                                imageUrl = project.photo()?.full(),
+                                photo = project.photo(),
                                 title = project.name(),
                                 isLaunched = project.isLive,
-                                fundedAmount = project.percentageFunded().toInt(),
                                 timeRemainingString = environment?.ksString()?.let {
                                     NumberUtils.format(
                                         project.deadlineCountdownValue(),
                                     ) + " " + project.deadlineCountdownDetail(context, it)
-                                } ?: ""
+                                } ?: "",
+                                fundedPercentage = project.percentageFunded().toInt(),
                             ) {
                                 onItemClicked(project)
                             }
 
                             if (itemsList.size > 1) {
                                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                                KSDividerLineGrey()
-                                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
                             }
                         } else {
-                            ProjectSearchViewHolder(
+                            KSProjectCardSmall(
                                 modifier = Modifier
-                                    .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
-                                imageUrl = project.photo()?.med(),
+                                    .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
+                                photo = project.photo(),
                                 title = project.name(),
                                 isLaunched = project.isLive,
-                                fundedAmount = project.percentageFunded().toInt(),
                                 timeRemainingString = environment?.ksString()?.let {
                                     NumberUtils.format(
                                         project.deadlineCountdownValue(),
                                     ) + " " + project.deadlineCountdownDetail(context, it)
-                                } ?: ""
+                                } ?: "",
+                                fundedPercentage = project.percentageFunded().toInt(),
                             ) {
                                 onItemClicked(project)
                             }
 
                             if (index < itemsList.size - 1) {
-                                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-                                KSDividerLineGrey()
-                                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                             } else {
                                 Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                             }

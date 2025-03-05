@@ -61,6 +61,7 @@ import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlueButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
+import com.kickstarter.ui.compose.designsystem.KSProjectCardsPreview
 import com.kickstarter.ui.compose.designsystem.KSRadioButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
@@ -115,7 +116,6 @@ fun DesignSystemViewPreview() {
 }
 
 @SuppressLint("UnrememberedMutableInteractionSource")
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -197,6 +197,10 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
                 Dividers()
+
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
+
+                ProjectCards()
             }
         }
     }
@@ -1000,5 +1004,18 @@ fun TypographyVisuals() {
             style = typographyV2.subHeadlineMedium,
             color = colors.kds_support_700
         )
+    }
+}
+
+@Composable
+fun ProjectCards() {
+    Column {
+        Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSProjectCardsPreview()
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
     }
 }

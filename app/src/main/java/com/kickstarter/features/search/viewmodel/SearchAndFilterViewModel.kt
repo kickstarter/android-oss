@@ -103,7 +103,8 @@ class SearchAndFilterViewModel(
         val searchEnvelopeResult = apolloClient.getSearchProjects(params.value)
 
         if (searchEnvelopeResult.isFailure) {
-            errorAction.invoke(searchEnvelopeResult.exceptionOrNull()?.message)
+            // - errorAction.invoke(searchEnvelopeResult.exceptionOrNull()?.message) to return API level message
+            errorAction.invoke(null)
         }
 
         if (searchEnvelopeResult.isSuccess) {

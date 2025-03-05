@@ -164,8 +164,6 @@ fun SearchScreen(
                     modifier = Modifier.padding(dimensions.paddingSmall),
                     hostState = errorSnackBarHostState,
                     snackbar = { data ->
-                        // Action label is typically for the action on a snackbar, but we can
-                        // leverage it and show different visuals depending on what we pass in
                         if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
                             KSErrorSnackbar(text = data.message)
                         } else {

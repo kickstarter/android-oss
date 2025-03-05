@@ -68,7 +68,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                 viewModel.provideErrorAction { message ->
                     lifecycleScope.launch {
                         snackbarHostState.showSnackbar(
-                            message = message ?: "Something went wrong",
+                            message = message ?: getString(R.string.Something_went_wrong_please_try_again),
                             actionLabel = KSSnackbarTypes.KS_ERROR.name,
                             duration = SnackbarDuration.Long
                         )

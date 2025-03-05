@@ -9,6 +9,7 @@ import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.PledgedProjectsOverviewQuery
 import com.kickstarter.TriggerThirdPartyEventMutation
+import com.kickstarter.UpdateBackerCompletedMutation
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
@@ -55,6 +56,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.type.AppDataInput
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
@@ -65,6 +67,7 @@ import com.kickstarter.type.Feature
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
 import com.kickstarter.type.ThirdPartyEventItemInput
+import com.kickstarter.type.UpdateBackerCompletedInput
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -992,6 +995,15 @@ fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAdd
         backingId = eventInput.backingID
     )
     return CreateOrUpdateBackingAddressMutation(input = graphInput)
+}
+
+fun getUpdateBackerCompletedMutation(inputData: UpdateBackerCompletedData): UpdateBackerCompletedMutation {
+
+    val graphInput = UpdateBackerCompletedInput(
+        id = inputData.backingID,
+        backerCompleted = inputData.backerCompleted
+    )
+    return UpdateBackerCompletedMutation(input = graphInput)
 }
 
 fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData): PledgedProjectsOverviewQuery {

@@ -215,3 +215,18 @@ query BuildPaymentPlan($slug: String!, $amount: String!) {
     }
   }
 }
+
+query FetchSimilarProjects($first: Int = 4, $similarToPid: String!, $excludePid: Int!, $recommended: Boolean, $seed: Int, $imageUrlWidth: Int = 1024) {
+  projects(
+    first: $first
+    state: LIVE
+    similarToPid: $similarToPid
+    excludePids: [$excludePid]
+    seed: $seed
+    recommended: $recommended
+  ) {
+    nodes {
+      ...similarProject
+    }
+  }
+}

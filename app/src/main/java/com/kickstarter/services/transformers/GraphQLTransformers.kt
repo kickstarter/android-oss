@@ -21,6 +21,7 @@ import com.kickstarter.fragment.FullProject
 import com.kickstarter.fragment.PpoCard.DeliveryAddress
 import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.fragment.RewardImage
+import com.kickstarter.fragment.SimilarProject
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
@@ -830,6 +831,32 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
         .cancelable(backingGr?.cancelable ?: false)
         .completedByBacker(completedByBacker)
         .isPostCampaign(isPostCampaign)
+        .build()
+}
+
+/**
+ * Transform the Project GraphQL data structure into our own Project data model
+ * @param fragment.SimilarProject similarProjectFragment
+ * @return Project
+ */
+fun projectTransformer(similarProjectFragment: SimilarProject?): Project {
+    val id = decodeRelayId(similarProjectFragment?.id) ?: -1
+    val name = similarProjectFragment?.name
+    val slug = similarProjectFragment?.slug
+    val displayPrelaunch = (similarProjectFragment?.isLaunched ?: false).negate()
+    val deadline = similarProjectFragment?.deadlineAt
+    val percentFunded = similarProjectFragment?.percentFunded
+    val photo = getPhoto(similarProjectFragment?.imageUrl, null)
+
+    return Project.builder()
+        .currencyTrailingCode(false) // - This field is available on V1 Configuration Object
+        .displayPrelaunch(displayPrelaunch)
+        .deadline(deadline)
+        .id(id)
+        .name(name)
+        .percentFunded(percentFunded)
+        .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
+        .slug(slug)
         .build()
 }
 

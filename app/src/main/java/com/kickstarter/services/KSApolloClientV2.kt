@@ -31,6 +31,7 @@ import com.kickstarter.FetchCategoryQuery
 import com.kickstarter.FetchProjectQuery
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.FetchProjectsQuery
+import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
 import com.kickstarter.GetProjectAddOnsQuery
@@ -229,8 +230,9 @@ interface ApolloClientTypeV2 {
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
-    suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
+    suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
+    suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     fun cleanDisposables()
 }
 
@@ -1846,6 +1848,26 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }
             SearchEnvelope(projects, pageInfoEnvelope)
         } ?: SearchEnvelope()
+    }
+
+    override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> = executeForResult {
+        val query = FetchSimilarProjectsQuery(
+            first = Optional.present(4),
+            similarToPid = pid.toString(),
+            excludePid = pid.toInt(),
+            recommended = Optional.present(true),
+            seed = Optional.present(pid.toInt())
+        )
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            responseData.projects?.nodes?.map {
+                projectTransformer(it?.similarProject)
+            }
+        } ?: emptyList()
     }
 
     sealed class KSApolloClientV2Exception(

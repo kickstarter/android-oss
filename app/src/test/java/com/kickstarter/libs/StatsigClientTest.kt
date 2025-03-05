@@ -4,8 +4,6 @@ import com.kickstarter.KSApplication
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.statsig.androidsdk.InitializationDetails
-import com.statsig.androidsdk.InitializeFailReason
-import com.statsig.androidsdk.InitializeResponse
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher

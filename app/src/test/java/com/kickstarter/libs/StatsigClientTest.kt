@@ -10,7 +10,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -76,7 +75,7 @@ class StatsigClientTest : KSRobolectricTestCase() {
             exception = e
             eCounter++
         })
-        
+
         assertEquals(stClient.scope, this)
         assertEquals(eCounter, 1)
         assertEquals(exception?.message, "Something went wrong")

@@ -31,6 +31,7 @@ import com.kickstarter.FetchCategoryQuery
 import com.kickstarter.FetchProjectQuery
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.FetchProjectsQuery
+import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
 import com.kickstarter.GetProjectAddOnsQuery
@@ -93,6 +94,7 @@ import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
@@ -104,6 +106,7 @@ import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
 import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
+import com.kickstarter.services.transformers.getUpdateBackerCompletedMutation
 import com.kickstarter.services.transformers.paymentPlanTransformer
 import com.kickstarter.services.transformers.pledgedProjectsOverviewEnvelopeTransformer
 import com.kickstarter.services.transformers.projectTransformer
@@ -226,7 +229,9 @@ interface ApolloClientTypeV2 {
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
+    fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
+    suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     fun cleanDisposables()
 }
 
@@ -1736,6 +1741,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
+    override fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+
+            val mutation = getUpdateBackerCompletedMutation(inputData)
+
+            service.mutation(mutation)
+                .rxSingle()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                    }
+
+                    response.data?.let {
+                        val backerCompleted = it.updateBackerCompleted?.backing?.backerCompleted ?: false
+                        ps.onNext(backerCompleted)
+                    }
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+            return@defer ps
+        }
+    }
+
     // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview
     override fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload> {
         return Observable.defer {
@@ -1816,6 +1847,26 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }
             SearchEnvelope(projects, pageInfoEnvelope)
         } ?: SearchEnvelope()
+    }
+
+    override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> = executeForResult {
+        val query = FetchSimilarProjectsQuery(
+            first = Optional.present(4),
+            similarToPid = pid.toString(),
+            excludePid = pid.toInt(),
+            recommended = Optional.present(true),
+            seed = Optional.present(pid.toInt())
+        )
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            responseData.projects?.nodes?.map {
+                projectTransformer(it?.similarProject)
+            }
+        } ?: emptyList()
     }
 
     sealed class KSApolloClientV2Exception(

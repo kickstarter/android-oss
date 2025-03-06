@@ -49,9 +49,11 @@ import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import io.reactivex.Observable
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -348,8 +350,16 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
+    override fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean> {
+        return io.reactivex.Observable.empty()
+    }
+
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
         return Result.success(SearchEnvelope())
+    }
+
+    override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {
+        return Result.success(listOf())
     }
 
     override fun cleanDisposables() {

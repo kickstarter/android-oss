@@ -3,6 +3,8 @@ package com.kickstarter.features.search.viewmodel
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -12,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -26,7 +29,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for initial state getPopularProjects will only have sorting parameter POPULAR`() = runTest {
+    fun `test for initial state will only have sorting parameter POPULAR and empty search term`() = runTest {
 
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
@@ -48,17 +51,19 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
 
         val searchState = mutableListOf<SearchUIState>()
         backgroundScope.launch(dispatcher) {
-            viewModel.getPopularProjects()
+            viewModel.updateSearchTerm("")
             viewModel.searchUIState.toList(searchState)
         }
 
+        advanceUntilIdle()
         assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertNull(params?.term())
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, projectList)
     }
 
     @Test
-    fun `test getPopularProjects fails`() = runTest {
+    fun `test initial state fails`() = runTest {
 
         var params: DiscoveryParams? = null
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -77,15 +82,140 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment, dispatcher)
 
+        var errorNumber = 0
         val searchState = mutableListOf<SearchUIState>()
         backgroundScope.launch(dispatcher) {
-            viewModel.getPopularProjects()
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("")
             viewModel.searchUIState.toList(searchState)
         }
 
+        advanceUntilIdle()
         assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertNull(params?.term())
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, emptyList<Project>())
-        assertEquals(searchState.last().isErrored, true)
+        assertEquals(errorNumber, 1)
+    }
+
+    @Test
+    fun `test for searching a tem`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        return Result.success(SearchEnvelope(projectList))
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorNumber = 0
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("hello")
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.term(), "hello")
+        assertEquals(searchState.size, 2)
+        assertEquals(searchState.last().popularProjectsList, emptyList<Project>())
+        assertEquals(searchState.last().searchList, projectList)
+        assertEquals(errorNumber, 0)
+    }
+
+    @Test
+    fun `test analytics and reftags when from a search with term`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        return Result.success(SearchEnvelope(projectList))
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorNumber = 0
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("hello")
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.term(), "hello")
+        assertEquals(searchState.size, 2)
+
+        val projAndRefTag1 = viewModel.getProjectAndRefTag(projectList.first())
+        val projAndRefTag2 = viewModel.getProjectAndRefTag(projectList.last())
+
+        assertEquals(projAndRefTag1.second, RefTag.searchFeatured())
+        assertEquals(projAndRefTag2.second, RefTag.search())
+
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun `test analytics and reftags for initial state with empty term and sorting parameter POPULAR`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        return Result.success(SearchEnvelope(projectList))
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorNumber = 0
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("")
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertNull(params?.term())
+        assertEquals(searchState.size, 2)
+
+        val projAndRefTag1 = viewModel.getProjectAndRefTag(projectList.first())
+        val projAndRefTag2 = viewModel.getProjectAndRefTag(projectList.last())
+
+        assertEquals(projAndRefTag1.second, RefTag.searchPopularFeatured())
+        assertEquals(projAndRefTag2.second, RefTag.searchPopular())
+
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName)
     }
 }

@@ -21,6 +21,8 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue.Hidden
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
@@ -47,6 +49,9 @@ import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
+import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
+import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -65,6 +70,7 @@ fun SearchScreenPreviewNonEmpty() {
         SearchScreen(
             onBackClicked = { },
             scaffoldState = rememberScaffoldState(),
+            errorSnackBarHostState = SnackbarHostState(),
             isLoading = false,
             isPopularList = true,
             itemsList = List(100) {
@@ -91,6 +97,7 @@ fun SearchScreenPreviewEmpty() {
         SearchScreen(
             onBackClicked = { },
             scaffoldState = rememberScaffoldState(),
+            errorSnackBarHostState = SnackbarHostState(),
             isLoading = true,
             itemsList = listOf(),
             lazyColumnListState = rememberLazyListState(),
@@ -119,6 +126,7 @@ fun SearchScreen(
     environment: Environment? = null,
     onBackClicked: () -> Unit,
     scaffoldState: ScaffoldState,
+    errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     isPopularList: Boolean = true,
     isLoading: Boolean,
     itemsList: List<Project> = listOf(),
@@ -151,6 +159,19 @@ fun SearchScreen(
         Scaffold(
             modifier = Modifier.systemBarsPadding(),
             scaffoldState = scaffoldState,
+            snackbarHost = {
+                SnackbarHost(
+                    modifier = Modifier.padding(dimensions.paddingSmall),
+                    hostState = errorSnackBarHostState,
+                    snackbar = { data ->
+                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                            KSErrorSnackbar(text = data.message)
+                        } else {
+                            KSHeadsupSnackbar(text = data.message)
+                        }
+                    }
+                )
+            },
             topBar = {
                 Surface(elevation = 3.dp) {
                     SearchTopBar(

@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +31,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.models.Photo
+import com.kickstarter.ui.activities.compose.search.CardProjectState
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
@@ -50,8 +50,8 @@ fun KSProjectCardsPreview() {
             KSProjectCardLarge(
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
-                isLaunched = true,
-                timeRemainingString = "2 days left",
+                state = CardProjectState.LIVE,
+                fundingInfoString = "4 days to go • 50% funded",
                 fundedPercentage = 50,
                 onClick = {}
             )
@@ -59,30 +59,82 @@ fun KSProjectCardsPreview() {
             KSProjectCardLarge(
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck",
-                isLaunched = false,
-                timeRemainingString = "2 days left",
+                state = CardProjectState.LATE_PLEDGES_ACTIVE,
+                fundingInfoString = "Late pledges active",
+                fundedPercentage = 100,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSProjectCardLarge(
+                photo = Photo.builder().altText("").full("").build(),
+                title = "Cat Themed Pawker Deck",
+                state = CardProjectState.LAUNCHING_SOON,
+                fundingInfoString = "Launching soon",
                 fundedPercentage = 0,
                 onClick = {}
             )
-
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSProjectCardLarge(
+                photo = Photo.builder().altText("").full("").build(),
+                title = "Cat Themed Pawker Deck",
+                state = CardProjectState.ENDED_SUCCESSFUL,
+                fundingInfoString = "Ended",
+                fundedPercentage = 100,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSProjectCardLarge(
+                photo = Photo.builder().altText("").full("").build(),
+                title = "Cat Themed Pawker Deck",
+                state = CardProjectState.ENDED_UNSUCCESSFUL,
+                fundingInfoString = "Ended",
+                fundedPercentage = 50,
+                onClick = {}
+            )
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingMedium))
 
             KSProjectCardSmall(
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
-                isLaunched = false,
-                timeRemainingString = "2 days left",
-                fundedPercentage = 0,
+                state = CardProjectState.LIVE,
+                fundingInfoString = "4 days to go • 50% funded",
+                fundedPercentage = 50,
                 onClick = {}
             )
-
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-
             KSProjectCardSmall(
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck",
-                isLaunched = true,
-                timeRemainingString = "2 days left",
+                state = CardProjectState.LATE_PLEDGES_ACTIVE,
+                fundingInfoString = "Late pledges active",
+                fundedPercentage = 100,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSProjectCardSmall(
+                photo = Photo.builder().altText("").full("").build(),
+                title = "Cat Themed Pawker Deck",
+                state = CardProjectState.LAUNCHING_SOON,
+                fundingInfoString = "Launching soon",
+                fundedPercentage = 0,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSProjectCardSmall(
+                photo = Photo.builder().altText("").full("").build(),
+                title = "Cat Themed Pawker Deck",
+                state = CardProjectState.ENDED_SUCCESSFUL,
+                fundingInfoString = "Ended",
+                fundedPercentage = 100,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSProjectCardSmall(
+                photo = Photo.builder().altText("").full("").build(),
+                title = "Cat Themed Pawker Deck",
+                state = CardProjectState.ENDED_UNSUCCESSFUL,
+                fundingInfoString = "Ended",
                 fundedPercentage = 50,
                 onClick = {}
             )
@@ -95,8 +147,8 @@ fun KSProjectCardLarge(
     modifier: Modifier = Modifier,
     photo: Photo? = null,
     title: String,
-    isLaunched: Boolean,
-    timeRemainingString: String = "",
+    state: CardProjectState,
+    fundingInfoString: String = "",
     fundedPercentage: Int,
     onClick: () -> Unit
 ) {
@@ -134,14 +186,13 @@ fun KSProjectCardLarge(
                 )
                 Spacer(modifier = Modifier.height(dimensions.paddingSmall))
                 KSFundingInfoRow(
-                    isLaunched = isLaunched,
-                    fundedPercentage = fundedPercentage,
-                    timeRemainingString = timeRemainingString,
+                    state = state,
+                    fundingInfoString = fundingInfoString,
                     textStyle = typographyV2.bodyMD
                 )
             }
-            if (isLaunched) {
-                KSLinearProgressIndicator(fundedPercentage / 100f)
+            if (state != CardProjectState.LAUNCHING_SOON) {
+                KSFundingProgressIndicator(fundedPercentage / 100f, state)
             }
         }
     }
@@ -152,13 +203,14 @@ fun KSProjectCardSmall(
     modifier: Modifier = Modifier,
     photo: Photo? = null,
     title: String,
-    isLaunched: Boolean,
-    timeRemainingString: String,
+    state: CardProjectState,
+    fundingInfoString: String = "",
     fundedPercentage: Int,
     onClick: () -> Unit
 ) {
     Card(
         modifier = modifier
+            .fillMaxWidth()
             .clickable { onClick.invoke() },
         backgroundColor = colors.backgroundSurfaceRaised,
         shape = shapes.small,
@@ -194,15 +246,14 @@ fun KSProjectCardSmall(
                     Spacer(modifier = Modifier.weight(1f))
 
                     KSFundingInfoRow(
-                        isLaunched = isLaunched,
-                        fundedPercentage = fundedPercentage,
-                        timeRemainingString = timeRemainingString,
+                        state = state,
+                        fundingInfoString = fundingInfoString,
                         textStyle = typographyV2.bodyXS
                     )
                 }
             }
-            if (isLaunched) {
-                KSLinearProgressIndicator(fundedPercentage / 100f)
+            if (state != CardProjectState.LAUNCHING_SOON) {
+                KSFundingProgressIndicator(fundedPercentage / 100f, state)
             }
         }
     }
@@ -210,43 +261,86 @@ fun KSProjectCardSmall(
 
 @Composable
 fun KSFundingInfoRow(
-    isLaunched: Boolean,
-    fundedPercentage: Int,
-    timeRemainingString: String,
+    state: CardProjectState,
+    fundingInfoString: String,
     textStyle: TextStyle
 ) {
-    if (isLaunched || fundedPercentage > 0) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_clock),
-                contentDescription = "Time Left",
-                tint = colors.iconSubtle,
-                modifier = Modifier.size(dimensions.paddingMedium)
-            )
-            Spacer(modifier = Modifier.width(dimensions.paddingXSmall))
-            Text(
-                text = "$timeRemainingString •  $fundedPercentage% " + stringResource(id = R.string.discovery_baseball_card_stats_funded),
-                style = textStyle,
-                color = colors.textSecondary
-            )
-        }
-    } else {
-        Text(
-            text = stringResource(id = R.string.Coming_soon),
-            style = typographyV2.bodyMD,
-            color = colors.kds_create_700
+    return when (state) {
+        CardProjectState.LATE_PLEDGES_ACTIVE -> StateFundingInfoRow(
+            R.drawable.ic_late_pledges,
+            "Late pledges active",
+            fundingInfoString,
+            textStyle
+        )
+        CardProjectState.LIVE -> StateFundingInfoRow(
+            R.drawable.ic_clock,
+            "Live",
+            fundingInfoString,
+            textStyle
+        )
+        CardProjectState.LAUNCHING_SOON -> StateFundingInfoRow(
+            R.drawable.calendar,
+            "Launching soon",
+            fundingInfoString,
+            textStyle
+        )
+        CardProjectState.ENDED_SUCCESSFUL -> StateFundingInfoRow(
+            R.drawable.flag,
+            "Ended",
+            fundingInfoString,
+            textStyle
+        )
+        CardProjectState.ENDED_UNSUCCESSFUL -> StateFundingInfoRow(
+            R.drawable.flag,
+            "Ended",
+            fundingInfoString,
+            textStyle
         )
     }
 }
 
 @Composable
-fun KSLinearProgressIndicator(progress: Float) {
-    LinearProgressIndicator(
-        progress = progress,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(dimensions.linearProgressBarHeight),
-        color = colors.textAccentGreen,
-        backgroundColor = colors.borderSubtle
-    )
+fun StateFundingInfoRow(
+    iconRes: Int,
+    contentDescription: String,
+    text: String,
+    textStyle: TextStyle
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = contentDescription,
+            tint = colors.iconSubtle,
+            modifier = Modifier.size(dimensions.paddingMedium)
+        )
+        Spacer(modifier = Modifier.width(dimensions.paddingXSmall))
+        Text(
+            text = text,
+            style = textStyle,
+            color = colors.textSecondary
+        )
+    }
+}
+
+@Composable
+fun KSFundingProgressIndicator(progress: Float, state: CardProjectState) {
+    if (state == CardProjectState.ENDED_UNSUCCESSFUL) {
+        LinearProgressIndicator(
+            progress = progress,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensions.linearProgressBarHeight),
+            color = colors.borderBold,
+            backgroundColor = colors.borderDisabled
+        )
+    } else {
+        LinearProgressIndicator(
+            progress = progress,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensions.linearProgressBarHeight),
+            color = colors.textAccentGreen,
+            backgroundColor = colors.borderSubtle
+        )
+    }
 }

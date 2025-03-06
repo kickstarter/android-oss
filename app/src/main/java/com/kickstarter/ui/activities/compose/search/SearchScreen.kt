@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose.search
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isCompleted
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
@@ -114,6 +116,30 @@ enum class SearchScreenTestTag {
     POPULAR_PROJECTS_TITLE,
     FEATURED_PROJECT_VIEW,
     NORMAL_PROJECT_VIEW
+}
+
+enum class CardProjectState {
+    LIVE,
+    LATE_PLEDGES_ACTIVE,
+    LAUNCHING_SOON,
+    ENDED_SUCCESSFUL,
+    ENDED_UNSUCCESSFUL
+}
+
+fun getCardProjectState(project: Project) : CardProjectState {
+    return if (project.isCompleted() && project.isSuccessful)
+        CardProjectState.ENDED_SUCCESSFUL
+    else if (project.isCompleted() && !project.isSuccessful)
+        CardProjectState.ENDED_UNSUCCESSFUL
+    else if (project.postCampaignPledgingEnabled() == true && project.isInPostCampaignPledgingPhase() == true)
+        CardProjectState.LATE_PLEDGES_ACTIVE
+    else if (!project.isLive)
+        CardProjectState.LAUNCHING_SOON
+    else if (project.isLive)
+        CardProjectState.LIVE
+    else {
+        CardProjectState.LIVE
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -210,20 +236,18 @@ fun SearchScreen(
                             )
                         }
 
+                        val state = getCardProjectState(project)
+                        val fundingInfoString = getFundingInfoString(state, environment, context, project)
+
                         if (index == 0) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
                             KSProjectCardLarge(
                                 modifier = Modifier
                                     .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
                                 photo = project.photo(),
                                 title = project.name(),
-                                isLaunched = project.isLive,
-                                timeRemainingString = environment?.ksString()?.let {
-                                    NumberUtils.format(
-                                        project.deadlineCountdownValue(),
-                                    ) + " " + project.deadlineCountdownDetail(context, it)
-                                } ?: "",
+                                state = state,
+                                fundingInfoString = fundingInfoString,
                                 fundedPercentage = project.percentageFunded().toInt(),
                             ) {
                                 onItemClicked(project)
@@ -238,12 +262,8 @@ fun SearchScreen(
                                     .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
                                 photo = project.photo(),
                                 title = project.name(),
-                                isLaunched = project.isLive,
-                                timeRemainingString = environment?.ksString()?.let {
-                                    NumberUtils.format(
-                                        project.deadlineCountdownValue(),
-                                    ) + " " + project.deadlineCountdownDetail(context, it)
-                                } ?: "",
+                                state = state,
+                                fundingInfoString = fundingInfoString,
                                 fundedPercentage = project.percentageFunded().toInt(),
                             ) {
                                 onItemClicked(project)
@@ -285,5 +305,20 @@ fun SearchScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun getFundingInfoString(projectCardState: CardProjectState, environment: Environment?, context: Context, project: Project): String {
+    return when (projectCardState) {
+        CardProjectState.LIVE -> environment?.ksString()?.let {
+            NumberUtils.format(
+                project.deadlineCountdownValue(),
+            ) + " " + project.deadlineCountdownDetail(context, it) + " • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        }.toString() ?: ""
+        CardProjectState.LATE_PLEDGES_ACTIVE -> "Live pledges active  • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        CardProjectState.LAUNCHING_SOON -> "Launching soon"
+        CardProjectState.ENDED_SUCCESSFUL -> "Ended • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        CardProjectState.ENDED_UNSUCCESSFUL -> "Ended • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
     }
 }

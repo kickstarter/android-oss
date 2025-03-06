@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -69,9 +70,9 @@ fun KSProjectCardsPreview() {
             KSProjectCardSmall(
                 photo = Photo.builder().altText("").full("").build(),
                 title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
-                isLaunched = true,
+                isLaunched = false,
                 timeRemainingString = "2 days left",
-                fundedPercentage = 50,
+                fundedPercentage = 0,
                 onClick = {}
             )
 
@@ -102,9 +103,10 @@ fun KSProjectCardLarge(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        backgroundColor = colors.kds_white,
+            .clickable { onClick.invoke() },
+        backgroundColor = colors.backgroundSurfaceRaised,
         shape = shapes.medium,
+        elevation = dimensionResource(id = R.dimen.grid_2),
     ) {
         Column {
             if (photo != null) {
@@ -116,7 +118,7 @@ fun KSProjectCardLarge(
                     contentDescription = photo.altText(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(dimensions.cardImageAspectRatio),
+                        .aspectRatio(dimensions.projectCardImageAspectRatio),
                     placeholder = ColorPainter(color = colors.backgroundDisabled),
                     contentScale = ContentScale.Crop
                 )
@@ -157,9 +159,10 @@ fun KSProjectCardSmall(
 ) {
     Card(
         modifier = modifier
-            .clickable { onClick() },
-        backgroundColor = colors.kds_white,
+            .clickable { onClick.invoke() },
+        backgroundColor = colors.backgroundSurfaceRaised,
         shape = shapes.small,
+        elevation = dimensionResource(id = R.dimen.grid_2)
     ) {
         Column {
             Row(
@@ -174,7 +177,7 @@ fun KSProjectCardSmall(
                         contentDescription = photo.altText(),
                         modifier = Modifier
                             .height(dimensions.smallProjectCardImageHeight)
-                            .aspectRatio(dimensions.cardImageAspectRatio),
+                            .aspectRatio(dimensions.projectCardImageAspectRatio),
                         placeholder = ColorPainter(color = colors.backgroundDisabled),
                         contentScale = ContentScale.Crop
                     )
@@ -243,7 +246,7 @@ fun KSLinearProgressIndicator(progress: Float) {
         modifier = Modifier
             .fillMaxWidth()
             .height(dimensions.linearProgressBarHeight),
-        color = colors.kds_create_500,
+        color = colors.textAccentGreen,
         backgroundColor = colors.borderSubtle
     )
 }

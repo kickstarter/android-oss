@@ -87,6 +87,8 @@ class PlaygroundActivity : ComponentActivity() {
         this.binding.pledgeButton.setOnClickListener {
             flowController.confirm()
         }
+
+        setStartActivity()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

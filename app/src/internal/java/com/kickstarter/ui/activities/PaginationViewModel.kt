@@ -12,6 +12,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.services.ApolloClientTypeV2
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
+import timber.log.Timber
 
 class UpdatesPagingSource(
     private val apolloClient: ApolloClientTypeV2,
@@ -59,22 +61,59 @@ class UpdatesPagingSource(
         }
     }
 }
+
+class SearchAndFilterPagingSource(
+    private val apolloClient: ApolloClientTypeV2,
+    private val discoveryParams: DiscoveryParams,
+    private val limit: Int = 25,
+) : PagingSource<String, Project>() {
+
+    var pageCount = 0
+    override fun getRefreshKey(state: PagingState<String, Project>): String {
+        return "" // - Default first page is empty string when paginating with graphQL
+    }
+
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, Project> {
+        return try {
+            pageCount++
+            val currentCursor = params.key ?: ""
+            val result = apolloClient.getSearchProjects(discoveryParams, cursor = currentCursor)
+            return if (result.isSuccess) {
+                result.getOrNull()?.let { env ->
+                    val nextPageEnvelope = if (env.pageInfo?.hasNextPage == true) env.pageInfo else null
+                    Timber.d("${this.javaClass} **** Page: ${nextPageEnvelope?.startCursor}")
+                    Timber.d("${this.javaClass} **** Page: ${nextPageEnvelope?.hasPreviousPage}")
+                    Timber.d("${this.javaClass} **** Page: ${nextPageEnvelope?.hasNextPage}")
+                    Timber.d("${this.javaClass} **** Page: ${nextPageEnvelope?.endCursor}")
+                    return LoadResult.Page(
+                        data = env.projectList,
+                        prevKey = null,
+                        nextKey = nextPageEnvelope?.startCursor
+                    )
+                } ?: LoadResult.Error(Throwable())
+            } else LoadResult.Error(result.exceptionOrNull() ?: Throwable())
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+}
+
 class PaginationViewModel(
     private val environment: Environment,
 ) : ViewModel() {
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
-    private val _uiState = MutableStateFlow<PagingData<Update>>(PagingData.empty())
+    private val _uiState = MutableStateFlow<PagingData<Project>>(PagingData.empty())
     private val _totalCount = MutableStateFlow<Int>(0)
     val totalItemsState = _totalCount.asStateFlow()
-    val projectUpdatesState: StateFlow<PagingData<Update>> = _uiState.asStateFlow()
+    val projectUpdatesState: StateFlow<PagingData<Project>> = _uiState.asStateFlow()
     init {
         loadUpdates()
     }
 
     fun loadUpdates() {
+        val discoveryParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
         viewModelScope.launch(Dispatchers.IO) {
-            val project = Project.builder().slug("frosthaven").build()
             val limit = 25
             try {
                 Pager(
@@ -84,7 +123,7 @@ class PaginationViewModel(
                         enablePlaceholders = true,
                     )
                 ) {
-                    UpdatesPagingSource(apolloClient, project, limit, _totalCount)
+                    SearchAndFilterPagingSource(apolloClient, discoveryParams)
                 }
                     .flow
                     .cachedIn(viewModelScope)

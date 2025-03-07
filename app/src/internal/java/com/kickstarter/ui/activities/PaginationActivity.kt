@@ -37,7 +37,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
+import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -74,7 +76,7 @@ class PaginationActivity : ComponentActivity() {
 @Composable
 fun PreviewScreen() {
     val list = List(100) {
-        UpdateFactory.update().toBuilder().id(it.toLong()).build()
+        ProjectFactory.project().toBuilder().id(it.toLong()).build()
     }
     val updatesList = flowOf(PagingData.from(list)).collectAsLazyPagingItems()
     Screen(updatesPagingSource = updatesList, total = 100)
@@ -83,7 +85,7 @@ fun PreviewScreen() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Screen(
-    updatesPagingSource: LazyPagingItems<Update>,
+    updatesPagingSource: LazyPagingItems<Project>,
     total: Int = 0,
     pullRefreshCallback: () -> Unit = {}
 ) {
@@ -125,7 +127,7 @@ fun ItemsList(
     listState: LazyListState,
     pullToRefreshIsLoading: Boolean,
     pullRefreshState: PullRefreshState,
-    updates: LazyPagingItems<Update>
+    updates: LazyPagingItems<Project>
 ) {
     Box(
         modifier = modifier
@@ -145,7 +147,7 @@ fun ItemsList(
 
                 // As the standard items call provides only the index, we get the item directly from our lazyPagingItems
                 updates[index]?.let {
-                    UpdateCard(update = it, index = index)
+                    UpdateCard(project = it, index = index)
                 }
             }
         }
@@ -159,7 +161,7 @@ fun ItemsList(
 }
 
 @Composable
-fun UpdateCard(update: Update, index: Int) {
+fun UpdateCard(project: Project, index: Int) {
     Card(
         modifier = Modifier
             .padding(12.dp),
@@ -173,12 +175,12 @@ fun UpdateCard(update: Update, index: Int) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "Index: $index | publishedAt: ${update.publishedAt()} |update ID: ${update.id()} | update title: ${update.title()}",
+                text = "Index: $index | projectName: ${project.name()} |project ID: ${project.id()} | project slug: ${project.slug()}",
                 style = KSTheme.typographyV2.title2,
                 textAlign = TextAlign.Start
             )
             Text(
-                text = " * ${update.truncatedBody()}",
+                text = " * ${project.descriptionUrl()}",
                 style = KSTheme.typographyV2.body,
             )
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))

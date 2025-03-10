@@ -9,6 +9,7 @@ import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.PledgedProjectsOverviewQuery
 import com.kickstarter.TriggerThirdPartyEventMutation
+import com.kickstarter.UpdateBackerCompletedMutation
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
@@ -20,6 +21,7 @@ import com.kickstarter.fragment.FullProject
 import com.kickstarter.fragment.PpoCard.DeliveryAddress
 import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.fragment.RewardImage
+import com.kickstarter.fragment.SimilarProject
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
@@ -55,6 +57,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.type.AppDataInput
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
@@ -65,6 +68,7 @@ import com.kickstarter.type.Feature
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
 import com.kickstarter.type.ThirdPartyEventItemInput
+import com.kickstarter.type.UpdateBackerCompletedInput
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
@@ -831,6 +835,32 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
 }
 
 /**
+ * Transform the Project GraphQL data structure into our own Project data model
+ * @param fragment.SimilarProject similarProjectFragment
+ * @return Project
+ */
+fun projectTransformer(similarProjectFragment: SimilarProject?): Project {
+    val id = decodeRelayId(similarProjectFragment?.id) ?: -1
+    val name = similarProjectFragment?.name
+    val slug = similarProjectFragment?.slug
+    val displayPrelaunch = (similarProjectFragment?.isLaunched ?: false).negate()
+    val deadline = similarProjectFragment?.deadlineAt
+    val percentFunded = similarProjectFragment?.percentFunded
+    val photo = getPhoto(similarProjectFragment?.imageUrl, null)
+
+    return Project.builder()
+        .currencyTrailingCode(false) // - This field is available on V1 Configuration Object
+        .displayPrelaunch(displayPrelaunch)
+        .deadline(deadline)
+        .id(id)
+        .name(name)
+        .percentFunded(percentFunded)
+        .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
+        .slug(slug)
+        .build()
+}
+
+/**
  * For addOns we receive this kind of data structure :[D, D, D, D, D, C, E, E]
  * and we need to transform it in : D(5),C(1),E(2)
  */
@@ -992,6 +1022,15 @@ fun getCreateOrUpdateBackingAddressMutation(eventInput: CreateOrUpdateBackingAdd
         backingId = eventInput.backingID
     )
     return CreateOrUpdateBackingAddressMutation(input = graphInput)
+}
+
+fun getUpdateBackerCompletedMutation(inputData: UpdateBackerCompletedData): UpdateBackerCompletedMutation {
+
+    val graphInput = UpdateBackerCompletedInput(
+        id = inputData.backingID,
+        backerCompleted = inputData.backerCompleted
+    )
+    return UpdateBackerCompletedMutation(input = graphInput)
 }
 
 fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData): PledgedProjectsOverviewQuery {

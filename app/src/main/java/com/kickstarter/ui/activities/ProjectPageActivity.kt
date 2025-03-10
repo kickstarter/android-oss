@@ -1345,11 +1345,13 @@ class ProjectPageActivity :
     }
 
     private fun showToastError(message: String? = null) {
-        showErrorToast(
-            applicationContext,
-            binding.pledgeContainerCompose,
-            message ?: getString(R.string.general_error_something_wrong)
-        )
+        this.runOnUiThread {
+            showErrorToast(
+                applicationContext,
+                binding.pledgeContainerCompose,
+                message ?: getString(R.string.general_error_something_wrong)
+            )
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

@@ -15,14 +15,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue.Hidden
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,6 +49,9 @@ import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
+import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
+import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -49,6 +60,7 @@ import com.kickstarter.ui.viewholders.compose.search.FeaturedSearchViewHolder
 import com.kickstarter.ui.viewholders.compose.search.ProjectSearchViewHolder
 import com.kickstarter.ui.views.compose.search.SearchEmptyView
 import com.kickstarter.ui.views.compose.search.SearchTopBar
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -58,6 +70,7 @@ fun SearchScreenPreviewNonEmpty() {
         SearchScreen(
             onBackClicked = { },
             scaffoldState = rememberScaffoldState(),
+            errorSnackBarHostState = SnackbarHostState(),
             isLoading = false,
             isPopularList = true,
             itemsList = List(100) {
@@ -84,6 +97,7 @@ fun SearchScreenPreviewEmpty() {
         SearchScreen(
             onBackClicked = { },
             scaffoldState = rememberScaffoldState(),
+            errorSnackBarHostState = SnackbarHostState(),
             isLoading = true,
             itemsList = listOf(),
             lazyColumnListState = rememberLazyListState(),
@@ -106,152 +120,185 @@ enum class SearchScreenTestTag {
     NORMAL_PROJECT_VIEW
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
     environment: Environment? = null,
     onBackClicked: () -> Unit,
     scaffoldState: ScaffoldState,
+    errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     isPopularList: Boolean = true,
     isLoading: Boolean,
     itemsList: List<Project> = listOf(),
     lazyColumnListState: LazyListState,
     showEmptyView: Boolean,
     onSearchTermChanged: (String) -> Unit,
-    onItemClicked: (Project) -> Unit
+    onItemClicked: (Project) -> Unit,
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = Hidden,
+        skipHalfExpanded = true
+    )
+    val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(
-        modifier = Modifier.systemBarsPadding(),
-        scaffoldState = scaffoldState,
-        topBar = {
-            Surface(elevation = 3.dp) {
-                SearchTopBar(
-                    onBackPressed = onBackClicked,
-                    onValueChanged = {
-                        onSearchTermChanged.invoke(it)
-                        currentSearchTerm = it
-                    },
-                )
-            }
-        },
-        backgroundColor = colors.kds_white
-    ) { padding ->
-        if (showEmptyView) {
-            SearchEmptyView(
-                modifier = Modifier.testTag(SearchScreenTestTag.EMPTY_VIEW.name),
-                environment = environment,
-                currentSearchTerm = currentSearchTerm
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = {
+            CategorySelectionSheet(
+                onDismiss = { coroutineScope.launch { sheetState.hide() } },
+                categories = sampleCategories,
+                onApply = { totalResults -> println("Total results: $totalResults") },
+                isLoading = false
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .testTag(SearchScreenTestTag.LIST_VIEW.name)
-                    .padding(padding)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(
-                    start = dimensions.paddingSmall,
-                    end = dimensions.paddingSmall
-                ),
-                state = lazyColumnListState,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                itemsIndexed(itemsList) { index, project ->
-                    if (index == 0 && isPopularList) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                        Text(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.POPULAR_PROJECTS_TITLE.name)
-                                .fillMaxWidth(),
-                            text = stringResource(id = R.string.Popular_Projects),
-                            style = typographyV2.title2,
-                            color = colors.kds_support_700,
-                            textAlign = TextAlign.Start
-                        )
-                    }
-
-                    if (index == 0) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                        FeaturedSearchViewHolder(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
-                            imageUrl = project.photo()?.full(),
-                            title = project.name(),
-                            isLaunched = project.isLive,
-                            fundedAmount = project.percentageFunded().toInt(),
-                            timeRemainingString = environment?.ksString()?.let {
-                                NumberUtils.format(
-                                    project.deadlineCountdownValue(),
-                                ) + " " + project.deadlineCountdownDetail(context, it)
-                            } ?: ""
-                        ) {
-                            onItemClicked(project)
+        },
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetBackgroundColor = colors.kds_white
+    ) {
+        Scaffold(
+            modifier = Modifier.systemBarsPadding(),
+            scaffoldState = scaffoldState,
+            snackbarHost = {
+                SnackbarHost(
+                    modifier = Modifier.padding(dimensions.paddingSmall),
+                    hostState = errorSnackBarHostState,
+                    snackbar = { data ->
+                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                            KSErrorSnackbar(text = data.message)
+                        } else {
+                            KSHeadsupSnackbar(text = data.message)
                         }
-
-                        if (itemsList.size > 1) {
+                    }
+                )
+            },
+            topBar = {
+                Surface(elevation = 3.dp) {
+                    SearchTopBar(
+                        onBackPressed = onBackClicked,
+                        onValueChanged = {
+                            onSearchTermChanged.invoke(it)
+                            currentSearchTerm = it
+                        },
+                        onCategoryPressed = {
+                            coroutineScope.launch { sheetState.show() } // Open bottom sheet
+                        }
+                    )
+                }
+            },
+            backgroundColor = colors.kds_white
+        ) { padding ->
+            if (showEmptyView) {
+                SearchEmptyView(
+                    modifier = Modifier.testTag(SearchScreenTestTag.EMPTY_VIEW.name),
+                    environment = environment,
+                    currentSearchTerm = currentSearchTerm
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .testTag(SearchScreenTestTag.LIST_VIEW.name)
+                        .padding(padding)
+                        .fillMaxWidth(),
+                    contentPadding = PaddingValues(
+                        start = dimensions.paddingSmall,
+                        end = dimensions.paddingSmall
+                    ),
+                    state = lazyColumnListState,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    itemsIndexed(itemsList) { index, project ->
+                        if (index == 0 && isPopularList) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                            KSDividerLineGrey()
-
-                            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
-                        }
-                    } else {
-                        ProjectSearchViewHolder(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
-                            imageUrl = project.photo()?.med(),
-                            title = project.name(),
-                            isLaunched = project.isLive,
-                            fundedAmount = project.percentageFunded().toInt(),
-                            timeRemainingString = environment?.ksString()?.let {
-                                NumberUtils.format(
-                                    project.deadlineCountdownValue(),
-                                ) + " " + project.deadlineCountdownDetail(context, it)
-                            } ?: ""
-                        ) {
-                            onItemClicked(project)
+                            Text(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.POPULAR_PROJECTS_TITLE.name)
+                                    .fillMaxWidth(),
+                                text = stringResource(id = R.string.Popular_Projects),
+                                style = typographyV2.title2,
+                                color = colors.kds_support_700,
+                                textAlign = TextAlign.Start
+                            )
                         }
 
-                        if (index < itemsList.size - 1) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                        if (index == 0) {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                            KSDividerLineGrey()
+                            FeaturedSearchViewHolder(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
+                                imageUrl = project.photo()?.full(),
+                                title = project.name(),
+                                isLaunched = project.isLive,
+                                fundedAmount = project.percentageFunded().toInt(),
+                                timeRemainingString = environment?.ksString()?.let {
+                                    NumberUtils.format(
+                                        project.deadlineCountdownValue(),
+                                    ) + " " + project.deadlineCountdownDetail(context, it)
+                                } ?: ""
+                            ) {
+                                onItemClicked(project)
+                            }
 
-                            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                            if (itemsList.size > 1) {
+                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                                KSDividerLineGrey()
+                                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                            }
                         } else {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                            ProjectSearchViewHolder(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
+                                imageUrl = project.photo()?.med(),
+                                title = project.name(),
+                                isLaunched = project.isLive,
+                                fundedAmount = project.percentageFunded().toInt(),
+                                timeRemainingString = environment?.ksString()?.let {
+                                    NumberUtils.format(
+                                        project.deadlineCountdownValue(),
+                                    ) + " " + project.deadlineCountdownDetail(context, it)
+                                } ?: ""
+                            ) {
+                                onItemClicked(project)
+                            }
+
+                            if (index < itemsList.size - 1) {
+                                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                                KSDividerLineGrey()
+                                Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                            } else {
+                                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                            }
                         }
                     }
-                }
 
-                item(isLoading) {
-                    if (isLoading && itemsList.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    item(isLoading) {
+                        if (isLoading && itemsList.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                        KSCircularProgressIndicator(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
-                                .size(size = dimensions.imageSizeLarge)
-                        )
+                            KSCircularProgressIndicator(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
+                                    .size(size = dimensions.imageSizeLarge)
+                            )
 
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        }
                     }
                 }
             }
-        }
 
-        if (isLoading && itemsList.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .testTag(SearchScreenTestTag.LOADING_VIEW.name)
-                    .fillMaxSize()
-                    .background(color = colors.kds_black.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                KSCircularProgressIndicator()
+            if (isLoading && itemsList.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .testTag(SearchScreenTestTag.LOADING_VIEW.name)
+                        .fillMaxSize()
+                        .background(color = colors.kds_black.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    KSCircularProgressIndicator()
+                }
             }
         }
     }

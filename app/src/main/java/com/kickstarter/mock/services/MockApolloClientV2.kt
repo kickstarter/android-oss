@@ -9,6 +9,7 @@ import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CommentFactory
@@ -48,9 +49,11 @@ import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import io.reactivex.Observable
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -345,6 +348,18 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun buildPaymentPlan(inputData: BuildPaymentPlanData): io.reactivex.Observable<PaymentPlan> {
         return io.reactivex.Observable.empty()
+    }
+
+    override fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
+        return Result.success(SearchEnvelope())
+    }
+
+    override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {
+        return Result.success(listOf())
     }
 
     override fun cleanDisposables() {

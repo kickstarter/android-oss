@@ -3,10 +3,15 @@ package com.kickstarter.services
 import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.rx2.rxFlowable
 import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CancelBackingMutation
@@ -26,6 +31,7 @@ import com.kickstarter.FetchCategoryQuery
 import com.kickstarter.FetchProjectQuery
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.FetchProjectsQuery
+import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
 import com.kickstarter.GetProjectAddOnsQuery
@@ -51,6 +57,7 @@ import com.kickstarter.ValidateCheckoutQuery
 import com.kickstarter.WatchProjectMutation
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
@@ -87,6 +94,7 @@ import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.categoryTransformer
@@ -98,6 +106,7 @@ import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
 import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
+import com.kickstarter.services.transformers.getUpdateBackerCompletedMutation
 import com.kickstarter.services.transformers.paymentPlanTransformer
 import com.kickstarter.services.transformers.pledgedProjectsOverviewEnvelopeTransformer
 import com.kickstarter.services.transformers.projectTransformer
@@ -115,7 +124,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import java.net.SocketTimeoutException
 import java.nio.charset.Charset
+import kotlin.coroutines.cancellation.CancellationException
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -219,6 +230,9 @@ interface ApolloClientTypeV2 {
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
+    fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
+    suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
+    suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     fun cleanDisposables()
 }
 
@@ -310,7 +324,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             categoryId = if (discoveryParams.category()?.id() == null) Optional.absent() else Optional.present(discoveryParams.category()?.id().toString()),
             recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(discoveryParams.recommended()),
             starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),
-            backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean())
+            backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean()),
+            searchTerm = if (discoveryParams.term() == null) Optional.absent() else Optional.present(discoveryParams.term())
         )
     }
 
@@ -1727,6 +1742,32 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
+    override fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+
+            val mutation = getUpdateBackerCompletedMutation(inputData)
+
+            service.mutation(mutation)
+                .rxSingle()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                    }
+
+                    response.data?.let {
+                        val backerCompleted = it.updateBackerCompleted?.backing?.backerCompleted ?: false
+                        ps.onNext(backerCompleted)
+                    }
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+            return@defer ps
+        }
+    }
+
     // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview
     override fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload> {
         return Observable.defer {
@@ -1789,4 +1830,97 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
+
+    override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> = executeForResult {
+        val query = buildFetchProjectsQuery(discoveryParams, cursor)
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            val projects = responseData.projects?.edges?.map {
+                projectTransformer(it?.node?.projectCard)
+            } ?: emptyList()
+            val pageInfoEnvelope =
+                responseData.projects?.pageInfo?.pageInfo?.let {
+                    createPageInfoObject(it)
+                }
+            SearchEnvelope(projects, pageInfoEnvelope)
+        } ?: SearchEnvelope()
+    }
+
+    override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> = executeForResult {
+        val query = FetchSimilarProjectsQuery(
+            first = Optional.present(4),
+            similarToPid = pid.toString(),
+            excludePid = pid.toInt(),
+            recommended = Optional.present(true),
+            seed = Optional.present(pid.toInt())
+        )
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            responseData.projects?.nodes?.map {
+                projectTransformer(it?.similarProject)
+            }
+        } ?: emptyList()
+    }
+
+    sealed class KSApolloClientV2Exception(
+        message: String? = null,
+        cause: Throwable? = null
+    ) : Exception(message, cause) {
+        class Timeout(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class TooManyRequests(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+        class ApiError(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
+    }
+
+    private fun buildClientException(errors: List<Error>?): KSApolloClientV2Exception {
+        return KSApolloClientV2Exception.ApiError(errors?.first()?.message)
+    }
+
+    private fun ApolloException.toClientException(): Exception =
+        when (this) {
+            is ApolloNetworkException -> {
+                when (cause) {
+                    is SocketTimeoutException -> KSApolloClientV2Exception.Timeout()
+                    else -> this
+                }
+            }
+            is ApolloHttpException -> {
+                when (statusCode) {
+                    429 -> KSApolloClientV2Exception.TooManyRequests()
+                    else -> this
+                }
+            }
+            else -> this
+        }
+
+    private suspend fun <T> executeForResult(block: suspend () -> T): Result<T> =
+        try {
+            Result.success(block())
+        } catch (cancellationException: CancellationException) {
+            // - When using try catch blocks with suspending functions always rethrow CancellationExceptions and not threat them as an error
+            throw cancellationException
+        } catch (apolloException: ApolloException) {
+            val exception = apolloException.toClientException()
+            FirebaseCrashlytics.getInstance().recordException(exception)
+            Result.failure(exception)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            Result.failure(e)
+        }
 }

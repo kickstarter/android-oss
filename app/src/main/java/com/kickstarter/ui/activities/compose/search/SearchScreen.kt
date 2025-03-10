@@ -51,10 +51,10 @@ import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
-import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
-import com.kickstarter.ui.compose.designsystem.KSProjectCardSmall
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
+import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
+import com.kickstarter.ui.compose.designsystem.KSProjectCardSmall
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors

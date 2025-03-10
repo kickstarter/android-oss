@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose.search
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -257,7 +256,7 @@ fun SearchScreen(
                         }
 
                         val state = getCardProjectState(project)
-                        val fundingInfoString = getFundingInfoString(state, environment, context, project)
+                        val fundingInfoString = getFundingInfoString(state, environment, project)
 
                         if (index == 0) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -329,12 +328,12 @@ fun SearchScreen(
 }
 
 @Composable
-fun getFundingInfoString(projectCardState: CardProjectState, environment: Environment?, context: Context, project: Project): String {
+fun getFundingInfoString(projectCardState: CardProjectState, environment: Environment?, project: Project): String {
     return when (projectCardState) {
         CardProjectState.LIVE -> environment?.ksString()?.let {
             NumberUtils.format(
                 project.deadlineCountdownValue(),
-            ) + " " + project.deadlineCountdownDetail(context, it) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+            ) + " " + project.deadlineCountdownDetail(LocalContext.current, it) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
         }.toString()
         CardProjectState.LATE_PLEDGES_ACTIVE -> stringResource(R.string.Late_pledges_active) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
         CardProjectState.LAUNCHING_SOON -> stringResource(R.string.Launching_soon)

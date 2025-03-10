@@ -598,7 +598,10 @@ interface BackingFragmentViewModel {
                         Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
                         Backing.STATUS_AUTHENTICATION_REQUIRED,
                         Backing.STATUS_ERRORED -> {
-                            if (!backing.paymentIncrements()
+                            if (backing.status() == Backing.STATUS_AUTHENTICATION_REQUIRED && backing.paymentIncrements.isNullOrEmpty()) {
+                                R.string.We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate
+                            }
+                            else if (!backing.paymentIncrements()
                                 .isNullOrEmpty() && !project.isLive
                             ) {
                                 R.string.We_cant_process_your_Pledge_Over_Time_payment

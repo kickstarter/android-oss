@@ -127,9 +127,9 @@ enum class CardProjectState {
 }
 
 fun getCardProjectState(project: Project): CardProjectState {
-    return if (project.isCompleted() && project.isSuccessful)
+    return if (project.isSuccessful)
         CardProjectState.ENDED_SUCCESSFUL
-    else if (project.isCompleted() && !project.isSuccessful)
+    else if (project.isFailed)
         CardProjectState.ENDED_UNSUCCESSFUL
     else if (project.postCampaignPledgingEnabled() == true && project.isInPostCampaignPledgingPhase() == true)
         CardProjectState.LATE_PLEDGES_ACTIVE
@@ -315,7 +315,7 @@ fun getFundingInfoString(projectCardState: CardProjectState, environment: Enviro
             NumberUtils.format(
                 project.deadlineCountdownValue(),
             ) + " " + project.deadlineCountdownDetail(context, it) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
-        }.toString() ?: ""
+        }.toString()
         CardProjectState.LATE_PLEDGES_ACTIVE -> stringResource(R.string.Late_pledges_active) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
         CardProjectState.LAUNCHING_SOON -> stringResource(R.string.Launching_soon)
         CardProjectState.ENDED_SUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)

@@ -126,6 +126,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.net.SocketTimeoutException
 import java.nio.charset.Charset
+import kotlin.coroutines.cancellation.CancellationException
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -1911,6 +1912,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     private suspend fun <T> executeForResult(block: suspend () -> T): Result<T> =
         try {
             Result.success(block())
+        } catch (cancellationException: CancellationException) {
+            // - When using try catch blocks with suspending functions always rethrow CancellationExceptions and not threat them as an error
+            throw cancellationException
         } catch (apolloException: ApolloException) {
             val exception = apolloException.toClientException()
             FirebaseCrashlytics.getInstance().recordException(exception)

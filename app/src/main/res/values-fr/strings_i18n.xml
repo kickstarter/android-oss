@@ -236,6 +236,7 @@ Cliquez pour réessayer.</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">L\'adresse e-mail doit être valide.</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
   <string name="Email_unverified" formatted="false">Adresse e-mail non vérifiée.</string>
+  <string name="Ended" formatted="false">Ended</string>
   <string name="Ending_in_last_four" formatted="false">Finissant par %{last_four}</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Veuillez saisir un montant inférieur à %{max_pledge}.</string>
@@ -384,6 +385,8 @@ Cliquez pour réessayer.</string>
   <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter prend les atteintes au droit à la propriété intellectuelle très au sérieux. Pour plus d\'information et pour des instructions sur le signalement d\'utilisations abusives, veuillez consulter nos pages {{copyrightPolicyLink}} et {{trademarkPolicyLink}}. Seules les demandes formulées par le titulaire du droit d\'auteur ou de la marque déposée seront traitées.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
+  <string name="Late_pledges_active" formatted="false">Late pledges active</string>
+  <string name="Launching_soon" formatted="false">Launching soon</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Comprendre la politique sur l\'IA de Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">En savoir plus sur la notion de responsabilité sur Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
@@ -670,6 +673,7 @@ n\'ont rien soutenu.</string>
   <string name="Sign_up" formatted="false">Inscription</string>
   <string name="Sign_up_newsletter" formatted="false">Inscrivez-vous à Coups de cœur pour recevoir une sélection hebdomadaire de projets marquants qui nous ont plu.</string>
   <string name="Signs_up_with_Email" formatted="false">Inscription avec l\'adresse e-mail.</string>
+  <string name="Similar_projects" formatted="false">Similar projects</string>
   <string name="Skip_add_ons" formatted="false">Passer les compléments</string>
   <string name="Social_friend_is_backer_few" formatted="false">%{friend_name} et %{remaining_count} autre(s)</string>
   <string name="Social_friend_is_backer_many" formatted="false">%{friend_name} et %{remaining_count} autre(s)</string>
@@ -1911,6 +1915,7 @@ projets enregistrés</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">Activité</string>
+  <string name="tabbar_backings" formatted="false">Engagements</string>
   <string name="tabbar_dashboard" formatted="false">Tableau de bord</string>
   <string name="tabbar_discover" formatted="false">Découvrir</string>
   <string name="tabbar_login" formatted="false">Connexion</string>

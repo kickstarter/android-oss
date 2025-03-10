@@ -126,7 +126,7 @@ enum class CardProjectState {
     ENDED_UNSUCCESSFUL
 }
 
-fun getCardProjectState(project: Project) : CardProjectState {
+fun getCardProjectState(project: Project): CardProjectState {
     return if (project.isCompleted() && project.isSuccessful)
         CardProjectState.ENDED_SUCCESSFUL
     else if (project.isCompleted() && !project.isSuccessful)
@@ -314,11 +314,11 @@ fun getFundingInfoString(projectCardState: CardProjectState, environment: Enviro
         CardProjectState.LIVE -> environment?.ksString()?.let {
             NumberUtils.format(
                 project.deadlineCountdownValue(),
-            ) + " " + project.deadlineCountdownDetail(context, it) + " • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+            ) + " " + project.deadlineCountdownDetail(context, it) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
         }.toString() ?: ""
-        CardProjectState.LATE_PLEDGES_ACTIVE -> "Live pledges active  • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
-        CardProjectState.LAUNCHING_SOON -> "Launching soon"
-        CardProjectState.ENDED_SUCCESSFUL -> "Ended • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
-        CardProjectState.ENDED_UNSUCCESSFUL -> "Ended • " + project.percentageFunded().toInt() + "%" + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        CardProjectState.LATE_PLEDGES_ACTIVE -> stringResource(R.string.Late_pledges_active) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        CardProjectState.LAUNCHING_SOON -> stringResource(R.string.Launching_soon)
+        CardProjectState.ENDED_SUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        CardProjectState.ENDED_UNSUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
     }
 }

@@ -17,6 +17,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.RefTag
@@ -34,6 +36,7 @@ import com.kickstarter.ui.activities.compose.search.SearchScreen
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class SearchAndFilterActivity : ComponentActivity() {
@@ -53,9 +56,9 @@ class SearchAndFilterActivity : ComponentActivity() {
 
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
-                val popularProjects = searchUIState.popularProjectsList
+                val popularProjects =  flowOf(PagingData.from(searchUIState.popularProjectsList)).collectAsLazyPagingItems()
 
-                val searchedProjects = searchUIState.searchList
+                val searchedProjects = flowOf(PagingData.from(searchUIState.searchList)).collectAsLazyPagingItems()
 
                 val isLoading = searchUIState.isLoading
 
@@ -93,7 +96,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                         showEmptyView = !isLoading &&
                             !isTyping &&
                             !currentSearchTerm.isTrimmedEmpty() &&
-                            searchedProjects.isEmpty(),
+                            searchedProjects.itemCount > 0,
                         onSearchTermChanged = { searchTerm ->
                             currentSearchTerm = searchTerm
                             viewModel.updateSearchTerm(searchTerm)

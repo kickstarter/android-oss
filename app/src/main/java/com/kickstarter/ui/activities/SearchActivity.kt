@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.kickstarter.R
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
@@ -37,6 +39,7 @@ import com.kickstarter.viewmodels.SearchViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 
 class SearchActivity : ComponentActivity() {
     private lateinit var viewModelFactory: SearchViewModel.Factory
@@ -65,10 +68,10 @@ class SearchActivity : ComponentActivity() {
             var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
             var popularProjects =
-                viewModel.popularProjects().subscribeAsState(initial = listOf()).value
+                flowOf(PagingData.from(viewModel.popularProjects().subscribeAsState(initial = listOf()).value)).collectAsLazyPagingItems()
 
             var searchedProjects =
-                viewModel.searchProjects().subscribeAsState(initial = listOf()).value
+                flowOf(PagingData.from(viewModel.searchProjects().subscribeAsState(initial = listOf()).value)).collectAsLazyPagingItems()
 
             var isLoading = viewModel.isFetchingProjects().subscribeAsState(initial = false).value
 
@@ -111,7 +114,7 @@ class SearchActivity : ComponentActivity() {
                     showEmptyView = !isLoading &&
                         !isTyping &&
                         !currentSearchTerm.isTrimmedEmpty() &&
-                        searchedProjects.isEmpty(),
+                        searchedProjects.itemCount > 0,
                     onSearchTermChanged = { searchTerm ->
                         if (searchTerm.isEmpty()) viewModel.clearSearchedProjects()
                         currentSearchTerm = searchTerm

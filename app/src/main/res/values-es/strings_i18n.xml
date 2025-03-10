@@ -236,6 +236,7 @@ Toca para intentar de nuevo.</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">El correo electrónico debe tener una dirección de correo electrónico válida.</string>
   <string name="Email_notifications" formatted="false">Notificaciones por correo electrónico</string>
   <string name="Email_unverified" formatted="false">Esta dirección de correo electrónico no está verificada.</string>
+  <string name="Ended" formatted="false">Ended</string>
   <string name="Ending_in_last_four" formatted="false">Número que termina en %{last_four}</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Ingresa una cantidad inferior a %{max_pledge}.</string>
@@ -385,6 +386,8 @@ Toca para intentar de nuevo.</string>
   <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter presta suma atención a las denuncias de infracción de derecho intelectual. Para encontrar más información e instrucciones sobre cómo denunciar una infracción, visita nuestra Política de copyright y nuestra Política de marca registrada. Solo se pueden procesar las denuncias presentadas por el propietario del copyright o marca registrada.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
+  <string name="Late_pledges_active" formatted="false">Late pledges active</string>
+  <string name="Launching_soon" formatted="false">Launching soon</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Información sobre la política de IA en Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Más información sobre el concepto de responsabilidad en Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Más información sobre las responsabilidades</string>
@@ -502,7 +505,7 @@ Toca para intentar de nuevo.</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Por favor inicia sesión o regístrate para mandarle un mensaje a este creador.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Por favor inicia sesión o regístrate para participar en este Live Stream.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Por favor inicia sesión o regístrate para suscribirte a este Live Stream.</string>
-  <string name="Pledge" formatted="false">Contribución:</string>
+  <string name="Pledge" formatted="false">Contribuir</string>
   <string name="Pledge_Over_Time" formatted="false">Contribución en cuotas</string>
   <string name="Pledge_activity" formatted="false">Actividad de contribución</string>
   <string name="Pledge_amount" formatted="false">Monto de contribución</string>
@@ -670,6 +673,7 @@ Toca para intentar de nuevo.</string>
   <string name="Sign_up" formatted="false">Registrarse</string>
   <string name="Sign_up_newsletter" formatted="false">Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
+  <string name="Similar_projects" formatted="false">Similar projects</string>
   <string name="Skip_add_ons" formatted="false">Omitir complementos</string>
   <string name="Social_friend_is_backer_few" formatted="false">%{friend_name} y %{remaining_count} otros</string>
   <string name="Social_friend_is_backer_many" formatted="false">%{friend_name} y %{remaining_count} otros</string>
@@ -1911,6 +1915,7 @@ guardados</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">Actividad</string>
+  <string name="tabbar_backings" formatted="false">Contribuciones</string>
   <string name="tabbar_dashboard" formatted="false">Panel de control</string>
   <string name="tabbar_discover" formatted="false">Descubrir</string>
   <string name="tabbar_login" formatted="false">Iniciar sesión</string>

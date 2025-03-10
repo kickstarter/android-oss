@@ -54,6 +54,7 @@ val grey_07 = Color(0xFF4D4D4D)
 val grey_08 = Color(0xFF3C3C3C)
 val grey_09 = Color(0xFF2C2C2C)
 val grey_10 = Color(0xFF171717)
+val grey_11 = Color(0xFF212121)
 
 // Greens
 val green_01 = Color(0xFFEBFEF6)
@@ -151,6 +152,8 @@ data class KSCustomColors(
     // Background Colors
     val backgroundSurfacePrimary: Color = Color.Unspecified,
     val backgroundSurfaceInverse: Color = Color.Unspecified,
+    val backgroundSurfaceSecondary: Color = Color.Unspecified,
+    val backgroundSurfaceRaised: Color = Color.Unspecified,
     val backgroundDisabled: Color = Color.Unspecified,
     val backgroundInverse: Color = Color.Unspecified,
     val backgroundInverseHover: Color = Color.Unspecified,
@@ -265,6 +268,8 @@ val KSLightCustomColors = KSCustomColors(
     // Background Colors
     backgroundSurfacePrimary = white,
     backgroundSurfaceInverse = grey_10,
+    backgroundSurfaceSecondary = grey_01,
+    backgroundSurfaceRaised = white,
     backgroundDisabled = grey_04,
     backgroundInverse = white,
     backgroundInverseHover = grey_02,
@@ -376,6 +381,8 @@ val KSDarkCustomColors = KSCustomColors(
     // Background Colors
     backgroundSurfacePrimary = grey_10,
     backgroundSurfaceInverse = white,
+    backgroundSurfaceSecondary = black,
+    backgroundSurfaceRaised = grey_11,
     backgroundDisabled = grey_06,
     backgroundInverse = grey_10,
     backgroundInverseHover = grey_09,

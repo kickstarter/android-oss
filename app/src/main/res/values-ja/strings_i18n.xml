@@ -234,6 +234,7 @@
   <string name="Email_must_be_a_valid_email_address" formatted="false">有効なメールアドレスを入力してください。</string>
   <string name="Email_notifications" formatted="false">メール通知設定</string>
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
+  <string name="Ended" formatted="false">Ended</string>
   <string name="Ending_in_last_four" formatted="false">下の桁が%{last_four} の番号</string>
   <string name="Ending_soon" formatted="false">まもなく終了</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">%{max_pledge} 以下の額を入力してください。</string>
@@ -382,6 +383,8 @@
   <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarterは、知的財産権侵害の報告をすべて真剣に受け止めています。違反行為の報告手順についてのさらなる情報は、著作権ポリシーおよび商標ポリシーをご参照ください。著作権者または商標権者によって提出された申し立てのみ手続きを進めることができます。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
+  <string name="Late_pledges_active" formatted="false">Late pledges active</string>
+  <string name="Launching_soon" formatted="false">Launching soon</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Kickstarter の AI ポリシーについて詳しく見る</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Kickstarter上の説明責任について詳しく知る</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
@@ -668,6 +671,7 @@
   <string name="Sign_up" formatted="false">サインアップ。</string>
   <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
+  <string name="Similar_projects" formatted="false">Similar projects</string>
   <string name="Skip_add_ons" formatted="false">アドオンをスキップする</string>
   <string name="Social_friend_is_backer_few" formatted="false">%{friend_name} さんと他%{remaining_count} 人</string>
   <string name="Social_friend_is_backer_many" formatted="false">%{friend_name} さんと他%{remaining_count} 人</string>
@@ -1902,6 +1906,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">アクティビティ</string>
+  <string name="tabbar_backings" formatted="false">バック済み</string>
   <string name="tabbar_dashboard" formatted="false">ダッシュボード</string>
   <string name="tabbar_discover" formatted="false">さがす</string>
   <string name="tabbar_login" formatted="false">ログイン</string>

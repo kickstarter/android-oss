@@ -103,7 +103,7 @@ fun AddOnsContainer(
                     contentDescription = image.altText(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(dimensions.cardImageAspectRatio),
+                        .aspectRatio(dimensions.rewardCardImageAspectRatio),
                     placeholder = ColorPainter(color = colors.backgroundDisabled),
                     contentScale = ContentScale.Crop
                 )

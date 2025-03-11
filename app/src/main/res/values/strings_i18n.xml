@@ -236,6 +236,7 @@ Tap to retry</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">Email notifications</string>
   <string name="Email_unverified" formatted="false">This email address is unverified.</string>
+  <string name="Ended" formatted="false">Ended</string>
   <string name="Ending_in_last_four" formatted="false">Ending in %{last_four}</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Enter an amount less than %{max_pledge}.</string>
@@ -385,6 +386,8 @@ with friends.</string>
   <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
+  <string name="Late_pledges_active" formatted="false">Late pledges active</string>
+  <string name="Launching_soon" formatted="false">Launching soon</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Learn about AI policy on Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
@@ -672,6 +675,7 @@ daring ideas.</string>
   <string name="Sign_up" formatted="false">Sign up</string>
   <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
+  <string name="Similar_projects" formatted="false">Similar projects</string>
   <string name="Skip_add_ons" formatted="false">Skip add-ons</string>
   <string name="Social_friend_is_backer_few" formatted="false">%{friend_name} and %{remaining_count} others</string>
   <string name="Social_friend_is_backer_many" formatted="false">%{friend_name} and %{remaining_count} others</string>
@@ -1917,6 +1921,7 @@ saved</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">Activity</string>
+  <string name="tabbar_backings" formatted="false">Backings</string>
   <string name="tabbar_dashboard" formatted="false">Dashboard</string>
   <string name="tabbar_discover" formatted="false">Discover</string>
   <string name="tabbar_login" formatted="false">Log in</string>

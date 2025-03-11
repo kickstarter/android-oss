@@ -41,7 +41,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -72,6 +71,7 @@ import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlueButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
+import com.kickstarter.ui.compose.designsystem.KSProjectCardsPreview
 import com.kickstarter.ui.compose.designsystem.KSRadioButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
@@ -127,7 +127,6 @@ fun DesignSystemViewPreview() {
 }
 
 @SuppressLint("UnrememberedMutableInteractionSource")
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -213,6 +212,10 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
                 PillBarVisuals()
+                
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
+
+                ProjectCards()
             }
         }
     }
@@ -1082,5 +1085,15 @@ fun PillButton(
             contentDescription = text,
             tint = colors.icon
         )
+
+fun ProjectCards() {
+    Column {
+        Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+
+        KSProjectCardsPreview()
+
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
     }
 }

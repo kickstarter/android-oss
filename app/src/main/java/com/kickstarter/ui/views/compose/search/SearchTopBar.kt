@@ -87,7 +87,7 @@ fun SearchTopBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = colors.kds_white)
+            .background(color = colors.backgroundSurfacePrimary)
     ) {
         Row(
             modifier = Modifier
@@ -147,7 +147,7 @@ fun SearchTopBar(
                     }
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    backgroundColor = colors.kds_white,
+                    backgroundColor = colors.backgroundSurfacePrimary,
                     errorLabelColor = colors.kds_alert,
                     unfocusedLabelColor = colors.textSecondary,
                     focusedLabelColor = colors.borderActive,

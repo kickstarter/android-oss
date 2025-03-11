@@ -251,6 +251,7 @@
       "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Email notifications",
       "Email_unverified": "This email address is unverified.",
+      "Ended": "Ended",
       "Ending_in_last_four": "Ending in %{last_four}",
       "Ending_soon": "Ending Soon",
       "Enter_an_amount_less_than_max_pledge": "Enter an amount less than %{max_pledge}.",
@@ -411,6 +412,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.",
       "Know_when_creators_and_backers_message_you": "Know when creators and backers message you by enabling notifications.",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "Learn more about accountability",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">Learn more about comment guidelines</a>",
       "Leave_page": "Leave page",
@@ -759,6 +762,7 @@
       "Sign_up": "Sign up",
       "Sign_up_newsletter": "Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.",
       "Signs_up_with_Email": "Signs up with Email.",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "Skip add-ons",
       "Social_friend_is_backer": {
         "zero": "%{friend_name} is a backer",
@@ -1008,7 +1012,8 @@
         "dashboard": "Dashboard",
         "search": "Search",
         "search_projects": "Search projects",
-        "me": "Me"
+        "me": "Me",
+        "backings": "Backings"
       },
       "discovery": {
         "accessibility": {
@@ -2808,6 +2813,7 @@
       "Email_must_be_a_valid_email_address": "E-Mail-Adresse muss gültig sein.",
       "Email_notifications": "Benachrichtigung per E-Mail",
       "Email_unverified": "Diese E-Mail-Adresse wurde noch nicht verifiziert.",
+      "Ended": "Ended",
       "Ending_in_last_four": "Endet auf %{last_four}",
       "Ending_soon": "Endet bald",
       "Enter_an_amount_less_than_max_pledge": "Gib einen Betrag unter %{max_pledge} ein.",
@@ -2968,6 +2974,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Meldungen zu möglichen Verletzungen von Urheberrechten werden bei Kickstarter sehr ernst genommen. Weitere Informationen zum Melden von solchen Urheberrechtsverletzungen findest du in unserer Richtlinie zu Urheberrechten und unserer Richtlinie zu Markenrechten. Es können nur Meldungen bearbeitet werden, die vom Eigentümer des Urheberrechts oder Markenzeichens gemacht wurden.",
       "Know_when_creators_and_backers_message_you": "Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "Weitere Informationen zur Rechenschaftspflicht",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">Mehr Info zu Kommentar-Richtlinien</a>",
       "Leave_page": "Seite verlassen",
@@ -3316,6 +3324,7 @@
       "Sign_up": "Registrieren",
       "Sign_up_newsletter": "Abonniere unsere \"Team Favoriten\" und wir schicken dir einmal pro Woche eine Auswahl von bemerkenswerten Projekten, handverlesen von unserem Team.",
       "Signs_up_with_Email": "Mit E-Mail-Adresse registrieren.",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "Keine Add-ons",
       "Social_friend_is_backer": {
         "zero": "%{friend_name} unterstützt dieses Projekt",
@@ -3565,7 +3574,8 @@
         "dashboard": "Dashboard",
         "search": "Suche",
         "search_projects": "Projekte suchen",
-        "me": "Mein Konto"
+        "me": "Mein Konto",
+        "backings": "Unterstützte Projekte"
       },
       "discovery": {
         "accessibility": {
@@ -5365,6 +5375,7 @@
       "Email_must_be_a_valid_email_address": "El correo electrónico debe tener una dirección de correo electrónico válida.",
       "Email_notifications": "Notificaciones por correo electrónico",
       "Email_unverified": "Esta dirección de correo electrónico no está verificada.",
+      "Ended": "Ended",
       "Ending_in_last_four": "Número que termina en %{last_four}",
       "Ending_soon": "Finaliza pronto",
       "Enter_an_amount_less_than_max_pledge": "Ingresa una cantidad inferior a %{max_pledge}.",
@@ -5525,6 +5536,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Kickstarter presta suma atención a las denuncias de infracción de derecho intelectual. Para encontrar más información e instrucciones sobre cómo denunciar una infracción, visita nuestra Política de copyright y nuestra Política de marca registrada. Solo se pueden procesar las denuncias presentadas por el propietario del copyright o marca registrada.",
       "Know_when_creators_and_backers_message_you": "Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "Más información sobre las responsabilidades",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">Más información sobre las reglas de los comentarios</a>",
       "Leave_page": "Salir de la página",
@@ -5669,7 +5682,7 @@
       "Please_log_in_or_sign_up_to_message_this_creator": "Por favor inicia sesión o regístrate para mandarle un mensaje a este creador.",
       "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "Por favor inicia sesión o regístrate para participar en este Live Stream.",
       "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "Por favor inicia sesión o regístrate para suscribirte a este Live Stream.",
-      "Pledge": "Contribución:",
+      "Pledge": "Contribuir",
       "Pledge_activity": "Actividad de contribución",
       "Pledge_amount": "Monto de contribución",
       "Pledge_amount_pledged": "%{pledge_amount} contribuido",
@@ -5873,6 +5886,7 @@
       "Sign_up": "Registrarse",
       "Sign_up_newsletter": "Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.",
       "Signs_up_with_Email": "Registro con correo electrónico.",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "Omitir complementos",
       "Social_friend_is_backer": {
         "zero": "%{friend_name} patrocina este proyecto",
@@ -6122,7 +6136,8 @@
         "dashboard": "Panel de control",
         "search": "Búsqueda",
         "search_projects": "Buscar proyectos",
-        "me": "Mi cuenta"
+        "me": "Mi cuenta",
+        "backings": "Contribuciones"
       },
       "discovery": {
         "accessibility": {
@@ -7922,6 +7937,7 @@
       "Email_must_be_a_valid_email_address": "L'adresse e-mail doit être valide.",
       "Email_notifications": "Notifications par e-mail",
       "Email_unverified": "Adresse e-mail non vérifiée.",
+      "Ended": "Ended",
       "Ending_in_last_four": "Finissant par %{last_four}",
       "Ending_soon": "Campagnes bientôt terminées",
       "Enter_an_amount_less_than_max_pledge": "Veuillez saisir un montant inférieur à %{max_pledge}.",
@@ -8082,6 +8098,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Kickstarter prend les atteintes au droit à la propriété intellectuelle très au sérieux. Pour plus d'information et pour des instructions sur le signalement d'utilisations abusives, veuillez consulter nos pages {{copyrightPolicyLink}} et {{trademarkPolicyLink}}. Seules les demandes formulées par le titulaire du droit d'auteur ou de la marque déposée seront traitées.",
       "Know_when_creators_and_backers_message_you": "Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "En savoir plus sur la responsabilité",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">En savoir plus sur les directives applicables aux commentaires</a>",
       "Leave_page": "Quitter la page",
@@ -8430,6 +8448,7 @@
       "Sign_up": "Inscription",
       "Sign_up_newsletter": "Inscrivez-vous à Coups de cœur pour recevoir une sélection hebdomadaire de projets marquants qui nous ont plu.",
       "Signs_up_with_Email": "Inscription avec l'adresse e-mail.",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "Passer les compléments",
       "Social_friend_is_backer": {
         "zero": "%{friend_name} est contributeur",
@@ -8679,7 +8698,8 @@
         "dashboard": "Tableau de bord",
         "search": "Recherche",
         "search_projects": "Rechercher des projets",
-        "me": "Mon compte"
+        "me": "Mon compte",
+        "backings": "Engagements"
       },
       "discovery": {
         "accessibility": {
@@ -10479,6 +10499,7 @@
       "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Email notifications",
       "Email_unverified": "This email address is unverified.",
+      "Ended": "Ended",
       "Ending_in_last_four": "Ending in %{last_four}",
       "Ending_soon": "Ending Soon",
       "Enter_an_amount_less_than_max_pledge": "Enter an amount less than %{max_pledge}.",
@@ -10639,6 +10660,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.",
       "Know_when_creators_and_backers_message_you": "Know when creators and backers message you by enabling notifications.",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "Learn more about accountability",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">Learn more about comment guidelines</a>",
       "Leave_page": "Leave page",
@@ -10987,6 +11010,7 @@
       "Sign_up": "Sign up",
       "Sign_up_newsletter": "Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.",
       "Signs_up_with_Email": "Signs up with Email.",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "Skip add-ons",
       "Social_friend_is_backer": {
         "zero": "%{friend_name} is a backer",
@@ -11236,7 +11260,8 @@
         "dashboard": "Dashboard",
         "search": "Search",
         "search_projects": "Search projects",
-        "me": "Me"
+        "me": "Me",
+        "backings": "Backings"
       },
       "discovery": {
         "accessibility": {
@@ -13036,6 +13061,7 @@
       "Email_must_be_a_valid_email_address": "有効なメールアドレスを入力してください。",
       "Email_notifications": "メール通知設定",
       "Email_unverified": "このメールアドレスは認証されていません。",
+      "Ended": "Ended",
       "Ending_in_last_four": "下の桁が%{last_four} の番号",
       "Ending_soon": "まもなく終了",
       "Enter_an_amount_less_than_max_pledge": "%{max_pledge} 以下の額を入力してください。",
@@ -13196,6 +13222,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Kickstarterは、知的財産権侵害の報告をすべて真剣に受け止めています。違反行為の報告手順についてのさらなる情報は、著作権ポリシーおよび商標ポリシーをご参照ください。著作権者または商標権者によって提出された申し立てのみ手続きを進めることができます。",
       "Know_when_creators_and_backers_message_you": "クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "報告義務に関してさらに詳しく",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">コメントのガイドラインについてもっと詳しく</a>",
       "Leave_page": "ページから移動",
@@ -13544,6 +13572,7 @@
       "Sign_up": "サインアップ。",
       "Sign_up_newsletter": "Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。",
       "Signs_up_with_Email": "Eメールでサインアップする。",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "アドオンをスキップする",
       "Social_friend_is_backer": {
         "zero": "%{friend_name}さんがバッカーです",
@@ -13793,7 +13822,8 @@
         "dashboard": "ダッシュボード",
         "search": "さがす",
         "search_projects": "プロジェクトを探す",
-        "me": "Me"
+        "me": "Me",
+        "backings": "バック済み"
       },
       "discovery": {
         "accessibility": {
@@ -15593,6 +15623,7 @@
       "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Email notifications",
       "Email_unverified": "This email address is unverified.",
+      "Ended": "Ended",
       "Ending_in_last_four": "Ending in %{last_four}",
       "Ending_soon": "Ending Soon",
       "Enter_an_amount_less_than_max_pledge": "Enter an amount less than %{max_pledge}.",
@@ -15753,6 +15784,8 @@
       "Kickstarter_on_Film": "Kickstarter on Film",
       "Kickstarter_takes_claims": "Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.",
       "Know_when_creators_and_backers_message_you": "Know when creators and backers message you by enabling notifications.",
+      "Late_pledges_active": "Late pledges active",
+      "Launching_soon": "Launching soon",
       "Learn_more_about_accountability": "Learn more about accountability",
       "Learn_more_about_comment_guidelines": "<a href=\"%{community_link}\">Learn more about comment guidelines</a>",
       "Leave_page": "Leave page",
@@ -16101,6 +16134,7 @@
       "Sign_up": "Sign up",
       "Sign_up_newsletter": "Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.",
       "Signs_up_with_Email": "Signs up with Email.",
+      "Similar_projects": "Similar projects",
       "Skip_add_ons": "Skip add-ons",
       "Social_friend_is_backer": {
         "zero": "%{friend_name} is a backer",
@@ -16350,7 +16384,8 @@
         "dashboard": "Dashboard",
         "search": "Search",
         "search_projects": "Search projects",
-        "me": "Me"
+        "me": "Me",
+        "backings": "Backings"
       },
       "discovery": {
         "accessibility": {
@@ -18646,6 +18681,6 @@
       ]
     }
   },
-  "country_code": "CA",
+  "country_code": "US",
   "locale": "en"
 }

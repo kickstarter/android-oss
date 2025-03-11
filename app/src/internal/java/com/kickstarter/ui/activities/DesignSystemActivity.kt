@@ -212,7 +212,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
                 PillBarVisuals()
-                
+
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
                 ProjectCards()
@@ -1067,7 +1067,10 @@ fun PillButton(
             backgroundColor = Color.Transparent,
             contentColor = colors.textAccentGrey
         ),
-        border = if (isSelected) BorderStroke(dimensions.strokeWidth, colors.borderActive) else BorderStroke(dimensions.borderThickness, colors.borderBold),
+        border = if (isSelected) BorderStroke(
+            dimensions.strokeWidth,
+            colors.borderActive
+        ) else BorderStroke(dimensions.borderThickness, colors.borderBold),
         shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
         elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
     ) {
@@ -1085,7 +1088,10 @@ fun PillButton(
             contentDescription = text,
             tint = colors.icon
         )
+    }
+}
 
+@Composable
 fun ProjectCards() {
     Column {
         Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)

@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,7 +52,6 @@ import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
-import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
@@ -63,6 +61,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.views.compose.search.FilterRowPillType
 import com.kickstarter.ui.views.compose.search.SearchEmptyView
 import com.kickstarter.ui.views.compose.search.SearchTopBar
 import kotlinx.coroutines.launch

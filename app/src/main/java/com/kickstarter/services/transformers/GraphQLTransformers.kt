@@ -1133,5 +1133,11 @@ fun getTierType(tierType: String?) =
         PledgeTierType.SURVEY_OPEN.tierType -> PPOCardViewType.OPEN_SURVEY
         PledgeTierType.ADDRESS_LOCK.tierType -> PPOCardViewType.CONFIRM_ADDRESS
         PledgeTierType.PAYMENT_AUTHENTICATION.tierType -> PPOCardViewType.AUTHENTICATE_CARD
+        PledgeTierType.PLEDGE_COLLECTED.tierType -> PPOCardViewType.PLEDGE_COLLECTED
+        PledgeTierType.SUVERY_SUBMITTED.tierType -> PPOCardViewType.SUVERY_SUBMITTED
+        PledgeTierType.ADDRESS_CONFIRMED.tierType -> PPOCardViewType.ADDRESS_CONFIRMED
+        PledgeTierType.ADDRESS_LOCKED.tierType -> PPOCardViewType.ADDRESS_LOCKED
+        PledgeTierType.PLEDGE_REDEMPTION.tierType -> PPOCardViewType.PLEDGE_REDEMPTION
+        PledgeTierType.REWARD_RECEIVED.tierType -> PPOCardViewType.REWARD_RECEIVED
         else -> PPOCardViewType.UNKNOWN
     }

@@ -8,11 +8,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
-import com.kickstarter.libs.utils.extensions.toDiscoveryParam
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.type.ProjectSort
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -96,11 +94,11 @@ class SearchAndFilterViewModel(
         this.errorAction = errorAction
     }
 
-    fun updateParamsToSearchWith(category: Category? = null, projectSort: ProjectSort? = null) {
+    fun updateParamsToSearchWith(category: Category? = null, projectSort: DiscoveryParams.Sort? = null) {
         val update = params.value.toBuilder()
             .apply {
                 category?.let { this.category(it) }
-                projectSort?.let { this.sort(it.toDiscoveryParam()) }
+                projectSort?.let { this.sort(projectSort) }
             }
             .build()
 

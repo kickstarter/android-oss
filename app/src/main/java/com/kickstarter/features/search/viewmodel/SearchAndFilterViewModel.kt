@@ -8,8 +8,10 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.ProjectSort
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,11 +19,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.text.isNotBlank
 
@@ -52,9 +55,9 @@ class SearchAndFilterViewModel(
             )
 
     // - Popular projects sorting selection
-    private val popularDiscoveryParam = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
+    private val userSelectedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
 
-    private val _params = MutableStateFlow(popularDiscoveryParam)
+    private val _params = MutableStateFlow(userSelectedParams)
     val params: StateFlow<DiscoveryParams> = _params
 
     private val debouncePeriod = 300L
@@ -68,21 +71,25 @@ class SearchAndFilterViewModel(
 
     init {
         scope.launch {
-            searchTerm
+            _searchTerm
                 .debounce(debouncePeriod)
-                .onEach { debouncedTerm ->
+
+            _params
+                .combine(_searchTerm) { currentParams, debouncedTerm ->
                     // - Reset to initial state in case of empty search term
                     if (debouncedTerm.isEmpty() || debouncedTerm.isBlank()) {
-                        _params.emit(popularDiscoveryParam)
+                        Timber.d("***** whaaaaaat 1 $debouncedTerm")
+//                        userSelectedParams.toBuilder()
+//                            .build()
                     } else
-                        _params.emit(
-                            DiscoveryParams.builder()
-                                .term(debouncedTerm)
-                                .sort(DiscoveryParams.Sort.POPULAR) // TODO: update once sort option is ready MBL-2131, by default popular in every search
-                                .build()
-                        )
-                }.collectLatest {
-                    updateSearchResultsState()
+                        Timber.d("***** whaaaaaat 2 $debouncedTerm")
+                        userSelectedParams.toBuilder()
+                            .term(debouncedTerm)
+                            .build()
+                }
+                .collectLatest { params ->
+                    Timber.d("***** whaaaaaat 3 $params")
+                    updateSearchResultsState(params)
                 }
         }
     }
@@ -91,16 +98,28 @@ class SearchAndFilterViewModel(
         this.errorAction = errorAction
     }
 
+    fun updateParamsToSearchWith(category: Category? = null, projectSort: ProjectSort? = null) {
+        val update = userSelectedParams.toBuilder()
+            .apply {
+                category?.let { this.category(it) }
+            }
+            .build()
+
+        scope.launch {
+            _params.emit(update)
+        }
+    }
+
     /**
      * Update UIState with after executing Search query with latest params
      */
-    private suspend fun updateSearchResultsState() {
-        analyticEvents.trackSearchCTAButtonClicked(params.value)
+    private suspend fun updateSearchResultsState(params: DiscoveryParams) {
+        analyticEvents.trackSearchCTAButtonClicked(params)
 
         emitCurrentState(isLoading = true)
 
         // - Result from API
-        val searchEnvelopeResult = apolloClient.getSearchProjects(params.value)
+        val searchEnvelopeResult = apolloClient.getSearchProjects(params)
 
         if (searchEnvelopeResult.isFailure) {
             // - errorAction.invoke(searchEnvelopeResult.exceptionOrNull()?.message) to return API level message
@@ -109,15 +128,15 @@ class SearchAndFilterViewModel(
 
         if (searchEnvelopeResult.isSuccess) {
             searchEnvelopeResult.getOrNull()?.projectList?.let {
-                if (params.value.term().isNull()) popularProjectsList = it
-                if (params.value.term()?.isNotBlank().isTrue()) projectsList = it
+                if (params.term().isNull()) popularProjectsList = it
+                if (params.term()?.isNotBlank().isTrue()) projectsList = it
 
                 emitCurrentState(isLoading = false)
 
                 analyticEvents.trackSearchResultPageViewed(
-                    params.value,
+                    params,
                     1, // TODO: this will contain the page when pagination ready MBL-2139
-                    params.value.sort() ?: DiscoveryParams.Sort.POPULAR
+                    params.sort() ?: DiscoveryParams.Sort.POPULAR
                 )
             }
         }
@@ -162,6 +181,7 @@ class SearchAndFilterViewModel(
 
     fun updateSearchTerm(searchTerm: String) {
         scope.launch {
+            Timber.d("***** whaaaaaat 0 $searchTerm")
             _searchTerm.emit(searchTerm)
         }
     }

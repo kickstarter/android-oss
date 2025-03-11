@@ -325,7 +325,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(discoveryParams.recommended()),
             starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),
             backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean()),
-            searchTerm = if (discoveryParams.term() == null) Optional.absent() else Optional.present(discoveryParams.term())
+            searchTerm = if (discoveryParams.term() == null || discoveryParams.term().isNullOrBlank()) Optional.absent() else Optional.present(discoveryParams.term())
         )
     }
 

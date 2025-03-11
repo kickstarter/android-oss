@@ -188,7 +188,7 @@ fun PillBar(
             onSortPressed
         )
         PillButton(
-            "Category",
+            stringResource(R.string.fpo_category),
             selectedFilterCounts.getValue(FilterRowPillType.CATEGORY.name) > 0,
             selectedFilterCounts.getValue(FilterRowPillType.CATEGORY.name),
             onCategoryPressed

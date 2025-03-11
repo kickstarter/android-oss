@@ -169,8 +169,6 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
             contentPadding = PaddingValues(dimensions.paddingSmall)
         ) {
             item {
-                FilterRowVisuals()
-
                 AlertsVisuals()
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
@@ -215,11 +213,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
-                PillBar(
-                    selectedFilterCounts = mapOf(),
-                    onSortPressed = {},
-                    onCategoryPressed = {}
-                )
+                PillBarVisuals()
             }
         }
     }
@@ -1027,8 +1021,8 @@ fun TypographyVisuals() {
 }
 
 @Composable
-fun FilterRowVisuals() {
-    Text(text = "FilterRow", style = typographyV2.title1Bold, color = colors.kds_support_700)
+fun PillBarVisuals() {
+    Text(text = "Pill Bar", style = typographyV2.title1Bold, color = colors.kds_support_700)
     PillBar(
         selectedFilterCounts = mapOf(),
         onSortPressed = {},

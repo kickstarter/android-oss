@@ -913,6 +913,92 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeStatusData_whenAuthenticationRequiredButNotPlotPledge() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val backing =
+            backingWithStatus(Backing.STATUS_AUTHENTICATION_REQUIRED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .deadline(deadline)
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .apolloClientV2(mockApolloClientForBacking(backing))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.pledgeStatusData.assertValue(
+            PledgeStatusData(
+                R.string.We_cant_process_your_pledge_visit_the_project_alerts_dashboard_to_authenticate,
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline),
+                plotData = null,
+            )
+        )
+    }
+
+    @Test
+    fun testPledgeStatusData_whenAuthenticationRequiredAndPlotPledge() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        val backing =
+            backingWithPaymentIncrements(PaymentIncrementFactory.samplePaymentIncrements()).toBuilder().status(Backing.STATUS_AUTHENTICATION_REQUIRED).build()
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProjectWithPlotSelected()
+            .toBuilder()
+            .deadline(deadline)
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .apolloClientV2(mockApolloClientForBacking(backing))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.pledgeStatusData.assertValue(
+            PledgeStatusData(
+                R.string.We_cant_process_your_Pledge_Over_Time_payment,
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline),
+                plotData = PlotData(
+                    plotAmount = backing.paymentIncrements()
+                        ?.first()?.paymentIncrementAmount?.formattedAmount(),
+                    plotFirstScheduleCollection = backing.paymentIncrements()
+                        ?.first()?.scheduledCollection?.let { DateTimeUtils.longDate(it) },
+                    fixPledgeUrl = "https://www.kickstarter.com/projects/slug-1/backing/details"
+                ),
+            )
+        )
+    }
+
+    @Test
     fun testPledgeStatusData_whenBackingIsPreAuth() {
         val backing = backingWithStatus(Backing.STATUS_PREAUTH)
         val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")

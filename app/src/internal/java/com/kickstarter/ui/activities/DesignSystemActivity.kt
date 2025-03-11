@@ -48,7 +48,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.FBLoginButton
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -1031,16 +1030,16 @@ fun PillBarVisuals() {
 }
 
 @Composable
-fun SortButton(isSelected: Boolean, onClick: () -> Unit) {
+fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
             .border(
-                if (isSelected) 2.dp else 1.dp,
+                if (isSelected) dimensions.strokeWidth else dimensions.borderThickness,
                 if (isSelected) colors.borderActive else colors.borderBold,
                 CircleShape
             )
-            .size(40.dp)
+            .size(dimensions.iconPillButtonSize)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_sort),
@@ -1065,12 +1064,12 @@ fun PillButton(
             backgroundColor = Color.Transparent,
             contentColor = colors.textAccentGrey
         ),
-        border = if (isSelected) BorderStroke(2.dp, colors.borderActive) else BorderStroke(1.dp, colors.borderBold),
-        shape = RoundedCornerShape(100.dp),
-        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
+        border = if (isSelected) BorderStroke(dimensions.strokeWidth, colors.borderActive) else BorderStroke(dimensions.borderThickness, colors.borderBold),
+        shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
+        elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
     ) {
         Text(
-            modifier = Modifier.padding(end = 8.dp),
+            modifier = Modifier.padding(end = dimensions.paddingSmall),
             text = "Category",
             style = typographyV2.buttonLabel,
             color = colors.textAccentGrey

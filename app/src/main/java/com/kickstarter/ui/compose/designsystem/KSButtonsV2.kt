@@ -298,7 +298,7 @@ fun BaseButton(
                 CircularProgressIndicator(
                     modifier = Modifier.size(dimensions.loadingSpinnerSize),
                     color = loadingSpinnerColor,
-                    strokeWidth = dimensions.strokeWith
+                    strokeWidth = dimensions.strokeWidth
                 )
             }
         }

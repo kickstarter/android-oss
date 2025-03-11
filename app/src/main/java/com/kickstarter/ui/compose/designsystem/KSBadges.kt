@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -229,10 +228,10 @@ fun KSCountBadge(
 ) {
     Box(
         modifier = Modifier
-            .background(Color.LightGray, RoundedCornerShape(50))
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+            .background(colors.backgroundAccentGraySubtle, RoundedCornerShape(50))
+            .padding(horizontal = dimensions.radiusSmall, vertical = dimensions.strokeWidth),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = count.toString(), color = Color.Black, fontSize = 12.sp)
+        Text(text = count.toString(), color = colors.textAccentGrey, fontSize = 12.sp)
     }
 }

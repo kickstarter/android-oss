@@ -39,7 +39,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.PillButton
-import com.kickstarter.ui.activities.SortButton
+import com.kickstarter.ui.activities.IconPillButton
 import com.kickstarter.ui.activities.compose.search.SearchScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -183,7 +183,7 @@ fun PillBar(
             .padding(dimensions.paddingMedium, dimensions.none, dimensions.none, dimensions.none),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SortButton(
+        IconPillButton(
             selectedFilterCounts.getValue(FilterRowPillType.SORT.name) > 0,
             onSortPressed
         )

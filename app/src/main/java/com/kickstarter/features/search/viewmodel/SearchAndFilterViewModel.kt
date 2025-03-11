@@ -8,6 +8,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.toDiscoveryParam
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
@@ -55,9 +56,9 @@ class SearchAndFilterViewModel(
             )
 
     // - Popular projects sorting selection
-    private val userSelectedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
+    private val firstLoadParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
 
-    private val _params = MutableStateFlow(userSelectedParams)
+    private val _params = MutableStateFlow(firstLoadParams)
     val params: StateFlow<DiscoveryParams> = _params
 
     private val debouncePeriod = 300L
@@ -71,24 +72,21 @@ class SearchAndFilterViewModel(
 
     init {
         scope.launch {
-            _searchTerm
+            val debounced = _searchTerm
                 .debounce(debouncePeriod)
 
             _params
-                .combine(_searchTerm) { currentParams, debouncedTerm ->
+                .combine(debounced) { currentParams, debouncedTerm ->
                     // - Reset to initial state in case of empty search term
                     if (debouncedTerm.isEmpty() || debouncedTerm.isBlank()) {
-                        Timber.d("***** whaaaaaat 1 $debouncedTerm")
-//                        userSelectedParams.toBuilder()
-//                            .build()
-                    } else
-                        Timber.d("***** whaaaaaat 2 $debouncedTerm")
-                        userSelectedParams.toBuilder()
+                        currentParams
+                    } else {
+                        currentParams.toBuilder()
                             .term(debouncedTerm)
                             .build()
+                    }
                 }
                 .collectLatest { params ->
-                    Timber.d("***** whaaaaaat 3 $params")
                     updateSearchResultsState(params)
                 }
         }
@@ -99,9 +97,10 @@ class SearchAndFilterViewModel(
     }
 
     fun updateParamsToSearchWith(category: Category? = null, projectSort: ProjectSort? = null) {
-        val update = userSelectedParams.toBuilder()
+        val update = params.value.toBuilder()
             .apply {
                 category?.let { this.category(it) }
+                projectSort?.let { this.sort(it.toDiscoveryParam()) }
             }
             .build()
 
@@ -119,6 +118,7 @@ class SearchAndFilterViewModel(
         emitCurrentState(isLoading = true)
 
         // - Result from API
+        Timber.d("${this.javaClass} params: $params")
         val searchEnvelopeResult = apolloClient.getSearchProjects(params)
 
         if (searchEnvelopeResult.isFailure) {
@@ -181,7 +181,6 @@ class SearchAndFilterViewModel(
 
     fun updateSearchTerm(searchTerm: String) {
         scope.launch {
-            Timber.d("***** whaaaaaat 0 $searchTerm")
             _searchTerm.emit(searchTerm)
         }
     }

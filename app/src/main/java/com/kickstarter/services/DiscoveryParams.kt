@@ -485,7 +485,7 @@ class DiscoveryParams private constructor(
     }
 
     enum class Sort {
-        MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE;
+        MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE, MOST_FUNDED, MOST_BACKED;
 
         override fun toString(): String {
             return when (this) {
@@ -494,6 +494,7 @@ class DiscoveryParams private constructor(
                 NEWEST -> "newest"
                 ENDING_SOON -> "end_date"
                 DISTANCE -> "distance"
+                else -> this.name
             }
         }
 
@@ -504,6 +505,8 @@ class DiscoveryParams private constructor(
                 NEWEST -> "_newest"
                 ENDING_SOON -> "_ending_soon"
                 DISTANCE -> "_distance"
+                MOST_FUNDED -> "_most_funded"
+                MOST_BACKED -> "_most_backed"
             }
         }
 

@@ -44,6 +44,7 @@ import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
+import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -76,6 +77,24 @@ fun PPOCardPreview() {
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
                     flags = listOf(Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address").type("warning").icon("time").build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.CONFIRM_ADDRESS,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$50.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("In fulfillment").type("info").icon(null).build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -403,6 +422,7 @@ fun AlertFlagsView(flags: List<Flag?>) {
             when (it?.type) {
                 "alert" -> KSAlertBadge(icon = icon, message = it.message)
                 "warning" -> KSWarningBadge(icon = icon, message = it.message)
+                "info" -> it.message?.let { message -> KSGreenBadge(text = message) }
                 else -> {}
             }
         }

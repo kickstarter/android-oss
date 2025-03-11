@@ -29,10 +29,13 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -144,11 +147,12 @@ fun SearchScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
-    // Update logic with user interaction
-    val selectedFilterCounts = mutableMapOf(
-        FilterRowPillType.SORT.name to 0,
-        FilterRowPillType.CATEGORY.name to 0
-    )
+    val selectedFilterCounts: SnapshotStateMap<String, Int> = remember {
+        mutableStateMapOf(
+            FilterRowPillType.SORT.name to 0,
+            FilterRowPillType.CATEGORY.name to 0
+        )
+    }
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
@@ -196,7 +200,7 @@ fun SearchScreen(
 
                             // Open bottom sheet
                             coroutineScope.launch {
-                              sheetState.show()
+                                sheetState.show()
                             }
                         }
                     )

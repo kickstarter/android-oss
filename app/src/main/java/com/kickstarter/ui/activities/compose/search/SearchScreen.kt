@@ -58,6 +58,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.viewholders.compose.search.FeaturedSearchViewHolder
 import com.kickstarter.ui.viewholders.compose.search.ProjectSearchViewHolder
+import com.kickstarter.ui.views.compose.search.FilterRowPillType
 import com.kickstarter.ui.views.compose.search.SearchEmptyView
 import com.kickstarter.ui.views.compose.search.SearchTopBar
 import kotlinx.coroutines.launch
@@ -143,6 +144,12 @@ fun SearchScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
+    // Update logic with user interaction
+    val selectedFilterCounts = mutableMapOf(
+        FilterRowPillType.SORT.name to 0,
+        FilterRowPillType.CATEGORY.name to 0
+    )
+
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
@@ -180,8 +187,17 @@ fun SearchScreen(
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
                         },
+                        selectedFilterCounts = selectedFilterCounts,
+                        onSortPressed = {
+                            // Add logic here
+                        },
                         onCategoryPressed = {
-                            coroutineScope.launch { sheetState.show() } // Open bottom sheet
+                            // Add logic here
+
+                            // Open bottom sheet
+                            coroutineScope.launch {
+                              sheetState.show()
+                            }
                         }
                     )
                 }

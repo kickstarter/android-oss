@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,12 +26,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.IconToggleButton
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -46,7 +49,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.FBLoginButton
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -91,6 +93,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
+import com.kickstarter.ui.views.compose.search.PillBar
 import com.kickstarter.utils.WindowInsetsUtil
 
 class DesignSystemActivity : ComponentActivity() {
@@ -166,7 +169,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
             contentPadding = PaddingValues(dimensions.paddingSmall)
         ) {
             item {
-                FilterRow()
+                FilterRowVisuals()
 
                 AlertsVisuals()
 
@@ -212,7 +215,11 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
-                FilterRow()
+                PillBar(
+                    selectedFilterCounts = mapOf(),
+                    onSortPressed = {},
+                    onCategoryPressed = {}
+                )
             }
         }
     }
@@ -1020,49 +1027,67 @@ fun TypographyVisuals() {
 }
 
 @Composable
-fun FilterRow() {
+fun FilterRowVisuals() {
     Text(text = "FilterRow", style = typographyV2.title1Bold, color = colors.kds_support_700)
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        SortButton(onClick = {})
-        Spacer(Modifier.width(8.dp))
-        FilterPillButton("Category", selectedCount = 1, onClick = {})
-    }
+    PillBar(
+        selectedFilterCounts = mapOf(),
+        onSortPressed = {},
+        onCategoryPressed = {}
+    )
 }
 
-
 @Composable
-fun SortButton(onClick: () -> Unit) {
+fun SortButton(isSelected: Boolean, onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
-            .border(1.dp, Color.Gray, CircleShape).size(40.dp)
+            .border(
+                if (isSelected) 2.dp else 1.dp,
+                if (isSelected) colors.borderActive else colors.borderBold,
+                CircleShape
+            )
+            .size(40.dp)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_retry_send_comment), // TODO: get actual asset
+            painter = painterResource(id = R.drawable.ic_sort),
             contentDescription = "Filter",
-            tint = Color.Black
+            tint = colors.icon
         )
     }
 }
 
 @Composable
-fun FilterPillButton(text: String, selectedCount: Int, onClick: () -> Unit) {
-    OutlinedButton(
+fun PillButton(
+    text: String,
+    isSelected: Boolean,
+    count: Int,
+    onClick: () -> Unit
+) {
+    Button(
         onClick = onClick,
-        shape = RoundedCornerShape(50)
+        modifier = Modifier
+            .padding(dimensions.paddingSmall),
+        colors = ButtonDefaults.outlinedButtonColors(
+            backgroundColor = Color.Transparent,
+            contentColor = colors.textAccentGrey
+        ),
+        border = if (isSelected) BorderStroke(2.dp, colors.borderActive) else BorderStroke(1.dp, colors.borderBold),
+        shape = RoundedCornerShape(100.dp),
+        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
     ) {
-        Text(text = text, color = Color.Black, fontSize = 14.sp)
-        Spacer(modifier = Modifier.width(4.dp))
-        if (selectedCount > 0) {
-            KSCountBadge(selectedCount)
+        Text(
+            modifier = Modifier.padding(end = 8.dp),
+            text = "Category",
+            style = typographyV2.buttonLabel,
+            color = colors.textAccentGrey
+        )
+        if (count > 0) {
+            KSCountBadge(count)
         }
         Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_down),
-            contentDescription = "Dropdown",
-            tint = Color.Black
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = text,
+            tint = colors.icon
         )
     }
 }

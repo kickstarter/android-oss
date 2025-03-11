@@ -1,7 +1,6 @@
 package com.kickstarter.ui.views.compose.search
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,11 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -24,16 +20,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -42,10 +35,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.activities.PillButton
+import com.kickstarter.ui.activities.SortButton
 import com.kickstarter.ui.activities.compose.search.SearchScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -59,17 +53,20 @@ fun SearchTopBarPreview() {
         SearchTopBar(
             onBackPressed = {},
             onValueChanged = {},
+            selectedFilterCounts = mapOf(),
+            onSortPressed = {},
             onCategoryPressed = {}
         )
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchTopBar(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
+    selectedFilterCounts: Map<String, Int>,
+    onSortPressed: () -> Unit = {},
     onCategoryPressed: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -165,38 +162,41 @@ fun SearchTopBar(
             )
         }
         if (ffEnabled) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensions.appBarSearchPadding),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = onCategoryPressed,
-                    modifier = Modifier
-                        .padding(dimensions.paddingSmall),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        backgroundColor = Color.Transparent,
-                        contentColor = colors.textAccentGrey
-                    ),
-                    border = (BorderStroke(1.dp, colors.backgroundDisabled)),
-                    shape = RoundedCornerShape(100.dp),
-                    elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(end = 8.dp),
-                        text = "Category",
-                        style = KSTheme.typographyV2.buttonLabel,
-                        color = colors.textAccentGrey
-
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowDown,
-                        contentDescription = stringResource(id = R.string.Back),
-                        tint = colors.kds_black
-                    )
-                }
-            }
+            PillBar(
+                selectedFilterCounts,
+                onSortPressed,
+                onCategoryPressed
+            )
         }
     }
+}
+
+@Composable
+fun PillBar(
+    selectedFilterCounts: Map<String, Int>,
+    onSortPressed: () -> Unit,
+    onCategoryPressed: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensions.paddingMedium, dimensions.none, dimensions.none, dimensions.none),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SortButton(
+            selectedFilterCounts.getValue(FilterRowPillType.SORT.name) > 0,
+            onSortPressed
+        )
+        PillButton(
+            "Category",
+            selectedFilterCounts.getValue(FilterRowPillType.CATEGORY.name) > 0,
+            selectedFilterCounts.getValue(FilterRowPillType.CATEGORY.name),
+            onCategoryPressed
+        )
+    }
+}
+
+enum class FilterRowPillType {
+    SORT,
+    CATEGORY,
 }

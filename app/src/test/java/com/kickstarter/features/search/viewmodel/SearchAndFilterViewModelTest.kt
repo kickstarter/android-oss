@@ -262,4 +262,39 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(searchState.last().searchList, projectList)
         assertEquals(errorNumber, 0)
     }
+
+    @Test
+    fun `test for searching with clean user selection no category, no sorting, no term options`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        return Result.success(SearchEnvelope(projectList))
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorNumber = 0
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("")
+            viewModel.updateParamsToSearchWith()
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.category(), null)
+        assertEquals(params?.term(), null)
+    }
 }

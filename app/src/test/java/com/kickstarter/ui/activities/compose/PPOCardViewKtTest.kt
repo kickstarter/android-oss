@@ -133,7 +133,8 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
                     flags = listOf(
                         Flag.builder().message("Address locks in 7 days").type("alert").icon("time")
                             .build(),
-                        Flag.builder().message("Open Survey").type("warning").icon("time").build()
+                        Flag.builder().message("Open Survey").type("warning").icon("time").build(),
+                        Flag.builder().message("Reward Received").type("info").icon(null).build()
                     ),
                 )
             }
@@ -142,6 +143,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         flagsListView.assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Address locks in 7 days")[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Open Survey")[0].assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("Reward Received")[0].assertIsDisplayed()
     }
 
     @Test

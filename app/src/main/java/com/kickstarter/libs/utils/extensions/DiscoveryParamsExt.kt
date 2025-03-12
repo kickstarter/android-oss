@@ -246,5 +246,7 @@ fun DiscoveryParams.Sort.toProjectSort(): ProjectSort {
         DiscoveryParams.Sort.POPULAR -> ProjectSort.POPULARITY
         DiscoveryParams.Sort.ENDING_SOON -> ProjectSort.END_DATE
         DiscoveryParams.Sort.NEWEST -> ProjectSort.NEWEST
+        DiscoveryParams.Sort.MOST_BACKED -> ProjectSort.MOST_BACKED
+        DiscoveryParams.Sort.MOST_FUNDED -> ProjectSort.MOST_FUNDED
     }
 }

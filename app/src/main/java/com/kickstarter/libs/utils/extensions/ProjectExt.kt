@@ -16,6 +16,7 @@ import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.CreditCardTypes
+import com.kickstarter.type.ProjectSort
 import io.reactivex.Observable
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -346,4 +347,17 @@ fun Project.reduceProjectPayload(): Project {
         .pledgeOverTimeMinimumExplanation(this.pledgeOverTimeMinimumExplanation())
         .state(this.state())
         .build()
+}
+
+fun ProjectSort.toDiscoveryParam(): DiscoveryParams.Sort {
+    return when (this) {
+        ProjectSort.MAGIC -> DiscoveryParams.Sort.MAGIC
+        ProjectSort.DISTANCE -> DiscoveryParams.Sort.DISTANCE
+        ProjectSort.POPULARITY -> DiscoveryParams.Sort.POPULAR
+        ProjectSort.END_DATE -> DiscoveryParams.Sort.ENDING_SOON
+        ProjectSort.NEWEST -> DiscoveryParams.Sort.NEWEST
+        ProjectSort.MOST_FUNDED -> DiscoveryParams.Sort.MOST_FUNDED
+        ProjectSort.MOST_BACKED -> DiscoveryParams.Sort.MOST_BACKED
+        ProjectSort.UNKNOWN__ -> DiscoveryParams.Sort.MAGIC
+    }
 }

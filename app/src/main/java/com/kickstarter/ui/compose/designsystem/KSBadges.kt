@@ -3,6 +3,7 @@ package com.kickstarter.ui.compose.designsystem
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -19,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -216,4 +220,18 @@ fun KSBetaBadge() {
         color = colors.textAccentGreen,
         style = typographyV2.headingXS
     )
+}
+
+@Composable
+fun KSCountBadge(
+    count: Int
+) {
+    Box(
+        modifier = Modifier
+            .background(colors.backgroundAccentGraySubtle, RoundedCornerShape(50))
+            .padding(horizontal = dimensions.radiusSmall, vertical = dimensions.strokeWidth),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = count.toString(), color = colors.textAccentGrey, fontSize = 12.sp)
+    }
 }

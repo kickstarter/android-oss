@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,12 +12,18 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -473,6 +480,65 @@ fun KSSmallButton(
             text = text,
             color = if (isEnabled) textColor else colors.textAccentGrey,
             style = typographyV2.buttonLabel
+        )
+    }
+}
+
+@Composable
+fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .border(
+                if (isSelected) dimensions.strokeWidth else dimensions.borderThickness,
+                if (isSelected) colors.borderActive else colors.borderBold,
+                CircleShape
+            )
+            .size(dimensions.iconPillButtonSize)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_sort),
+            contentDescription = "Filter",
+            tint = colors.icon
+        )
+    }
+}
+
+@Composable
+fun PillButton(
+    text: String,
+    isSelected: Boolean,
+    count: Int,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .padding(dimensions.paddingSmall),
+        colors = ButtonDefaults.outlinedButtonColors(
+            backgroundColor = Color.Transparent,
+            contentColor = colors.textAccentGrey
+        ),
+        border = if (isSelected) BorderStroke(
+            dimensions.strokeWidth,
+            colors.borderActive
+        ) else BorderStroke(dimensions.borderThickness, colors.borderBold),
+        shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
+        elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
+    ) {
+        Text(
+            modifier = Modifier.padding(end = dimensions.paddingSmall),
+            text = "Category",
+            style = typographyV2.buttonLabel,
+            color = colors.textAccentGrey
+        )
+        if (count > 0) {
+            KSCountBadge(count)
+        }
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = text,
+            tint = colors.icon
         )
     }
 }

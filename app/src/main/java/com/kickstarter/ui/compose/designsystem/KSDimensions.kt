@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
 
 @Immutable
 data class KSDimensions(
+    val strokeWidth: Dp = Dp.Unspecified,
     val dividerThickness: Dp = Dp.Unspecified,
     val none: Dp = 0.dp,
     val paddingXSmall: Dp = Dp.Unspecified,
@@ -65,7 +66,8 @@ data class KSDimensions(
     val cardImageHeight: Dp = Dp.Unspecified,
     val rewardCardImageAspectRatio: Float = Float.NaN,
     val loadingSpinnerSize: Dp = Dp.Unspecified,
-    val strokeWith: Dp = Dp.Unspecified,
+    val pillButtonShapeSize: Dp = Dp.Unspecified,
+    val iconPillButtonSize: Dp = Dp.Unspecified,
     val linearProgressBarHeight: Dp = Dp.Unspecified,
     val smallProjectCardImageHeight: Dp = Dp.Unspecified,
     val projectCardImageAspectRatio: Float = Float.NaN,
@@ -76,7 +78,7 @@ val LocalKSCustomDimensions = staticCompositionLocalOf {
 }
 
 val KSStandardDimensions = KSDimensions(
-    strokeWith = 2.dp,
+    strokeWidth = 2.dp,
     dividerThickness = 1.dp,
     paddingXSmall = 4.dp,
     paddingSmall = 8.dp,
@@ -132,8 +134,10 @@ val KSStandardDimensions = KSDimensions(
     plotChargeItemWidth = 100.dp,
     cardWidth = 294.dp,
     cardImageHeight = 196.dp,
-    rewardCardImageAspectRatio = 3f / 2f,
     loadingSpinnerSize = 24.dp,
+    pillButtonShapeSize = 100.dp,
+    iconPillButtonSize = 40.dp,
+    rewardCardImageAspectRatio = 3f / 2f,
     linearProgressBarHeight = 9.dp,
     smallProjectCardImageHeight = 72.dp,
     projectCardImageAspectRatio = 16f / 9f

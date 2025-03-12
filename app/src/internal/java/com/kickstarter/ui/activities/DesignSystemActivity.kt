@@ -81,6 +81,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
+import com.kickstarter.ui.views.compose.search.PillBar
 import com.kickstarter.utils.WindowInsetsUtil
 
 class DesignSystemActivity : ComponentActivity() {
@@ -199,7 +200,11 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
-                ProjectCards()
+                PillBarVisuals()
+
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
+
+                ProjectCardVisuals()
             }
         }
     }
@@ -1007,7 +1012,17 @@ fun TypographyVisuals() {
 }
 
 @Composable
-fun ProjectCards() {
+fun PillBarVisuals() {
+    Text(text = "Pill Bar", style = typographyV2.title1Bold, color = colors.kds_support_700)
+    PillBar(
+        selectedFilterCounts = mapOf(),
+        onSortPressed = {},
+        onCategoryPressed = {}
+    )
+}
+
+@Composable
+fun ProjectCardVisuals() {
     Column {
         Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)
 

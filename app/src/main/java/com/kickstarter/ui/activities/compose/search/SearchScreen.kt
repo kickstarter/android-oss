@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,10 +29,13 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +52,6 @@ import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
-import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
@@ -60,6 +61,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.views.compose.search.FilterRowPillType
 import com.kickstarter.ui.views.compose.search.SearchEmptyView
 import com.kickstarter.ui.views.compose.search.SearchTopBar
 import kotlinx.coroutines.launch
@@ -171,6 +173,13 @@ fun SearchScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
+    val selectedFilterCounts: SnapshotStateMap<String, Int> = remember {
+        mutableStateMapOf(
+            FilterRowPillType.SORT.name to 0,
+            FilterRowPillType.CATEGORY.name to 0
+        )
+    }
+
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
@@ -205,19 +214,25 @@ fun SearchScreen(
             },
             topBar = {
                 Surface(elevation = 3.dp) {
-                    Column {
-                        SearchTopBar(
-                            onBackPressed = onBackClicked,
-                            onValueChanged = {
-                                onSearchTermChanged.invoke(it)
-                                currentSearchTerm = it
-                            },
-                            onCategoryPressed = {
-                                coroutineScope.launch { sheetState.show() } // Open bottom sheet
+                    SearchTopBar(
+                        onBackPressed = onBackClicked,
+                        onValueChanged = {
+                            onSearchTermChanged.invoke(it)
+                            currentSearchTerm = it
+                        },
+                        selectedFilterCounts = selectedFilterCounts,
+                        onSortPressed = {
+                            // Add logic here
+                        },
+                        onCategoryPressed = {
+                            // Add logic here
+
+                            // Open bottom sheet
+                            coroutineScope.launch {
+                                sheetState.show()
                             }
-                        )
-                        KSDividerLineGrey()
-                    }
+                        }
+                    )
                 }
             },
             backgroundColor = colors.kds_white

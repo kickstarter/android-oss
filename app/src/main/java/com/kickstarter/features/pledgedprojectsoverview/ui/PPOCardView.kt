@@ -139,6 +139,12 @@ enum class PPOCardViewType {
     FIX_PAYMENT,
     AUTHENTICATE_CARD,
     OPEN_SURVEY,
+    PLEDGE_COLLECTED,
+    SUVERY_SUBMITTED,
+    ADDRESS_CONFIRMED,
+    AWAITING_REWARD,
+    PLEDGE_REDEMPTION,
+    REWARD_RECEIVED,
     UNKNOWN,
 }
 
@@ -211,6 +217,7 @@ fun PPOCardView(
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
                     PPOCardViewType.OPEN_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
                     PPOCardViewType.UNKNOWN -> {}
+                    else -> {}
                 }
             }
         }

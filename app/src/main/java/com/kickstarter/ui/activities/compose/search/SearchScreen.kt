@@ -163,6 +163,7 @@ fun SearchScreen(
     showEmptyView: Boolean,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
+    onDismissBottomSheet: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -183,7 +184,10 @@ fun SearchScreen(
         sheetState = sheetState,
         sheetContent = {
             CategorySelectionSheet(
-                onDismiss = { coroutineScope.launch { sheetState.hide() } },
+                onDismiss = {
+                    coroutineScope.launch { sheetState.hide() }
+                    onDismissBottomSheet.invoke()
+                },
                 categories = sampleCategories,
                 onApply = { totalResults -> println("Total results: $totalResults") },
                 isLoading = false

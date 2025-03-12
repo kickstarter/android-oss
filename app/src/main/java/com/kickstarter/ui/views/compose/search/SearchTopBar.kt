@@ -53,7 +53,10 @@ fun SearchTopBarPreview() {
         SearchTopBar(
             onBackPressed = {},
             onValueChanged = {},
-            selectedFilterCounts = mapOf(),
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 0
+            ),
             onSortPressed = {},
             onCategoryPressed = {}
         )
@@ -184,13 +187,13 @@ fun PillBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconPillButton(
-            selectedFilterCounts.getValue(FilterRowPillType.SORT.name) > 0,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
             onSortPressed
         )
         PillButton(
             stringResource(R.string.fpo_category),
-            selectedFilterCounts.getValue(FilterRowPillType.CATEGORY.name) > 0,
-            selectedFilterCounts.getValue(FilterRowPillType.CATEGORY.name),
+            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
             onCategoryPressed
         )
     }

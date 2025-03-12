@@ -354,6 +354,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
+    override suspend fun getRootCategories(): Result<List<Category>> {
+        return Result.success(emptyList())
+    }
+
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
         return Result.success(SearchEnvelope())
     }

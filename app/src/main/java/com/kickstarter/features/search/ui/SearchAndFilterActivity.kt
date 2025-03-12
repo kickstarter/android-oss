@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -42,7 +44,9 @@ import kotlinx.coroutines.launch
 class SearchAndFilterActivity : ComponentActivity() {
 
     private lateinit var viewModelFactory: SearchAndFilterViewModel.Factory
+    private lateinit var filterMenuViewModelFactory: FilterMenuViewModel.Factory
     private val viewModel: SearchAndFilterViewModel by viewModels { viewModelFactory }
+    private val filterMenuViewModel: FilterMenuViewModel by viewModels { filterMenuViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +54,7 @@ class SearchAndFilterActivity : ComponentActivity() {
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = SearchAndFilterViewModel.Factory(env)
+            filterMenuViewModelFactory = FilterMenuViewModel.Factory(env)
 
             setContent {
                 val searchUIState by viewModel.searchUIState.collectAsStateWithLifecycle()
@@ -68,15 +73,12 @@ class SearchAndFilterActivity : ComponentActivity() {
 
                 val snackbarHostState = remember { SnackbarHostState() }
 
-                viewModel.provideErrorAction { message ->
-                    lifecycleScope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = message ?: getString(R.string.Something_went_wrong_please_try_again),
-                            actionLabel = KSSnackbarTypes.KS_ERROR.name,
-                            duration = SnackbarDuration.Long
-                        )
-                    }
-                }
+                val categoriesState by filterMenuViewModel.filterMenuUIState.collectAsStateWithLifecycle()
+
+                // TODO: send the list of categories to the BottomSheet coordinate with MBL-2171
+                val categories = categoriesState.categoriesList
+
+                SetUpErrorActions(snackbarHostState)
 
                 val darModeEnabled = this.isDarkModeEnabled(env = env)
                 KickstarterApp(useDarkTheme = darModeEnabled) {
@@ -118,6 +120,26 @@ class SearchAndFilterActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun SetUpErrorActions(snackbarHostState: SnackbarHostState) {
+        val errorAction = { message: String? ->
+            lifecycleScope.launch { // TODO: store SnackbarResult on VM to consult it before showing new  one, in case there is multiple enqueue snackbars.
+                snackbarHostState.showSnackbar(
+                    message = message ?: getString(R.string.Something_went_wrong_please_try_again),
+                    actionLabel = KSSnackbarTypes.KS_ERROR.name,
+                    duration = SnackbarDuration.Long
+                )
+            }
+        }
+        viewModel.provideErrorAction { message ->
+            errorAction.invoke(message)
+        }
+
+        filterMenuViewModel.provideErrorAction { message ->
+            errorAction.invoke(message)
         }
     }
 

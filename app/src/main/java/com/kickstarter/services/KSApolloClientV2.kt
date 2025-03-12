@@ -233,6 +233,7 @@ interface ApolloClientTypeV2 {
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
+    suspend fun getRootCategories(): Result<List<Category>>
     fun cleanDisposables()
 }
 
@@ -1829,6 +1830,23 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }.addToDisposable(disposables)
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override suspend fun getRootCategories(): Result<List<Category>> = executeForResult {
+        val query = GetRootCategoriesQuery()
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        // For now just returning rootCategories, in the future will likely be Map<Category, <List<Category>>> where second parameter is the list of subcategories
+        response.data?.let { responseData ->
+            val rootCategory = responseData.rootCategories.map {
+                categoryTransformer(it.category)
+            }
+
+            rootCategory
+        } ?: emptyList()
     }
 
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> = executeForResult {

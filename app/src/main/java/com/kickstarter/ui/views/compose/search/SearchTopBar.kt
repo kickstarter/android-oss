@@ -38,12 +38,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.activities.IconPillButton
-import com.kickstarter.ui.activities.PillButton
 import com.kickstarter.ui.activities.compose.search.SearchScreenTestTag
+import com.kickstarter.ui.compose.designsystem.IconPillButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.PillButton
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)

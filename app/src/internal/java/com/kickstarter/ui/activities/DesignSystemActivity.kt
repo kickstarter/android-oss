@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -24,16 +22,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -42,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -57,7 +47,6 @@ import com.kickstarter.ui.compose.designsystem.KSCheckbox
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
-import com.kickstarter.ui.compose.designsystem.KSCountBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSErrorRoundedText
 import com.kickstarter.ui.compose.designsystem.KSFacebookButton
@@ -215,7 +204,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
-                ProjectCards()
+                ProjectCardVisuals()
             }
         }
     }
@@ -1033,66 +1022,7 @@ fun PillBarVisuals() {
 }
 
 @Composable
-fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier
-            .border(
-                if (isSelected) dimensions.strokeWidth else dimensions.borderThickness,
-                if (isSelected) colors.borderActive else colors.borderBold,
-                CircleShape
-            )
-            .size(dimensions.iconPillButtonSize)
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_sort),
-            contentDescription = "Filter",
-            tint = colors.icon
-        )
-    }
-}
-
-@Composable
-fun PillButton(
-    text: String,
-    isSelected: Boolean,
-    count: Int,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(dimensions.paddingSmall),
-        colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = Color.Transparent,
-            contentColor = colors.textAccentGrey
-        ),
-        border = if (isSelected) BorderStroke(
-            dimensions.strokeWidth,
-            colors.borderActive
-        ) else BorderStroke(dimensions.borderThickness, colors.borderBold),
-        shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
-        elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
-    ) {
-        Text(
-            modifier = Modifier.padding(end = dimensions.paddingSmall),
-            text = "Category",
-            style = typographyV2.buttonLabel,
-            color = colors.textAccentGrey
-        )
-        if (count > 0) {
-            KSCountBadge(count)
-        }
-        Icon(
-            imageVector = Icons.Filled.KeyboardArrowDown,
-            contentDescription = text,
-            tint = colors.icon
-        )
-    }
-}
-
-@Composable
-fun ProjectCards() {
+fun ProjectCardVisuals() {
     Column {
         Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)
 

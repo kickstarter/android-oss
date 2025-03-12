@@ -42,7 +42,7 @@ class FilterMenuViewModel(
 
     private var categoriesList = emptyList<Category>()
 
-    init {
+    fun getRootCategories() {
         scope.launch {
             emitCurrentState(isLoading = true)
             val response = apolloClient.getRootCategories()

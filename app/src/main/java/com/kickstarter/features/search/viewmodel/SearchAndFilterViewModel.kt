@@ -59,7 +59,7 @@ class SearchAndFilterViewModel(
     private val _params = MutableStateFlow(firstLoadParams)
     val params: StateFlow<DiscoveryParams> = _params
 
-    private val debouncePeriod = 300L
+    val debouncePeriod = 300L
     private val _searchTerm = MutableStateFlow("")
     private val searchTerm: StateFlow<String> = _searchTerm
 

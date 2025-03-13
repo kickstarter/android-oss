@@ -189,7 +189,7 @@ fun SearchScreen(
                     onDismissBottomSheet.invoke()
                 },
                 categories = sampleCategories,
-                onApply = { totalResults -> println("Total results: $totalResults") },
+                onApply = { selectedCategory, selectedResultsCount -> println("Total results: $selectedResultsCount") },
                 isLoading = false
             )
         },

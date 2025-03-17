@@ -16,19 +16,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
@@ -36,6 +41,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
@@ -53,9 +59,11 @@ import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startReportProjectActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.fragments.projectpage.ui.SimilarProjectsComponent
 import com.kickstarter.ui.views.KSBottomSheetDialogFragment
 import com.kickstarter.ui.views.compose.KSColorAccentedBanner
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel.ProjectOverviewViewModel
+import com.kickstarter.viewmodels.projectpage.SimilarProjectsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
@@ -67,6 +75,8 @@ class ProjectOverviewFragment : Fragment(), Configure {
 
     private lateinit var viewModelFactory: ProjectOverviewViewModel.Factory
     private val viewModel: ProjectOverviewViewModel by viewModels { viewModelFactory }
+    private lateinit var similarProjectsViewModelFactory: SimilarProjectsViewModel.Factory
+    private val similarProjectsViewModel: SimilarProjectsViewModel by activityViewModels { similarProjectsViewModelFactory }
 
     private var disposables = CompositeDisposable()
 
@@ -92,6 +102,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
 
         this.context?.getEnvironment()?.let { env ->
             viewModelFactory = ProjectOverviewViewModel.Factory(env)
+            similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
             env
         }
 
@@ -249,6 +260,32 @@ class ProjectOverviewFragment : Fragment(), Configure {
                         )
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                     }
+                }
+            }
+        }
+
+        binding.composeViewSpc.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KSTheme {
+                    val context = LocalContext.current
+                    val uiState = similarProjectsViewModel.similarProjectsUiState.collectAsState()
+                    SimilarProjectsComponent(
+                        uiState = uiState,
+                        onTouchChange = { touching ->
+                            similarProjectsViewModel.setParentScrollable(!touching)
+                        },
+                        onClick = { project ->
+                            /* Currently, the VM only fetches Live Projects. If the VM's API call is
+                             * is updated to include Pre-launch Projects, update this handler to check
+                             * `Project.displayPrelaunch` and start `PreLaunchProjectPageActivity`. */
+                            val intent = Intent().getProjectIntent(context).apply {
+                                putExtra(IntentKey.PROJECT_PARAM, project.slug())
+                                putExtra(IntentKey.REF_TAG, RefTag.from(""))
+                            }
+                            startActivity(intent)
+                        }
+                    )
                 }
             }
         }
@@ -606,6 +643,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
 
     override fun configureWith(projectData: ProjectData) {
         this.viewModel.inputs.configureWith(projectData)
+        this.similarProjectsViewModel.provideProject(projectData.project())
     }
 
     override fun onDestroyView() {

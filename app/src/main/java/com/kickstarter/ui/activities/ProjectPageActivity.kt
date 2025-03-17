@@ -38,7 +38,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -93,6 +96,7 @@ import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.projectpage.RewardsSelectionViewModel
+import com.kickstarter.viewmodels.projectpage.SimilarProjectsViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
 import com.stripe.android.Stripe
@@ -104,7 +108,9 @@ import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 const val REFRESH = "refresh"
 
@@ -135,6 +141,9 @@ class ProjectPageActivity :
 
     private lateinit var addOnsViewModelFactory: AddOnsViewModel.Factory
     private val addOnsViewModel: AddOnsViewModel by viewModels { addOnsViewModelFactory }
+
+    private lateinit var similarProjectsViewModelFactory: SimilarProjectsViewModel.Factory
+    private val similarProjectsViewModel: SimilarProjectsViewModel by viewModels { similarProjectsViewModelFactory }
 
     private lateinit var stripe: Stripe
     private lateinit var flowController: PaymentSheet.FlowController
@@ -182,6 +191,7 @@ class ProjectPageActivity :
             rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory(env)
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
+            similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
             stripe = requireNotNull(env.stripe())
             env
         }
@@ -494,6 +504,14 @@ class ProjectPageActivity :
                     binding.projectAppBarLayout.setExpanded(false)
                 }
             }.addToDisposable(disposables)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                similarProjectsViewModel.parentUiState.collect {
+                    binding.projectPager.isUserInputEnabled = it.scrollable
+                }
+            }
+        }
 
         var pBacking: Project? = null
         var user: User? = null

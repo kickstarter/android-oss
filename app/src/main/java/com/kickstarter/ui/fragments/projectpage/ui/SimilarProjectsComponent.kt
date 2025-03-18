@@ -50,7 +50,6 @@ import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
 import org.joda.time.DateTime
-import timber.log.Timber
 
 @Preview(
     name = "Light",

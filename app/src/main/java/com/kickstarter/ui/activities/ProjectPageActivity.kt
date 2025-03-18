@@ -108,9 +108,7 @@ import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 const val REFRESH = "refresh"
 

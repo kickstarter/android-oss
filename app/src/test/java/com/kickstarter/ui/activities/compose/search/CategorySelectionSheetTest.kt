@@ -19,7 +19,7 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 CategorySelectionSheet(
-                    categories = sampleCategories,
+                    categories = listOf(),
                     onDismiss = { dismissClickCount++ },
                     onApply = { applyClickCount++ },
                     isLoading = false

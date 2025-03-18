@@ -1869,6 +1869,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     }
 
     override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> = executeForResult {
+        // Expose these as necessary
         val query = FetchSimilarProjectsQuery(
             first = Optional.present(4),
             similarToPid = pid.toString(),
@@ -1876,6 +1877,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             recommended = Optional.present(true),
             seed = Optional.present(pid.toInt())
         )
+
         val response = this.service.query(query).execute()
 
         if (response.hasErrors())

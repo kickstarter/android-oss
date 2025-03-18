@@ -51,6 +51,7 @@ object ProjectFactory {
             .location(LocationFactory.unitedStates())
             .name("Some Name")
             .pledged(50.0)
+            .percentFunded(50)
             .photo(PhotoFactory.photo())
             .rewards(listOf(RewardFactory.noReward(), RewardFactory.reward()))
             .staffPick(false)
@@ -362,6 +363,7 @@ object ProjectFactory {
             .name("halfwayProject")
             .goal(100.0)
             .pledged(50.0)
+            .percentFunded(50)
             .build()
     }
 
@@ -372,6 +374,7 @@ object ProjectFactory {
             .name("allTheWayProject")
             .goal(100.0)
             .pledged(100.0)
+            .percentFunded(50)
             .build()
     }
 
@@ -382,6 +385,7 @@ object ProjectFactory {
             .name("doubledGoalProject")
             .goal(100.0)
             .pledged(200.0)
+            .percentFunded(200)
             .build()
     }
 

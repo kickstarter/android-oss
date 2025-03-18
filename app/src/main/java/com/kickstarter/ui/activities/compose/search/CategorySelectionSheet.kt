@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose.search
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -36,6 +34,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSDimensions
@@ -44,16 +43,15 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
 @Composable
 fun CategorySelectionSheet(
-    categories: List<CategoryItem>,
+    categories: List<Category>,
     onDismiss: () -> Unit,
-    onApply: (String, Int) -> Unit,
+    onApply: (Category) -> Unit,
     isLoading: Boolean,
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val selectedCategory = remember { mutableStateOf("") }
-    val selectedResultsCount = categories.find { it.name == selectedCategory.value }?.totalResults
+    val selectedCategory = remember { mutableStateOf(Category.builder().build()) }
 
     KSTheme {
         Surface(
@@ -108,9 +106,12 @@ fun CategorySelectionSheet(
                         items(categories) { category ->
                             CategoryItemRow(
                                 category = category,
-                                isSelected = category.name == selectedCategory.value,
+                                isSelected = category.name() == selectedCategory.value.name(),
                                 onSelectionChange = { isChecked ->
-                                    selectedCategory.value = category.name
+                                    if (isChecked) {
+                                        selectedCategory.value =
+                                            categories.find { it.name() == category.name() }!!
+                                    }
                                 }
                             )
                         }
@@ -137,25 +138,24 @@ fun CategorySelectionSheet(
                             .padding(dimensions.paddingLarge),
                         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
                     ) {
+                        val resetCategoryName = stringResource(R.string.fpo_category)
                         KSButton(
                             onClickAction = {
-                                selectedCategory.value = ""
+                                selectedCategory.value = Category.builder().name(resetCategoryName).build()
                             },
                             type = KSButtonType.Outlined,
                             text = stringResource(R.string.Reset),
                             isEnabled = !isLoading
                         )
-                        if (selectedResultsCount != null) {
-                            KSButton(
-                                modifier = Modifier.weight(1f),
-                                onClickAction = {
-                                    onApply(selectedCategory.value, selectedResultsCount)
-                                },
-                                type = KSButtonType.Filled,
-                                text = "See $selectedResultsCount results",
-                                isEnabled = selectedResultsCount > 0 && !isLoading,
-                            )
-                        }
+                        KSButton(
+                            modifier = Modifier.weight(1f),
+                            onClickAction = {
+                                onApply(selectedCategory.value)
+                            },
+                            type = KSButtonType.Filled,
+                            text = "See results",
+                            isEnabled = !isLoading,
+                        )
                     }
                 }
             }
@@ -165,7 +165,7 @@ fun CategorySelectionSheet(
 
 @Composable
 fun CategoryItemRow(
-    category: CategoryItem,
+    category: Category,
     isSelected: Boolean,
     onSelectionChange: (Boolean) -> Unit,
 ) {
@@ -192,28 +192,9 @@ fun CategoryItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = category.name,
+                text = category.name(),
                 style = KSTheme.typographyV2.headingLG
             )
-
-            Box(
-                modifier = Modifier
-                    .padding(start = dimensions.paddingSmall)
-                    .background(
-                        color = if (isSelected) colors.borderAccentGreenSubtle.copy(alpha = 0.3f) else backgroundDisabledColor,
-                        shape = RoundedCornerShape(dimensions.radiusExtraSmall)
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    text = category.totalResults.toString(),
-                    style = KSTheme.typographyV2.headingSM,
-                    color = colors.kds_black
-                )
-            }
         }
 
         RadioButton(

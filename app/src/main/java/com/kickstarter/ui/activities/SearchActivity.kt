@@ -112,6 +112,7 @@ class SearchActivity : ComponentActivity() {
                         !isTyping &&
                         !currentSearchTerm.isTrimmedEmpty() &&
                         searchedProjects.isEmpty(),
+                    categories = listOf(),
                     onSearchTermChanged = { searchTerm ->
                         if (searchTerm.isEmpty()) viewModel.clearSearchedProjects()
                         currentSearchTerm = searchTerm

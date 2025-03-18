@@ -286,24 +286,6 @@ data class CategoryItem(
     val totalResults: Int,
 )
 
-val sampleCategories = listOf(
-    CategoryItem("Art", 1034),
-    CategoryItem("Games", 765),
-    CategoryItem("Design", 546),
-    CategoryItem("Publishing", 489),
-    CategoryItem("Fashion", 445),
-    CategoryItem("Comics", 322),
-    CategoryItem("Film & Video", 322),
-    CategoryItem("Food", 217),
-    CategoryItem("Technology", 654),
-    CategoryItem("Music", 879),
-    CategoryItem("Photography", 410),
-    CategoryItem("Theater", 295),
-    CategoryItem("Dance", 125),
-    CategoryItem("Crafts", 300),
-    CategoryItem("Journalism", 180),
-)
-
 enum class CategorySelectionSheetTestTag {
     APPLY_BUTTON,
     DISMISS_BUTTON

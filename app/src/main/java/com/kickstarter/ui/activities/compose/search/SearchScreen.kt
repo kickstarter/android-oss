@@ -49,6 +49,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
@@ -88,6 +89,7 @@ fun SearchScreenPreviewNonEmpty() {
             },
             lazyColumnListState = rememberLazyListState(),
             showEmptyView = false,
+            categories = listOf(),
             onSearchTermChanged = {},
             onItemClicked = { project -> }
         )
@@ -107,6 +109,7 @@ fun SearchScreenPreviewEmpty() {
             itemsList = listOf(),
             lazyColumnListState = rememberLazyListState(),
             showEmptyView = true,
+            categories = listOf(),
             onSearchTermChanged = {},
             onItemClicked = { project -> }
         )
@@ -161,9 +164,10 @@ fun SearchScreen(
     itemsList: List<Project> = listOf(),
     lazyColumnListState: LazyListState,
     showEmptyView: Boolean,
+    categories: List<Category>,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: () -> Unit = {}
+    onDismissBottomSheet: (Category?) -> Unit = {},
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -173,23 +177,43 @@ fun SearchScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
+    val countApiIsReady = false // Hide all result counts until backend API is ready
+
     val selectedFilterCounts: SnapshotStateMap<String, Int> = remember {
         mutableStateMapOf(
             FilterRowPillType.SORT.name to 0,
             FilterRowPillType.CATEGORY.name to 0
         )
     }
+    val initialCategoryPillText = stringResource(R.string.fpo_category)
+    var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
-            CategorySelectionSheet(
+            CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
                 onDismiss = {
                     coroutineScope.launch { sheetState.hide() }
-                    onDismissBottomSheet.invoke()
+                    onDismissBottomSheet.invoke(null)
                 },
-                categories = sampleCategories,
-                onApply = { selectedCategory, selectedResultsCount -> println("Total results: $selectedResultsCount") },
+                categories = categories,
+                onApply = { selectedCategory ->
+
+                    categoryPillText.value = selectedCategory.name()
+                    coroutineScope.launch { sheetState.hide() }
+
+                    if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
+                        onDismissBottomSheet.invoke(null)
+                        selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
+                    } else { // User applied valid filter
+                        onDismissBottomSheet.invoke(selectedCategory)
+                        if (countApiIsReady) {
+                            // Set selectedFilterCounts to actual count when count API is ready
+                        } else {
+                            selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 1
+                        }
+                    }
+                },
                 isLoading = false
             )
         },
@@ -215,6 +239,8 @@ fun SearchScreen(
             topBar = {
                 Surface(elevation = 3.dp) {
                     SearchTopBar(
+                        countApiIsReady = countApiIsReady,
+                        categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
@@ -225,8 +251,6 @@ fun SearchScreen(
                             // Add logic here
                         },
                         onCategoryPressed = {
-                            // Add logic here
-
                             // Open bottom sheet
                             coroutineScope.launch {
                                 sheetState.show()

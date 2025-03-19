@@ -191,7 +191,7 @@ fun SearchScreen(
     var currentCategory by remember { mutableStateOf<Category?>(null) }
 
     val activeBottomSheet = remember {
-        mutableStateOf("")
+        mutableStateOf<FilterRowPillType?>(null)
     }
 
     val categorySheetState = rememberModalBottomSheetState(
@@ -205,10 +205,10 @@ fun SearchScreen(
     )
 
     ModalBottomSheetLayout(
-        sheetState = if (activeBottomSheet.value == "categories") categorySheetState else sortSheetState,
+        sheetState = if (activeBottomSheet.value == FilterRowPillType.CATEGORY) categorySheetState else sortSheetState,
         sheetContent = {
             when (activeBottomSheet.value) {
-                "categories" -> {
+                FilterRowPillType.CATEGORY -> {
                     CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
                         currentCategory = currentCategory,
                         onDismiss = {
@@ -239,7 +239,7 @@ fun SearchScreen(
                     )
                 }
 
-                "sort" -> {
+                FilterRowPillType.SORT -> {
                     SortSelectionBottomSheet(
                         currentSelection = currentSort,
                         sorts = ProjectSort.knownValues().toDiscoveryParamsList(),
@@ -250,6 +250,7 @@ fun SearchScreen(
                         },
                     )
                 }
+                else -> {}
             }
         },
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -283,13 +284,13 @@ fun SearchScreen(
                         },
                         selectedFilterCounts = selectedFilterCounts,
                         onSortPressed = {
-                            activeBottomSheet.value = "sort"
+                            activeBottomSheet.value = FilterRowPillType.SORT
                             coroutineScope.launch {
                                 sortSheetState.show()
                             }
                         },
                         onCategoryPressed = {
-                            activeBottomSheet.value = "categories"
+                            activeBottomSheet.value = FilterRowPillType.CATEGORY
                             coroutineScope.launch {
                                 categorySheetState.show()
                             }

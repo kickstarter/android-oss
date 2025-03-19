@@ -109,7 +109,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                         onDismissBottomSheet = { category, sort ->
                             viewModel.updateParamsToSearchWith(
                                 category,
-                                sort ?: DiscoveryParams.Sort.MAGIC
+                                sort ?: DiscoveryParams.Sort.POPULAR //popular is the default sort
                             )
                         }
                     )

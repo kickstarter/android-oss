@@ -129,8 +129,6 @@ enum class SearchScreenTestTag {
     POPULAR_PROJECTS_TITLE,
     FEATURED_PROJECT_VIEW,
     NORMAL_PROJECT_VIEW,
-    CATEGORY_BUTTON,
-    SORT_BUTTON,
 }
 
 enum class CardProjectState {

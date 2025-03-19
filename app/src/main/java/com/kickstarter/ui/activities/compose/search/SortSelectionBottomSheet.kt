@@ -75,7 +75,7 @@ fun SortSelectionBottomSheet(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Sort by",
+                text = stringResource(R.string.fpo_sort_by),
                 style = KSTheme.typographyV2.headingXL,
                 modifier = Modifier.weight(1f)
             )

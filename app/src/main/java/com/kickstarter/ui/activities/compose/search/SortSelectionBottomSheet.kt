@@ -39,7 +39,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 
-
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -63,60 +62,59 @@ fun SortSelectionBottomSheet(
     val onOptionSelected: (DiscoveryParams.Sort) -> Unit = {
         selectedOption = it
     }
-            Column(
-                modifier = Modifier
-                    .background(color = colors.backgroundSurfacePrimary)
-                    .padding(start = dimensions.paddingLarge, end = dimensions.paddingSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
-                    .navigationBarsPadding()
-                    .fillMaxWidth(),
+    Column(
+        modifier = Modifier
+            .background(color = colors.backgroundSurfacePrimary)
+            .padding(start = dimensions.paddingLarge, end = dimensions.paddingSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
+            .navigationBarsPadding()
+            .fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(bottom = dimensions.paddingSmall),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Sort by",
+                style = KSTheme.typographyV2.headingXL,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(
+                modifier = Modifier.testTag(SortSelectionBottomSheetTestTag.DISMISS_BUTTON.name),
+                onClick = { onDismiss.invoke(selectedOption) }
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(bottom = dimensions.paddingSmall),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Sort by",
-                        style = KSTheme.typographyV2.headingXL,
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconButton(
-                        modifier = Modifier.testTag(SortSelectionBottomSheetTestTag.DISMISS_BUTTON.name),
-                        onClick = { onDismiss.invoke(selectedOption) }
-                    ) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
-                    }
-                }
+                Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+            }
+        }
 
-                if (isLoading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = KSTheme.colors.textPrimary,
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
-                } else {
-                    LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(sorts.filter { !sortToString(it).isNullOrZero() })
-                        { sort ->
-                            SortItemRow(
-                                sort = sort,
-                                isSelected = selectedOption == sort,
-                                onSelected = {
-                                    onOptionSelected.invoke(sort)
-                                    onDismiss.invoke(sort)
-                                }
-                            )
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = KSTheme.colors.textPrimary,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        } else {
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(sorts.filter { !getSortString(it).isNullOrZero() }) { sort ->
+                    SortItemRow(
+                        sort = sort,
+                        isSelected = selectedOption == sort,
+                        onSelected = {
+                            onOptionSelected.invoke(sort)
+                            onDismiss.invoke(sort)
                         }
-                    }
+                    )
                 }
             }
         }
+    }
+}
 
 @Composable
 fun SortItemRow(
@@ -128,13 +126,13 @@ fun SortItemRow(
         modifier = Modifier.clickable { onSelected.invoke() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-            sortToString(sort)?.let {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(it),
-                    style = KSTheme.typographyV2.headingLG
-                )
-            }
+        getSortString(sort)?.let {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(it),
+                style = KSTheme.typographyV2.headingLG
+            )
+        }
 
         RadioButton(
             selected = isSelected,
@@ -144,8 +142,9 @@ fun SortItemRow(
     }
 }
 
-fun sortToString(sort : DiscoveryParams.Sort) : Int? { // omit distance until api is ready
-    return when(sort) {
+fun getSortString(sort: DiscoveryParams.Sort): Int? {
+    // omit distance until api is ready
+    return when (sort) {
         DiscoveryParams.Sort.MAGIC -> R.string.Recommended
         DiscoveryParams.Sort.POPULAR -> R.string.discovery_sort_types_popularity
         DiscoveryParams.Sort.NEWEST -> R.string.discovery_sort_types_newest

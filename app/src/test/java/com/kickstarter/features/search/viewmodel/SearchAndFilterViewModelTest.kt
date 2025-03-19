@@ -5,13 +5,11 @@ import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.extensions.toDiscoveryParam
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.type.ProjectSort
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

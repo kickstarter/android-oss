@@ -43,7 +43,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
 @Composable
 fun CategorySelectionSheet(
-    currentCategory : Category? = null,
+    currentCategory: Category? = null,
     categories: List<Category>,
     onDismiss: () -> Unit,
     onApply: (Category) -> Unit,

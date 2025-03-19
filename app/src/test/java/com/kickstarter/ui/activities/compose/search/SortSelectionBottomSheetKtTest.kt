@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.search
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test

@@ -115,7 +115,9 @@
                                 style="@style/BodyPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
+                                android:textAlignment="center"
+                                android:gravity="center"
+                            tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
                         </LinearLayout>
                     </LinearLayout>
                     <include

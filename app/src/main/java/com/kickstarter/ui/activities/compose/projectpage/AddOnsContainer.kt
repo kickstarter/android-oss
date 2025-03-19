@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.models.Photo
-import com.kickstarter.ui.compose.KSRewardImageCompose
+import com.kickstarter.ui.compose.KSRewardAsyncImage
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -90,7 +90,7 @@ fun AddOnsContainer(
                 .fillMaxWidth()
         ) {
             if (image != null) {
-                KSRewardImageCompose(image = image)
+                KSRewardAsyncImage(image = image)
             }
             Column(
                 modifier = Modifier.padding(dimensions.paddingMediumLarge)

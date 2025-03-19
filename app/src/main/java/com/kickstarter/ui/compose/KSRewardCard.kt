@@ -96,7 +96,7 @@ fun KSRewardCard(
         ) {
             Box {
                 if (image != null) {
-                    KSRewardImageCompose(image = image)
+                    KSRewardAsyncImage(image = image)
                 }
                 if (yourSelectionIsVisible) {
                     YourSelectionTag()

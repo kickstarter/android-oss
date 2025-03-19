@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -33,6 +34,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -49,8 +51,13 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.ProjectSort
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -161,16 +168,14 @@ fun SearchScreen(
     itemsList: List<Project> = listOf(),
     lazyColumnListState: LazyListState,
     showEmptyView: Boolean,
+    sortList: List<ProjectSort> = listOf(),
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
     onDismissBottomSheet: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = Hidden,
-        skipHalfExpanded = true
-    )
+
     val coroutineScope = rememberCoroutineScope()
 
     val selectedFilterCounts: SnapshotStateMap<String, Int> = remember {
@@ -180,18 +185,47 @@ fun SearchScreen(
         )
     }
 
+    val activeBottomSheet = remember {
+        mutableStateOf("")
+    }
+
+    val categorySheetState = rememberModalBottomSheetState(
+        initialValue = Hidden,
+        skipHalfExpanded = true
+    )
+
+    val sortSheetState = rememberModalBottomSheetState(
+        initialValue = Hidden,
+        skipHalfExpanded = false
+    )
+
     ModalBottomSheetLayout(
-        sheetState = sheetState,
+        modifier = Modifier.heightIn(),
+        sheetState = if (activeBottomSheet.value == "categories") categorySheetState else sortSheetState,
         sheetContent = {
-            CategorySelectionSheet(
-                onDismiss = {
-                    coroutineScope.launch { sheetState.hide() }
-                    onDismissBottomSheet.invoke()
-                },
-                categories = sampleCategories,
-                onApply = { totalResults -> println("Total results: $totalResults") },
-                isLoading = false
-            )
+            when (activeBottomSheet.value) {
+                "categories" -> {
+                    CategorySelectionSheet(
+                        onDismiss = {
+                            onDismissBottomSheet.invoke()
+                            coroutineScope.launch { categorySheetState.hide() }
+                        },
+                        categories = sampleCategories,
+                        onApply = { totalResults -> println("Total results: $totalResults") },
+                        isLoading = false
+                    )
+                }
+
+                "sort" -> {
+                    SortSelectionBottomSheet(
+                        sorts = ProjectSort.knownValues(),
+                        onDismiss = { sort ->
+                            coroutineScope.launch { sortSheetState.hide() }
+                            onDismissBottomSheet.invoke()
+                        },
+                    )
+                }
+            }
         },
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetBackgroundColor = colors.kds_white
@@ -222,14 +256,15 @@ fun SearchScreen(
                         },
                         selectedFilterCounts = selectedFilterCounts,
                         onSortPressed = {
-                            // Add logic here
+                            activeBottomSheet.value = "sort"
+                            coroutineScope.launch {
+                                sortSheetState.show()
+                            }
                         },
                         onCategoryPressed = {
-                            // Add logic here
-
-                            // Open bottom sheet
+                            activeBottomSheet.value = "categories"
                             coroutineScope.launch {
-                                sheetState.show()
+                                categorySheetState.show()
                             }
                         }
                     )

@@ -42,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSDimensions

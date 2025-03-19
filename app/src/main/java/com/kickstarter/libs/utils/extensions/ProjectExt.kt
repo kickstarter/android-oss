@@ -361,3 +361,18 @@ fun ProjectSort.toDiscoveryParam(): DiscoveryParams.Sort {
         ProjectSort.UNKNOWN__ -> DiscoveryParams.Sort.MAGIC
     }
 }
+
+fun Array<ProjectSort>.toDiscoveryParamsList(): List<DiscoveryParams.Sort> {
+    return this.map {
+        when (it) {
+            ProjectSort.MAGIC -> DiscoveryParams.Sort.MAGIC
+            ProjectSort.DISTANCE -> DiscoveryParams.Sort.DISTANCE
+            ProjectSort.POPULARITY -> DiscoveryParams.Sort.POPULAR
+            ProjectSort.END_DATE -> DiscoveryParams.Sort.ENDING_SOON
+            ProjectSort.NEWEST -> DiscoveryParams.Sort.NEWEST
+            ProjectSort.MOST_FUNDED -> DiscoveryParams.Sort.MOST_FUNDED
+            ProjectSort.MOST_BACKED -> DiscoveryParams.Sort.MOST_BACKED
+            ProjectSort.UNKNOWN__ -> DiscoveryParams.Sort.MAGIC
+        }
+    }
+}

@@ -66,6 +66,8 @@ fun SearchTopBarPreview() {
 @Composable
 fun SearchTopBar(
     modifier: Modifier = Modifier,
+    countApiIsReady: Boolean = false,
+    categoryPillText: String = stringResource(R.string.fpo_category),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -166,6 +168,8 @@ fun SearchTopBar(
         }
         if (ffEnabled) {
             PillBar(
+                countApiIsReady,
+                categoryPillText,
                 selectedFilterCounts,
                 onSortPressed,
                 onCategoryPressed
@@ -176,6 +180,8 @@ fun SearchTopBar(
 
 @Composable
 fun PillBar(
+    countApiIsReady: Boolean = false,
+    categoryPillText: String = stringResource(R.string.fpo_category),
     selectedFilterCounts: Map<String, Int>,
     onSortPressed: () -> Unit,
     onCategoryPressed: () -> Unit,
@@ -191,7 +197,8 @@ fun PillBar(
             onSortPressed
         )
         PillButton(
-            stringResource(R.string.fpo_category),
+            countApiIsReady,
+            categoryPillText,
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
             onCategoryPressed

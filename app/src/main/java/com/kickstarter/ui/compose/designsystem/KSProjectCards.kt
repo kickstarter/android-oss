@@ -147,7 +147,7 @@ fun KSProjectCardLarge(
     modifier: Modifier = Modifier,
     photo: Photo? = null,
     title: String,
-    titleMinMaxLines: IntRange = 3..3,
+    titleMinMaxLines: IntRange = 1..3,
     state: CardProjectState,
     fundingInfoString: String = "",
     fundedPercentage: Int,
@@ -343,7 +343,7 @@ fun KSFundingProgressIndicator(progress: Float, state: CardProjectState) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensions.linearProgressBarHeight),
-            color = colors.textAccentGreen,
+            color = colors.backgroundAccentGreenBrand,
             backgroundColor = colors.borderSubtle
         )
     }

@@ -32,7 +32,6 @@ import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParam
-import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Project
 import com.kickstarter.type.ProjectSort
 import com.kickstarter.ui.IntentKey
@@ -71,7 +70,6 @@ class SearchAndFilterActivity : ComponentActivity() {
                 val isLoading = searchUIState.isLoading
 
                 val categoriesState by filterMenuViewModel.filterMenuUIState.collectAsStateWithLifecycle()
-                // TODO: send the list of categories to the BottomSheet coordinate with MBL-2171
                 val categories = categoriesState.categoriesList
 
                 SetUpErrorActions(snackbarHostState)
@@ -95,6 +93,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                             !isTyping &&
                             !currentSearchTerm.isTrimmedEmpty() &&
                             (searchedProjects.isEmpty() || popularProjects.isEmpty()),
+                        categories = categories,
                         onSearchTermChanged = { searchTerm ->
                             isTyping = true
                             currentSearchTerm = searchTerm
@@ -108,9 +107,9 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 startProjectActivity(projAndRef)
                             }
                         },
-                        onDismissBottomSheet = {
+                        onDismissBottomSheet = { category ->
                             viewModel.updateParamsToSearchWith(
-                                CategoryFactory.gamesCategory(),
+                                category,
                                 ProjectSort.MOST_FUNDED.toDiscoveryParam()
                             )
                         }

@@ -94,11 +94,11 @@ class SearchAndFilterViewModel(
         this.errorAction = errorAction
     }
 
-    fun updateParamsToSearchWith(category: Category? = null, projectSort: DiscoveryParams.Sort = DiscoveryParams.Sort.POPULAR) {
+    fun updateParamsToSearchWith(category: Category? = null, projectSort: DiscoveryParams.Sort) {
         val update = params.value.toBuilder()
             .apply {
                 this.category(category)
-                this.sort(projectSort) // - Default sorting is popular
+                this.sort(projectSort)
             }
             .build()
 

@@ -107,10 +107,10 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 startProjectActivity(projAndRef)
                             }
                         },
-                        onDismissBottomSheet = { category ->
+                        onDismissBottomSheet = { category, sort ->
                             viewModel.updateParamsToSearchWith(
                                 category,
-                                ProjectSort.MOST_FUNDED.toDiscoveryParam()
+                                sort?.toDiscoveryParam() ?: ProjectSort.MAGIC.toDiscoveryParam()
                             )
                         }
                     )

@@ -171,10 +171,9 @@ fun SearchScreen(
     lazyColumnListState: LazyListState,
     showEmptyView: Boolean,
     categories: List<Category>,
-    sortList: List<ProjectSort> = listOf(),
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: (Category?) -> Unit = {},
+    onDismissBottomSheet: (Category?, ProjectSort?) -> Unit = { category, sort -> },
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -191,6 +190,8 @@ fun SearchScreen(
     }
     val initialCategoryPillText = stringResource(R.string.fpo_category)
     var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
+    var currentSort by remember { mutableStateOf(ProjectSort.MAGIC) }
+    var currentCategory by remember { mutableStateOf<Category?>(null) }
 
     val activeBottomSheet = remember {
         mutableStateOf("")
@@ -214,7 +215,7 @@ fun SearchScreen(
                     CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
                         onDismiss = {
                             coroutineScope.launch { categorySheetState.hide() }
-                            onDismissBottomSheet.invoke(null)
+                            onDismissBottomSheet.invoke(null, currentSort)
                         },
                         categories = categories,
                         onApply = { selectedCategory ->
@@ -223,10 +224,12 @@ fun SearchScreen(
                             coroutineScope.launch { categorySheetState.hide() }
 
                             if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
-                                onDismissBottomSheet.invoke(null)
+                                onDismissBottomSheet.invoke(null, currentSort)
                                 selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
+                                currentCategory = null
                             } else { // User applied valid filter
-                                onDismissBottomSheet.invoke(selectedCategory)
+                                onDismissBottomSheet.invoke(selectedCategory, currentSort)
+                                currentCategory = selectedCategory
                                 if (countApiIsReady) {
                                     // Set selectedFilterCounts to actual count when count API is ready
                                 } else {
@@ -240,10 +243,12 @@ fun SearchScreen(
 
                 "sort" -> {
                     SortSelectionBottomSheet(
+                        initialSelection = currentSort,
                         sorts = ProjectSort.knownValues(),
                         onDismiss = { sort ->
+                            currentSort = sort
                             coroutineScope.launch { sortSheetState.hide() }
-                            onDismissBottomSheet.invoke(null)
+                            onDismissBottomSheet.invoke(currentCategory, sort)
                         },
                     )
                 }

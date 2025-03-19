@@ -28,7 +28,7 @@ mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String,$re
   }
 }
 
-query GetBacking($backingId: ID!, $rewardImageUrlWidth: Int = 1024) {
+query GetBacking($backingId: ID!, $rewardImageWidth: Int = 1024) {
   backing(id: $backingId) {
     ... backing
   }

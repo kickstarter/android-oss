@@ -506,6 +506,7 @@ fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
 
 @Composable
 fun PillButton(
+    countApiIsReady: Boolean = false,
     text: String,
     isSelected: Boolean,
     count: Int,
@@ -528,11 +529,11 @@ fun PillButton(
     ) {
         Text(
             modifier = Modifier.padding(end = dimensions.paddingSmall),
-            text = "Category",
+            text = text,
             style = typographyV2.buttonLabel,
             color = colors.textAccentGrey
         )
-        if (count > 0) {
+        if (countApiIsReady && count > 0) {
             KSCountBadge(count)
         }
         Icon(

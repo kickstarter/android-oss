@@ -41,6 +41,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = false,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = true,
+                    categories = listOf(),
                     onSearchTermChanged = {},
                     onItemClicked = {}
                 )
@@ -76,6 +77,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                             .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                             .build()
                     },
+                    categories = listOf(),
                     onSearchTermChanged = {},
                     onItemClicked = {}
                 )
@@ -122,6 +124,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                             .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                             .build()
                     },
+                    categories = listOf(),
                     onSearchTermChanged = {},
                     onItemClicked = {}
                 )
@@ -156,6 +159,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = true,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = false,
+                    categories = listOf(),
                     onSearchTermChanged = {},
                     onItemClicked = {}
                 )
@@ -191,6 +195,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                             .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                             .build()
                     },
+                    categories = listOf(),
                     onSearchTermChanged = {},
                     onItemClicked = {}
                 )
@@ -238,6 +243,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                             .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                             .build()
                     },
+                    categories = listOf(),
                     onSearchTermChanged = {},
                     onItemClicked = { itemClickedCount++ }
                 )
@@ -281,6 +287,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                             .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                             .build()
                     },
+                    categories = listOf(),
                     onSearchTermChanged = {
                         currentSearchTerm = it
                     },

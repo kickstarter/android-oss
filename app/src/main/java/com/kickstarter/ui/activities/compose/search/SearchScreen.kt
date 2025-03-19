@@ -95,6 +95,7 @@ fun SearchScreenPreviewNonEmpty() {
             },
             lazyColumnListState = rememberLazyListState(),
             showEmptyView = false,
+            categories = listOf(),
             onSearchTermChanged = {},
             onItemClicked = { project -> }
         )
@@ -114,6 +115,7 @@ fun SearchScreenPreviewEmpty() {
             itemsList = listOf(),
             lazyColumnListState = rememberLazyListState(),
             showEmptyView = true,
+            categories = listOf(),
             onSearchTermChanged = {},
             onItemClicked = { project -> }
         )
@@ -168,15 +170,18 @@ fun SearchScreen(
     itemsList: List<Project> = listOf(),
     lazyColumnListState: LazyListState,
     showEmptyView: Boolean,
+    categories: List<Category>,
     sortList: List<ProjectSort> = listOf(),
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: () -> Unit = {}
+    onDismissBottomSheet: (Category?) -> Unit = {},
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
+
+    val countApiIsReady = false // Hide all result counts until backend API is ready
 
     val selectedFilterCounts: SnapshotStateMap<String, Int> = remember {
         mutableStateMapOf(
@@ -184,6 +189,8 @@ fun SearchScreen(
             FilterRowPillType.CATEGORY.name to 0
         )
     }
+    val initialCategoryPillText = stringResource(R.string.fpo_category)
+    var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
 
     val activeBottomSheet = remember {
         mutableStateOf("")
@@ -200,18 +207,33 @@ fun SearchScreen(
     )
 
     ModalBottomSheetLayout(
-        modifier = Modifier.heightIn(),
         sheetState = if (activeBottomSheet.value == "categories") categorySheetState else sortSheetState,
         sheetContent = {
             when (activeBottomSheet.value) {
                 "categories" -> {
-                    CategorySelectionSheet(
+                    CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
                         onDismiss = {
-                            onDismissBottomSheet.invoke()
                             coroutineScope.launch { categorySheetState.hide() }
+                            onDismissBottomSheet.invoke(null)
                         },
-                        categories = sampleCategories,
-                        onApply = { totalResults -> println("Total results: $totalResults") },
+                        categories = categories,
+                        onApply = { selectedCategory ->
+
+                            categoryPillText.value = selectedCategory.name()
+                            coroutineScope.launch { categorySheetState.hide() }
+
+                            if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
+                                onDismissBottomSheet.invoke(null)
+                                selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
+                            } else { // User applied valid filter
+                                onDismissBottomSheet.invoke(selectedCategory)
+                                if (countApiIsReady) {
+                                    // Set selectedFilterCounts to actual count when count API is ready
+                                } else {
+                                    selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 1
+                                }
+                            }
+                        },
                         isLoading = false
                     )
                 }
@@ -221,7 +243,7 @@ fun SearchScreen(
                         sorts = ProjectSort.knownValues(),
                         onDismiss = { sort ->
                             coroutineScope.launch { sortSheetState.hide() }
-                            onDismissBottomSheet.invoke()
+                            onDismissBottomSheet.invoke(null)
                         },
                     )
                 }
@@ -249,6 +271,8 @@ fun SearchScreen(
             topBar = {
                 Surface(elevation = 3.dp) {
                     SearchTopBar(
+                        countApiIsReady = countApiIsReady,
+                        categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)

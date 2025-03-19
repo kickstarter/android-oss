@@ -5,11 +5,13 @@ import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.toDiscoveryParam
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.ProjectSort
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -288,12 +290,12 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch(dispatcher) {
             viewModel.provideErrorAction { errorNumber++ }
             viewModel.updateSearchTerm("")
-            viewModel.updateParamsToSearchWith()
+            viewModel.updateParamsToSearchWith(null, DiscoveryParams.Sort.MAGIC)
             viewModel.searchUIState.toList(searchState)
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
     }

@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,10 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isNullOrZero
-import com.kickstarter.models.Category
-import com.kickstarter.models.Project
-import com.kickstarter.type.ProjectSort
-import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -48,21 +46,21 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 private fun BetaMessagingBottomSheetPreview() {
     KSTheme {
         SortSelectionBottomSheet(
-            sorts = ProjectSort.knownValues(),
+            sorts = DiscoveryParams.Sort.values().toList(),
         )
     }
 }
 
 @Composable
 fun SortSelectionBottomSheet(
-    sorts: Array<ProjectSort>,
-    initialSelection: ProjectSort = ProjectSort.MAGIC,
-    onDismiss: (ProjectSort) -> Unit = { },
+    sorts: List<DiscoveryParams.Sort>,
+    currentSelection: DiscoveryParams.Sort = DiscoveryParams.Sort.POPULAR,
+    onDismiss: (DiscoveryParams.Sort) -> Unit = { },
     isLoading: Boolean = false,
 ) {
-    var selectedOption by remember { mutableStateOf(initialSelection) }
+    var selectedOption by remember { mutableStateOf(currentSelection) }
 
-    val onOptionSelected: (ProjectSort) -> Unit = {
+    val onOptionSelected: (DiscoveryParams.Sort) -> Unit = {
         selectedOption = it
     }
             Column(
@@ -83,7 +81,7 @@ fun SortSelectionBottomSheet(
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(
-                        modifier = Modifier.testTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name),
+                        modifier = Modifier.testTag(SortSelectionBottomSheetTestTag.DISMISS_BUTTON.name),
                         onClick = { onDismiss.invoke(selectedOption) }
                     ) {
                         Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
@@ -122,14 +120,12 @@ fun SortSelectionBottomSheet(
 
 @Composable
 fun SortItemRow(
-    sort: ProjectSort,
+    sort: DiscoveryParams.Sort,
     isSelected: Boolean,
     onSelected: () -> Unit,
 ) {
-    val backgroundDisabledColor = colors.backgroundDisabled
-    val dimensions: KSDimensions = KSTheme.dimensions
-
     Row(
+        modifier = Modifier.clickable { onSelected.invoke() },
         verticalAlignment = Alignment.CenterVertically
     ) {
             sortToString(sort)?.let {
@@ -148,14 +144,18 @@ fun SortItemRow(
     }
 }
 
-fun sortToString(sort : ProjectSort) : Int? {
+fun sortToString(sort : DiscoveryParams.Sort) : Int? { // omit distance until api is ready
     return when(sort) {
-        ProjectSort.MAGIC -> R.string.Recommended
-        ProjectSort.POPULARITY -> R.string.discovery_sort_types_popularity
-        ProjectSort.NEWEST -> R.string.discovery_sort_types_newest
-        ProjectSort.END_DATE -> R.string.discovery_sort_types_end_date
-        ProjectSort.MOST_FUNDED -> R.string.discovery_sort_types_most_funded
-        ProjectSort.MOST_BACKED -> R.string.discovery_sort_types_most_backed
+        DiscoveryParams.Sort.MAGIC -> R.string.Recommended
+        DiscoveryParams.Sort.POPULAR -> R.string.discovery_sort_types_popularity
+        DiscoveryParams.Sort.NEWEST -> R.string.discovery_sort_types_newest
+        DiscoveryParams.Sort.ENDING_SOON -> R.string.discovery_sort_types_end_date
+        DiscoveryParams.Sort.MOST_FUNDED -> R.string.discovery_sort_types_most_funded
+        DiscoveryParams.Sort.MOST_BACKED -> R.string.discovery_sort_types_most_backed
         else -> null
     }
+}
+
+enum class SortSelectionBottomSheetTestTag {
+    DISMISS_BUTTON,
 }

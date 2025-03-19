@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -34,7 +33,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -51,8 +49,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
-import com.kickstarter.libs.utils.extensions.isTrue
-import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
@@ -131,7 +128,9 @@ enum class SearchScreenTestTag {
     LIST_VIEW,
     POPULAR_PROJECTS_TITLE,
     FEATURED_PROJECT_VIEW,
-    NORMAL_PROJECT_VIEW
+    NORMAL_PROJECT_VIEW,
+    CATEGORY_BUTTON,
+    SORT_BUTTON,
 }
 
 enum class CardProjectState {
@@ -173,7 +172,7 @@ fun SearchScreen(
     categories: List<Category>,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: (Category?, ProjectSort?) -> Unit = { category, sort -> },
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit = { category, sort -> },
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -190,7 +189,7 @@ fun SearchScreen(
     }
     val initialCategoryPillText = stringResource(R.string.fpo_category)
     var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
-    var currentSort by remember { mutableStateOf(ProjectSort.MAGIC) }
+    var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.POPULAR) }
     var currentCategory by remember { mutableStateOf<Category?>(null) }
 
     val activeBottomSheet = remember {
@@ -213,9 +212,10 @@ fun SearchScreen(
             when (activeBottomSheet.value) {
                 "categories" -> {
                     CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
+                        currentCategory = currentCategory,
                         onDismiss = {
                             coroutineScope.launch { categorySheetState.hide() }
-                            onDismissBottomSheet.invoke(null, currentSort)
+                            onDismissBottomSheet.invoke(currentCategory, currentSort)
                         },
                         categories = categories,
                         onApply = { selectedCategory ->
@@ -243,8 +243,8 @@ fun SearchScreen(
 
                 "sort" -> {
                     SortSelectionBottomSheet(
-                        initialSelection = currentSort,
-                        sorts = ProjectSort.knownValues(),
+                        currentSelection = currentSort,
+                        sorts = ProjectSort.knownValues().toDiscoveryParamsList(),
                         onDismiss = { sort ->
                             currentSort = sort
                             coroutineScope.launch { sortSheetState.hide() }

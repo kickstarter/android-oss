@@ -33,6 +33,7 @@ import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParam
 import com.kickstarter.models.Project
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.search.SearchScreen
@@ -110,7 +111,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                         onDismissBottomSheet = { category, sort ->
                             viewModel.updateParamsToSearchWith(
                                 category,
-                                sort?.toDiscoveryParam() ?: ProjectSort.MAGIC.toDiscoveryParam()
+                                sort ?: DiscoveryParams.Sort.MAGIC
                             )
                         }
                     )

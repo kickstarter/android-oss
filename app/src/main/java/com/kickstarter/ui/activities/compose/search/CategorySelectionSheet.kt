@@ -43,6 +43,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
 @Composable
 fun CategorySelectionSheet(
+    currentCategory : Category? = null,
     categories: List<Category>,
     onDismiss: () -> Unit,
     onApply: (Category) -> Unit,
@@ -51,7 +52,7 @@ fun CategorySelectionSheet(
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val selectedCategory = remember { mutableStateOf(Category.builder().build()) }
+    val selectedCategory = remember { mutableStateOf(currentCategory) }
 
     KSTheme {
         Surface(
@@ -106,7 +107,7 @@ fun CategorySelectionSheet(
                         items(categories) { category ->
                             CategoryItemRow(
                                 category = category,
-                                isSelected = category.name() == selectedCategory.value.name(),
+                                isSelected = category.name() == selectedCategory.value?.name(),
                                 onSelectionChange = { isChecked ->
                                     if (isChecked) {
                                         selectedCategory.value =
@@ -150,7 +151,7 @@ fun CategorySelectionSheet(
                         KSButton(
                             modifier = Modifier.weight(1f),
                             onClickAction = {
-                                onApply(selectedCategory.value)
+                                selectedCategory.value?.let { onApply(it) }
                             },
                             type = KSButtonType.Filled,
                             text = "See results",

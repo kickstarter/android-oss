@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.ui.activities.compose.search.CustomSwitch
 import com.kickstarter.ui.compose.designsystem.FBLoginButton
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
@@ -678,6 +679,7 @@ fun ControlsVisuals() {
         Row {
             var switch1Checked by remember { mutableStateOf(true) }
             var switch2Checked by remember { mutableStateOf(false) }
+            var switch3Checked by remember { mutableStateOf(false) }
             KSSwitch(
                 checked = switch1Checked,
                 onCheckChanged = { switch1Checked = it }
@@ -697,6 +699,10 @@ fun ControlsVisuals() {
             Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSSwitch(checked = switch2Checked, onCheckChanged = {}, enabled = false)
+
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
+
+            CustomSwitch(checked = switch3Checked, onCheckedChange = { switch3Checked = it })
         }
 
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))

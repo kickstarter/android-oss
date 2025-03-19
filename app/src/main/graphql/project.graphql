@@ -13,13 +13,13 @@ query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $back
   }
 }
 
-query FetchProject($slug: String!) {
+query FetchProject($slug: String!, $rewardImageUrlWidth: Int = 1024) {
   project(slug: $slug) {
     ... fullProject
   }
 }
 
-query FetchProjectRewards($slug: String!) {
+query FetchProjectRewards($slug: String!, $rewardImageUrlWidth: Int = 1024) {
   project(slug: $slug) {
     minPledge
     rewards {
@@ -58,7 +58,7 @@ query ProjectCreatorDetails($slug: String!) {
   }
 }
 
-query GetProjectBacking($slug: String!) {
+query GetProjectBacking($slug: String!, $rewardImageUrlWidth: Int = 1024) {
   project(slug: $slug) {
     id
     backing {
@@ -67,7 +67,7 @@ query GetProjectBacking($slug: String!) {
   }
 }
 
-query GetProjectAddOns($slug: String!, $locationId: ID!) {
+query GetProjectAddOns($slug: String!, $locationId: ID!, $rewardImageUrlWidth: Int = 1024) {
   project(slug: $slug) {
     addOns {
       nodes {
@@ -99,7 +99,7 @@ mutation CreateComment($body: String!, $commentableId: ID!, $parentId: ID, $clie
   }
 }
 
-mutation watchProject($id: ID!) {
+mutation watchProject($id: ID!, $rewardImageUrlWidth: Int = 1024) {
   watchProject(input: {id: $id}) {
     clientMutationId
     project {
@@ -108,7 +108,7 @@ mutation watchProject($id: ID!) {
   }
 }
 
-mutation unwatchProject($id: ID!) {
+mutation unwatchProject($id: ID!, $rewardImageUrlWidth: Int = 1024) {
   watchProject: unwatchProject(input: {id: $id}) {
     clientMutationId
     project {

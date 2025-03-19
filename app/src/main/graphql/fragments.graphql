@@ -219,7 +219,7 @@ fragment full on Project {
 
 fragment rewardImage on Reward {
     image {
-        url(width: 1024)
+        url(width: $rewardImageUrlWidth)
         altText
     }
 }

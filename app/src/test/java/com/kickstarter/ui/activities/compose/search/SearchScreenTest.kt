@@ -27,7 +27,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
     private val listView = composeTestRule.onNodeWithTag(SearchScreenTestTag.LIST_VIEW.name)
     private val popularProjectsTitle =
-        composeTestRule.onNodeWithTag(SearchScreenTestTag.POPULAR_PROJECTS_TITLE.name)
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
     private val featuredProjectView =
         composeTestRule.onNodeWithTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name)
 
@@ -68,7 +68,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = false,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = false,
-                    isPopularList = true,
+                    isDefaultList = true,
                     itemsList = List(20) {
                         Project.builder()
                             .name("This is a test $it")
@@ -115,7 +115,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = false,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = false,
-                    isPopularList = false,
+                    isDefaultList = false,
                     itemsList = List(20) {
                         Project.builder()
                             .name("This is a test $it")
@@ -186,7 +186,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = true,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = false,
-                    isPopularList = false,
+                    isDefaultList = false,
                     itemsList = List(20) {
                         Project.builder()
                             .name("This is a test $it")
@@ -234,7 +234,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = false,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = false,
-                    isPopularList = false,
+                    isDefaultList = false,
                     itemsList = List(20) {
                         Project.builder()
                             .name("This is a test $it")
@@ -278,7 +278,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     isLoading = false,
                     lazyColumnListState = rememberLazyListState(),
                     showEmptyView = false,
-                    isPopularList = false,
+                    isDefaultList = false,
                     itemsList = List(20) {
                         Project.builder()
                             .name("This is a test $it")

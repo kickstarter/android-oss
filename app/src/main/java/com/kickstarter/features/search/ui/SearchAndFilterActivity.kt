@@ -81,7 +81,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                         scaffoldState = rememberScaffoldState(),
                         errorSnackBarHostState = snackbarHostState,
                         isLoading = isLoading,
-                        isPopularList = currentSearchTerm.isTrimmedEmpty(),
+                        isDefaultList = currentSearchTerm.isTrimmedEmpty(),
                         itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
                             popularProjects
                         } else {

@@ -53,7 +53,7 @@ private fun BetaMessagingBottomSheetPreview() {
 @Composable
 fun SortSelectionBottomSheet(
     sorts: List<DiscoveryParams.Sort>,
-    currentSelection: DiscoveryParams.Sort = DiscoveryParams.Sort.POPULAR,
+    currentSelection: DiscoveryParams.Sort = DiscoveryParams.Sort.MAGIC,
     onDismiss: (DiscoveryParams.Sort) -> Unit = { },
     isLoading: Boolean = false,
 ) {

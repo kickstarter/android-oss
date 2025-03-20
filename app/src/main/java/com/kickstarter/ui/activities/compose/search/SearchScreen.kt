@@ -247,6 +247,12 @@ fun SearchScreen(
                             currentSort = sort
                             coroutineScope.launch { sortSheetState.hide() }
                             onDismissBottomSheet.invoke(currentCategory, sort)
+//                            // When a sort other than Recommended is applied, the Sort pill is in the active state
+                            if (sort == DiscoveryParams.Sort.MAGIC) {
+                                selectedFilterCounts[FilterRowPillType.SORT.name] = 0
+                            } else {
+                                selectedFilterCounts[FilterRowPillType.SORT.name] = 1
+                            }
                         },
                     )
                 }

@@ -82,7 +82,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                         scaffoldState = rememberScaffoldState(),
                         errorSnackBarHostState = snackbarHostState,
                         isLoading = isLoading,
-                        isPopularList = currentSearchTerm.isTrimmedEmpty(),
+                        isDefaultList = currentSearchTerm.isTrimmedEmpty(),
                         itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
                             popularProjects
                         } else {
@@ -106,7 +106,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                         onDismissBottomSheet = { category, sort ->
                             viewModel.updateParamsToSearchWith(
                                 category,
-                                sort ?: DiscoveryParams.Sort.POPULAR // popular is the default sort
+                                sort ?: DiscoveryParams.Sort.MAGIC // magic is the default sort
                             )
                         },
                         shouldShowPillbar = true

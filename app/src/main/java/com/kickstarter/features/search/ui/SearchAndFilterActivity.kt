@@ -12,11 +12,14 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
@@ -38,7 +41,6 @@ import com.kickstarter.ui.activities.compose.search.SearchScreen
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchAndFilterActivity : ComponentActivity() {
@@ -59,7 +61,6 @@ class SearchAndFilterActivity : ComponentActivity() {
 
             setContent {
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
-                var isTyping by remember { mutableStateOf(false) }
                 val lazyListState = rememberLazyListState()
                 val snackbarHostState = remember { SnackbarHostState() }
 
@@ -88,13 +89,9 @@ class SearchAndFilterActivity : ComponentActivity() {
                             searchedProjects
                         },
                         lazyColumnListState = lazyListState,
-                        showEmptyView = !isLoading &&
-                            !isTyping &&
-                            !currentSearchTerm.isTrimmedEmpty() &&
-                            (searchedProjects.isEmpty() || popularProjects.isEmpty()),
+                        showEmptyView = !isLoading && (searchedProjects.isEmpty() && popularProjects.isEmpty()),
                         categories = categories,
                         onSearchTermChanged = { searchTerm ->
-                            isTyping = true
                             currentSearchTerm = searchTerm
                             viewModel.updateSearchTerm(searchTerm)
                         },
@@ -111,17 +108,26 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 category,
                                 sort ?: DiscoveryParams.Sort.MAGIC // magic is the default sort
                             )
-                        }
+                        },
+                        shouldShowPillbar = true
                     )
                 }
 
-                LaunchedEffect(key1 = currentSearchTerm) {
-                    // Reset isTyping after a delay when the user stops typing
-                    if (currentSearchTerm.isNotEmpty()) {
-                        delay(viewModel.debouncePeriod)
-                        isTyping = false
-                    } else {
-                        isTyping = false
+                // Load more when scroll to the end
+                val shouldLoadMore by remember {
+                    derivedStateOf {
+                        val layoutInfo = lazyListState.layoutInfo
+                        val totalItems = layoutInfo.totalItemsCount
+                        val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+                        lastVisibleItemIndex >= (totalItems - 5) && totalItems > 0
+                    }
+                }
+
+                val lifecycleOwner = LocalLifecycleOwner.current
+                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState) {
+                    if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                        viewModel.loadMore()
                     }
                 }
             }

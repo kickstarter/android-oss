@@ -119,7 +119,8 @@ class SearchActivity : ComponentActivity() {
                     },
                     onItemClicked = { project ->
                         viewModel.projectClicked(project = project)
-                    }
+                    },
+                    shouldShowPillbar = false
                 )
             }
 

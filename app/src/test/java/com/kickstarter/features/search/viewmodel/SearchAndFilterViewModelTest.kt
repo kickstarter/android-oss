@@ -297,4 +297,98 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
     }
+
+    @Test
+    fun `test for searching with clean user selection no category, no sorting, no term options, load two pages`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+        val secondPageList = listOf(ProjectFactory.caProject(), ProjectFactory.mxProject())
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        var pageCounter = 0
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        pageCounter++
+                        val envelope = if (pageCounter == 2) SearchEnvelope(secondPageList)
+                        else SearchEnvelope(projectList)
+                        return Result.success(envelope)
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorNumber = 0
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("")
+            viewModel.updateParamsToSearchWith(null, DiscoveryParams.Sort.MAGIC)
+            viewModel.loadMore()
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
+        assertEquals(params?.category(), null)
+        assertEquals(params?.term(), null)
+        assertEquals(searchState.size, 3)
+        assertEquals(pageCounter, 2)
+    }
+
+    @Test
+    fun `test for searching a tem with category and sorting, load two pages`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+
+        val secondPageList = listOf(ProjectFactory.caProject(), ProjectFactory.mxProject())
+        var pageCounter = 0
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        pageCounter++
+                        val envelope = if (pageCounter == 2) SearchEnvelope(secondPageList)
+                        else SearchEnvelope(projectList)
+                        return Result.success(envelope)
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorNumber = 0
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorNumber++ }
+            viewModel.updateSearchTerm("hello")
+            viewModel.updateParamsToSearchWith(
+                CategoryFactory.gamesCategory(),
+                DiscoveryParams.Sort.MOST_FUNDED
+            )
+            viewModel.updateSearchTerm("cats")
+            viewModel.loadMore()
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MOST_FUNDED)
+        assertEquals(params?.category(), CategoryFactory.gamesCategory())
+        assertEquals(params?.term(), "cats")
+        assertEquals(searchState.size, 3)
+        assertEquals(pageCounter, 2)
+        assertEquals(errorNumber, 0)
+    }
 }

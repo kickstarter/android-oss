@@ -117,6 +117,7 @@ patrocinadores</string>
   <string name="Card_ending_in_last_four" formatted="false">Tarjeta que termina en %{last_four}</string>
   <string name="Card_number" formatted="false">Número de tarjeta</string>
   <string name="Cardholder_name" formatted="false">Nombre del titular de la tarjeta</string>
+  <string name="Category" formatted="false">Category</string>
   <string name="Change_currency" formatted="false">Cambiar la moneda</string>
   <string name="Change_email" formatted="false">Cambiar correo electrónico</string>
   <string name="Change_password" formatted="false">Cambiar contraseña</string>
@@ -236,7 +237,8 @@ Toca para intentar de nuevo.</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">El correo electrónico debe tener una dirección de correo electrónico válida.</string>
   <string name="Email_notifications" formatted="false">Notificaciones por correo electrónico</string>
   <string name="Email_unverified" formatted="false">Esta dirección de correo electrónico no está verificada.</string>
-  <string name="Ended" formatted="false">Ended</string>
+  <string name="End_date" formatted="false">End date</string>
+  <string name="Ended" formatted="false">Finalizado</string>
   <string name="Ending_in_last_four" formatted="false">Número que termina en %{last_four}</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Ingresa una cantidad inferior a %{max_pledge}.</string>
@@ -386,8 +388,8 @@ Toca para intentar de nuevo.</string>
   <string name="Kickstarter_payment_summary" formatted="false">Kickstarter</string>
   <string name="Kickstarter_takes_claims" formatted="false">Kickstarter presta suma atención a las denuncias de infracción de derecho intelectual. Para encontrar más información e instrucciones sobre cómo denunciar una infracción, visita nuestra Política de copyright y nuestra Política de marca registrada. Solo se pueden procesar las denuncias presentadas por el propietario del copyright o marca registrada.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
-  <string name="Late_pledges_active" formatted="false">Late pledges active</string>
-  <string name="Launching_soon" formatted="false">Launching soon</string>
+  <string name="Late_pledges_active" formatted="false">Contribuciones tardías activas</string>
+  <string name="Launching_soon" formatted="false">Lanzamiento en breve</string>
   <string name="Learn_about_AI_policy_on_Kickstarter" formatted="false">Información sobre la política de IA en Kickstarter</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Más información sobre el concepto de responsabilidad en Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Más información sobre las responsabilidades</string>
@@ -434,14 +436,18 @@ Toca para intentar de nuevo.</string>
   <string name="Messages" formatted="false">Mensajes</string>
   <string name="Million_plus" formatted="false">Más de %{total_amount} millones</string>
   <string name="More_than_number_of_items_items" formatted="false">Más de %{number_of_items} notificaciones</string>
+  <string name="Most_backed" formatted="false">Most backed</string>
+  <string name="Most_funded" formatted="false">Most funded</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">Mi proyecto busca financiamiento para la tecnología de IA.</string>
   <string name="Name" formatted="false">Nombre</string>
+  <string name="Near_me" formatted="false">Near me</string>
   <string name="Never" formatted="false">Nunca</string>
   <string name="New_email" formatted="false">Nuevo correo electrónico</string>
   <string name="New_password" formatted="false">Contraseña nueva</string>
   <string name="New_payment_method" formatted="false">Nuevo método de pago</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.</string>
+  <string name="Newest" formatted="false">Newest</string>
   <string name="News_and_projects" formatted="false">Novedades y proyectos</string>
   <string name="News_events" formatted="false">Unas cuantas veces al año: Noticias sobresalientes y eventos cerca de ti.</string>
   <string name="Newsletters" formatted="false">Boletines informativos</string>
@@ -521,6 +527,7 @@ Toca para intentar de nuevo.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Contribuido&lt;/b> el %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
+  <string name="Popularity" formatted="false">Popularity</string>
   <string name="Post" formatted="false">Publicar</string>
   <string name="Postal_code" formatted="false">Código postal</string>
   <string name="Postcode" formatted="false">Código postal</string>
@@ -586,6 +593,7 @@ Toca para intentar de nuevo.</string>
   <string name="Request_my_personal_data" formatted="false">Solicitar mis datos personales</string>
   <string name="Resend_email" formatted="false">Reenviar correo</string>
   <string name="Resend_verification_email" formatted="false">Volver a enviar correo electrónico de verificación</string>
+  <string name="Reset_filters" formatted="false">Reset</string>
   <string name="Reset_your_password" formatted="false">Restablece tu contraseña</string>
   <string name="Retry" formatted="false">Volver a intentar</string>
   <string name="Retry_or_select_another_method" formatted="false">Vuelve a intentarlo o selecciona otro método.</string>
@@ -630,6 +638,7 @@ Toca para intentar de nuevo.</string>
   <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
   <string name="See_our_suggestions" formatted="false">Ver nuestras sugerencias ▸</string>
   <string name="See_our_terms_of_use" formatted="false">Ver nuestros Términos de uso</string>
+  <string name="See_results" formatted="false">See results</string>
   <string name="See_rewards" formatted="false">Ver recompensas</string>
   <string name="See_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="Select" formatted="false">Seleccionar</string>
@@ -673,7 +682,7 @@ Toca para intentar de nuevo.</string>
   <string name="Sign_up" formatted="false">Registrarse</string>
   <string name="Sign_up_newsletter" formatted="false">Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
-  <string name="Similar_projects" formatted="false">Similar projects</string>
+  <string name="Similar_projects" formatted="false">Proyectos similares</string>
   <string name="Skip_add_ons" formatted="false">Omitir complementos</string>
   <string name="Social_friend_is_backer_few" formatted="false">%{friend_name} y %{remaining_count} otros</string>
   <string name="Social_friend_is_backer_many" formatted="false">%{friend_name} y %{remaining_count} otros</string>
@@ -687,6 +696,7 @@ Toca para intentar de nuevo.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Ocurrió un error. Inténtalo nuevamente más tarde.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Ocurrió un error. Desliza para actualizar.</string>
   <string name="Something_went_wrong_pull_to_refresh_no_period" formatted="false">Ocurrió un error. Desliza para actualizar.</string>
+  <string name="Sort_by" formatted="false">Sort by</string>
   <string name="Spam" formatted="false">Correo no deseado</string>
   <string name="Start_the_request" formatted="false">Comenzar la recopilación de datos</string>
   <string name="Starting_soon" formatted="false">Comienza en breve</string>

@@ -91,7 +91,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         inListLoadingView.assertDoesNotExist()
         listView.assertIsDisplayed()
 
-        val popularProjectTitleText = context.getString(R.string.Popular_Projects)
+        val popularProjectTitleText = context.getString(R.string.activity_empty_state_logged_in_button)
         popularProjectsTitle.assertIsDisplayed()
         popularProjectsTitle.assertTextEquals(popularProjectTitleText)
 

@@ -32,6 +32,7 @@ import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.models.Photo
 import com.kickstarter.ui.activities.compose.search.CardProjectState
+import com.kickstarter.ui.compose.KSAsyncImage
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
@@ -163,17 +164,11 @@ fun KSProjectCardLarge(
     ) {
         Column {
             if (photo != null) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(photo.full())
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = photo.altText(),
+                KSAsyncImage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(dimensions.projectCardImageAspectRatio),
-                    placeholder = ColorPainter(color = colors.backgroundDisabled),
-                    contentScale = ContentScale.Crop
+                    image = photo
                 )
             }
 
@@ -225,17 +220,11 @@ fun KSProjectCardSmall(
                 modifier = Modifier.height(dimensions.smallProjectCardImageHeight)
             ) {
                 if (photo != null) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(photo.full())
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = photo.altText(),
+                    KSAsyncImage(
                         modifier = Modifier
                             .height(dimensions.smallProjectCardImageHeight)
                             .aspectRatio(dimensions.projectCardImageAspectRatio),
-                        placeholder = ColorPainter(color = colors.backgroundDisabled),
-                        contentScale = ContentScale.Crop
+                        image = photo
                     )
                 }
 

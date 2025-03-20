@@ -72,15 +72,11 @@ fun SearchTopBar(
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
     onSortPressed: () -> Unit = {},
-    onCategoryPressed: () -> Unit = {}
+    onCategoryPressed: () -> Unit = {},
+    shouldShowPillbar: Boolean = true
 ) {
     val context = LocalContext.current
     val isPreview = LocalInspectionMode.current
-    val ffEnabled = if (!isPreview) {
-        context.getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
-    } else {
-        true
-    }
 
     var value by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -166,7 +162,7 @@ fun SearchTopBar(
                 singleLine = true
             )
         }
-        if (ffEnabled) {
+        if (shouldShowPillbar) {
             PillBar(
                 countApiIsReady,
                 categoryPillText,

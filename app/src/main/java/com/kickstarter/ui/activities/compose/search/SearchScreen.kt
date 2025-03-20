@@ -171,6 +171,7 @@ fun SearchScreen(
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
     onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit = { category, sort -> },
+    shouldShowPillbar: Boolean = true
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -294,7 +295,8 @@ fun SearchScreen(
                             coroutineScope.launch {
                                 categorySheetState.show()
                             }
-                        }
+                        },
+                        shouldShowPillbar = shouldShowPillbar
                     )
                 }
             },

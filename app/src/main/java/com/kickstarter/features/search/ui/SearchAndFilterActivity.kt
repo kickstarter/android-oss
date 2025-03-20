@@ -41,7 +41,6 @@ import com.kickstarter.ui.activities.compose.search.SearchScreen
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchAndFilterActivity : ComponentActivity() {
@@ -62,7 +61,6 @@ class SearchAndFilterActivity : ComponentActivity() {
 
             setContent {
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
-                var isTyping by remember { mutableStateOf(false) }
                 val lazyListState = rememberLazyListState()
                 val snackbarHostState = remember { SnackbarHostState() }
 
@@ -91,13 +89,9 @@ class SearchAndFilterActivity : ComponentActivity() {
                             searchedProjects
                         },
                         lazyColumnListState = lazyListState,
-                        showEmptyView = !isLoading &&
-                            !isTyping &&
-                            !currentSearchTerm.isTrimmedEmpty() &&
-                            (searchedProjects.isEmpty() || popularProjects.isEmpty()),
+                        showEmptyView = !isLoading && (searchedProjects.isEmpty() && popularProjects.isEmpty()),
                         categories = categories,
                         onSearchTermChanged = { searchTerm ->
-                            isTyping = true
                             currentSearchTerm = searchTerm
                             viewModel.updateSearchTerm(searchTerm)
                         },
@@ -114,18 +108,9 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 category,
                                 sort ?: DiscoveryParams.Sort.POPULAR // popular is the default sort
                             )
-                        }
+                        },
+                        shouldShowPillbar = true
                     )
-                }
-
-                LaunchedEffect(key1 = currentSearchTerm) {
-                    // Reset isTyping after a delay when the user stops typing
-                    if (currentSearchTerm.isNotEmpty()) {
-                        delay(viewModel.debouncePeriod)
-                        isTyping = false
-                    } else {
-                        isTyping = false
-                    }
                 }
 
                 // Load more when scroll to the end

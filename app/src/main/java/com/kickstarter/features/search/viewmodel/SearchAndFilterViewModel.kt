@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -64,14 +63,15 @@ class SearchAndFilterViewModel(
     val debouncePeriod = 300L
     private val _searchTerm = MutableStateFlow("")
     private val searchTerm: StateFlow<String> = _searchTerm
+    private var persistedTerm: String? = null
 
     private var errorAction: (message: String?) -> Unit = {}
 
-    private var projectsList = emptyList<Project>()
-    private var popularProjectsList = emptyList<Project>()
+    private var projectsList = mutableListOf<Project>()
+    private var popularProjectsList = mutableListOf<Project>()
 
     // Pagination variables
-    private var currentPage = 1
+    private var currentPage = 0
     private var nextPage: String? = null
     private var isLoadingMore = false
 
@@ -79,18 +79,20 @@ class SearchAndFilterViewModel(
         scope.launch {
             val debounced = _searchTerm
                 .debounce(debouncePeriod)
-                .map { debouncedTerm ->
+
+            _params
+                .combine(debounced) { currentParams, debouncedTerm ->
                     // - Reset to initial state in case of empty search term
                     if (debouncedTerm.isEmpty() || debouncedTerm.isBlank()) {
+                        persistedTerm = null
                         currentParams
                     } else {
+                        persistedTerm = debouncedTerm
                         currentParams.toBuilder()
                             .term(debouncedTerm)
                             .build()
                     }
                 }
-
-            _params
                 .collectLatest { params ->
                     resetPagination()
                     updateSearchResultsState(params)
@@ -118,18 +120,20 @@ class SearchAndFilterViewModel(
     fun loadMore() {
         if (!isLoadingMore && searchUIState.value.hasMore) {
             isLoadingMore = true
-            currentPage++
             scope.launch {
-                updateSearchResultsState(params.value)
+                val updatedParams = params.value.toBuilder().term(persistedTerm).build()
+                updateSearchResultsState(updatedParams)
                 isLoadingMore = false
             }
         }
     }
 
     private fun resetPagination() {
-        currentPage = 1
+        currentPage = 0
         isLoadingMore = false
         nextPage = null
+        popularProjectsList = mutableListOf()
+        projectsList = mutableListOf()
     }
 
     /**
@@ -151,17 +155,23 @@ class SearchAndFilterViewModel(
 
         if (searchEnvelopeResult.isSuccess) {
             searchEnvelopeResult.getOrNull()?.projectList?.let {
-                if (params.term().isNull()) popularProjectsList = popularProjectsList + it
-                if (params.term()?.isNotBlank().isTrue()) projectsList = projectsList + it
+                if (params.term().isNull()) popularProjectsList.addAll(it)
+                if (params.term()?.isNotBlank().isTrue()) projectsList.addAll(it)
+
+                Timber.d("${this.javaClass} popularProjectsList: ${popularProjectsList.size}")
+                Timber.d("${this.javaClass} projectsList: ${projectsList.size}")
 
                 // - pagination related stuff
+                currentPage++
                 nextPage = searchEnvelopeResult.getOrNull()?.pageInfo?.endCursor
                 val hasMore = searchEnvelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
+
+                // - update UI
                 emitCurrentState(isLoading = false, hasMore = hasMore)
 
                 analyticEvents.trackSearchResultPageViewed(
                     params,
-                    currentPage,
+                    currentPage, // TODO: likely is not the page but the total number, does require upgrades on the query
                     params.sort() ?: DiscoveryParams.Sort.POPULAR
                 )
             }
@@ -172,8 +182,8 @@ class SearchAndFilterViewModel(
         _searchUIState.emit(
             SearchUIState(
                 isLoading = isLoading,
-                popularProjectsList = popularProjectsList,
-                searchList = projectsList,
+                popularProjectsList = popularProjectsList.toList(),
+                searchList = projectsList.toList(),
                 hasMore = hasMore
             )
         )

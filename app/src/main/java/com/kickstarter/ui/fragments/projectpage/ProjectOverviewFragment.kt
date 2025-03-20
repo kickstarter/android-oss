@@ -281,7 +281,7 @@ class ProjectOverviewFragment : Fragment(), Configure {
                              * `Project.displayPrelaunch` and start `PreLaunchProjectPageActivity`. */
                             val intent = Intent().getProjectIntent(context).apply {
                                 putExtra(IntentKey.PROJECT_PARAM, project.slug())
-                                putExtra(IntentKey.REF_TAG, RefTag.from(""))
+                                putExtra(IntentKey.REF_TAG, RefTag.similarProjects())
                             }
                             startActivity(intent)
                         }

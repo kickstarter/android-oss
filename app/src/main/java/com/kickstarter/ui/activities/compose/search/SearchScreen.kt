@@ -80,7 +80,7 @@ fun SearchScreenPreviewNonEmpty() {
             scaffoldState = rememberScaffoldState(),
             errorSnackBarHostState = SnackbarHostState(),
             isLoading = false,
-            isPopularList = true,
+            isDefaultList = true,
             itemsList = List(100) {
                 Project.builder()
                     .name("This is a test $it")
@@ -126,7 +126,7 @@ enum class SearchScreenTestTag {
     LOADING_VIEW,
     IN_LIST_LOADING_VIEW,
     LIST_VIEW,
-    POPULAR_PROJECTS_TITLE,
+    DISCOVER_PROJECTS_TITLE,
     FEATURED_PROJECT_VIEW,
     NORMAL_PROJECT_VIEW,
 }
@@ -162,7 +162,7 @@ fun SearchScreen(
     onBackClicked: () -> Unit,
     scaffoldState: ScaffoldState,
     errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
-    isPopularList: Boolean = true,
+    isDefaultList: Boolean = true,
     isLoading: Boolean,
     itemsList: List<Project> = listOf(),
     lazyColumnListState: LazyListState,
@@ -171,6 +171,7 @@ fun SearchScreen(
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
     onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit = { category, sort -> },
+    shouldShowPillbar: Boolean = true
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -187,7 +188,7 @@ fun SearchScreen(
     }
     val initialCategoryPillText = stringResource(R.string.fpo_category)
     var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
-    var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.POPULAR) }
+    var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     var currentCategory by remember { mutableStateOf<Category?>(null) }
 
     val activeBottomSheet = remember {
@@ -300,7 +301,8 @@ fun SearchScreen(
                             coroutineScope.launch {
                                 categorySheetState.show()
                             }
-                        }
+                        },
+                        shouldShowPillbar = shouldShowPillbar
                     )
                 }
             },
@@ -329,14 +331,14 @@ fun SearchScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     itemsIndexed(itemsList) { index, project ->
-                        if (index == 0 && isPopularList) {
+                        if (index == 0 && isDefaultList) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                             Text(
                                 modifier = Modifier
-                                    .testTag(SearchScreenTestTag.POPULAR_PROJECTS_TITLE.name)
+                                    .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
                                     .fillMaxWidth(),
-                                text = stringResource(id = R.string.Popular_Projects),
+                                text = stringResource(id = R.string.activity_empty_state_logged_in_button),
                                 style = typographyV2.title2,
                                 color = colors.kds_support_700,
                                 textAlign = TextAlign.Start

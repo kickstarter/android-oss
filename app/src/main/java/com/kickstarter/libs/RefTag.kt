@@ -126,6 +126,10 @@ class RefTag private constructor(
             return builder().tag("search_popular_featured").build()
         }
 
+        fun similarProjects(): RefTag {
+            return builder().tag("similar_projects").build()
+        }
+
         fun social(): RefTag {
             return builder().tag("social").build()
         }

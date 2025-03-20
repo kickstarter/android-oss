@@ -101,7 +101,7 @@ class SearchActivity : ComponentActivity() {
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     scaffoldState = rememberScaffoldState(),
                     isLoading = isLoading,
-                    isPopularList = currentSearchTerm.isTrimmedEmpty(),
+                    isDefaultList = currentSearchTerm.isTrimmedEmpty(),
                     itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
                         popularProjects
                     } else {
@@ -119,7 +119,8 @@ class SearchActivity : ComponentActivity() {
                     },
                     onItemClicked = { project ->
                         viewModel.projectClicked(project = project)
-                    }
+                    },
+                    shouldShowPillbar = false
                 )
             }
 

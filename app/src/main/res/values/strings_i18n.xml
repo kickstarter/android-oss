@@ -117,6 +117,7 @@ backers</string>
   <string name="Card_ending_in_last_four" formatted="false">Card ending in %{last_four}</string>
   <string name="Card_number" formatted="false">Card number</string>
   <string name="Cardholder_name" formatted="false">Cardholder name</string>
+  <string name="Category" formatted="false">Category</string>
   <string name="Change_currency" formatted="false">Change currency?</string>
   <string name="Change_email" formatted="false">Change email</string>
   <string name="Change_password" formatted="false">Change password</string>
@@ -236,6 +237,7 @@ Tap to retry</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">Email notifications</string>
   <string name="Email_unverified" formatted="false">This email address is unverified.</string>
+  <string name="End_date" formatted="false">End date</string>
   <string name="Ended" formatted="false">Ended</string>
   <string name="Ending_in_last_four" formatted="false">Ending in %{last_four}</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
@@ -434,14 +436,18 @@ with friends.</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Million_plus" formatted="false">%{total_amount} million+</string>
   <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
+  <string name="Most_backed" formatted="false">Most backed</string>
+  <string name="Most_funded" formatted="false">Most funded</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">My project seeks funding for AI technology.</string>
   <string name="Name" formatted="false">Name</string>
+  <string name="Near_me" formatted="false">Near me</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_email" formatted="false">New email</string>
   <string name="New_password" formatted="false">New password</string>
   <string name="New_payment_method" formatted="false">New payment method</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">New work and big ideas from established and emerging artists.</string>
+  <string name="Newest" formatted="false">Newest</string>
   <string name="News_and_projects" formatted="false">News and projects</string>
   <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
   <string name="Newsletters" formatted="false">Newsletters</string>
@@ -522,6 +528,7 @@ from friends yet.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
+  <string name="Popularity" formatted="false">Popularity</string>
   <string name="Post" formatted="false">Post</string>
   <string name="Postal_code" formatted="false">Postal code</string>
   <string name="Postcode" formatted="false">Postcode</string>
@@ -588,6 +595,7 @@ daring ideas.</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_email" formatted="false">Resend email</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
+  <string name="Reset_filters" formatted="false">Reset</string>
   <string name="Reset_your_password" formatted="false">Reset your password</string>
   <string name="Retry" formatted="false">Retry</string>
   <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
@@ -632,6 +640,7 @@ daring ideas.</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
   <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_our_terms_of_use" formatted="false">See our Terms of Use</string>
+  <string name="See_results" formatted="false">See results</string>
   <string name="See_rewards" formatted="false">See rewards</string>
   <string name="See_the_rewards" formatted="false">See the rewards</string>
   <string name="Select" formatted="false">Select</string>
@@ -690,6 +699,7 @@ catch your eye?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Something went wrong—pull to refresh.</string>
   <string name="Something_went_wrong_pull_to_refresh_no_period" formatted="false">Something went wrong - Pull to refresh</string>
+  <string name="Sort_by" formatted="false">Sort by</string>
   <string name="Spam" formatted="false">Spam</string>
   <string name="Start_the_request" formatted="false">Start the request</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -30,7 +31,8 @@ import kotlin.text.isNotBlank
 data class SearchUIState(
     val isLoading: Boolean = false,
     val popularProjectsList: List<Project> = emptyList(),
-    val searchList: List<Project> = emptyList()
+    val searchList: List<Project> = emptyList(),
+    val hasMore: Boolean = true // flag to load more items to the lists
 )
 
 @OptIn(FlowPreview::class)
@@ -68,13 +70,16 @@ class SearchAndFilterViewModel(
     private var projectsList = emptyList<Project>()
     private var popularProjectsList = emptyList<Project>()
 
+    // Pagination variables
+    private var currentPage = 1
+    private var nextPage: String? = null
+    private var isLoadingMore = false
+
     init {
         scope.launch {
             val debounced = _searchTerm
                 .debounce(debouncePeriod)
-
-            _params
-                .combine(debounced) { currentParams, debouncedTerm ->
+                .map { debouncedTerm ->
                     // - Reset to initial state in case of empty search term
                     if (debouncedTerm.isEmpty() || debouncedTerm.isBlank()) {
                         currentParams
@@ -84,7 +89,10 @@ class SearchAndFilterViewModel(
                             .build()
                     }
                 }
+
+            _params
                 .collectLatest { params ->
+                    resetPagination()
                     updateSearchResultsState(params)
                 }
         }
@@ -107,6 +115,23 @@ class SearchAndFilterViewModel(
         }
     }
 
+    fun loadMore() {
+        if (!isLoadingMore && searchUIState.value.hasMore) {
+            isLoadingMore = true
+            currentPage++
+            scope.launch {
+                updateSearchResultsState(params.value)
+                isLoadingMore = false
+            }
+        }
+    }
+
+    private fun resetPagination() {
+        currentPage = 1
+        isLoadingMore = false
+        nextPage = null
+    }
+
     /**
      * Update UIState with after executing Search query with latest params
      */
@@ -117,7 +142,7 @@ class SearchAndFilterViewModel(
 
         // - Result from API
         Timber.d("${this.javaClass} params: $params")
-        val searchEnvelopeResult = apolloClient.getSearchProjects(params)
+        val searchEnvelopeResult = apolloClient.getSearchProjects(params, nextPage)
 
         if (searchEnvelopeResult.isFailure) {
             // - errorAction.invoke(searchEnvelopeResult.exceptionOrNull()?.message) to return API level message
@@ -126,26 +151,30 @@ class SearchAndFilterViewModel(
 
         if (searchEnvelopeResult.isSuccess) {
             searchEnvelopeResult.getOrNull()?.projectList?.let {
-                if (params.term().isNull()) popularProjectsList = it
-                if (params.term()?.isNotBlank().isTrue()) projectsList = it
+                if (params.term().isNull()) popularProjectsList = popularProjectsList + it
+                if (params.term()?.isNotBlank().isTrue()) projectsList = projectsList + it
 
-                emitCurrentState(isLoading = false)
+                // - pagination related stuff
+                nextPage = searchEnvelopeResult.getOrNull()?.pageInfo?.endCursor
+                val hasMore = searchEnvelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
+                emitCurrentState(isLoading = false, hasMore = hasMore)
 
                 analyticEvents.trackSearchResultPageViewed(
                     params,
-                    1, // TODO: this will contain the page when pagination ready MBL-2139
+                    currentPage,
                     params.sort() ?: DiscoveryParams.Sort.POPULAR
                 )
             }
         }
     }
 
-    private suspend fun emitCurrentState(isLoading: Boolean = false) {
+    private suspend fun emitCurrentState(isLoading: Boolean = false, hasMore: Boolean = true) {
         _searchUIState.emit(
             SearchUIState(
                 isLoading = isLoading,
                 popularProjectsList = popularProjectsList,
-                searchList = projectsList
+                searchList = projectsList,
+                hasMore = hasMore
             )
         )
     }

@@ -12,11 +12,14 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
@@ -122,6 +125,24 @@ class SearchAndFilterActivity : ComponentActivity() {
                         isTyping = false
                     } else {
                         isTyping = false
+                    }
+                }
+
+                // Load more when scroll to the end
+                val shouldLoadMore by remember {
+                    derivedStateOf {
+                        val layoutInfo = lazyListState.layoutInfo
+                        val totalItems = layoutInfo.totalItemsCount
+                        val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+                        lastVisibleItemIndex >= (totalItems - 5) && totalItems > 0
+                    }
+                }
+
+                val lifecycleOwner = LocalLifecycleOwner.current
+                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState) {
+                    if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                        viewModel.loadMore()
                     }
                 }
             }

@@ -288,12 +288,12 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch(dispatcher) {
             viewModel.provideErrorAction { errorNumber++ }
             viewModel.updateSearchTerm("")
-            viewModel.updateParamsToSearchWith()
+            viewModel.updateParamsToSearchWith(null, DiscoveryParams.Sort.MAGIC)
             viewModel.searchUIState.toList(searchState)
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
     }

@@ -49,9 +49,12 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.ProjectSort
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -125,7 +128,7 @@ enum class SearchScreenTestTag {
     LIST_VIEW,
     POPULAR_PROJECTS_TITLE,
     FEATURED_PROJECT_VIEW,
-    NORMAL_PROJECT_VIEW
+    NORMAL_PROJECT_VIEW,
 }
 
 enum class CardProjectState {
@@ -167,14 +170,11 @@ fun SearchScreen(
     categories: List<Category>,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: (Category?) -> Unit = {},
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit = { category, sort -> },
 ) {
     val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = Hidden,
-        skipHalfExpanded = true
-    )
+
     val coroutineScope = rememberCoroutineScope()
 
     val countApiIsReady = false // Hide all result counts until backend API is ready
@@ -187,35 +187,71 @@ fun SearchScreen(
     }
     val initialCategoryPillText = stringResource(R.string.fpo_category)
     var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
+    var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.POPULAR) }
+    var currentCategory by remember { mutableStateOf<Category?>(null) }
+
+    val activeBottomSheet = remember {
+        mutableStateOf<FilterRowPillType?>(null)
+    }
+
+    val categorySheetState = rememberModalBottomSheetState(
+        initialValue = Hidden,
+        skipHalfExpanded = true
+    )
+
+    val sortSheetState = rememberModalBottomSheetState(
+        initialValue = Hidden,
+        skipHalfExpanded = false
+    )
 
     ModalBottomSheetLayout(
-        sheetState = sheetState,
+        sheetState = if (activeBottomSheet.value == FilterRowPillType.CATEGORY) categorySheetState else sortSheetState,
         sheetContent = {
-            CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
-                onDismiss = {
-                    coroutineScope.launch { sheetState.hide() }
-                    onDismissBottomSheet.invoke(null)
-                },
-                categories = categories,
-                onApply = { selectedCategory ->
+            when (activeBottomSheet.value) {
+                FilterRowPillType.CATEGORY -> {
+                    CategorySelectionSheet( // Switch out for MultiCategorySelectionSheet when count API is ready
+                        currentCategory = currentCategory,
+                        onDismiss = {
+                            coroutineScope.launch { categorySheetState.hide() }
+                            onDismissBottomSheet.invoke(currentCategory, currentSort)
+                        },
+                        categories = categories,
+                        onApply = { selectedCategory ->
 
-                    categoryPillText.value = selectedCategory.name()
-                    coroutineScope.launch { sheetState.hide() }
+                            categoryPillText.value = selectedCategory.name()
+                            coroutineScope.launch { categorySheetState.hide() }
 
-                    if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
-                        onDismissBottomSheet.invoke(null)
-                        selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
-                    } else { // User applied valid filter
-                        onDismissBottomSheet.invoke(selectedCategory)
-                        if (countApiIsReady) {
-                            // Set selectedFilterCounts to actual count when count API is ready
-                        } else {
-                            selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 1
-                        }
-                    }
-                },
-                isLoading = false
-            )
+                            if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
+                                onDismissBottomSheet.invoke(null, currentSort)
+                                selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
+                                currentCategory = null
+                            } else { // User applied valid filter
+                                onDismissBottomSheet.invoke(selectedCategory, currentSort)
+                                currentCategory = selectedCategory
+                                if (countApiIsReady) {
+                                    // Set selectedFilterCounts to actual count when count API is ready
+                                } else {
+                                    selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 1
+                                }
+                            }
+                        },
+                        isLoading = false
+                    )
+                }
+
+                FilterRowPillType.SORT -> {
+                    SortSelectionBottomSheet(
+                        currentSelection = currentSort,
+                        sorts = ProjectSort.knownValues().toDiscoveryParamsList(),
+                        onDismiss = { sort ->
+                            currentSort = sort
+                            coroutineScope.launch { sortSheetState.hide() }
+                            onDismissBottomSheet.invoke(currentCategory, sort)
+                        },
+                    )
+                }
+                else -> {}
+            }
         },
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetBackgroundColor = colors.kds_white
@@ -248,12 +284,15 @@ fun SearchScreen(
                         },
                         selectedFilterCounts = selectedFilterCounts,
                         onSortPressed = {
-                            // Add logic here
+                            activeBottomSheet.value = FilterRowPillType.SORT
+                            coroutineScope.launch {
+                                sortSheetState.show()
+                            }
                         },
                         onCategoryPressed = {
-                            // Open bottom sheet
+                            activeBottomSheet.value = FilterRowPillType.CATEGORY
                             coroutineScope.launch {
-                                sheetState.show()
+                                categorySheetState.show()
                             }
                         }
                     )

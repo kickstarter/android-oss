@@ -31,9 +31,8 @@ import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.libs.utils.extensions.isTrue
-import com.kickstarter.libs.utils.extensions.toDiscoveryParam
 import com.kickstarter.models.Project
-import com.kickstarter.type.ProjectSort
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.search.SearchScreen
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
@@ -107,10 +106,10 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 startProjectActivity(projAndRef)
                             }
                         },
-                        onDismissBottomSheet = { category ->
+                        onDismissBottomSheet = { category, sort ->
                             viewModel.updateParamsToSearchWith(
                                 category,
-                                ProjectSort.MOST_FUNDED.toDiscoveryParam()
+                                sort ?: DiscoveryParams.Sort.POPULAR // popular is the default sort
                             )
                         }
                     )

@@ -106,5 +106,6 @@
 
   <!--Search and discover-->
   <string name="fpo_category" formatted="false">Category</string>
+  <string name="fpo_sort_by" formatted="false">Sort by</string>
 
 </resources>

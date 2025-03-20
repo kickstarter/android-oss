@@ -203,7 +203,7 @@ fun SimilarProjectsComponent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Similar projects",
+                text = stringResource(R.string.Similar_projects),
                 style = KSTheme.typographyV2.headingXL,
                 color = KSTheme.colors.kds_black
             )

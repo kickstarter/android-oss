@@ -54,7 +54,7 @@ class SearchAndFilterViewModel(
             )
 
     // - Popular projects sorting selection
-    private val firstLoadParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
+    private val firstLoadParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
 
     private val _params = MutableStateFlow(firstLoadParams)
     val params: StateFlow<DiscoveryParams> = _params
@@ -134,7 +134,7 @@ class SearchAndFilterViewModel(
                 analyticEvents.trackSearchResultPageViewed(
                     params,
                     1, // TODO: this will contain the page when pagination ready MBL-2139
-                    params.sort() ?: DiscoveryParams.Sort.POPULAR
+                    params.sort() ?: DiscoveryParams.Sort.MAGIC
                 )
             }
         }

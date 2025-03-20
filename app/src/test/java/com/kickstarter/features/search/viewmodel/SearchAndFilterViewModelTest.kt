@@ -30,7 +30,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for initial state will only have sorting parameter POPULAR and empty search term`() = runTest {
+    fun `test for initial state will only have sorting parameter MAGIC and empty search term`() = runTest {
 
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
@@ -57,7 +57,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertNull(params?.term())
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, projectList)
@@ -92,7 +92,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertNull(params?.term())
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, emptyList<Project>())
@@ -128,7 +128,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertEquals(params?.term(), "hello")
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, emptyList<Project>())
@@ -165,7 +165,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertEquals(params?.term(), "hello")
         assertEquals(searchState.size, 2)
 
@@ -207,7 +207,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-        assertEquals(params?.sort(), DiscoveryParams.Sort.POPULAR)
+        assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertNull(params?.term())
         assertEquals(searchState.size, 2)
 

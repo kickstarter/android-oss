@@ -101,7 +101,7 @@ class SearchActivity : ComponentActivity() {
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     scaffoldState = rememberScaffoldState(),
                     isLoading = isLoading,
-                    isPopularList = currentSearchTerm.isTrimmedEmpty(),
+                    isDefaultList = currentSearchTerm.isTrimmedEmpty(),
                     itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
                         popularProjects
                     } else {

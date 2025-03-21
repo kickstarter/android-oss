@@ -20,6 +20,7 @@ import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.type.CreditCardPaymentType
@@ -31,8 +32,10 @@ import com.stripe.android.model.ConfirmPaymentIntentParams
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,11 +45,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -64,7 +63,6 @@ data class LatePledgeCheckoutUIState(
     val isPledgeButtonEnabled: Boolean = true
 )
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var pledgeData: PledgeData? = null
@@ -135,38 +133,30 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     val paymentRequiresAction: SharedFlow<String>
         get() = mutablePaymentRequiresAction.asSharedFlow()
 
-    private val currentUser = requireNotNull(
-        environment.currentUserV2()?.loggedInUser()?.asFlow()
-    )
-
     private suspend fun loadUserInfo() {
-
-        val privacyAndCardsFlow = combine(
-            apolloClient.userPrivacy().asFlow(),
-            apolloClient.getStoredCards().asFlow()
-        ) { userPrivacy, cards ->
-            Pair(userPrivacy, cards)
-        }
-
-        currentUser
-            .filter {
-                it.isNotNull()
-            }
-            .distinctUntilChanged()
-            .flatMapConcat {
-                privacyAndCardsFlow
-            }
-            .onStart {
+        try {
+            coroutineScope {
                 emitCurrentState(isLoading = true)
-            }
-            .catch {
-                errorAction.invoke(null)
-            }
-            .collectLatest { privacyAndCards ->
-                userEmail = privacyAndCards.first.email
-                storedCards = privacyAndCards.second
+
+                val user = environment.currentUserV2()?.observable()?.asFlow()?.first()?.getValue()
+                user ?: return@coroutineScope
+
+                val privacy = async { apolloClient.userPrivacy().asFlow().first() }
+                val cards = async { apolloClient.getStoredCards().asFlow().first() }
+
+                // TODO: change to Pair?
+                val privacyAndCards = awaitAll(privacy, cards)
+
+                userEmail = (privacyAndCards[0] as UserPrivacy).email
+                @Suppress("UNCHECKED_CAST")
+                storedCards = privacyAndCards[1] as List<StoredCard>
                 emitCurrentState()
             }
+        } catch (t: Throwable) {
+            // report to Firebase?
+            errorAction.invoke(null)
+            emitCurrentState()
+        }
     }
 
     fun getCheckoutData() = checkoutData
@@ -245,10 +235,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 buttonEnabled = false
                 emitCurrentState(isLoading = true)
 
-                if (paymentIntent == null)
+                if (paymentIntent == null) {
                     createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
-
-                else {
+                } else {
                     paymentIntent?.let { pi ->
                         selectedCard?.let { card ->
                             validateCheckout(
@@ -545,7 +534,6 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             selectedRewards.add(pledgeData.reward())
             selectedRewards.addAll(addOns)
         }
-
         scope.launch(dispatcher) {
             loadUserInfo()
             createCheckout()

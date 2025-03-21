@@ -29,6 +29,7 @@ import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -152,8 +153,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        advanceUntilIdle()
-        assertEquals(state.size, 2)
+        assertEquals(state.size, 3)
         assertEquals(state.last().storeCards, emptyList<StoredCard>())
         assertEquals(state.last().userEmail, "")
     }
@@ -768,7 +768,6 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Test VM error when UserPrivacy or StoreCards requests fail will generate state without saved cards or user email`() = runTest {
-
         val currentUser = MockCurrentUserV2(UserFactory.user())
         setUpEnvironment(
             environment()
@@ -798,16 +797,19 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         var errorActionCount = 0
 
         val state = mutableListOf<LatePledgeCheckoutUIState>()
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
-
-        backgroundScope.launch(dispatcher) {
-            viewModel.provideScopeAndDispatcher(this, dispatcher)
-            viewModel.provideErrorAction {
-                errorActionCount++
-            }
-            viewModel.providePledgeData(pledgeData)
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(unconfinedDispatcher) {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
+
+        val standardDispatcher = StandardTestDispatcher(testScheduler)
+        viewModel.provideScopeAndDispatcher(this, standardDispatcher)
+        viewModel.provideErrorAction {
+            errorActionCount++
+        }
+        viewModel.providePledgeData(pledgeData)
+
+        advanceUntilIdle()
 
         assertEquals(state.size, 3)
         assertEquals(state.last().userEmail, "")

@@ -544,8 +544,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             selectedRewards.addAll(addOns)
         }
         scope.launch(dispatcher) {
-                loadUserInfo()
-                createCheckout()
+            loadUserInfo()
+            createCheckout()
         }
     }
 

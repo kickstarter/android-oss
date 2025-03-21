@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.annotation.SuppressLint
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -33,8 +32,6 @@ import com.stripe.android.model.ConfirmPaymentIntentParams
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -66,7 +63,6 @@ data class LatePledgeCheckoutUIState(
     val isPledgeButtonEnabled: Boolean = true
 )
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
     private var pledgeData: PledgeData? = null
@@ -137,16 +133,14 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     val paymentRequiresAction: SharedFlow<String>
         get() = mutablePaymentRequiresAction.asSharedFlow()
 
-    private suspend fun loadUserInfo() =
+    private suspend fun loadUserInfo() {
         try {
             coroutineScope {
                 emitCurrentState(isLoading = true)
 
-                @OptIn(FlowPreview::class)
-                val user = environment.currentUserV2()?.observable()?.asFlow()?.first()
-                user?.getValue() ?: return@coroutineScope
+                val user = environment.currentUserV2()?.observable()?.asFlow()?.first()?.getValue()
+                user ?: return@coroutineScope
 
-                // `userPrivacy()` should be migrated to a suspending function
                 val privacy = async { apolloClient.userPrivacy().asFlow().first() }
                 val cards = async { apolloClient.getStoredCards().asFlow().first() }
 
@@ -158,16 +152,16 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 storedCards = privacyAndCards[1] as List<StoredCard>
                 emitCurrentState()
             }
-        } catch (e: Exception) {
-            // log `e`
+        } catch (t: Throwable) {
+            // report to Firebase?
             errorAction.invoke(null)
             emitCurrentState()
         }
+    }
 
     fun getCheckoutData() = checkoutData
     fun getPledgeData() = pledgeData
 
-    @SuppressLint("LogNotTimber")
     fun provideCheckoutIdAndBacking(checkoutId: Long, backing: Backing) {
         this.checkoutId = checkoutId.toString()
         this.backing = backing
@@ -230,15 +224,14 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.collect()
     }
 
-    @SuppressLint("LogNotTimber")
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
-
         // - Avoid launching any other coroutine call while previous coroutine active
         if (pledgeButtonClickedJob?.isActive.isTrue()) return
 
         this.pledgeData?.let {
             pledgeButtonClickedJob = viewModelScope.launch(dispatcher) {
                 val project = it.projectData().project()
+
                 buttonEnabled = false
                 emitCurrentState(isLoading = true)
 
@@ -478,7 +471,6 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    @SuppressLint("LogNotTimber")
     private fun createCheckout() {
         this.pledgeData?.let { pData ->
             val locationId = if (!RewardUtils.isNoReward(pData.reward())) pData.locationId() else null
@@ -534,7 +526,6 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.dispatcher = dispatcher
     }
 
-    @SuppressLint("LogNotTimber")
     fun providePledgeData(pledgeData: PledgeData) {
         this.pledgeData = pledgeData
         this.checkoutData = createCheckoutData(pledgeData.shippingCostIfShipping(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())

@@ -91,6 +91,7 @@ fun SimilarProjectCardPreview() {
 @Composable
 fun SimilarProjectCard(
     project: Project,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -99,7 +100,7 @@ fun SimilarProjectCard(
     val fundedString = stringResource(R.string.discovery_baseball_card_stats_funded)
 
     KSProjectCardLarge(
-        modifier = Modifier,
+        modifier = modifier,
         photo = project.photo(),
         title = project.name(),
         titleMinMaxLines = 2..2,
@@ -190,6 +191,9 @@ fun SimilarProjectsComponent(
 ) {
     val projects = uiState.value.data
 
+    // Will use `isLoading` & `error` when necessary, but this is the simple truth right now
+    val showPlaceholder = projects.isNullOrEmpty()
+
     val pagerState = rememberPagerState { projects?.size ?: 0 }
 
     Column {
@@ -209,7 +213,7 @@ fun SimilarProjectsComponent(
             )
             Row(
                 Modifier
-                    .weight(1f, true)
+                    .weight(1f)
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.End
             ) {
@@ -233,22 +237,24 @@ fun SimilarProjectsComponent(
                 .height(12.dp)
         )
         Box(
-            modifier = Modifier,
             contentAlignment = Alignment.Center
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .absolutePadding(18.dp, 0.dp, 24.dp, 0.dp)
-                    .alpha(0f)
+                    .alpha(if (showPlaceholder) 1f else 0f)
                     .clickable(false) {},
                 contentAlignment = Alignment.Center
             ) {
-                SimilarProjectCard(placeholderProject)
+                SimilarProjectPlaceholderCard {
+                    SimilarProjectCard(placeholderProject)
+                }
             }
             HorizontalPager(
                 state = pagerState,
                 contentPadding = PaddingValues.Absolute(18.dp, 0.dp, 24.dp, 0.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 pageSpacing = 12.dp,
                 modifier = Modifier.pointerInput(Unit) {
                     detectTouch { touching ->
@@ -265,8 +271,7 @@ fun SimilarProjectsComponent(
             }
         }
         Spacer(
-            modifier = Modifier
-                .height(24.dp)
+            modifier = Modifier.height(24.dp)
         )
     }
 }

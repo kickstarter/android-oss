@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import android.annotation.SuppressLint
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.mutations.CreateCheckoutData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.type.CreditCardPaymentType
@@ -32,7 +34,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,11 +48,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -135,43 +137,37 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     val paymentRequiresAction: SharedFlow<String>
         get() = mutablePaymentRequiresAction.asSharedFlow()
 
-    private val currentUser = requireNotNull(
-        environment.currentUserV2()?.loggedInUser()?.asFlow()
-    )
-
-    private suspend fun loadUserInfo() {
-
-        val privacyAndCardsFlow = combine(
-            apolloClient.userPrivacy().asFlow(),
-            apolloClient.getStoredCards().asFlow()
-        ) { userPrivacy, cards ->
-            Pair(userPrivacy, cards)
-        }
-
-        currentUser
-            .filter {
-                it.isNotNull()
-            }
-            .distinctUntilChanged()
-            .flatMapConcat {
-                privacyAndCardsFlow
-            }
-            .onStart {
+    private suspend fun loadUserInfo() =
+        try {
+            coroutineScope {
                 emitCurrentState(isLoading = true)
-            }
-            .catch {
-                errorAction.invoke(null)
-            }
-            .collectLatest { privacyAndCards ->
-                userEmail = privacyAndCards.first.email
-                storedCards = privacyAndCards.second
+
+                @OptIn(FlowPreview::class)
+                val user = environment.currentUserV2()?.observable()?.asFlow()?.first()
+                user?.getValue() ?: return@coroutineScope
+
+                // `userPrivacy()` should be migrated to a suspending function
+                val privacy = async { apolloClient.userPrivacy().asFlow().first() }
+                val cards = async { apolloClient.getStoredCards().asFlow().first() }
+
+                // TODO: change to Pair?
+                val privacyAndCards = awaitAll(privacy, cards)
+
+                userEmail = (privacyAndCards[0] as UserPrivacy).email
+                @Suppress("UNCHECKED_CAST")
+                storedCards = privacyAndCards[1] as List<StoredCard>
                 emitCurrentState()
             }
-    }
+        } catch (e: Exception) {
+            // log `e`
+            errorAction.invoke(null)
+            emitCurrentState()
+        }
 
     fun getCheckoutData() = checkoutData
     fun getPledgeData() = pledgeData
 
+    @SuppressLint("LogNotTimber")
     fun provideCheckoutIdAndBacking(checkoutId: Long, backing: Backing) {
         this.checkoutId = checkoutId.toString()
         this.backing = backing
@@ -234,21 +230,21 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.collect()
     }
 
+    @SuppressLint("LogNotTimber")
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
+
         // - Avoid launching any other coroutine call while previous coroutine active
         if (pledgeButtonClickedJob?.isActive.isTrue()) return
 
         this.pledgeData?.let {
             pledgeButtonClickedJob = viewModelScope.launch(dispatcher) {
                 val project = it.projectData().project()
-
                 buttonEnabled = false
                 emitCurrentState(isLoading = true)
 
-                if (paymentIntent == null)
+                if (paymentIntent == null) {
                     createPaymentIntentForCheckout(selectedCard, project, it.checkoutTotalAmount())
-
-                else {
+                } else {
                     paymentIntent?.let { pi ->
                         selectedCard?.let { card ->
                             validateCheckout(
@@ -482,6 +478,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    @SuppressLint("LogNotTimber")
     private fun createCheckout() {
         this.pledgeData?.let { pData ->
             val locationId = if (!RewardUtils.isNoReward(pData.reward())) pData.locationId() else null
@@ -537,6 +534,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         this.dispatcher = dispatcher
     }
 
+    @SuppressLint("LogNotTimber")
     fun providePledgeData(pledgeData: PledgeData) {
         this.pledgeData = pledgeData
         this.checkoutData = createCheckoutData(pledgeData.shippingCostIfShipping(), pledgeData.pledgeAmountTotal(), pledgeData.bonusAmount())
@@ -545,10 +543,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             selectedRewards.add(pledgeData.reward())
             selectedRewards.addAll(addOns)
         }
-
         scope.launch(dispatcher) {
-            loadUserInfo()
-            createCheckout()
+                loadUserInfo()
+                createCheckout()
         }
     }
 

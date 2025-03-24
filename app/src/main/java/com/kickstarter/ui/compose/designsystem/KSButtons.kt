@@ -1,6 +1,7 @@
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
+import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -550,13 +551,16 @@ fun KSOutlinedButton(
     onClickAction: () -> Unit,
     backgroundColor: Color,
     text: String,
-    textColor: Color = colors.textAccentGrey
-) {
+    textColor: Color = colors.textAccentGrey,
+    isEnabled: Boolean = true,
+    ) {
     OutlinedButton(
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
             contentColor = textColor
         ),
+        enabled = isEnabled,
         border = BorderStroke(dimensions.borderThickness, colors.borderBold),
         onClick = { onClickAction.invoke() }
     ) {
@@ -578,6 +582,7 @@ fun KSButton(
     text: String,
     textStyle: TextStyle = typographyV2.body,
     textColor: Color,
+    shape: RoundedCornerShape? = null,
 ) {
     Button(
         modifier = modifier
@@ -590,7 +595,7 @@ fun KSButton(
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
         enabled = isEnabled,
-        shape = shapes.medium
+        shape = shape ?: shapes.medium
     ) {
         leadingIcon()
 

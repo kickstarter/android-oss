@@ -34,20 +34,17 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSButton
-import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -166,7 +163,7 @@ fun CategorySelectionSheet(
                         val resetCategoryName = stringResource(R.string.fpo_category)
                         KSOutlinedButton(
                             modifier = Modifier
-                                    .defaultMinSize(minHeight = dimensions.minButtonHeight),
+                                .defaultMinSize(minHeight = dimensions.minButtonHeight),
                             backgroundColor = colors.backgroundSurfacePrimary,
                             textColor = colors.textPrimary,
                             onClickAction = {

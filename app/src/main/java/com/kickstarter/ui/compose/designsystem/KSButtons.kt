@@ -1,7 +1,6 @@
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
-import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -553,7 +552,7 @@ fun KSOutlinedButton(
     text: String,
     textColor: Color = colors.textAccentGrey,
     isEnabled: Boolean = true,
-    ) {
+) {
     OutlinedButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(

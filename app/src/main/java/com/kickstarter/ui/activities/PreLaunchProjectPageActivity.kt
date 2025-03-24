@@ -8,14 +8,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.ui.platform.LocalContext
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreen
@@ -23,6 +28,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
+import com.kickstarter.viewmodels.projectpage.SimilarProjectsViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -31,6 +37,8 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
 
     private lateinit var viewModelFactory: PrelaunchProjectViewModel.Factory
     private val viewModel: PrelaunchProjectViewModel.PrelaunchProjectViewModel by viewModels { viewModelFactory }
+    private lateinit var similarProjectsViewModelFactory: SimilarProjectsViewModel.Factory
+    private val similarProjectsViewModel: SimilarProjectsViewModel by viewModels { similarProjectsViewModelFactory }
     private val compositeDisposable = CompositeDisposable()
     private var ksString: KSString? = null
 
@@ -48,6 +56,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = PrelaunchProjectViewModel.Factory(env)
+            similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
@@ -70,10 +79,19 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                     isSystemInDarkTheme() // Force dark mode uses system theme
                 } else false
             ) {
+                val context = LocalContext.current
                 val projectState = viewModel.project().subscribeAsState(initial = null)
+                val similarProjectsState = similarProjectsViewModel.similarProjectsUiState.collectAsState()
+
+                LaunchedEffect(projectState.value) {
+                    projectState.value?.let {
+                        similarProjectsViewModel.provideProject(it)
+                    }
+                }
 
                 PreLaunchProjectPageScreen(
                     projectState = projectState,
+                    similarProjectsState = similarProjectsState,
                     leftOnClickAction = { finish() },
                     rightOnClickAction = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
@@ -83,13 +101,22 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                     onButtonClicked = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
                     },
-                    numberOfFollowers =
-                    viewModel.environment.ksString()?.format(
+                    numberOfFollowers = viewModel.environment.ksString()?.format(
                         getString(R.string.activity_followers),
                         "number_of_followers",
                         projectState.value?.watchesCount()?.toString()
-                    )
-
+                    ),
+                    onSimilarProjectClick = { project ->
+                        /* Same logic as in `ProjectOverviewFragment`. */
+                        /* Currently, the VM only fetches Live Projects. If the VM's API call is
+                         * is updated to include Pre-launch Projects, update this handler to check
+                         * `Project.displayPrelaunch` and start `PreLaunchProjectPageActivity`. */
+                        val intent = Intent().getProjectIntent(context).apply {
+                            putExtra(IntentKey.PROJECT_PARAM, project.slug())
+                            putExtra(IntentKey.REF_TAG, RefTag.similarProjects())
+                        }
+                        startActivity(intent)
+                    }
                 )
             }
         }

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities.compose
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,10 +54,12 @@ import com.kickstarter.ui.compose.TextWithKdsSupport700Bg
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KsButton
+import com.kickstarter.ui.fragments.projectpage.ui.SimilarProjectsComponent
 import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import com.kickstarter.ui.views.compose.KsCreatorLayout
+import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -65,7 +68,8 @@ fun PreLaunchProjectPageScreenPreview() {
     KSTheme {
         val project = ProjectFactory.backedProject()
         val projectState = remember { mutableStateOf(null) }
-        PreLaunchProjectPageScreen(projectState)
+        val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+        PreLaunchProjectPageScreen(projectState, similarProjectsState)
     }
 }
 
@@ -85,11 +89,13 @@ enum class PreLaunchProjectPageScreenTestTag() {
 @Composable
 fun PreLaunchProjectPageScreen(
     projectState: State<Project?>,
+    similarProjectsState: State<SimilarProjectsUiState>,
     leftOnClickAction: () -> Unit = {},
     rightOnClickAction: () -> Unit = {},
     middleRightClickAction: () -> Unit = {},
     onCreatorLayoutClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {},
+    onSimilarProjectClick: (Project) -> Unit = {},
     numberOfFollowers: String? = null
 ) {
     val project = projectState.value
@@ -132,7 +138,7 @@ fun PreLaunchProjectPageScreen(
             ) {
                 val (
                     projectImage, comingSoonBadge, projectName, creatorLayout,
-                    projectDescription, category, location
+                    projectDescription, category, location, similarProjects
                 ) = createRefs()
 
                 ProjectImageFromURl(
@@ -233,6 +239,31 @@ fun PreLaunchProjectPageScreen(
                                 bottom.linkTo(category.bottom)
                             }
                             .padding(end = screenPadding)
+                    )
+                }
+
+                val spcAnchor = when {
+                    project?.location()?.name() != null -> location
+                    project?.category()?.name() != null -> category
+                    project?.blurb() != null -> projectDescription
+                    else -> creatorLayout
+                }
+
+                val spcMarginTop = dimensionResource(id = R.dimen.grid_3)
+                val spcMarginBottom = dimensionResource(id = R.dimen.grid_27)
+
+                Box(
+                    modifier = Modifier
+                        .constrainAs(similarProjects) {
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            top.linkTo(spcAnchor.bottom, spcMarginTop)
+                        }
+                        .padding(bottom = spcMarginBottom)
+                ) {
+                    SimilarProjectsComponent(
+                        uiState = similarProjectsState,
+                        onClick = onSimilarProjectClick
                     )
                 }
             }

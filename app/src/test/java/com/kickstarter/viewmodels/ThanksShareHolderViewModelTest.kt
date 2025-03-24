@@ -32,8 +32,6 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
             .addToDisposable(disposables)
         vm.outputs.startShareOnTwitter().subscribe { startShareOnTwitter.onNext(it) }
             .addToDisposable(disposables)
-        vm.outputs.postCampaignPledgeText().subscribe { postCampaignText.onNext(it) }
-            .addToDisposable(disposables)
     }
 
     @Test
@@ -108,10 +106,13 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowLatePledges_whenTrue_ShowLatePledgeFlow() {
+    fun testShowLatePledges_whenTrue_ShowsProjectName() {
         setUpEnvironment()
 
-        val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(true).postCampaignPledgingEnabled(true).build()
+        val project = setUpProjectWithWebUrls().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
         val checkoutData = CheckoutDataFactory.checkoutData(
             3L,
             20.0,
@@ -119,40 +120,7 @@ class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
         )
         vm.configureWith(Pair(project, checkoutData))
 
-        postCampaignText.assertValue(Pair(checkoutData.amount(), project))
-        projectName.assertNoValues()
-    }
-
-    @Test
-    fun testShowLatePledges_whenFalse_noEmission() {
-        setUpEnvironment()
-
-        val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(false).postCampaignPledgingEnabled(false).build()
-        val checkoutData = CheckoutDataFactory.checkoutData(
-            3L,
-            20.0,
-            30.0
-        )
-        vm.configureWith(Pair(project, checkoutData))
-
-        postCampaignText.assertNoValues()
-        projectName.assertValue(project.name())
-    }
-
-    @Test
-    fun testShowLatePledges_whenNull_noEmission() {
-        setUpEnvironment()
-
-        val project = setUpProjectWithWebUrls().toBuilder().isInPostCampaignPledgingPhase(null).postCampaignPledgingEnabled(null).build()
-        val checkoutData = CheckoutDataFactory.checkoutData(
-            3L,
-            20.0,
-            30.0
-        )
-        vm.configureWith(Pair(project, checkoutData))
-
-        postCampaignText.assertNoValues()
-        projectName.assertValue(project.name())
+        projectName.assertValues(project.name())
     }
 
     private fun setUpProjectWithWebUrls(): Project {

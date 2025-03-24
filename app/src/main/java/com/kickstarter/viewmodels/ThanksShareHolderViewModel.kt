@@ -8,8 +8,6 @@ import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.libs.utils.extensions.isFalse
-import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.CheckoutData
 import io.reactivex.Observable
@@ -46,8 +44,6 @@ interface ThanksShareHolderViewModel {
 
         /** Emits the project name and url to share using Twitter.  */
         fun startShareOnTwitter(): Observable<Pair<String, String>>
-
-        fun postCampaignPledgeText(): Observable<Pair<Double, Project>>
     }
 
     class ThanksShareViewHolderViewModel(environment: Environment) : Inputs, Outputs {
@@ -61,7 +57,6 @@ interface ThanksShareHolderViewModel {
         private val startShare = PublishSubject.create<Pair<String, String>>()
         private val startShareOnFacebook = PublishSubject.create<Pair<Project, String>>()
         private val startShareOnTwitter = PublishSubject.create<Pair<String, String>>()
-        private val postCampaignText = PublishSubject.create<Pair<Double, Project>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -69,54 +64,30 @@ interface ThanksShareHolderViewModel {
         private var disposables = CompositeDisposable()
 
         init {
+            // Emit project and project name whenever configuration happens
             thanksShareData
                 .map { it.first }
+                .doOnNext { projectName.onNext(it.name()) }
                 .subscribe { project.onNext(it) }
                 .addToDisposable(disposables)
 
-            thanksShareData
-                .filter { it.first.isInPostCampaignPledgingPhase().isFalse() }
-                .filter { it.first.postCampaignPledgingEnabled().isFalse() }
-                .map { it.first.name() }
-                .subscribe { projectName.onNext(it) }
-                .addToDisposable(disposables)
-
-            thanksShareData
-                .filter { it.first.isInPostCampaignPledgingPhase().isTrue() }
-                .filter { it.first.postCampaignPledgingEnabled().isTrue() }
-                .subscribe {
-                    postCampaignText.onNext(Pair(it.second.amount(), it.first))
-                }
-                .addToDisposable(disposables)
+            // Share via default Android share
             project
-                .map {
-                    Pair.create(
-                        it.name(),
-                        appendRefTag(it.webProjectUrl(), thanksShare().tag())
-                    )
-                }
+                .map { Pair.create(it.name(), appendRefTag(it.webProjectUrl(), thanksShare().tag())) }
                 .compose(Transformers.takeWhenV2(shareClick))
                 .subscribe { startShare.onNext(it) }
                 .addToDisposable(disposables)
 
+            // Share on Facebook
             project
-                .map {
-                    Pair.create(
-                        it,
-                        appendRefTag(it.webProjectUrl(), thanksFacebookShare().tag())
-                    )
-                }
+                .map { Pair.create(it, appendRefTag(it.webProjectUrl(), thanksFacebookShare().tag())) }
                 .compose(Transformers.takeWhenV2(shareOnFacebookClick))
                 .subscribe { startShareOnFacebook.onNext(it) }
                 .addToDisposable(disposables)
 
+            // Share on Twitter
             project
-                .map {
-                    Pair.create(
-                        it.name(),
-                        appendRefTag(it.webProjectUrl(), thanksTwitterShare().tag())
-                    )
-                }
+                .map { Pair.create(it.name(), appendRefTag(it.webProjectUrl(), thanksTwitterShare().tag())) }
                 .compose(Transformers.takeWhenV2(shareOnTwitterClick))
                 .subscribe { startShareOnTwitter.onNext(it) }
                 .addToDisposable(disposables)
@@ -143,7 +114,6 @@ interface ThanksShareHolderViewModel {
         override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
         override fun projectName(): Observable<String> = projectName
 
-        override fun postCampaignPledgeText(): Observable<Pair<Double, Project>> = postCampaignText
         override fun onCleared() {
             disposables.clear()
         }

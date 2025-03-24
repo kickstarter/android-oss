@@ -117,7 +117,7 @@ Unterstützer</string>
   <string name="Card_ending_in_last_four" formatted="false">Kartennummer endet auf %{last_four}</string>
   <string name="Card_number" formatted="false">Kartennummer</string>
   <string name="Cardholder_name" formatted="false">Name des Karteninhabers</string>
-  <string name="Category" formatted="false">Category</string>
+  <string name="Category" formatted="false">Kategorie</string>
   <string name="Change_currency" formatted="false">Währung ändern</string>
   <string name="Change_email" formatted="false">E-Mail-Adresse ändern</string>
   <string name="Change_password" formatted="false">Passwort ändern</string>
@@ -237,7 +237,7 @@ Antippen und erneut versuchen</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">E-Mail-Adresse muss gültig sein.</string>
   <string name="Email_notifications" formatted="false">Benachrichtigung per E-Mail</string>
   <string name="Email_unverified" formatted="false">Diese E-Mail-Adresse wurde noch nicht verifiziert.</string>
-  <string name="End_date" formatted="false">End date</string>
+  <string name="End_date" formatted="false">Enddatum</string>
   <string name="Ended" formatted="false">Beendet</string>
   <string name="Ending_in_last_four" formatted="false">Endet auf %{last_four}</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
@@ -435,18 +435,18 @@ Antippen und erneut versuchen</string>
   <string name="Messages" formatted="false">Nachrichten</string>
   <string name="Million_plus" formatted="false">Über %{total_amount} Millionen</string>
   <string name="More_than_number_of_items_items" formatted="false">Mehr als %{number_of_items} Benachrichtigungen</string>
-  <string name="Most_backed" formatted="false">Most backed</string>
-  <string name="Most_funded" formatted="false">Most funded</string>
+  <string name="Most_backed" formatted="false">Meist unterstüzt</string>
+  <string name="Most_funded" formatted="false">Meist finanziert</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">Mit meinem Projekt soll KI-Technologie finanziert werden.</string>
   <string name="Name" formatted="false">Name</string>
-  <string name="Near_me" formatted="false">Near me</string>
+  <string name="Near_me" formatted="false">In meiner Nähe</string>
   <string name="Never" formatted="false">Niemals</string>
   <string name="New_email" formatted="false">Neue E-Mail</string>
   <string name="New_password" formatted="false">Neues Passwort</string>
   <string name="New_payment_method" formatted="false">Neue Zahlungsmethode</string>
   <string name="New_pledge_activity" formatted="false">Neue Finanzierungsbeiträge</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Neue Arbeiten und großartige Ideen von etablierten und neuen Künstlern.</string>
-  <string name="Newest" formatted="false">Newest</string>
+  <string name="Newest" formatted="false">Neueste</string>
   <string name="News_and_projects" formatted="false">Neuheiten und Projekte</string>
   <string name="News_events" formatted="false">Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.</string>
   <string name="Newsletters" formatted="false">Newsletter</string>
@@ -526,7 +526,7 @@ Antippen und erneut versuchen</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Beitrag geleistet&lt;/b> am %{pledge_date}</string>
   <string name="Popular" formatted="false">Beliebt</string>
   <string name="Popular_Projects" formatted="false">Beliebte Projekte</string>
-  <string name="Popularity" formatted="false">Popularity</string>
+  <string name="Popularity" formatted="false">Nach Beliebtheit</string>
   <string name="Post" formatted="false">Posten</string>
   <string name="Postal_code" formatted="false">Postleitzahl</string>
   <string name="Postcode" formatted="false">Postleitzahl</string>
@@ -592,7 +592,7 @@ Antippen und erneut versuchen</string>
   <string name="Request_my_personal_data" formatted="false">Meine persönlichen Daten anfordern</string>
   <string name="Resend_email" formatted="false">Erneut senden</string>
   <string name="Resend_verification_email" formatted="false">Verifizierungs-E-Mail erneut senden</string>
-  <string name="Reset_filters" formatted="false">Reset</string>
+  <string name="Reset_filters" formatted="false">Zurücksetzen</string>
   <string name="Reset_your_password" formatted="false">Passwort zurücksetzen</string>
   <string name="Retry" formatted="false">Erneut versuchen</string>
   <string name="Retry_or_select_another_method" formatted="false">Versuche es erneut oder wähle eine andere Karte.</string>
@@ -637,7 +637,7 @@ Antippen und erneut versuchen</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
   <string name="See_our_suggestions" formatted="false">Unsere Empfehlungen ansehen ▸</string>
   <string name="See_our_terms_of_use" formatted="false">Weitere Informationen findest du in unseren Nutzungsbedingungen</string>
-  <string name="See_results" formatted="false">See results</string>
+  <string name="See_results" formatted="false">Ergebnisse ansehen</string>
   <string name="See_rewards" formatted="false">Belohnungen ansehen</string>
   <string name="See_the_rewards" formatted="false">Belohnungen einblenden</string>
   <string name="Select" formatted="false">Auswählen</string>
@@ -695,7 +695,7 @@ Antippen und erneut versuchen</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Da hat etwas nicht geklappt, bitte nach unten streichen.</string>
   <string name="Something_went_wrong_pull_to_refresh_no_period" formatted="false">Da hat etwas nicht geklappt – ziehe, um die Seite zu aktualisieren</string>
-  <string name="Sort_by" formatted="false">Sort by</string>
+  <string name="Sort_by" formatted="false">Sortieren nach</string>
   <string name="Spam" formatted="false">Spam</string>
   <string name="Start_the_request" formatted="false">Daten zusammenstellen</string>
   <string name="Starting_soon" formatted="false">Beginnt in Kürze</string>
@@ -880,6 +880,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">Die erste Rate wird 24 Stunden nach erfolgreichem Ende des Projekts eingezogen. Die weiteren Raten werden alle 2 Wochen eingezogen, bis der Finanzierungsbeitrag komplett bezahlt wurde. Wenn du dich für diese Option entscheidest, kannst du keine weiteren Änderungen an deinem Beitrag vornehmen.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Wenn du diese Seite verlässt, wird dein Kommentar gelöscht.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">Dein Finanzierungsbeitrag wird nur abgebucht, wenn das Projekt sein Finanzierungsziel erreichte.</string>
+  <string name="Youll_be_the_first_to_receive_project_launch" formatted="false">Du gehörst dann zu den Ersten, die E-Mails zur Projektveröffentlichung und Updates des Projektgründers erhalten.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Deine Chat-Nachricht konnte leider nicht gesendet werden.</string>
   <string name="Your_comment_wasnt_posted" formatted="false">Dein Kommentar wurde nicht gepostet</string>

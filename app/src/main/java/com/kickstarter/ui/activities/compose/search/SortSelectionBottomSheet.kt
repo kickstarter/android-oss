@@ -75,7 +75,7 @@ fun SortSelectionBottomSheet(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.fpo_sort_by),
+                text = stringResource(R.string.Sort_by),
                 style = KSTheme.typographyV2.headingXL,
                 modifier = Modifier.weight(1f)
             )
@@ -146,11 +146,11 @@ fun getSortString(sort: DiscoveryParams.Sort): Int? {
     // omit distance until api is ready
     return when (sort) {
         DiscoveryParams.Sort.MAGIC -> R.string.Recommended
-        DiscoveryParams.Sort.POPULAR -> R.string.discovery_sort_types_popularity
-        DiscoveryParams.Sort.NEWEST -> R.string.discovery_sort_types_newest
-        DiscoveryParams.Sort.ENDING_SOON -> R.string.discovery_sort_types_end_date
-        DiscoveryParams.Sort.MOST_FUNDED -> R.string.discovery_sort_types_most_funded
-        DiscoveryParams.Sort.MOST_BACKED -> R.string.discovery_sort_types_most_backed
+        DiscoveryParams.Sort.POPULAR -> R.string.Popularity
+        DiscoveryParams.Sort.NEWEST -> R.string.Newest
+        DiscoveryParams.Sort.ENDING_SOON -> R.string.Ending_soon
+        DiscoveryParams.Sort.MOST_FUNDED -> R.string.Most_funded
+        DiscoveryParams.Sort.MOST_BACKED -> R.string.Most_backed
         else -> null
     }
 }

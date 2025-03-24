@@ -65,7 +65,7 @@ fun SearchTopBarPreview() {
 fun SearchTopBar(
     modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
-    categoryPillText: String = stringResource(R.string.fpo_category),
+    categoryPillText: String = stringResource(R.string.Category),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -175,7 +175,7 @@ fun SearchTopBar(
 @Composable
 fun PillBar(
     countApiIsReady: Boolean = false,
-    categoryPillText: String = stringResource(R.string.fpo_category),
+    categoryPillText: String = stringResource(R.string.Category),
     selectedFilterCounts: Map<String, Int>,
     onSortPressed: () -> Unit,
     onCategoryPressed: () -> Unit,

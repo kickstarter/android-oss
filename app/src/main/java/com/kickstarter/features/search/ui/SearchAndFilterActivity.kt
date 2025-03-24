@@ -68,6 +68,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                 val popularProjects = searchUIState.popularProjectsList
                 val searchedProjects = searchUIState.searchList
                 val isLoading = searchUIState.isLoading
+                val hasMorePages = searchUIState.hasMore
 
                 val categoriesState by filterMenuViewModel.filterMenuUIState.collectAsStateWithLifecycle()
                 val categories = categoriesState.categoriesList
@@ -125,8 +126,8 @@ class SearchAndFilterActivity : ComponentActivity() {
                 }
 
                 val lifecycleOwner = LocalLifecycleOwner.current
-                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState, isLoading) {
-                    if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !isLoading) {
+                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState, isLoading, hasMorePages) {
+                    if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !isLoading && hasMorePages) {
                         viewModel.loadMore()
                     }
                 }

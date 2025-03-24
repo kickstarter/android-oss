@@ -156,7 +156,7 @@ class SearchAndFilterViewModel(
                 if (params.term()?.isNotBlank().isTrue()) projectsList.addAll(it)
 
                 val totalCount = searchEnvelopeResult.getOrNull()?.totalCount ?: 0
-
+                Timber.d("${this.javaClass} totalCount: $totalCount")
                 Timber.d("${this.javaClass} popularProjectsList: ${popularProjectsList.size}")
                 Timber.d("${this.javaClass} projectsList: ${projectsList.size}")
 

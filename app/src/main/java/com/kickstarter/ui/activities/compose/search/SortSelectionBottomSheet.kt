@@ -65,7 +65,7 @@ fun SortSelectionBottomSheet(
     Column(
         modifier = Modifier
             .background(color = colors.backgroundSurfacePrimary)
-            .padding(start = dimensions.paddingLarge, end = dimensions.paddingSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
+            .padding(start = dimensions.paddingLarge, end = dimensions.paddingMediumSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
             .navigationBarsPadding()
             .fillMaxWidth(),
     ) {

@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
@@ -45,6 +46,7 @@ import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 
 @Composable
@@ -182,6 +184,7 @@ fun CategorySelectionSheet(
                             },
                             shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
                             text = "See results",
+                            textStyle = typographyV2.buttonLabel,
                             isEnabled = !isLoading,
                         )
                     }

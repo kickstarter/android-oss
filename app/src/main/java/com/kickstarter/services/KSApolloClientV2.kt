@@ -1864,7 +1864,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 responseData.projects?.pageInfo?.pageInfo?.let {
                     createPageInfoObject(it)
                 }
-            SearchEnvelope(projects, pageInfoEnvelope)
+            val totalCount = responseData.projects?.totalCount ?: 0
+            SearchEnvelope(projects, pageInfoEnvelope, totalCount)
         } ?: SearchEnvelope()
     }
 

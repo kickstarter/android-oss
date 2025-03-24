@@ -125,8 +125,8 @@ class SearchAndFilterActivity : ComponentActivity() {
                 }
 
                 val lifecycleOwner = LocalLifecycleOwner.current
-                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState) {
-                    if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState, isLoading) {
+                    if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !isLoading) {
                         viewModel.loadMore()
                     }
                 }

@@ -115,7 +115,7 @@
   <string name="Card_ending_in_last_four" formatted="false">下4桁が %{last_four} のカード</string>
   <string name="Card_number" formatted="false">カード番号</string>
   <string name="Cardholder_name" formatted="false">カード名義</string>
-  <string name="Category" formatted="false">Category</string>
+  <string name="Category" formatted="false">カテゴリー選択</string>
   <string name="Change_currency" formatted="false">通貨の変更</string>
   <string name="Change_email" formatted="false">メールアドレスを変更</string>
   <string name="Change_password" formatted="false">パスワードを変更</string>
@@ -235,7 +235,7 @@
   <string name="Email_must_be_a_valid_email_address" formatted="false">有効なメールアドレスを入力してください。</string>
   <string name="Email_notifications" formatted="false">メール通知設定</string>
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
-  <string name="End_date" formatted="false">End date</string>
+  <string name="End_date" formatted="false">終了日</string>
   <string name="Ended" formatted="false">終了</string>
   <string name="Ending_in_last_four" formatted="false">下の桁が%{last_four} の番号</string>
   <string name="Ending_soon" formatted="false">まもなく終了</string>
@@ -433,18 +433,18 @@
   <string name="Messages" formatted="false">メッセージ</string>
   <string name="Million_plus" formatted="false">%{total_amount},000,000 以上</string>
   <string name="More_than_number_of_items_items" formatted="false">%{number_of_items} 件以上のアイテム</string>
-  <string name="Most_backed" formatted="false">Most backed</string>
-  <string name="Most_funded" formatted="false">Most funded</string>
+  <string name="Most_backed" formatted="false">バッカー数</string>
+  <string name="Most_funded" formatted="false">達成額</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">私のプロジェクトの目的は、AI テクノロジーのための資金調達です。</string>
   <string name="Name" formatted="false">名前</string>
-  <string name="Near_me" formatted="false">Near me</string>
+  <string name="Near_me" formatted="false">近辺</string>
   <string name="Never" formatted="false">通知を受けない</string>
   <string name="New_email" formatted="false">新しいメールアドレス</string>
   <string name="New_password" formatted="false">新しいパスワード</string>
   <string name="New_payment_method" formatted="false">新しいお支払い方法</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。</string>
-  <string name="Newest" formatted="false">Newest</string>
+  <string name="Newest" formatted="false">最新</string>
   <string name="News_and_projects" formatted="false">ニュースとプロジェクト</string>
   <string name="News_events" formatted="false">1年に数回だけ、お近くのニュースやイベント情報をお届け。</string>
   <string name="Newsletters" formatted="false">ニュースレター</string>
@@ -524,7 +524,7 @@
   <string name="Pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
-  <string name="Popularity" formatted="false">Popularity</string>
+  <string name="Popularity" formatted="false">人気</string>
   <string name="Post" formatted="false">投稿する</string>
   <string name="Postal_code" formatted="false">郵便番号</string>
   <string name="Postcode" formatted="false">郵便番号</string>
@@ -591,7 +591,7 @@
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
   <string name="Resend_email" formatted="false">メールを再送</string>
   <string name="Resend_verification_email" formatted="false">認証メールをもう一度送信</string>
-  <string name="Reset_filters" formatted="false">Reset</string>
+  <string name="Reset_filters" formatted="false">リセット</string>
   <string name="Reset_your_password" formatted="false">パスワードをリセット</string>
   <string name="Retry" formatted="false">もう一度試す</string>
   <string name="Retry_or_select_another_method" formatted="false">再試行するか別のお支払い方法を選択してください。</string>
@@ -636,7 +636,7 @@
   <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
   <string name="See_our_suggestions" formatted="false">おすすめを見る ▸</string>
   <string name="See_our_terms_of_use" formatted="false">利用規約を見る</string>
-  <string name="See_results" formatted="false">See results</string>
+  <string name="See_results" formatted="false">結果を表示</string>
   <string name="See_rewards" formatted="false">リワードを見る</string>
   <string name="See_the_rewards" formatted="false">リワードを保存</string>
   <string name="Select" formatted="false">選択</string>
@@ -694,7 +694,7 @@
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">何らかのエラーが発生しました。リフレッシュするにはプルダウンしてください。</string>
   <string name="Something_went_wrong_pull_to_refresh_no_period" formatted="false">何らかのエラーが発生しました。プルダウンして画面を更新してください。</string>
-  <string name="Sort_by" formatted="false">Sort by</string>
+  <string name="Sort_by" formatted="false">並べ替える</string>
   <string name="Spam" formatted="false">迷惑メール</string>
   <string name="Start_the_request" formatted="false">データの収集を開始する</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
@@ -879,6 +879,7 @@
   <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">最初の請求はプロジェクトが成功に終わってから24時間後に行われます。その後は全額が支払われるまで、2週間おきに請求が行われます。このオプションを選択すると、その後はプレッジを編集することはできなくなります。</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">このページから移動するとコメントは破棄されます。</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">プロジェクトをバックした場合、プロジェクトがファンディングゴールに到達しない限り、課金されることはありません。</string>
+  <string name="Youll_be_the_first_to_receive_project_launch" formatted="false">プロジェクトのローンチやクリエイターからの最新情報に関するメールがまっさきに届きます。</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
   <string name="Your_comment_wasnt_posted" formatted="false">コメントは投稿されませんでした</string>

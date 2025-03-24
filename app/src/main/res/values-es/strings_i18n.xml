@@ -117,7 +117,7 @@ patrocinadores</string>
   <string name="Card_ending_in_last_four" formatted="false">Tarjeta que termina en %{last_four}</string>
   <string name="Card_number" formatted="false">Número de tarjeta</string>
   <string name="Cardholder_name" formatted="false">Nombre del titular de la tarjeta</string>
-  <string name="Category" formatted="false">Category</string>
+  <string name="Category" formatted="false">Categoría</string>
   <string name="Change_currency" formatted="false">Cambiar la moneda</string>
   <string name="Change_email" formatted="false">Cambiar correo electrónico</string>
   <string name="Change_password" formatted="false">Cambiar contraseña</string>
@@ -237,7 +237,7 @@ Toca para intentar de nuevo.</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">El correo electrónico debe tener una dirección de correo electrónico válida.</string>
   <string name="Email_notifications" formatted="false">Notificaciones por correo electrónico</string>
   <string name="Email_unverified" formatted="false">Esta dirección de correo electrónico no está verificada.</string>
-  <string name="End_date" formatted="false">End date</string>
+  <string name="End_date" formatted="false">Fecha de finalización</string>
   <string name="Ended" formatted="false">Finalizado</string>
   <string name="Ending_in_last_four" formatted="false">Número que termina en %{last_four}</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
@@ -436,18 +436,18 @@ Toca para intentar de nuevo.</string>
   <string name="Messages" formatted="false">Mensajes</string>
   <string name="Million_plus" formatted="false">Más de %{total_amount} millones</string>
   <string name="More_than_number_of_items_items" formatted="false">Más de %{number_of_items} notificaciones</string>
-  <string name="Most_backed" formatted="false">Most backed</string>
-  <string name="Most_funded" formatted="false">Most funded</string>
+  <string name="Most_backed" formatted="false">Más patrocinadores</string>
+  <string name="Most_funded" formatted="false">Más financiados</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">Mi proyecto busca financiamiento para la tecnología de IA.</string>
   <string name="Name" formatted="false">Nombre</string>
-  <string name="Near_me" formatted="false">Near me</string>
+  <string name="Near_me" formatted="false">Cerca de mí</string>
   <string name="Never" formatted="false">Nunca</string>
   <string name="New_email" formatted="false">Nuevo correo electrónico</string>
   <string name="New_password" formatted="false">Contraseña nueva</string>
   <string name="New_payment_method" formatted="false">Nuevo método de pago</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.</string>
-  <string name="Newest" formatted="false">Newest</string>
+  <string name="Newest" formatted="false">Más recientes</string>
   <string name="News_and_projects" formatted="false">Novedades y proyectos</string>
   <string name="News_events" formatted="false">Unas cuantas veces al año: Noticias sobresalientes y eventos cerca de ti.</string>
   <string name="Newsletters" formatted="false">Boletines informativos</string>
@@ -527,7 +527,7 @@ Toca para intentar de nuevo.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Contribuido&lt;/b> el %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
-  <string name="Popularity" formatted="false">Popularity</string>
+  <string name="Popularity" formatted="false">Popularidad</string>
   <string name="Post" formatted="false">Publicar</string>
   <string name="Postal_code" formatted="false">Código postal</string>
   <string name="Postcode" formatted="false">Código postal</string>
@@ -593,7 +593,7 @@ Toca para intentar de nuevo.</string>
   <string name="Request_my_personal_data" formatted="false">Solicitar mis datos personales</string>
   <string name="Resend_email" formatted="false">Reenviar correo</string>
   <string name="Resend_verification_email" formatted="false">Volver a enviar correo electrónico de verificación</string>
-  <string name="Reset_filters" formatted="false">Reset</string>
+  <string name="Reset_filters" formatted="false">Restablecer</string>
   <string name="Reset_your_password" formatted="false">Restablece tu contraseña</string>
   <string name="Retry" formatted="false">Volver a intentar</string>
   <string name="Retry_or_select_another_method" formatted="false">Vuelve a intentarlo o selecciona otro método.</string>
@@ -638,7 +638,7 @@ Toca para intentar de nuevo.</string>
   <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
   <string name="See_our_suggestions" formatted="false">Ver nuestras sugerencias ▸</string>
   <string name="See_our_terms_of_use" formatted="false">Ver nuestros Términos de uso</string>
-  <string name="See_results" formatted="false">See results</string>
+  <string name="See_results" formatted="false">Ver resultados</string>
   <string name="See_rewards" formatted="false">Ver recompensas</string>
   <string name="See_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="Select" formatted="false">Seleccionar</string>
@@ -696,7 +696,7 @@ Toca para intentar de nuevo.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Ocurrió un error. Inténtalo nuevamente más tarde.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Ocurrió un error. Desliza para actualizar.</string>
   <string name="Something_went_wrong_pull_to_refresh_no_period" formatted="false">Ocurrió un error. Desliza para actualizar.</string>
-  <string name="Sort_by" formatted="false">Sort by</string>
+  <string name="Sort_by" formatted="false">Ordenar por</string>
   <string name="Spam" formatted="false">Correo no deseado</string>
   <string name="Start_the_request" formatted="false">Comenzar la recopilación de datos</string>
   <string name="Starting_soon" formatted="false">Comienza en breve</string>
@@ -881,6 +881,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">El primer pago será 24 horas después de que el proyecto finalice con éxito y luego cada 2 semanas hasta el monto total de la contribución. Cuando se selecciona esta opción, no se pueden realizar más modificaciones en tu contribución.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Perderás el comentario si sales de esta página.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">No se te cobrará por patrocinar un proyecto a menos que alcance su meta de financiamiento.</string>
+  <string name="Youll_be_the_first_to_receive_project_launch" formatted="false">Serás el primero en recibir correos electrónicos sobre el lanzamiento del proyecto y actualizaciones del creador.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Recibirás un correo electrónico en %{email} cuando la descarga esté lista.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Tu mensaje no fue enviado.</string>
   <string name="Your_comment_wasnt_posted" formatted="false">Tu comentario no se publicó</string>

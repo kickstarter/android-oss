@@ -186,7 +186,7 @@ fun SearchScreen(
             FilterRowPillType.CATEGORY.name to 0
         )
     }
-    val initialCategoryPillText = stringResource(R.string.fpo_category)
+    val initialCategoryPillText = stringResource(R.string.Category)
     var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
     var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     var currentCategory by remember { mutableStateOf<Category?>(null) }

@@ -155,7 +155,7 @@ fun MultiCategorySelectionSheet(
                                 selectedCategories = selectedCategories.mapValues { false }
                             },
                             type = KSButtonType.Outlined,
-                            text = stringResource(R.string.Reset),
+                            text = stringResource(R.string.Reset_filters),
                             isEnabled = !isLoading
                         )
                         KSButton(

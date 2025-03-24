@@ -98,7 +98,7 @@ fun CategorySelectionSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Category",
+                        text = stringResource(R.string.Category),
                         style = KSTheme.typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
@@ -169,7 +169,7 @@ fun CategorySelectionSheet(
                             onClickAction = {
                                 selectedCategory.value = Category.builder().name(resetCategoryName).build()
                             },
-                            text = stringResource(R.string.Reset),
+                            text = stringResource(R.string.Reset_filters),
                             isEnabled = !isLoading
                         )
                         KSButton(
@@ -180,7 +180,7 @@ fun CategorySelectionSheet(
                                 selectedCategory.value?.let { onApply(it) }
                             },
                             shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-                            text = "See results",
+                            text = R.string.See_results,
                             textStyle = typographyV2.buttonLabel,
                             isEnabled = !isLoading,
                         )

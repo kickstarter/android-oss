@@ -160,7 +160,7 @@ fun CategorySelectionSheet(
                             .padding(dimensions.paddingLarge),
                         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
                     ) {
-                        val resetCategoryName = stringResource(R.string.fpo_category)
+                        val resetCategoryName = stringResource(R.string.Category)
                         KSOutlinedButton(
                             modifier = Modifier
                                 .defaultMinSize(minHeight = dimensions.minButtonHeight),
@@ -180,7 +180,7 @@ fun CategorySelectionSheet(
                                 selectedCategory.value?.let { onApply(it) }
                             },
                             shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-                            text = R.string.See_results,
+                            text = stringResource(R.string.See_results),
                             textStyle = typographyV2.buttonLabel,
                             isEnabled = !isLoading,
                         )

@@ -78,7 +78,7 @@ fun CategorySelectionSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Category",
+                        text = stringResource(R.string.Category),
                         style = KSTheme.typographyV2.headingXL,
                         modifier = Modifier.weight(1f)
                     )
@@ -139,13 +139,13 @@ fun CategorySelectionSheet(
                             .padding(dimensions.paddingLarge),
                         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
                     ) {
-                        val resetCategoryName = stringResource(R.string.fpo_category)
+                        val resetCategoryName = stringResource(R.string.Category)
                         KSButton(
                             onClickAction = {
                                 selectedCategory.value = Category.builder().name(resetCategoryName).build()
                             },
                             type = KSButtonType.Outlined,
-                            text = stringResource(R.string.Reset),
+                            text = stringResource(R.string.Reset_filters),
                             isEnabled = !isLoading
                         )
                         KSButton(
@@ -154,7 +154,7 @@ fun CategorySelectionSheet(
                                 selectedCategory.value?.let { onApply(it) }
                             },
                             type = KSButtonType.Filled,
-                            text = "See results",
+                            text = stringResource(R.string.See_results),
                             isEnabled = !isLoading,
                         )
                     }

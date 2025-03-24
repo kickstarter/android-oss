@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -20,6 +19,8 @@ import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.P
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_SAVE_BUTTON
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
 import org.joda.time.DateTime
 import org.junit.Test
 
@@ -37,9 +38,10 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
     @Test
     fun verifyInitState() {
         composeTestRule.setContent { // setting our composable as content for test
-            MaterialTheme {
+            KSTheme {
                 val projectState = remember { mutableStateOf(null) }
-                PreLaunchProjectPageScreen(projectState)
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState)
             }
         }
         projectImage.assertExists()
@@ -64,11 +66,13 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
             .urls(Urls.builder().build()).build()
 
         composeTestRule.setContent { // setting our composable as content for test
-            MaterialTheme {
+            KSTheme {
                 val projectState = remember { mutableStateOf(project) }
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
 
                 PreLaunchProjectPageScreen(
                     projectState,
+                    similarProjectsState,
                     onButtonClicked = {
                         projectState.value = project.toBuilder().isStarred(true).watchesCount(2).build()
                     },

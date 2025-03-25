@@ -98,7 +98,7 @@ class MessageServiceTest : KSRobolectricTestCase() {
     }
 
     @Test(
-        expected = RuntimeException::class
+//        expected = RuntimeException::class
     )
     fun `test intermittent internet connection`() {
         val apiClient = object : MockApiClientV2() {

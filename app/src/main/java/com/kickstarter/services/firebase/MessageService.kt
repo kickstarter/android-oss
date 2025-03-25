@@ -30,12 +30,14 @@ interface RefreshPushToken {
             val response = apiClient.registerPushToken(newToken).blockingSingle()
             val message = "$OK_MESSAGE $response"
             successCallback.invoke(message)
-        } catch (exception: ApiException) {
-            val errorMessage = "$KO_MESSAGE ${
-            exception.errorEnvelope().errorMessage()
-            }"
-            if (exception.errorEnvelope().httpCode() != 401) // else OAuth token not authorized
-                errorCallback.invoke(errorMessage)
+        } catch (t: Throwable) {
+            if (t is ApiException) {
+                val errorMessage = "$KO_MESSAGE ${
+                t.errorEnvelope().errorMessage()
+                }"
+                if (t.errorEnvelope().httpCode() != 401) // else OAuth token not authorized
+                    errorCallback.invoke(errorMessage)
+            }
         }
     }
 }

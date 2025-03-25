@@ -42,7 +42,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun BetaMessagingBottomSheetPreview() {
+private fun SortSelectionBottomSheetPreview() {
     KSTheme {
         SortSelectionBottomSheet(
             sorts = DiscoveryParams.Sort.values().toList(),
@@ -65,7 +65,7 @@ fun SortSelectionBottomSheet(
     Column(
         modifier = Modifier
             .background(color = colors.backgroundSurfacePrimary)
-            .padding(start = dimensions.paddingLarge, end = dimensions.paddingSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
+            .padding(start = dimensions.paddingLarge, end = dimensions.paddingMediumSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
             .navigationBarsPadding()
             .fillMaxWidth(),
     ) {
@@ -75,7 +75,8 @@ fun SortSelectionBottomSheet(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.fpo_sort_by),
+                text = stringResource(R.string.Sort_by),
+                color = colors.textPrimary,
                 style = KSTheme.typographyV2.headingXL,
                 modifier = Modifier.weight(1f)
             )
@@ -83,7 +84,7 @@ fun SortSelectionBottomSheet(
                 modifier = Modifier.testTag(SortSelectionBottomSheetTestTag.DISMISS_BUTTON.name),
                 onClick = { onDismiss.invoke(selectedOption) }
             ) {
-                Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+                Icon(imageVector = Icons.Filled.Close, contentDescription = "Close", tint = colors.textPrimary)
             }
         }
 
@@ -129,6 +130,7 @@ fun SortItemRow(
         getSortString(sort)?.let {
             Text(
                 modifier = Modifier.weight(1f),
+                color = colors.textPrimary,
                 text = stringResource(it),
                 style = KSTheme.typographyV2.headingLG
             )
@@ -137,7 +139,7 @@ fun SortItemRow(
         RadioButton(
             selected = isSelected,
             onClick = onSelected,
-            colors = RadioButtonDefaults.colors(selectedColor = colors.backgroundSelected)
+            colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
         )
     }
 }
@@ -146,11 +148,11 @@ fun getSortString(sort: DiscoveryParams.Sort): Int? {
     // omit distance until api is ready
     return when (sort) {
         DiscoveryParams.Sort.MAGIC -> R.string.Recommended
-        DiscoveryParams.Sort.POPULAR -> R.string.discovery_sort_types_popularity
-        DiscoveryParams.Sort.NEWEST -> R.string.discovery_sort_types_newest
-        DiscoveryParams.Sort.ENDING_SOON -> R.string.discovery_sort_types_end_date
-        DiscoveryParams.Sort.MOST_FUNDED -> R.string.discovery_sort_types_most_funded
-        DiscoveryParams.Sort.MOST_BACKED -> R.string.discovery_sort_types_most_backed
+        DiscoveryParams.Sort.POPULAR -> R.string.Popularity
+        DiscoveryParams.Sort.NEWEST -> R.string.Newest
+        DiscoveryParams.Sort.ENDING_SOON -> R.string.Ending_soon
+        DiscoveryParams.Sort.MOST_FUNDED -> R.string.Most_funded
+        DiscoveryParams.Sort.MOST_BACKED -> R.string.Most_backed
         else -> null
     }
 }

@@ -3,12 +3,15 @@ package com.kickstarter.ui.activities.compose
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -51,10 +54,12 @@ import com.kickstarter.ui.compose.TextWithKdsSupport700Bg
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KsButton
+import com.kickstarter.ui.fragments.projectpage.ui.SimilarProjectsComponent
 import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import com.kickstarter.ui.views.compose.KsCreatorLayout
+import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -63,7 +68,8 @@ fun PreLaunchProjectPageScreenPreview() {
     KSTheme {
         val project = ProjectFactory.backedProject()
         val projectState = remember { mutableStateOf(null) }
-        PreLaunchProjectPageScreen(projectState)
+        val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+        PreLaunchProjectPageScreen(projectState, similarProjectsState)
     }
 }
 
@@ -83,11 +89,13 @@ enum class PreLaunchProjectPageScreenTestTag() {
 @Composable
 fun PreLaunchProjectPageScreen(
     projectState: State<Project?>,
+    similarProjectsState: State<SimilarProjectsUiState>,
     leftOnClickAction: () -> Unit = {},
     rightOnClickAction: () -> Unit = {},
     middleRightClickAction: () -> Unit = {},
     onCreatorLayoutClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {},
+    onSimilarProjectClick: (Project) -> Unit = {},
     numberOfFollowers: String? = null
 ) {
     val project = projectState.value
@@ -113,114 +121,151 @@ fun PreLaunchProjectPageScreen(
             )
         }
     ) {
-        val screenPadding = dimensionResource(id = R.dimen.activity_horizontal_margin)
         ConstraintLayout(
             modifier = Modifier.fillMaxSize().background(colors.kds_support_100)
         ) {
-            val (
-                projectImage, comingSoonBadge, projectName, creatorLayout,
-                projectDescription, category, location, buttonCardLayout
-            ) = createRefs()
+            val (constraintLayout, buttonCardLayout) = createRefs()
+            val screenPadding = dimensionResource(id = R.dimen.activity_horizontal_margin)
 
-            ProjectImageFromURl(
-                imageUrl = (project?.photo()?.full()),
+            ConstraintLayout(
                 modifier = Modifier
-                    .testTag(PROJECT_IMAGE.name)
-                    .constrainAs(projectImage) {
-                        top.linkTo(parent.top)
+                    .constrainAs(constraintLayout) {
+                        linkTo(parent.top, buttonCardLayout.bottom, bias = 0.0f)
+                        absoluteLeft.linkTo(parent.absoluteLeft)
+                        absoluteRight.linkTo(parent.absoluteRight)
                     }
-                    .aspectRatio(1.77f)
-            )
+                    .verticalScroll(rememberScrollState())
+            ) {
+                val (
+                    projectImage, comingSoonBadge, projectName, creatorLayout,
+                    projectDescription, category, location, similarProjects
+                ) = createRefs()
 
-            TextWithKdsSupport700Bg(
-                stringResource(id = R.string.Coming_soon),
-                Modifier
-                    .constrainAs(comingSoonBadge) {
-                        top.linkTo(projectImage.bottom)
-                        bottom.linkTo(projectImage.bottom)
-                        start.linkTo(parent.start, screenPadding)
-                    }
-                    .testTag(COMING_SOON_BADGE.name)
-            )
-
-            val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f
-            TextH6ExtraBoldTitle(
-                text = project?.name().orEmpty(),
-                modifier = Modifier
-                    .alpha(projectNameAlpha)
-                    .constrainAs(projectName) {
-                        top.linkTo(comingSoonBadge.bottom)
-                        start.linkTo(parent.start, screenPadding)
-                    }
-                    .padding(end = screenPadding)
-                    .testTag(PROJECT_NAME.name)
-            )
-
-            KsCreatorLayout(
-                creatorName = project?.creator()?.name() ?: "",
-                imageUrl = project?.creator()?.avatar()?.medium() ?: "",
-                modifier = Modifier
-                    .testTag(CREATOR_LAYOUT.name)
-                    .fillMaxWidth()
-                    .constrainAs(creatorLayout) {
-                        top.linkTo(projectName.bottom)
-                        start.linkTo(parent.start, screenPadding)
-                    }
-                    .padding(end = screenPadding)
-                    .padding(
-                        vertical = dimensionResource(id = R.dimen.grid_1)
-                    ),
-                onClickAction = {
-                    onCreatorLayoutClicked.invoke()
-                }
-            )
-
-            project?.blurb()?.let {
-                TextBody2Style(
-                    text = it.toHtml().toString(),
+                ProjectImageFromURl(
+                    imageUrl = (project?.photo()?.full()),
                     modifier = Modifier
+                        .testTag(PROJECT_IMAGE.name)
+                        .constrainAs(projectImage) {
+                            top.linkTo(parent.top)
+                        }
+                        .aspectRatio(1.77f)
+                )
+
+                TextWithKdsSupport700Bg(
+                    stringResource(id = R.string.Coming_soon),
+                    Modifier
+                        .constrainAs(comingSoonBadge) {
+                            top.linkTo(projectImage.bottom)
+                            bottom.linkTo(projectImage.bottom)
+                            start.linkTo(parent.start, screenPadding)
+                        }
+                        .testTag(COMING_SOON_BADGE.name)
+                )
+
+                val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f
+                TextH6ExtraBoldTitle(
+                    text = project?.name().orEmpty(),
+                    modifier = Modifier
+                        .alpha(projectNameAlpha)
+                        .constrainAs(projectName) {
+                            top.linkTo(comingSoonBadge.bottom)
+                            start.linkTo(parent.start, screenPadding)
+                        }
+                        .padding(end = screenPadding)
+                        .testTag(PROJECT_NAME.name)
+                )
+
+                KsCreatorLayout(
+                    creatorName = project?.creator()?.name() ?: "",
+                    imageUrl = project?.creator()?.avatar()?.medium() ?: "",
+                    modifier = Modifier
+                        .testTag(CREATOR_LAYOUT.name)
                         .fillMaxWidth()
-                        .testTag(PROJECT_DESCRIPTION.name)
-                        .constrainAs(projectDescription) {
-                            top.linkTo(creatorLayout.bottom)
+                        .constrainAs(creatorLayout) {
+                            top.linkTo(projectName.bottom)
                             start.linkTo(parent.start, screenPadding)
                         }
                         .padding(end = screenPadding)
                         .padding(
                             vertical = dimensionResource(id = R.dimen.grid_1)
-                        )
+                        ),
+                    onClickAction = {
+                        onCreatorLayoutClicked.invoke()
+                    }
                 )
-            }
 
-            project?.category()?.name()?.let {
-                TextCaptionStyleWithStartIcon(
-                    it,
-                    painterResource(R.drawable.icon__compass),
-                    modifier = Modifier
-                        .testTag(PROJECT_CATEGORY_NAME.name)
-                        .constrainAs(category) {
-                            top.linkTo(projectDescription.bottom)
-                            start.linkTo(parent.start, screenPadding)
-                        }
-                        .padding(end = screenPadding)
-                        .padding(vertical = dimensionResource(id = R.dimen.grid_2))
-                )
-            }
+                project?.blurb()?.let {
+                    TextBody2Style(
+                        text = it.toHtml().toString(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(PROJECT_DESCRIPTION.name)
+                            .constrainAs(projectDescription) {
+                                top.linkTo(creatorLayout.bottom)
+                                start.linkTo(parent.start, screenPadding)
+                            }
+                            .padding(end = screenPadding)
+                            .padding(
+                                vertical = dimensionResource(id = R.dimen.grid_1)
+                            )
+                    )
+                }
 
-            project?.location()?.name()?.let {
-                val locationPadding = dimensionResource(id = R.dimen.grid_5)
-                TextCaptionStyleWithStartIcon(
-                    it,
-                    Icons.Filled.LocationOn,
+                project?.category()?.name()?.let {
+                    TextCaptionStyleWithStartIcon(
+                        it,
+                        painterResource(R.drawable.icon__compass),
+                        modifier = Modifier
+                            .testTag(PROJECT_CATEGORY_NAME.name)
+                            .constrainAs(category) {
+                                top.linkTo(projectDescription.bottom)
+                                start.linkTo(parent.start, screenPadding)
+                            }
+                            .padding(end = screenPadding)
+                            .padding(vertical = dimensionResource(id = R.dimen.grid_2))
+                    )
+                }
+
+                project?.location()?.name()?.let {
+                    val locationPadding = dimensionResource(id = R.dimen.grid_5)
+                    TextCaptionStyleWithStartIcon(
+                        it,
+                        Icons.Filled.LocationOn,
+                        modifier = Modifier
+                            .testTag(PROJECT_LOCATION_NAME.name)
+                            .constrainAs(location) {
+                                start.linkTo(category.end, locationPadding)
+                                top.linkTo(category.top)
+                                bottom.linkTo(category.bottom)
+                            }
+                            .padding(end = screenPadding)
+                    )
+                }
+
+                val spcAnchor = when {
+                    project?.location()?.name() != null -> location
+                    project?.category()?.name() != null -> category
+                    project?.blurb() != null -> projectDescription
+                    else -> creatorLayout
+                }
+
+                val spcMarginTop = dimensionResource(id = R.dimen.grid_3)
+                val spcMarginBottom = dimensionResource(id = R.dimen.grid_27)
+
+                Box(
                     modifier = Modifier
-                        .testTag(PROJECT_LOCATION_NAME.name)
-                        .constrainAs(location) {
-                            start.linkTo(category.end, locationPadding)
-                            top.linkTo(category.top)
-                            bottom.linkTo(category.bottom)
+                        .constrainAs(similarProjects) {
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            top.linkTo(spcAnchor.bottom, spcMarginTop)
                         }
-                        .padding(end = screenPadding)
-                )
+                        .padding(bottom = spcMarginBottom)
+                ) {
+                    SimilarProjectsComponent(
+                        uiState = similarProjectsState,
+                        onClick = onSimilarProjectClick
+                    )
+                }
             }
 
             Card(

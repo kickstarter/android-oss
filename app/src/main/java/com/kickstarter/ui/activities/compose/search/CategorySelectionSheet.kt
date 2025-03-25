@@ -1,10 +1,12 @@
 package com.kickstarter.ui.activities.compose.search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,17 +32,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSButton
-import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun CategorySelectionSheetPreview() {
+    KSTheme {
+        CategorySelectionSheet(
+            categories = CategoryFactory.rootCategories(),
+            onApply = {},
+            onDismiss = {},
+            isLoading = false
+        )
+    }
+}
 
 @Composable
 fun CategorySelectionSheet(
@@ -60,7 +79,7 @@ fun CategorySelectionSheet(
                 .fillMaxWidth()
                 .navigationBarsPadding()
                 .heightIn(min = 200.dp, max = 770.dp),
-            color = Color.White
+            color = colors.backgroundSurfacePrimary
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
@@ -74,19 +93,21 @@ fun CategorySelectionSheet(
                                 strokeWidth = dimensions.dividerThickness.toPx()
                             )
                         }
-                        .padding(dimensions.paddingLarge),
+                        .padding(start = dimensions.paddingLarge, top = dimensions.paddingLarge, bottom = dimensions.paddingLarge, end = dimensions.paddingMediumSmall),
+
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(R.string.Category),
                         style = KSTheme.typographyV2.headingXL,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        color = colors.textPrimary
                     )
                     IconButton(
                         modifier = Modifier.testTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name),
                         onClick = onDismiss
                     ) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close", tint = colors.icon)
                     }
                 }
 
@@ -140,21 +161,27 @@ fun CategorySelectionSheet(
                         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
                     ) {
                         val resetCategoryName = stringResource(R.string.Category)
-                        KSButton(
+                        KSOutlinedButton(
+                            modifier = Modifier
+                                .defaultMinSize(minHeight = dimensions.minButtonHeight),
+                            backgroundColor = colors.backgroundSurfacePrimary,
+                            textColor = colors.textPrimary,
                             onClickAction = {
                                 selectedCategory.value = Category.builder().name(resetCategoryName).build()
                             },
-                            type = KSButtonType.Outlined,
                             text = stringResource(R.string.Reset_filters),
                             isEnabled = !isLoading
                         )
                         KSButton(
                             modifier = Modifier.weight(1f),
+                            backgroundColor = colors.kds_black,
+                            textColor = colors.kds_white,
                             onClickAction = {
                                 selectedCategory.value?.let { onApply(it) }
                             },
-                            type = KSButtonType.Filled,
+                            shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
                             text = stringResource(R.string.See_results),
+                            textStyle = typographyV2.buttonLabel,
                             isEnabled = !isLoading,
                         )
                     }
@@ -193,6 +220,7 @@ fun CategoryItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                color = colors.textPrimary,
                 text = category.name(),
                 style = KSTheme.typographyV2.headingLG
             )
@@ -201,7 +229,7 @@ fun CategoryItemRow(
         RadioButton(
             selected = isSelected,
             onClick = null, // null recommended for accessibility with screenreaders
-            colors = RadioButtonDefaults.colors(selectedColor = colors.backgroundSelected)
+            colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
         )
     }
 }

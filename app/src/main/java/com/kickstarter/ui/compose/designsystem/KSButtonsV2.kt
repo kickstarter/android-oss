@@ -1,5 +1,6 @@
 package com.kickstarter.ui.compose.designsystem
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -342,15 +343,16 @@ fun FBLoginButton(
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSFilledButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
                 .fillMaxWidth()
-                .background(colors.kds_white),
+                .background(color = colors.backgroundSurfacePrimary),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
             KSButton(
@@ -384,15 +386,16 @@ fun KSFilledButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSGreenButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
                 .fillMaxWidth()
-                .background(colors.kds_white),
+                .background(color = colors.backgroundSurfacePrimary),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
             KSButton(
@@ -426,15 +429,16 @@ fun KSGreenButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSFilledInvertedButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
                 .fillMaxWidth()
-                .background(colors.kds_white),
+                .background(color = colors.backgroundSurfacePrimary),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
             KSButton(
@@ -468,15 +472,16 @@ fun KSFilledInvertedButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSFilledDestructiveButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
                 .fillMaxWidth()
-                .background(colors.kds_white),
+                .background(color = colors.backgroundSurfacePrimary),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
             KSButton(
@@ -510,13 +515,15 @@ fun KSFilledDestructiveButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSBorderlessButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
+                .background(color = colors.backgroundSurfacePrimary)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
@@ -551,13 +558,15 @@ fun KSBorderlessButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSOutlinedButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
+                .background(color = colors.backgroundSurfacePrimary)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
@@ -592,13 +601,15 @@ fun KSOutlinedButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSOutlinedDestructiveButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
+                .background(color = colors.backgroundSurfacePrimary)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
@@ -633,13 +644,15 @@ fun KSOutlinedDestructiveButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSBorderlessDestructiveButtonPreview() {
     KSTheme {
         Column(
             Modifier
                 .padding(all = dimensions.paddingSmall)
+                .background(color = colors.backgroundSurfacePrimary)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterVertically)
         ) {
@@ -674,8 +687,9 @@ fun KSBorderlessDestructiveButtonPreview() {
     }
 }
 
-@Preview
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun FBLoginButtonPreview() {
     KSTheme {
         Column(

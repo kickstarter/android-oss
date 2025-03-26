@@ -1,8 +1,9 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
@@ -155,11 +157,11 @@ fun KSProjectCardLarge(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable { onClick.invoke() },
+            .fillMaxWidth(),
         backgroundColor = colors.backgroundSurfaceRaised,
         shape = shapes.medium,
         elevation = dimensionResource(id = R.dimen.grid_2),
+        onClick = onClick
     ) {
         Column {
             if (photo != null) {
@@ -214,11 +216,11 @@ fun KSProjectCardSmall(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable { onClick.invoke() },
+            .fillMaxWidth(),
         backgroundColor = colors.backgroundSurfaceRaised,
         shape = shapes.small,
-        elevation = dimensionResource(id = R.dimen.grid_2)
+        elevation = dimensionResource(id = R.dimen.grid_2),
+        onClick = onClick
     ) {
         Column {
             Row(

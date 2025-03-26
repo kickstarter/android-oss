@@ -203,7 +203,7 @@ fun SimilarProjectsComponent(
         )
         Row(
             modifier = Modifier
-                .absolutePadding(left = 18.dp, right = 24.dp),
+                .absolutePadding(left = 24.dp, right = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -242,7 +242,7 @@ fun SimilarProjectsComponent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .absolutePadding(18.dp, 0.dp, 24.dp, 0.dp)
+                    .absolutePadding(24.dp, 0.dp, 24.dp, 0.dp)
                     .alpha(if (showPlaceholder) 1f else 0f)
                     .clickable(false) {},
                 contentAlignment = Alignment.Center
@@ -253,7 +253,7 @@ fun SimilarProjectsComponent(
             }
             HorizontalPager(
                 state = pagerState,
-                contentPadding = PaddingValues.Absolute(18.dp, 0.dp, 24.dp, 0.dp),
+                contentPadding = PaddingValues.Absolute(24.dp, 0.dp, 24.dp, 0.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 pageSpacing = 12.dp,
                 modifier = Modifier.pointerInput(Unit) {

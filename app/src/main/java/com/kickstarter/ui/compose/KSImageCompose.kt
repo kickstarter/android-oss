@@ -10,19 +10,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.kickstarter.R
@@ -69,22 +67,16 @@ fun KSRewardAsyncImage(image: Photo) {
 
 @Composable
 fun KSAsyncImage(modifier: Modifier, image: Photo) {
-    SubcomposeAsyncImage(
+    AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(image.full())
             .crossfade(true)
             .build(),
         contentDescription = image.altText(),
         modifier = modifier,
+        placeholder = ColorPainter(color = colors.backgroundDisabled),
         contentScale = ContentScale.Crop
-    ) {
-        val state = painter.state
-        if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-            LinearProgressIndicator(color = KSTheme.colors.backgroundDisabled)
-        } else {
-            SubcomposeAsyncImageContent()
-        }
-    }
+    )
 }
 
 @Composable

@@ -340,6 +340,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.term(), null)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
+
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -390,5 +392,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
         assertEquals(errorNumber, 0)
+
+        // - When updating search term or new params selected new events should be sent
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName)
     }
 }

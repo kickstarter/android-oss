@@ -71,7 +71,6 @@ class SearchAndFilterViewModel(
     private var popularProjectsList = mutableListOf<Project>()
 
     // Pagination variables
-    private var currentPage = 0
     private var nextPage: String? = null
     private var isLoadingMore = false
 
@@ -129,7 +128,6 @@ class SearchAndFilterViewModel(
     }
 
     private fun resetPagination() {
-        currentPage = 0
         isLoadingMore = false
         nextPage = null
         popularProjectsList = mutableListOf()
@@ -140,7 +138,6 @@ class SearchAndFilterViewModel(
      * Update UIState with after executing Search query with latest params
      */
     private suspend fun updateSearchResultsState(params: DiscoveryParams) {
-        analyticEvents.trackSearchCTAButtonClicked(params)
 
         emitCurrentState(isLoading = true)
 
@@ -158,22 +155,27 @@ class SearchAndFilterViewModel(
                 if (params.term().isNull()) popularProjectsList.addAll(it)
                 if (params.term()?.isNotBlank().isTrue()) projectsList.addAll(it)
 
+                val totalCount = searchEnvelopeResult.getOrNull()?.totalCount ?: 0
+                Timber.d("${this.javaClass} totalCount: $totalCount")
                 Timber.d("${this.javaClass} popularProjectsList: ${popularProjectsList.size}")
                 Timber.d("${this.javaClass} projectsList: ${projectsList.size}")
 
+                // - Send analytic events only on first page load
+                if (nextPage == null) {
+                    analyticEvents.trackSearchCTAButtonClicked(params)
+                    analyticEvents.trackSearchResultPageViewed(
+                        params,
+                        totalCount,
+                        params.sort() ?: DiscoveryParams.Sort.MAGIC
+                    )
+                }
+
                 // - pagination related stuff
-                currentPage++
                 nextPage = searchEnvelopeResult.getOrNull()?.pageInfo?.endCursor
                 val hasMore = searchEnvelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
 
                 // - update UI
                 emitCurrentState(isLoading = false, hasMore = hasMore)
-
-                analyticEvents.trackSearchResultPageViewed(
-                    params,
-                    currentPage, // TODO: likely is not the page but the total number, does require upgrades on the query
-                    params.sort() ?: DiscoveryParams.Sort.MAGIC
-                )
             }
         }
     }

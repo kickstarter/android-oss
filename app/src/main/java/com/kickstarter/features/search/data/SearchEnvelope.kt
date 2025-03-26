@@ -5,5 +5,6 @@ import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 
 data class SearchEnvelope(
     val projectList: List<Project> = emptyList(),
-    val pageInfo: PageInfoEnvelope? = null
+    val pageInfo: PageInfoEnvelope? = null,
+    val totalCount: Int = 0
 )

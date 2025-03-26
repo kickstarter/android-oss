@@ -20,8 +20,8 @@ data class ParentUiState(
 
 data class SimilarProjectsUiState(
     val isLoading: Boolean = false,
-    val data: List<Project>? = null,
     val error: Throwable? = null,
+    val data: List<Project>? = null,
 )
 
 class SimilarProjectsViewModel(
@@ -42,7 +42,9 @@ class SimilarProjectsViewModel(
     private var job: Job? = null
 
     fun provideProject(project: Project) {
-        if (this.project?.id() != project.id()) {
+        if (this.project?.id() != project.id() ||
+            (similarProjectsUiState.value.error != null && !similarProjectsUiState.value.isLoading)
+        ) {
             this.project = project
             fetchSimilarProjects()
         }

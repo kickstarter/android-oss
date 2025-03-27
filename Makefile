@@ -7,12 +7,7 @@ bootstrap: dependencies secrets
 bootstrap-circle: dependencies secrets
 	./script/bootstrap_configs
 
-dependencies: submodules secrets
-
-submodules:
-	git submodule sync --recursive
-	git submodule update --init --recursive || true
-	git submodule foreach git checkout $(sha1)
+dependencies: secrets
 
 secrets:
 	-@rm -rf vendor/native-secrets

@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -14,13 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.kickstarter.R
+import com.kickstarter.models.Photo
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -28,6 +35,14 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 fun KSImagePreview() {
     KSTheme {
         Column {
+            val photo = Photo.builder().full("").altText("").build()
+            KSRewardAsyncImage(photo)
+            KSAsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(dimensions.rewardCardImageAspectRatio),
+                image = photo
+            )
             CircleImageFromURl(
                 imageUrl = ("http://goo.gl/gEgYUd"),
                 modifier = Modifier.size(dimensionResource(id = R.dimen.profile_avatar_width))
@@ -38,6 +53,30 @@ fun KSImagePreview() {
             )
         }
     }
+}
+
+@Composable
+fun KSRewardAsyncImage(image: Photo) {
+    KSAsyncImage(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(dimensions.rewardCardImageAspectRatio),
+        image = image
+    )
+}
+
+@Composable
+fun KSAsyncImage(modifier: Modifier, image: Photo) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(image.full())
+            .crossfade(true)
+            .build(),
+        contentDescription = image.altText(),
+        modifier = modifier,
+        placeholder = ColorPainter(color = colors.backgroundDisabled),
+        contentScale = ContentScale.Crop
+    )
 }
 
 @Composable

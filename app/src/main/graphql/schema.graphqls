@@ -42,6 +42,11 @@ type Query {
   """
   currentCurrency: CurrencyCode!
 
+  """
+  Default tax categories managed by Kickstarter
+  """
+  defaultTaxCategories: [TaxCategory!]!
+
   editorial("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, slug: String!, revision: String, admin: Boolean = false): EditorialConnection
 
   editorialPage(slug: String!): EditorialPage
@@ -99,7 +104,7 @@ type Query {
   """
   Provides an overview of pledge projects
   """
-  pledgeProjectsOverview("Sort option as a string." sort: BackingsDashboardSortOptions = RELEVANCY): PledgeProjectsOverview
+  pledgeProjectsOverview("Sort option as a string." sort: BackingsDashboardSortOptions = RELEVANCY, "All filter criteria for pledge projects." filters: PledgeProjectsOverviewFilterInput): PledgeProjectsOverview
 
   """
   Fetches a post given its ID.
@@ -208,6 +213,11 @@ scalar ID
 A member of Kickstarter.
 """
 type User implements Node {
+  """
+  A user's active backings of live projects
+  """
+  activeBackings("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackingsConnection!
+
   """
   Projects a user has created or is an active collaborator on
   """
@@ -471,7 +481,7 @@ type User implements Node {
   """
   Projects a user has launched.
   """
-  launchedProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): ProjectsConnectionWithTotalCount
+  launchedProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Column to order the list of projects by" orderBy: String, "Order in ascending or descending order" order: OrderDirection): ProjectsConnectionWithTotalCount
 
   """
   Where the user is based.
@@ -549,6 +559,11 @@ type User implements Node {
   storedCards("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserCreditCardTypeConnection
 
   """
+  A user's backings of successful projects
+  """
+  successfulBackings("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackingsConnection!
+
+  """
   Projects a user has launched that are successful.
   """
   successfulProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): ProjectsConnectionWithTotalCount
@@ -572,6 +587,11 @@ type User implements Node {
   A user's uid
   """
   uid: String!
+
+  """
+  A user's backings that are cancelled or for unsuccessful projects
+  """
+  unsuccessfulBackings("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackingsConnection!
 
   """
   A URL to the user's profile.
@@ -827,6 +847,16 @@ enum Feature {
   show_creative_download_2024_report_in_nav
 
   recent_searches_2025
+
+  pledge_management_self_launch_2025
+
+  project_classifiers_2025
+
+  pledge_management_backer_report
+
+  improved_tax_code_collection_2025
+
+  pledge_upgrade_2025
 }
 
 """
@@ -1280,6 +1310,11 @@ type Project implements Node & Commentable {
   backerAddressLockoutDatePassed: Boolean!
 
   """
+  Returns the backer report in JSON format
+  """
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlAndItems: Boolean, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlAndSkus: Boolean, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: String, "Filter by wether the backer has answered the survey" surveyAnswered: Boolean, "Filter by whether the backer is a late pledge" isLatePledge: Boolean, "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int): JSON
+
+  """
   Backer survey for the project
   """
   backerSurvey: BackerSurvey
@@ -1545,6 +1580,11 @@ type Project implements Node & Commentable {
   hasSlug: Boolean!
 
   """
+  If the payout for the funds capture has happened
+  """
+  hasSuccessfulFundsCapturePayout: Boolean!
+
+  """
   Whether or not the project has supporting materials (Prototype Gallery)
   """
   hasSupportingMaterials: Boolean!
@@ -1629,7 +1669,7 @@ type Project implements Node & Commentable {
   """
   Items available through the project's backer rewards.
   """
-  items("Whether to exclude the items that are not attached to any reward or addon." excludeItemsWithoutRewards: Boolean): [RewardItem]!
+  items("Whether to exclude the items that are not attached to any reward or addon." excludeItemsWithoutRewards: Boolean): [RewardItem!]!
 
   """
   A project's last uploaded video, if it's processing, or the current project video.
@@ -1665,6 +1705,11 @@ type Project implements Node & Commentable {
   Where the project is based.
   """
   location: Location
+
+  """
+  Possible VAT numbers the project could have, by location.
+  """
+  locationVatNumbers: [LocationVatNumber!]!
 
   """
   The max pledge amount for a single reward tier.
@@ -1844,6 +1889,11 @@ type Project implements Node & Commentable {
   risks("The number of characters to fetch." first: Int): String!
 
   """
+  whether project has shipping zone for 'rest of the world' location
+  """
+  rootShippingZoneExists: Boolean!
+
+  """
   Is this project configured so that events should be triggered for Meta's Conversions API?
   """
   sendMetaCapiEvents: Boolean!
@@ -1852,6 +1902,21 @@ type Project implements Node & Commentable {
   Is this project configured for third party analytics events?
   """
   sendThirdPartyEvents: Boolean!
+
+  """
+  Shipping destination countries on all rewards on the project
+  """
+  shippableCountries: [Location!]!
+
+  """
+  Details regarding how the project is set up to charge shipping
+  """
+  shippingConfig: ShippingConfig
+
+  """
+  Shipping zones configured for the project.
+  """
+  shippingZones: [ShippingZone!]!
 
   """
   Whether or not to show ended to live cta
@@ -1982,11 +2047,6 @@ type Project implements Node & Commentable {
   Was the current user removed from this project?
   """
   userWasRemoved: Boolean!
-
-  """
-  The project's VAT number.
-  """
-  vatNumber: String
 
   """
   Name of user on verified account
@@ -2301,6 +2361,11 @@ type Backing implements Node {
   When the backing was completed
   """
   completedAt: DateTime
+
+  """
+  Refund attempts performed by the creator
+  """
+  completedRefundAttempts: [Refund!]!
 
   """
   Message thread between backer and creator
@@ -3327,7 +3392,7 @@ type RewardItem implements Node {
   """
   Whether backers have backed rewards this item belongs to
   """
-  hasBackers: Boolean
+  hasBackers: Boolean!
 
   id: ID!
 
@@ -3342,6 +3407,11 @@ type RewardItem implements Node {
   itemVariants: [ItemVariant!]!
 
   """
+  Item weight related configuration
+  """
+  itemWeight: ItemWeight
+
+  """
   The max amount of this item that may have to be produced based on reward limits.
   """
   maxInventoryCount: Int
@@ -3349,7 +3419,7 @@ type RewardItem implements Node {
   """
   An item name.
   """
-  name: String
+  name: String!
 
   """
   Option types tied to this item
@@ -3681,7 +3751,7 @@ type Photo implements Node {
   """
   URL of the photo
   """
-  url("Whether or not to blur the image." blur: Boolean, "The width of the image in pixels." width: Int!): String
+  url("Whether or not to blur the image." blur: Boolean, "The width of the image in pixels." width: Int!): String!
 }
 
 """
@@ -4123,7 +4193,17 @@ type TaxCategory {
   """
   associatedWithMultipleItems: Boolean!
 
+  """
+  Describes what products or services the tax code covers
+  """
+  codeDescription: String
+
   id: ID!
+
+  """
+  Whether or not this is a default category managed by Kickstarter
+  """
+  ksrManaged: Boolean!
 
   """
   Whether or not the category is nontaxable
@@ -4139,6 +4219,22 @@ type TaxCategory {
   The user assigned label for the vendor tax code
   """
   userLabel: String!
+}
+
+"""
+Item's weight configuration data
+"""
+type ItemWeight {
+  exclude: Boolean!
+
+  id: ID!
+
+  item: RewardItem!
+
+  """
+  item weight
+  """
+  weight: Float
 }
 
 """
@@ -4695,6 +4791,11 @@ type Order implements Node {
   crossSellsTotalFormatted: String!
 
   """
+  Add-ons selected for this order during Pledge Redemption with quantity
+  """
+  crossSellsWithQuantity: [OrderCrossSellWithQuantity!]!
+
+  """
   The currency of the order
   """
   currency: CurrencyCode!
@@ -4819,6 +4920,28 @@ type OrderCrossSell {
   orderable: Orderable!
 
   """
+  The price of one unit of the cross-sell
+  """
+  unitPrice: Int!
+
+  """
+  The price of one unit of the cross-sell
+  """
+  unitPriceFormatted: String!
+}
+
+union Orderable = Reward
+
+"""
+An add-on reward included in an Order during Pledge Redemption as a Cross Sell.
+"""
+type OrderCrossSellWithQuantity {
+  """
+  The orderable of the cross sell
+  """
+  orderable: Orderable!
+
+  """
   The quantity of the add-on in the Order
   """
   quantity: Int!
@@ -4838,8 +4961,6 @@ type OrderCrossSell {
   """
   unitPriceFormatted: String!
 }
-
-union Orderable = Reward
 
 """
 The state of checkout, e.g. complete, in progress, incomplete.
@@ -5235,6 +5356,155 @@ type AdjustmentReward {
 }
 
 """
+A refund.
+"""
+type Refund implements Node {
+  """
+  The associated backing
+  """
+  backing: Backing!
+
+  """
+  The adjustment for the backings reward, addons, and/or bonus amount
+  """
+  backingAdjustmentData: RefundAdjustmentData
+
+  """
+  The refund checkout associated with the backing adjustment
+  """
+  backingAdjustmentRefundCheckout: RefundCheckout
+
+  """
+  Timestamp at which refund was created
+  """
+  createdAt: DateTime!
+
+  id: ID!
+
+  """
+  message from the creator associated with this refund
+  """
+  message: String
+
+  """
+  The adjustment for the order's addons, shipping taxes, and sales taxes
+  """
+  orderAdjustmentData: RefundAdjustmentData
+
+  """
+  reason for the refund
+  """
+  reason: RefundReasonType!
+
+  """
+  The refund details path
+  """
+  refundDetailsPath: String!
+
+  """
+  The total refunded from this refund attempt, formatted
+  """
+  totalFormatted: String!
+}
+
+"""
+The refund adjustment data for a backing or an order.
+"""
+type RefundAdjustmentData {
+  """
+  The adjustment for the addons
+  """
+  addons: [AdjustedReward!]!
+
+  """
+  The adjustment for the bonus support
+  """
+  bonusSupport: String
+
+  """
+  The adjustment for the reward
+  """
+  reward: AdjustedReward
+
+  """
+  The adjustment for the shipping and shipping tax
+  """
+  shipping: String
+
+  """
+  Whether the adjustment was successfully refunded
+  """
+  success: Boolean!
+
+  """
+  The adjustment for the sales tax
+  """
+  tax: String
+
+  """
+  The adjustment total
+  """
+  total: String!
+}
+
+"""
+The adjusted reward.
+"""
+type AdjustedReward {
+  """
+  The total amount refunded for the reward
+  """
+  amount: String!
+
+  """
+  The name of the reward
+  """
+  name: String!
+}
+
+"""
+Intermediary set of changes that have yet to be applied to a backing
+"""
+type RefundCheckout {
+  """
+  The total amount of the refund
+  """
+  amount: Money!
+
+  """
+  The backing associated with the refund
+  """
+  backing: Backing
+
+  """
+  If `requires_action` is true, `client_secret` should be used to initiate additional client-side authentication steps
+  """
+  clientSecret: String
+
+  id: ID!
+
+  """
+  Whether this refund checkout requires additional client-side authentication steps (e.g. 3DS2)
+  """
+  requiresAction: Boolean!
+
+  """
+  The state of the redund checkout
+  """
+  state: RefundCheckoutState!
+
+  """
+  Reason given when state is in a failed state
+  """
+  stateReason: String
+
+  """
+  The full URL to redirect to after payment setup via Stripe in refunds
+  """
+  stripePaymentSetupRedirectUrl: String!
+}
+
+"""
 An HTML string.
 """
 scalar HTML
@@ -5606,6 +5876,16 @@ type DepositAccount {
   identity: Identity
 
   """
+  Whether the deposit account is in the EU.
+  """
+  isInEuropeanUnion: Boolean!
+
+  """
+  Whether the deposit account is in the UK.
+  """
+  isInUnitedKingdom: Boolean!
+
+  """
   Has the Stripe Account been created for this deposit account.
   """
   isStripeAccountCreated: Boolean!
@@ -5963,6 +6243,16 @@ enum PublicProjectState {
   Project is submitted and in prelaunch state.
   """
   SUBMITTED
+
+  """
+  Project that is in prelaunch.
+  """
+  UPCOMING
+
+  """
+  Project that is successful and accepting late pledges.
+  """
+  LATE_PLEDGE
 }
 
 """
@@ -8421,6 +8711,11 @@ type CheckoutWave {
   endable: Boolean!
 
   """
+  When the wave can be closed
+  """
+  endableAt: DateTime!
+
+  """
   Whether the wave has ended
   """
   ended: Boolean!
@@ -8441,6 +8736,169 @@ type CheckoutWave {
   The start date of the wave
   """
   startsAt: DateTime!
+}
+
+"""
+A project's shipping configuration
+"""
+type ShippingConfig {
+  id: ID!
+
+  itemWeightCompletionStats: ItemWeightCompletionStats!
+
+  """
+  How are shipping rates configured? Either flat rate or weight based
+  """
+  shippingType: ShippingTypeEnum!
+
+  """
+  If shipping is weight based, a unit must be provided, e.g. oz or kg
+  """
+  unit: ShippingUnitEnum
+}
+
+"""
+The type of shipping set up, either flat rate or weight based
+"""
+enum ShippingTypeEnum {
+  """
+  weight_based
+  """
+  weight_based
+
+  """
+  flat_rate
+  """
+  flat_rate
+}
+
+"""
+The units that weights will be in, for weight based shipping type
+"""
+enum ShippingUnitEnum {
+  """
+  oz
+  """
+  oz
+
+  """
+  kg
+  """
+  kg
+}
+
+"""
+Stats related to configuring weights for items
+"""
+type ItemWeightCompletionStats {
+  allItemsConfigured: Boolean!
+
+  excludedCount: Int!
+
+  itemsMissingWeightsCount: Int!
+
+  itemsWithWeightCount: Int!
+}
+
+"""
+A shipping zone configured for a project
+"""
+type ShippingZone {
+  id: ID!
+
+  """
+  Whether it has rest of the world location
+  """
+  isRoot: Boolean!
+
+  """
+  The locations included in the zone.
+  """
+  locations: [Location!]!
+
+  """
+  Optional name for the shipping zone
+  """
+  name: String
+
+  """
+  The project the shipping zone belongs
+  """
+  project: Project!
+
+  """
+  Weight ranges with cost, relevant to the zone.
+  """
+  weightRanges: [WeightRange!]!
+}
+
+"""
+A min and max weight range with associated cost
+"""
+type WeightRange {
+  """
+  The cost for this weight range.
+  """
+  cost: Int!
+
+  """
+  The cost for this weight range, formatted.
+  """
+  costFormatted: String!
+
+  id: ID!
+
+  """
+  The max of the weight range (optional)
+  """
+  max: Float
+
+  """
+  The min of the weight range
+  """
+  min: Float!
+}
+
+type LocationVatNumber {
+  """
+  The creator's last used vat number for this location
+  """
+  lastUsed: String
+
+  """
+  The id of the location associated with a given VAT number.
+  """
+  locationId: ID!
+
+  """
+  The name of the location.
+  """
+  locationName: VatConfigLocationEnum!
+
+  """
+  Whether the creator has opted out of VAT collection for this location.
+  """
+  optOut: Boolean!
+
+  """
+  The unique tax identifier for a given location.
+  """
+  vatNumber: String
+}
+
+"""
+The possible locations for a VatConfig.
+"""
+enum VatConfigLocationEnum {
+  """
+  United Kingdom
+  """
+  UK
+
+  """
+  European Union
+  """
+  EU
 }
 
 """
@@ -8615,6 +9073,11 @@ type UserGroup {
 A rule that specifies a resource that a user group can access and how they access it
 """
 type AccessRule {
+  """
+  What percent backed the secret resource?
+  """
+  convertedUserPercentage: Int!
+
   id: ID!
 
   """
@@ -8644,6 +9107,8 @@ enum AccessRuleTypeEnum {
 }
 
 union SecretResource = Reward
+
+scalar JSON
 
 """
 The connection type for Backing.
@@ -9513,75 +9978,6 @@ enum CheckoutAction {
   REAUTH
 
   AUTHENTICATE
-}
-
-"""
-Intermediary set of changes that have yet to be applied to a backing
-"""
-type RefundCheckout {
-  """
-  The total amount of the refund
-  """
-  amount: Money!
-
-  """
-  The backing associated with the refund
-  """
-  backing: Backing
-
-  """
-  If `requires_action` is true, `client_secret` should be used to initiate additional client-side authentication steps
-  """
-  clientSecret: String
-
-  id: ID!
-
-  """
-  Whether this refund checkout requires additional client-side authentication steps (e.g. 3DS2)
-  """
-  requiresAction: Boolean!
-
-  """
-  The state of the redund checkout
-  """
-  state: RefundCheckoutState!
-
-  """
-  Reason given when state is in a failed state
-  """
-  stateReason: String
-
-  """
-  The full URL to redirect to after payment setup via Stripe in refunds
-  """
-  stripePaymentSetupRedirectUrl: String!
-}
-
-"""
-A refund.
-"""
-type Refund implements Node {
-  """
-  The associated backing
-  """
-  backing: Backing!
-
-  """
-  Timestamp at which refund was created
-  """
-  createdAt: DateTime!
-
-  id: ID!
-
-  """
-  message from the creator associated with this refund
-  """
-  message: String
-
-  """
-  reason for the refund
-  """
-  reason: RefundReasonType!
 }
 
 """
@@ -10489,8 +10885,6 @@ type BespokeComponent {
   props: JSON
 }
 
-scalar JSON
-
 """
 A header for an editorial layout.
 """
@@ -11026,6 +11420,11 @@ Provides an overview of pledge projects
 """
 type PledgeProjectsOverview {
   """
+  List of sort options
+  """
+  filterOption: [PledgeProjectsOverviewOptionSet!]
+
+  """
   List of pledged projects
   """
   pledges("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): PledgedProjectsOverviewPledgesConnection
@@ -11033,7 +11432,7 @@ type PledgeProjectsOverview {
   """
   List of sort options
   """
-  sortOptions: [SortOptionGroup!]
+  sortOptions: [PledgeProjectsOverviewOptionSet!]
 }
 
 """
@@ -11091,6 +11490,11 @@ type PledgeProjectOverviewItem {
   tier type
   """
   tierType: String
+
+  """
+  webview url for survey responses or pledge management
+  """
+  webviewUrl: String
 }
 
 """
@@ -11116,11 +11520,11 @@ type PledgedProjectsOverviewPledgeFlags {
 """
 sort option group
 """
-type SortOptionGroup {
+type PledgeProjectsOverviewOptionSet {
   """
   List of sort option groups
   """
-  items: [SortOptionGroupItem!]
+  items: [PledgeProjectsOverviewOptionSetItem!]
 
   """
   Title of the sort option group
@@ -11131,7 +11535,7 @@ type SortOptionGroup {
 """
 sort option group
 """
-type SortOptionGroupItem {
+type PledgeProjectsOverviewOptionSetItem {
   """
   Label for sort option
   """
@@ -11158,6 +11562,40 @@ enum BackingsDashboardSortOptions {
   Sort by newest first
   """
   NEWEST_FIRST
+}
+
+input PledgeProjectsOverviewFilterInput {
+  """
+  Filter by one or more reward statuses.
+  """
+  rewardStatuses: PledgeProjectsOverviewRewardStatusFilter
+
+  """
+  Filter by one or more years.
+  """
+  pledgeDate: Int
+}
+
+enum PledgeProjectsOverviewRewardStatusFilter {
+  """
+  All reward types
+  """
+  All
+
+  """
+  Pledges awaiting rewards for
+  """
+  AWAITING_REWARD
+
+  """
+  pledges reward received
+  """
+  RECEIVED
+
+  """
+  Pledges with no rewards
+  """
+  NO_REWARD
 }
 
 """
@@ -11327,6 +11765,11 @@ type Mutation {
   Creates/updates item tax config and creates/updates tax category for an item
   """
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
+
+  """
+  Creates (or updates) a shipping zone with weight ranges and locations
+  """
+  createOrUpdateShippingZone(input: CreateOrUpdateShippingZoneInput!): CreateOrUpdateShippingZonePayload
 
   """
   Creates/updates a VAT config
@@ -11503,6 +11946,11 @@ type Mutation {
   deleteRewardItem(input: DeleteRewardItemInput!): DeleteRewardItemPayload
 
   """
+  Delete a shipping zone.
+  """
+  deleteShippingZone(input: DeleteShippingZoneInput!): DeleteShippingZonePayload
+
+  """
   Deletes a stock location and associated address
   """
   deleteStockLocation(input: DeleteStockLocationInput!): DeleteStockLocationPayload
@@ -11677,6 +12125,11 @@ type Mutation {
   setProjectStatus(input: SetProjectStatusInput!): SetProjectStatusPayload
 
   """
+  Sets a project's shipping configuration, e.g. weight based or flat rate
+  """
+  setShippingConfig(input: SetShippingConfigInput!): SetShippingConfigPayload
+
+  """
   Sets tax category for an item
   """
   setTaxCategory(input: SetTaxCategoryInput!): SetTaxCategoryPayload
@@ -11821,6 +12274,11 @@ type Mutation {
   Updates an array of ItemVariant
   """
   updateItemVariants(input: UpdateItemVariantsInput!): UpdateItemVariantsPayload
+
+  """
+  Updates item weights given a set of item ids and weights
+  """
+  updateItemWeights(input: UpdateItemWeightsInput!): UpdateItemWeightsPayload
 
   """
   Updates an option type and values for an item
@@ -13821,6 +14279,8 @@ enum AddressCreationSource {
   survey
 
   pledge_redemption
+
+  pledge_redemption_edit
 }
 
 """
@@ -17001,12 +17461,177 @@ input CreateOrUpdateVatConfigInput {
   """
   projectId: ID!
 
-  vatNumber: String!
+  locationVatNumbers: [LocationVatNumberInput!]!
 
   """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+"""
+Input to create or update a VAT number for a location.
+"""
+input LocationVatNumberInput {
+  locationId: ID!
+
+  vatNumber: String
+
+  optOut: Boolean!
+}
+
+"""
+Autogenerated return type of SetShippingConfig
+"""
+type SetShippingConfigPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Updated project
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of SetShippingConfig
+"""
+input SetShippingConfigInput {
+  projectId: ID!
+
+  shippingType: ShippingTypeEnum!
+
+  shippingUnit: ShippingUnitEnum
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateShippingZone
+"""
+type CreateOrUpdateShippingZonePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The project with updated shipping zones
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateShippingZone
+"""
+input CreateOrUpdateShippingZoneInput {
+  """
+  The existing shipping zone id, if updating
+  """
+  shippingZoneId: ID
+
+  """
+  The id of the project the shipping zone is under
+  """
+  projectId: ID!
+
+  """
+  IDs of locations included in the shipping zone
+  """
+  locationIds: [ID!]!
+
+  """
+  Weight ranges and cost data for the shipping zone
+  """
+  weightRanges: [WeightRangeInput!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Input to create or update weight ranges
+"""
+input WeightRangeInput {
+  min: Float!
+
+  max: Float
+
+  cost: Int!
+}
+
+"""
+Autogenerated return type of DeleteShippingZone
+"""
+type DeleteShippingZonePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project!
+}
+
+"""
+Autogenerated input type of DeleteShippingZone
+"""
+input DeleteShippingZoneInput {
+  """
+  The id of the to be deleted shipping
+  """
+  shippingZoneId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UpdateItemWeights
+"""
+type UpdateItemWeightsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Updated project
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of UpdateItemWeights
+"""
+input UpdateItemWeightsInput {
+  projectId: ID!
+
+  itemWeightInputs: [ItemWeightInput!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Input to create or update weight ranges
+"""
+input ItemWeightInput {
+  itemId: ID!
+
+  weight: Float
+
+  exclude: Boolean!
 }
 
 """
@@ -17599,6 +18224,8 @@ type CreateAdjustmentPayload {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  refundCheckout: RefundCheckout
 }
 
 """

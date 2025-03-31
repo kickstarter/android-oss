@@ -29,7 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -174,11 +176,13 @@ fun KSSmallButtonsPreview() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun KSToolbarButons() {
+fun KSToolbarButtons() {
     KSTheme {
         Column {
-            PillButton(countApiIsReady = false, text = "Project Status", isSelected = false, count = 0, onClick = {})
+            IconPillButton(type = FilterRowPillType.SORT, isSelected = false)
+            IconPillButton(type = FilterRowPillType.SORT, isSelected = true)
             PillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
+            PillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
         }
     }
 }
@@ -498,7 +502,7 @@ fun KSSmallButton(
 }
 
 @Composable
-fun IconPillButton(isSelected: Boolean, onClick: () -> Unit, type: FilterRowPillType) {
+fun IconPillButton(isSelected: Boolean, onClick: () -> Unit = {}, type: FilterRowPillType) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
@@ -510,13 +514,28 @@ fun IconPillButton(isSelected: Boolean, onClick: () -> Unit, type: FilterRowPill
             .size(dimensions.iconPillButtonSize)
     ) {
         Icon(
-            painter = // TODO extract to a function use when
-            if (type == FilterRowPillType.SORT) painterResource(id = R.drawable.ic_sort)
-            else if (type == FilterRowPillType.FILTER) painterResource(id = R.drawable.ic_filter)
-            else painterResource(id = R.drawable.ic_sort),
-            contentDescription = "Filter", // TODO improve contentDescription for accesibility
+            painter = painterForFilterType(type),
+            contentDescription = descriptionForFilterType(type),
             tint = colors.icon
         )
+    }
+}
+
+@Composable
+private fun descriptionForFilterType(type: FilterRowPillType): String {
+    return when (type) {
+        FilterRowPillType.SORT -> stringResource(R.string.Sort_by)
+        FilterRowPillType.FILTER -> stringResource(R.string.Filter_fpo)
+        else -> stringResource(R.string.Sort_by)
+    }
+}
+
+@Composable
+private fun painterForFilterType(type: FilterRowPillType): Painter {
+    return when (type) {
+        FilterRowPillType.SORT -> painterResource(id = R.drawable.ic_sort)
+        FilterRowPillType.FILTER -> painterResource(id = R.drawable.ic_filter)
+        else -> painterResource(id = R.drawable.ic_sort)
     }
 }
 

@@ -62,12 +62,12 @@ fun SearchTopBarPreview() {
     }
 }
 
-@Composable // TODO: likely a good moment to start hoisting states for pillTexts/callbacks etc
+@Composable
 fun SearchTopBar(
     modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
-    projectStatusText: String = stringResource(R.string.Project_Status),
+    projectStatusText: String = stringResource(R.string.Project_Status_fpo),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -177,7 +177,7 @@ fun SearchTopBar(
 fun PillBar(
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
-    projectStatusText: String = stringResource(R.string.Project_Status),
+    projectStatusText: String = stringResource(R.string.Project_Status_fpo),
     selectedFilterCounts: Map<String, Int>,
     onSortPressed: () -> Unit,
     onCategoryPressed: () -> Unit,
@@ -204,7 +204,7 @@ fun PillBar(
         IconPillButton(
             type = FilterRowPillType.FILTER,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.FILTER.name, 0) > 0,
-            onClick = {} // Bring it from VM
+            onClick = {} // Bring it from the VM MBL-2219
         )
         PillButton(
             countApiIsReady,
@@ -218,7 +218,7 @@ fun PillBar(
             projectStatusText,
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
             selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
-            {} // Bring it from the VM
+            {} // Bring it from the VM MBL-2219
         )
     }
 }

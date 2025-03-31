@@ -186,7 +186,7 @@ fun SearchScreen(
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
-    val initProjectStatusPillText = stringResource(R.string.Project_Status)
+    val initProjectStatusPillText = stringResource(R.string.Project_Status_fpo)
     val categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
     val projectStatusPillText = remember { mutableStateOf(initProjectStatusPillText) }
     var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }

@@ -204,7 +204,7 @@ fun PillBar(
         IconPillButton(
             type = FilterRowPillType.FILTER,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.FILTER.name, 0) > 0,
-            onClick = {} // Bring it from the VM MBL-2219
+            onClick = {} // Bring it from the VM MBL-2225
         )
         PillButton(
             countApiIsReady,
@@ -218,7 +218,7 @@ fun PillBar(
             projectStatusText,
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
             selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
-            {} // Bring it from the VM MBL-2219
+            onClick = {} // Bring it from the VM MBL-2225
         )
     }
 }

@@ -104,5 +104,9 @@
   <string name="fpo_view_and_manage_your_backings_from_our_new_backings_dashboard" formatted="false">View and manage your backings from our new Backings dashboard! More functionality will become available as our beta evolves.</string>
   <string name="fpo_introducing_the_backings_tab" formatted="false">Introducing the Backings tab</string>
 
+  <!-- FPO's for search and filter Phase 2 --> // - TODO should be removed on MBL-2231
+  <string name="Project_Status_fpo" formatted="false">Project Status</string>
+  <string name="Filter_fpo" formatted="false">Filter</string>
+
 
 </resources>

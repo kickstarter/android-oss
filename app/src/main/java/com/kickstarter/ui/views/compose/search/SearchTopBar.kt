@@ -2,6 +2,8 @@ package com.kickstarter.ui.views.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -27,9 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -66,6 +67,7 @@ fun SearchTopBar(
     modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
+    projectStatusText: String = stringResource(R.string.Project_Status_fpo),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -73,8 +75,6 @@ fun SearchTopBar(
     onCategoryPressed: () -> Unit = {},
     shouldShowPillbar: Boolean = true
 ) {
-    val context = LocalContext.current
-    val isPreview = LocalInspectionMode.current
 
     var value by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -164,6 +164,7 @@ fun SearchTopBar(
             PillBar(
                 countApiIsReady,
                 categoryPillText,
+                projectStatusText,
                 selectedFilterCounts,
                 onSortPressed,
                 onCategoryPressed
@@ -176,19 +177,34 @@ fun SearchTopBar(
 fun PillBar(
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
+    projectStatusText: String = stringResource(R.string.Project_Status_fpo),
     selectedFilterCounts: Map<String, Int>,
     onSortPressed: () -> Unit,
     onCategoryPressed: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingMedium, dimensions.none, dimensions.none, dimensions.none),
+            .horizontalScroll(scrollState)
+            .padding(
+                start = dimensions.paddingMediumLarge,
+                end = dimensions.paddingMediumLarge,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall
+            ),
+        horizontalArrangement = Arrangement.spacedBy(dimensions.listItemSpacingSmall),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconPillButton(
-            selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
-            onSortPressed
+            type = FilterRowPillType.SORT,
+            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
+            onClick = onSortPressed
+        )
+        IconPillButton(
+            type = FilterRowPillType.FILTER,
+            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.FILTER.name, 0) > 0,
+            onClick = {} // Bring it from the VM MBL-2225
         )
         PillButton(
             countApiIsReady,
@@ -197,10 +213,19 @@ fun PillBar(
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
             onCategoryPressed
         )
+        PillButton(
+            countApiIsReady,
+            projectStatusText,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
+            onClick = {} // Bring it from the VM MBL-2225
+        )
     }
 }
 
 enum class FilterRowPillType {
     SORT,
     CATEGORY,
+    FILTER,
+    PROJECT_STATUS
 }

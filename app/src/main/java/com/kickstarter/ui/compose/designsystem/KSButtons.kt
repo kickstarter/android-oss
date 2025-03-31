@@ -29,7 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -38,6 +40,7 @@ import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.views.compose.search.FilterRowPillType
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -166,6 +169,20 @@ fun KSSmallButtonsPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSmallWhiteButton(onClickAction = {}, text = "WHITE", isEnabled = true)
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSToolbarButtons() {
+    KSTheme {
+        Column {
+            IconPillButton(type = FilterRowPillType.SORT, isSelected = false)
+            IconPillButton(type = FilterRowPillType.SORT, isSelected = true)
+            PillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
+            PillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
         }
     }
 }
@@ -485,7 +502,7 @@ fun KSSmallButton(
 }
 
 @Composable
-fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
+fun IconPillButton(isSelected: Boolean, onClick: () -> Unit = {}, type: FilterRowPillType) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
@@ -497,10 +514,28 @@ fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
             .size(dimensions.iconPillButtonSize)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_sort),
-            contentDescription = "Filter",
+            painter = painterForFilterType(type),
+            contentDescription = descriptionForFilterType(type),
             tint = colors.icon
         )
+    }
+}
+
+@Composable
+private fun descriptionForFilterType(type: FilterRowPillType): String {
+    return when (type) {
+        FilterRowPillType.SORT -> stringResource(R.string.Sort_by)
+        FilterRowPillType.FILTER -> stringResource(R.string.Filter_fpo)
+        else -> stringResource(R.string.Sort_by)
+    }
+}
+
+@Composable
+private fun painterForFilterType(type: FilterRowPillType): Painter {
+    return when (type) {
+        FilterRowPillType.SORT -> painterResource(id = R.drawable.ic_sort)
+        FilterRowPillType.FILTER -> painterResource(id = R.drawable.ic_filter)
+        else -> painterResource(id = R.drawable.ic_sort)
     }
 }
 
@@ -514,8 +549,7 @@ fun PillButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .padding(dimensions.paddingSmall),
+        modifier = Modifier,
         colors = ButtonDefaults.outlinedButtonColors(
             backgroundColor = Color.Transparent,
             contentColor = colors.textAccentGrey

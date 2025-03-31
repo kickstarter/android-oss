@@ -78,7 +78,7 @@ val LocalKSCustomDimensions = staticCompositionLocalOf {
 }
 
 val KSStandardDimensions = KSDimensions(
-    strokeWidth = 2.dp,
+    strokeWidth = 1.dp,
     dividerThickness = 1.dp,
     paddingXSmall = 4.dp,
     paddingSmall = 8.dp,

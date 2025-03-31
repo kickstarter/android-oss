@@ -173,7 +173,6 @@ fun SearchScreen(
     onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit = { category, sort -> },
     shouldShowPillbar: Boolean = true
 ) {
-    val context = LocalContext.current
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
@@ -187,7 +186,9 @@ fun SearchScreen(
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
-    var categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
+    val initProjectStatusPillText = stringResource(R.string.Project_Status_fpo)
+    val categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
+    val projectStatusPillText = remember { mutableStateOf(initProjectStatusPillText) }
     var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     var currentCategory by remember { mutableStateOf<Category?>(null) }
 

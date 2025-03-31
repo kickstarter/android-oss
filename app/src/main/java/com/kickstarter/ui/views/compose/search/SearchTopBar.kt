@@ -2,14 +2,19 @@ package com.kickstarter.ui.views.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -61,11 +66,12 @@ fun SearchTopBarPreview() {
     }
 }
 
-@Composable
+@Composable // TODO: likely a good moment to start hoisting states for pillTexts/callbacks etc
 fun SearchTopBar(
     modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
+    projectStatusText: String = stringResource(R.string.Project_Status),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -73,8 +79,6 @@ fun SearchTopBar(
     onCategoryPressed: () -> Unit = {},
     shouldShowPillbar: Boolean = true
 ) {
-    val context = LocalContext.current
-    val isPreview = LocalInspectionMode.current
 
     var value by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -164,6 +168,7 @@ fun SearchTopBar(
             PillBar(
                 countApiIsReady,
                 categoryPillText,
+                projectStatusText,
                 selectedFilterCounts,
                 onSortPressed,
                 onCategoryPressed
@@ -176,19 +181,34 @@ fun SearchTopBar(
 fun PillBar(
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
+    projectStatusText: String = stringResource(R.string.Project_Status),
     selectedFilterCounts: Map<String, Int>,
     onSortPressed: () -> Unit,
     onCategoryPressed: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingMedium, dimensions.none, dimensions.none, dimensions.none),
+            .horizontalScroll(scrollState)
+            .padding(
+                start = dimensions.paddingMediumLarge,
+                end = dimensions.paddingMediumLarge,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall
+            ),
+        horizontalArrangement = Arrangement.spacedBy(dimensions.listItemSpacingSmall),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconPillButton(
-            selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
-            onSortPressed
+            type = FilterRowPillType.SORT,
+            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
+            onClick = onSortPressed
+        )
+        IconPillButton(
+            type = FilterRowPillType.FILTER,
+            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.FILTER.name, 0) > 0,
+            onClick = {}// Bring it from VM
         )
         PillButton(
             countApiIsReady,
@@ -197,10 +217,19 @@ fun PillBar(
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
             onCategoryPressed
         )
+        PillButton(
+            countApiIsReady,
+            projectStatusText,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
+            {} // Bring it from the VM
+        )
     }
 }
 
 enum class FilterRowPillType {
     SORT,
     CATEGORY,
+    FILTER,
+    PROJECT_STATUS
 }

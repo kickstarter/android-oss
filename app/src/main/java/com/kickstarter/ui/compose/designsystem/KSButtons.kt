@@ -38,6 +38,8 @@ import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.toolbars.KSToolbar
+import com.kickstarter.ui.views.compose.search.FilterRowPillType
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -166,6 +168,18 @@ fun KSSmallButtonsPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSmallWhiteButton(onClickAction = {}, text = "WHITE", isEnabled = true)
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSToolbarButons() {
+    KSTheme {
+        Column {
+            PillButton(countApiIsReady= false, text= "Project Status", isSelected = false, count = 0, onClick = {})
+            PillButton(countApiIsReady= false, text= "Category", isSelected = false, count = 0, onClick = {})
         }
     }
 }
@@ -485,7 +499,7 @@ fun KSSmallButton(
 }
 
 @Composable
-fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
+fun IconPillButton(isSelected: Boolean, onClick: () -> Unit, type: FilterRowPillType) {
     IconButton(
         onClick = onClick,
         modifier = Modifier
@@ -497,8 +511,11 @@ fun IconPillButton(isSelected: Boolean, onClick: () -> Unit) {
             .size(dimensions.iconPillButtonSize)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_sort),
-            contentDescription = "Filter",
+            painter = // TODO extract to a function use when
+                if (type == FilterRowPillType.SORT) painterResource(id = R.drawable.ic_sort)
+                else if (type == FilterRowPillType.FILTER) painterResource(id = R.drawable.ic_filter)
+                else painterResource(id = R.drawable.ic_sort),
+            contentDescription = "Filter", // TODO improve contentDescription for accesibility
             tint = colors.icon
         )
     }
@@ -514,8 +531,7 @@ fun PillButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .padding(dimensions.paddingSmall),
+        modifier = Modifier,
         colors = ButtonDefaults.outlinedButtonColors(
             backgroundColor = Color.Transparent,
             contentColor = colors.textAccentGrey

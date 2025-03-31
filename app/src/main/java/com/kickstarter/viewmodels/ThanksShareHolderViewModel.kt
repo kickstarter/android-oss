@@ -46,7 +46,8 @@ interface ThanksShareHolderViewModel {
         fun startShareOnTwitter(): Observable<Pair<String, String>>
     }
 
-    class ThanksShareViewHolderViewModel(environment: Environment) : Inputs, Outputs {
+    class ThanksShareViewHolderViewModel(val environment: Environment) : Inputs, Outputs {
+        private val apolloClient = environment.apolloClientV2()!!
 
         private val thanksShareData = PublishSubject.create<Pair<Project, CheckoutData>>()
         private val project = PublishSubject.create<Project>()
@@ -63,6 +64,10 @@ interface ThanksShareHolderViewModel {
 
         private var disposables = CompositeDisposable()
 
+        private fun Project.webProjectUrlWithFallback() =
+            this.webProjectUrl().takeUnless { it.isBlank() }
+                ?: "${environment.webEndpoint()}/projects/${this.slug()}"
+
         init {
             // Emit project and project name whenever configuration happens
             thanksShareData
@@ -71,23 +76,34 @@ interface ThanksShareHolderViewModel {
                 .subscribe { project.onNext(it) }
                 .addToDisposable(disposables)
 
+            thanksShareData
+                .filter { it.first.webProjectUrl().isBlank() }
+                .switchMap {
+                    apolloClient.getProject(it.first.slug() ?: "")
+                }
+                .onErrorResumeNext(Observable.empty())
+                .subscribe {
+                    project.onNext(it)
+                }
+                .addToDisposable(disposables)
+
             // Share via default Android share
             project
-                .map { Pair.create(it.name(), appendRefTag(it.webProjectUrl(), thanksShare().tag())) }
+                .map { Pair.create(it.name(), appendRefTag(it.webProjectUrlWithFallback(), thanksShare().tag())) }
                 .compose(Transformers.takeWhenV2(shareClick))
                 .subscribe { startShare.onNext(it) }
                 .addToDisposable(disposables)
 
             // Share on Facebook
             project
-                .map { Pair.create(it, appendRefTag(it.webProjectUrl(), thanksFacebookShare().tag())) }
+                .map { Pair.create(it, appendRefTag(it.webProjectUrlWithFallback(), thanksFacebookShare().tag())) }
                 .compose(Transformers.takeWhenV2(shareOnFacebookClick))
                 .subscribe { startShareOnFacebook.onNext(it) }
                 .addToDisposable(disposables)
 
             // Share on Twitter
             project
-                .map { Pair.create(it.name(), appendRefTag(it.webProjectUrl(), thanksTwitterShare().tag())) }
+                .map { Pair.create(it.name(), appendRefTag(it.webProjectUrlWithFallback(), thanksTwitterShare().tag())) }
                 .compose(Transformers.takeWhenV2(shareOnTwitterClick))
                 .subscribe { startShareOnTwitter.onNext(it) }
                 .addToDisposable(disposables)

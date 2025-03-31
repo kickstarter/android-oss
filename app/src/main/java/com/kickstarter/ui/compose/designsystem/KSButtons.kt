@@ -38,7 +38,6 @@ import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.toolbars.KSToolbar
 import com.kickstarter.ui.views.compose.search.FilterRowPillType
 
 @Composable
@@ -178,8 +177,8 @@ fun KSSmallButtonsPreview() {
 fun KSToolbarButons() {
     KSTheme {
         Column {
-            PillButton(countApiIsReady= false, text= "Project Status", isSelected = false, count = 0, onClick = {})
-            PillButton(countApiIsReady= false, text= "Category", isSelected = false, count = 0, onClick = {})
+            PillButton(countApiIsReady = false, text = "Project Status", isSelected = false, count = 0, onClick = {})
+            PillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
         }
     }
 }
@@ -512,9 +511,9 @@ fun IconPillButton(isSelected: Boolean, onClick: () -> Unit, type: FilterRowPill
     ) {
         Icon(
             painter = // TODO extract to a function use when
-                if (type == FilterRowPillType.SORT) painterResource(id = R.drawable.ic_sort)
-                else if (type == FilterRowPillType.FILTER) painterResource(id = R.drawable.ic_filter)
-                else painterResource(id = R.drawable.ic_sort),
+            if (type == FilterRowPillType.SORT) painterResource(id = R.drawable.ic_sort)
+            else if (type == FilterRowPillType.FILTER) painterResource(id = R.drawable.ic_filter)
+            else painterResource(id = R.drawable.ic_sort),
             contentDescription = "Filter", // TODO improve contentDescription for accesibility
             tint = colors.icon
         )

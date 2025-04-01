@@ -108,5 +108,10 @@
   <string name="Project_Status_fpo" formatted="false">Project Status</string>
   <string name="Filter_fpo" formatted="false">Filter</string>
 
+  <!-- FPO's for search and filter Phase X -->
+  <string name="Percentage_raised_fpo" formatted="false">% Raised</string>
+  <string name="Amount_pledged_fpo" formatted="false">Amount Pledged</string>
+  <string name="Goal_fpo" formatted="false">Goal</string>
+
 
 </resources>

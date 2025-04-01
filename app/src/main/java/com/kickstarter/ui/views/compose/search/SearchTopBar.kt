@@ -56,8 +56,7 @@ fun SearchTopBarPreview() {
                 FilterRowPillType.SORT.name to 0,
                 FilterRowPillType.CATEGORY.name to 0
             ),
-            onSortPressed = {},
-            onCategoryPressed = {}
+            onPillPressed = {}
         )
     }
 }
@@ -71,8 +70,7 @@ fun SearchTopBar(
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
-    onSortPressed: () -> Unit = {},
-    onCategoryPressed: () -> Unit = {},
+    onPillPressed: (FilterRowPillType) -> Unit = {},
     shouldShowPillbar: Boolean = true
 ) {
 
@@ -166,8 +164,7 @@ fun SearchTopBar(
                 categoryPillText,
                 projectStatusText,
                 selectedFilterCounts,
-                onSortPressed,
-                onCategoryPressed
+                onPillPressed
             )
         }
     }
@@ -179,8 +176,7 @@ fun PillBar(
     categoryPillText: String = stringResource(R.string.Category),
     projectStatusText: String = stringResource(R.string.Project_Status_fpo),
     selectedFilterCounts: Map<String, Int>,
-    onSortPressed: () -> Unit,
-    onCategoryPressed: () -> Unit,
+    onPillPressed: (FilterRowPillType) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Row(
@@ -199,26 +195,26 @@ fun PillBar(
         IconPillButton(
             type = FilterRowPillType.SORT,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
-            onClick = onSortPressed
+            onClick = { onPillPressed(FilterRowPillType.SORT) }
         )
         IconPillButton(
             type = FilterRowPillType.FILTER,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.FILTER.name, 0) > 0,
-            onClick = {} // Bring it from the VM MBL-2225
+            onClick = { onPillPressed(FilterRowPillType.FILTER) }
         )
         PillButton(
             countApiIsReady,
             categoryPillText,
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
             selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
-            onCategoryPressed
+            onClick = { onPillPressed(FilterRowPillType.CATEGORY) }
         )
         PillButton(
             countApiIsReady,
             projectStatusText,
-            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
+            selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) > 0,
             selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
-            onClick = {} // Bring it from the VM MBL-2225
+            onClick = { onPillPressed(FilterRowPillType.PROJECT_STATUS) }
         )
     }
 }

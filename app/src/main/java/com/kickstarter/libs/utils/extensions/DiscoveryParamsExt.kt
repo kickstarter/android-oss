@@ -7,6 +7,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
+import com.kickstarter.type.PublicProjectState
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import java.util.TreeMap
 
@@ -248,5 +249,17 @@ fun DiscoveryParams.Sort.toProjectSort(): ProjectSort {
         DiscoveryParams.Sort.NEWEST -> ProjectSort.NEWEST
         DiscoveryParams.Sort.MOST_BACKED -> ProjectSort.MOST_BACKED
         DiscoveryParams.Sort.MOST_FUNDED -> ProjectSort.MOST_FUNDED
+    }
+}
+
+fun DiscoveryParams.PublicState.toPublicProjectState(): PublicProjectState {
+    return when (this) {
+        DiscoveryParams.PublicState.LIVE -> PublicProjectState.LIVE
+        DiscoveryParams.PublicState.SUCCESSFUL -> PublicProjectState.SUCCESSFUL
+        DiscoveryParams.PublicState.FAILED -> PublicProjectState.FAILED
+        DiscoveryParams.PublicState.SUBMITTED -> PublicProjectState.SUBMITTED
+        DiscoveryParams.PublicState.UPCOMING -> PublicProjectState.UPCOMING
+        DiscoveryParams.PublicState.LATE_PLEDGE -> PublicProjectState.LATE_PLEDGE
+        DiscoveryParams.PublicState.UNKNOWN -> PublicProjectState.UNKNOWN__
     }
 }

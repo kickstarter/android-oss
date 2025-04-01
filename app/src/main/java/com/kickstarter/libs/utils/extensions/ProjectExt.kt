@@ -285,6 +285,10 @@ fun Project.updateStartedProjectAndDiscoveryParamsList(
  * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
  */
 fun Project.reduce(): Project {
+    val web = Web.builder()
+        .project(this.webProjectUrl())
+        .build()
+
     return Project.Builder()
         .id(this.id())
         .slug(this.slug())
@@ -305,6 +309,7 @@ fun Project.reduce(): Project {
         .backing(backing())
         .availableCardTypes(this.availableCardTypes())
         .category(this.category())
+        .urls(Urls.builder().web(web).build())
         .build()
 }
 

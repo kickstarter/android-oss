@@ -190,11 +190,10 @@ fun SearchScreen(
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
-    val initProjectStatusPillText = stringResource(R.string.Project_Status_fpo)
     val categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
-    val projectStatusPillText = remember { mutableStateOf(initProjectStatusPillText) }
-    var currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
-    var currentCategory by remember { mutableStateOf<Category?>(null) }
+    val projectStatusPill = remember { mutableStateOf("Project Status") }
+    val currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
+    val currentCategory by remember { mutableStateOf<Category?>(null) }
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)
@@ -231,10 +230,12 @@ fun SearchScreen(
             currentSort,
             categories,
             categoryPillText,
+            projectStatusPill,
             initialCategoryPillText,
             selectedFilterCounts,
             countApiIsReady,
-            sortSheetState
+            sortSheetState,
+            mainFilterMenuState
         ),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetBackgroundColor = colors.kds_white
@@ -261,6 +262,7 @@ fun SearchScreen(
                         countApiIsReady = countApiIsReady,
                         categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
+                        projectStatusText = projectStatusPill.value,
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
@@ -428,20 +430,36 @@ private fun sheetContent(
     currentSort: DiscoveryParams.Sort,
     categories: List<Category>,
     categoryPillText: MutableState<String>,
+    projectStatusPillText: MutableState<String>,
     initialCategoryPillText: String,
     selectedFilterCounts: SnapshotStateMap<String, Int>,
     countApiIsReady: Boolean,
-    sortSheetState: ModalBottomSheetState
+    sortSheetState: ModalBottomSheetState,
+    menuSheetState: ModalBottomSheetState
 ): @Composable() (ColumnScope.() -> Unit) {
     var currentCategory1 = currentCategory
     var currentSort1 = currentSort
+
     return {
         when (activeBottomSheet.value) {
             FilterRowPillType.PROJECT_STATUS,
             FilterRowPillType.FILTER -> {
                 FilterMenuBottomSheet(
                     onDismiss = {
-                        coroutineScope.launch { categorySheetState.hide() }
+                        coroutineScope.launch { menuSheetState.hide() }
+                    },
+                    onApply = { projectState ->
+                        projectStatusPillText.value = when (projectState) {
+                            // TODO: fetch proper strings + translations
+                            DiscoveryParams.PublicState.LIVE -> "Live"
+                            DiscoveryParams.PublicState.SUCCESSFUL -> "Successful"
+                            DiscoveryParams.PublicState.FAILED -> "Failed"
+                            DiscoveryParams.PublicState.SUBMITTED -> "Submitted"
+                            DiscoveryParams.PublicState.UPCOMING -> "Upcoming"
+                            DiscoveryParams.PublicState.LATE_PLEDGE -> "Late Pledges"
+                            DiscoveryParams.PublicState.UNKNOWN -> ""
+                            null -> "Project Status"
+                        }
                     }
                 )
             }

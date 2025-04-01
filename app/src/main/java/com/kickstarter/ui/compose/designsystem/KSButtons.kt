@@ -30,6 +30,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -176,13 +177,19 @@ fun KSSmallButtonsPreview() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun KSToolbarButtons() {
+fun KSSearchToolbarButtons() {
     KSTheme {
-        Column {
+        Column(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+        ) {
             IconPillButton(type = FilterRowPillType.SORT, isSelected = false)
             IconPillButton(type = FilterRowPillType.SORT, isSelected = true)
             PillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
             PillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
+            PillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowIcon = false)
+            PillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowIcon = false)
+            PillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
+            PillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
         }
     }
 }
@@ -543,9 +550,11 @@ private fun painterForFilterType(type: FilterRowPillType): Painter {
 fun PillButton(
     countApiIsReady: Boolean = false,
     text: String,
-    isSelected: Boolean,
-    count: Int,
-    onClick: () -> Unit
+    isSelected: Boolean = false,
+    count: Int = 0,
+    onClick: () -> Unit,
+    icon: ImageVector = Icons.Filled.KeyboardArrowDown,
+    shouldShowIcon: Boolean = true,
 ) {
     Button(
         onClick = onClick,
@@ -570,11 +579,13 @@ fun PillButton(
         if (countApiIsReady && count > 0) {
             KSCountBadge(count)
         }
-        Icon(
-            imageVector = Icons.Filled.KeyboardArrowDown,
-            contentDescription = text,
-            tint = colors.icon
-        )
+        if (shouldShowIcon) {
+            Icon(
+                imageVector = icon,
+                contentDescription = text,
+                tint = colors.icon
+            )
+        }
     }
 }
 

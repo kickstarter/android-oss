@@ -1,7 +1,6 @@
 package com.kickstarter.services
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
@@ -820,9 +819,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 addOnItems = complexRewardItemsTransformer(node.items?.rewardItems),
                 rewardImage = node.rewardImage
             )
-        } ?.toList() ?: emptyList()
+        }?.toList() ?: emptyList()
     }
-
     override fun getRewardAllowedAddOns(slug: String, rewardId: Long): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
@@ -858,7 +856,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             return@defer ps
         }
     }
-
 
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
         return Observable.defer {

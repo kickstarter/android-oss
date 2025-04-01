@@ -12,7 +12,7 @@ query GetShippingRulesForRewardId($rewardId: ID!) {
     }
 }
 
-query GetRewardAllowedAddOns($slug: String!) {
+query GetRewardAllowedAddOns($slug: String!, , $rewardImageWidth: Int = 1024) {
     project(slug: $slug) {
         rewards {
             nodes {

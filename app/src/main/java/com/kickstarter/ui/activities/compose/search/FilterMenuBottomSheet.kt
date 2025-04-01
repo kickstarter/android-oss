@@ -1,17 +1,16 @@
 package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -28,10 +27,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
@@ -43,7 +42,6 @@ private fun CategorySelectionSheetPreview() {
     KSTheme {
         FilterMenuBottomSheet(
             selectedProjectStatus = DiscoveryParams.PublicState.LIVE,
-            availableFilters = FilterType.values().asList(),
             onApply = {},
             onDismiss = {}
         )
@@ -62,70 +60,66 @@ enum class FilterType {
 @Composable
 fun FilterMenuBottomSheet(
     selectedProjectStatus: DiscoveryParams.PublicState? = null,
-    availableFilters: List<FilterType> = emptyList(),
+    availableFilters: List<FilterType> = FilterType.values().asList(),
     onDismiss: () -> Unit = {},
     onApply: (DiscoveryParams.State) -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
-
-    KSTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .heightIn(min = 200.dp, max = 770.dp),
-            color = colors.backgroundSurfacePrimary
-        ) {
-            Column {
-                FilterRow(callback = onDismiss, icon = Icons.Filled.Close)
-                LazyColumn {
-                    items(availableFilters) { filter ->
-                        when (filter) {
-                            FilterType.CATEGORIES ->
-                                FilterRow(
-                                    text = titleForFilter(filter),
-                                    callback = onDismiss,
-                                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                )
-                            FilterType.PROJECT_STATUS ->
-                                FilterRow(
-                                    text = titleForFilter(filter),
-                                    callback = onDismiss,
-                                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                )
-                            FilterType.LOCATION ->
-                                FilterRow(
-                                    modifier = Modifier.alpha(0f), // Hide those rows for following phases
-                                    text = titleForFilter(filter),
-                                    callback = onDismiss,
-                                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                )
-                            FilterType.PERCENTAGE_RAISED ->
-                                FilterRow(
-                                    modifier = Modifier.alpha(0f), // Hide those rows for following phases
-                                    text = titleForFilter(filter),
-                                    callback = onDismiss,
-                                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                )
-                            FilterType.AMOUNT_PLEDGED ->
-                                FilterRow(
-                                    modifier = Modifier.alpha(0f), // Hide those rows for following phases
-                                    text = titleForFilter(filter),
-                                    callback = onDismiss,
-                                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                )
-                            FilterType.GOAL_RAISED ->
-                                FilterRow(
-                                    modifier = Modifier.alpha(0f), // Hide those rows for following phases
-                                    text = titleForFilter(filter),
-                                    callback = onDismiss,
-                                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                                )
-                        }
-                    }
+    Column(
+        modifier = Modifier
+            .background(color = colors.backgroundSurfacePrimary)
+            .navigationBarsPadding()
+            .fillMaxWidth(),
+    ) {
+        FilterRow(callback = onDismiss, icon = Icons.Filled.Close)
+        LazyColumn {
+            items(availableFilters) { filter ->
+                when (filter) {
+                    FilterType.CATEGORIES ->
+                        FilterRow(
+                            text = titleForFilter(filter),
+                            callback = onDismiss,
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                        )
+                    FilterType.PROJECT_STATUS ->
+                        FilterRow(
+                            text = titleForFilter(filter),
+                            callback = onDismiss,
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                        )
+                    FilterType.LOCATION ->
+                        FilterRow(
+                            modifier = Modifier.alpha(0f), // Hide those rows for following phases
+                            text = titleForFilter(filter),
+                            callback = onDismiss,
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                        )
+                    FilterType.PERCENTAGE_RAISED ->
+                        FilterRow(
+                            modifier = Modifier.alpha(0f), // Hide those rows for following phases
+                            text = titleForFilter(filter),
+                            callback = onDismiss,
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                        )
+                    FilterType.AMOUNT_PLEDGED ->
+                        FilterRow(
+                            modifier = Modifier.alpha(0f), // Hide those rows for following phases
+                            text = titleForFilter(filter),
+                            callback = onDismiss,
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                        )
+                    FilterType.GOAL_RAISED ->
+                        FilterRow(
+                            modifier = Modifier.alpha(0f), // Hide those rows for following phases
+                            text = titleForFilter(filter),
+                            callback = onDismiss,
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                        )
                 }
             }
         }
+
+        KSSearchBottomSheetFooter()
     }
 }
 

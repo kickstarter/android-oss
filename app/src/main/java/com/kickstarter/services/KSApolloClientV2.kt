@@ -1,5 +1,7 @@
 package com.kickstarter.services
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
@@ -40,6 +42,7 @@ import com.kickstarter.GetProjectCommentsQuery
 import com.kickstarter.GetProjectUpdateCommentsQuery
 import com.kickstarter.GetProjectUpdatesQuery
 import com.kickstarter.GetRepliesForCommentQuery
+import com.kickstarter.GetRewardAllowedAddOnsQuery
 import com.kickstarter.GetRootCategoriesQuery
 import com.kickstarter.GetShippingRulesForRewardIdQuery
 import com.kickstarter.ProjectCreatorDetailsQuery
@@ -160,6 +163,7 @@ interface ApolloClientTypeV2 {
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
+    fun getRewardAllowedAddOns(slug: String, rewardId: Long): Observable<List<Reward>>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
@@ -717,6 +721,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
+    @SuppressLint("LogNotTimber")
     override fun getRewardsFromProject(slug: String): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
@@ -735,6 +740,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     response.data?.let { data ->
                         val rwList: List<Reward?> = data.project?.rewards?.nodes?.map {
                             it?.reward?.let { rwGr ->
+
                                 rewardTransformer(
                                     rewardGr = rwGr,
                                     allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
@@ -801,6 +807,58 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
         }?.toList() ?: emptyList()
     }
+
+    private fun getAddOnsFromAllowedAddOns(addOnsGr: GetRewardAllowedAddOnsQuery.AllowedAddons): List<Reward> {
+        return addOnsGr.edges?.mapNotNull { edge ->
+            val node = edge?.node ?: return@mapNotNull null
+            val shippingRulesGr = node.shippingRulesExpanded?.nodes
+                ?.mapNotNull { it?.shippingRule } ?: emptyList()
+
+            rewardTransformer(
+                requireNotNull(node.reward),
+                shippingRulesExpanded = shippingRulesGr,
+                addOnItems = complexRewardItemsTransformer(node.items?.rewardItems),
+                rewardImage = node.rewardImage
+            )
+        } ?.toList() ?: emptyList()
+    }
+
+    override fun getRewardAllowedAddOns(slug: String, rewardId: Long): Observable<List<Reward>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Reward>>()
+
+            val query = GetRewardAllowedAddOnsQuery(slug)
+
+            this.service
+                .query(query)
+                .rxSingle()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    }
+
+                    response.data?.let { data ->
+                        val rewardNode = data.project?.rewards?.nodes?.firstOrNull { node ->
+                            node?.id?.let { decodeRelayId(it) } == rewardId
+                        }
+                        val allowedAddOns = rewardNode?.allowedAddons
+
+                        val addOns = if (allowedAddOns != null)
+                            getAddOnsFromAllowedAddOns(allowedAddOns)
+                        else emptyList()
+                        ps.onNext(addOns)
+                    }
+
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+
+            return@defer ps
+        }
+    }
+
 
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
         return Observable.defer {

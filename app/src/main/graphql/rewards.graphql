@@ -11,3 +11,30 @@ query GetShippingRulesForRewardId($rewardId: ID!) {
         }
     }
 }
+
+query GetRewardAllowedAddOns($slug: String!) {
+    project(slug: $slug) {
+        rewards {
+            nodes {
+                id
+                allowedAddons {
+                    edges {
+                        node {
+                            shippingRulesExpanded {
+                                nodes {
+                                    ... shippingRule
+                                }
+                            }
+                            ... reward
+                            items {
+                                ... rewardItems
+                            }
+                            ...rewardImage
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}

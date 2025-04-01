@@ -1,6 +1,8 @@
 package com.kickstarter.viewmodels.projectpage
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -187,14 +189,15 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         }
     }
 
+    @SuppressLint("LogNotTimber")
     private fun getAddOns(selectedShippingRule: ShippingRule) {
         // - Do not execute call unless reward has addOns
         if (currentUserReward.hasAddons()) {
             scope.launch(dispatcher) {
                 apolloClient
-                    .getProjectAddOns(
+                    .getRewardAllowedAddOns(
                         slug = project.slug() ?: "",
-                        locationId = selectedShippingRule.location() ?: LocationFactory.empty()
+                        rewardId = currentUserReward.id(),
                     )
                     .asFlow()
                     .onStart {

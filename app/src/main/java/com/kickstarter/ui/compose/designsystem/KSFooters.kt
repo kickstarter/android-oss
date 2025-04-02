@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
@@ -142,8 +143,13 @@ fun KSStandardFooter(
     }
 }
 
+enum class BottomSheetFooterTestTags {
+    RESET,
+    SEE_RESULTS
+}
 @Composable
 fun KSSearchBottomSheetFooter(
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     resetOnclickAction: () -> Unit = {},
     onApply: () -> Unit = {}
@@ -152,7 +158,7 @@ fun KSSearchBottomSheetFooter(
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(dimensions.searchBottomSheetFooter)
             .drawBehind {
@@ -166,14 +172,15 @@ fun KSSearchBottomSheetFooter(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(dimensions.paddingLarge),
             horizontalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
         ) {
             KSOutlinedButton(
                 modifier = Modifier
-                    .defaultMinSize(minHeight = dimensions.minButtonHeight),
+                    .defaultMinSize(minHeight = dimensions.minButtonHeight)
+                    .testTag(BottomSheetFooterTestTags.RESET.name),
                 backgroundColor = colors.backgroundSurfacePrimary,
                 textColor = colors.textPrimary,
                 onClickAction = {
@@ -183,7 +190,9 @@ fun KSSearchBottomSheetFooter(
                 isEnabled = !isLoading
             )
             KSButton(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag(BottomSheetFooterTestTags.SEE_RESULTS.name),
                 backgroundColor = colors.kds_black,
                 textColor = colors.kds_white,
                 onClickAction = {

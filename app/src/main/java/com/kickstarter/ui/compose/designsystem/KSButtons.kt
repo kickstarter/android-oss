@@ -548,6 +548,7 @@ private fun painterForFilterType(type: FilterRowPillType): Painter {
 
 @Composable
 fun PillButton(
+    modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
     text: String,
     isSelected: Boolean = false,
@@ -558,7 +559,7 @@ fun PillButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier,
+        modifier = modifier,
         colors = ButtonDefaults.outlinedButtonColors(
             backgroundColor = Color.Transparent,
             contentColor = colors.textAccentGrey

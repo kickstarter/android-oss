@@ -203,17 +203,17 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.FILTER) }
         )
         PillButton(
-            countApiIsReady,
-            categoryPillText,
-            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
-            selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
+            countApiIsReady = countApiIsReady,
+            text = categoryPillText,
+            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
+            count = selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
             onClick = { onPillPressed(FilterRowPillType.CATEGORY) }
         )
         PillButton(
-            countApiIsReady,
-            projectStatusText,
-            selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) > 0,
-            selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
+            countApiIsReady = countApiIsReady,
+            text = projectStatusText,
+            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) > 0,
+            count = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
             onClick = { onPillPressed(FilterRowPillType.PROJECT_STATUS) }
         )
     }

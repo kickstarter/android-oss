@@ -7,14 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,39 +43,21 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.PillButton
+import timber.log.Timber
 
-@Composable
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun ProjectStatusRowPreview() {
-    KSTheme {
-        ProjectStatusRow(
-            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-            text = titleForFilter(FilterType.PROJECT_STATUS)
-        )
-    }
-}
+object FilterMenuTestTags {
+    const val SHEET = "filter_menu_sheet"
+    const val DISMISS_ROW = "dismiss_row"
+    const val CATEGORY_ROW = "category_filter_row"
+    const val PROJECT_STATUS_ROW = "project_status_row"
+    const val FOOTER = "footer"
 
-@Composable
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun FilterMenuSheetPreview() {
-    KSTheme {
-        FilterMenuBottomSheet(
-            selectedProjectStatus = DiscoveryParams.PublicState.LIVE,
-            onApply = {},
-            onDismiss = {}
-        )
-    }
+    fun pillTag(state: DiscoveryParams.PublicState?) = "pill_${state?.name ?: "ALL"}"
 }
 
 enum class FilterType {
     CATEGORIES,
-    PROJECT_STATUS,
-//    LOCATION,
-//    PERCENTAGE_RAISED,
-//    AMOUNT_PLEDGED,
-//    GOAL_RAISED
+    PROJECT_STATUS
 }
 
 @Composable
@@ -84,65 +68,54 @@ fun FilterMenuBottomSheet(
     onApply: (DiscoveryParams.PublicState?) -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
-    Column(
+
+    Surface(
         modifier = Modifier
-            .background(color = colors.backgroundSurfacePrimary)
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .testTag(FilterMenuTestTags.SHEET),
+        color = colors.backgroundSurfacePrimary
     ) {
-        FilterRow(callback = onDismiss, icon = Icons.Filled.Close)
-        LazyColumn {
-            items(availableFilters) { filter ->
-                when (filter) {
-                    FilterType.CATEGORIES ->
-                        FilterRow(
+        Column(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary)
+        ) {
+            FilterRow(
+                callback = onDismiss,
+                icon = Icons.Filled.Close,
+                modifier = Modifier.testTag(FilterMenuTestTags.DISMISS_ROW)
+            )
+
+            LazyColumn {
+                items(availableFilters) { filter ->
+                    when (filter) {
+                        FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
                             callback = onDismiss,
-                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
-                    FilterType.PROJECT_STATUS ->
-                        ProjectStatusRow(
+
+                        FilterType.PROJECT_STATUS -> ProjectStatusRow(
                             text = titleForFilter(filter),
                             callback = { status -> projStatus.value = status },
-                            selectedStatus = projStatus
+                            selectedStatus = projStatus,
+                            modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
                         )
-//                    FilterType.LOCATION ->
-//                        FilterRow(
-//                            text = titleForFilter(filter),
-//                            callback = onDismiss,
-//                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-//                        )
-//                    FilterType.PERCENTAGE_RAISED ->
-//                        FilterRow(
-//                            text = titleForFilter(filter),
-//                            callback = onDismiss,
-//                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-//                        )
-//                    FilterType.AMOUNT_PLEDGED ->
-//                        FilterRow(
-//                            text = titleForFilter(filter),
-//                            callback = onDismiss,
-//                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-//                        )
-//                    FilterType.GOAL_RAISED ->
-//                        FilterRow(
-//                            text = titleForFilter(filter),
-//                            callback = onDismiss,
-//                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
-//                        )
+                    }
                 }
             }
+
+            KSSearchBottomSheetFooter(
+                modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
+                resetOnclickAction = {
+                    projStatus.value = null
+                    onApply(projStatus.value)
+                },
+                onApply = {
+                    onApply(projStatus.value)
+                }
+            )
         }
-
-        KSSearchBottomSheetFooter(
-            resetOnclickAction = {
-                projStatus.value = null // Resets to default value
-                onApply(projStatus.value)
-            },
-            onApply = {
-                onApply(projStatus.value)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
@@ -151,19 +124,18 @@ fun FilterMenuBottomSheet(
 private fun ProjectStatusRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Filter_fpo),
-    selectedStatus: MutableState<DiscoveryParams.PublicState?> = mutableStateOf<DiscoveryParams.PublicState?>(null), // -> Reset button will trigger this piece
+    selectedStatus: MutableState<DiscoveryParams.PublicState?> = mutableStateOf(null),
     callback: (DiscoveryParams.PublicState?) -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
     var switchChecked by remember { mutableStateOf(false) }
 
-    // - Pill options list
     val pillOptions = listOf(
         null to stringResource(R.string.Project_Status_All_fpo),
         DiscoveryParams.PublicState.LIVE to stringResource(R.string.Project_Status_Live_fpo),
         DiscoveryParams.PublicState.LATE_PLEDGE to stringResource(R.string.Project_Status_Late_Pledges_fpo),
-        DiscoveryParams.PublicState.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo), // TODO: might require to be removed waiting on Alison's confirmation
+        DiscoveryParams.PublicState.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo),
         DiscoveryParams.PublicState.UPCOMING to stringResource(R.string.Project_Status_Upcoming_fpo),
     )
 
@@ -185,9 +157,7 @@ private fun ProjectStatusRow(
                 end = dimensions.paddingMediumSmall
             )
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(KSTheme.dimensions.listItemSpacingSmall)
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(KSTheme.dimensions.listItemSpacingSmall)) {
             Text(
                 text = text,
                 style = typographyV2.headingLG,
@@ -200,10 +170,12 @@ private fun ProjectStatusRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 pillOptions.forEach { (state, label) ->
+                    Timber.d("*****${FilterMenuTestTags.pillTag(state)}")
                     PillButton(
                         text = label,
                         shouldShowIcon = false,
                         isSelected = selectedStatus.value == state,
+                        modifier = Modifier.testTag(FilterMenuTestTags.pillTag(state)),
                         onClick = {
                             val newSelection = if (selectedStatus.value == state) null else state
                             selectedStatus.value = newSelection
@@ -213,8 +185,8 @@ private fun ProjectStatusRow(
                 }
             }
 
-            // TODO: This row might potentially not be necessary waiting for Alison's confirmation
             Row(
+                modifier = Modifier.height(0.dp), // placeholder for future API support
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -229,24 +201,12 @@ private fun ProjectStatusRow(
                     onCheckedChange = {
                         switchChecked = it
                         if (switchChecked) {
-                            callback(null)
+                            callback(DiscoveryParams.PublicState.SUCCESSFUL)
                         }
                     }
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun titleForFilter(filter: FilterType): String {
-    return when (filter) {
-        FilterType.CATEGORIES -> stringResource(R.string.Category)
-        FilterType.PROJECT_STATUS -> stringResource(R.string.Project_Status_fpo)
-//        FilterType.LOCATION -> stringResource(R.string.Location)
-//        FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised_fpo)
-//        FilterType.AMOUNT_PLEDGED -> stringResource(R.string.Amount_pledged_fpo)
-//        FilterType.GOAL_RAISED -> stringResource(R.string.Goal_fpo)
     }
 }
 
@@ -276,12 +236,13 @@ private fun FilterRow(
                 bottom = dimensions.paddingLarge,
                 end = dimensions.paddingMediumSmall
             ),
-
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val style =
-            if (text == stringResource(R.string.Filter_fpo)) typographyV2.headingXL
-            else typographyV2.headingLG
+        val style = if (text == stringResource(R.string.Filter_fpo)) {
+            typographyV2.headingXL
+        } else {
+            typographyV2.headingLG
+        }
 
         Text(
             text = text,
@@ -290,9 +251,46 @@ private fun FilterRow(
             color = colors.textPrimary
         )
         IconButton(
-            onClick = callback
+            onClick = { callback.invoke() }
         ) {
-            Icon(imageVector = icon, contentDescription = "Close", tint = colors.icon) // TODO: Content description change
+            Icon(
+                imageVector = icon,
+                contentDescription = "Dismiss Filter Menu",
+                tint = colors.icon
+            )
         }
+    }
+}
+
+@Composable
+private fun titleForFilter(filter: FilterType): String {
+    return when (filter) {
+        FilterType.CATEGORIES -> stringResource(R.string.Category)
+        FilterType.PROJECT_STATUS -> stringResource(R.string.Project_Status_fpo)
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun ProjectStatusRowPreview() {
+    KSTheme {
+        ProjectStatusRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            text = titleForFilter(FilterType.PROJECT_STATUS)
+        )
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterMenuSheetPreview() {
+    KSTheme {
+        FilterMenuBottomSheet(
+            selectedProjectStatus = DiscoveryParams.PublicState.LIVE,
+            onApply = {},
+            onDismiss = {}
+        )
     }
 }

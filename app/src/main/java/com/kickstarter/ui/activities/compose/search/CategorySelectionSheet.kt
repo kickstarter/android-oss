@@ -138,7 +138,7 @@ fun CategorySelectionSheet(
 
                 val resetCategoryName = stringResource(R.string.Category)
                 KSSearchBottomSheetFooter(
-                    isLoading,
+                    isLoading = isLoading,
                     resetOnclickAction = {
                         selectedCategory.value = Category.builder().name(resetCategoryName).build()
                     },

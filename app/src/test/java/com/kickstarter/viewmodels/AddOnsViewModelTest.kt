@@ -91,7 +91,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `analytic event sent for late pledges, should be sent wen calling sendEvent()`() {
+    fun `analytic event sent d late pledges, should be sent wen calling sendEvent()`() {
         val addOnReward = RewardFactory.addOn()
         val aDifferentAddOnReward = RewardFactory.addOnSingle()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
@@ -116,16 +116,17 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test_on_addons_added_or_removed`() = runTest {
-        val addOnReward = RewardFactory.addOn()
-        val aDifferentAddOnReward = RewardFactory.addOnSingle()
+    fun test_on_addons_added_or_removed() = runTest {
+        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getProjectAddOns(
+            override fun getRewardAllowedAddOns(
                 slug: String,
-                locationId: Location
+                rewardId: Long
             ): Observable<List<Reward>> {
+                assertEquals(99L, rewardId)
                 return Observable.just(addOnsList)
             }
         }
@@ -135,7 +136,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setup(env)
-        val rw = RewardFactory.reward().toBuilder().hasAddons(true).build()
+
+        val rw = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .id(99L)
+            .pledgeAmount(20.0)
+            .build()
+
         viewModel.userRewardSelection(rw)
         viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
@@ -147,7 +154,6 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             viewModel.addOnsUIState.toList(uiState)
         }
 
-        // - Initial state addOns freshly loaded,
         assertEquals(
             uiState.last(),
             AddOnsUIState(
@@ -160,10 +166,10 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             )
         )
 
-        // Increment addOnReward to quantity 3
         viewModel.updateSelection(addOnsList.first().id(), 3)
 
         val total = viewModel.getPledgeDataAndReason()?.first?.pledgeAmountTotal()?.toDouble() ?: 0.0
+
         assertEquals(
             uiState.last(),
             AddOnsUIState(
@@ -178,15 +184,16 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `test add bonus Support without selecting addOns`() = runTest {
-        val addOnReward = RewardFactory.addOn()
-        val aDifferentAddOnReward = RewardFactory.addOnSingle()
+        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getProjectAddOns(
+            override fun getRewardAllowedAddOns(
                 slug: String,
-                locationId: Location
+                rewardId: Long
             ): Observable<List<Reward>> {
+                assertEquals(99L, rewardId)
                 return Observable.just(addOnsList)
             }
         }
@@ -196,7 +203,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setup(env)
-        val rw = RewardFactory.reward().toBuilder().hasAddons(true).pledgeAmount(55.0).build()
+
+        val rw = RewardFactory.reward().toBuilder()
+            .id(99L)
+            .hasAddons(true)
+            .pledgeAmount(55.0)
+            .build()
+
         viewModel.userRewardSelection(rw)
         viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
@@ -208,9 +221,11 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             viewModel.addOnsUIState.toList(uiState)
         }
 
-        // - Initial state addOns freshly loaded,
+        advanceUntilIdle()
+
+        val finalState = uiState.last { !it.isLoading }
+
         assertEquals(
-            uiState.last(),
             AddOnsUIState(
                 addOns = addOnsList,
                 totalCount = 0,
@@ -218,15 +233,16 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 shippingRule = ShippingRuleFactory.canadaShippingRule(),
                 totalBonusAmount = 0.0,
                 totalPledgeAmount = rw.pledgeAmount()
-            )
+            ),
+            finalState
         )
 
-        // - bonus Amount has been added
         viewModel.bonusAmountUpdated(3.0)
 
-        // - No addOns selected, but increase bonus amount,
+        advanceUntilIdle()
+        val finalBonusState = uiState.last { it.totalBonusAmount == 3.0 }
+
         assertEquals(
-            uiState.last(),
             AddOnsUIState(
                 addOns = addOnsList,
                 totalCount = 0,
@@ -234,23 +250,24 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 shippingRule = ShippingRuleFactory.canadaShippingRule(),
                 totalBonusAmount = 3.0,
                 totalPledgeAmount = rw.pledgeAmount() + 3.0
-            )
+            ),
+            finalBonusState
         )
     }
 
     @Test
     fun `test backed addOns total amount on start`() = runTest {
-
-        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
-        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
+
+        val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getProjectAddOns(
+            override fun getRewardAllowedAddOns(
                 slug: String,
-                locationId: Location
+                rewardId: Long
             ): Observable<List<Reward>> {
-                return Observable.just(addOnsList)
+                assertEquals(99L, rewardId)
+                return Observable.just(listOf(aDifferentAddOnReward))
             }
         }
 
@@ -258,21 +275,42 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .apolloClientV2(apolloClient)
             .build()
 
-        val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
-        val backedReward = RewardFactory.reward().toBuilder().hasAddons(true).build()
-        val backing = BackingFactory.backing(reward = backedReward).toBuilder().addOns(listOf(backedAddOnq)).build()
-        val testProject = ProjectFactory.project().toBuilder().rewards(listOf(backedReward)).backing(backing).build()
+        val backedReward = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .id(99L)
+            .build()
+
+        val backing = BackingFactory.backing(reward = backedReward)
+            .toBuilder()
+            .addOns(listOf(backedAddOnq))
+            .build()
+
+        val testProject = ProjectFactory.project()
+            .toBuilder()
+            .rewards(listOf(backedReward))
+            .backing(backing)
+            .build()
+
         val testProjectData = ProjectData.builder().project(testProject).build()
 
         createViewModel(env)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.CHANGE_REWARD, testProjectData, backedReward, shippingRule = shippingRule))
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            PledgeData.with(
+                PledgeFlowContext.CHANGE_REWARD,
+                testProjectData,
+                backedReward,
+                shippingRule = shippingRule
+            )
+        )
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
 
         val uiState = mutableListOf<AddOnsUIState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
         backgroundScope.launch(dispatcher) {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
@@ -280,31 +318,33 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-        val pledgeDataAndReason = viewModel.getPledgeDataAndReason()
 
-        // - Initial state queried for addOns and updated with backed information
-        assertEquals(uiState.last().addOns.size, 2)
-        assertEquals(uiState.last().addOns.last(), backedAddOnq)
-        assertEquals(uiState.last().addOns.first(), addOnReward)
-        assertEquals(uiState.last().totalCount, 4)
-        assertEquals(pledgeDataAndReason?.first?.shippingRule(), shippingRule)
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.size, 1) // - only the backed AddOn
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.first()?.id(), backedAddOnq.id()) // - only the backed AddOn
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.first()?.quantity(), backedAddOnq.quantity()) // - only the backed AddOn
+        val pledgeDataAndReason = viewModel.getPledgeDataAndReason()
+        val pledgeData = pledgeDataAndReason?.first
+
+        assertEquals(1, uiState.last().addOns.size)
+        assertEquals(aDifferentAddOnReward.id(), uiState.last().addOns.first().id())
+
+        assertEquals(4, uiState.last().totalCount)
+
+        assertEquals(shippingRule, pledgeData?.shippingRule())
+        assertEquals(1, pledgeData?.addOns()?.size)
+        assertEquals(backedAddOnq.id(), pledgeData?.addOns()?.first()?.id())
+        assertEquals(backedAddOnq.quantity(), pledgeData?.addOns()?.first()?.quantity())
     }
 
     @Test
     fun `test backed addOns total amount when the amount has been updated`() = runTest {
-
         val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getProjectAddOns(
+            override fun getRewardAllowedAddOns(
                 slug: String,
-                locationId: Location
+                rewardId: Long
             ): Observable<List<Reward>> {
+                assertEquals(99L, rewardId)
                 return Observable.just(addOnsList)
             }
         }
@@ -315,37 +355,66 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
-        val backedReward = RewardFactory.reward().toBuilder().hasAddons(true).build()
-        val backing = BackingFactory.backing(reward = backedReward).toBuilder().addOns(listOf(backedAddOnq)).build()
-        val testProject = ProjectFactory.project().toBuilder().rewards(listOf(backedReward)).backing(backing).build()
+        val backedReward = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .id(99L)
+            .build()
+
+        val backing = BackingFactory.backing(reward = backedReward)
+            .toBuilder()
+            .addOns(listOf(backedAddOnq))
+            .build()
+
+        val testProject = ProjectFactory.project()
+            .toBuilder()
+            .rewards(listOf(backedReward))
+            .backing(backing)
+            .build()
+
         val testProjectData = ProjectData.builder().project(testProject).build()
 
         createViewModel(env)
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.CHANGE_REWARD, testProjectData, backedReward, shippingRule = shippingRule))
+        bundle.putParcelable(
+            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+            PledgeData.with(
+                PledgeFlowContext.CHANGE_REWARD,
+                testProjectData,
+                backedReward,
+                shippingRule = shippingRule
+            )
+        )
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
 
         val uiState = mutableListOf<AddOnsUIState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
         backgroundScope.launch(dispatcher) {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
 
-            // - Increment addOnReward to quantity 3, the addOn that was not backed
-            viewModel.updateSelection(addOnsList.first().id(), 3)
+            viewModel.updateSelection(addOnReward.id(), 3)
+
             viewModel.addOnsUIState.toList(uiState)
         }
 
         advanceUntilIdle()
+
         val pledgeDataAndReason = viewModel.getPledgeDataAndReason()
+        val pledgeData = pledgeDataAndReason?.first
 
-        assertEquals(uiState.last().totalCount, 7)
+        assertEquals(7, uiState.last().totalCount)
+        assertEquals(2, pledgeData?.addOns()?.size)
 
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.size, 2)
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.first()?.id(), addOnReward.id())
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.first()?.quantity(), 3)
-        assertEquals(pledgeDataAndReason?.first?.addOns()?.last(), backedAddOnq)
+        val firstAddOn = pledgeData?.addOns()?.first()
+        val secondAddOn = pledgeData?.addOns()?.last()
+
+        assertEquals(addOnReward.id(), firstAddOn?.id())
+        assertEquals(3, firstAddOn?.quantity())
+
+        assertEquals(backedAddOnq.id(), secondAddOn?.id())
+        assertEquals(backedAddOnq.quantity(), secondAddOn?.quantity())
     }
 
     @Test

@@ -186,7 +186,9 @@ fun SearchScreen(
     val selectedFilterCounts: SnapshotStateMap<String, Int> = remember {
         mutableStateMapOf(
             FilterRowPillType.SORT.name to 0,
-            FilterRowPillType.CATEGORY.name to 0
+            FilterRowPillType.CATEGORY.name to 0,
+            FilterRowPillType.FILTER.name to 0,
+            FilterRowPillType.PROJECT_STATUS.name to 0,
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
@@ -461,6 +463,14 @@ private fun sheetContent(
                             null -> "Project Status"
                         }
                         coroutineScope.launch { menuSheetState.hide() }
+
+                        if (projectState != null) {
+                            selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = 1
+                            selectedFilterCounts[FilterRowPillType.FILTER.name] = 1
+                        } else {
+                            selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = 0
+                            selectedFilterCounts[FilterRowPillType.FILTER.name] = 0
+                        }
                     }
                 )
             }

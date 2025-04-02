@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -100,7 +101,8 @@ fun FilterMenuBottomSheet(
                     FilterType.PROJECT_STATUS ->
                         ProjectStatusRow(
                             text = titleForFilter(filter),
-                            callback = { status -> projStatus.value = status }
+                            callback = { status -> projStatus.value = status },
+                            selectedStatus = projStatus
                         )
 //                    FilterType.LOCATION ->
 //                        FilterRow(
@@ -132,7 +134,7 @@ fun FilterMenuBottomSheet(
 
         KSSearchBottomSheetFooter(
             resetOnclickAction = {
-                projStatus.value = null
+                projStatus.value = null // Resets to default value
                 onApply(projStatus.value)
             },
             onApply = {
@@ -149,11 +151,22 @@ fun FilterMenuBottomSheet(
 private fun ProjectStatusRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Filter_fpo),
+    selectedStatus: MutableState<DiscoveryParams.PublicState?> = mutableStateOf<DiscoveryParams.PublicState?>(null), // -> Reset button will trigger this piece
     callback: (DiscoveryParams.PublicState?) -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
     var switchChecked by remember { mutableStateOf(false) }
+
+    // - Pill options list
+    val pillOptions = listOf(
+        null to stringResource(R.string.Project_Status_All_fpo),
+        DiscoveryParams.PublicState.LIVE to stringResource(R.string.Project_Status_Live_fpo),
+        DiscoveryParams.PublicState.LATE_PLEDGE to stringResource(R.string.Project_Status_Late_Pledges_fpo),
+        DiscoveryParams.PublicState.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo), // TODO: might require to be removed waiting on Alison's confirmation
+        DiscoveryParams.PublicState.UPCOMING to stringResource(R.string.Project_Status_Upcoming_fpo),
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -180,92 +193,28 @@ private fun ProjectStatusRow(
                 style = typographyV2.headingLG,
                 color = colors.textPrimary
             )
+
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // TODO: change the states to a Map, and create a function that will update in each pill click
-                val isAllPill = remember { mutableStateOf(true) }
-                val isLivePill = remember { mutableStateOf(false) }
-                val isLatePledgePill = remember { mutableStateOf(false) }
-                val isSuccessfulPill = remember { mutableStateOf(false) }
-                val isUpcomingPill = remember { mutableStateOf(false) }
-
-                PillButton(
-                    text = stringResource(R.string.Project_Status_All_fpo),
-                    shouldShowIcon = false,
-                    isSelected = isAllPill.value,
-                    onClick = {
-                        isAllPill.value = !isAllPill.value
-                        isLivePill.value = false
-                        isLatePledgePill.value = false
-                        isSuccessfulPill.value = false
-                        isUpcomingPill.value = false
-                        callback(null)
-                    }
-                )
-
-                PillButton(
-                    text = stringResource(R.string.Project_Status_Live_fpo),
-                    shouldShowIcon = false,
-                    isSelected = isLivePill.value,
-                    onClick = {
-                        isLivePill.value = !isLivePill.value
-                        isAllPill.value = false
-                        isLatePledgePill.value = false
-                        isSuccessfulPill.value = false
-                        isUpcomingPill.value = false
-                        callback(DiscoveryParams.PublicState.LIVE)
-                    }
-                )
-
-                PillButton(
-                    text = stringResource(R.string.Project_Status_Late_Pledges_fpo),
-                    shouldShowIcon = false,
-                    isSelected = isLatePledgePill.value,
-                    onClick = {
-                        isLatePledgePill.value = !isLatePledgePill.value
-                        isAllPill.value = false
-                        isLivePill.value = false
-                        isSuccessfulPill.value = false
-                        isUpcomingPill.value = false
-                        callback(DiscoveryParams.PublicState.LATE_PLEDGE)
-                    }
-                )
-
-                PillButton(
-                    text = stringResource(R.string.Project_Status_Successful_fpo),
-                    shouldShowIcon = false,
-                    isSelected = isSuccessfulPill.value,
-                    onClick = {
-                        isSuccessfulPill.value = !isSuccessfulPill.value
-                        isAllPill.value = false
-                        isLivePill.value = false
-                        isLatePledgePill.value = false
-                        isUpcomingPill.value = false
-                        callback(DiscoveryParams.PublicState.SUCCESSFUL)
-                    }
-                )
-
-                PillButton(
-                    text = stringResource(R.string.Project_Status_Upcoming_fpo),
-                    shouldShowIcon = false,
-                    isSelected = isUpcomingPill.value,
-                    onClick = {
-                        isUpcomingPill.value = !isUpcomingPill.value
-                        isAllPill.value = false
-                        isLivePill.value = false
-                        isLatePledgePill.value = false
-                        isSuccessfulPill.value = false
-                        callback(DiscoveryParams.PublicState.UPCOMING)
-                    }
-                )
+                pillOptions.forEach { (state, label) ->
+                    PillButton(
+                        text = label,
+                        shouldShowIcon = false,
+                        isSelected = selectedStatus.value == state,
+                        onClick = {
+                            val newSelection = if (selectedStatus.value == state) null else state
+                            selectedStatus.value = newSelection
+                            callback(newSelection)
+                        }
+                    )
+                }
             }
 
-            // TODO: This row might potentially not be necessary waiting for alison's confirmation
+            // TODO: This row might potentially not be necessary waiting for Alison's confirmation
             Row(
-                modifier = Modifier.height(0.dp), // Hide until multi selection query available
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -279,7 +228,6 @@ private fun ProjectStatusRow(
                     checked = switchChecked,
                     onCheckedChange = {
                         switchChecked = it
-
                         if (switchChecked) {
                             callback(null)
                         }

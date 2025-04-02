@@ -460,6 +460,7 @@ private fun sheetContent(
                             DiscoveryParams.PublicState.UNKNOWN -> ""
                             null -> "Project Status"
                         }
+                        coroutineScope.launch { menuSheetState.hide() }
                     }
                 )
             }

@@ -8,7 +8,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
-import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -155,7 +154,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 }
             }
 
-            getAddOns(shippingRule)
+            getAddOns()
         }
     }
 
@@ -183,18 +182,18 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
         if (this.shippingRule != shippingRule) {
             this.shippingRule = shippingRule
-            getAddOns(selectedShippingRule = shippingRule)
+            getAddOns()
         }
     }
 
-    private fun getAddOns(selectedShippingRule: ShippingRule) {
+    private fun getAddOns() {
         // - Do not execute call unless reward has addOns
         if (currentUserReward.hasAddons()) {
             scope.launch(dispatcher) {
                 apolloClient
-                    .getProjectAddOns(
+                    .getRewardAllowedAddOns(
                         slug = project.slug() ?: "",
-                        locationId = selectedShippingRule.location() ?: LocationFactory.empty()
+                        rewardId = currentUserReward.id(),
                     )
                     .asFlow()
                     .onStart {

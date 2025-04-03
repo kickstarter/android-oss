@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels.projectpage
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -155,7 +154,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 }
             }
 
-            getAddOns(shippingRule)
+            getAddOns()
         }
     }
 
@@ -183,12 +182,11 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
         if (this.shippingRule != shippingRule) {
             this.shippingRule = shippingRule
-            getAddOns(selectedShippingRule = shippingRule)
+            getAddOns()
         }
     }
 
-    @SuppressLint("LogNotTimber")
-    private fun getAddOns(selectedShippingRule: ShippingRule) {
+    private fun getAddOns() {
         // - Do not execute call unless reward has addOns
         if (currentUserReward.hasAddons()) {
             scope.launch(dispatcher) {

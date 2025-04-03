@@ -222,8 +222,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         }
 
         advanceUntilIdle()
-
-        val finalState = uiState.last { !it.isLoading }
+        val loadedState = uiState.last { !it.isLoading }
 
         assertEquals(
             AddOnsUIState(
@@ -234,13 +233,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 totalBonusAmount = 0.0,
                 totalPledgeAmount = rw.pledgeAmount()
             ),
-            finalState
+            loadedState
         )
 
         viewModel.bonusAmountUpdated(3.0)
 
         advanceUntilIdle()
-        val finalBonusState = uiState.last { it.totalBonusAmount == 3.0 }
+        val bonusUpdatedState = uiState.last { it.totalBonusAmount == 3.0 }
 
         assertEquals(
             AddOnsUIState(
@@ -251,7 +250,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
                 totalBonusAmount = 3.0,
                 totalPledgeAmount = rw.pledgeAmount() + 3.0
             ),
-            finalBonusState
+            bonusUpdatedState
         )
     }
 

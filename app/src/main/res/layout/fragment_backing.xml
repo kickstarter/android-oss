@@ -83,12 +83,13 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:background="@color/kds_support_200"
+                        android:orientation="vertical"
                         android:paddingStart="@dimen/grid_4"
                         android:paddingTop="@dimen/grid_2"
                         android:paddingEnd="@dimen/grid_4"
                         android:paddingBottom="@dimen/grid_2">
+
                         <LinearLayout
                             android:id="@+id/beta_badge_container"
                             android:layout_width="match_parent"
@@ -96,12 +97,12 @@
                             android:gravity="center"
                             android:paddingBottom="@dimen/grid_2"
                             android:visibility="gone"
-                            tools:visibility="visible"
-                            >
-                        <androidx.compose.ui.platform.ComposeView
-                            android:id="@+id/beta_badge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            tools:visibility="visible">
+
+                            <androidx.compose.ui.platform.ComposeView
+                                android:id="@+id/beta_badge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
 
                         </LinearLayout>
 
@@ -115,16 +116,43 @@
                                 style="@style/BodyPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAlignment="center"
                                 android:gravity="center"
-                            tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
+                                android:textAlignment="center"
+                                tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/estimated_delivery_label_2"
+                        style="@style/CalloutPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_3"
+                        android:text="@string/Estimated_delivery"
+                        android:textColor="@color/kds_support_700"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        android:id="@+id/received_section_layout"
+                        layout="@layout/fragment_backing_section_reward_delivery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_5_half" />
+
+                    <include
+                        android:id="@+id/delivery_disclaimer_section"
+                        layout="@layout/fragment_backing_section_delivery_date_reminder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_3" />
+
                     <include
                         android:id="@+id/fragment_pledge_section_summary_pledge"
                         layout="@layout/fragment_pledge_section_summary_pledge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_4"
                         android:layout_marginBottom="@dimen/grid_3"
                         android:visibility="visible" />
 
@@ -204,42 +232,17 @@
                     <androidx.compose.ui.platform.ComposeView
                         android:id="@+id/payment_schedule_compose_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/pledge_details_label"
                         style="@style/CalloutPrimaryMedium"
-                        android:textColor="@color/kds_support_700"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/grid_4"
-                        android:text="@string/Your_pledge_details" />
+                        android:text="@string/Your_pledge_details"
+                        android:textColor="@color/kds_support_700" />
 
-                    <TextView
-                        android:id="@+id/estimated_delivery_label_2"
-                        style="@style/CalloutPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/grid_3"
-                        android:text="@string/Estimated_delivery"
-                        android:textColor="@color/kds_support_700"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <include
-                        android:id="@+id/received_section_layout"
-                        layout="@layout/fragment_backing_section_reward_delivery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/grid_5_half" />
-
-                    <include
-                        android:id="@+id/delivery_disclaimer_section"
-                        layout="@layout/fragment_backing_section_delivery_date_reminder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/grid_3" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -24,6 +24,7 @@ query FetchProjectRewards($slug: String!, $rewardImageWidth: Int = 1024) {
     minPledge
     rewards {
       nodes {
+        id
         ... reward
         allowedAddons {
             pageInfo {

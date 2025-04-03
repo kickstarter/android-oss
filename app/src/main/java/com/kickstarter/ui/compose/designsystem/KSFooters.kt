@@ -58,7 +58,9 @@ fun SmallButtonFooterPreview() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchBottomSheetFooterPreview() {
     KSTheme {
-        Column {
+        Column(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary)
+        ) {
             KSSearchBottomSheetFooter()
         }
     }

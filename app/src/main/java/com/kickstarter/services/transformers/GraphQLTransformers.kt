@@ -60,7 +60,6 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.type.AppDataInput
-import com.kickstarter.type.Checkout
 import com.kickstarter.type.CheckoutStateEnum
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput

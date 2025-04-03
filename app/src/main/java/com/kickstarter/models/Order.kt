@@ -1,11 +1,6 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import androidx.annotation.StringDef
-import com.kickstarter.models.Reward.Companion.SHIPPING_TYPE_ANYWHERE
-import com.kickstarter.models.Reward.Companion.SHIPPING_TYPE_MULTIPLE_LOCATIONS
-import com.kickstarter.models.Reward.Companion.SHIPPING_TYPE_NO_SHIPPING
-import com.kickstarter.models.Reward.Companion.SHIPPING_TYPE_SINGLE_LOCATION
 import com.kickstarter.type.CurrencyCode
 import kotlinx.parcelize.Parcelize
 

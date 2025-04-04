@@ -52,6 +52,8 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isLatePledgesActive
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
@@ -144,13 +146,13 @@ enum class CardProjectState {
 }
 
 fun getCardProjectState(project: Project): CardProjectState {
-    return if (project.isSuccessful)
+    return if (project.isSuccessful && !project.isLatePledgesActive())
         CardProjectState.ENDED_SUCCESSFUL
     else if (project.isFailed)
         CardProjectState.ENDED_UNSUCCESSFUL
-    else if (project.postCampaignPledgingEnabled() == true && project.isInPostCampaignPledgingPhase() == true)
+    else if (project.isLatePledgesActive())
         CardProjectState.LATE_PLEDGES_ACTIVE
-    else if (!project.isLive)
+    else if (project.prelaunchActivated().isTrue())
         CardProjectState.LAUNCHING_SOON
     else if (project.isLive)
         CardProjectState.LIVE

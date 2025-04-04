@@ -1,10 +1,7 @@
 package com.kickstarter.features.rewardtracking
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,7 +48,7 @@ fun RewardTrackingActivityPreview() {
 @Composable
 fun RewardTrackingActivityFeed(
     modifier: Modifier = Modifier,
-    trackingNumber : String,
+    trackingNumber: String,
     projectPhotoUrl: String? = null,
     projectName: String
 ) {
@@ -96,7 +93,6 @@ fun RewardTrackingActivityFeed(
         TrackingCardFooter(
             trackingNumber
         )
-
     }
 }
 
@@ -124,12 +120,11 @@ fun TrackingCardFooter(
             isEnabled = true
         )
     }
-
 }
 
 @Composable
 fun ProjectInfoHeader(
-    projectPhotoUrl : String? = null,
+    projectPhotoUrl: String? = null,
     projectName: String,
 ) {
     Row(
@@ -154,25 +149,5 @@ fun ProjectInfoHeader(
             style = typographyV2.headingSM,
             color = colors.textPrimary
         )
-
     }
-}
-
-@Composable
-fun RewardTrackingViewYourPledge(
-) {
-    Column(
-        modifier = Modifier.background(colors.backgroundSurfacePrimary)
-    ) {
-        Row {
-            TextWithStartIcon(
-                modifier = Modifier,
-                text = stringResource(id = R.string.fpo_your_reward_has_shipped),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_shipping),
-                style = typographyV2.headingMD,
-                textColor = colors.textPrimary,
-
-                )
-        }
-    }
-}
+}gi

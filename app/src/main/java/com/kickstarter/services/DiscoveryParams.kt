@@ -527,7 +527,7 @@ class DiscoveryParams private constructor(
     }
 
     enum class State {
-        STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED, UNKNOWN;
+        STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED, UPCOMING, LATE_PLEDGES, UNKNOWN;
 
         override fun toString(): String {
             return name.lowercase(Locale.getDefault())
@@ -541,18 +541,12 @@ class DiscoveryParams private constructor(
                     "live" -> LIVE
                     "successful" -> SUCCESSFUL
                     "canceled" -> CANCELED
+                    "upcoming" -> UPCOMING
+                    "late_pledges" -> LATE_PLEDGES
                     "failed" -> FAILED
                     else -> { UNKNOWN }
                 }
             }
-        }
-    }
-
-    enum class PublicState {
-        LIVE, SUCCESSFUL, FAILED, SUBMITTED, UPCOMING, LATE_PLEDGE, UNKNOWN;
-
-        override fun toString(): String {
-            return name.lowercase(Locale.getDefault())
         }
     }
 }

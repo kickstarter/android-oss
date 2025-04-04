@@ -103,11 +103,12 @@ class SearchAndFilterViewModel(
         this.errorAction = errorAction
     }
 
-    fun updateParamsToSearchWith(category: Category? = null, projectSort: DiscoveryParams.Sort) {
+    fun updateParamsToSearchWith(category: Category? = null, projectSort: DiscoveryParams.Sort, projectState: DiscoveryParams.State? = null) {
         val update = params.value.toBuilder()
             .apply {
                 this.category(category)
                 this.sort(projectSort)
+                this.state(projectState)
             }
             .build()
 

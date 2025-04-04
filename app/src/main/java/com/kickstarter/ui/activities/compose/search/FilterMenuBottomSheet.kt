@@ -135,8 +135,8 @@ private fun ProjectStatusRow(
         null to stringResource(R.string.Project_Status_All_fpo),
         DiscoveryParams.PublicState.LIVE to stringResource(R.string.Project_Status_Live_fpo),
         DiscoveryParams.PublicState.LATE_PLEDGE to stringResource(R.string.Project_Status_Late_Pledges_fpo),
-        DiscoveryParams.PublicState.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo),
         DiscoveryParams.PublicState.UPCOMING to stringResource(R.string.Project_Status_Upcoming_fpo),
+        DiscoveryParams.PublicState.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo)
     )
 
     Row(

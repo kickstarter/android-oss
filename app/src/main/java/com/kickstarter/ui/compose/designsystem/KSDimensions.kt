@@ -71,6 +71,7 @@ data class KSDimensions(
     val linearProgressBarHeight: Dp = Dp.Unspecified,
     val smallProjectCardImageHeight: Dp = Dp.Unspecified,
     val projectCardImageAspectRatio: Float = Float.NaN,
+    val searchBottomSheetFooter: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -140,5 +141,6 @@ val KSStandardDimensions = KSDimensions(
     rewardCardImageAspectRatio = 3f / 2f,
     linearProgressBarHeight = 9.dp,
     smallProjectCardImageHeight = 72.dp,
-    projectCardImageAspectRatio = 16f / 9f
+    projectCardImageAspectRatio = 16f / 9f,
+    searchBottomSheetFooter = 88.dp
 )

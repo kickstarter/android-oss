@@ -1022,8 +1022,7 @@ fun PillBarVisuals() {
     Text(text = "Pill Bar", style = typographyV2.title1Bold, color = colors.kds_support_700)
     PillBar(
         selectedFilterCounts = mapOf(),
-        onSortPressed = {},
-        onCategoryPressed = {}
+        onPillPressed = {}
     )
 }
 

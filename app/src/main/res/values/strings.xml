@@ -106,7 +106,18 @@
 
   <!-- FPO's for search and filter Phase 2 --> // - TODO should be removed on MBL-2231
   <string name="Project_Status_fpo" formatted="false">Project Status</string>
+  <string name="Project_Status_All_fpo" formatted="false">All</string>
+  <string name="Project_Status_Live_fpo" formatted="false">Live</string>
+  <string name="Project_Status_Late_Pledges_fpo" formatted="false">Late Pledges</string>
+  <string name="Project_Status_Successful_fpo" formatted="false">Successful</string>
+  <string name="Project_Status_Upcoming_fpo" formatted="false">Upcoming</string>
+  <string name="Include_ended_projects_fpo" formatted="false">Include ended Projects</string>
   <string name="Filter_fpo" formatted="false">Filter</string>
+
+  <!-- FPO's for search and filter Phase X -->
+  <string name="Percentage_raised_fpo" formatted="false">% Raised</string>
+  <string name="Amount_pledged_fpo" formatted="false">Amount Pledged</string>
+  <string name="Goal_fpo" formatted="false">Goal</string>
 
 
 </resources>

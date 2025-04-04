@@ -2,11 +2,9 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -39,9 +36,8 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
-import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSDimensions
-import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
+import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
@@ -140,52 +136,16 @@ fun CategorySelectionSheet(
                     }
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(88.dp)
-                        .drawBehind {
-                            drawLine(
-                                color = backgroundDisabledColor,
-                                start = Offset(0f, 0f),
-                                end = Offset(size.width, 0f),
-                                strokeWidth = dimensions.dividerThickness.toPx()
-                            )
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensions.paddingLarge),
-                        horizontalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
-                    ) {
-                        val resetCategoryName = stringResource(R.string.Category)
-                        KSOutlinedButton(
-                            modifier = Modifier
-                                .defaultMinSize(minHeight = dimensions.minButtonHeight),
-                            backgroundColor = colors.backgroundSurfacePrimary,
-                            textColor = colors.textPrimary,
-                            onClickAction = {
-                                selectedCategory.value = Category.builder().name(resetCategoryName).build()
-                            },
-                            text = stringResource(R.string.Reset_filters),
-                            isEnabled = !isLoading
-                        )
-                        KSButton(
-                            modifier = Modifier.weight(1f),
-                            backgroundColor = colors.kds_black,
-                            textColor = colors.kds_white,
-                            onClickAction = {
-                                selectedCategory.value?.let { onApply(it) }
-                            },
-                            shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-                            text = stringResource(R.string.See_results),
-                            textStyle = typographyV2.buttonLabel,
-                            isEnabled = !isLoading,
-                        )
+                val resetCategoryName = stringResource(R.string.Category)
+                KSSearchBottomSheetFooter(
+                    isLoading = isLoading,
+                    resetOnclickAction = {
+                        selectedCategory.value = Category.builder().name(resetCategoryName).build()
+                    },
+                    onApply = {
+                        selectedCategory.value?.let { onApply(it) }
                     }
-                }
+                )
             }
         }
     }
@@ -222,7 +182,7 @@ fun CategoryItemRow(
             Text(
                 color = colors.textPrimary,
                 text = category.name(),
-                style = KSTheme.typographyV2.headingLG
+                style = typographyV2.headingLG
             )
         }
 

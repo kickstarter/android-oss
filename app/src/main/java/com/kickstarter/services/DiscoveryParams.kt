@@ -547,4 +547,12 @@ class DiscoveryParams private constructor(
             }
         }
     }
+
+    enum class PublicState {
+        LIVE, SUCCESSFUL, FAILED, SUBMITTED, UPCOMING, LATE_PLEDGE, UNKNOWN;
+
+        override fun toString(): String {
+            return name.lowercase(Locale.getDefault())
+        }
+    }
 }

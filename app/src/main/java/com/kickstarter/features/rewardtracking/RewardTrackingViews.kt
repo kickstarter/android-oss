@@ -150,4 +150,4 @@ fun ProjectInfoHeader(
             color = colors.textPrimary
         )
     }
-}gi
+}

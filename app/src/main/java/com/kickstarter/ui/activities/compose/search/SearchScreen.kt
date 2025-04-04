@@ -503,11 +503,11 @@ private fun sheetContent(
                         coroutineScope.launch { categorySheetState.hide() }
 
                         if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
-                            onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
+                            onDismissBottomSheet.invoke(null, currentSort1, currentProjectState1)
                             selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
                             currentCategory1 = null
                         } else { // User applied valid filter
-                            onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
+                            onDismissBottomSheet.invoke(selectedCategory, currentSort1, currentProjectState1)
                             currentCategory1 = selectedCategory
                             if (countApiIsReady) {
                                 // Set selectedFilterCounts to actual count when count API is ready
@@ -527,7 +527,7 @@ private fun sheetContent(
                     onDismiss = { sort ->
                         currentSort1 = sort
                         coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
+                        onDismissBottomSheet.invoke(currentCategory1, sort, currentProjectState1)
 //                            // When a sort other than Recommended is applied, the Sort pill is in the active state
                         if (sort == DiscoveryParams.Sort.MAGIC) {
                             selectedFilterCounts[FilterRowPillType.SORT.name] = 0

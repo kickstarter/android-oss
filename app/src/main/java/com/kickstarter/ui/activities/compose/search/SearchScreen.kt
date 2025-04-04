@@ -152,7 +152,7 @@ fun getCardProjectState(project: Project): CardProjectState {
         CardProjectState.ENDED_UNSUCCESSFUL
     else if (project.isLatePledgesActive())
         CardProjectState.LATE_PLEDGES_ACTIVE
-    else if (project.prelaunchActivated().isTrue())
+    else if (project.prelaunchActivated().isTrue() && !project.isLive)
         CardProjectState.LAUNCHING_SOON
     else if (project.isLive)
         CardProjectState.LIVE

@@ -174,7 +174,7 @@ fun SearchScreen(
     categories: List<Category>,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit = { category, sort -> },
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?) -> Unit = { category, sort, projectState -> },
     shouldShowPillbar: Boolean = true
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -193,9 +193,13 @@ fun SearchScreen(
     }
     val initialCategoryPillText = stringResource(R.string.Category)
     val categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
-    val projectStatusPill = remember { mutableStateOf("Project Status") }
+
+    val initialProjectStatsPillText = stringResource(R.string.Project_Status_fpo)
+    val projectStatusPill = remember { mutableStateOf(initialProjectStatsPillText) }
+
     val currentSort by remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     val currentCategory by remember { mutableStateOf<Category?>(null) }
+    val currentProjectState by remember { mutableStateOf<DiscoveryParams.State?>(null) }
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)
@@ -230,6 +234,7 @@ fun SearchScreen(
             currentCategory,
             onDismissBottomSheet,
             currentSort,
+            currentProjectState,
             categories,
             categoryPillText,
             projectStatusPill,
@@ -428,8 +433,9 @@ private fun sheetContent(
     coroutineScope: CoroutineScope,
     categorySheetState: ModalBottomSheetState,
     currentCategory: Category?,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?) -> Unit,
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?) -> Unit,
     currentSort: DiscoveryParams.Sort,
+    currentProjectState: DiscoveryParams.State?,
     categories: List<Category>,
     categoryPillText: MutableState<String>,
     projectStatusPillText: MutableState<String>,
@@ -441,26 +447,31 @@ private fun sheetContent(
 ): @Composable() (ColumnScope.() -> Unit) {
     var currentCategory1 = currentCategory
     var currentSort1 = currentSort
+    var currentProjectState1 = currentProjectState
 
     return {
         when (activeBottomSheet.value) {
             FilterRowPillType.PROJECT_STATUS,
             FilterRowPillType.FILTER -> {
+                val liveString = stringResource(R.string.Project_Status_Live_fpo)
+                val successfulString = stringResource(R.string.Project_Status_Successful_fpo)
+                val upcomingString = stringResource(R.string.Project_Status_Upcoming_fpo)
+                val latePledgeString = stringResource(R.string.Project_Status_Late_Pledges_fpo)
+                val defaultString = stringResource(R.string.Project_Status_fpo)
                 FilterMenuBottomSheet(
+                    selectedProjectStatus = currentProjectState1,
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }
+                        onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
                     },
                     onApply = { projectState ->
+                        currentProjectState1 = projectState
                         projectStatusPillText.value = when (projectState) {
-                            // TODO: fetch proper strings + translations
-                            DiscoveryParams.PublicState.LIVE -> "Live"
-                            DiscoveryParams.PublicState.SUCCESSFUL -> "Successful"
-                            DiscoveryParams.PublicState.FAILED -> "Failed"
-                            DiscoveryParams.PublicState.SUBMITTED -> "Submitted"
-                            DiscoveryParams.PublicState.UPCOMING -> "Upcoming"
-                            DiscoveryParams.PublicState.LATE_PLEDGE -> "Late Pledges"
-                            DiscoveryParams.PublicState.UNKNOWN -> ""
-                            null -> "Project Status"
+                            DiscoveryParams.State.LIVE -> liveString
+                            DiscoveryParams.State.SUCCESSFUL -> successfulString
+                            DiscoveryParams.State.UPCOMING -> upcomingString
+                            DiscoveryParams.State.LATE_PLEDGES -> latePledgeString
+                            else -> defaultString
                         }
                         coroutineScope.launch { menuSheetState.hide() }
 
@@ -471,6 +482,7 @@ private fun sheetContent(
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = 0
                             selectedFilterCounts[FilterRowPillType.FILTER.name] = 0
                         }
+                        onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
                     }
                 )
             }
@@ -480,7 +492,7 @@ private fun sheetContent(
                     currentCategory = currentCategory1,
                     onDismiss = {
                         coroutineScope.launch { categorySheetState.hide() }
-                        onDismissBottomSheet.invoke(currentCategory1, currentSort1)
+                        onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
                     },
                     categories = categories,
                     onApply = { selectedCategory ->
@@ -489,11 +501,11 @@ private fun sheetContent(
                         coroutineScope.launch { categorySheetState.hide() }
 
                         if (selectedCategory.name() == initialCategoryPillText) { // User reset filter
-                            onDismissBottomSheet.invoke(null, currentSort1)
+                            onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
                             selectedFilterCounts[FilterRowPillType.CATEGORY.name] = 0
                             currentCategory1 = null
                         } else { // User applied valid filter
-                            onDismissBottomSheet.invoke(selectedCategory, currentSort1)
+                            onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
                             currentCategory1 = selectedCategory
                             if (countApiIsReady) {
                                 // Set selectedFilterCounts to actual count when count API is ready
@@ -513,7 +525,7 @@ private fun sheetContent(
                     onDismiss = { sort ->
                         currentSort1 = sort
                         coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet.invoke(currentCategory1, sort)
+                        onDismissBottomSheet.invoke(currentCategory1, currentSort1, currentProjectState1)
 //                            // When a sort other than Recommended is applied, the Sort pill is in the active state
                         if (sort == DiscoveryParams.Sort.MAGIC) {
                             selectedFilterCounts[FilterRowPillType.SORT.name] = 0

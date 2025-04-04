@@ -252,14 +252,14 @@ fun DiscoveryParams.Sort.toProjectSort(): ProjectSort {
     }
 }
 
-fun DiscoveryParams.PublicState.toPublicProjectState(): PublicProjectState {
+fun DiscoveryParams.State.toProjectState(): PublicProjectState {
     return when (this) {
-        DiscoveryParams.PublicState.LIVE -> PublicProjectState.LIVE
-        DiscoveryParams.PublicState.SUCCESSFUL -> PublicProjectState.SUCCESSFUL
-        DiscoveryParams.PublicState.FAILED -> PublicProjectState.FAILED
-        DiscoveryParams.PublicState.SUBMITTED -> PublicProjectState.SUBMITTED
-        DiscoveryParams.PublicState.UPCOMING -> PublicProjectState.UPCOMING
-        DiscoveryParams.PublicState.LATE_PLEDGE -> PublicProjectState.LATE_PLEDGE
-        DiscoveryParams.PublicState.UNKNOWN -> PublicProjectState.UNKNOWN__
+        DiscoveryParams.State.LIVE -> PublicProjectState.LIVE
+        DiscoveryParams.State.SUCCESSFUL -> PublicProjectState.SUCCESSFUL
+        DiscoveryParams.State.FAILED -> PublicProjectState.FAILED
+        DiscoveryParams.State.SUBMITTED -> PublicProjectState.SUBMITTED
+        DiscoveryParams.State.UPCOMING -> PublicProjectState.UPCOMING
+        DiscoveryParams.State.LATE_PLEDGES -> PublicProjectState.LATE_PLEDGE
+        else -> PublicProjectState.UNKNOWN__
     }
 }

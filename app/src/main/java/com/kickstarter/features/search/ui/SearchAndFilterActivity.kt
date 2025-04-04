@@ -104,10 +104,11 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 startProjectActivity(projAndRef)
                             }
                         },
-                        onDismissBottomSheet = { category, sort ->
+                        onDismissBottomSheet = { category, sort, projectState ->
                             viewModel.updateParamsToSearchWith(
-                                category,
-                                sort ?: DiscoveryParams.Sort.MAGIC // magic is the default sort
+                                category = category,
+                                projectSort = sort ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
+                                projectState = projectState
                             )
                         },
                         shouldShowPillbar = true

@@ -597,6 +597,8 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .build()
     val urls = Urls.builder().web(urlsWeb).build()
     val displayPrelaunch = (projectFragment?.isLaunched ?: false).negate()
+    val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
+    val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled ?: false
 
     return Project.builder()
         .backersCount(backersCount)
@@ -629,6 +631,8 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .state(state)
         .urls(urls)
         .stateChangedAt(stateChangedAt)
+        .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
+        .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
         .build()
 }
 

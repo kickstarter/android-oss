@@ -59,6 +59,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle()
         assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertNull(params?.term())
+        assertNull(params?.state())
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, projectList)
     }
@@ -221,9 +222,13 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching a tem with category and sorting`() = runTest {
+    fun `test for searching a tem with category, sorting and projectStatus`() = runTest {
         var params: DiscoveryParams? = null
-        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
+        val latePledgeProject = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+        val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""), latePledgeProject)
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val environment = environment()
             .toBuilder()
@@ -247,7 +252,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
             viewModel.updateSearchTerm("hello")
             viewModel.updateParamsToSearchWith(
                 CategoryFactory.gamesCategory(),
-                DiscoveryParams.Sort.MOST_FUNDED
+                DiscoveryParams.Sort.MOST_FUNDED,
+                DiscoveryParams.State.LATE_PLEDGES
             )
             viewModel.updateSearchTerm("cats")
             viewModel.searchUIState.toList(searchState)
@@ -257,6 +263,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.sort(), DiscoveryParams.Sort.MOST_FUNDED)
         assertEquals(params?.category(), CategoryFactory.gamesCategory())
         assertEquals(params?.term(), "cats")
+        assertEquals(params?.state(), DiscoveryParams.State.LATE_PLEDGES)
         assertEquals(searchState.size, 2)
         assertEquals(searchState.last().popularProjectsList, emptyList<Project>())
         assertEquals(searchState.last().searchList, projectList)
@@ -264,7 +271,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -296,10 +303,11 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
+        assertEquals(params?.state(), null)
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, load two pages`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val secondPageList = listOf(ProjectFactory.caProject(), ProjectFactory.mxProject())
@@ -338,6 +346,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.sort(), DiscoveryParams.Sort.MAGIC)
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
+        assertEquals(params?.state(), null)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
 
@@ -345,7 +354,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching a tem with category and sorting, load two pages`() = runTest {
+    fun `test for searching a tem with category sorting and projectStatus, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
 
@@ -378,7 +387,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
             viewModel.updateSearchTerm("hello")
             viewModel.updateParamsToSearchWith(
                 CategoryFactory.gamesCategory(),
-                DiscoveryParams.Sort.MOST_FUNDED
+                DiscoveryParams.Sort.MOST_FUNDED,
+                DiscoveryParams.State.LIVE
             )
             viewModel.updateSearchTerm("cats")
             viewModel.loadMore()
@@ -389,6 +399,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.sort(), DiscoveryParams.Sort.MOST_FUNDED)
         assertEquals(params?.category(), CategoryFactory.gamesCategory())
         assertEquals(params?.term(), "cats")
+        assertEquals(params?.state(), DiscoveryParams.State.LIVE)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
         assertEquals(errorNumber, 0)

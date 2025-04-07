@@ -65,7 +65,8 @@ fun FilterMenuBottomSheet(
     selectedProjectStatus: DiscoveryParams.State? = null,
     availableFilters: List<FilterType> = FilterType.values().asList(),
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.State?) -> Unit = {}
+    onApply: (DiscoveryParams.State?) -> Unit = {},
+    onNavigate: () -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -90,7 +91,7 @@ fun FilterMenuBottomSheet(
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
-                            callback = onDismiss,
+                            callback = onNavigate,
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )

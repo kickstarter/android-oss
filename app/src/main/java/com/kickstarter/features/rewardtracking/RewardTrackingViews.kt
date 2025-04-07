@@ -185,7 +185,7 @@ fun ProjectInfoHeader(
     }
 }
 
-enum class RewardTrackingPageType(name : String) {
+enum class RewardTrackingPageType(name: String) {
     VIEW_YOUR_PLEDGE("view_your_pledge"),
     ACTIVITY_FEED("activity_feed")
 }

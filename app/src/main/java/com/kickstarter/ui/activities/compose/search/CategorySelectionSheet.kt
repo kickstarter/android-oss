@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +19,7 @@ import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +62,7 @@ fun CategorySelectionSheet(
     onDismiss: () -> Unit,
     onApply: (Category) -> Unit,
     isLoading: Boolean,
+    onNavigate: () -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -71,10 +71,6 @@ fun CategorySelectionSheet(
 
     KSTheme {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .heightIn(min = 200.dp, max = 770.dp),
             color = colors.backgroundSurfacePrimary
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -89,13 +85,25 @@ fun CategorySelectionSheet(
                                 strokeWidth = dimensions.dividerThickness.toPx()
                             )
                         }
-                        .padding(start = dimensions.paddingLarge, top = dimensions.paddingLarge, bottom = dimensions.paddingLarge, end = dimensions.paddingMediumSmall),
+                        .padding(top = dimensions.paddingLarge, bottom = dimensions.paddingLarge, end = dimensions.paddingMediumSmall),
 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    IconButton(
+                        onClick = onNavigate,
+                        modifier = Modifier
+                            .padding(start = dimensions.paddingSmall)
+                            .testTag(SearchScreenTestTag.BACK_BUTTON.name)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.Back),
+                            tint = colors.kds_black
+                        )
+                    }
                     Text(
                         text = stringResource(R.string.Category),
-                        style = KSTheme.typographyV2.headingXL,
+                        style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
                     )

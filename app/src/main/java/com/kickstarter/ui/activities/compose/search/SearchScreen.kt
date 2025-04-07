@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -163,53 +165,6 @@ fun getCardProjectState(project: Project): CardProjectState {
         CardProjectState.LIVE
     }
 }
-
-/*
- * Replaces the existing Filter and Category bottom sheets with a pager-based solution.
- * Sort sheet remains separate.
- */
-
-@Composable
-fun FilterAndCategoryPagerSheet(
-    selectedProjectStatus: DiscoveryParams.State?,
-    currentCategory: Category?,
-    categories: List<Category>,
-    onDismiss: () -> Unit,
-    onApplyProjectStatus: (DiscoveryParams.State?) -> Unit,
-    onApplyCategory: (Category?) -> Unit,
-    initialCategoryPillText: String,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
-    pagerState: PagerState
-) {
-    val coroutineScope = rememberCoroutineScope()
-
-    HorizontalPager(state = pagerState) { page ->
-        when (page) {
-            0 -> FilterMenuBottomSheet(
-                selectedProjectStatus = selectedProjectStatus,
-                onDismiss = onDismiss,
-                onApply = {
-                    onApplyProjectStatus(it)
-                    updateSelectedCounts(if (it != null) 1 else 0, null)
-                },
-                onNavigate = {
-                    coroutineScope.launch { pagerState.animateScrollToPage(1) }
-                }
-            )
-            1 -> CategorySelectionSheet(
-                currentCategory = currentCategory,
-                onDismiss = onDismiss,
-                categories = categories,
-                onApply = {
-                    onApplyCategory(it)
-                    updateSelectedCounts(null, if (it?.name() == initialCategoryPillText) 0 else 1)
-                },
-                isLoading = false
-            )
-        }
-    }
-}
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -445,6 +400,64 @@ fun SearchScreen(
     }
 }
 
+enum class FilterPages {
+    MAIN_FILTER,
+    CATEGORIES
+}
+
+@Composable
+fun FilterAndCategoryPagerSheet(
+    selectedProjectStatus: DiscoveryParams.State?,
+    currentCategory: Category?,
+    categories: List<Category>,
+    onDismiss: () -> Unit,
+    onApplyProjectStatus: (DiscoveryParams.State?) -> Unit,
+    onApplyCategory: (Category?) -> Unit,
+    initialCategoryPillText: String,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
+    pagerState: PagerState
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    HorizontalPager(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .heightIn(min = 200.dp, max = 770.dp),
+        state = pagerState,
+
+    ) { page ->
+        when (page) {
+            FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
+                selectedProjectStatus = selectedProjectStatus,
+                onDismiss = onDismiss,
+                onApply = {
+                    onApplyProjectStatus(it)
+                    updateSelectedCounts(if (it != null) 1 else 0, null)
+                    onDismiss.invoke()
+                },
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.CATEGORIES.ordinal) }
+                }
+            )
+            FilterPages.CATEGORIES.ordinal -> CategorySelectionSheet(
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                currentCategory = currentCategory,
+                onDismiss = onDismiss,
+                categories = categories,
+                onApply = {
+                    onApplyCategory(it)
+                    updateSelectedCounts(null, if (it?.name() == initialCategoryPillText) 0 else 1)
+                    onDismiss.invoke()
+                },
+                isLoading = false
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun onPillPressed(
@@ -464,19 +477,18 @@ private fun onPillPressed(
             FilterRowPillType.FILTER,
             FilterRowPillType.PROJECT_STATUS -> {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(0)
+                    pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal)
                     mainFilterMenuState.show()
                 }
             }
             FilterRowPillType.CATEGORY -> {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(1)
+                    pagerState.animateScrollToPage(FilterPages.CATEGORIES.ordinal)
                     mainFilterMenuState.show()
                 }
             }
         }
     }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

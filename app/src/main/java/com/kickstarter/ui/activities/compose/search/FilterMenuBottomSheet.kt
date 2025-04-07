@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -72,8 +71,6 @@ fun FilterMenuBottomSheet(
 
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
             .testTag(FilterMenuTestTags.SHEET),
         color = colors.backgroundSurfacePrimary
     ) {
@@ -86,7 +83,7 @@ fun FilterMenuBottomSheet(
                 modifier = Modifier.testTag(FilterMenuTestTags.DISMISS_ROW)
             )
 
-            LazyColumn {
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 items(availableFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
@@ -95,7 +92,6 @@ fun FilterMenuBottomSheet(
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
-
                         FilterType.PROJECT_STATUS -> ProjectStatusRow(
                             text = titleForFilter(filter),
                             callback = { status -> projStatus.value = status },

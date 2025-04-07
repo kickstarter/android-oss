@@ -119,5 +119,9 @@
   <string name="Amount_pledged_fpo" formatted="false">Amount Pledged</string>
   <string name="Goal_fpo" formatted="false">Goal</string>
 
+  <!-- FPO's for reward shipment tracking -->
+  <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
+  <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
+  <string name="fpo_track_shipment" formatted="false">Track shipment</string>
 
 </resources>

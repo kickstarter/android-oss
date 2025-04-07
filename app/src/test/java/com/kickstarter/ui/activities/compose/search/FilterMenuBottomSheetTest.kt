@@ -24,10 +24,10 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(null)).assertIsDisplayed() // All
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.PublicState.LIVE)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.PublicState.LATE_PLEDGE)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.PublicState.SUCCESSFUL)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.PublicState.UPCOMING)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.LIVE)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.LATE_PLEDGES)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.SUCCESSFUL)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.UPCOMING)).assertIsDisplayed()
     }
 
     @Test
@@ -49,10 +49,10 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuBottomSheet(
-                    onApply = { publicState: DiscoveryParams.PublicState? ->
+                    onApply = { publicState: DiscoveryParams.State? ->
                         counter++
                         if (counter == 1)
-                            assertEquals(publicState, DiscoveryParams.PublicState.LIVE)
+                            assertEquals(publicState, DiscoveryParams.State.LIVE)
 
                         if (counter == 2)
                             assertEquals(publicState, null)
@@ -61,7 +61,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             }
         }
 
-        val livePill = composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.PublicState.LIVE))
+        val livePill = composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.LIVE))
         livePill.performClick() // Select
         composeTestRule
             .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name) // apply
@@ -75,7 +75,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun filterMenu_onApplyCallbackReceivesSelection() {
-        var selected: DiscoveryParams.PublicState? = null
+        var selected: DiscoveryParams.State? = null
 
         composeTestRule.setContent {
             KSTheme {
@@ -84,19 +84,19 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.PublicState.LIVE))
+            .onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.LIVE))
             .performClick()
 
         composeTestRule
             .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name)
             .performClick()
 
-        assertEquals(DiscoveryParams.PublicState.LIVE, selected)
+        assertEquals(DiscoveryParams.State.LIVE, selected)
     }
 
     @Test
     fun filterMenu_resetClearsSelection() {
-        var selected: DiscoveryParams.PublicState? = DiscoveryParams.PublicState.LIVE
+        var selected: DiscoveryParams.State? = DiscoveryParams.State.LIVE
 
         composeTestRule.setContent {
             KSTheme {

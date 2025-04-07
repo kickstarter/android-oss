@@ -52,7 +52,7 @@ object FilterMenuTestTags {
     const val PROJECT_STATUS_ROW = "project_status_row"
     const val FOOTER = "footer"
 
-    fun pillTag(state: DiscoveryParams.PublicState?) = "pill_${state?.name ?: "ALL"}"
+    fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
 }
 
 enum class FilterType {
@@ -62,10 +62,10 @@ enum class FilterType {
 
 @Composable
 fun FilterMenuBottomSheet(
-    selectedProjectStatus: DiscoveryParams.PublicState? = null,
+    selectedProjectStatus: DiscoveryParams.State? = null,
     availableFilters: List<FilterType> = FilterType.values().asList(),
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.PublicState?) -> Unit = {}
+    onApply: (DiscoveryParams.State?) -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -124,8 +124,8 @@ fun FilterMenuBottomSheet(
 private fun ProjectStatusRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Filter_fpo),
-    selectedStatus: MutableState<DiscoveryParams.PublicState?> = mutableStateOf(null),
-    callback: (DiscoveryParams.PublicState?) -> Unit = {},
+    selectedStatus: MutableState<DiscoveryParams.State?> = mutableStateOf(null),
+    callback: (DiscoveryParams.State?) -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -133,10 +133,10 @@ private fun ProjectStatusRow(
 
     val pillOptions = listOf(
         null to stringResource(R.string.Project_Status_All_fpo),
-        DiscoveryParams.PublicState.LIVE to stringResource(R.string.Project_Status_Live_fpo),
-        DiscoveryParams.PublicState.LATE_PLEDGE to stringResource(R.string.Project_Status_Late_Pledges_fpo),
-        DiscoveryParams.PublicState.UPCOMING to stringResource(R.string.Project_Status_Upcoming_fpo),
-        DiscoveryParams.PublicState.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo)
+        DiscoveryParams.State.LIVE to stringResource(R.string.Project_Status_Live_fpo),
+        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_Status_Late_Pledges_fpo),
+        DiscoveryParams.State.UPCOMING to stringResource(R.string.Project_Status_Upcoming_fpo),
+        DiscoveryParams.State.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo)
     )
 
     Row(
@@ -201,7 +201,7 @@ private fun ProjectStatusRow(
                     onCheckedChange = {
                         switchChecked = it
                         if (switchChecked) {
-                            callback(DiscoveryParams.PublicState.SUCCESSFUL)
+                            callback(DiscoveryParams.State.SUCCESSFUL)
                         }
                     }
                 )
@@ -288,7 +288,7 @@ private fun ProjectStatusRowPreview() {
 private fun FilterMenuSheetPreview() {
     KSTheme {
         FilterMenuBottomSheet(
-            selectedProjectStatus = DiscoveryParams.PublicState.LIVE,
+            selectedProjectStatus = DiscoveryParams.State.LIVE,
             onApply = {},
             onDismiss = {}
         )

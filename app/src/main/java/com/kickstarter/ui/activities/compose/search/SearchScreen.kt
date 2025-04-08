@@ -219,7 +219,7 @@ fun SearchScreen(
 
     val mainFilterMenuState = rememberModalBottomSheetState(
         initialValue = Hidden,
-        skipHalfExpanded = false
+        skipHalfExpanded = true
     )
 
     ModalBottomSheetLayout(

@@ -64,7 +64,7 @@ fun FilterMenuBottomSheet(
     selectedProjectStatus: DiscoveryParams.State? = null,
     availableFilters: List<FilterType> = FilterType.values().asList(),
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.State?) -> Unit = {},
+    onApply: (DiscoveryParams.State?, Boolean?) -> Unit = { a, b -> },
     onNavigate: () -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
@@ -94,7 +94,10 @@ fun FilterMenuBottomSheet(
                         )
                         FilterType.PROJECT_STATUS -> ProjectStatusRow(
                             text = titleForFilter(filter),
-                            callback = { status -> projStatus.value = status },
+                            callback = { status ->
+                                projStatus.value = status
+                                onApply(projStatus.value, null)
+                            },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
                         )
@@ -106,10 +109,10 @@ fun FilterMenuBottomSheet(
                 modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
                 resetOnclickAction = {
                     projStatus.value = null
-                    onApply(projStatus.value)
+                    onApply(projStatus.value, false)
                 },
                 onApply = {
-                    onApply(projStatus.value)
+                    onApply(projStatus.value, true)
                 }
             )
         }
@@ -286,7 +289,7 @@ private fun FilterMenuSheetPreview() {
     KSTheme {
         FilterMenuBottomSheet(
             selectedProjectStatus = DiscoveryParams.State.LIVE,
-            onApply = {},
+            onApply = { a, b -> },
             onDismiss = {}
         )
     }

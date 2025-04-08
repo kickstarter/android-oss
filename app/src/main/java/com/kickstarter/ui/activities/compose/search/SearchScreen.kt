@@ -411,13 +411,13 @@ fun FilterAndCategoryPagerSheet(
     currentCategory: Category?,
     categories: List<Category>,
     onDismiss: () -> Unit,
-    onApplyProjectStatus: (DiscoveryParams.State?) -> Unit,
-    onApplyCategory: (Category?) -> Unit,
-    initialCategoryPillText: String,
+    onApply: (DiscoveryParams.State?, Category?) -> Unit,
     updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
     pagerState: PagerState
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val category = remember { mutableStateOf(currentCategory) }
+    val projectState = remember { mutableStateOf(selectedProjectStatus) }
 
     HorizontalPager(
         modifier = Modifier
@@ -431,10 +431,18 @@ fun FilterAndCategoryPagerSheet(
             FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
                 selectedProjectStatus = selectedProjectStatus,
                 onDismiss = onDismiss,
-                onApply = {
-                    onApplyProjectStatus(it)
-                    updateSelectedCounts(if (it != null) 1 else 0, null)
-                    onDismiss.invoke()
+                onApply = { selectedProjectState, applyAndDismiss ->
+                    projectState.value = selectedProjectState
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply,
+                            projectState.value,
+                            category.value,
+                            updateSelectedCounts,
+                            onDismiss,
+                            applyAndDismiss
+                        )
+                    }
                 },
                 onNavigate = {
                     coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.CATEGORIES.ordinal) }
@@ -447,14 +455,40 @@ fun FilterAndCategoryPagerSheet(
                 currentCategory = currentCategory,
                 onDismiss = onDismiss,
                 categories = categories,
-                onApply = {
-                    onApplyCategory(it)
-                    updateSelectedCounts(null, if (it?.name() == initialCategoryPillText) 0 else 1)
-                    onDismiss.invoke()
+                onApply = { selectedCategory, applyAndDismiss ->
+                    category.value = selectedCategory
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply,
+                            projectState.value,
+                            category.value,
+                            updateSelectedCounts,
+                            onDismiss,
+                            applyAndDismiss
+                        )
+                    }
                 },
                 isLoading = false
             )
         }
+    }
+}
+
+private fun applyUserSelection(
+    onApply: (DiscoveryParams.State?, Category?) -> Unit,
+    projectState: DiscoveryParams.State?,
+    category: Category?,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
+    onDismiss: () -> Unit,
+    shouldDismiss: Boolean
+) {
+    onApply(projectState, category)
+    updateSelectedCounts(
+        if (projectState != null) 1 else 0,
+        if (category != null) 1 else 0
+    )
+    if (shouldDismiss) {
+        onDismiss.invoke()
     }
 }
 
@@ -529,21 +563,18 @@ private fun sheetContent(
                         coroutineScope.launch { menuSheetState.hide() }
                         onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value)
                     },
-                    onApplyProjectStatus = {
-                        currentProjectState.value = it
-                        projectStatusPillText.value = when (it) {
+                    onApply = { project, category ->
+                        currentProjectState.value = project
+                        currentCategory.value = category
+                        projectStatusPillText.value = when (project) {
                             DiscoveryParams.State.LIVE -> liveString
                             DiscoveryParams.State.SUCCESSFUL -> successfulString
                             DiscoveryParams.State.UPCOMING -> upcomingString
                             DiscoveryParams.State.LATE_PLEDGES -> latePledgeString
                             else -> defaultString
                         }
+                        categoryPillText.value = category?.name() ?: initialCategoryPillText
                     },
-                    onApplyCategory = {
-                        currentCategory.value = it
-                        categoryPillText.value = it?.name() ?: initialCategoryPillText
-                    },
-                    initialCategoryPillText = initialCategoryPillText,
                     updateSelectedCounts = { statusCount, categoryCount ->
                         statusCount?.let {
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it

@@ -48,7 +48,7 @@ private fun CategorySelectionSheetPreview() {
     KSTheme {
         CategorySelectionSheet(
             categories = CategoryFactory.rootCategories(),
-            onApply = {},
+            onApply = { a, b -> },
             onDismiss = {},
             isLoading = false
         )
@@ -60,7 +60,7 @@ fun CategorySelectionSheet(
     currentCategory: Category? = null,
     categories: List<Category>,
     onDismiss: () -> Unit,
-    onApply: (Category) -> Unit,
+    onApply: (Category?, Boolean?) -> Unit,
     isLoading: Boolean,
     onNavigate: () -> Unit = {},
 ) {
@@ -123,7 +123,7 @@ fun CategorySelectionSheet(
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(
-                            color = KSTheme.colors.textPrimary,
+                            color = colors.textPrimary,
                             modifier = Modifier.size(48.dp)
                         )
                     }
@@ -138,6 +138,8 @@ fun CategorySelectionSheet(
                                         selectedCategory.value =
                                             categories.find { it.name() == category.name() }!!
                                     }
+
+                                    onApply(selectedCategory.value, null)
                                 }
                             )
                         }
@@ -148,10 +150,11 @@ fun CategorySelectionSheet(
                 KSSearchBottomSheetFooter(
                     isLoading = isLoading,
                     resetOnclickAction = {
-                        selectedCategory.value = Category.builder().name(resetCategoryName).build()
+                        selectedCategory.value = null
+                        onApply(selectedCategory.value, false)
                     },
                     onApply = {
-                        selectedCategory.value?.let { onApply(it) }
+                        selectedCategory.value?.let { onApply(it, true) }
                     }
                 )
             }

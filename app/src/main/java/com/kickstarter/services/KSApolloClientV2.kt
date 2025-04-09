@@ -1,6 +1,5 @@
 package com.kickstarter.services
 
-import android.annotation.SuppressLint
 import android.util.Pair
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
@@ -163,7 +162,7 @@ interface ApolloClientTypeV2 {
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
-    fun getRewardAllowedAddOns(slug: String, rewardId: Long): Observable<List<Reward>>
+    fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
@@ -722,7 +721,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
-    @SuppressLint("LogNotTimber")
     override fun getRewardsFromProject(slug: String): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
@@ -823,11 +821,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
         }?.toList() ?: emptyList()
     }
-    override fun getRewardAllowedAddOns(slug: String, rewardId: Long): Observable<List<Reward>> {
+    override fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
 
-            val query = GetRewardAllowedAddOnsQuery(slug)
+            val query = GetRewardAllowedAddOnsQuery(
+                slug,
+                locationId = encodeRelayId(locationId),
+            )
 
             this.service
                 .query(query)
@@ -867,7 +868,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 slug = slug,
                 locationId = encodeRelayId(locationId)
             )
-
             this.service
                 .query(query)
                 .rxSingle()

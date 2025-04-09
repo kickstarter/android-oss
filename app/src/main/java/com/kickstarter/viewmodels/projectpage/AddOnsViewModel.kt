@@ -8,8 +8,10 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -154,7 +156,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 }
             }
 
-            getAddOns()
+            getAddOns(shippingRule)
         }
     }
 
@@ -182,11 +184,12 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
         if (this.shippingRule != shippingRule) {
             this.shippingRule = shippingRule
-            getAddOns()
+            getAddOns(shippingRule)
         }
     }
 
-    private fun getAddOns() {
+    private fun getAddOns(selectedShippingRule: ShippingRule) {
+
         // - Do not execute call unless reward has addOns
         if (currentUserReward.hasAddons()) {
             scope.launch(dispatcher) {
@@ -194,6 +197,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                     .getRewardAllowedAddOns(
                         slug = project.slug() ?: "",
                         rewardId = currentUserReward.id(),
+                        locationId = selectedShippingRule.location() ?: LocationFactory.empty()
                     )
                     .asFlow()
                     .onStart {
@@ -201,7 +205,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                     }
                     .map { addOns ->
                         if (!addOns.isNullOrEmpty()) {
-                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns)
+                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns, selectedShippingRule.location() ?: LocationFactory.empty())
                         }
                     }.onCompletion {
                         emitCurrentState(isLoading = false)
@@ -220,18 +224,26 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
      * List of available addOns, updated for those backed addOns with the Backed information
      * such as quantity backed.
      */
-    private fun getUpdatedList(addOns: List<Reward>, backedAddOns: List<Reward>): List<Reward> {
+    private fun getUpdatedList(addOns: List<Reward>, backedAddOns: List<Reward>, location: Location): List<Reward> {
         val holder = mutableMapOf<Long, Reward>()
-        // First Store all addOns, Key should be the addOns ID
-        addOns.map {
+        val locationId = location.id()
+
+        val filteredAddOns = addOns.filter { reward ->
+            when (reward.shippingPreference()) {
+                "unrestricted", "none" -> true
+                else -> reward.shippingRules()!!.any { it.location()?.id() == locationId }
+            }
+        }
+        // Store filtered addOns into holder
+        filteredAddOns.forEach {
             holder[it.id()] = it
         }
 
         // Take the backed AddOns, update with matching addOn ID with the quantity information
-        backedAddOns.map { backedAddOn ->
-            val aux = holder[backedAddOn.id()]
-            if (aux != null) {
-                val updated = aux.toBuilder().quantity(backedAddOn.quantity()).build()
+        backedAddOns.forEach { backedAddOn ->
+            val match = holder[backedAddOn.id()]
+            if (match != null) {
+                val updated = match.toBuilder().quantity(backedAddOn.quantity()).build()
                 holder[backedAddOn.id()] = updated
             }
             currentSelection[backedAddOn.id()] = backedAddOn.quantity() ?: 0

@@ -12,7 +12,7 @@ query GetShippingRulesForRewardId($rewardId: ID!) {
     }
 }
 
-query GetRewardAllowedAddOns($slug: String!, , $rewardImageWidth: Int = 1024) {
+query GetRewardAllowedAddOns($slug: String!, $locationId: ID! , $rewardImageWidth: Int = 1024) {
     project(slug: $slug) {
         rewards {
             nodes {
@@ -20,7 +20,7 @@ query GetRewardAllowedAddOns($slug: String!, , $rewardImageWidth: Int = 1024) {
                 allowedAddons {
                     edges {
                         node {
-                            shippingRulesExpanded {
+                            shippingRulesExpanded(forLocation: $locationId) {
                                 nodes {
                                     ... shippingRule
                                 }

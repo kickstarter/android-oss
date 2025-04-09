@@ -35,6 +35,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -57,6 +58,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isLatePledgesActive
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
@@ -405,6 +407,7 @@ enum class FilterPages {
     CATEGORIES
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FilterAndCategoryPagerSheet(
     selectedProjectStatus: DiscoveryParams.State?,
@@ -413,11 +416,24 @@ fun FilterAndCategoryPagerSheet(
     onDismiss: () -> Unit,
     onApply: (DiscoveryParams.State?, Category?) -> Unit,
     updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
-    pagerState: PagerState
+    pagerState: PagerState,
+    sheetState: ModalBottomSheetState
 ) {
     val coroutineScope = rememberCoroutineScope()
     val category = remember { mutableStateOf(currentCategory) }
     val projectState = remember { mutableStateOf(selectedProjectStatus) }
+
+    LaunchedEffect(!sheetState.isVisible) {
+        coroutineScope.launch {
+            if (currentCategory != category.value) {
+                category.value = currentCategory
+            }
+
+            if (selectedProjectStatus != projectState.value) {
+                projectState.value = selectedProjectStatus
+            }
+        }
+    }
 
     HorizontalPager(
         modifier = Modifier
@@ -430,10 +446,15 @@ fun FilterAndCategoryPagerSheet(
         when (page) {
             FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
                 selectedProjectStatus = selectedProjectStatus,
-                onDismiss = onDismiss,
+                onDismiss = {
+                    onDismiss.invoke()
+                },
                 onApply = { selectedProjectState, applyAndDismiss ->
                     projectState.value = selectedProjectState
                     if (applyAndDismiss != null) {
+                        if (applyAndDismiss.isFalse()) {
+                            category.value = null
+                        }
                         applyUserSelection(
                             onApply,
                             projectState.value,
@@ -458,6 +479,9 @@ fun FilterAndCategoryPagerSheet(
                 onApply = { selectedCategory, applyAndDismiss ->
                     category.value = selectedCategory
                     if (applyAndDismiss != null) {
+                        if (applyAndDismiss.isFalse()) {
+                            projectState.value = null
+                        }
                         applyUserSelection(
                             onApply,
                             projectState.value,
@@ -555,13 +579,13 @@ private fun sheetContent(
             FilterRowPillType.PROJECT_STATUS,
             FilterRowPillType.FILTER, -> {
                 FilterAndCategoryPagerSheet(
+                    sheetState = menuSheetState,
                     pagerState = pagerState,
                     selectedProjectStatus = currentProjectState.value,
                     currentCategory = currentCategory.value,
                     categories = categories,
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }
-                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value)
                     },
                     onApply = { project, category ->
                         currentProjectState.value = project
@@ -574,6 +598,7 @@ private fun sheetContent(
                             else -> defaultString
                         }
                         categoryPillText.value = category?.name() ?: initialCategoryPillText
+                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value)
                     },
                     updateSelectedCounts = { statusCount, categoryCount ->
                         statusCount?.let {

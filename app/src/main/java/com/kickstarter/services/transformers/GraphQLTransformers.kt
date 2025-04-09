@@ -36,6 +36,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
+import com.kickstarter.models.Order
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentPlan
@@ -59,6 +60,7 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.type.AppDataInput
+import com.kickstarter.type.CheckoutStateEnum
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
 import com.kickstarter.type.CreateOrUpdateBackingAddressInput
@@ -811,6 +813,22 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .build()
     }
 
+    fun getCheckoutStateType(checkoutStateType: CheckoutStateEnum) =
+        when (checkoutStateType) {
+            CheckoutStateEnum.in_progress -> Order.CheckoutStateEnum.IN_PROGRESS
+            CheckoutStateEnum.complete -> Order.CheckoutStateEnum.COMPLETE
+            else -> Order.CheckoutStateEnum.NOT_STARTED
+        }
+
+    val order = backingGr?.order?.order?.let { order ->
+        Order.builder()
+            .id(order.id.toLong())
+            .checkoutState(getCheckoutStateType(order.checkoutState))
+            .currency(order.currency)
+            .total(order.total)
+            .build()
+    }
+
     return Backing.builder()
         .amount(backingGr?.amount?.amount?.amount?.toDouble() ?: 0.0)
         .bonusAmount(backingGr?.bonusAmount?.amount?.amount?.toDouble() ?: 0.0)
@@ -827,6 +845,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
         .rewardId(reward?.id())
         .locationId(locationId)
         .locationName(location?.displayableName)
+        .order(order)
         .pledgedAt(backingGr?.pledgedOn)
         .projectId(projectId)
         .sequence(backingGr?.sequence?.toLong() ?: 0)

@@ -198,6 +198,9 @@ fragment backing on Backing {
             ...rewardImage
         }
     }
+    order {
+        ... order
+    }
 }
 
 fragment rewardItems on RewardItemsConnection {
@@ -524,4 +527,11 @@ fragment paymentIncrement on PaymentIncrement {
     state
     stateReason
     scheduledCollection
+}
+
+fragment order on Order {
+    id
+    checkoutState
+    currency
+    total
 }

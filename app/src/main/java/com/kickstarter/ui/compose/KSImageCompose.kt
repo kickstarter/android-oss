@@ -68,7 +68,7 @@ fun KSRewardAsyncImage(image: Photo) {
 @Composable
 fun KSAsyncImage(modifier: Modifier, image: Photo?) {
     AsyncImage(
-        model = image?.let{
+        model = image?.let {
             ImageRequest.Builder(LocalContext.current)
                 .data(image.full())
                 .crossfade(true)

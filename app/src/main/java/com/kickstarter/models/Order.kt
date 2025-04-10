@@ -17,6 +17,7 @@ class Order private constructor(
 ) : Parcelable {
 
     fun id() = this.id
+    fun checkoutState() = this.checkoutState
     fun currency() = this.currency
     fun total() = this.total
 

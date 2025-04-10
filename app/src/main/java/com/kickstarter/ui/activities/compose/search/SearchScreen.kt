@@ -62,6 +62,7 @@ import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isLatePledgesActive
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
+import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
@@ -82,6 +83,44 @@ import com.kickstarter.ui.views.compose.search.SearchEmptyView
 import com.kickstarter.ui.views.compose.search.SearchTopBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun PagerPreview() {
+    KSTheme {
+        val testPagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
+        val testSheetState = rememberModalBottomSheetState(
+            initialValue = Hidden,
+            skipHalfExpanded = true
+        )
+
+        val categories = CategoryFactory.rootCategories()
+        val selectedStatus = DiscoveryParams.State.LIVE
+
+        val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
+        val dismissed = mutableListOf<Boolean>()
+        val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
+
+        Box(modifier = Modifier.size(400.dp)) {
+            FilterAndCategoryPagerSheet(
+                selectedProjectStatus = selectedStatus,
+                currentCategory = categories[0],
+                categories = categories,
+                onDismiss = { dismissed.add(true) },
+                onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
+                updateSelectedCounts = { statusCount, categoryCount ->
+                    selectedCounts.add(
+                        statusCount to categoryCount
+                    )
+                },
+                pagerState = testPagerState,
+                sheetState = testSheetState
+            )
+        }
+    }
+}
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -439,7 +478,7 @@ fun FilterAndCategoryPagerSheet(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .heightIn(min = 200.dp, max = 770.dp),
+            .heightIn(min = dimensions.bottomSheetMinHeight, max = dimensions.bottomSheetMaxHeight),
         state = pagerState,
 
     ) { page ->

@@ -78,7 +78,7 @@ fun FilterMenuBottomSheet(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary)
         ) {
             FilterRow(
-                callback = onDismiss,
+                onClickAction = onDismiss,
                 icon = Icons.Filled.Close,
                 modifier = Modifier.testTag(FilterMenuTestTags.DISMISS_ROW)
             )
@@ -88,7 +88,7 @@ fun FilterMenuBottomSheet(
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
-                            callback = onNavigate,
+                            onClickAction = onNavigate,
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
@@ -214,7 +214,7 @@ private fun ProjectStatusRow(
 private fun FilterRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Filter_fpo),
-    callback: () -> Unit,
+    onClickAction: () -> Unit,
     icon: ImageVector
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -251,7 +251,10 @@ private fun FilterRow(
             color = colors.textPrimary
         )
         IconButton(
-            onClick = { callback.invoke() }
+            modifier = Modifier.testTag(text),
+            onClick = {
+                onClickAction.invoke()
+            }
         ) {
             Icon(
                 imageVector = icon,

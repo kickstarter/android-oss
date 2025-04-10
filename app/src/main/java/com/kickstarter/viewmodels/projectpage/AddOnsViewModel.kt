@@ -230,7 +230,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
         val filteredAddOns = addOns.filter { reward ->
             when (reward.shippingPreference()) {
-                "unrestricted", "none" -> true
+                "unrestricted", "none", "local" -> true
                 else -> reward.shippingRules()!!.any { it.location()?.id() == locationId }
             }
         }

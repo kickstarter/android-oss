@@ -491,6 +491,7 @@ fun FilterAndCategoryPagerSheet(
                 onApply = { selectedProjectState, applyAndDismiss ->
                     projectState.value = selectedProjectState
                     if (applyAndDismiss != null) {
+                        // - Reset to default values
                         if (applyAndDismiss.isFalse()) {
                             category.value = null
                         }
@@ -518,6 +519,7 @@ fun FilterAndCategoryPagerSheet(
                 onApply = { selectedCategory, applyAndDismiss ->
                     category.value = selectedCategory
                     if (applyAndDismiss != null) {
+                        // - Reset to default values
                         if (applyAndDismiss.isFalse()) {
                             projectState.value = null
                         }
@@ -537,6 +539,13 @@ fun FilterAndCategoryPagerSheet(
     }
 }
 
+/**
+ * Applies user selection.
+ * @param shouldDismiss the context for this value refers to which button in the footer the user has pressed,
+ * it applies to both FilterMenu screen and CategorySelection screen
+ *  shouldDismiss = false -> user has pressed "Reset" button on the footer. (Not dismiss bottomSheet).
+ *  shouldDismiss = true -> user has pressed "See results" button on the footer. (Should dismiss bottomSheet).
+ */
 private fun applyUserSelection(
     onApply: (DiscoveryParams.State?, Category?) -> Unit,
     projectState: DiscoveryParams.State?,

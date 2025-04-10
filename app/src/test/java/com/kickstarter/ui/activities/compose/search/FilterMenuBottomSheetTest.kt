@@ -49,13 +49,15 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuBottomSheet(
-                    onApply = { publicState: DiscoveryParams.State? ->
+                    onApply = { publicState: DiscoveryParams.State?, from: Boolean? ->
                         counter++
                         if (counter == 1)
                             assertEquals(publicState, DiscoveryParams.State.LIVE)
 
                         if (counter == 2)
                             assertEquals(publicState, null)
+
+                        assertNull(from)
                     }
                 )
             }
@@ -63,23 +65,20 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
 
         val livePill = composeTestRule.onNodeWithTag(FilterMenuTestTags.pillTag(DiscoveryParams.State.LIVE))
         livePill.performClick() // Select
-        composeTestRule
-            .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name) // apply
-            .performClick()
 
         livePill.performClick() // Unselect (toggle off)
-        composeTestRule
-            .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name) // apply
-            .performClick()
     }
 
     @Test
     fun filterMenu_onApplyCallbackReceivesSelection() {
         var selected: DiscoveryParams.State? = null
-
+        var contextFrom: Boolean? = null
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(onApply = { selected = it })
+                FilterMenuBottomSheet(onApply = { state, from ->
+                    selected = state
+                    contextFrom = from
+                })
             }
         }
 
@@ -92,17 +91,22 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             .performClick()
 
         assertEquals(DiscoveryParams.State.LIVE, selected)
+        assertEquals(contextFrom, true)
     }
 
     @Test
     fun filterMenu_resetClearsSelection() {
         var selected: DiscoveryParams.State? = DiscoveryParams.State.LIVE
+        var contextFrom: Boolean? = null
 
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuBottomSheet(
                     selectedProjectStatus = selected,
-                    onApply = { selected = it }
+                    onApply = { state, from ->
+                        selected = state
+                        contextFrom = from
+                    }
                 )
             }
         }
@@ -112,5 +116,6 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             .performClick()
 
         assertNull(selected)
+        assertEquals(contextFrom, false)
     }
 }

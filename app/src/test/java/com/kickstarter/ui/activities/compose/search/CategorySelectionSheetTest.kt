@@ -21,7 +21,9 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
                 CategorySelectionSheet(
                     categories = listOf(),
                     onDismiss = { dismissClickCount++ },
-                    onApply = { applyClickCount++ },
+                    onApply = { selected, from ->
+                        applyClickCount++
+                    },
                     isLoading = false
                 )
             }

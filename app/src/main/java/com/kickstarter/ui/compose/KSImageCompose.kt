@@ -66,13 +66,15 @@ fun KSRewardAsyncImage(image: Photo) {
 }
 
 @Composable
-fun KSAsyncImage(modifier: Modifier, image: Photo) {
+fun KSAsyncImage(modifier: Modifier, image: Photo?) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(image.full())
-            .crossfade(true)
-            .build(),
-        contentDescription = image.altText(),
+        model = image?.let {
+            ImageRequest.Builder(LocalContext.current)
+                .data(image.full())
+                .crossfade(true)
+                .build()
+        },
+        contentDescription = image?.altText(),
         modifier = modifier,
         placeholder = ColorPainter(color = colors.backgroundDisabled),
         contentScale = ContentScale.Crop

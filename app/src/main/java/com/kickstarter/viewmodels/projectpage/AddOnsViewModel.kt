@@ -8,7 +8,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
-import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Location
@@ -197,7 +196,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                     .getRewardAllowedAddOns(
                         slug = project.slug() ?: "",
                         rewardId = currentUserReward.id(),
-                        locationId = selectedShippingRule.location() ?: LocationFactory.empty()
+                        locationId = selectedShippingRule.location() ?: Location.builder().build()
                     )
                     .asFlow()
                     .onStart {
@@ -205,7 +204,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                     }
                     .map { addOns ->
                         if (!addOns.isNullOrEmpty()) {
-                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns, selectedShippingRule.location() ?: LocationFactory.empty())
+                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns, selectedShippingRule.location() ?: Location.builder().build())
                         }
                     }.onCompletion {
                         emitCurrentState(isLoading = false)

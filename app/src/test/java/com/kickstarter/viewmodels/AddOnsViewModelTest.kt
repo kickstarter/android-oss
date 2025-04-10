@@ -124,6 +124,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val apolloClient = object : MockApolloClientV2() {
             override fun getRewardAllowedAddOns(
                 slug: String,
+                locationId: Location,
                 rewardId: Long
             ): Observable<List<Reward>> {
                 assertEquals(99L, rewardId)
@@ -191,6 +192,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val apolloClient = object : MockApolloClientV2() {
             override fun getRewardAllowedAddOns(
                 slug: String,
+                locationId: Location,
                 rewardId: Long
             ): Observable<List<Reward>> {
                 assertEquals(99L, rewardId)
@@ -263,7 +265,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val apolloClient = object : MockApolloClientV2() {
             override fun getRewardAllowedAddOns(
                 slug: String,
-                rewardId: Long
+                locationId: Location,
+                rewardId: Long,
             ): Observable<List<Reward>> {
                 assertEquals(99L, rewardId)
                 return Observable.just(listOf(aDifferentAddOnReward))
@@ -341,6 +344,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val apolloClient = object : MockApolloClientV2() {
             override fun getRewardAllowedAddOns(
                 slug: String,
+                locationId: Location,
                 rewardId: Long
             ): Observable<List<Reward>> {
                 assertEquals(99L, rewardId)

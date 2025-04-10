@@ -36,7 +36,8 @@ class Backing private constructor(
     private val status: String,
     private val addOns: List<Reward>?,
     private val bonusAmount: Double,
-    private val isPostCampaign: Boolean
+    private val isPostCampaign: Boolean,
+    private val order: Order?,
 ) : Parcelable, Relay {
     fun amount() = this.amount
     fun backer() = this.backer
@@ -67,6 +68,7 @@ class Backing private constructor(
     fun addOns() = this.addOns
     fun bonusAmount() = this.bonusAmount
     fun isPostCampaign() = this.isPostCampaign
+    fun order() = this.order
 
     @Parcelize
     data class Builder(
@@ -98,7 +100,8 @@ class Backing private constructor(
         private var status: String = "",
         private var addOns: List<Reward>? = null,
         private var bonusAmount: Double = 0.0,
-        private var isPostCampaign: Boolean = false
+        private var isPostCampaign: Boolean = false,
+        private var order: Order? = null,
     ) : Parcelable {
         fun amount(amount: Double?) = apply { this.amount = amount ?: 0.0 }
         fun backer(backer: User?) = apply { this.backer = backer }
@@ -128,6 +131,7 @@ class Backing private constructor(
         fun addOns(addOns: List<Reward>?) = apply { this.addOns = addOns ?: emptyList() }
         fun bonusAmount(bonusAmount: Double?) = apply { this.bonusAmount = bonusAmount ?: 0.0 }
         fun isPostCampaign(isPostCampaign: Boolean) = apply { this.isPostCampaign = isPostCampaign }
+        fun order(order: Order?) = apply { this.order = order }
         fun build() = Backing(
             amount = amount,
             backer = backer,
@@ -156,7 +160,8 @@ class Backing private constructor(
             addOns = addOns,
             bonusAmount = bonusAmount,
             isPostCampaign = isPostCampaign,
-            paymentIncrements = paymentIncrements
+            paymentIncrements = paymentIncrements,
+            order = order,
         )
     }
 
@@ -188,7 +193,8 @@ class Backing private constructor(
         status = status,
         addOns = addOns,
         bonusAmount = bonusAmount,
-        isPostCampaign = isPostCampaign
+        isPostCampaign = isPostCampaign,
+        order = order,
     )
 
     override fun equals(other: Any?): Boolean {

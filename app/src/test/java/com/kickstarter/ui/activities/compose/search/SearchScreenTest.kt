@@ -1,7 +1,13 @@
 package com.kickstarter.ui.activities.compose.search
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue.Hidden
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
@@ -11,7 +17,10 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.models.Category
 import com.kickstarter.models.Project
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -298,5 +307,62 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
         searchTextInput.performTextInput("this is a test")
         assertEquals(currentSearchTerm, "this is a test")
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun `pager initial State, navigates to category row, then navigate back to filter menu page`() {
+
+        var page = 0
+        composeTestRule.setContent {
+            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
+            val testSheetState = rememberModalBottomSheetState(
+                initialValue = Hidden,
+                skipHalfExpanded = true
+            )
+
+            val categories = CategoryFactory.rootCategories()
+            val selectedStatus = DiscoveryParams.State.LIVE
+
+            val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
+            val dismissed = mutableListOf<Boolean>()
+            val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
+
+            KSTheme {
+
+                FilterAndCategoryPagerSheet(
+                    selectedProjectStatus = selectedStatus,
+                    currentCategory = categories[0],
+                    categories = categories,
+                    onDismiss = { dismissed.add(true) },
+                    onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount ->
+                        selectedCounts.add(
+                            statusCount to categoryCount
+                        )
+                    },
+                    pagerState = testPagerState,
+                    sheetState = testSheetState
+                )
+            }
+
+            LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context
+                page = testPagerState.currentPage
+            }
+        }
+
+        composeTestRule.onNodeWithTag("Category").assertExists() // On Filters page, category row button
+        assertEquals(page, FilterPages.MAIN_FILTER.ordinal) // First page is main menu
+
+        composeTestRule.onNodeWithTag("Category").performClick()
+
+        composeTestRule.waitForIdle()
+        assertEquals(page, FilterPages.CATEGORIES.ordinal)
+
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertExists() // On Category Selection, top left Arrow Icon
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).performClick()
+
+        composeTestRule.waitForIdle()
+        assertEquals(page, FilterPages.MAIN_FILTER.ordinal)
     }
 }

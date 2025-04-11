@@ -774,9 +774,10 @@ interface ProjectPageViewModel {
                     val order = project.backing()?.order()
                     val completedPM = order != null && order.checkoutState() == Order.CheckoutStateEnum.COMPLETE
                     if (completedPM) {
-                        // Open webview
-                        val url = "${environment.webEndpoint()}/projects/${project.slug()}/backing/details"
-                        openBackingDetailsWebview.onNext(url)
+                        // Open webview url = "${environment.webEndpoint()}/projects/${project.slug()}/backing/detail"
+                        project.backing()?.backingDetailsPageRoute()?.let {
+                            openBackingDetailsWebview.onNext(it)
+                        }
                     } else {
                         // Open native view pledge screen
                         this.expandPledgeSheet.onNext(Pair(true, true))

@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class Order private constructor(
-    private val id: Long,
+    private val id: String,
     private val checkoutState: CheckoutStateEnum, // The checkout state of the order
     private val currency: CurrencyCode, // The currency of the order
     private val total: Int? // The total cost for the order including taxes and shipping
@@ -23,12 +23,12 @@ class Order private constructor(
 
     @Parcelize
     data class Builder(
-        private var id: Long = 0L,
+        private var id: String = "",
         private var checkoutState: CheckoutStateEnum = CheckoutStateEnum.NOT_STARTED,
         private var currency: CurrencyCode = CurrencyCode.UNKNOWN__,
         private var total: Int? = null
     ) : Parcelable {
-        fun id(id: Long?) = apply { this.id = id ?: 0L }
+        fun id(id: String?) = apply { this.id = id ?: "" }
         fun checkoutState(checkoutState: CheckoutStateEnum) = apply { this.checkoutState = checkoutState }
         fun currency(currency: CurrencyCode?) = apply { this.currency = currency ?: CurrencyCode.UNKNOWN__ }
         fun total(total: Int?) = apply { this.total = total }

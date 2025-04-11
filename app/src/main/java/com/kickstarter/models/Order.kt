@@ -17,6 +17,7 @@ class Order private constructor(
 ) : Parcelable {
 
     fun id() = this.id
+    fun checkoutState() = this.checkoutState
     fun currency() = this.currency
     fun total() = this.total
 
@@ -27,7 +28,7 @@ class Order private constructor(
         private var currency: CurrencyCode = CurrencyCode.UNKNOWN__,
         private var total: Int? = null
     ) : Parcelable {
-        fun id(id: String?) = apply { this.id = id ?: "" }
+        fun id(id: String) = apply { this.id = id }
         fun checkoutState(checkoutState: CheckoutStateEnum) = apply { this.checkoutState = checkoutState }
         fun currency(currency: CurrencyCode?) = apply { this.currency = currency ?: CurrencyCode.UNKNOWN__ }
         fun total(total: Int?) = apply { this.total = total }

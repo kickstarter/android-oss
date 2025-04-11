@@ -47,6 +47,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectPageBinding
+import com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
@@ -454,6 +455,11 @@ class ProjectPageActivity :
         this.viewModel.outputs.startThanksActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCreatePledgeSuccess(it) }
+            .addToDisposable(disposables)
+
+        this.viewModel.outputs.openBackingDetailsWebview()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { openBackingDetailsWebView(it) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.projectMedia()
@@ -1235,6 +1241,12 @@ class ProjectPageActivity :
                 .putExtra(IntentKey.PROJECT, project.reduceProjectPayload())
                 .putExtra(IntentKey.BACKING, project.backing())
         )
+    }
+
+    private fun openBackingDetailsWebView(url: String) {
+        val intent = Intent(this, BackingDetailsActivity::class.java)
+            .putExtra(IntentKey.URL, url)
+        startActivity(intent)
     }
 
     private fun styleProjectActionButton(detailsAreVisible: Boolean) {

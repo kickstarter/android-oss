@@ -1,6 +1,7 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Order
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.Urls
@@ -133,6 +134,37 @@ object ProjectFactory {
             .isBacking(true)
             .build()
     }
+
+    @JvmStatic
+    fun backedProjectWithPMCheckoutOrder(): Project {
+        val project = project()
+        val reward = RewardFactory.reward()
+        val order = Order.builder().checkoutState(Order.CheckoutStateEnum.COMPLETE).build()
+        val backing = Backing.builder()
+            .amount(10.0)
+            .backerId(IdFactory.id().toLong())
+            .backingDetailsPageRoute("https://ksr.com/backing/details")
+            .cancelable(true)
+            .id(IdFactory.id().toLong())
+            .sequence(1)
+            .order(order)
+            .reward(reward)
+            .rewardId(reward.id())
+            .paymentSource(PaymentSourceFactory.visa())
+            .pledgedAt(DateTime.now())
+            .projectId(project.id())
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
+            .build()
+        return project
+            .toBuilder()
+            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue))
+            .canComment(true)
+            .backing(backing)
+            .isBacking(true)
+            .build()
+    }
+
     @JvmStatic
     fun backedProjectWithPlotSelected(): Project {
         val project = project().toBuilder().isPledgeOverTimeAllowed(true).build()

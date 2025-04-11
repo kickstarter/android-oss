@@ -178,7 +178,7 @@ class Backing private constructor(
         backerUrl = backerUrl,
         backerId = backerId,
         backerCompletedAt = backerCompletedAt,
-        backingDetailsPageRoute =  backingDetailsPageRoute,
+        backingDetailsPageRoute = backingDetailsPageRoute,
         cancelable = cancelable,
         completedAt = completedAt,
         completedByBacker = completedByBacker,

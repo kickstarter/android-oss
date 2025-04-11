@@ -822,7 +822,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
 
     val order = backingGr?.order?.order?.let { order ->
         Order.builder()
-            .id(order.id.toLong())
+            .id(order.id)
             .checkoutState(getCheckoutStateType(order.checkoutState))
             .currency(order.currency)
             .total(order.total)

@@ -2070,7 +2070,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        val url = "https://ksr.com/backing/details"
+        val url = "https://ksr.com/backing/survey_responses"
         this.openBackingDetailsWebview.assertValue(url)
     }
 

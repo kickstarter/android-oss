@@ -774,7 +774,8 @@ interface ProjectPageViewModel {
                     val order = project.backing()?.order()
                     val completedPM = order != null && order.checkoutState() == Order.CheckoutStateEnum.COMPLETE
                     if (completedPM) {
-                        // Open webview url = "${environment.webEndpoint()}/projects/${project.slug()}/backing/detail"
+                        // Open webview to backing/survey_responses endpoint instead of backing/details
+                        // endpoint to avoid prompting user to re-login
                         project.backing()?.backingDetailsPageRoute()?.let {
                             openBackingDetailsWebview.onNext(it)
                         }

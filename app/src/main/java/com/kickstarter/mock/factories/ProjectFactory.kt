@@ -143,7 +143,7 @@ object ProjectFactory {
         val backing = Backing.builder()
             .amount(10.0)
             .backerId(IdFactory.id().toLong())
-            .backingDetailsPageRoute("https://ksr.com/backing/details")
+            .backingDetailsPageRoute("https://ksr.com/backing/survey_responses")
             .cancelable(true)
             .id(IdFactory.id().toLong())
             .sequence(1)

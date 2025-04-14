@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -65,14 +64,13 @@ fun FilterMenuBottomSheet(
     selectedProjectStatus: DiscoveryParams.State? = null,
     availableFilters: List<FilterType> = FilterType.values().asList(),
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.State?) -> Unit = {}
+    onApply: (DiscoveryParams.State?, Boolean?) -> Unit = { a, b -> },
+    onNavigate: () -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
             .testTag(FilterMenuTestTags.SHEET),
         color = colors.backgroundSurfacePrimary
     ) {
@@ -80,24 +78,26 @@ fun FilterMenuBottomSheet(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary)
         ) {
             FilterRow(
-                callback = onDismiss,
+                onClickAction = onDismiss,
                 icon = Icons.Filled.Close,
                 modifier = Modifier.testTag(FilterMenuTestTags.DISMISS_ROW)
             )
 
-            LazyColumn {
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 items(availableFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
-                            callback = onDismiss,
+                            onClickAction = onNavigate,
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
-
                         FilterType.PROJECT_STATUS -> ProjectStatusRow(
                             text = titleForFilter(filter),
-                            callback = { status -> projStatus.value = status },
+                            callback = { status ->
+                                projStatus.value = status
+                                onApply(projStatus.value, null)
+                            },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
                         )
@@ -109,10 +109,10 @@ fun FilterMenuBottomSheet(
                 modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
                 resetOnclickAction = {
                     projStatus.value = null
-                    onApply(projStatus.value)
+                    onApply(projStatus.value, false)
                 },
                 onApply = {
-                    onApply(projStatus.value)
+                    onApply(projStatus.value, true)
                 }
             )
         }
@@ -214,7 +214,7 @@ private fun ProjectStatusRow(
 private fun FilterRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Filter_fpo),
-    callback: () -> Unit,
+    onClickAction: () -> Unit,
     icon: ImageVector
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -251,7 +251,10 @@ private fun FilterRow(
             color = colors.textPrimary
         )
         IconButton(
-            onClick = { callback.invoke() }
+            modifier = Modifier.testTag(text),
+            onClick = {
+                onClickAction.invoke()
+            }
         ) {
             Icon(
                 imageVector = icon,
@@ -289,7 +292,7 @@ private fun FilterMenuSheetPreview() {
     KSTheme {
         FilterMenuBottomSheet(
             selectedProjectStatus = DiscoveryParams.State.LIVE,
-            onApply = {},
+            onApply = { a, b -> },
             onDismiss = {}
         )
     }

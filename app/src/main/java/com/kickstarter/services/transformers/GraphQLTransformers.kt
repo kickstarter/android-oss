@@ -838,6 +838,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
         .backerUrl(backerData?.imageUrl)
         .backerName(nameBacker)
         .backer(backer)
+        .backingDetailsPageRoute(backingGr?.backingDetailsPageRoute)
         .id(id)
         .incremental(incremental)
         .reward(reward)

@@ -15,6 +15,7 @@ class Backing private constructor(
     private val backerName: String?,
     private val backerUrl: String?,
     private val backerCompletedAt: DateTime?,
+    private val backingDetailsPageRoute: String?,
     private val cancelable: Boolean,
     private val completedAt: DateTime?,
     private val completedByBacker: Boolean,
@@ -46,6 +47,7 @@ class Backing private constructor(
     fun backerName() = this.backerName
     fun backerUrl() = this.backerUrl
     fun backerCompletedAt() = this.backerCompletedAt
+    fun backingDetailsPageRoute() = this.backingDetailsPageRoute
     fun cancelable() = this.cancelable
     fun completedAt() = this.completedAt
     fun completedByBacker() = this.completedByBacker
@@ -79,6 +81,7 @@ class Backing private constructor(
         private var backerName: String? = null,
         private var backerUrl: String? = null,
         private var backerCompletedAt: DateTime? = null,
+        private var backingDetailsPageRoute: String? = null,
         private var cancelable: Boolean = false,
         private var completedAt: DateTime? = null,
         private var completedByBacker: Boolean = false,
@@ -110,6 +113,7 @@ class Backing private constructor(
         fun backerUrl(backerUrl: String?) = apply { this.backerUrl = backerUrl }
         fun backerId(backerId: Long?) = apply { this.backerId = backerId ?: 0L }
         fun backerCompletedAt(backerCompletedAt: DateTime?) = apply { this.backerCompletedAt = backerCompletedAt }
+        fun backingDetailsPageRoute(backingDetailsPageRoute: String?) = apply { this.backingDetailsPageRoute = backingDetailsPageRoute }
         fun cancelable(cancelable: Boolean?) = apply { this.cancelable = cancelable ?: false }
         fun completedAt(completedAt: DateTime?) = apply { this.completedAt = completedAt }
         fun completedByBacker(completedByBacker: Boolean?) = apply { this.completedByBacker = completedByBacker ?: false }
@@ -140,6 +144,7 @@ class Backing private constructor(
             backerUrl = backerUrl,
             backerId = backerId,
             backerCompletedAt = backerCompletedAt,
+            backingDetailsPageRoute = backingDetailsPageRoute,
             cancelable = cancelable,
             completedAt = completedAt,
             completedByBacker = completedByBacker,
@@ -173,6 +178,7 @@ class Backing private constructor(
         backerUrl = backerUrl,
         backerId = backerId,
         backerCompletedAt = backerCompletedAt,
+        backingDetailsPageRoute = backingDetailsPageRoute,
         cancelable = cancelable,
         completedAt = completedAt,
         completedByBacker = completedByBacker,
@@ -209,6 +215,7 @@ class Backing private constructor(
                 backerUrl() == other.backerUrl() &&
                 backerId() == other.backerId() &&
                 backerCompletedAt() == other.backerCompletedAt() &&
+                backingDetailsPageRoute() == other.backingDetailsPageRoute() &&
                 cancelable() == other.cancelable() &&
                 completedAt() == other.completedAt() &&
                 completedByBacker() == other.completedByBacker() &&

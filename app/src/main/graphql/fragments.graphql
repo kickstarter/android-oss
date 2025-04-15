@@ -156,6 +156,7 @@ fragment backing on Backing {
     cancelable
     pledgedOn
     backerCompleted
+    backingDetailsPageRoute(type: url, tab: survey_responses)
     isPostCampaign
     incremental
     project {

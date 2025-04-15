@@ -91,6 +91,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Unit>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
+    private val openBackingDetailsWebview = TestSubscriber<String>()
     private val updateFragments = TestSubscriber<ProjectData>()
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
@@ -143,6 +144,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startProjectUpdateActivity().subscribe { this.startProjectUpdateActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startMessagesActivity().subscribe { this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startThanksActivity().subscribe { this.startThanksActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.openBackingDetailsWebview().subscribe { this.openBackingDetailsWebview.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.updateFragments().subscribe { this.updateFragments.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe { this.startRootCommentsForCommentsThreadActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }.addToDisposable(disposables)
@@ -2056,6 +2058,20 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
         this.projectData.assertValueCount(2)
+    }
+
+    @Test
+    fun testOpenBackingDetailsWebview() { // The testExpandPledgeSheet_ suite of tests covers projects that do not have PM checkout
+        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+
+        // Start the view model with a backed project with PM checkout order
+        val backedProject = ProjectFactory.backedProjectWithPMCheckoutOrder()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        val url = "https://ksr.com/backing/survey_responses"
+        this.openBackingDetailsWebview.assertValue(url)
     }
 
     @Test

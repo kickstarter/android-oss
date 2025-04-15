@@ -47,6 +47,7 @@ import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Order
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
@@ -244,6 +245,9 @@ interface ProjectPageViewModel {
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
 
+        /** Emits when user clicks View Pledge button and should start the [com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity.kt]. */
+        fun openBackingDetailsWebview(): Observable<String>
+
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
 
@@ -349,6 +353,7 @@ interface ProjectPageViewModel {
         private val startProjectUpdateToRepliesDeepLinkActivity =
             PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
+        private val openBackingDetailsWebview = PublishSubject.create<String>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
@@ -764,8 +769,21 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             this.nativeProjectActionButtonClicked
-                .map { Pair(true, true) }
-                .subscribe { this.expandPledgeSheet.onNext(it) }
+                .withLatestFrom(currentProject) { _, project -> project }
+                .subscribe { project ->
+                    val order = project.backing()?.order()
+                    val completedPM = order != null && order.checkoutState() == Order.CheckoutStateEnum.COMPLETE
+                    if (completedPM) {
+                        // Open webview to backing/survey_responses endpoint instead of backing/details
+                        // endpoint to avoid prompting user to re-login
+                        project.backing()?.backingDetailsPageRoute()?.let {
+                            openBackingDetailsWebview.onNext(it)
+                        }
+                    } else {
+                        // Open native view pledge screen
+                        this.expandPledgeSheet.onNext(Pair(true, true))
+                    }
+                }
                 .addToDisposable(disposables)
 
             val fragmentStackCount = this.fragmentStackCount.startWith(0)
@@ -1392,6 +1410,9 @@ interface ProjectPageViewModel {
 
         override fun startProjectUpdateToRepliesDeepLinkActivity(): Observable<Pair<Pair<String, String>, Pair<Project, ProjectData>>> =
             this.startProjectUpdateToRepliesDeepLinkActivity
+
+        override fun openBackingDetailsWebview(): Observable<String> =
+            this.openBackingDetailsWebview
 
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> =
             this.onOpenVideoInFullScreen

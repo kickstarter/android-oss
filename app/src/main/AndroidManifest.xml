@@ -206,10 +206,6 @@
             android:name=".ui.activities.ProjectUpdatesActivity"
             android:parentActivityName=".ui.activities.ProjectPageActivity" />
         <activity
-            android:name=".ui.activities.SearchActivity"
-            android:parentActivityName=".ui.activities.DiscoveryActivity"
-            android:theme="@style/SearchActivity" />
-        <activity
             android:name=".features.search.ui.SearchAndFilterActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/SearchActivity" />

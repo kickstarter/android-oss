@@ -21,6 +21,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
@@ -47,7 +48,7 @@ import com.kickstarter.ui.compose.designsystem.PillButton
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun SearchTopBarPreview() {
+fun SearchTopBarPreviewPhase2On() {
     KSTheme {
         SearchTopBar(
             onBackPressed = {},
@@ -56,7 +57,26 @@ fun SearchTopBarPreview() {
                 FilterRowPillType.SORT.name to 0,
                 FilterRowPillType.CATEGORY.name to 0
             ),
-            onPillPressed = {}
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarPreviewPhase2Off() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 0
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = false
         )
     }
 }
@@ -71,7 +91,7 @@ fun SearchTopBar(
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit = {},
-    shouldShowPillbar: Boolean = true
+    shouldShowPhase2: Boolean = true
 ) {
 
     var value by rememberSaveable { mutableStateOf("") }
@@ -96,7 +116,7 @@ fun SearchTopBar(
                     .size(dimensions.clickableButtonHeight)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.Back),
                     tint = colors.kds_black
                 )
@@ -158,15 +178,14 @@ fun SearchTopBar(
                 singleLine = true
             )
         }
-        if (shouldShowPillbar) {
-            PillBar(
-                countApiIsReady,
-                categoryPillText,
-                projectStatusText,
-                selectedFilterCounts,
-                onPillPressed
-            )
-        }
+        PillBar(
+            countApiIsReady,
+            categoryPillText,
+            projectStatusText,
+            selectedFilterCounts,
+            onPillPressed,
+            shouldShowPhase2 = shouldShowPhase2
+        )
     }
 }
 
@@ -176,7 +195,8 @@ fun PillBar(
     categoryPillText: String = stringResource(R.string.Category),
     projectStatusText: String = stringResource(R.string.Project_Status_fpo),
     selectedFilterCounts: Map<String, Int>,
-    onPillPressed: (FilterRowPillType) -> Unit
+    onPillPressed: (FilterRowPillType) -> Unit,
+    shouldShowPhase2: Boolean = true
 ) {
     val scrollState = rememberScrollState()
     Row(
@@ -197,11 +217,16 @@ fun PillBar(
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
             onClick = { onPillPressed(FilterRowPillType.SORT) }
         )
-        IconPillButton(
-            type = FilterRowPillType.FILTER,
-            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.FILTER.name, 0) > 0,
-            onClick = { onPillPressed(FilterRowPillType.FILTER) }
-        )
+        if (shouldShowPhase2) {
+            IconPillButton(
+                type = FilterRowPillType.FILTER,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.FILTER.name,
+                    0
+                ) > 0,
+                onClick = { onPillPressed(FilterRowPillType.FILTER) }
+            )
+        }
         PillButton(
             countApiIsReady = countApiIsReady,
             text = categoryPillText,
@@ -209,13 +234,19 @@ fun PillBar(
             count = selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0),
             onClick = { onPillPressed(FilterRowPillType.CATEGORY) }
         )
-        PillButton(
-            countApiIsReady = countApiIsReady,
-            text = projectStatusText,
-            isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) > 0,
-            count = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
-            onClick = { onPillPressed(FilterRowPillType.PROJECT_STATUS) }
-        )
+
+        if (shouldShowPhase2) {
+            PillButton(
+                countApiIsReady = countApiIsReady,
+                text = projectStatusText,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.PROJECT_STATUS.name,
+                    0
+                ) > 0,
+                count = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
+                onClick = { onPillPressed(FilterRowPillType.PROJECT_STATUS) }
+            )
+        }
     }
 }
 

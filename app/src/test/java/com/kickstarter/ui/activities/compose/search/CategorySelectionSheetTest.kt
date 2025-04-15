@@ -24,7 +24,8 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
                     onApply = { selected, from ->
                         applyClickCount++
                     },
-                    isLoading = false
+                    isLoading = false,
+                    shouldShowPhase2 = shouldShowPhase2
                 )
             }
         }

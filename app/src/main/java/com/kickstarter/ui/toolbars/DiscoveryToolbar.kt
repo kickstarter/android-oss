@@ -52,9 +52,7 @@ class DiscoveryToolbar @JvmOverloads constructor(
     }
 
     private fun searchButtonClick() {
-        val ffEnabled = context.getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
         val context = context as? DiscoveryActivity
-
-        context?.presentSearchActivity(featureFlagEnabled = ffEnabled)
+        context?.presentSearchActivity()
     }
 }

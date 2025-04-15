@@ -7,8 +7,6 @@ import android.widget.TextView
 import androidx.core.view.GravityCompat
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.activities.DiscoveryActivity
 import com.kickstarter.ui.extensions.presentSearchActivity

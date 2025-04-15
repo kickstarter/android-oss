@@ -34,7 +34,7 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
     return intent
 }
 
-fun Intent.getSearchIntent(context: Context): Intent  = this.setClass(context, SearchAndFilterActivity::class.java)
+fun Intent.getSearchIntent(context: Context): Intent = this.setClass(context, SearchAndFilterActivity::class.java)
 
 /**
  * Retruns the Intent for start the PaymentMethodsSettigns activity

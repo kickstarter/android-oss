@@ -123,7 +123,9 @@ fun CategorySelectionSheet(
                     Text(
                         text = stringResource(R.string.Category),
                         style = typographyV2.headingXL,
-                        modifier = Modifier.weight(1f),
+                        modifier =
+                        if (shouldShowPhase2) Modifier.weight(1f)
+                        else Modifier.weight(1f).padding(start = dimensions.paddingMediumLarge),
                         color = colors.textPrimary
                     )
                     IconButton(

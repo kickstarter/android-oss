@@ -25,7 +25,7 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
                         applyClickCount++
                     },
                     isLoading = false,
-                    shouldShowPhase2 = shouldShowPhase2
+                    shouldShowPhase2 = false
                 )
             }
         }

@@ -44,6 +44,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.PillButton
+import com.kickstarter.ui.views.compose.search.PillBarTestTags.pillTag
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -189,6 +190,10 @@ fun SearchTopBar(
     }
 }
 
+object PillBarTestTags {
+    fun pillTag(state: FilterRowPillType) = "pill_${state.name}"
+}
+
 @Composable
 fun PillBar(
     countApiIsReady: Boolean = false,
@@ -213,12 +218,14 @@ fun PillBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconPillButton(
+            modifier = Modifier.testTag(pillTag(FilterRowPillType.SORT)),
             type = FilterRowPillType.SORT,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
             onClick = { onPillPressed(FilterRowPillType.SORT) }
         )
         if (shouldShowPhase2) {
             IconPillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),
                 type = FilterRowPillType.FILTER,
                 isSelected = selectedFilterCounts.getOrDefault(
                     FilterRowPillType.FILTER.name,
@@ -228,6 +235,7 @@ fun PillBar(
             )
         }
         PillButton(
+            modifier = Modifier.testTag(pillTag(FilterRowPillType.CATEGORY)),
             countApiIsReady = countApiIsReady,
             text = categoryPillText,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) > 0,
@@ -237,6 +245,7 @@ fun PillBar(
 
         if (shouldShowPhase2) {
             PillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECT_STATUS)),
                 countApiIsReady = countApiIsReady,
                 text = projectStatusText,
                 isSelected = selectedFilterCounts.getOrDefault(

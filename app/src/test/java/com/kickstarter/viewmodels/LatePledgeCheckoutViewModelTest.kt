@@ -841,5 +841,4 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(state.last().isPledgeButtonEnabled, true)
         assertEquals(state.last().isLoading, false)
     }
-
 }

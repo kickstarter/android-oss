@@ -180,7 +180,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.onCompletion {
                 emitCurrentState()
             }.catch {
-                errorAction.invoke(null)
+                resetPledgeButtonUIOnFailure()
             }.collect()
         }
     }
@@ -197,7 +197,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.map {
                 refreshUserCards()
             }.catch {
-                errorAction.invoke(null)
+                resetPledgeButtonUIOnFailure()
             }.onCompletion {
                 emitCurrentState()
             }
@@ -221,7 +221,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.onCompletion {
                 emitCurrentState()
             }.catch {
-                errorAction.invoke(null)
+                resetPledgeButtonUIOnFailure()
             }.collect()
     }
 
@@ -283,11 +283,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                                 )
                             } ?: run {
                                 emitCurrentState()
-                                errorAction.invoke(null)
+                                resetPledgeButtonUIOnFailure()
                             }
                         } ?: run {
                             emitCurrentState()
-                            errorAction.invoke(null)
+                            resetPledgeButtonUIOnFailure()
                         }
                     }.catch {
                         // - Clean up states if error happens when creating payment intent
@@ -369,7 +369,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }.onCompletion {
             emitCurrentState()
         }.catch {
-            errorAction.invoke(null)
+            resetPledgeButtonUIOnFailure()
         }.collect()
     }
 

@@ -208,6 +208,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     fun onNewCardFailed() {
         viewModelScope.launch {
             emitCurrentState()
+            resetPledgeButtonUIOnFailure()
         }
     }
 
@@ -291,7 +292,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     }.catch {
                         // - Clean up states if error happens when creating payment intent
                         paymentIntent = null
-                        errorAction.invoke(null)
+                        resetPledgeButtonUIOnFailure()
                     }.collect() // - No completation block, will continue on validateCheckout
             }
         } ?: run {
@@ -319,10 +320,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     null
                 }
                 emitCurrentState()
-                errorAction.invoke(error)
+                resetPledgeButtonUIOnFailure(error)
             }
         }.catch {
-            errorAction.invoke(null)
+            resetPledgeButtonUIOnFailure(null)
         }
             .onCompletion {
                 emitCurrentState()
@@ -346,7 +347,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         } else if (paymentIntent.lastPaymentError.isNotNull()) {
             // Display error with lastPaymentError.message
             emitCurrentState()
-            errorAction.invoke(paymentIntent.lastPaymentError?.message)
+            resetPledgeButtonUIOnFailure(paymentIntent.lastPaymentError?.message)
         } else {
             // Success, move on
             completeOnSessionCheckout(clientSecret = clientSecret, selectedCard = selectedCard)
@@ -393,11 +394,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                     }.onCompletion {
                         emitCurrentState()
                     }.catch {
-                        errorAction.invoke(null)
+                        resetPledgeButtonUIOnFailure()
                         clear3DSValues()
                     }.collect()
             } else {
-                errorAction.invoke(null)
+                resetPledgeButtonUIOnFailure()
                 clear3DSValues()
             }
         }
@@ -435,6 +436,14 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 isPledgeButtonEnabled = buttonEnabled && !isLoading,
             )
         )
+    }
+
+    fun resetPledgeButtonUIOnFailure(errorMessage: String? = null) {
+        buttonEnabled = true
+        scope.launch {
+            emitCurrentState(isLoading = false)
+        }
+        errorAction.invoke(errorMessage)
     }
 
     fun sendPageViewedEvent() {

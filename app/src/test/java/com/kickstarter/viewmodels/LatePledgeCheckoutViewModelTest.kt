@@ -480,10 +480,10 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             advanceUntilIdle()
 
             assertEquals(state.size, 4)
-            assertEquals(state[state.size - 2].isPledgeButtonEnabled, false)
+            assertEquals(state[state.size - 2].isPledgeButtonEnabled, true)
             assertEquals(state.last().storeCards, cardList)
             assertEquals(state.last().userEmail, "some@email.com")
-            assertEquals(state.last().isPledgeButtonEnabled, false)
+            assertEquals(state.last().isPledgeButtonEnabled, true)
 
             // Stripe will give an error since this is mock data
             assertEquals(errorActionCount, 1)
@@ -816,4 +816,30 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(state.last().storeCards, emptyList<StoredCard>())
         assertEquals(errorActionCount, 1)
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test resetPledgeUIOnFailure should emit state with enabled button`() = runTest {
+        setUpEnvironment(environment())
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.loading()
+        advanceUntilIdle()
+
+        assertEquals(state.last().isPledgeButtonEnabled, false)
+
+        viewModel.resetPledgeButtonUIOnFailure("Error")
+        advanceUntilIdle()
+
+        assertEquals(state.last().isPledgeButtonEnabled, true)
+        assertEquals(state.last().isLoading, false)
+    }
+
 }

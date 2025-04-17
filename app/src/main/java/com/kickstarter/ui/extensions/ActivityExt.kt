@@ -17,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
+import com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
@@ -320,5 +321,12 @@ fun Activity.startCreatorMessageActivity(project: Project, previousScreen: Messa
             .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, previousScreen)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.BACKING, project.backing())
+    )
+}
+
+fun Activity.startBackingDetailsWebViewActivity(url: String) {
+    startActivity(
+        Intent(this, BackingDetailsActivity::class.java)
+            .putExtra(IntentKey.URL, url)
     )
 }

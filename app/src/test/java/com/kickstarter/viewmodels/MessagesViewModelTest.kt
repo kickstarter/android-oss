@@ -7,9 +7,12 @@ import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
+import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.BackingFactory.backing
 import com.kickstarter.mock.factories.MessageFactory.message
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory.empty
@@ -57,6 +60,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
     private val setMessageEditText = TestSubscriber<String>()
     private val showMessageErrorToast = TestSubscriber<String>()
     private val startBackingActivity = TestSubscriber<BackingWrapper>()
+    private val startBackingDetailsWebViewActivity = TestSubscriber<String>()
     private val startProjectPageActivity = TestSubscriber<Project>()
     private val successfullyMarkedAsRead = TestSubscriber<Unit>()
     private val toolbarIsExpanded = TestSubscriber<Boolean>()
@@ -91,6 +95,7 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
         vm.outputs.successfullyMarkedAsRead().subscribe { successfullyMarkedAsRead.onNext(it) }.addToDisposable(disposables)
         vm.outputs.toolbarIsExpanded().subscribe { toolbarIsExpanded.onNext(it) }.addToDisposable(disposables)
         vm.outputs.viewPledgeButtonIsGone().subscribe { viewPledgeButtonIsGone.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startBackingDetailsWebActivity().subscribe { startBackingDetailsWebViewActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -679,6 +684,96 @@ class MessagesViewModelTest : KSRobolectricTestCase() {
 
         // View pledge button is shown when context is from anywhere but the backer modal.
         viewPledgeButtonIsGone.assertValues(false)
+    }
+
+    @Test
+    fun `test open backing details web view when order complete and feature flag on`() {
+        val url = "https://ksr.com/backing/survey_responses"
+        val user = user()
+        val project = project().toBuilder().isBacking(true).build()
+        val backing = BackingFactory.backingWithCompletePmOrder(url)
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchProjectBacking(project: Project, user: User): Observable<Backing> {
+                return Observable.just(backing)
+            }
+        }
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user)).featureFlagClient(mockFeatureFlagClient)
+                .build(),
+            backerModalContextIntent(backing, project)
+        )
+
+        vm.inputs.viewPledgeButtonClicked()
+
+        this.startBackingActivity.assertNoValues()
+        this.startBackingDetailsWebViewActivity.assertValue(url)
+    }
+
+    @Test
+    fun `test open native view pledge when order complete and feature flag off`() {
+        val url = "https://ksr.com/backing/survey_responses"
+        val user = user()
+        val project = project().toBuilder().isBacking(true).build()
+        val backing = BackingFactory.backingWithCompletePmOrder(url)
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchProjectBacking(project: Project, user: User): Observable<Backing> {
+                return Observable.just(backing)
+            }
+        }
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user)).featureFlagClient(mockFeatureFlagClient)
+                .build(),
+            backerModalContextIntent(backing, project)
+        )
+
+        vm.inputs.viewPledgeButtonClicked()
+
+        this.startBackingActivity.assertValue(BackingWrapper(backing, user, project))
+        this.startBackingDetailsWebViewActivity.assertNoValues()
+    }
+
+    @Test
+    fun `test open native view pledge when order null and feature flag on`() {
+        val url = "https://ksr.com/backing/survey_responses"
+        val user = user()
+        val project = project().toBuilder().isBacking(true).build()
+        val backing = backing()
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchProjectBacking(project: Project, user: User): Observable<Backing> {
+                return Observable.just(backing)
+            }
+        }
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder().apiClientV2(apiClient).currentUserV2(MockCurrentUserV2(user)).featureFlagClient(mockFeatureFlagClient)
+                .build(),
+            backerModalContextIntent(backing, project)
+        )
+
+        vm.inputs.viewPledgeButtonClicked()
+
+        this.startBackingActivity.assertValue(BackingWrapper(backing, user, project))
+        this.startBackingDetailsWebViewActivity.assertNoValues()
     }
 
     companion object {

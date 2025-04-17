@@ -509,10 +509,15 @@ fun KSSmallButton(
 }
 
 @Composable
-fun IconPillButton(isSelected: Boolean, onClick: () -> Unit = {}, type: FilterRowPillType) {
+fun IconPillButton(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean,
+    onClick: () -> Unit = {},
+    type: FilterRowPillType
+) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .border(
                 if (isSelected) dimensions.strokeWidth else dimensions.borderThickness,
                 if (isSelected) colors.borderActive else colors.borderBold,

@@ -44,13 +44,29 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun CategorySelectionSheetPreview() {
+private fun CategorySelectionSheetPreviewPhase2Off() {
     KSTheme {
         CategorySelectionSheet(
             categories = CategoryFactory.rootCategories(),
-            onApply = { a, b -> },
             onDismiss = {},
-            isLoading = false
+            onApply = { a, b -> },
+            isLoading = false,
+            shouldShowPhase2 = false
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun CategorySelectionSheetPreviewPhase2On() {
+    KSTheme {
+        CategorySelectionSheet(
+            categories = CategoryFactory.rootCategories(),
+            onDismiss = {},
+            onApply = { a, b -> },
+            isLoading = false,
+            shouldShowPhase2 = true
         )
     }
 }
@@ -63,6 +79,7 @@ fun CategorySelectionSheet(
     onApply: (Category?, Boolean?) -> Unit,
     isLoading: Boolean,
     onNavigate: () -> Unit = {},
+    shouldShowPhase2: Boolean,
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -89,22 +106,26 @@ fun CategorySelectionSheet(
 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
-                        onClick = onNavigate,
-                        modifier = Modifier
-                            .padding(start = dimensions.paddingSmall)
-                            .testTag(SearchScreenTestTag.BACK_BUTTON.name)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.Back),
-                            tint = colors.kds_black
-                        )
+                    if (shouldShowPhase2) {
+                        IconButton(
+                            onClick = onNavigate,
+                            modifier = Modifier
+                                .padding(start = dimensions.paddingSmall)
+                                .testTag(SearchScreenTestTag.BACK_BUTTON.name)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.Back),
+                                tint = colors.kds_black
+                            )
+                        }
                     }
                     Text(
                         text = stringResource(R.string.Category),
                         style = typographyV2.headingXL,
-                        modifier = Modifier.weight(1f),
+                        modifier =
+                        if (shouldShowPhase2) Modifier.weight(1f)
+                        else Modifier.weight(1f).padding(start = dimensions.paddingMediumLarge),
                         color = colors.textPrimary
                     )
                     IconButton(

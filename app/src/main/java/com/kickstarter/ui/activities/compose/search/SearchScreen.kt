@@ -116,7 +116,7 @@ fun PagerPreview() {
                     )
                 },
                 pagerState = testPagerState,
-                sheetState = testSheetState
+                sheetState = testSheetState,
             )
         }
     }
@@ -223,7 +223,7 @@ fun SearchScreen(
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
     onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?) -> Unit = { category, sort, projectState -> },
-    shouldShowPillbar: Boolean = true
+    shouldShowPhase2: Boolean = true
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
@@ -286,7 +286,8 @@ fun SearchScreen(
             countApiIsReady,
             sortSheetState,
             mainFilterMenuState,
-            pagerState
+            pagerState,
+            shouldShowPhase2 = shouldShowPhase2
         ),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetBackgroundColor = colors.kds_white
@@ -326,7 +327,7 @@ fun SearchScreen(
                             mainFilterMenuState,
                             pagerState
                         ),
-                        shouldShowPillbar = shouldShowPillbar
+                        shouldShowPhase2 = shouldShowPhase2
                     )
                 }
             },
@@ -456,7 +457,8 @@ fun FilterAndCategoryPagerSheet(
     onApply: (DiscoveryParams.State?, Category?) -> Unit,
     updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
     pagerState: PagerState,
-    sheetState: ModalBottomSheetState
+    sheetState: ModalBottomSheetState,
+    shouldShowPhase2: Boolean = true
 ) {
     val coroutineScope = rememberCoroutineScope()
     val category = remember { mutableStateOf(currentCategory) }
@@ -533,7 +535,8 @@ fun FilterAndCategoryPagerSheet(
                         )
                     }
                 },
-                isLoading = false
+                isLoading = false,
+                shouldShowPhase2 = shouldShowPhase2
             )
         }
     }
@@ -613,7 +616,8 @@ private fun sheetContent(
     countApiIsReady: Boolean,
     sortSheetState: ModalBottomSheetState,
     menuSheetState: ModalBottomSheetState,
-    pagerState: PagerState
+    pagerState: PagerState,
+    shouldShowPhase2: Boolean = true
 ): @Composable() (ColumnScope.() -> Unit) {
     val liveString = stringResource(R.string.Project_Status_Live_fpo)
     val successfulString = stringResource(R.string.Project_Status_Successful_fpo)
@@ -656,7 +660,8 @@ private fun sheetContent(
                         categoryCount?.let {
                             selectedFilterCounts[FilterRowPillType.CATEGORY.name] = it
                         }
-                    }
+                    },
+                    shouldShowPhase2 = shouldShowPhase2
                 )
             }
 

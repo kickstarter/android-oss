@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.MockCurrentUserV2
-import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
@@ -20,7 +19,6 @@ import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory.empty
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory.messageThreadEnvelope
 import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.ProjectFactory.backedProjectWithPMCheckoutOrder
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.creator
 import com.kickstarter.mock.factories.UserFactory.user

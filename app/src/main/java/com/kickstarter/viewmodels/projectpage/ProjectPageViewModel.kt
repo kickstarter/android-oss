@@ -48,7 +48,6 @@ import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
-import com.kickstarter.models.Order
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
@@ -772,7 +771,7 @@ interface ProjectPageViewModel {
             this.nativeProjectActionButtonClicked
                 .withLatestFrom(currentProject) { _, project -> project }
                 .subscribe { project ->
-                    val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false;
+                    val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false
                     if (project.backing()?.isOrderPresentAndComplete() ?: false && netNewBackFeatureFlag) {
                         // Open webview to backing/survey_responses endpoint instead of backing/details
                         // endpoint to avoid prompting user to re-login

@@ -24,7 +24,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.BackingWrapper
 import com.kickstarter.models.Message
 import com.kickstarter.models.MessageThread
-import com.kickstarter.models.Order
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -273,7 +272,7 @@ interface MessagesViewModel {
         }
 
         init {
-            apolloClient = requireNotNull(environment.apolloClientV2());
+            apolloClient = requireNotNull(environment.apolloClientV2())
             apiClient = requireNotNull(environment.apiClientV2())
             currentUser = requireNotNull(environment.currentUserV2())
             featureFlagClient = requireNotNull(environment.featureFlagClient())
@@ -594,7 +593,7 @@ interface MessagesViewModel {
                         requireNotNull(it.second.first), it.first.second, it.first.first
                     )
                 }.subscribe {
-                    if(featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false && it.backing.isOrderPresentAndComplete() )
+                    if (featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false && it.backing.isOrderPresentAndComplete())
                         it.backing.backingDetailsPageRoute()?.let {
                             startBackingDetailsWebActivity.onNext(it)
                         } else {

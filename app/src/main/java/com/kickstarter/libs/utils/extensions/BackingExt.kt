@@ -22,8 +22,7 @@ fun Backing.isShippable(): Boolean {
     return isShippable(reward)
 }
 
-
-fun Backing.isOrderPresentAndComplete() : Boolean {
+fun Backing.isOrderPresentAndComplete(): Boolean {
     return this.order().isNotNull() && this.order()?.checkoutState() == Order.CheckoutStateEnum.COMPLETE
 }
 

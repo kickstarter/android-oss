@@ -4,6 +4,7 @@ package com.kickstarter.libs.utils.extensions
 import com.kickstarter.libs.utils.RewardUtils.isNoReward
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Order
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 
@@ -19,6 +20,11 @@ fun Backing.isErroredWithPLOT(): Boolean = (this.status() == Backing.STATUS_AUTH
 fun Backing.isShippable(): Boolean {
     val reward = this.reward() ?: return false
     return isShippable(reward)
+}
+
+
+fun Backing.isOrderPresentAndComplete() : Boolean {
+    return this.order().isNotNull() && this.order()?.checkoutState() == Order.CheckoutStateEnum.COMPLETE
 }
 
 fun Backing.backedReward(project: Project): Reward? {

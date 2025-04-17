@@ -39,6 +39,7 @@ import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isOrderPresentAndComplete
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
@@ -771,9 +772,8 @@ interface ProjectPageViewModel {
             this.nativeProjectActionButtonClicked
                 .withLatestFrom(currentProject) { _, project -> project }
                 .subscribe { project ->
-                    val order = project.backing()?.order()
-                    val completedPM = order != null && order.checkoutState() == Order.CheckoutStateEnum.COMPLETE
-                    if (completedPM) {
+                    val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false;
+                    if (project.backing()?.isOrderPresentAndComplete() ?: false && netNewBackFeatureFlag) {
                         // Open webview to backing/survey_responses endpoint instead of backing/details
                         // endpoint to avoid prompting user to re-login
                         project.backing()?.backingDetailsPageRoute()?.let {

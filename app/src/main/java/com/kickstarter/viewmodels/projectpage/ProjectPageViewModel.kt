@@ -771,7 +771,7 @@ interface ProjectPageViewModel {
             this.nativeProjectActionButtonClicked
                 .withLatestFrom(currentProject) { _, project -> project }
                 .subscribe { project ->
-                    val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false
+                    val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_COMPLETED_PM_CHECKOUT_WEBVIEW) ?: false
                     if (project.backing()?.isOrderPresentAndComplete() ?: false && netNewBackFeatureFlag) {
                         // Open webview to backing/survey_responses endpoint instead of backing/details
                         // endpoint to avoid prompting user to re-login

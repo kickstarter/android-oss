@@ -593,7 +593,7 @@ interface MessagesViewModel {
                         requireNotNull(it.second.first), it.first.second, it.first.first
                     )
                 }.subscribe {
-                    if (featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKERS_WEBVIEW) ?: false && it.backing.isOrderPresentAndComplete())
+                    if (featureFlagClient?.getBoolean(FlagKey.ANDROID_COMPLETED_PM_CHECKOUT_WEBVIEW) ?: false && it.backing.isOrderPresentAndComplete())
                         it.backing.backingDetailsPageRoute()?.let {
                             startBackingDetailsWebActivity.onNext(it)
                         } else {

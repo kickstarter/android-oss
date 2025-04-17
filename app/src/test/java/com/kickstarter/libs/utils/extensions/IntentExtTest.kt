@@ -133,22 +133,4 @@ class IntentExtTest : KSRobolectricTestCase() {
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.SetPasswordActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
     }
-
-    @Test
-    fun `test when feature flag enabled new search experience intent`() {
-        val intent = Intent().getSearchIntent(context(), featureFlagEnabled = true)
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.features.search.ui.SearchAndFilterActivity"
-        )
-    }
-
-    @Test
-    fun `test when feature flag disabled old search experience intent`() {
-        val intent = Intent().getSearchIntent(context(), featureFlagEnabled = false)
-        assertEquals(
-            intent.component?.className,
-            "com.kickstarter.ui.activities.SearchActivity"
-        )
-    }
 }

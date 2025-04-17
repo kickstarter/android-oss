@@ -2061,8 +2061,13 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testOpenBackingDetailsWebview() { // The testExpandPledgeSheet_ suite of tests covers projects that do not have PM checkout
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+    fun `test open Backing Details Webview when order not null and feature flag on`() { // The testExpandPledgeSheet_ suite of tests covers projects that do not have PM checkout
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
 
         // Start the view model with a backed project with PM checkout order
         val backedProject = ProjectFactory.backedProjectWithPMCheckoutOrder()
@@ -2071,7 +2076,49 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         val url = "https://ksr.com/backing/survey_responses"
+
+        this.expandPledgeSheet.assertNoValues()
         this.openBackingDetailsWebview.assertValue(url)
+    }
+
+    @Test
+    fun `test open pledge sheet when order not null but feature flag off`() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
+        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
+
+        // Start the view model with a backed project with PM checkout order
+        val backedProject = ProjectFactory.backedProjectWithPMCheckoutOrder()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        val url = "https://ksr.com/backing/survey_responses"
+        this.openBackingDetailsWebview.assertNoValues()
+        this.expandPledgeSheet.assertValue(Pair(true, true))
+    }
+
+    @Test
+    fun `test open pledge sheet when order null but feature flag on`() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return false
+            }
+        }
+        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
+
+        // Start the view model with a backed project with PM checkout order
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        val url = "https://ksr.com/backing/survey_responses"
+        this.openBackingDetailsWebview.assertNoValues()
+        this.expandPledgeSheet.assertValue(Pair(true, true))
     }
 
     @Test

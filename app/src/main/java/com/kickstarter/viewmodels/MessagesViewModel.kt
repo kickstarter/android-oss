@@ -10,11 +10,14 @@ import com.kickstarter.libs.Either.Left
 import com.kickstarter.libs.Either.Right
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MessagePreviousScreenType
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isOrderPresentAndComplete
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Backing
@@ -24,6 +27,7 @@ import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope
 import com.kickstarter.ui.IntentKey
@@ -116,6 +120,9 @@ interface MessagesViewModel {
         /** Emits when we should start the [ProjectPageActivity].  */
         fun startProjectPageActivity(): Observable<Project>
 
+        /** Emits when we should start the [BackingDetailsActivity].  */
+        fun startBackingDetailsWebActivity(): Observable<String>
+
         /** Emits when the thread has been marked as read.  */
         fun successfullyMarkedAsRead(): Observable<Unit>
 
@@ -130,8 +137,10 @@ interface MessagesViewModel {
         ViewModel(),
         Inputs,
         Outputs {
-        private val client: ApiClientTypeV2
+        private val apiClient: ApiClientTypeV2
+        private val apolloClient: ApolloClientTypeV2
         private val currentUser: CurrentUserTypeV2
+        private val featureFlagClient: FeatureFlagClientType
         private val disposables = CompositeDisposable()
 
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
@@ -169,6 +178,7 @@ interface MessagesViewModel {
         private val setMessageEditText: Observable<String>
         private val startBackingActivity = PublishSubject.create<BackingWrapper>()
         private val startProjectPageActivity = PublishSubject.create<Project>()
+        private val startBackingDetailsWebActivity = PublishSubject.create<String>()
         private val successfullyMarkedAsRead = BehaviorSubject.create<Unit>()
         private val toolbarIsExpanded: Observable<Boolean>
         private val viewPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -223,6 +233,7 @@ interface MessagesViewModel {
         override fun setMessageEditText(): Observable<String> = setMessageEditText
         override fun startBackingActivity(): Observable<BackingWrapper> = startBackingActivity
         override fun startProjectPageActivity(): Observable<Project> = startProjectPageActivity
+        override fun startBackingDetailsWebActivity(): Observable<String> = startBackingDetailsWebActivity
         override fun successfullyMarkedAsRead(): Observable<Unit> = successfullyMarkedAsRead
         override fun toolbarIsExpanded(): Observable<Boolean> = toolbarIsExpanded
         override fun viewPledgeButtonIsGone(): Observable<Boolean> = viewPledgeButtonIsGone
@@ -230,7 +241,8 @@ interface MessagesViewModel {
         companion object {
             private fun backingAndProjectFromData(
                 data: MessagesData,
-                client: ApiClientTypeV2
+                apiClient: ApiClientTypeV2,
+                apolloClient: ApolloClientTypeV2
             ): Observable<Pair<Backing?, Project>> {
                 val backingAndProjectObs = data.backingOrThread.either(
                     ifLeft = {
@@ -238,10 +250,10 @@ interface MessagesViewModel {
                     },
                     ifRight = {
                         val backingNotification =
-                            if (data.project.isBacking()) client.fetchProjectBacking(
-                                data.project,
-                                data.currentUser
-                            ).materialize().share() else client.fetchProjectBacking(
+                            if (data.project.isBacking()) apolloClient.getProjectBacking(
+                                data.project.slug() ?: ""
+                            ).materialize().share()
+                            else apiClient.fetchProjectBacking(
                                 data.project,
                                 data.participant
                             ).materialize().share()
@@ -260,9 +272,10 @@ interface MessagesViewModel {
         }
 
         init {
-            client = requireNotNull(environment.apiClientV2())
+            apolloClient = requireNotNull(environment.apolloClientV2())
+            apiClient = requireNotNull(environment.apiClientV2())
             currentUser = requireNotNull(environment.currentUserV2())
-
+            featureFlagClient = requireNotNull(environment.featureFlagClient())
             val configData = intent()
                 .map { i: Intent ->
                     val messageThread =
@@ -290,18 +303,18 @@ interface MessagesViewModel {
                 .filter { it.isNotNull() && it.left().isNotNull() }
                 .map { requireNotNull(it.left()) }
 
-            val backingOrThread: Observable<Either<Backing, MessageThread>> = Observable.merge<Either<Backing, MessageThread>?>(
-                configBacking.filter { it.isNotNull() }.map { Left(it) },
-                configThread.filter { it.isNotNull() }.map { Right(it) }
-            )
+            val backingOrThread: Observable<Either<Backing, MessageThread>> =
+                Observable.merge<Either<Backing, MessageThread>?>(
+                    configBacking.filter { it.isNotNull() }.map { Left(it) },
+                    configThread.filter { it.isNotNull() }.map { Right(it) }
+                )
 
             val messageIsSending = PublishSubject.create<Boolean>()
             val messagesAreLoading = PublishSubject.create<Boolean>()
 
             val project = configData
                 .map { data: Either<MessageThread, Pair<Project?, Backing?>> ->
-                    data.either({ obj: MessageThread -> obj.project() }) {
-                            projectAndBacking: Pair<Project?, Backing?> ->
+                    data.either({ obj: MessageThread -> obj.project() }) { projectAndBacking: Pair<Project?, Backing?> ->
                         projectAndBacking.first
                     }
                 }.filter { it.isNotNull() }
@@ -311,10 +324,10 @@ interface MessagesViewModel {
                 .switchMap {
                     it.either(
                         ifLeft = { backing ->
-                            client.fetchMessagesForBacking(backing)
+                            apiClient.fetchMessagesForBacking(backing)
                         },
                         ifRight = { messageThread ->
-                            client.fetchMessagesForThread(messageThread)
+                            apiClient.fetchMessagesForThread(messageThread)
                         }
                     )
                         .doOnSubscribe { messagesAreLoading.onNext(true) }
@@ -390,7 +403,7 @@ interface MessagesViewModel {
                     )
                 )
                 .switchMap {
-                    client.sendMessage(
+                    apiClient.sendMessage(
                         it.first, it.second
                     )
                         .doOnSubscribe { messageIsSending.onNext(true) }
@@ -406,11 +419,11 @@ interface MessagesViewModel {
                 .compose(Transformers.takeWhenV2(messageSent))
                 .switchMap {
                     it.either({ backing: Backing ->
-                        client.fetchMessagesForBacking(
+                        apiClient.fetchMessagesForBacking(
                             backing
                         )
                     }) { messageThread: MessageThread ->
-                        client.fetchMessagesForThread(
+                        apiClient.fetchMessagesForThread(
                             messageThread
                         )
                     }
@@ -431,7 +444,7 @@ interface MessagesViewModel {
                 .filter { it.isNotNull() && it.messageThread().isNotNull() }
                 .map { requireNotNull(it.messageThread()) }
                 .switchMap {
-                    client.markAsRead(
+                    apiClient.markAsRead(
                         it
                     )
                 }
@@ -496,7 +509,7 @@ interface MessagesViewModel {
 
             messagesData
                 .switchMap {
-                    backingAndProjectFromData(it, client)
+                    backingAndProjectFromData(it, apiClient, apolloClient)
                 }
                 .filter { it.isNotNull() }
                 .subscribe { backingAndProject ->
@@ -575,13 +588,18 @@ interface MessagesViewModel {
                             .map { requireNotNull(it) }
                     )
                 )
-                .filter { it.second.first.isNotNull() }
                 .map {
                     BackingWrapper(
                         requireNotNull(it.second.first), it.first.second, it.first.first
                     )
+                }.subscribe {
+                    if (featureFlagClient?.getBoolean(FlagKey.ANDROID_COMPLETED_PM_CHECKOUT_WEBVIEW) ?: false && it.backing.isOrderPresentAndComplete())
+                        it.backing.backingDetailsPageRoute()?.let {
+                            startBackingDetailsWebActivity.onNext(it)
+                        } else {
+                        startBackingActivity.onNext(it)
+                    }
                 }
-                .subscribe { v: BackingWrapper -> startBackingActivity.onNext(v) }
                 .addToDisposable(disposables)
 
             // Set only the initial padding once to counteract the appbar offset.

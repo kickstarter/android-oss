@@ -36,6 +36,7 @@ import com.kickstarter.ui.adapters.MessagesAdapter
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startActivityWithTransition
+import com.kickstarter.ui.extensions.startBackingDetailsWebViewActivity
 import com.kickstarter.viewmodels.MessagesViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -210,6 +211,11 @@ class MessagesActivity : AppCompatActivity() {
         viewModel.outputs.startProjectPageActivity()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectPageActivity(it) }
+            .addToDisposable(disposables)
+
+        viewModel.outputs.startBackingDetailsWebActivity()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startBackingDetailsWebViewActivity(it) }
             .addToDisposable(disposables)
 
         viewModel.outputs.toolbarIsExpanded()

@@ -5,6 +5,7 @@ import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Backing.Companion.builder
+import com.kickstarter.models.Order
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
@@ -83,6 +84,30 @@ object BackingFactory {
         return backing()
             .toBuilder()
             .status(status)
+            .build()
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun backingWithCompletePmOrder(url: String): Backing {
+        val project = project()
+        val reward = RewardFactory.reward()
+        val order = Order.builder().checkoutState(Order.CheckoutStateEnum.COMPLETE).build()
+        return Backing.builder()
+            .amount(10.0)
+            .backerId(IdFactory.id().toLong())
+            .backingDetailsPageRoute(url)
+            .cancelable(true)
+            .id(IdFactory.id().toLong())
+            .sequence(1)
+            .order(order)
+            .reward(reward)
+            .rewardId(reward.id())
+            .paymentSource(PaymentSourceFactory.visa())
+            .pledgedAt(DateTime.now())
+            .projectId(project.id())
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
             .build()
     }
 }

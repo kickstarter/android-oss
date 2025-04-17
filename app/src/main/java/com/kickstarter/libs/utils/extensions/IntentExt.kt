@@ -15,7 +15,6 @@ import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ReportProjectActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
-import com.kickstarter.ui.activities.SearchActivity
 import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
@@ -35,14 +34,7 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
     return intent
 }
 
-fun Intent.getSearchIntent(context: Context, featureFlagEnabled: Boolean): Intent {
-    if (featureFlagEnabled)
-        this.setClass(context, SearchAndFilterActivity::class.java)
-    else
-        this.setClass(context, SearchActivity::class.java)
-
-    return this
-}
+fun Intent.getSearchIntent(context: Context): Intent = this.setClass(context, SearchAndFilterActivity::class.java)
 
 /**
  * Retruns the Intent for start the PaymentMethodsSettigns activity

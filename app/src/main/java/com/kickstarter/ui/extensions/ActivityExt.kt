@@ -78,14 +78,10 @@ fun Activity.hideKeyboard() {
 }
 
 /**
- * This function starts the Search with Transition animation included
- * @param featureFlagEnabled
- *
- *  If featureFlagEnabled = true will present new Search experience
- *  if featureFlagEnabled = false will present old Search experience
+ * This function starts SearchAndFilter activity with transition animation included
  */
-fun Activity.presentSearchActivity(featureFlagEnabled: Boolean) {
-    val intent = Intent().getSearchIntent(this, featureFlagEnabled)
+fun Activity.presentSearchActivity() {
+    val intent = Intent().getSearchIntent(this)
 
     startActivity(intent)
 

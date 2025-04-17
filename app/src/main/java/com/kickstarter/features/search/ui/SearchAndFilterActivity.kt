@@ -26,6 +26,7 @@ import com.kickstarter.R
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -58,6 +59,8 @@ class SearchAndFilterActivity : ComponentActivity() {
             viewModelFactory = SearchAndFilterViewModel.Factory(env)
             filterMenuViewModelFactory = FilterMenuViewModel.Factory(env)
             filterMenuViewModel.getRootCategories()
+
+            val phase2ff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
 
             setContent {
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -111,7 +114,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 projectState = projectState
                             )
                         },
-                        shouldShowPillbar = true
+                        shouldShowPhase2 = phase2ff
                     )
                 }
 

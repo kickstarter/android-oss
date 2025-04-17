@@ -177,10 +177,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 buttonEnabled = true
                 clientSecretForNewCard = clientSecret
                 mutableClientSecretForNewPaymentMethod.emit(clientSecretForNewCard)
-            }.onCompletion {
-                emitCurrentState()
             }.catch {
                 resetPledgeButtonUIOnFailure()
+            }.onCompletion {
+                emitCurrentState()
             }.collect()
         }
     }
@@ -218,10 +218,10 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 emitCurrentState(isLoading = true)
             }.map { cards ->
                 storedCards = cards
-            }.onCompletion {
-                emitCurrentState()
             }.catch {
                 resetPledgeButtonUIOnFailure()
+            }.onCompletion {
+                emitCurrentState()
             }.collect()
     }
 
@@ -391,11 +391,11 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                         } else {
                             mutableOnPledgeSuccessAction.emit(true)
                         }
-                    }.onCompletion {
-                        emitCurrentState()
                     }.catch {
                         resetPledgeButtonUIOnFailure()
                         clear3DSValues()
+                    }.onCompletion {
+                        emitCurrentState()
                     }.collect()
             } else {
                 resetPledgeButtonUIOnFailure()
@@ -509,7 +509,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                                 mutableCheckoutPayment.emit(checkoutPayment)
                             }
                             .catch {
-                                errorAction.invoke(it.message)
+                                resetPledgeButtonUIOnFailure(it.message)
                             }
                             .onCompletion {
                                 emitCurrentState()

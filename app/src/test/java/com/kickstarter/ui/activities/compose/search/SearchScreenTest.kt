@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose.search
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -309,6 +308,36 @@ class SearchScreenTest : KSRobolectricTestCase() {
         assertEquals(currentSearchTerm, "this is a test")
     }
 
+    @Test
+    fun `SearchScreen when phase 2 feature flag off, has not filter menu pillBar button not project state pillbar button`() {
+
+        composeTestRule.setContent {
+            KSTheme {
+                SearchScreen(
+                    onBackClicked = { },
+                    scaffoldState = rememberScaffoldState(),
+                    isLoading = false,
+                    lazyColumnListState = rememberLazyListState(),
+                    showEmptyView = false,
+                    isDefaultList = false,
+                    itemsList = List(20) {
+                        Project.builder()
+                            .name("This is a test $it")
+                            .pledged((it * 2).toDouble())
+                            .goal(20.0)
+                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                            .build()
+                    },
+                    categories = listOf(),
+                    onSearchTermChanged = {
+                    },
+                    onItemClicked = { },
+                    shouldShowPhase2 = true
+                )
+            }
+        }
+    }
+
     @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun `pager initial State, navigates to category row, then navigate back to filter menu page`() {
@@ -364,5 +393,52 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         assertEquals(page, FilterPages.MAIN_FILTER.ordinal)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun `Pager with phase2 feature flag off, back button on CategoriesSelection Screen not available`() {
+
+        var page = 0
+        composeTestRule.setContent {
+            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
+            val testSheetState = rememberModalBottomSheetState(
+                initialValue = Hidden,
+                skipHalfExpanded = true
+            )
+
+            val categories = CategoryFactory.rootCategories()
+            val selectedStatus = DiscoveryParams.State.LIVE
+
+            val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
+            val dismissed = mutableListOf<Boolean>()
+            val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
+
+            KSTheme {
+
+                FilterAndCategoryPagerSheet(
+                    selectedProjectStatus = selectedStatus,
+                    currentCategory = categories[0],
+                    categories = categories,
+                    onDismiss = { dismissed.add(true) },
+                    onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount ->
+                        selectedCounts.add(
+                            statusCount to categoryCount
+                        )
+                    },
+                    pagerState = testPagerState,
+                    sheetState = testSheetState,
+                    shouldShowPhase2 = false
+                )
+            }
+
+            LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context
+                page = testPagerState.currentPage
+            }
+        }
+
+        composeTestRule.onNodeWithTag("Category").assertExists() // On Filters page, category row button
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertDoesNotExist() // On Category Selection, top left Arrow Icon
     }
 }

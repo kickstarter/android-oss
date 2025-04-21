@@ -537,7 +537,7 @@ fun IconPillButton(
 private fun descriptionForFilterType(type: FilterRowPillType): String {
     return when (type) {
         FilterRowPillType.SORT -> stringResource(R.string.Sort_by)
-        FilterRowPillType.FILTER -> stringResource(R.string.Filter_fpo)
+        FilterRowPillType.FILTER -> stringResource(R.string.Filter)
         else -> stringResource(R.string.Sort_by)
     }
 }

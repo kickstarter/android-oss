@@ -267,6 +267,7 @@ Toca para intentar de nuevo.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
   <string name="Failed_to_update_subscription" formatted="false">No se pudo actualizar la suscripción</string>
   <string name="Faq" formatted="false">Preguntas frecuentes</string>
+  <string name="Filter" formatted="false">Filtro</string>
   <string name="Filter_by_all_projects" formatted="false">Filtro: Todos los proyectos</string>
   <string name="Filter_by_category_name" formatted="false">Filtro: %{category_name}</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">Filtro: Proyectos patrocinados por amigos</string>
@@ -355,6 +356,7 @@ Toca para intentar de nuevo.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, al patrocinador se le cobrará el %{project_deadline}.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, al patrocinador se le cobrará %{total} el %{project_deadline}.</string>
   <string name="Ill_do_this_later" formatted="false">Lo haré más tarde</string>
+  <string name="Include_ended_projects" formatted="false">Incluir proyectos finalizados</string>
   <string name="Increase_pledge" formatted="false">Incrementar contribución</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>
@@ -549,6 +551,12 @@ Toca para intentar de nuevo.</string>
   <string name="Project_goal_and_pledge" formatted="false">La meta del proyecto y los montos de contribución se mostrarán en conversiones aproximadas. Un proyecto financiado con éxito cobrará tu contribución en su moneda nativa.</string>
   <string name="Project_reminders" formatted="false">Recordatorios del proyecto</string>
   <string name="Project_saved" formatted="false">Proyecto guardado.</string>
+  <string name="Project_status" formatted="false">Estado del proyecto</string>
+  <string name="Project_status_all" formatted="false">Todos</string>
+  <string name="Project_status_late_pledges" formatted="false">Contribuciones tardías</string>
+  <string name="Project_status_live" formatted="false">Activo</string>
+  <string name="Project_status_successful" formatted="false">Exitoso</string>
+  <string name="Project_status_upcoming" formatted="false">Próximamente</string>
   <string name="Project_updates" formatted="false">Actualizaciones del proyecto</string>
   <string name="Project_url" formatted="false">URL del proyecto</string>
   <string name="Projects_We_Love" formatted="false">Nuestros Favoritos</string>
@@ -776,7 +784,9 @@ Toca para intentar de nuevo.</string>
   <string name="Total_amount_billion_plus" formatted="false">%{total_amount} mil millones+</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
   <string name="Total_plus" formatted="false">Más de %{total}</string>
+  <string name="Track_shipment" formatted="false">Seguir envío</string>
   <string name="Track_your_backings" formatted="false">Sigue los proyectos que has patrocinado</string>
+  <string name="Tracking_number" formatted="false">Número de seguimiento: %{number}</string>
   <string name="Twice_a_day_summary" formatted="false">Resumen dos veces al día</string>
   <string name="Unable_to_request" formatted="false">No se pueden solicitar datos.</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
@@ -900,6 +910,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Tu proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo al método de pago del patrocinador.</string>
   <string name="Your_reward" formatted="false">Tu recompensa</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Tu recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
+  <string name="Your_reward_has_shipped" formatted="false">¡Recompensa enviada!</string>
   <string name="Your_selection" formatted="false">Tu selección</string>
   <string name="Your_shipping_destination" formatted="false">Tu destino de envío</string>
   <string name="Your_shipping_location" formatted="false">Tu ubicación de envío</string>

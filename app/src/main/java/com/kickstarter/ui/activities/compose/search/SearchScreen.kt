@@ -242,7 +242,7 @@ fun SearchScreen(
     val initialCategoryPillText = stringResource(R.string.Category)
     val categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
 
-    val initialProjectStatsPillText = stringResource(R.string.Project_Status_fpo)
+    val initialProjectStatsPillText = stringResource(R.string.Project_status)
     val projectStatusPill = remember { mutableStateOf(initialProjectStatsPillText) }
 
     val currentSort = remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
@@ -619,11 +619,11 @@ private fun sheetContent(
     pagerState: PagerState,
     shouldShowPhase2: Boolean = true
 ): @Composable() (ColumnScope.() -> Unit) {
-    val liveString = stringResource(R.string.Project_Status_Live_fpo)
-    val successfulString = stringResource(R.string.Project_Status_Successful_fpo)
-    val upcomingString = stringResource(R.string.Project_Status_Upcoming_fpo)
-    val latePledgeString = stringResource(R.string.Project_Status_Late_Pledges_fpo)
-    val defaultString = stringResource(R.string.Project_Status_fpo)
+    val liveString = stringResource(R.string.Project_status_live)
+    val successfulString = stringResource(R.string.Project_status_successful)
+    val upcomingString = stringResource(R.string.Project_status_upcoming)
+    val latePledgeString = stringResource(R.string.Project_status_late_pledges)
+    val defaultString = stringResource(R.string.Project_status)
 
     return {
         when (activeBottomSheet.value) {

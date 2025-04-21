@@ -123,7 +123,7 @@ fun FilterMenuBottomSheet(
 @Composable
 private fun ProjectStatusRow(
     modifier: Modifier = Modifier,
-    text: String = stringResource(R.string.Filter_fpo),
+    text: String = stringResource(R.string.Filter),
     selectedStatus: MutableState<DiscoveryParams.State?> = mutableStateOf(null),
     callback: (DiscoveryParams.State?) -> Unit = {},
 ) {
@@ -132,11 +132,11 @@ private fun ProjectStatusRow(
     var switchChecked by remember { mutableStateOf(false) }
 
     val pillOptions = listOf(
-        null to stringResource(R.string.Project_Status_All_fpo),
-        DiscoveryParams.State.LIVE to stringResource(R.string.Project_Status_Live_fpo),
-        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_Status_Late_Pledges_fpo),
-        DiscoveryParams.State.UPCOMING to stringResource(R.string.Project_Status_Upcoming_fpo),
-        DiscoveryParams.State.SUCCESSFUL to stringResource(R.string.Project_Status_Successful_fpo)
+        null to stringResource(R.string.Project_status_all),
+        DiscoveryParams.State.LIVE to stringResource(R.string.Project_status_live),
+        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_status_late_pledges),
+        DiscoveryParams.State.UPCOMING to stringResource(R.string.Project_status_upcoming),
+        DiscoveryParams.State.SUCCESSFUL to stringResource(R.string.Project_status_successful)
     )
 
     Row(
@@ -191,7 +191,7 @@ private fun ProjectStatusRow(
             ) {
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.Include_ended_projects_fpo),
+                    text = stringResource(R.string.Include_ended_projects),
                     style = typographyV2.body,
                     color = colors.textPrimary
                 )
@@ -213,7 +213,7 @@ private fun ProjectStatusRow(
 @Composable
 private fun FilterRow(
     modifier: Modifier = Modifier,
-    text: String = stringResource(R.string.Filter_fpo),
+    text: String = stringResource(R.string.Filter),
     onClickAction: () -> Unit,
     icon: ImageVector
 ) {
@@ -238,7 +238,7 @@ private fun FilterRow(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val style = if (text == stringResource(R.string.Filter_fpo)) {
+        val style = if (text == stringResource(R.string.Filter)) {
             typographyV2.headingXL
         } else {
             typographyV2.headingLG
@@ -269,7 +269,7 @@ private fun FilterRow(
 private fun titleForFilter(filter: FilterType): String {
     return when (filter) {
         FilterType.CATEGORIES -> stringResource(R.string.Category)
-        FilterType.PROJECT_STATUS -> stringResource(R.string.Project_Status_fpo)
+        FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
     }
 }
 

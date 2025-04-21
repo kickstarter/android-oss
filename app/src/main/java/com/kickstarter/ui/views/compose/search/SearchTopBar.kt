@@ -87,7 +87,7 @@ fun SearchTopBar(
     modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
-    projectStatusText: String = stringResource(R.string.Project_Status_fpo),
+    projectStatusText: String = stringResource(R.string.Project_status),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -198,7 +198,7 @@ object PillBarTestTags {
 fun PillBar(
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
-    projectStatusText: String = stringResource(R.string.Project_Status_fpo),
+    projectStatusText: String = stringResource(R.string.Project_status),
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase2: Boolean = true

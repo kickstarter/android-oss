@@ -267,6 +267,7 @@ Tap to retry</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Filter" formatted="false">Filter</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
   <string name="Filter_by_category_name" formatted="false">Filter by %{category_name}</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">Filter by projects backed by friends</string>
@@ -354,6 +355,7 @@ Tap to retry</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">If your project reaches its funding goal, the backer will be charged on %{project_deadline}.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">If your project reaches its funding goal, the backer will be charged %{total} on %{project_deadline}.</string>
   <string name="Ill_do_this_later" formatted="false">I\'ll do this later</string>
+  <string name="Include_ended_projects" formatted="false">Include ended projects</string>
   <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
@@ -550,6 +552,12 @@ from friends yet.</string>
   <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
   <string name="Project_reminders" formatted="false">Project reminders</string>
   <string name="Project_saved" formatted="false">Project saved.</string>
+  <string name="Project_status" formatted="false">Project status</string>
+  <string name="Project_status_all" formatted="false">All</string>
+  <string name="Project_status_late_pledges" formatted="false">Late pledges</string>
+  <string name="Project_status_live" formatted="false">Live</string>
+  <string name="Project_status_successful" formatted="false">Successful</string>
+  <string name="Project_status_upcoming" formatted="false">Upcoming</string>
   <string name="Project_updates" formatted="false">Project updates</string>
   <string name="Project_url" formatted="false">Project URL</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
@@ -779,7 +787,9 @@ catch your eye?</string>
   <string name="Total_amount_billion_plus" formatted="false">%{total_amount} billion+</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
   <string name="Total_plus" formatted="false">%{total}+</string>
+  <string name="Track_shipment" formatted="false">Track shipment</string>
   <string name="Track_your_backings" formatted="false">Track your backings</string>
+  <string name="Tracking_number" formatted="false">Tracking number: %{number}</string>
   <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
@@ -903,6 +913,7 @@ Please try again later.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Your project didn’t reach its funding goal, so the backer’s payment method was never charged.</string>
   <string name="Your_reward" formatted="false">Your reward</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Your reward&lt;/b> estimated for delivery in %{delivery_date}</string>
+  <string name="Your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
   <string name="Your_selection" formatted="false">Your selection</string>
   <string name="Your_shipping_destination" formatted="false">Your shipping destination</string>
   <string name="Your_shipping_location" formatted="false">Your shipping location</string>

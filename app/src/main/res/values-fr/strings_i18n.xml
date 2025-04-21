@@ -267,6 +267,7 @@ Cliquez pour réessayer.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Impossible de récupérer les détails de la diffusion en direct</string>
   <string name="Failed_to_update_subscription" formatted="false">Mise à jour de l\'abonnement impossible</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Filter" formatted="false">Filtre</string>
   <string name="Filter_by_all_projects" formatted="false">Filtrer : tous les projets</string>
   <string name="Filter_by_category_name" formatted="false">Filtrer par catégorie : %{category_name}</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">Filtrer : engagements de mes amis</string>
@@ -354,6 +355,7 @@ Cliquez pour réessayer.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">Si vous atteignez votre objectif de financement, le contributeur sera débité le %{project_deadline}.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">Si vous atteignez votre objectif de financement, le contributeur sera débité de %{total} le %{project_deadline}.</string>
   <string name="Ill_do_this_later" formatted="false">Plus tard</string>
+  <string name="Include_ended_projects" formatted="false">Inclure les projets terminés</string>
   <string name="Increase_pledge" formatted="false">Augmenter mon engagement</string>
   <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
@@ -512,7 +514,7 @@ n\'ont rien soutenu.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Veuillez vous connecter ou vous inscrire pour participer au chat de cette diffusion en direct.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Veuillez vous connecter ou vous inscrire pour vous abonner à cette diffusion en direct.</string>
   <string name="Pledge" formatted="false">Je m\'engage</string>
-  <string name="Pledge_Over_Time" formatted="false">Engagement étalé dans le temps</string>
+  <string name="Pledge_Over_Time" formatted="false">Contribution étalée dans le temps</string>
   <string name="Pledge_activity" formatted="false">Mes engagements</string>
   <string name="Pledge_amount" formatted="false">Montant engagé</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} engagés</string>
@@ -549,6 +551,12 @@ n\'ont rien soutenu.</string>
   <string name="Project_goal_and_pledge" formatted="false">La valeur de l\'objectif de financement et des montants engagés sera convertie (approximativement). Si le projet est intégralement financé, votre engagement vous sera débité dans la devise d\'origine du projet.</string>
   <string name="Project_reminders" formatted="false">Rappels</string>
   <string name="Project_saved" formatted="false">Projet enregistré.</string>
+  <string name="Project_status" formatted="false">État d\'avancement du projet</string>
+  <string name="Project_status_all" formatted="false">Tout</string>
+  <string name="Project_status_late_pledges" formatted="false">Contributions tardives</string>
+  <string name="Project_status_live" formatted="false">En cours</string>
+  <string name="Project_status_successful" formatted="false">Intégralement financé</string>
+  <string name="Project_status_upcoming" formatted="false">Bientôt en ligne</string>
   <string name="Project_updates" formatted="false">Actus de projet</string>
   <string name="Project_url" formatted="false">URL de projet</string>
   <string name="Projects_We_Love" formatted="false">Nos coups de cœur</string>
@@ -776,7 +784,9 @@ n\'ont rien soutenu.</string>
   <string name="Total_amount_billion_plus" formatted="false">Plus de 4 milliards de dollars</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
   <string name="Total_plus" formatted="false">Plus de %{total}</string>
+  <string name="Track_shipment" formatted="false">Suivre le colis</string>
   <string name="Track_your_backings" formatted="false">Suivi de vos engagements</string>
+  <string name="Tracking_number" formatted="false">Numéro de suivi : %{number}</string>
   <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
@@ -815,7 +825,7 @@ n\'ont rien soutenu.</string>
   <string name="We_are_unable_to_authenticate_your_payment_method_please_pull_to_refresh_and_choose_a_different_payment_method" formatted="false">Impossible d\'authentifier votre moyen de paiement. Veuillez faire glisser la page vers le bas pour l\'actualiser et sélectionner un autre choix.</string>
   <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">La connexion Facebook est désormais impossible. Veuillez vous connecter avec votre mot de passe Kickstarter, ou créer un autre mot de passe pour votre adresse Facebook.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Impossible de traiter cet engagement en raison d\'un problème survenu au niveau du moyen de paiement du contributeur.</string>
-  <string name="We_cant_process_your_Pledge_Over_Time_payment" formatted="false">Impossible de traiter le règlement de votre engagement étalé dans le temps. Veuillez vous connecter et &lt;a href="%{view_your_pledge_link}">consulter votre engagement&lt;/a> sur un navigateur Web pour régler le problème.</string>
+  <string name="We_cant_process_your_Pledge_Over_Time_payment" formatted="false">Impossible de traiter le règlement de votre contribution étalée dans le temps. Veuillez vous connecter et &lt;a href="%{view_your_pledge_link}">consulter votre engagement&lt;/a> sur un navigateur Web pour régler le problème.</string>
   <string name="We_cant_process_your_pledge" formatted="false">Impossible de traiter votre engagement.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">Impossible de traiter votre engagement. Veuillez mettre à jour votre moyen de paiement.</string>
   <string name="We_cant_process_your_pledge_for" formatted="false">Impossible de traiter votre engagement pour :</string>
@@ -877,7 +887,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Engagement sans récompense</string>
   <string name="You_saved_this_project" formatted="false">Vous avez enregistré ce projet.</string>
-  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">Votre engagement sera étalé en quatre prélèvements, sans frais supplémentaires.</string>
+  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">Votre contribution sera étalée en quatre prélèvements, sans frais supplémentaires.</string>
   <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">Le premier prélèvement interviendra 24 heures après la fin de la campagne, si l\'objectif de celle-ci est atteint. Les prélèvements suivants auront lieu toutes les deux semaines, jusqu\'au règlement intégral du montant dû. Si vous sélectionnez cette option, votre engagement devient non modifiable.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Si vous quittez cette page, votre commentaire sera perdu.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">Vous ne serez débité que si le créateur atteint son objectif de financement.</string>
@@ -900,6 +910,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">L\'objectif de financement de votre projet n\'a pas été atteint, donc le moyen de paiement du contributeur n\'a pas été débité.</string>
   <string name="Your_reward" formatted="false">Votre récompense</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Votre récompense&lt;/b> prévue pour %{delivery_date}</string>
+  <string name="Your_reward_has_shipped" formatted="false">Votre récompense a été expédiée !</string>
   <string name="Your_selection" formatted="false">Votre sélection</string>
   <string name="Your_shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Your_shipping_location" formatted="false">Votre destination de livraison</string>

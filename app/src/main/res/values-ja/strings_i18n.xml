@@ -265,6 +265,7 @@
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
   <string name="Failed_to_update_subscription" formatted="false">定期購読の更新に失敗しました</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Filter" formatted="false">絞り込む</string>
   <string name="Filter_by_all_projects" formatted="false">全てのプロジェクトに絞る</string>
   <string name="Filter_by_category_name" formatted="false">%{category_name} に絞る</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">友達がバックしてるプロジェクトに絞る</string>
@@ -352,6 +353,7 @@
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、バッカーは %{project_deadline} に請求されます。</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} にバッカーへ %{total} が請求されます。</string>
   <string name="Ill_do_this_later" formatted="false">後でする</string>
+  <string name="Include_ended_projects" formatted="false">終了済みのプロジェクトを含む</string>
   <string name="Increase_pledge" formatted="false">プレッジ額を上げる</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
@@ -546,6 +548,12 @@
   <string name="Project_goal_and_pledge" formatted="false">プロジェクトのゴール額とプレッジ額はおおよその換算金額で表示されます。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められます。</string>
   <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
+  <string name="Project_status" formatted="false">プロジェクトのステータス</string>
+  <string name="Project_status_all" formatted="false">すべて</string>
+  <string name="Project_status_late_pledges" formatted="false">遅延プレッジ</string>
+  <string name="Project_status_live" formatted="false">ライブ</string>
+  <string name="Project_status_successful" formatted="false">成功済</string>
+  <string name="Project_status_upcoming" formatted="false">今後登場予定</string>
   <string name="Project_updates" formatted="false">プロジェクトの更新情報</string>
   <string name="Project_url" formatted="false">プロジェクトのURL</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
@@ -774,7 +782,9 @@
   <string name="Total_amount_billion_plus" formatted="false">%{total_amount},000,000,000 以上</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
   <string name="Total_plus" formatted="false">%{total}以上</string>
+  <string name="Track_shipment" formatted="false">配送状況を追跡</string>
   <string name="Track_your_backings" formatted="false">バックしたプロジェクトを追跡</string>
+  <string name="Tracking_number" formatted="false">追跡番号：%{number}</string>
   <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
@@ -898,6 +908,7 @@
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">あなたのプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
   <string name="Your_reward" formatted="false">リワード</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配送予定日は%{delivery_date}</string>
+  <string name="Your_reward_has_shipped" formatted="false">リワードが発送されました！</string>
   <string name="Your_selection" formatted="false">選択内容</string>
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
   <string name="Your_shipping_location" formatted="false">配送地域</string>

@@ -267,6 +267,7 @@ Antippen und erneut versuchen</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Details zu Live-Stream-Event konnten nicht geladen werden</string>
   <string name="Failed_to_update_subscription" formatted="false">Abo konnte nicht aktualisiert werden</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Filter" formatted="false">Filter</string>
   <string name="Filter_by_all_projects" formatted="false">Filter: Alle Projekte</string>
   <string name="Filter_by_category_name" formatted="false">Filter: %{category_name}</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">Filter: Von Freunden unterstützte Projekte</string>
@@ -354,6 +355,7 @@ Antippen und erneut versuchen</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">Wenn dein Projekt das Finanzierungsziel erreicht, wird der Finanzierungsbeitrag des Unterstützers am %{project_deadline} abgebucht.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">Wenn dein Projekt das Finanzierungsziel erreicht, wird die Karte des Unterstützers am %{project_deadline} mit %{total} belastet.</string>
   <string name="Ill_do_this_later" formatted="false">Ich kümmere mich später darum</string>
+  <string name="Include_ended_projects" formatted="false">Beendete Projekte anzeigen</string>
   <string name="Increase_pledge" formatted="false">Finanzierungsbeitrag erhöhen</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
@@ -548,6 +550,12 @@ Antippen und erneut versuchen</string>
   <string name="Project_goal_and_pledge" formatted="false">Es wird eine ungefähre Umrechnung des Finanzierungsziels und der Finanzierungsbeiträge angezeigt. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht.</string>
   <string name="Project_reminders" formatted="false">Projekt-Erinnerungen</string>
   <string name="Project_saved" formatted="false">Projekt gespeichert.</string>
+  <string name="Project_status" formatted="false">Projektstatus</string>
+  <string name="Project_status_all" formatted="false">Alle</string>
+  <string name="Project_status_late_pledges" formatted="false">Nachträgliche Beiträge</string>
+  <string name="Project_status_live" formatted="false">Live</string>
+  <string name="Project_status_successful" formatted="false">Erfolgreich</string>
+  <string name="Project_status_upcoming" formatted="false">In Kürze</string>
   <string name="Project_updates" formatted="false">Projekt-Updates</string>
   <string name="Project_url" formatted="false">Projekt-URL</string>
   <string name="Projects_We_Love" formatted="false">Team-Favoriten</string>
@@ -775,7 +783,9 @@ Antippen und erneut versuchen</string>
   <string name="Total_amount_billion_plus" formatted="false">%{total_amount} Milliarden+</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
   <string name="Total_plus" formatted="false">Über %{total}</string>
+  <string name="Track_shipment" formatted="false">Sendung verfolgen</string>
   <string name="Track_your_backings" formatted="false">Folge deinen unterstützten Projekten</string>
+  <string name="Tracking_number" formatted="false">Sendungsnummer: %{number}</string>
   <string name="Twice_a_day_summary" formatted="false">Übersicht (zweimal täglich)</string>
   <string name="Unable_to_request" formatted="false">Daten konnten nicht angefordert werden.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
@@ -899,6 +909,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Dein Projekt hat das Finanzierungsziel leider nicht erreicht. Daher wurde die Zahlungsmethode des Unterstützers nicht belastet.</string>
   <string name="Your_reward" formatted="false">Deine Belohnung</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Deine Belohnung&lt;/b> wird voraussichtlich im %{delivery_date} geliefert</string>
+  <string name="Your_reward_has_shipped" formatted="false">Deine Belohnung wurde versendet!</string>
   <string name="Your_selection" formatted="false">Deine Auswahl</string>
   <string name="Your_shipping_destination" formatted="false">Dein Versandziel</string>
   <string name="Your_shipping_location" formatted="false">Dein Versand-Standort</string>

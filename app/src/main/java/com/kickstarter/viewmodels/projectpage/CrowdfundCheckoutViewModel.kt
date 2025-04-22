@@ -469,7 +469,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                             pMethod = selectedPaymentMethod
                         )
                     } else {
-                        // Non-PLOT: fallback to legacy behavior
+                        // Non-PLOT: send the payment method, locationId, and rewards
                         val locationId = backing.locationId()?.toString()
                         val rwl = mutableListOf<Reward>()
                         backing.reward()?.let {

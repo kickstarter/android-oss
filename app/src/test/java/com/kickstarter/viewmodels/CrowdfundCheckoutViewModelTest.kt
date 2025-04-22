@@ -1506,4 +1506,75 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(errorList[1], "Oh no, no more chocolate!")
         assertEquals(errorList[2], "Oh no, the team rocket!")
     }
+
+    @Test
+    fun `test update payment method on PLOT project sends only payment method`() = runTest {
+        val reward = RewardFactory.rewardWithShipping()
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+
+        val backing = BackingFactory.backing(reward)
+            .toBuilder()
+            .location(shippingRule.location())
+            .locationId(shippingRule.location()?.id())
+            .paymentSource(PaymentSourceFactory.visa())
+            .build()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .isPledgeOverTimeAllowed(true) // Mark as PLOT
+            .rewards(listOf(reward))
+            .build()
+
+        val cards = listOf(StoredCardFactory.visa())
+        val user = UserFactory.user()
+        val currentUserV2 = MockCurrentUserV2(initialUser = user)
+
+        val projectData = ProjectDataFactory.project(project)
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_PAYMENT),
+            projectData,
+            reward
+        )
+
+        val bundle = Bundle().apply {
+            putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
+            putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PAYMENT)
+        }
+
+        lateinit var updateData: UpdateBackingData
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> = Observable.just(cards)
+
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                    updateData = updateBackingData
+                    return Observable.just(
+                        Checkout.builder().id(123L).backing(Checkout.Backing.builder().build()).build()
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.provideBundle(bundle)
+            viewModel.userChangedPaymentMethodSelected(cards.first())
+            viewModel.pledgeOrUpdatePledge()
+        }
+
+        advanceUntilIdle()
+
+        // PLOT rules: only payment source sent
+        assertEquals(updateData.paymentSourceId, cards.first().id())
+        assertNull(updateData.amount)
+        assertNull(updateData.locationId)
+        assertNull(updateData.rewardsIds)
+    }
 }

@@ -7,13 +7,16 @@ import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.ApiPaginatorV2
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Activity
+import com.kickstarter.models.Activity.Companion.CATEGORY_SHIPPED
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
@@ -207,7 +210,15 @@ interface ActivityFeedViewModel {
                 .build()
 
             paginator.paginatedData()
-                .subscribe { activityList.onNext(it) }
+                .subscribe {
+                    if (!environment.featureFlagClient()
+                            ?.getBoolean(FlagKey.ANDROID_REWARD_SHIPMENT_TRACKING).isTrue()
+                    ) {
+                        activityList.onNext(it.filter { it.category() != CATEGORY_SHIPPED })
+                    } else {
+                        activityList.onNext(it)
+                    }
+                }
                 .addToDisposable(disposables)
 
             paginator.isFetching

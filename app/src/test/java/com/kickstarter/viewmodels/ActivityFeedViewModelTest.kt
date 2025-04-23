@@ -4,22 +4,28 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.MockFeatureFlagClient
+import com.kickstarter.mock.factories.ActivityFactory
 import com.kickstarter.mock.factories.ActivityFactory.activity
 import com.kickstarter.mock.factories.ActivityFactory.friendBackingActivity
 import com.kickstarter.mock.factories.ActivityFactory.projectStateChangedActivity
 import com.kickstarter.mock.factories.ActivityFactory.projectStateChangedPositiveActivity
+import com.kickstarter.mock.factories.ActivityFactory.rewardShippedActivity
 import com.kickstarter.mock.factories.ActivityFactory.updateActivity
 import com.kickstarter.mock.factories.SurveyResponseFactory.surveyResponse
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
+import com.kickstarter.services.apiresponses.ActivityEnvelope
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ActivityFeedViewModel
 import com.kickstarter.viewmodels.ActivityFeedViewModel.Factory
 import com.kickstarter.viewmodels.usecases.LoginUseCase
@@ -33,6 +39,7 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: ActivityFeedViewModel
     private val activityList = TestSubscriber<List<Activity>>()
+    private val activityListCount = TestSubscriber<Int>()
     private val erroredBackings = TestSubscriber<List<ErroredBacking>>()
     private val goToDiscovery = TestSubscriber<Unit>()
     private val goToLogin = TestSubscriber<Unit>()
@@ -50,6 +57,8 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         vm = Factory(environment).create(ActivityFeedViewModel::class.java)
         vm.outputs.activityList().subscribe { activityList.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.activityList().map { it.size }.subscribe { activityListCount.onNext(it) }
             .addToDisposable(disposables)
         vm.outputs.erroredBackings().subscribe { erroredBackings.onNext(it) }
             .addToDisposable(disposables)
@@ -375,6 +384,62 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         surveys.assertValueCount(2)
         user.assertValues(initialUser, updatedUser)
+    }
+
+    @Test
+    fun testUser_featureFlagOn_shouldFilterResults() {
+        val environment = environment().toBuilder()
+            .featureFlagClient(object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return false
+                }
+            })
+            .apiClientV2(object : MockApiClientV2() {
+                override fun fetchActivities(): Observable<ActivityEnvelope> {
+                    return  Observable.just(ActivityEnvelope.builder().activities(listOf(projectStateChangedPositiveActivity(), friendBackingActivity(), rewardShippedActivity(), updateActivity())).build())
+                }
+            })
+            .build()
+        setUpEnvironment(environment)
+
+        // Swipe refresh.
+        vm.inputs.refresh()
+
+        // Activities should emit.
+        activityList.assertValueCount(1)
+
+        // Paginate.
+        vm.inputs.nextPage()
+        activityList.assertValueCount(1)
+        activityListCount.assertValue(3)
+    }
+
+    @Test
+    fun testUser_featureFlagOff_shouldNotFilterResults() {
+        val environment = environment().toBuilder()
+            .featureFlagClient(object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            })
+            .apiClientV2(object : MockApiClientV2() {
+                override fun fetchActivities(): Observable<ActivityEnvelope> {
+                    return  Observable.just(ActivityEnvelope.builder().activities(listOf(projectStateChangedPositiveActivity(), friendBackingActivity(), rewardShippedActivity(), updateActivity())).build())
+                }
+            })
+            .build()
+        setUpEnvironment(environment)
+
+        // Swipe refresh.
+        vm.inputs.refresh()
+
+        // Activities should emit.
+        activityList.assertValueCount(1)
+
+        // Paginate.
+        vm.inputs.nextPage()
+        activityList.assertValueCount(1)
+        activityListCount.assertValue(4)
     }
 
     @Test

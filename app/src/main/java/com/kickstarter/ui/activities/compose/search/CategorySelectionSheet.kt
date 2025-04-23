@@ -1,9 +1,17 @@
 package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +30,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -40,6 +50,7 @@ import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.PillButton
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -183,6 +194,7 @@ fun CategorySelectionSheet(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CategoryItemRow(
     category: Category,
@@ -191,8 +203,10 @@ fun CategoryItemRow(
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
+    val subcategoriesList = CategoryFactory.rootCategories()
+    val switchChecked = remember { mutableStateOf(isSelected) }
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .drawBehind {
@@ -205,23 +219,44 @@ fun CategoryItemRow(
             }
             .clickable { onSelectionChange(!isSelected) }
             .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                modifier = Modifier.weight(1f),
                 color = colors.textPrimary,
                 text = category.name(),
                 style = typographyV2.headingLG
             )
+
+            CustomSwitch(checked = switchChecked.value, onCheckedChange = { switchChecked.value = it })
         }
 
-        RadioButton(
-            selected = isSelected,
-            onClick = null, // null recommended for accessibility with screenreaders
-            colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
-        )
+        AnimatedVisibility(
+            visible = switchChecked.value,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                subcategoriesList.map { subcat ->
+                    PillButton(
+                        text = subcat.name(),
+                        shouldShowIcon = false,
+                        isSelected = false,
+                        modifier = Modifier.testTag("subcat"),
+                        onClick = {
+                        }
+                    )
+                }
+            }
+        }
+
     }
 }

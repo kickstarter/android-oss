@@ -42,7 +42,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.PillButton
-import timber.log.Timber
 
 object FilterMenuTestTags {
     const val SHEET = "filter_menu_sheet"
@@ -170,7 +169,6 @@ private fun ProjectStatusRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 pillOptions.forEach { (state, label) ->
-                    Timber.d("*****${FilterMenuTestTags.pillTag(state)}")
                     PillButton(
                         text = label,
                         shouldShowIcon = false,

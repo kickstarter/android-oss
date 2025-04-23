@@ -22,17 +22,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +58,8 @@ import com.kickstarter.ui.compose.designsystem.PillButton
 private fun CategorySelectionSheetPreviewPhase2Off() {
     KSTheme {
         CategorySelectionSheet(
-            categories = CategoryFactory.rootCategories(),
+            currentCategory = CategoryFactory.textilesCategory(),
+            categories = listOf(CategoryFactory.tabletopGamesCategory(), CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory(), CategoryFactory.worldMusicCategory()),
             onDismiss = {},
             onApply = { a, b -> },
             isLoading = false,
@@ -73,7 +74,8 @@ private fun CategorySelectionSheetPreviewPhase2Off() {
 private fun CategorySelectionSheetPreviewPhase2On() {
     KSTheme {
         CategorySelectionSheet(
-            categories = CategoryFactory.rootCategories(),
+            currentCategory = CategoryFactory.artCategory(),
+            categories = listOf(CategoryFactory.tabletopGamesCategory(), CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory(), CategoryFactory.worldMusicCategory()),
             onDismiss = {},
             onApply = { a, b -> },
             isLoading = false,
@@ -173,14 +175,10 @@ fun CategorySelectionSheet(
                         val rootCat = categoryWithSubCats.keys.toList()
                         items(rootCat) { category ->
                             CategoryItemRow(
+                                selectedCategory = selectedCategory.value,
                                 category = category,
-                                isSelected = category.name() == selectedCategory.value?.name(),
-                                onSelectionChange = { isChecked ->
-                                    if (isChecked) {
-                                        selectedCategory.value =
-                                            categories.find { it.name() == category.name() }!!
-                                    }
-
+                                onSelectionChange = { category ->
+                                    selectedCategory.value = category
                                     onApply(selectedCategory.value, null)
                                 },
                                 subcategories = categoryWithSubCats.get(category) ?: emptyList()
@@ -209,13 +207,14 @@ fun CategorySelectionSheet(
 @Composable
 fun CategoryItemRow(
     category: Category,
-    isSelected: Boolean,
-    onSelectionChange: (Boolean) -> Unit,
+    selectedCategory: Category?,
+    onSelectionChange: (Category) -> Unit,
     subcategories: List<Category> = emptyList()
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
-    val switchChecked = remember { mutableStateOf(isSelected) }
+
+    val isSelected = category.id() == selectedCategory?.id() || category.id() == selectedCategory?.parentId()
 
     Column(
         modifier = Modifier
@@ -228,7 +227,7 @@ fun CategoryItemRow(
                     strokeWidth = dimensions.dividerThickness.toPx()
                 )
             }
-            .clickable { onSelectionChange(!isSelected) }
+            .clickable { onSelectionChange(category) }
             .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
     ) {
         Row(
@@ -241,11 +240,15 @@ fun CategoryItemRow(
                 style = typographyV2.headingLG
             )
 
-            CustomSwitch(checked = switchChecked.value, onCheckedChange = { switchChecked.value = it })
+            RadioButton(
+                selected = isSelected,
+                onClick = null,
+                colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
+            )
         }
 
         AnimatedVisibility(
-            visible = switchChecked.value,
+            visible = isSelected,
             enter = expandVertically() + fadeIn(),
             exit = shrinkVertically() + fadeOut()
         ) {
@@ -257,20 +260,22 @@ fun CategoryItemRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 PillButton(
-                    text = "All",
+                    text = stringResource(R.string.Project_status_all),
                     shouldShowIcon = false,
-                    isSelected = true,
+                    isSelected = selectedCategory?.isRoot == true,
                     modifier = Modifier.testTag("subcat"),
                     onClick = {
+                        onSelectionChange(category)
                     }
                 )
-                subcategories.map { subcat ->
+                subcategories.map { subcategorie ->
                     PillButton(
-                        text = subcat.name(),
+                        text = subcategorie.name(),
                         shouldShowIcon = false,
-                        isSelected = false,
+                        isSelected = selectedCategory?.id() == subcategorie.id(),
                         modifier = Modifier.testTag("subcat"),
                         onClick = {
+                            onSelectionChange(subcategorie)
                         }
                     )
                 }

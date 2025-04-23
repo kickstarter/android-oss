@@ -422,6 +422,5 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.trackingNumberClicked("www.google.com")
         trackShipment.assertValue("www.google.com")
-
     }
 }

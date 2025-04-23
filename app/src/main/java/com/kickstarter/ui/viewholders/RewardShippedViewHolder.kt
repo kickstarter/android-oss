@@ -27,7 +27,7 @@ class RewardShippedViewHolder(
                     projectClicked = { projectOnClick() },
                     trackShipmentClicked = { trackingNumberClicked() }
                 )
-        }
+            }
         }
     }
 

@@ -245,6 +245,14 @@ fun CategoryItemRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                PillButton(
+                    text = "All",
+                    shouldShowIcon = false,
+                    isSelected = true,
+                    modifier = Modifier.testTag("subcat"),
+                    onClick = {
+                    }
+                )
                 subcategoriesList.map { subcat ->
                     PillButton(
                         text = subcat.name(),

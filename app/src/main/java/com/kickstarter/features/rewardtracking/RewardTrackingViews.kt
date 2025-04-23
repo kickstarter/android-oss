@@ -121,7 +121,7 @@ fun RewardTrackingModal(
         Row {
             TextWithStartIcon(
                 modifier = Modifier,
-                text = stringResource(id = R.string.fpo_your_reward_has_shipped),
+                text = stringResource(id = R.string.Your_reward_has_shipped),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_shipping),
                 style = when (pageType) {
                     RewardTrackingPageType.VIEW_YOUR_PLEDGE -> typographyV2.headingMD
@@ -137,7 +137,7 @@ fun RewardTrackingModal(
         Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
         Text(
-            text = stringResource(R.string.fpo_tracking_number).format(key1 = "tracking_number", value1 = trackingNumber),
+            text = stringResource(R.string.Tracking_number).format(key1 = "number", value1 = trackingNumber),
             style = typographyV2.bodyMD,
             color = colors.textSecondary
         )
@@ -150,7 +150,7 @@ fun RewardTrackingModal(
             textColor = colors.kds_white,
             onClickAction = trackShipmentClicked,
             shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-            text = stringResource(R.string.fpo_track_shipment),
+            text = stringResource(R.string.Track_shipment),
             textStyle = typographyV2.buttonLabel,
             isEnabled = true
         )

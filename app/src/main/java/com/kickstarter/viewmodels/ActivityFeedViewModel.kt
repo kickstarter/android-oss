@@ -27,6 +27,7 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
+import com.kickstarter.ui.viewholders.RewardShippedViewHolder
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -78,6 +79,9 @@ interface ActivityFeedViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.UpdateActivity].  */
         fun startUpdateActivity(): Observable<Activity>
 
+        /** Emits when we should open the browser to view shipment tracking.  */
+        fun trackShipmentClicked(): Observable<String>
+
         /** Emits a list of unanswered surveys to be shown in the user's activity feed  */
         fun surveys(): Observable<List<SurveyResponse>>
     }
@@ -93,6 +97,7 @@ interface ActivityFeedViewModel {
         private val friendBackingClick = PublishSubject.create<Activity>()
         private val loginClick = PublishSubject.create<Unit>()
         private val managePledgeClicked = PublishSubject.create<String>()
+        private val trackShipmentClicked = PublishSubject.create<String>()
         private val nextPage = PublishSubject.create<Unit>()
         private val projectStateChangedClick = PublishSubject.create<Activity>()
         private val projectStateChangedPositiveClick = PublishSubject.create<Activity>()
@@ -258,6 +263,18 @@ interface ActivityFeedViewModel {
             loginClick.onNext(Unit)
         }
 
+        override fun projectClicked(viewHolder: RewardShippedViewHolder?, activity: Activity?) {
+            if (activity != null) {
+                projectUpdateProjectClick.onNext(activity)
+            }
+        }
+
+        override fun trackingNumberClicked(
+            url: String
+        ) {
+            trackShipmentClicked.onNext(url)
+        }
+
         override fun managePledgeClicked(projectSlug: String) {
             managePledgeClicked.onNext(projectSlug)
         }
@@ -330,6 +347,7 @@ interface ActivityFeedViewModel {
         override fun loggedOutEmptyStateIsVisible(): Observable<Boolean> = loggedOutEmptyStateIsVisible
         override fun startFixPledge(): Observable<String> = startFixPledge
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
+        override fun trackShipmentClicked(): Observable<String> = trackShipmentClicked
         override fun surveys(): Observable<List<SurveyResponse>> = surveys
     }
 

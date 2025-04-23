@@ -37,6 +37,16 @@ object ActivityFactory {
     }
 
     @JvmStatic
+    fun rewardShippedActivity(): Activity {
+        return activity().toBuilder()
+            .category(Activity.CATEGORY_SHIPPED)
+            .project(project())
+            .trackingUrl("www.trackingnumbertest.com")
+            .trackingNumber("22342gdfg2341")
+            .build()
+    }
+
+    @JvmStatic
     fun projectStateChangedPositiveActivity(): Activity {
         return activity().toBuilder()
             .category(Activity.CATEGORY_SUCCESS)

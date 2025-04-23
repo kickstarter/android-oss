@@ -44,6 +44,7 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     private val startUpdateActivity = TestSubscriber<Activity>()
     private val surveys = TestSubscriber<List<SurveyResponse>>()
     private val user = TestSubscriber<User>()
+    private val trackShipment = TestSubscriber<String>()
     private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -69,6 +70,8 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startUpdateActivity().subscribe { startUpdateActivity.onNext(it) }
             .addToDisposable(disposables)
         vm.outputs.surveys().subscribe { surveys.onNext(it) }
+            .addToDisposable(disposables)
+        vm.trackShipmentClicked().subscribe { trackShipment.onNext(it) }
             .addToDisposable(disposables)
     }
 
@@ -407,5 +410,18 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.resume()
         user.assertValues(initialUser, updatedUser)
+    }
+
+    @Test
+    fun testTrackShipment_whenButtonClicked_emitsUrl() {
+        val environment = environment()
+            .toBuilder()
+            .apiClientV2(MockApiClientV2())
+            .build()
+        setUpEnvironment(environment)
+
+        vm.inputs.trackingNumberClicked("www.google.com")
+        trackShipment.assertValue("www.google.com")
+
     }
 }

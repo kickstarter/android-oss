@@ -5,6 +5,7 @@ import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
+import com.kickstarter.databinding.BackingLayoutBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -14,6 +15,7 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.BackingFragment.BackingDelegate
+import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.BackingViewModel.BackingViewModel
 import com.kickstarter.viewmodels.BackingViewModel.Factory
 import io.reactivex.disposables.CompositeDisposable
@@ -30,7 +32,12 @@ class BackingActivity : AppCompatActivity(), BackingDelegate {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.backing_layout)
+        val binding = BackingLayoutBinding.inflate(layoutInflater)
+        WindowInsetsUtil.manageEdgeToEdge(
+            window,
+            binding.root
+        )
+        setContentView(binding.root)
 
         setUpConnectivityStatusCheck(lifecycle)
 

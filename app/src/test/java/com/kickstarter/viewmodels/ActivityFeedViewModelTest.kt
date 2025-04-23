@@ -8,7 +8,6 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
-import com.kickstarter.mock.factories.ActivityFactory
 import com.kickstarter.mock.factories.ActivityFactory.activity
 import com.kickstarter.mock.factories.ActivityFactory.friendBackingActivity
 import com.kickstarter.mock.factories.ActivityFactory.projectStateChangedActivity
@@ -18,7 +17,6 @@ import com.kickstarter.mock.factories.ActivityFactory.updateActivity
 import com.kickstarter.mock.factories.SurveyResponseFactory.surveyResponse
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.services.MockApiClientV2
-import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
@@ -396,7 +394,7 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
             })
             .apiClientV2(object : MockApiClientV2() {
                 override fun fetchActivities(): Observable<ActivityEnvelope> {
-                    return  Observable.just(ActivityEnvelope.builder().activities(listOf(projectStateChangedPositiveActivity(), friendBackingActivity(), rewardShippedActivity(), updateActivity())).build())
+                    return Observable.just(ActivityEnvelope.builder().activities(listOf(projectStateChangedPositiveActivity(), friendBackingActivity(), rewardShippedActivity(), updateActivity())).build())
                 }
             })
             .build()
@@ -424,7 +422,7 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
             })
             .apiClientV2(object : MockApiClientV2() {
                 override fun fetchActivities(): Observable<ActivityEnvelope> {
-                    return  Observable.just(ActivityEnvelope.builder().activities(listOf(projectStateChangedPositiveActivity(), friendBackingActivity(), rewardShippedActivity(), updateActivity())).build())
+                    return Observable.just(ActivityEnvelope.builder().activities(listOf(projectStateChangedPositiveActivity(), friendBackingActivity(), rewardShippedActivity(), updateActivity())).build())
                 }
             })
             .build()

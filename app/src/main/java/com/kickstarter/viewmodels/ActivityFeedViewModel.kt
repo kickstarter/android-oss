@@ -212,7 +212,7 @@ interface ActivityFeedViewModel {
             paginator.paginatedData()
                 .subscribe {
                     if (!environment.featureFlagClient()
-                            ?.getBoolean(FlagKey.ANDROID_REWARD_SHIPMENT_TRACKING).isTrue()
+                        ?.getBoolean(FlagKey.ANDROID_REWARD_SHIPMENT_TRACKING).isTrue()
                     ) {
                         activityList.onNext(it.filter { it.category() != CATEGORY_SHIPPED })
                     } else {

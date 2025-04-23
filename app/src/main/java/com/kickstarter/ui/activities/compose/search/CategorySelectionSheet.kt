@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -31,9 +29,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -94,6 +94,15 @@ fun CategorySelectionSheet(
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
+    val categoryWithSubCats = mutableMapOf<Category, List<Category>>()
+
+    categories.forEach { cat ->
+        cat.parent()?.let { parentCat ->
+            val subcatList = categoryWithSubCats[parentCat]?.toMutableStateList() ?: mutableStateListOf<Category>()
+            subcatList.add(cat)
+            categoryWithSubCats[parentCat] = subcatList.toList()
+        }
+    }
 
     val selectedCategory = remember { mutableStateOf(currentCategory) }
 
@@ -161,7 +170,8 @@ fun CategorySelectionSheet(
                     }
                 } else {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(categories) { category ->
+                        val rootCat = categoryWithSubCats.keys.toList()
+                        items(rootCat) { category ->
                             CategoryItemRow(
                                 category = category,
                                 isSelected = category.name() == selectedCategory.value?.name(),
@@ -172,7 +182,8 @@ fun CategorySelectionSheet(
                                     }
 
                                     onApply(selectedCategory.value, null)
-                                }
+                                },
+                                subcategories = categoryWithSubCats.get(category) ?: emptyList()
                             )
                         }
                     }
@@ -200,10 +211,10 @@ fun CategoryItemRow(
     category: Category,
     isSelected: Boolean,
     onSelectionChange: (Boolean) -> Unit,
+    subcategories: List<Category> = emptyList()
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
-    val subcategoriesList = CategoryFactory.rootCategories()
     val switchChecked = remember { mutableStateOf(isSelected) }
 
     Column(
@@ -253,7 +264,7 @@ fun CategoryItemRow(
                     onClick = {
                     }
                 )
-                subcategoriesList.map { subcat ->
+                subcategories.map { subcat ->
                     PillButton(
                         text = subcat.name(),
                         shouldShowIcon = false,
@@ -265,6 +276,5 @@ fun CategoryItemRow(
                 }
             }
         }
-
     }
 }

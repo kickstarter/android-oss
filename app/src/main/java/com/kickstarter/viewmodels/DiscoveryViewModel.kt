@@ -334,6 +334,9 @@ interface DiscoveryViewModel {
                 .compose(Transformers.neverErrorV2())
                 .flatMapIterable { it }
                 .toSortedList()
+                .map {
+                    it
+                }
                 .toObservable()
                 .share()
 

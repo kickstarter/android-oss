@@ -96,20 +96,19 @@ class Category internal constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        var equals = super.equals(other)
-        if (other is Category) {
-            equals = id() == other.id() &&
-                analyticsName() == other.analyticsName() &&
-                color() == other.color() &&
-                parentName() == other.parentName() &&
-                parent() == other.parent() &&
-                name() == other.name() &&
-                projectsCount() == other.projectsCount() &&
-                position() == other.position() &&
-                parentId() == other.parentId() &&
-                slug() == other.slug()
-        }
-        return equals
+        if (this === other) return true
+        if (other !is Category) return false
+
+        return id() == other.id() &&
+            analyticsName() == other.analyticsName() &&
+            color() == other.color() &&
+            parentName() == other.parentName() &&
+            parent() == other.parent() &&
+            name() == other.name() &&
+            projectsCount() == other.projectsCount() &&
+            position() == other.position() &&
+            parentId() == other.parentId() &&
+            slug() == other.slug()
     }
 
     val isRoot: Boolean
@@ -124,6 +123,16 @@ class Category internal constructor(
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        var result = id().hashCode()
+        result = 31 * result + analyticsName().hashCode()
+        result = 31 * result + (color()?.hashCode() ?: 0)
+        result = 31 * result + (parentName()?.hashCode() ?: 0)
+        result = 31 * result + (parent()?.hashCode() ?: 0)
+        result = 31 * result + name().hashCode()
+        result = 31 * result + projectsCount()
+        result = 31 * result + position()
+        result = 31 * result + parentId().hashCode()
+        result = 31 * result + slug().hashCode()
+        return result
     }
 }

@@ -288,5 +288,5 @@ data class CategoryItem(
 
 enum class CategorySelectionSheetTestTag {
     APPLY_BUTTON,
-    DISMISS_BUTTON
+    DISMISS_BUTTON;
 }

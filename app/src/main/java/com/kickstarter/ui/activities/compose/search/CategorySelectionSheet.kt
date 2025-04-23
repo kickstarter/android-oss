@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,12 +46,28 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.PillButton
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun CategoryRowSelectedWithSubcategoriesPills() {
+    KSTheme {
+        CategoryItemRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            category = CategoryFactory.artCategory(),
+            selectedCategory = CategoryFactory.ceramicsCategory(),
+            onSelectionChange = {},
+            subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
+        )
+    }
+}
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -203,9 +220,17 @@ fun CategorySelectionSheet(
     }
 }
 
+object CategorySelectionTestTags {
+    const val RADIO_BUTTON= "radio_button"
+    const val SUBCATEGORY_ROW= "subcategory_row"
+    const val ROOTCATEGORY_ROW= "rootcategory_row"
+    fun pillTag(category: Category) = "pill_${category.id()}"
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CategoryItemRow(
+    modifier: Modifier = Modifier,
     category: Category,
     selectedCategory: Category?,
     onSelectionChange: (Category) -> Unit,
@@ -217,7 +242,7 @@ fun CategoryItemRow(
     val isSelected = category.id() == selectedCategory?.id() || category.id() == selectedCategory?.parentId()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .drawBehind {
                 drawLine(
@@ -231,6 +256,7 @@ fun CategoryItemRow(
             .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
     ) {
         Row(
+            modifier = Modifier.testTag(CategorySelectionTestTags.ROOTCATEGORY_ROW),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -241,6 +267,7 @@ fun CategoryItemRow(
             )
 
             RadioButton(
+                modifier = Modifier.testTag(CategorySelectionTestTags.RADIO_BUTTON),
                 selected = isSelected,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
@@ -254,6 +281,7 @@ fun CategoryItemRow(
         ) {
             FlowRow(
                 modifier = Modifier
+                    .testTag(CategorySelectionTestTags.SUBCATEGORY_ROW)
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -263,19 +291,19 @@ fun CategoryItemRow(
                     text = stringResource(R.string.Project_status_all),
                     shouldShowIcon = false,
                     isSelected = selectedCategory?.isRoot == true,
-                    modifier = Modifier.testTag("subcat"),
+                    modifier = Modifier.testTag(CategorySelectionTestTags.pillTag(category)),
                     onClick = {
                         onSelectionChange(category)
                     }
                 )
-                subcategories.map { subcategorie ->
+                subcategories.map { subcategory ->
                     PillButton(
-                        text = subcategorie.name(),
+                        text = subcategory.name(),
                         shouldShowIcon = false,
-                        isSelected = selectedCategory?.id() == subcategorie.id(),
-                        modifier = Modifier.testTag("subcat"),
+                        isSelected = selectedCategory?.id() == subcategory.id(),
+                        modifier = Modifier.testTag(CategorySelectionTestTags.pillTag(subcategory)),
                         onClick = {
-                            onSelectionChange(subcategorie)
+                            onSelectionChange(subcategory)
                         }
                     )
                 }

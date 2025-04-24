@@ -486,7 +486,7 @@ fun FilterAndCategoryPagerSheet(
     ) { page ->
         when (page) {
             FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
-                selectedProjectStatus = selectedProjectStatus,
+                selectedProjectStatus = projectState.value,
                 onDismiss = {
                     onDismiss.invoke()
                 },
@@ -515,7 +515,7 @@ fun FilterAndCategoryPagerSheet(
                 onNavigate = {
                     coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
                 },
-                currentCategory = currentCategory,
+                currentCategory = category.value,
                 onDismiss = onDismiss,
                 categories = categories,
                 onApply = { selectedCategory, applyAndDismiss ->

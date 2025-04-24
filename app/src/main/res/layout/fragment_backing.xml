@@ -145,14 +145,14 @@
                         layout="@layout/fragment_backing_section_delivery_date_reminder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/grid_3" />
+                        android:layout_marginTop="@dimen/grid_3"
+                        android:layout_marginBottom="@dimen/grid_4" />
 
                     <include
                         android:id="@+id/fragment_pledge_section_summary_pledge"
                         layout="@layout/fragment_pledge_section_summary_pledge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/grid_4"
                         android:layout_marginBottom="@dimen/grid_3"
                         android:visibility="visible" />
 

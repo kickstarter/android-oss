@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
@@ -14,6 +15,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.createValidUrl
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Activity
@@ -126,6 +128,11 @@ class ActivityFeedActivity : AppCompatActivity() {
             .subscribe { startUpdateActivity(it) }
             .addToDisposable(disposables)
 
+        viewModel.outputs.trackShipmentClicked()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { openShipmentTrackingUrl(it) }
+            .addToDisposable(disposables)
+
         viewModel.outputs.loggedOutEmptyStateIsVisible()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter?.showLoggedOutEmptyState(it) }
@@ -200,5 +207,10 @@ class ActivityFeedActivity : AppCompatActivity() {
             .putExtra(IntentKey.PROJECT_PARAM, activity.project()?.slug())
             .putExtra(IntentKey.UPDATE, activity.update())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun openShipmentTrackingUrl(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url.createValidUrl()))
+        startActivityWithTransition(browserIntent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

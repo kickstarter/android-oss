@@ -9,6 +9,7 @@ import com.kickstarter.databinding.ActivityFriendFollowViewBinding
 import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
 import com.kickstarter.databinding.ActivityProjectStateChangedViewBinding
 import com.kickstarter.databinding.ActivityProjectUpdateViewBinding
+import com.kickstarter.databinding.ActivityRewardShippedViewBinding
 import com.kickstarter.databinding.ActivitySurveyHeaderViewBinding
 import com.kickstarter.databinding.ActivitySurveyViewBinding
 import com.kickstarter.databinding.EmptyActivityFeedViewBinding
@@ -27,6 +28,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
+import com.kickstarter.ui.viewholders.RewardShippedViewHolder
 import com.kickstarter.ui.viewholders.SurveyHeaderViewHolder
 import com.kickstarter.ui.viewholders.SurveyViewHolder
 
@@ -37,7 +39,8 @@ class ActivityFeedAdapter(private val delegate: Delegate?) : KSAdapter() {
         ProjectStateChangedPositiveViewHolder.Delegate,
         ProjectStateChangedViewHolder.Delegate,
         ProjectUpdateViewHolder.Delegate,
-        EmptyActivityFeedViewHolder.Delegate
+        EmptyActivityFeedViewHolder.Delegate,
+        RewardShippedViewHolder.Delegate
 
     fun takeActivities(activities: List<Activity?>) {
         setSection(SECTION_ACTIVITIES_VIEW, activities)
@@ -99,6 +102,7 @@ class ActivityFeedAdapter(private val delegate: Delegate?) : KSAdapter() {
                 Activity.CATEGORY_FAILURE, Activity.CATEGORY_CANCELLATION, Activity.CATEGORY_SUSPENSION -> return R.layout.activity_project_state_changed_view
                 Activity.CATEGORY_LAUNCH, Activity.CATEGORY_SUCCESS -> return R.layout.activity_project_state_changed_positive_view
                 Activity.CATEGORY_UPDATE -> return R.layout.activity_project_update_view
+                Activity.CATEGORY_SHIPPED -> return R.layout.activity_reward_shipped_view
             }
         }
         return R.layout.empty_view
@@ -141,6 +145,7 @@ class ActivityFeedAdapter(private val delegate: Delegate?) : KSAdapter() {
             )
 
             R.layout.activity_project_update_view -> ProjectUpdateViewHolder(ActivityProjectUpdateViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
+            R.layout.activity_reward_shipped_view -> RewardShippedViewHolder(ActivityRewardShippedViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             R.layout.empty_activity_feed_view -> EmptyActivityFeedViewHolder(EmptyActivityFeedViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             R.layout.item_errored_backing -> ErroredBackingViewHolder(ItemErroredBackingBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))

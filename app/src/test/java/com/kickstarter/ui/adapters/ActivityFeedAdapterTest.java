@@ -74,8 +74,9 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
     final Activity activity0 = ActivityFactory.projectStateChangedPositiveActivity();
     final Activity activity1 = ActivityFactory.friendBackingActivity();
     final Activity activity2 = ActivityFactory.projectStateChangedActivity();
+    final Activity activity3 = ActivityFactory.rewardShippedActivity();
 
-    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
+    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2, activity3));
     this.adapter.showLoggedOutEmptyState(true);
 
     final List<List<Object>> data = Arrays.asList(
@@ -88,7 +89,8 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
       Arrays.asList(
         activity0,
         activity1,
-        activity2
+        activity2,
+        activity3
       )
     );
 
@@ -140,11 +142,12 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
     final Activity activity0 = ActivityFactory.projectStateChangedPositiveActivity();
     final Activity activity1 = ActivityFactory.friendBackingActivity();
     final Activity activity2 = ActivityFactory.projectStateChangedActivity();
+    final Activity activity3 = ActivityFactory.rewardShippedActivity();
     final ErroredBacking erroredBacking = ErroredBackingFactory.erroredBacking();
     final SurveyResponse surveyResponse0 = SurveyResponseFactory.surveyResponse();
     final SurveyResponse surveyResponse1 = SurveyResponseFactory.surveyResponse();
 
-    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
+    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2, activity3));
     this.adapter.takeErroredBackings(Collections.singletonList(erroredBacking));
     this.adapter.takeSurveys(Arrays.asList(surveyResponse0, surveyResponse1));
     this.adapter.showLoggedInEmptyState(true);
@@ -162,7 +165,8 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
       Arrays.asList(
         activity0,
         activity1,
-        activity2
+        activity2,
+        activity3
       )
     );
 

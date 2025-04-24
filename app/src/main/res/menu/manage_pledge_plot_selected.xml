@@ -8,6 +8,9 @@
         android:layout_height="wrap_content"
         android:title="@string/Cancel_pledge"
         app:showAsAction="never" />
+    <item android:id="@+id/update_payment"
+        android:title="@string/Change_payment_method"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/contact_creator"
         android:layout_width="wrap_content"

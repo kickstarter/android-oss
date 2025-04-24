@@ -18,7 +18,7 @@ class RewardShippedViewHolder(
     }
 
     override fun onBind() {
-        if(!activity().trackingUrl().isNullOrEmpty() && !activity().trackingNumber().isNullOrEmpty() && activity().project().isNotNull()) {
+        if (!activity().trackingUrl().isNullOrEmpty() && !activity().trackingNumber().isNullOrEmpty() && activity().project().isNotNull()) {
             binding.rewardShippedComposeView.setContent {
                 KSTheme {
                     RewardTrackingActivityFeed(

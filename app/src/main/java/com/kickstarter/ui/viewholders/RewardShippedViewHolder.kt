@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders
 import androidx.compose.ui.Modifier
 import com.kickstarter.databinding.ActivityRewardShippedViewBinding
 import com.kickstarter.features.rewardtracking.RewardTrackingActivityFeed
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Activity
 import com.kickstarter.ui.compose.designsystem.KSTheme
 
@@ -17,16 +18,18 @@ class RewardShippedViewHolder(
     }
 
     override fun onBind() {
-        binding.rewardShippedComposeView.setContent {
-            KSTheme {
-                RewardTrackingActivityFeed(
-                    modifier = Modifier,
-                    trackingNumber = activity().trackingNumber() ?: "",
-                    projectName = activity().project()?.name() ?: "",
-                    photo = activity().project()?.photo(),
-                    projectClicked = { projectOnClick() },
-                    trackShipmentClicked = { trackingNumberClicked() }
-                )
+        if(!activity().trackingUrl().isNullOrEmpty() && !activity().trackingNumber().isNullOrEmpty() && activity().project().isNotNull()) {
+            binding.rewardShippedComposeView.setContent {
+                KSTheme {
+                    RewardTrackingActivityFeed(
+                        modifier = Modifier,
+                        trackingNumber = activity().trackingNumber() ?: "",
+                        projectName = activity().project()?.name() ?: "",
+                        photo = activity().project()?.photo(),
+                        projectClicked = { projectOnClick() },
+                        trackShipmentClicked = { trackingNumberClicked() }
+                    )
+                }
             }
         }
     }

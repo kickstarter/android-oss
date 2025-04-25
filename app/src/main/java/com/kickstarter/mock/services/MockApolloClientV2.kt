@@ -359,7 +359,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
-    override suspend fun getRootCategories(): Result<List<Category>> {
+    override suspend fun getCategories(): Result<List<Category>> {
         return Result.success(emptyList())
     }
 

@@ -132,6 +132,38 @@ object CategoryFactory {
     }
 
     @JvmStatic
+    fun CeramicsCategory(): Category {
+        return builder()
+            .color(16760235)
+            .id(287)
+            .name("Ceramics")
+            .analyticsName("subcategoryName")
+            .parent(artCategory())
+            .parentId(artCategory().id())
+            .parentName(artCategory().name())
+            .position(11)
+            .projectsCount(7)
+            .slug("art/ceramics")
+            .build()
+    }
+
+    @JvmStatic
+    fun digitalArtCategory(): Category {
+        return builder()
+            .color(16760235)
+            .id(21)
+            .name("Digital Art")
+            .analyticsName("subcategoryName")
+            .parent(artCategory())
+            .parentId(artCategory().id())
+            .parentName(artCategory().name())
+            .position(11)
+            .projectsCount(7)
+            .slug("digital art")
+            .build()
+    }
+
+    @JvmStatic
     fun worldMusicCategory(): Category {
         return builder()
             .color(10878931)

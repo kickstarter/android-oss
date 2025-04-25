@@ -287,4 +287,11 @@ fun String.replace(substitutions: Map<String, String?>): String {
     return buffer.toString()
 }
 
+fun String.createValidUrl(): String {
+    if (!this.startsWith("http://") && !this.startsWith("https://")) {
+        return "http://$this"
+    }
+    return this
+}
+
 private val NON_WORD_REGEXP = Pattern.compile("[^\\w]")

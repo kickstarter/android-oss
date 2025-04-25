@@ -96,19 +96,20 @@ class Category internal constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Category) return false
-
-        return id() == other.id() &&
-            analyticsName() == other.analyticsName() &&
-            color() == other.color() &&
-            parentName() == other.parentName() &&
-            parent() == other.parent() &&
-            name() == other.name() &&
-            projectsCount() == other.projectsCount() &&
-            position() == other.position() &&
-            parentId() == other.parentId() &&
-            slug() == other.slug()
+        var equals = super.equals(other)
+        if (other is Category) {
+            equals = id() == other.id() &&
+                analyticsName() == other.analyticsName() &&
+                color() == other.color() &&
+                parentName() == other.parentName() &&
+                parent() == other.parent() &&
+                name() == other.name() &&
+                projectsCount() == other.projectsCount() &&
+                position() == other.position() &&
+                parentId() == other.parentId() &&
+                slug() == other.slug()
+        }
+        return equals
     }
 
     val isRoot: Boolean

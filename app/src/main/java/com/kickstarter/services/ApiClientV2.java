@@ -87,7 +87,8 @@ public final class ApiClientV2 implements ApiClientTypeV2 {
       Activity.CATEGORY_LAUNCH,
       Activity.CATEGORY_SUCCESS,
       Activity.CATEGORY_UPDATE,
-      Activity.CATEGORY_FOLLOW
+      Activity.CATEGORY_FOLLOW,
+      Activity.CATEGORY_SHIPPED
     );
 
     return this.service

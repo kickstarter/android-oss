@@ -8,7 +8,7 @@ import com.kickstarter.mock.factories.ActivityFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
-class RewardTrackingViewsKtTest: KSRobolectricTestCase() {
+class RewardTrackingViewsKtTest : KSRobolectricTestCase() {
 
     private val trackingButton =
         composeTestRule.onNodeWithTag(RewardTrackingTestTag.TRACK_SHIPMENT_BUTTON.name)
@@ -25,13 +25,13 @@ class RewardTrackingViewsKtTest: KSRobolectricTestCase() {
 
             KSTheme {
                 RewardTrackingActivityFeed(
-                        trackingNumber = activity.trackingNumber() ?: "",
-                        projectName = activity.project()?.name() ?: "",
-                        photo = activity.project()?.photo(),
-                        projectClicked = { projectClicks++ },
-                        trackingButtonEnabled = !activity.trackingUrl().isNullOrEmpty(),
-                        trackShipmentClicked = { trackShipmentClicks++ }
-                    )
+                    trackingNumber = activity.trackingNumber() ?: "",
+                    projectName = activity.project()?.name() ?: "",
+                    photo = activity.project()?.photo(),
+                    projectClicked = { projectClicks++ },
+                    trackingButtonEnabled = !activity.trackingUrl().isNullOrEmpty(),
+                    trackShipmentClicked = { trackShipmentClicks++ }
+                )
             }
         }
 

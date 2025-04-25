@@ -64,7 +64,7 @@ fun RewardTrackingActivityFeed(
     photo: Photo? = null,
     projectName: String,
     projectClicked: () -> Unit = {},
-    trackingButtonEnabled : Boolean = false,
+    trackingButtonEnabled: Boolean = false,
     trackShipmentClicked: () -> Unit = {},
 ) {
     Column(
@@ -119,8 +119,8 @@ fun RewardTrackingModal(
     trackingNumber: String,
     pageType: RewardTrackingPageType,
     trackShipmentClicked: () -> Unit = {},
-    trackingButtonEnabled : Boolean = false,
-    ) {
+    trackingButtonEnabled: Boolean = false,
+) {
     Column {
         Row {
             TextWithStartIcon(

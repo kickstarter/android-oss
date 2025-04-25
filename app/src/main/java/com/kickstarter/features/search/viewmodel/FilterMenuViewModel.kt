@@ -45,7 +45,7 @@ class FilterMenuViewModel(
     fun getRootCategories() {
         scope.launch {
             emitCurrentState(isLoading = true)
-            val response = apolloClient.getRootCategories()
+            val response = apolloClient.getCategories()
 
             if (response.isSuccess)
                 categoriesList = response.getOrDefault(emptyList())

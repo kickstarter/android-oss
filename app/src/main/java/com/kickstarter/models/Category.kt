@@ -124,6 +124,16 @@ class Category internal constructor(
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        var result = id().hashCode()
+        result = 31 * result + analyticsName().hashCode()
+        result = 31 * result + (color()?.hashCode() ?: 0)
+        result = 31 * result + (parentName()?.hashCode() ?: 0)
+        result = 31 * result + (parent()?.hashCode() ?: 0)
+        result = 31 * result + name().hashCode()
+        result = 31 * result + projectsCount()
+        result = 31 * result + position()
+        result = 31 * result + parentId().hashCode()
+        result = 31 * result + slug().hashCode()
+        return result
     }
 }

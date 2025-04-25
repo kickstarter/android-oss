@@ -1,8 +1,15 @@
 package com.kickstarter.ui.activities.compose.search
 
+import android.content.Context
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
+import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -10,6 +17,8 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
 
     private val dismissButton =
         composeTestRule.onNodeWithTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name)
+
+    val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
     fun `test tapping dismiss button should register dismiss`() {
@@ -33,5 +42,68 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
         dismissButton.performClick()
         assertEquals(0, applyClickCount)
         assertEquals(1, dismissClickCount)
+    }
+
+    @Test
+    fun `root category expands when clicked, All pill is selected by default`() {
+        var selectedCategory: Category? = null
+        composeTestRule.setContent {
+            KSTheme {
+                CategoryItemRow(
+                    category = CategoryFactory.artCategory(),
+                    selectedCategory = CategoryFactory.artCategory(),
+                    onSelectionChange = { newlySelectedCat ->
+                        selectedCategory = newlySelectedCat
+                    },
+                    subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.ROOTCATEGORY_TITLE, useUnmergedTree = true)
+            .assertTextEquals(CategoryFactory.artCategory().name())
+
+        composeTestRule
+            .onNodeWithText(CategoryFactory.artCategory().name(), useUnmergedTree = true)
+            .performClick() // Expand row, performs animation
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.artCategory()))
+            .assertTextEquals(context.resources.getString(R.string.Project_status_all))
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.textilesCategory()))
+            .assertTextEquals(CategoryFactory.textilesCategory().name())
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.digitalArtCategory()))
+            .assertTextEquals(CategoryFactory.digitalArtCategory().name())
+
+        assertEquals(selectedCategory, CategoryFactory.artCategory())
+    }
+
+    @Test
+    fun `root category expands when clicked, select subcategory `() {
+
+        var selectedCategory: Category? = null
+        composeTestRule.setContent {
+            KSTheme {
+                CategoryItemRow(
+                    category = CategoryFactory.artCategory(),
+                    selectedCategory = CategoryFactory.artCategory(),
+                    onSelectionChange = { newlySelectedCat ->
+                        selectedCategory = newlySelectedCat
+                    },
+                    subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.digitalArtCategory()), useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(selectedCategory, CategoryFactory.digitalArtCategory())
     }
 }

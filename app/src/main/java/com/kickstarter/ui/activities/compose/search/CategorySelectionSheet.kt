@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
-import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -63,6 +62,20 @@ private fun CategoryRowSelectedWithSubcategoriesPills() {
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
             category = CategoryFactory.artCategory(),
             selectedCategory = CategoryFactory.ceramicsCategory(),
+            onSelectionChange = {},
+            subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun CategoryRowUnSelected() {
+    KSTheme {
+        CategoryItemRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            category = CategoryFactory.artCategory(),
             onSelectionChange = {},
             subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
         )
@@ -221,9 +234,10 @@ fun CategorySelectionSheet(
 }
 
 object CategorySelectionTestTags {
-    const val RADIO_BUTTON= "radio_button"
-    const val SUBCATEGORY_ROW= "subcategory_row"
-    const val ROOTCATEGORY_ROW= "rootcategory_row"
+    const val ROOTCATEGORY_TITLE = "rowcategory_title"
+    const val RADIO_BUTTON = "radio_button"
+    const val SUBCATEGORY_ROW = "subcategory_row"
+    const val ROOTCATEGORY_ROW = "rootcategory_row"
     fun pillTag(category: Category) = "pill_${category.id()}"
 }
 
@@ -232,7 +246,7 @@ object CategorySelectionTestTags {
 fun CategoryItemRow(
     modifier: Modifier = Modifier,
     category: Category,
-    selectedCategory: Category?,
+    selectedCategory: Category? = null,
     onSelectionChange: (Category) -> Unit,
     subcategories: List<Category> = emptyList()
 ) {
@@ -243,6 +257,7 @@ fun CategoryItemRow(
 
     Column(
         modifier = modifier
+            .testTag(CategorySelectionTestTags.RADIO_BUTTON)
             .fillMaxWidth()
             .drawBehind {
                 drawLine(
@@ -252,7 +267,9 @@ fun CategoryItemRow(
                     strokeWidth = dimensions.dividerThickness.toPx()
                 )
             }
-            .clickable { onSelectionChange(category) }
+            .clickable {
+                onSelectionChange(category)
+            }
             .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
     ) {
         Row(
@@ -260,14 +277,15 @@ fun CategoryItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = modifier
+                    .testTag(CategorySelectionTestTags.ROOTCATEGORY_TITLE)
+                    .weight(1f),
                 color = colors.textPrimary,
                 text = category.name(),
                 style = typographyV2.headingLG
             )
 
             RadioButton(
-                modifier = Modifier.testTag(CategorySelectionTestTags.RADIO_BUTTON),
                 selected = isSelected,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)

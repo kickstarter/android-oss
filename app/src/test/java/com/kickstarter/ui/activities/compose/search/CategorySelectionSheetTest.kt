@@ -1,9 +1,13 @@
 package com.kickstarter.ui.activities.compose.search
 
-import androidx.compose.ui.test.assertIsSelected
+import android.content.Context
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -14,10 +18,7 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
     private val dismissButton =
         composeTestRule.onNodeWithTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name)
 
-    private val rootCategory = CategoryFactory.artCategory()
-    private val sub1 = CategoryFactory.textilesCategory()
-    private val sub2 = CategoryFactory.digitalArtCategory()
-    private val sub3 = CategoryFactory.ceramicsCategory()
+    val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
     fun `test tapping dismiss button should register dismiss`() {
@@ -44,83 +45,65 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun rootCategoryRadio_isSelected_whenMatchingSelectedCategory() {
+    fun `root category expands when clicked, All pill is selected by default`() {
+        var selectedCategory: Category? = null
         composeTestRule.setContent {
             KSTheme {
                 CategoryItemRow(
-                    category = rootCategory,
-                    selectedCategory = rootCategory,
-                    onSelectionChange = {},
-                    subcategories = listOf(sub1, sub2, sub3)
+                    category = CategoryFactory.artCategory(),
+                    selectedCategory = CategoryFactory.artCategory(),
+                    onSelectionChange = { newlySelectedCat ->
+                        selectedCategory = newlySelectedCat
+                    },
+                    subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
                 )
             }
         }
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.RADIO_BUTTON)
-            .assertIsSelected()
+            .onNodeWithTag(CategorySelectionTestTags.ROOTCATEGORY_TITLE, useUnmergedTree = true)
+            .assertTextEquals(CategoryFactory.artCategory().name())
+
+        composeTestRule
+            .onNodeWithText(CategoryFactory.artCategory().name(), useUnmergedTree = true)
+            .performClick() // Expand row, performs animation
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.artCategory()))
+            .assertTextEquals(context.resources.getString(R.string.Project_status_all))
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.textilesCategory()))
+            .assertTextEquals(CategoryFactory.textilesCategory().name())
+
+        composeTestRule
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.digitalArtCategory()))
+            .assertTextEquals(CategoryFactory.digitalArtCategory().name())
+
+        assertEquals(selectedCategory, CategoryFactory.artCategory())
     }
 
     @Test
-    fun subcategoryPill_isSelected_whenMatchingSelectedCategory() {
+    fun `root category expands when clicked, select subcategory `() {
+
+        var selectedCategory: Category? = null
         composeTestRule.setContent {
             KSTheme {
                 CategoryItemRow(
-                    category = rootCategory,
-                    selectedCategory = sub3,
-                    onSelectionChange = {},
-                    subcategories = listOf(sub1, sub2, sub3)
+                    category = CategoryFactory.artCategory(),
+                    selectedCategory = CategoryFactory.artCategory(),
+                    onSelectionChange = { newlySelectedCat ->
+                        selectedCategory = newlySelectedCat
+                    },
+                    subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
                 )
             }
         }
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.pillTag(sub3))
-            .assertIsSelected()
-    }
-
-    @Test
-    fun clickingRootCategory_callsSelectionCallback() {
-        var clickedCategory: Category? = null
-
-        composeTestRule.setContent {
-            KSTheme {
-                CategoryItemRow(
-                    category = rootCategory,
-                    selectedCategory = null,
-                    onSelectionChange = { clickedCategory = it },
-                    subcategories = listOf(sub1, sub2, sub3)
-                )
-            }
-        }
-
-        composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.ROOTCATEGORY_ROW)
+            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.digitalArtCategory()), useUnmergedTree = true)
             .performClick()
 
-        assert(clickedCategory == rootCategory)
-    }
-
-    @Test
-    fun clickingSubcategoryPill_callsSelectionCallback() {
-        var clickedCategory: Category? = null
-
-        composeTestRule.setContent {
-            KSTheme {
-                CategoryItemRow(
-                    category = rootCategory,
-                    selectedCategory = null,
-                    onSelectionChange = { clickedCategory = it },
-                    subcategories = listOf(sub1, sub2, sub3)
-                )
-            }
-        }
-
-        composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.pillTag(sub2))
-            .performClick()
-
-        assert(clickedCategory == sub2)
+        assertEquals(selectedCategory, CategoryFactory.digitalArtCategory())
     }
 }
-

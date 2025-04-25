@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,6 +64,7 @@ fun RewardTrackingActivityFeed(
     photo: Photo? = null,
     projectName: String,
     projectClicked: () -> Unit = {},
+    trackingButtonEnabled : Boolean = false,
     trackShipmentClicked: () -> Unit = {},
 ) {
     Column(
@@ -88,6 +90,7 @@ fun RewardTrackingActivityFeed(
             trackingNumber,
             RewardTrackingPageType.ACTIVITY_FEED,
             trackShipmentClicked,
+            trackingButtonEnabled
         )
     }
 }
@@ -116,7 +119,8 @@ fun RewardTrackingModal(
     trackingNumber: String,
     pageType: RewardTrackingPageType,
     trackShipmentClicked: () -> Unit = {},
-) {
+    trackingButtonEnabled : Boolean = false,
+    ) {
     Column {
         Row {
             TextWithStartIcon(
@@ -145,14 +149,14 @@ fun RewardTrackingModal(
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
         KSButton(
-            modifier = Modifier,
+            modifier = Modifier.testTag(RewardTrackingTestTag.TRACK_SHIPMENT_BUTTON.name),
             backgroundColor = colors.kds_black,
             textColor = colors.kds_white,
             onClickAction = trackShipmentClicked,
             shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
             text = stringResource(R.string.Track_shipment),
             textStyle = typographyV2.buttonLabel,
-            isEnabled = true
+            isEnabled = trackingButtonEnabled
         )
     }
 }
@@ -165,7 +169,7 @@ fun ProjectInfoHeader(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { projectClicked.invoke() }
+        modifier = Modifier.clickable { projectClicked.invoke() }.testTag(RewardTrackingTestTag.PROJECT_CARD_MODAL.name)
     ) {
         KSAsyncImage(
             image = photo,
@@ -182,6 +186,10 @@ fun ProjectInfoHeader(
             color = colors.textPrimary
         )
     }
+}
+enum class RewardTrackingTestTag(name: String) {
+    TRACK_SHIPMENT_BUTTON("track_shipment_button"),
+    PROJECT_CARD_MODAL("project_card_modal")
 }
 
 enum class RewardTrackingPageType(name: String) {

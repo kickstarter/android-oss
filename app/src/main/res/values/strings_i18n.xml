@@ -124,7 +124,6 @@ backers</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Change your shipping location or skip add-ons to continue.</string>
   <string name="Charge_number" formatted="false">Charge %{number}</string>
-  <string name="Charged_as_number_of_payments" formatted="false">charged as %{number} payments</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Check out these handpicked projects just for you.</string>

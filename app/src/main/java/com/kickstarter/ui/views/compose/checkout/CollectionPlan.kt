@@ -59,60 +59,6 @@ enum class CollectionOptions {
     PLEDGE_OVER_TIME,
 }
 
-@Preview(
-    name = "Light Eligible - Pledge in Full Selected",
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-@Preview(
-    name = "Dark Eligible - Pledge in Full Selected",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun PreviewPledgeInFullSelected() {
-    KSTheme {
-        CollectionPlan(
-            isEligible = true,
-            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL
-        )
-    }
-}
-
-@Preview(
-    name = "Light Eligible - Pledge Over Time Selected",
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Preview(
-    name = "Dark Eligible - Pledge Over Time Selected",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun PreviewPledgeOverTimeSelected() {
-    KSTheme {
-        CollectionPlan(
-            isEligible = true,
-            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
-            paymentIncrements = listOf(
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(2), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(4), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(6), "150"),
-            )
-        )
-    }
-}
-
-@Preview(name = "Light Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewNotEligibleComponent() {
-    KSTheme {
-        CollectionPlan(
-            isEligible = false,
-            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL,
-        )
-    }
-}
-
 @Composable
 fun CollectionPlan(
     isEligible: Boolean,
@@ -123,7 +69,9 @@ fun CollectionPlan(
     ksCurrency: KSCurrency? = null,
     projectCurrency: String? = null,
     projectCurrentCurrency: String? = null,
-    termsOfUseCallback: (DisclaimerItems) -> Unit = {}
+    termsOfUseCallback: (DisclaimerItems) -> Unit = {},
+    pledgeOverTimeShortPitch: String? = null,
+    pledgeOverTimeCollectionPlanChargeExplanation: String? = null,
 ) {
     var selectedOption by remember { mutableStateOf(initialSelectedOption) }
     changeCollectionPlan.invoke(selectedOption)
@@ -133,22 +81,21 @@ fun CollectionPlan(
         changeCollectionPlan.invoke(it)
     }
 
-    Column(modifier = Modifier.padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)) {
+    Column(modifier = Modifier.padding(horizontal = dimensions.paddingMedium)) {
         PledgeOption(
+            modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_IN_FULL.name),
             optionText = stringResource(id = R.string.Pledge_in_full),
             selected = selectedOption == CollectionOptions.PLEDGE_IN_FULL,
-            onSelect = { onOptionSelected.invoke(CollectionOptions.PLEDGE_IN_FULL) },
-            modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_IN_FULL.name),
+            onSelect = { onOptionSelected.invoke(CollectionOptions.PLEDGE_IN_FULL) }
         )
-        Spacer(Modifier.height(dimensions.paddingSmall))
+        Spacer(modifier = Modifier.height(dimensions.paddingSmall))
         PledgeOption(
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_OVER_TIME.name),
             optionText = stringResource(id = R.string.Pledge_Over_Time),
             selected = selectedOption == CollectionOptions.PLEDGE_OVER_TIME,
-            description = if (isEligible) stringResource(id = R.string.You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description) else null,
-            onSelect = {
-                if (isEligible) onOptionSelected.invoke(CollectionOptions.PLEDGE_OVER_TIME)
-            },
+            description = pledgeOverTimeShortPitch,
+            expandedDescription = pledgeOverTimeCollectionPlanChargeExplanation,
+            onSelect = { if (isEligible) onOptionSelected.invoke(CollectionOptions.PLEDGE_OVER_TIME) },
             isExpanded = selectedOption == CollectionOptions.PLEDGE_OVER_TIME && isEligible,
             isSelectable = isEligible,
             showBadge = !isEligible,
@@ -157,7 +104,7 @@ fun CollectionPlan(
             ksCurrency = ksCurrency,
             projectCurrency = projectCurrency,
             projectCurrentCurrency = projectCurrentCurrency,
-            termsOfUseCallback = termsOfUseCallback,
+            termsOfUseCallback = termsOfUseCallback
         )
     }
 }
@@ -168,6 +115,7 @@ fun PledgeOption(
     optionText: String,
     selected: Boolean,
     description: String? = null,
+    expandedDescription: String? = null,
     onSelect: () -> Unit,
     isExpanded: Boolean = false,
     isSelectable: Boolean = true,
@@ -199,7 +147,7 @@ fun PledgeOption(
             modifier = Modifier.padding(start = dimensions.paddingSmall)
         ) {
             Column {
-                var radioButtonModifier = if (!isSelectable) Modifier.padding(end = dimensions.paddingMediumSmall) else Modifier
+                val radioButtonModifier = if (!isSelectable) Modifier.padding(end = dimensions.paddingMediumSmall) else Modifier
                 RadioButton(
                     modifier = radioButtonModifier.testTag(CollectionPlanTestTags.RADIO_BUTTON.name),
                     selected = selected,
@@ -219,33 +167,41 @@ fun PledgeOption(
                     style = typographyV2.subHeadlineMedium,
                     color = if (isSelectable) colors.textPrimary else colors.textDisabled
                 )
-                if (showBadge) {
-                    Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+
+                if (showBadge && plotMinimum != null) {
                     PledgeBadge(plotMinimum = plotMinimum)
-                } else if (description != null) {
-                    Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                } else if (!description.isNullOrEmpty()) {
                     Text(
                         modifier = Modifier
-                            .padding(bottom = dimensions.paddingMedium)
+                            .padding(bottom = dimensions.paddingSmall)
                             .testTag(CollectionPlanTestTags.DESCRIPTION_TEXT.name),
                         text = description,
                         style = typographyV2.bodyXS,
                         color = colors.textSecondary
                     )
                 }
-                if (isExpanded) {
+
+                if (isExpanded && !expandedDescription.isNullOrEmpty()) {
                     Text(
-                        modifier = Modifier.testTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name),
-                        text = stringResource(id = R.string.The_first_charge_will_occur_when_the_project_ends_successfully),
+                        modifier = Modifier
+                            .padding(bottom = dimensions.paddingMedium)
+                            .testTag(CollectionPlanTestTags.EXPANDED_DESCRIPTION_TEXT.name),
+                        text = expandedDescription,
                         style = typographyV2.bodyXS,
                         color = colors.textSecondary
                     )
+                }
+
+                if (isExpanded) {
                     Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
                     KSClickableText(
                         modifier = Modifier.testTag(CollectionPlanTestTags.TERMS_OF_USE_TEXT.name),
                         resourceId = R.string.See_our_terms_of_use,
                         clickCallback = { termsOfUseCallback.invoke(DisclaimerItems.TERMS) }
                     )
+
                     if (!paymentIncrements.isNullOrEmpty()) {
                         ChargeSchedule(paymentIncrements, ksCurrency, projectCurrency, projectCurrentCurrency)
                     }
@@ -303,8 +259,7 @@ fun ChargeSchedule(paymentIncrements: List<PaymentIncrement>, ksCurrency: KSCurr
 @Composable
 fun ChargeItem(title: String, date: String, amount: String) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.padding(bottom = dimensions.paddingMediumLarge)) {
@@ -316,9 +271,63 @@ fun ChargeItem(title: String, date: String, amount: String) {
             )
 
             Row(modifier = Modifier.padding(top = dimensions.paddingXSmall)) {
-                Text(modifier = Modifier.width(dimensions.plotChargeItemWidth), text = date, color = colors.textSecondary, style = typographyV2.footNote)
-                Text(text = amount, color = colors.textSecondary, style = typographyV2.footNote)
+                Text(
+                    modifier = Modifier.width(dimensions.plotChargeItemWidth),
+                    text = date,
+                    color = colors.textSecondary,
+                    style = typographyV2.footNote
+                )
+                Text(
+                    text = amount,
+                    color = colors.textSecondary,
+                    style = typographyV2.footNote
+                )
             }
         }
+    }
+}
+
+@Preview(name = "Light Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewPledgeInFull() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = true,
+            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL
+        )
+    }
+}
+
+@Preview(name = "Light Mode - Pledge Over Time", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode - Pledge Over Time", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewPledgeOverTime() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = true,
+            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
+            pledgeOverTimeShortPitch = "You will be charged over four payments.",
+            pledgeOverTimeCollectionPlanChargeExplanation = "First charge occurs when the project ends successfully.",
+            paymentIncrements = listOf(
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(2), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(4), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(6), "150"),
+            )
+        )
+    }
+}
+
+@Preview(name = "Light Mode - Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode - Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewNotEligible() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = false,
+            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
+            plotMinimum = "$10 minimum to split"
+        )
     }
 }

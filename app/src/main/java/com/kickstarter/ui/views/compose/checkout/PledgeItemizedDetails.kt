@@ -113,6 +113,7 @@ enum class PledgeItemizedDetailsTestTag {
     SHIPPING_AMOUNT,
     CURRENCY_CONVERSION,
     PLOT_SELECTED_BADGE,
+    PLOT_CHARGED_TEXT,
 }
 
 @Composable
@@ -130,7 +131,8 @@ fun ItemizedRewardListContainer(
     deliveryDateString: String = "",
     rewardsHaveShippables: Boolean = false,
     disclaimerText: String = "",
-    plotSelected: Boolean = false
+    plotSelected: Boolean = false,
+    pledgeOverTimeCollectionPlanChargedAsNPayments: String? = null,
 ) {
     Column(
         modifier = Modifier
@@ -314,12 +316,14 @@ fun ItemizedRewardListContainer(
                         color = colors.kds_create_700
                     )
                 }
-                Text(
-                    modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.DISCLAIMER_TEXT.name),
-                    text = stringResource(id = R.string.Charged_as_number_of_payments).format(key1 = "number", value1 = "4"),
-                    style = typographyV2.footNote,
-                    color = colors.textPrimary
-                )
+                if (pledgeOverTimeCollectionPlanChargedAsNPayments != null) {
+                    Text(
+                        modifier = Modifier.testTag(PledgeItemizedDetailsTestTag.PLOT_CHARGED_TEXT.name),
+                        text = pledgeOverTimeCollectionPlanChargedAsNPayments,
+                        style = typographyV2.footNote,
+                        color = colors.textPrimary
+                    )
+                }
             }
         }
 

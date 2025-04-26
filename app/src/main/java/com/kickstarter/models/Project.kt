@@ -52,6 +52,10 @@ class Project private constructor(
     private val staffPick: Boolean?,
     private val canComment: Boolean?,
     private val pledgeOverTimeMinimumExplanation: String?,
+    private val pledgeOverTimeCollectionPlanChargeExplanation: String?,
+    private val pledgeOverTimeCollectionPlanChargedAsNPayments: String?,
+    private val pledgeOverTimeCollectionPlanShortPitch: String?,
+
     @State
     private val state: String,
     private val stateChangedAt: DateTime?,
@@ -133,6 +137,11 @@ class Project private constructor(
     fun watchesCount() = this.watchesCount
     fun isInPostCampaignPledgingPhase() = this.isInPostCampaignPledgingPhase
     fun postCampaignPledgingEnabled() = this.postCampaignPledgingEnabled
+    fun pledgeOverTimeCollectionPlanChargeExplanation() =
+        this.pledgeOverTimeCollectionPlanChargeExplanation
+    fun pledgeOverTimeCollectionPlanChargedAsNPayments() =
+        this.pledgeOverTimeCollectionPlanChargedAsNPayments
+    fun pledgeOverTimeCollectionPlanShortPitch() = this.pledgeOverTimeCollectionPlanShortPitch
 
     @Parcelize
     data class Builder(
@@ -177,6 +186,9 @@ class Project private constructor(
         private var staffPick: Boolean? = null,
         private var canComment: Boolean? = null,
         private var pledgeOverTimeMinimumExplanation: String? = "",
+        private var pledgeOverTimeCollectionPlanChargeExplanation: String? = null,
+        private var pledgeOverTimeCollectionPlanChargedAsNPayments: String? = null,
+        private var pledgeOverTimeCollectionPlanShortPitch: String? = null,
         @State
         private var state: String = STATE_STARTED,
         private var stateChangedAt: DateTime? = null,
@@ -196,9 +208,11 @@ class Project private constructor(
         private var isFlagged: Boolean? = null,
         private var watchesCount: Int = 0,
         private var isInPostCampaignPledgingPhase: Boolean? = null,
-        private var postCampaignPledgingEnabled: Boolean? = null
+        private var postCampaignPledgingEnabled: Boolean? = null,
     ) : Parcelable {
-        fun availableCardTypes(availableCardTypes: List<String>?) = apply { this.availableCardTypes = availableCardTypes }
+        fun availableCardTypes(availableCardTypes: List<String>?) =
+            apply { this.availableCardTypes = availableCardTypes }
+
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
         fun watchesCount(watchesCount: Int?) = apply { this.watchesCount = watchesCount ?: 0 }
         fun blurb(blurb: String?) = apply { this.blurb = blurb ?: "" }
@@ -209,12 +223,20 @@ class Project private constructor(
         fun createdAt(createdAt: DateTime?) = apply { createdAt?.let { this.createdAt = it } }
         fun creator(creator: User?) = apply { creator?.let { this.creator = it } }
         fun currency(currency: String?) = apply { currency?.let { this.currency = it } }
-        fun currencySymbol(currencySymbol: String?) = apply { currencySymbol?.let { this.currencySymbol = it } }
+        fun currencySymbol(currencySymbol: String?) =
+            apply { currencySymbol?.let { this.currencySymbol = it } }
+
         fun currentCurrency(currency: String?) = apply { this.currentCurrency = currency }
-        fun currencyTrailingCode(currencyTrailingCode: Boolean?) = apply { this.currencyTrailingCode = currencyTrailingCode ?: false }
-        fun displayPrelaunch(displayPrelaunch: Boolean?) = apply { this.displayPrelaunch = displayPrelaunch }
+        fun currencyTrailingCode(currencyTrailingCode: Boolean?) =
+            apply { this.currencyTrailingCode = currencyTrailingCode ?: false }
+
+        fun displayPrelaunch(displayPrelaunch: Boolean?) =
+            apply { this.displayPrelaunch = displayPrelaunch }
+
         fun canComment(canComment: Boolean?) = apply { this.canComment = canComment ?: false }
-        fun pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation: String?) = apply { this.pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation }
+        fun pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation: String?) =
+            apply { this.pledgeOverTimeMinimumExplanation = pledgeOverTimeMinimumExplanation }
+
         fun deadline(deadline: DateTime?) = apply { this.deadline = deadline }
         fun featuredAt(featuredAt: DateTime?) = apply { this.featuredAt = featuredAt }
         fun friends(friends: List<User>?) = apply { this.friends = friends ?: emptyList() }
@@ -222,42 +244,91 @@ class Project private constructor(
         fun goal(goal: Double?) = apply { this.goal = goal ?: 0.0 }
         fun id(id: Long?) = apply { this.id = id ?: 0L }
         fun isBacking(isBacking: Boolean?) = apply { this.isBacking = isBacking ?: false }
-        fun isPledgeOverTimeAllowed(isPledgeOverTimeAllowed: Boolean?) = apply { this.isPledgeOverTimeAllowed = isPledgeOverTimeAllowed }
+        fun isPledgeOverTimeAllowed(isPledgeOverTimeAllowed: Boolean?) =
+            apply { this.isPledgeOverTimeAllowed = isPledgeOverTimeAllowed }
+
         fun isStarred(isStarred: Boolean?) = apply { this.isStarred = isStarred ?: false }
-        fun lastUpdatePublishedAt(lastUpdatePublishedAt: DateTime?) = apply { this.lastUpdatePublishedAt = lastUpdatePublishedAt }
+        fun lastUpdatePublishedAt(lastUpdatePublishedAt: DateTime?) =
+            apply { this.lastUpdatePublishedAt = lastUpdatePublishedAt }
+
         fun launchedAt(launchedAt: DateTime?) = apply { this.launchedAt = launchedAt }
         fun location(location: Location?) = apply { this.location = location }
         fun name(name: String?) = apply { this.name = name ?: "" }
         fun percentFunded(percentFunded: Int?) = apply { this.percentFunded = percentFunded }
-        fun permissions(permissions: List<Permission?>?) = apply { this.permissions = permissions?.filterNotNull() ?: emptyList() }
+        fun permissions(permissions: List<Permission?>?) =
+            apply { this.permissions = permissions?.filterNotNull() ?: emptyList() }
+
         fun pledged(pledged: Double?) = apply { this.pledged = pledged ?: 0.0 }
         fun photo(photo: Photo?) = apply { this.photo = photo }
-        fun prelaunchActivated(prelaunchActivated: Boolean?) = apply { this.prelaunchActivated = prelaunchActivated }
+        fun prelaunchActivated(prelaunchActivated: Boolean?) =
+            apply { this.prelaunchActivated = prelaunchActivated }
+
         fun projectNotice(projectNotice: String?) = apply { this.projectNotice = projectNotice }
-        fun sendMetaCapiEvents(sendMetaCapiEvents: Boolean?) = apply { this.sendMetaCapiEvents = sendMetaCapiEvents }
-        fun sendThirdPartyEvents(sendThirdPartyEvents: Boolean?) = apply { this.sendThirdPartyEvents = sendThirdPartyEvents }
+        fun sendMetaCapiEvents(sendMetaCapiEvents: Boolean?) =
+            apply { this.sendMetaCapiEvents = sendMetaCapiEvents }
+
+        fun sendThirdPartyEvents(sendThirdPartyEvents: Boolean?) =
+            apply { this.sendThirdPartyEvents = sendThirdPartyEvents }
+
         fun tags(tags: List<String>?) = apply { this.tags = tags ?: emptyList() }
         fun rewards(rewards: List<Reward>?) = apply { this.rewards = rewards ?: emptyList() }
         fun slug(slug: String?) = apply { this.slug = slug }
         fun staffPick(staffPick: Boolean?) = apply { this.staffPick = staffPick }
-        fun staticUsdRate(staticUsdRate: Float?) = apply { this.staticUsdRate = staticUsdRate ?: 0f }
-        fun usdExchangeRate(usdExchangeRate: Float?) = apply { this.usdExchangeRate = usdExchangeRate ?: 0f }
+        fun staticUsdRate(staticUsdRate: Float?) =
+            apply { this.staticUsdRate = staticUsdRate ?: 0f }
+
+        fun usdExchangeRate(usdExchangeRate: Float?) =
+            apply { this.usdExchangeRate = usdExchangeRate ?: 0f }
+
         fun state(state: String?) = apply { this.state = state ?: "" }
-        fun stateChangedAt(stateChangedAt: DateTime?) = apply { this.stateChangedAt = stateChangedAt }
-        fun unreadMessagesCount(unreadMessagesCount: Int?) = apply { this.unreadMessagesCount = unreadMessagesCount ?: 0 }
-        fun unseenActivityCount(unseenActivityCount: Int?) = apply { this.unseenActivityCount = unseenActivityCount ?: 0 }
+        fun stateChangedAt(stateChangedAt: DateTime?) =
+            apply { this.stateChangedAt = stateChangedAt }
+
+        fun unreadMessagesCount(unreadMessagesCount: Int?) =
+            apply { this.unreadMessagesCount = unreadMessagesCount ?: 0 }
+
+        fun unseenActivityCount(unseenActivityCount: Int?) =
+            apply { this.unseenActivityCount = unseenActivityCount ?: 0 }
+
         fun updatedAt(updatedAt: DateTime?) = apply { this.updatedAt = updatedAt }
         fun updatesCount(updatesCount: Int?) = apply { this.updatesCount = updatesCount ?: 0 }
         fun urls(urls: Urls?) = apply { urls?.let { this.urls = it } }
         fun video(video: Video?) = apply { this.video = video }
-        fun projectFaqs(projectFaqs: List<ProjectFaq>?) = apply { this.projectFaqs = projectFaqs ?: emptyList() }
-        fun envCommitments(envCommitments: List<EnvironmentalCommitment>?) = apply { this.envCommitments = envCommitments ?: emptyList() }
+        fun projectFaqs(projectFaqs: List<ProjectFaq>?) =
+            apply { this.projectFaqs = projectFaqs ?: emptyList() }
+
+        fun envCommitments(envCommitments: List<EnvironmentalCommitment>?) =
+            apply { this.envCommitments = envCommitments ?: emptyList() }
+
         fun aiDisclosure(aiDisclosure: AiDisclosure?) = apply { this.aiDisclosure = aiDisclosure }
         fun risks(risks: String?) = apply { this.risks = risks ?: "" }
         fun story(story: String?) = apply { this.story = story ?: "" }
         fun isFlagged(isFlagged: Boolean?) = apply { this.isFlagged = isFlagged }
-        fun isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase: Boolean?) = apply { this.isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase }
-        fun postCampaignPledgingEnabled(postCampaignPledgingEnabled: Boolean?) = apply { this.postCampaignPledgingEnabled = postCampaignPledgingEnabled }
+        fun isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase: Boolean?) =
+            apply { this.isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase }
+
+        fun postCampaignPledgingEnabled(postCampaignPledgingEnabled: Boolean?) =
+            apply { this.postCampaignPledgingEnabled = postCampaignPledgingEnabled }
+
+        fun pledgeOverTimeCollectionPlanChargeExplanation(
+            pledgeOverTimeCollectionPlanChargeExplanation: String?,
+        ) = apply {
+            this.pledgeOverTimeCollectionPlanChargeExplanation =
+                pledgeOverTimeCollectionPlanChargeExplanation
+        }
+
+        fun pledgeOverTimeCollectionPlanChargedAsNPayments(
+            pledgeOverTimeCollectionPlanChargedAsNPayments: String?,
+        ) = apply {
+            this.pledgeOverTimeCollectionPlanChargedAsNPayments =
+                pledgeOverTimeCollectionPlanChargedAsNPayments
+        }
+
+        fun pledgeOverTimeCollectionPlanShortPitch(pledgeOverTimeCollectionPlanShortPitch: String?) =
+            apply {
+                this.pledgeOverTimeCollectionPlanShortPitch = pledgeOverTimeCollectionPlanShortPitch
+            }
+
         fun build() = Project(
             availableCardTypes = availableCardTypes,
             backersCount = backersCount,
@@ -318,7 +389,10 @@ class Project private constructor(
             isFlagged = isFlagged,
             watchesCount = watchesCount,
             isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase,
-            postCampaignPledgingEnabled = postCampaignPledgingEnabled
+            postCampaignPledgingEnabled = postCampaignPledgingEnabled,
+            pledgeOverTimeCollectionPlanShortPitch = pledgeOverTimeCollectionPlanShortPitch,
+            pledgeOverTimeCollectionPlanChargedAsNPayments = pledgeOverTimeCollectionPlanChargedAsNPayments,
+            pledgeOverTimeCollectionPlanChargeExplanation = pledgeOverTimeCollectionPlanChargeExplanation
         )
     }
 
@@ -382,7 +456,10 @@ class Project private constructor(
         isFlagged = isFlagged,
         watchesCount = watchesCount,
         isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase,
-        postCampaignPledgingEnabled = postCampaignPledgingEnabled
+        postCampaignPledgingEnabled = postCampaignPledgingEnabled,
+        pledgeOverTimeCollectionPlanShortPitch = pledgeOverTimeCollectionPlanShortPitch,
+        pledgeOverTimeCollectionPlanChargedAsNPayments = pledgeOverTimeCollectionPlanChargedAsNPayments,
+        pledgeOverTimeCollectionPlanChargeExplanation = pledgeOverTimeCollectionPlanChargeExplanation
     )
 
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
@@ -556,7 +633,10 @@ class Project private constructor(
                 aiDisclosure() == other.aiDisclosure() &&
                 risks() == other.risks() &&
                 story() == other.story() &&
-                isFlagged() == other.isFlagged()
+                isFlagged() == other.isFlagged() &&
+                pledgeOverTimeCollectionPlanShortPitch() == other.pledgeOverTimeCollectionPlanShortPitch() &&
+                pledgeOverTimeCollectionPlanChargedAsNPayments() == other.pledgeOverTimeCollectionPlanChargedAsNPayments() &&
+                pledgeOverTimeCollectionPlanChargeExplanation() == other.pledgeOverTimeCollectionPlanChargeExplanation()
         }
         return equals
     }

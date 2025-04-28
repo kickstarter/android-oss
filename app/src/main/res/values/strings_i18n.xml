@@ -124,7 +124,6 @@ backers</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Change your shipping location or skip add-ons to continue.</string>
   <string name="Charge_number" formatted="false">Charge %{number}</string>
-  <string name="Charged_as_number_of_payments" formatted="false">charged as %{number} payments</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Check out these handpicked projects just for you.</string>
@@ -890,8 +889,6 @@ Please try again later.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
-  <string name="You_will_be_charged_for_your_pledge_over_four_payments_collapsed_description" formatted="false">You will be charged for your pledge over four payments, at no extra cost.</string>
-  <string name="You_will_be_charged_for_your_pledge_over_four_payments_expanded_description" formatted="false">The first charge will be 24 hours after the project ends successfully, then every 2 weeks until fully paid. When this option is selected no further edits can be made to your pledge.</string>
   <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">You’ll lose the comment if you leave this page.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">You won\'t be charged for backing a project unless it reaches its funding goal.</string>
   <string name="Youll_be_the_first_to_receive_project_launch" formatted="false">You’ll be the first to receive project launch and creator update emails.</string>

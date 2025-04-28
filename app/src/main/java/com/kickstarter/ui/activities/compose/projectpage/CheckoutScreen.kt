@@ -405,7 +405,9 @@ fun CheckoutScreen(
                         projectCurrency = project.currency(),
                         projectCurrentCurrency = project.currentCurrency(),
                         termsOfUseCallback = onDisclaimerItemClicked,
-                        plotMinimum = project.pledgeOverTimeMinimumExplanation()
+                        plotMinimum = project.pledgeOverTimeMinimumExplanation(),
+                        pledgeOverTimeCollectionPlanChargeExplanation = project.pledgeOverTimeCollectionPlanChargeExplanation(),
+                        pledgeOverTimeShortPitch = project.pledgeOverTimeCollectionPlanShortPitch(),
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                     Text(
@@ -595,7 +597,8 @@ fun CheckoutScreen(
                         deliveryDateString = deliveryDateString,
                         rewardsHaveShippables = rewardsHaveShippables,
                         disclaimerText = if (isIncrementalPledge) plotDisclaimerText else disclaimerText,
-                        plotSelected = isIncrementalPledge
+                        plotSelected = isIncrementalPledge,
+                        pledgeOverTimeCollectionPlanChargedAsNPayments = project.pledgeOverTimeCollectionPlanChargedAsNPayments(),
                     )
                 } else {
                     // - For noReward, totalAmount = bonusAmount as there is no reward
@@ -606,7 +609,8 @@ fun CheckoutScreen(
                         totalBonusSupport = totalAmountString,
                         shippingAmount = shippingAmount,
                         disclaimerText = if (isIncrementalPledge) plotDisclaimerText else disclaimerText,
-                        plotSelected = isIncrementalPledge
+                        plotSelected = isIncrementalPledge,
+                        pledgeOverTimeCollectionPlanChargedAsNPayments = project.pledgeOverTimeCollectionPlanChargedAsNPayments(),
                     )
                 }
 

@@ -49,6 +49,9 @@ fragment projectCard on Project {
     url
     isInPostCampaignPledgingPhase
     postCampaignPledgingEnabled
+    pledgeOverTimeCollectionPlanChargeExplanation
+    pledgeOverTimeCollectionPlanChargedAsNPayments
+    pledgeOverTimeCollectionPlanShortPitch
 }
 
 # Fragment used to load all the Project information on Project Page
@@ -147,6 +150,9 @@ fragment fullProject on Project {
     watchesCount
     isInPostCampaignPledgingPhase
     postCampaignPledgingEnabled
+    pledgeOverTimeCollectionPlanChargeExplanation
+    pledgeOverTimeCollectionPlanChargedAsNPayments
+    pledgeOverTimeCollectionPlanShortPitch
 }
 
 fragment backing on Backing {

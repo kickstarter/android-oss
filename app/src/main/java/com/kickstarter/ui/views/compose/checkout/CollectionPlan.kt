@@ -59,6 +59,54 @@ enum class CollectionOptions {
     PLEDGE_OVER_TIME,
 }
 
+
+
+@Preview(name = "Light Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewPledgeInFull() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = true,
+            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL
+        )
+    }
+}
+
+@Preview(name = "Light Mode - Pledge Over Time", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode - Pledge Over Time", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewPledgeOverTime() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = true,
+            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
+            pledgeOverTimeShortPitch = "You will be charged over four payments.",
+            pledgeOverTimeCollectionPlanChargeExplanation = "First charge occurs when the project ends successfully.",
+            paymentIncrements = listOf(
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(2), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(4), "150"),
+                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(6), "150"),
+            )
+        )
+    }
+}
+
+@Preview(name = "Light Mode - Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Mode - Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewNotEligible() {
+    KSTheme {
+        CollectionPlan(
+            isEligible = false,
+            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
+            plotMinimum = "$10 minimum to split"
+        )
+    }
+}
+
+
 @Composable
 fun CollectionPlan(
     isEligible: Boolean,
@@ -81,7 +129,7 @@ fun CollectionPlan(
         changeCollectionPlan.invoke(it)
     }
 
-    Column(modifier = Modifier.padding(horizontal = dimensions.paddingMedium)) {
+    Column(modifier = Modifier.padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)) {
         PledgeOption(
             modifier = Modifier.testTag(CollectionPlanTestTags.OPTION_PLEDGE_IN_FULL.name),
             optionText = stringResource(id = R.string.Pledge_in_full),
@@ -175,7 +223,7 @@ fun PledgeOption(
                 } else if (!description.isNullOrEmpty()) {
                     Text(
                         modifier = Modifier
-                            .padding(bottom = dimensions.paddingSmall)
+                            .padding(bottom = dimensions.paddingMedium)
                             .testTag(CollectionPlanTestTags.DESCRIPTION_TEXT.name),
                         text = description,
                         style = typographyV2.bodyXS,
@@ -284,50 +332,5 @@ fun ChargeItem(title: String, date: String, amount: String) {
                 )
             }
         }
-    }
-}
-
-@Preview(name = "Light Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewPledgeInFull() {
-    KSTheme {
-        CollectionPlan(
-            isEligible = true,
-            initialSelectedOption = CollectionOptions.PLEDGE_IN_FULL
-        )
-    }
-}
-
-@Preview(name = "Light Mode - Pledge Over Time", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Mode - Pledge Over Time", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewPledgeOverTime() {
-    KSTheme {
-        CollectionPlan(
-            isEligible = true,
-            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
-            pledgeOverTimeShortPitch = "You will be charged over four payments.",
-            pledgeOverTimeCollectionPlanChargeExplanation = "First charge occurs when the project ends successfully.",
-            paymentIncrements = listOf(
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now(), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(2), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(4), "150"),
-                PaymentIncrementFactory.incrementUsdCollected(DateTime.now().plusWeeks(6), "150"),
-            )
-        )
-    }
-}
-
-@Preview(name = "Light Mode - Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Mode - Not Eligible", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewNotEligible() {
-    KSTheme {
-        CollectionPlan(
-            isEligible = false,
-            initialSelectedOption = CollectionOptions.PLEDGE_OVER_TIME,
-            plotMinimum = "$10 minimum to split"
-        )
     }
 }

@@ -70,6 +70,9 @@ object ProjectFactory {
             .launchedAt(DateTime(DateTimeZone.UTC).minusDays(10))
             .deadline(DateTime(DateTimeZone.UTC).plusDays(10))
             .risks("Risks and challenges")
+            .pledgeOverTimeCollectionPlanChargeExplanation("The first charge will occur when the project ends successfully, then every month until fully paid. When this option is selected no further edits can be made to your pledge. See our Terms of Use.")
+            .pledgeOverTimeCollectionPlanChargedAsNPayments("charged as 3 payments")
+            .pledgeOverTimeCollectionPlanShortPitch("You will be charged for your pledge over four payments, at no extra cost.")
             .build()
     }
 

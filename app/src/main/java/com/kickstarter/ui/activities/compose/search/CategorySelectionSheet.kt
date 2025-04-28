@@ -203,29 +203,29 @@ fun CategorySelectionSheet(
                 } else {
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         val rootCat = categoryWithSubCats.keys.toList()
-                        items(rootCat) { category ->
+                        items(rootCat) { rootCategory ->
                             CategoryItemRow(
                                 selectedCategory = selectedCategory.value,
-                                category = category,
+                                category = rootCategory,
                                 onSelectionChange = { category ->
                                     selectedCategory.value = category
                                     onApply(selectedCategory.value, null)
                                 },
-                                subcategories = categoryWithSubCats.get(category) ?: emptyList()
+                                subcategories = categoryWithSubCats[rootCategory] ?: emptyList()
                             )
                         }
                     }
                 }
 
-                val resetCategoryName = stringResource(R.string.Category)
                 KSSearchBottomSheetFooter(
                     isLoading = isLoading,
+                    leftButtonIsEnabled = selectedCategory.value != null,
                     resetOnclickAction = {
                         selectedCategory.value = null
                         onApply(selectedCategory.value, false)
                     },
                     onApply = {
-                        selectedCategory.value?.let { onApply(it, true) }
+                        onApply(selectedCategory.value, true)
                     }
                 )
             }

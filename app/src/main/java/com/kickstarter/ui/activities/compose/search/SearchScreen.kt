@@ -521,10 +521,6 @@ fun FilterAndCategoryPagerSheet(
                 onApply = { selectedCategory, applyAndDismiss ->
                     category.value = selectedCategory
                     if (applyAndDismiss != null) {
-                        // - Reset to default values
-                        if (applyAndDismiss.isFalse()) {
-                            projectState.value = null
-                        }
                         applyUserSelection(
                             onApply,
                             projectState.value,

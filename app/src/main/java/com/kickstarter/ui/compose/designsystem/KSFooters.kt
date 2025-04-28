@@ -153,6 +153,8 @@ enum class BottomSheetFooterTestTags {
 fun KSSearchBottomSheetFooter(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    leftButtonIsEnabled: Boolean = true,
+    rightButtonIsEnabled: Boolean = true,
     resetOnclickAction: () -> Unit = {},
     onApply: () -> Unit = {}
 ) {
@@ -189,7 +191,7 @@ fun KSSearchBottomSheetFooter(
                     resetOnclickAction.invoke()
                 },
                 text = stringResource(R.string.Reset_filters),
-                isEnabled = !isLoading
+                isEnabled = !isLoading && leftButtonIsEnabled
             )
             KSButton(
                 modifier = Modifier
@@ -203,7 +205,7 @@ fun KSSearchBottomSheetFooter(
                 shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
                 text = stringResource(R.string.See_results),
                 textStyle = typographyV2.buttonLabel,
-                isEnabled = !isLoading,
+                isEnabled = !isLoading && rightButtonIsEnabled
             )
         }
     }

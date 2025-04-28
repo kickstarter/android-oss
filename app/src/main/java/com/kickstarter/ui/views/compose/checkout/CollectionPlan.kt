@@ -59,8 +59,6 @@ enum class CollectionOptions {
     PLEDGE_OVER_TIME,
 }
 
-
-
 @Preview(name = "Light Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark Mode - Pledge In Full", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -105,7 +103,6 @@ fun PreviewNotEligible() {
         )
     }
 }
-
 
 @Composable
 fun CollectionPlan(

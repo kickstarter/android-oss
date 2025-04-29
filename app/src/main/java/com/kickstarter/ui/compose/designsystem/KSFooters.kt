@@ -155,8 +155,10 @@ fun KSSearchBottomSheetFooter(
     isLoading: Boolean = false,
     leftButtonIsEnabled: Boolean = true,
     rightButtonIsEnabled: Boolean = true,
-    resetOnclickAction: () -> Unit = {},
-    onApply: () -> Unit = {}
+    leftButtonClickAction: () -> Unit = {},
+    rightButtonOnClickAction: () -> Unit = {},
+    leftButtonText: String = stringResource(R.string.Reset_filters),
+    rightButtonText: String = stringResource(R.string.See_results)
 ) {
 
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -188,9 +190,9 @@ fun KSSearchBottomSheetFooter(
                 backgroundColor = colors.backgroundSurfacePrimary,
                 textColor = colors.textPrimary,
                 onClickAction = {
-                    resetOnclickAction.invoke()
+                    leftButtonClickAction.invoke()
                 },
-                text = stringResource(R.string.Reset_filters),
+                text = leftButtonText,
                 isEnabled = !isLoading && leftButtonIsEnabled
             )
             KSButton(
@@ -200,10 +202,10 @@ fun KSSearchBottomSheetFooter(
                 backgroundColor = colors.kds_black,
                 textColor = colors.kds_white,
                 onClickAction = {
-                    onApply.invoke()
+                    rightButtonOnClickAction.invoke()
                 },
                 shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-                text = stringResource(R.string.See_results),
+                text = rightButtonText,
                 textStyle = typographyV2.buttonLabel,
                 isEnabled = !isLoading && rightButtonIsEnabled
             )

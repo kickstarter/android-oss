@@ -220,11 +220,11 @@ fun CategorySelectionSheet(
                 KSSearchBottomSheetFooter(
                     isLoading = isLoading,
                     leftButtonIsEnabled = selectedCategory.value != null,
-                    resetOnclickAction = {
+                    leftButtonClickAction = {
                         selectedCategory.value = null
                         onApply(selectedCategory.value, false)
                     },
-                    onApply = {
+                    rightButtonOnClickAction = {
                         onApply(selectedCategory.value, true)
                     }
                 )

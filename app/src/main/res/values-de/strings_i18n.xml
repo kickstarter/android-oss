@@ -512,7 +512,7 @@ Antippen und erneut versuchen</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Um dem Projektgründer eine Nachricht zu senden, musst du dich bitte anmelden oder registrieren.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Bitte melde dich an oder registriere dich, um an diesem Live-Stream teilzunehmen.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Bitte melde dich an oder registriere dich, um diesen Live-Stream zu abonnieren.</string>
-  <string name="Pledge" formatted="false">Beitrag leisten</string>
+  <string name="Pledge" formatted="false">Unterstützen</string>
   <string name="Pledge_Over_Time" formatted="false">Ratenzahlung</string>
   <string name="Pledge_activity" formatted="false">Finanzierungsbeiträge</string>
   <string name="Pledge_amount" formatted="false">Beitragshöhe</string>
@@ -520,6 +520,7 @@ Antippen und erneut versuchen</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Du kannst jeden beliebigen Betrag eingeben, um das Projekt zu unterstützen.</string>
   <string name="Pledge_details" formatted="false">Dein Finanzierungsbeitrag</string>
   <string name="Pledge_in_full" formatted="false">Sofortzahlung</string>
+  <string name="Pledge_label" formatted="false">Finanzierungsbeitrag</string>
   <string name="Pledge_management" formatted="false">Beitragsverwaltung</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Unterstütze Projekte und sehe alle deine Projekte auf einen Blick.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Unterstütze deine Favoriten - alle von dir unterstützten Projekte werden hier angezeigt.</string>
@@ -552,7 +553,7 @@ Antippen und erneut versuchen</string>
   <string name="Project_saved" formatted="false">Projekt gespeichert.</string>
   <string name="Project_status" formatted="false">Projektstatus</string>
   <string name="Project_status_all" formatted="false">Alle</string>
-  <string name="Project_status_late_pledges" formatted="false">Nachträgliche Beiträge</string>
+  <string name="Project_status_late_pledge" formatted="false">Nachträglicher Beitrag</string>
   <string name="Project_status_live" formatted="false">Live</string>
   <string name="Project_status_successful" formatted="false">Erfolgreich</string>
   <string name="Project_status_upcoming" formatted="false">In Kürze</string>
@@ -600,6 +601,7 @@ Antippen und erneut versuchen</string>
   <string name="Request_my_personal_data" formatted="false">Meine persönlichen Daten anfordern</string>
   <string name="Resend_email" formatted="false">Erneut senden</string>
   <string name="Resend_verification_email" formatted="false">Verifizierungs-E-Mail erneut senden</string>
+  <string name="Reset_all_filters" formatted="false">Alle zurücksetzen</string>
   <string name="Reset_filters" formatted="false">Zurücksetzen</string>
   <string name="Reset_your_password" formatted="false">Passwort zurücksetzen</string>
   <string name="Retry" formatted="false">Erneut versuchen</string>

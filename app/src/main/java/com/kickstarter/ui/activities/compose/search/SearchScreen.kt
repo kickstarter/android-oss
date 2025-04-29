@@ -618,7 +618,7 @@ private fun sheetContent(
     val liveString = stringResource(R.string.Project_status_live)
     val successfulString = stringResource(R.string.Project_status_successful)
     val upcomingString = stringResource(R.string.Project_status_upcoming)
-    val latePledgeString = stringResource(R.string.Project_status_late_pledges)
+    val latePledgeString = stringResource(R.string.Project_status_late_pledge)
     val defaultString = stringResource(R.string.Project_status)
 
     return {

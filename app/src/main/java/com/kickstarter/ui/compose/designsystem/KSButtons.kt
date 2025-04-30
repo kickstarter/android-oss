@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -36,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -184,6 +187,12 @@ fun KSSearchToolbarButtons() {
         ) {
             IconPillButton(type = FilterRowPillType.SORT, isSelected = false)
             IconPillButton(type = FilterRowPillType.SORT, isSelected = true)
+            IconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
+            IconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
+            IconPillButton(type = FilterRowPillType.SORT, isSelected = true, count = 3)
+            IconPillButton(type = FilterRowPillType.SORT, isSelected = false, count = 3)
+            IconPillButton(type = FilterRowPillType.FILTER, isSelected = true, count = 3)
+            IconPillButton(type = FilterRowPillType.FILTER, isSelected = false, count = 3)
             PillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
             PillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
             PillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowIcon = false)
@@ -513,23 +522,34 @@ fun IconPillButton(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
     onClick: () -> Unit = {},
-    type: FilterRowPillType
+    type: FilterRowPillType,
+    count: Int = 0
 ) {
     IconButton(
         onClick = onClick,
         modifier = modifier
+            .width(if (count > 0) dimensions.iconPillButtonSizeLarge else dimensions.iconPillButtonSize)
             .border(
                 if (isSelected) dimensions.strokeWidth else dimensions.borderThickness,
                 if (isSelected) colors.borderActive else colors.borderBold,
-                CircleShape
+                RoundedCornerShape(dimensions.pillButtonShapeSize)
             )
             .size(dimensions.iconPillButtonSize)
     ) {
-        Icon(
-            painter = painterForFilterType(type),
-            contentDescription = descriptionForFilterType(type),
-            tint = colors.icon
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterForFilterType(type),
+                contentDescription = descriptionForFilterType(type),
+                tint = colors.icon
+            )
+            if (count > 0) {
+                Spacer(Modifier.padding(start = dimensions.paddingXSmall))
+                KSCountBadge(count)
+            }
+        }
     }
 }
 

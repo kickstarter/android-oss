@@ -649,9 +649,10 @@ private fun sheetContent(
                         onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value)
                     },
                     updateSelectedCounts = { statusCount, categoryCount ->
+
+                        selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0)
                         statusCount?.let {
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
-                            selectedFilterCounts[FilterRowPillType.FILTER.name] = it
                         }
                         categoryCount?.let {
                             selectedFilterCounts[FilterRowPillType.CATEGORY.name] = it

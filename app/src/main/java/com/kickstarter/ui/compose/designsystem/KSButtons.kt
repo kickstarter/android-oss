@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
@@ -601,12 +602,12 @@ fun KSOutlinedButton(
     onClickAction: () -> Unit,
     backgroundColor: Color,
     text: String,
-    textColor: Color = colors.textAccentGrey,
+    textColor: Color = colors.textPrimary,
     isEnabled: Boolean = true,
 ) {
     OutlinedButton(
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
+        colors = ButtonDefaults.outlinedButtonColors(
             backgroundColor = backgroundColor,
             contentColor = textColor
         ),
@@ -616,7 +617,7 @@ fun KSOutlinedButton(
     ) {
         Text(
             style = typographyV2.buttonLabel,
-            color = colors.textPrimary,
+            color = if (isEnabled) textColor else textColor.copy(alpha = ContentAlpha.disabled),
             text = text
         )
     }

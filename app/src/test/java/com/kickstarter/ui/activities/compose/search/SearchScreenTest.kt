@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTextInput
@@ -397,22 +398,21 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test
-    fun `Pager with phase2 feature flag off, back button on CategoriesSelection Screen not available`() {
+    fun `Pager with phase2 feature flag off, back button on CategoriesSelection Screen not available, reset button behaviour`() {
 
         var page = 0
+        val categories = CategoryFactory.rootCategories()
+        val selectedStatus = DiscoveryParams.State.LIVE
+
+        val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
+        val dismissed = mutableListOf<Boolean>()
+        val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
             val testSheetState = rememberModalBottomSheetState(
                 initialValue = Hidden,
                 skipHalfExpanded = true
             )
-
-            val categories = CategoryFactory.rootCategories()
-            val selectedStatus = DiscoveryParams.State.LIVE
-
-            val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
-            val dismissed = mutableListOf<Boolean>()
-            val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
 
             KSTheme {
 
@@ -440,5 +440,18 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag("Category").assertExists() // On Filters page, category row button
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertDoesNotExist() // On Category Selection, top left Arrow Icon
+
+        // - Reset button behaviour
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_all_filters))
+            .assertExists()
+
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_filters))
+            .assertDoesNotExist()
+
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_all_filters))
+            .performClick()
+
+        assertNull(appliedFilters.last().first)
+        assertNull(appliedFilters.last().second)
     }
 }

@@ -521,6 +521,7 @@ from friends yet.</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_details" formatted="false">Pledge details</string>
   <string name="Pledge_in_full" formatted="false">Pledge in full</string>
+  <string name="Pledge_label" formatted="false">Pledge</string>
   <string name="Pledge_management" formatted="false">Pledge management</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
@@ -553,7 +554,7 @@ from friends yet.</string>
   <string name="Project_saved" formatted="false">Project saved.</string>
   <string name="Project_status" formatted="false">Project status</string>
   <string name="Project_status_all" formatted="false">All</string>
-  <string name="Project_status_late_pledges" formatted="false">Late pledges</string>
+  <string name="Project_status_late_pledge" formatted="false">Late pledge</string>
   <string name="Project_status_live" formatted="false">Live</string>
   <string name="Project_status_successful" formatted="false">Successful</string>
   <string name="Project_status_upcoming" formatted="false">Upcoming</string>
@@ -602,6 +603,7 @@ daring ideas.</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_email" formatted="false">Resend email</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
+  <string name="Reset_all_filters" formatted="false">Reset all</string>
   <string name="Reset_filters" formatted="false">Reset</string>
   <string name="Reset_your_password" formatted="false">Reset your password</string>
   <string name="Retry" formatted="false">Retry</string>

@@ -521,10 +521,6 @@ fun FilterAndCategoryPagerSheet(
                 onApply = { selectedCategory, applyAndDismiss ->
                     category.value = selectedCategory
                     if (applyAndDismiss != null) {
-                        // - Reset to default values
-                        if (applyAndDismiss.isFalse()) {
-                            projectState.value = null
-                        }
                         applyUserSelection(
                             onApply,
                             projectState.value,
@@ -622,7 +618,7 @@ private fun sheetContent(
     val liveString = stringResource(R.string.Project_status_live)
     val successfulString = stringResource(R.string.Project_status_successful)
     val upcomingString = stringResource(R.string.Project_status_upcoming)
-    val latePledgeString = stringResource(R.string.Project_status_late_pledges)
+    val latePledgeString = stringResource(R.string.Project_status_late_pledge)
     val defaultString = stringResource(R.string.Project_status)
 
     return {

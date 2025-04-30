@@ -203,29 +203,29 @@ fun CategorySelectionSheet(
                 } else {
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         val rootCat = categoryWithSubCats.keys.toList()
-                        items(rootCat) { category ->
+                        items(rootCat) { rootCategory ->
                             CategoryItemRow(
                                 selectedCategory = selectedCategory.value,
-                                category = category,
+                                category = rootCategory,
                                 onSelectionChange = { category ->
                                     selectedCategory.value = category
                                     onApply(selectedCategory.value, null)
                                 },
-                                subcategories = categoryWithSubCats.get(category) ?: emptyList()
+                                subcategories = categoryWithSubCats[rootCategory] ?: emptyList()
                             )
                         }
                     }
                 }
 
-                val resetCategoryName = stringResource(R.string.Category)
                 KSSearchBottomSheetFooter(
                     isLoading = isLoading,
-                    resetOnclickAction = {
+                    leftButtonIsEnabled = selectedCategory.value != null,
+                    leftButtonClickAction = {
                         selectedCategory.value = null
                         onApply(selectedCategory.value, false)
                     },
-                    onApply = {
-                        selectedCategory.value?.let { onApply(it, true) }
+                    rightButtonOnClickAction = {
+                        onApply(selectedCategory.value, true)
                     }
                 )
             }
@@ -233,7 +233,7 @@ fun CategorySelectionSheet(
     }
 }
 
-object CategorySelectionTestTags {
+object CategoryItemRowTestTags {
     const val ROOTCATEGORY_TITLE = "rowcategory_title"
     const val RADIO_BUTTON = "radio_button"
     const val SUBCATEGORY_ROW = "subcategory_row"
@@ -257,7 +257,7 @@ fun CategoryItemRow(
 
     Column(
         modifier = modifier
-            .testTag(CategorySelectionTestTags.RADIO_BUTTON)
+            .testTag(CategoryItemRowTestTags.RADIO_BUTTON)
             .fillMaxWidth()
             .drawBehind {
                 drawLine(
@@ -273,12 +273,12 @@ fun CategoryItemRow(
             .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
     ) {
         Row(
-            modifier = Modifier.testTag(CategorySelectionTestTags.ROOTCATEGORY_ROW),
+            modifier = Modifier.testTag(CategoryItemRowTestTags.ROOTCATEGORY_ROW),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 modifier = modifier
-                    .testTag(CategorySelectionTestTags.ROOTCATEGORY_TITLE)
+                    .testTag(CategoryItemRowTestTags.ROOTCATEGORY_TITLE)
                     .weight(1f),
                 color = colors.textPrimary,
                 text = category.name(),
@@ -299,7 +299,7 @@ fun CategoryItemRow(
         ) {
             FlowRow(
                 modifier = Modifier
-                    .testTag(CategorySelectionTestTags.SUBCATEGORY_ROW)
+                    .testTag(CategoryItemRowTestTags.SUBCATEGORY_ROW)
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -309,7 +309,7 @@ fun CategoryItemRow(
                     text = stringResource(R.string.Project_status_all),
                     shouldShowIcon = false,
                     isSelected = selectedCategory?.isRoot == true,
-                    modifier = Modifier.testTag(CategorySelectionTestTags.pillTag(category)),
+                    modifier = Modifier.testTag(CategoryItemRowTestTags.pillTag(category)),
                     onClick = {
                         onSelectionChange(category)
                     }
@@ -319,7 +319,7 @@ fun CategoryItemRow(
                         text = subcategory.name(),
                         shouldShowIcon = false,
                         isSelected = selectedCategory?.id() == subcategory.id(),
-                        modifier = Modifier.testTag(CategorySelectionTestTags.pillTag(subcategory)),
+                        modifier = Modifier.testTag(CategoryItemRowTestTags.pillTag(subcategory)),
                         onClick = {
                             onSelectionChange(subcategory)
                         }

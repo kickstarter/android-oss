@@ -106,13 +106,14 @@ fun FilterMenuBottomSheet(
 
             KSSearchBottomSheetFooter(
                 modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
-                resetOnclickAction = {
+                leftButtonClickAction = {
                     projStatus.value = null
                     onApply(projStatus.value, false)
                 },
-                onApply = {
+                rightButtonOnClickAction = {
                     onApply(projStatus.value, true)
-                }
+                },
+                leftButtonText = stringResource(R.string.Reset_all_filters)
             )
         }
     }
@@ -133,7 +134,7 @@ private fun ProjectStatusRow(
     val pillOptions = listOf(
         null to stringResource(R.string.Project_status_all),
         DiscoveryParams.State.LIVE to stringResource(R.string.Project_status_live),
-        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_status_late_pledges),
+        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_status_late_pledge),
         DiscoveryParams.State.UPCOMING to stringResource(R.string.Project_status_upcoming),
         DiscoveryParams.State.SUCCESSFUL to stringResource(R.string.Project_status_successful)
     )

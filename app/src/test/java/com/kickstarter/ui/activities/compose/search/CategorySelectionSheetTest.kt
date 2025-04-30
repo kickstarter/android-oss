@@ -61,7 +61,7 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.ROOTCATEGORY_TITLE, useUnmergedTree = true)
+            .onNodeWithTag(CategoryItemRowTestTags.ROOTCATEGORY_TITLE, useUnmergedTree = true)
             .assertTextEquals(CategoryFactory.artCategory().name())
 
         composeTestRule
@@ -69,15 +69,15 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
             .performClick() // Expand row, performs animation
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.artCategory()))
+            .onNodeWithTag(CategoryItemRowTestTags.pillTag(CategoryFactory.artCategory()))
             .assertTextEquals(context.resources.getString(R.string.Project_status_all))
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.textilesCategory()))
+            .onNodeWithTag(CategoryItemRowTestTags.pillTag(CategoryFactory.textilesCategory()))
             .assertTextEquals(CategoryFactory.textilesCategory().name())
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.digitalArtCategory()))
+            .onNodeWithTag(CategoryItemRowTestTags.pillTag(CategoryFactory.digitalArtCategory()))
             .assertTextEquals(CategoryFactory.digitalArtCategory().name())
 
         assertEquals(selectedCategory, CategoryFactory.artCategory())
@@ -101,9 +101,49 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithTag(CategorySelectionTestTags.pillTag(CategoryFactory.digitalArtCategory()), useUnmergedTree = true)
+            .onNodeWithTag(CategoryItemRowTestTags.pillTag(CategoryFactory.digitalArtCategory()), useUnmergedTree = true)
             .performClick()
 
         assertEquals(selectedCategory, CategoryFactory.digitalArtCategory())
+    }
+
+    @Test
+    fun `reset button behaviour on CategoryScreen`() {
+        var selectedCategory: Category? = null
+        composeTestRule.setContent {
+            KSTheme {
+                CategorySelectionSheet(
+                    currentCategory = CategoryFactory.artCategory(),
+                    categories = CategoryFactory.rootCategories(),
+                    onDismiss = {
+                    },
+                    onApply = { selected, from ->
+                        selectedCategory = selected
+                    },
+                    isLoading = false,
+                    shouldShowPhase2 = false
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Reset_all_filters)) // - This text applies only on SearchScreen
+            .assertDoesNotExist()
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Reset_filters))
+            .assertExists()
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.See_results))
+            .performClick()
+
+        assertEquals(selectedCategory, CategoryFactory.artCategory())
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Reset_filters))
+            .performClick()
+
+        assertNull(selectedCategory)
     }
 }

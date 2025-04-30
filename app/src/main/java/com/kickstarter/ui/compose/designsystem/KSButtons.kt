@@ -187,7 +187,7 @@ fun KSSearchToolbarButtons() {
             IconPillButton(type = FilterRowPillType.SORT, isSelected = false)
             IconPillButton(type = FilterRowPillType.SORT, isSelected = true)
             IconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
-            IconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
+            IconPillButton(type = FilterRowPillType.FILTER, isSelected = false)
             IconPillButton(type = FilterRowPillType.SORT, isSelected = true, count = 3)
             IconPillButton(type = FilterRowPillType.SORT, isSelected = false, count = 3)
             IconPillButton(type = FilterRowPillType.FILTER, isSelected = true, count = 3)

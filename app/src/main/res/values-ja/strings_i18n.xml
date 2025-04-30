@@ -518,6 +518,7 @@
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">プレッジでプロジェクトに生命を。</string>
   <string name="Pledge_details" formatted="false">プレッジ詳細</string>
   <string name="Pledge_in_full" formatted="false">一括払いのプレッジ</string>
+  <string name="Pledge_label" formatted="false">プレッジ</string>
   <string name="Pledge_management" formatted="false">プレッジ管理</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">ここにバックした全プロジェクトが表示されます。</string>
@@ -550,7 +551,7 @@
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
   <string name="Project_status" formatted="false">プロジェクトのステータス</string>
   <string name="Project_status_all" formatted="false">すべて</string>
-  <string name="Project_status_late_pledges" formatted="false">遅延プレッジ</string>
+  <string name="Project_status_late_pledge" formatted="false">遅延プレッジ</string>
   <string name="Project_status_live" formatted="false">ライブ</string>
   <string name="Project_status_successful" formatted="false">成功済</string>
   <string name="Project_status_upcoming" formatted="false">今後登場予定</string>
@@ -599,6 +600,7 @@
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
   <string name="Resend_email" formatted="false">メールを再送</string>
   <string name="Resend_verification_email" formatted="false">認証メールをもう一度送信</string>
+  <string name="Reset_all_filters" formatted="false">すべてをリセット</string>
   <string name="Reset_filters" formatted="false">リセット</string>
   <string name="Reset_your_password" formatted="false">パスワードをリセット</string>
   <string name="Retry" formatted="false">もう一度試す</string>

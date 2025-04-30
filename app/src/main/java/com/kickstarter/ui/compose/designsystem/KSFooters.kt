@@ -153,8 +153,12 @@ enum class BottomSheetFooterTestTags {
 fun KSSearchBottomSheetFooter(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    resetOnclickAction: () -> Unit = {},
-    onApply: () -> Unit = {}
+    leftButtonIsEnabled: Boolean = true,
+    rightButtonIsEnabled: Boolean = true,
+    leftButtonClickAction: () -> Unit = {},
+    rightButtonOnClickAction: () -> Unit = {},
+    leftButtonText: String = stringResource(R.string.Reset_filters),
+    rightButtonText: String = stringResource(R.string.See_results)
 ) {
 
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -186,10 +190,10 @@ fun KSSearchBottomSheetFooter(
                 backgroundColor = colors.backgroundSurfacePrimary,
                 textColor = colors.textPrimary,
                 onClickAction = {
-                    resetOnclickAction.invoke()
+                    leftButtonClickAction.invoke()
                 },
-                text = stringResource(R.string.Reset_filters),
-                isEnabled = !isLoading
+                text = leftButtonText,
+                isEnabled = !isLoading && leftButtonIsEnabled
             )
             KSButton(
                 modifier = Modifier
@@ -198,12 +202,12 @@ fun KSSearchBottomSheetFooter(
                 backgroundColor = colors.kds_black,
                 textColor = colors.kds_white,
                 onClickAction = {
-                    onApply.invoke()
+                    rightButtonOnClickAction.invoke()
                 },
                 shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-                text = stringResource(R.string.See_results),
+                text = rightButtonText,
                 textStyle = typographyV2.buttonLabel,
-                isEnabled = !isLoading,
+                isEnabled = !isLoading && rightButtonIsEnabled
             )
         }
     }

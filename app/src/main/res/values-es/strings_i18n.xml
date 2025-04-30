@@ -521,6 +521,7 @@ Toca para intentar de nuevo.</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
   <string name="Pledge_details" formatted="false">Detalles de la contribución</string>
   <string name="Pledge_in_full" formatted="false">Contribución total</string>
+  <string name="Pledge_label" formatted="false">Contribución</string>
   <string name="Pledge_management" formatted="false">Gestión de contribución</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Haz contribuciones a proyectos y revisa todos tus proyectos guardados y patrocinados - todo en un mismo lugar.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Patrocina tus favoritos y ve todos tus proyectos en un solo lugar.</string>
@@ -553,7 +554,7 @@ Toca para intentar de nuevo.</string>
   <string name="Project_saved" formatted="false">Proyecto guardado.</string>
   <string name="Project_status" formatted="false">Estado del proyecto</string>
   <string name="Project_status_all" formatted="false">Todos</string>
-  <string name="Project_status_late_pledges" formatted="false">Contribuciones tardías</string>
+  <string name="Project_status_late_pledge" formatted="false">Contribución tardía</string>
   <string name="Project_status_live" formatted="false">Activo</string>
   <string name="Project_status_successful" formatted="false">Exitoso</string>
   <string name="Project_status_upcoming" formatted="false">Próximamente</string>
@@ -601,6 +602,7 @@ Toca para intentar de nuevo.</string>
   <string name="Request_my_personal_data" formatted="false">Solicitar mis datos personales</string>
   <string name="Resend_email" formatted="false">Reenviar correo</string>
   <string name="Resend_verification_email" formatted="false">Volver a enviar correo electrónico de verificación</string>
+  <string name="Reset_all_filters" formatted="false">Restablecer todo</string>
   <string name="Reset_filters" formatted="false">Restablecer</string>
   <string name="Reset_your_password" formatted="false">Restablece tu contraseña</string>
   <string name="Retry" formatted="false">Volver a intentar</string>

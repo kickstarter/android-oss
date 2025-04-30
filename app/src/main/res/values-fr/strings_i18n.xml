@@ -521,6 +521,7 @@ n\'ont rien soutenu.</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_details" formatted="false">Détails de mon engagement</string>
   <string name="Pledge_in_full" formatted="false">Engagement intégral</string>
+  <string name="Pledge_label" formatted="false">Contribution</string>
   <string name="Pledge_management" formatted="false">Gestion des engagements</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Soutenez des projets et consultez la liste de vos projets enregistrés et soutenus.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Engagez-vous à soutenir vos préférés, puis redécouvrez-les tous ici.</string>
@@ -553,7 +554,7 @@ n\'ont rien soutenu.</string>
   <string name="Project_saved" formatted="false">Projet enregistré.</string>
   <string name="Project_status" formatted="false">État d\'avancement du projet</string>
   <string name="Project_status_all" formatted="false">Tout</string>
-  <string name="Project_status_late_pledges" formatted="false">Contributions tardives</string>
+  <string name="Project_status_late_pledge" formatted="false">Contribution tardive</string>
   <string name="Project_status_live" formatted="false">En cours</string>
   <string name="Project_status_successful" formatted="false">Intégralement financé</string>
   <string name="Project_status_upcoming" formatted="false">Bientôt en ligne</string>
@@ -601,6 +602,7 @@ n\'ont rien soutenu.</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
   <string name="Resend_email" formatted="false">Renvoyer</string>
   <string name="Resend_verification_email" formatted="false">Renvoyer l\'e-mail de vérification</string>
+  <string name="Reset_all_filters" formatted="false">Tout réinitialiser</string>
   <string name="Reset_filters" formatted="false">Réinitialiser</string>
   <string name="Reset_your_password" formatted="false">Réinitialiser votre mot de passe</string>
   <string name="Retry" formatted="false">Réessayer</string>

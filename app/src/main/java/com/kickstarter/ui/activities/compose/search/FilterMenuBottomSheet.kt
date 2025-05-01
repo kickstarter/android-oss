@@ -42,7 +42,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.PillButton
-import timber.log.Timber
 
 object FilterMenuTestTags {
     const val SHEET = "filter_menu_sheet"
@@ -107,13 +106,14 @@ fun FilterMenuBottomSheet(
 
             KSSearchBottomSheetFooter(
                 modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
-                resetOnclickAction = {
+                leftButtonClickAction = {
                     projStatus.value = null
                     onApply(projStatus.value, false)
                 },
-                onApply = {
+                rightButtonOnClickAction = {
                     onApply(projStatus.value, true)
-                }
+                },
+                leftButtonText = stringResource(R.string.Reset_all_filters)
             )
         }
     }
@@ -134,7 +134,7 @@ private fun ProjectStatusRow(
     val pillOptions = listOf(
         null to stringResource(R.string.Project_status_all),
         DiscoveryParams.State.LIVE to stringResource(R.string.Project_status_live),
-        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_status_late_pledges),
+        DiscoveryParams.State.LATE_PLEDGES to stringResource(R.string.Project_status_late_pledge),
         DiscoveryParams.State.UPCOMING to stringResource(R.string.Project_status_upcoming),
         DiscoveryParams.State.SUCCESSFUL to stringResource(R.string.Project_status_successful)
     )
@@ -170,7 +170,6 @@ private fun ProjectStatusRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 pillOptions.forEach { (state, label) ->
-                    Timber.d("*****${FilterMenuTestTags.pillTag(state)}")
                     PillButton(
                         text = label,
                         shouldShowIcon = false,

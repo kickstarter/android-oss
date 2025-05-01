@@ -17,12 +17,16 @@ class Activity internal constructor(
     private val project: Project?,
     private val update: Update?,
     private val updatedAt: DateTime?,
+    private val trackingNumber: String?,
+    private val trackingUrl: String?,
     private val user: User?
 ) : Parcelable {
     fun category() = this.category
     fun createdAt() = this.createdAt
     fun id() = this.id
     fun project() = this.project
+    fun trackingNumber() = this.trackingNumber
+    fun trackingUrl() = this.trackingUrl
     fun update() = this.update
     fun updatedAt() = this.updatedAt
     fun user() = this.user
@@ -33,6 +37,8 @@ class Activity internal constructor(
         private var createdAt: DateTime = DateTime.now(),
         private var id: Long = 0L,
         private var project: Project? = null,
+        private var trackingNumber: String? = "",
+        private var trackingUrl: String? = "",
         private var update: Update? = null,
         private var updatedAt: DateTime? = null,
         private var user: User? = null
@@ -41,6 +47,8 @@ class Activity internal constructor(
         fun createdAt(createdAt: DateTime?) = apply { createdAt?.let { this.createdAt = it } }
         fun id(id: Long?) = apply { this.id = id ?: 0L }
         fun project(project: Project?) = apply { this.project = project }
+        fun trackingNumber(trackingNumber: String?) = apply { this.trackingNumber = trackingNumber }
+        fun trackingUrl(trackingUrl: String?) = apply { this.trackingUrl = trackingUrl }
         fun update(update: Update?) = apply { this.update = update }
         fun updatedAt(updatedAt: DateTime?) = apply { this.updatedAt = updatedAt }
         fun user(user: User?) = apply { this.user = user }
@@ -49,6 +57,8 @@ class Activity internal constructor(
             createdAt = createdAt,
             id = id,
             project = project,
+            trackingNumber = trackingNumber,
+            trackingUrl = trackingUrl,
             update = update,
             updatedAt = updatedAt,
             user = user
@@ -60,6 +70,8 @@ class Activity internal constructor(
         createdAt = createdAt,
         id = id,
         project = project,
+        trackingNumber = trackingNumber,
+        trackingUrl = trackingUrl,
         update = update,
         updatedAt = updatedAt,
         user = user
@@ -72,6 +84,8 @@ class Activity internal constructor(
                 createdAt() == other.createdAt() &&
                 id() == other.id() &&
                 project() == other.project() &&
+                trackingNumber() == other.trackingNumber() &&
+                trackingUrl() == other.trackingUrl() &&
                 update() == other.update() &&
                 updatedAt() == other.updatedAt() &&
                 user() == other.user()
@@ -101,7 +115,8 @@ class Activity internal constructor(
         CATEGORY_BACKING_REWARD,
         CATEGORY_BACKING_AMOUNT,
         CATEGORY_COMMENT_PROPOSAL,
-        CATEGORY_FOLLOW
+        CATEGORY_FOLLOW,
+        CATEGORY_SHIPPED,
     )
     annotation class Category
 
@@ -132,6 +147,7 @@ class Activity internal constructor(
         const val CATEGORY_BACKING_REWARD = "backing-reward"
         const val CATEGORY_BACKING_AMOUNT = "backing-amount"
         const val CATEGORY_COMMENT_PROPOSAL = "comment-proposal"
+        const val CATEGORY_SHIPPED = "shipped"
         const val CATEGORY_FOLLOW = "follow"
     }
 }

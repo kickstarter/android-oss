@@ -457,24 +457,38 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         project.backing()?.let { backing ->
             val backingData = when (pledgeReason) {
                 PledgeReason.UPDATE_PAYMENT -> {
-                    // - Update payment should NOT send amounts
-                    val locationId = backing.locationId() ?: 0
-                    val rwl = mutableListOf<Reward>()
-                    backing.reward()?.let {
-                        rwl.add(it)
-                    }
-                    backing.addOns()?.let {
-                        rwl.addAll(RewardUtils.extendAddOns(it))
-                    }
+                    if (project.isPledgeOverTimeAllowed().isTrue()) {
+                        // PLOT projects: Only send the payment method
+                        // Backend expects NO amount, NO rewards, NO location — sending any of these
+                        // may result in 'Feature unavailable' error.
+                        getUpdateBackingData(
+                            backing,
+                            amount = null,
+                            locationId = null,
+                            rewardsList = null,
+                            pMethod = selectedPaymentMethod
+                        )
+                    } else {
+                        // Non-PLOT: send the payment method, locationId, and rewards
+                        val locationId = backing.locationId()?.toString()
+                        val rwl = mutableListOf<Reward>()
+                        backing.reward()?.let {
+                            rwl.add(it)
+                        }
+                        backing.addOns()?.let {
+                            rwl.addAll(RewardUtils.extendAddOns(it))
+                        }
 
-                    getUpdateBackingData(
-                        backing,
-                        null,
-                        locationId.toString(),
-                        rwl,
-                        selectedPaymentMethod
-                    )
+                        getUpdateBackingData(
+                            backing,
+                            amount = null,
+                            locationId = locationId,
+                            rwl,
+                            pMethod = selectedPaymentMethod
+                        )
+                    }
                 }
+
                 PledgeReason.UPDATE_REWARD,
                 PledgeReason.UPDATE_PLEDGE -> {
                     // - Update Reward/Pledge should send ALL newly selected rewards/Locations

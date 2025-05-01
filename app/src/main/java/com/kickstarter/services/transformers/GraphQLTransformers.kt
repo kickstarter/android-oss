@@ -395,6 +395,9 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val watchesCount = projectFragment?.watchesCount ?: 0
     val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
     val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled ?: false
+    val pledgeOverTimeCollectionPlanChargeExplanation = projectFragment?.pledgeOverTimeCollectionPlanChargeExplanation ?: ""
+    val pledgeOverTimeCollectionPlanShortPitch = projectFragment?.pledgeOverTimeCollectionPlanShortPitch ?: ""
+    val pledgeOverTimeCollectionPlanChargedAsNPayments = projectFragment?.pledgeOverTimeCollectionPlanChargedAsNPayments ?: ""
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -456,6 +459,9 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
         .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
         .pledgeOverTimeMinimumExplanation(pledgeOverTimeMinimumExplanation)
+        .pledgeOverTimeCollectionPlanChargeExplanation(pledgeOverTimeCollectionPlanChargeExplanation)
+        .pledgeOverTimeCollectionPlanShortPitch(pledgeOverTimeCollectionPlanShortPitch)
+        .pledgeOverTimeCollectionPlanChargedAsNPayments(pledgeOverTimeCollectionPlanChargedAsNPayments)
         .build()
 }
 

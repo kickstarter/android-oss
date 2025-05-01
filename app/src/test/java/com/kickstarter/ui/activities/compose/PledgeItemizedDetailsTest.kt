@@ -301,4 +301,35 @@ class PledgeItemizedDetailsTest : KSRobolectricTestCase() {
         plotSelectedBadge.assertIsDisplayed()
         plotSelectedBadge.assertTextEquals(context.getString(R.string.Pledge_Over_Time))
     }
+
+    @Test
+    fun `test pledge over time charged text, when plot selected and pledgeOverTimeCollectionPlanChargedAsNPayments provided`() {
+        val rewardsList = listOf(Pair("T-shirt", "$22"))
+        val pledgeOverTimeChargeText = "You will be charged in 4 payments."
+
+        composeTestRule.setContent {
+            KSTheme {
+                ItemizedRewardListContainer(
+                    ksString = null,
+                    rewardsList = rewardsList,
+                    shippingAmount = 0.0,
+                    shippingAmountString = "",
+                    initialShippingLocation = "",
+                    totalAmount = "100$",
+                    totalAmountCurrencyConverted = "",
+                    initialBonusSupport = "0",
+                    totalBonusSupport = "0",
+                    deliveryDateString = "",
+                    rewardsHaveShippables = false,
+                    disclaimerText = "",
+                    plotSelected = true,
+                    pledgeOverTimeCollectionPlanChargedAsNPayments = pledgeOverTimeChargeText
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(PledgeItemizedDetailsTestTag.PLOT_CHARGED_TEXT.name)
+            .assertIsDisplayed()
+            .assertTextEquals(pledgeOverTimeChargeText)
+    }
 }

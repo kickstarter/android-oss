@@ -314,7 +314,6 @@ fun Activity.startDisclaimerChromeTab(disclaimerItem: DisclaimerItems, environme
 
     ChromeTabsHelperActivity.openCustomTab(this, UrlUtils.baseCustomTabsIntent(this), uri, fallback)
 }
-
 fun Activity.startCreatorMessageActivity(project: Project, previousScreen: MessagePreviousScreenType) {
     startActivity(
         Intent(this, MessagesActivity::class.java)

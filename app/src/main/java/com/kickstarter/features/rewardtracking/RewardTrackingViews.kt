@@ -2,6 +2,7 @@ package com.kickstarter.features.rewardtracking
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,7 +41,6 @@ fun RewardTrackingActivityPreview() {
             trackingNumber = "123291242342",
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
             projectName = "This is a project name",
-            publishedAt = "2 days ago",
         )
     }
 }
@@ -62,14 +63,17 @@ fun RewardTrackingActivityFeed(
     trackingNumber: String,
     photo: Photo? = null,
     projectName: String,
-    publishedAt: String,
+    projectClicked: () -> Unit = {},
+    trackingButtonEnabled: Boolean = false,
+    trackShipmentClicked: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
         ProjectInfoHeader(
             photo = photo,
-            projectName = projectName
+            projectName = projectName,
+            projectClicked = projectClicked,
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
@@ -80,17 +84,13 @@ fun RewardTrackingActivityFeed(
 
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
-        Text(
-            text = publishedAt,
-            style = typographyV2.bodyBoldXXS,
-            color = colors.textSecondary
-        )
-
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
         RewardTrackingModal(
             trackingNumber,
             RewardTrackingPageType.ACTIVITY_FEED,
+            trackShipmentClicked,
+            trackingButtonEnabled
         )
     }
 }
@@ -118,13 +118,14 @@ fun RewardTrackingViewYourPledge(
 fun RewardTrackingModal(
     trackingNumber: String,
     pageType: RewardTrackingPageType,
-    onClick: () -> Unit = {},
+    trackShipmentClicked: () -> Unit = {},
+    trackingButtonEnabled: Boolean = false,
 ) {
     Column {
         Row {
             TextWithStartIcon(
                 modifier = Modifier,
-                text = stringResource(id = R.string.fpo_your_reward_has_shipped),
+                text = stringResource(id = R.string.Your_reward_has_shipped),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_shipping),
                 style = when (pageType) {
                     RewardTrackingPageType.VIEW_YOUR_PLEDGE -> typographyV2.headingMD
@@ -140,7 +141,7 @@ fun RewardTrackingModal(
         Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
 
         Text(
-            text = stringResource(R.string.fpo_tracking_number).format(key1 = "tracking_number", value1 = trackingNumber),
+            text = stringResource(R.string.Tracking_number).format(key1 = "number", value1 = trackingNumber),
             style = typographyV2.bodyMD,
             color = colors.textSecondary
         )
@@ -148,14 +149,14 @@ fun RewardTrackingModal(
         Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 
         KSButton(
-            modifier = Modifier,
+            modifier = Modifier.testTag(RewardTrackingTestTag.TRACK_SHIPMENT_BUTTON.name),
             backgroundColor = colors.kds_black,
             textColor = colors.kds_white,
-            onClickAction = onClick,
+            onClickAction = trackShipmentClicked,
             shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-            text = stringResource(R.string.fpo_track_shipment),
+            text = stringResource(R.string.Track_shipment),
             textStyle = typographyV2.buttonLabel,
-            isEnabled = true
+            isEnabled = trackingButtonEnabled
         )
     }
 }
@@ -164,9 +165,11 @@ fun RewardTrackingModal(
 fun ProjectInfoHeader(
     photo: Photo?,
     projectName: String,
+    projectClicked: () -> Unit = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { projectClicked.invoke() }.testTag(RewardTrackingTestTag.PROJECT_CARD_MODAL.name)
     ) {
         KSAsyncImage(
             image = photo,
@@ -183,6 +186,10 @@ fun ProjectInfoHeader(
             color = colors.textPrimary
         )
     }
+}
+enum class RewardTrackingTestTag(name: String) {
+    TRACK_SHIPMENT_BUTTON("track_shipment_button"),
+    PROJECT_CARD_MODAL("project_card_modal")
 }
 
 enum class RewardTrackingPageType(name: String) {

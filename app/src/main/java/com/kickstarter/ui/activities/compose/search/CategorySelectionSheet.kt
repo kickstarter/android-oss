@@ -1,9 +1,18 @@
 package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +31,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -40,6 +51,36 @@ import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.PillButton
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun CategoryRowSelectedWithSubcategoriesPills() {
+    KSTheme {
+        CategoryItemRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            category = CategoryFactory.artCategory(),
+            selectedCategory = CategoryFactory.ceramicsCategory(),
+            onSelectionChange = {},
+            subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun CategoryRowUnSelected() {
+    KSTheme {
+        CategoryItemRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            category = CategoryFactory.artCategory(),
+            onSelectionChange = {},
+            subcategories = listOf(CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory())
+        )
+    }
+}
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -47,7 +88,8 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 private fun CategorySelectionSheetPreviewPhase2Off() {
     KSTheme {
         CategorySelectionSheet(
-            categories = CategoryFactory.rootCategories(),
+            currentCategory = CategoryFactory.textilesCategory(),
+            categories = listOf(CategoryFactory.tabletopGamesCategory(), CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory(), CategoryFactory.worldMusicCategory()),
             onDismiss = {},
             onApply = { a, b -> },
             isLoading = false,
@@ -62,7 +104,8 @@ private fun CategorySelectionSheetPreviewPhase2Off() {
 private fun CategorySelectionSheetPreviewPhase2On() {
     KSTheme {
         CategorySelectionSheet(
-            categories = CategoryFactory.rootCategories(),
+            currentCategory = CategoryFactory.artCategory(),
+            categories = listOf(CategoryFactory.tabletopGamesCategory(), CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory(), CategoryFactory.worldMusicCategory()),
             onDismiss = {},
             onApply = { a, b -> },
             isLoading = false,
@@ -83,6 +126,15 @@ fun CategorySelectionSheet(
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
+    val categoryWithSubCats = mutableMapOf<Category, List<Category>>()
+
+    categories.forEach { cat ->
+        cat.parent()?.let { parentCat ->
+            val subcatList = categoryWithSubCats[parentCat]?.toMutableStateList() ?: mutableStateListOf<Category>()
+            subcatList.add(cat)
+            categoryWithSubCats[parentCat] = subcatList.toList()
+        }
+    }
 
     val selectedCategory = remember { mutableStateOf(currentCategory) }
 
@@ -150,32 +202,30 @@ fun CategorySelectionSheet(
                     }
                 } else {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(categories) { category ->
+                        val rootCat = categoryWithSubCats.keys.toList()
+                        items(rootCat) { rootCategory ->
                             CategoryItemRow(
-                                category = category,
-                                isSelected = category.name() == selectedCategory.value?.name(),
-                                onSelectionChange = { isChecked ->
-                                    if (isChecked) {
-                                        selectedCategory.value =
-                                            categories.find { it.name() == category.name() }!!
-                                    }
-
+                                selectedCategory = selectedCategory.value,
+                                category = rootCategory,
+                                onSelectionChange = { category ->
+                                    selectedCategory.value = category
                                     onApply(selectedCategory.value, null)
-                                }
+                                },
+                                subcategories = categoryWithSubCats[rootCategory] ?: emptyList()
                             )
                         }
                     }
                 }
 
-                val resetCategoryName = stringResource(R.string.Category)
                 KSSearchBottomSheetFooter(
                     isLoading = isLoading,
-                    resetOnclickAction = {
+                    leftButtonIsEnabled = selectedCategory.value != null,
+                    leftButtonClickAction = {
                         selectedCategory.value = null
                         onApply(selectedCategory.value, false)
                     },
-                    onApply = {
-                        selectedCategory.value?.let { onApply(it, true) }
+                    rightButtonOnClickAction = {
+                        onApply(selectedCategory.value, true)
                     }
                 )
             }
@@ -183,17 +233,31 @@ fun CategorySelectionSheet(
     }
 }
 
+object CategoryItemRowTestTags {
+    const val ROOTCATEGORY_TITLE = "rowcategory_title"
+    const val RADIO_BUTTON = "radio_button"
+    const val SUBCATEGORY_ROW = "subcategory_row"
+    const val ROOTCATEGORY_ROW = "rootcategory_row"
+    fun pillTag(category: Category) = "pill_${category.id()}"
+}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CategoryItemRow(
+    modifier: Modifier = Modifier,
     category: Category,
-    isSelected: Boolean,
-    onSelectionChange: (Boolean) -> Unit,
+    selectedCategory: Category? = null,
+    onSelectionChange: (Category) -> Unit,
+    subcategories: List<Category> = emptyList()
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    Row(
-        modifier = Modifier
+    val isSelected = category.id() == selectedCategory?.id() || category.id() == selectedCategory?.parentId()
+
+    Column(
+        modifier = modifier
+            .testTag(CategoryItemRowTestTags.RADIO_BUTTON)
             .fillMaxWidth()
             .drawBehind {
                 drawLine(
@@ -203,25 +267,65 @@ fun CategoryItemRow(
                     strokeWidth = dimensions.dividerThickness.toPx()
                 )
             }
-            .clickable { onSelectionChange(!isSelected) }
+            .clickable {
+                onSelectionChange(category)
+            }
             .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.testTag(CategoryItemRowTestTags.ROOTCATEGORY_ROW),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                modifier = modifier
+                    .testTag(CategoryItemRowTestTags.ROOTCATEGORY_TITLE)
+                    .weight(1f),
                 color = colors.textPrimary,
                 text = category.name(),
                 style = typographyV2.headingLG
             )
+
+            RadioButton(
+                selected = isSelected,
+                onClick = null,
+                colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
+            )
         }
 
-        RadioButton(
-            selected = isSelected,
-            onClick = null, // null recommended for accessibility with screenreaders
-            colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
-        )
+        AnimatedVisibility(
+            visible = isSelected,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            FlowRow(
+                modifier = Modifier
+                    .testTag(CategoryItemRowTestTags.SUBCATEGORY_ROW)
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                PillButton(
+                    text = stringResource(R.string.Project_status_all),
+                    shouldShowIcon = false,
+                    isSelected = selectedCategory?.isRoot == true,
+                    modifier = Modifier.testTag(CategoryItemRowTestTags.pillTag(category)),
+                    onClick = {
+                        onSelectionChange(category)
+                    }
+                )
+                subcategories.map { subcategory ->
+                    PillButton(
+                        text = subcategory.name(),
+                        shouldShowIcon = false,
+                        isSelected = selectedCategory?.id() == subcategory.id(),
+                        modifier = Modifier.testTag(CategoryItemRowTestTags.pillTag(subcategory)),
+                        onClick = {
+                            onSelectionChange(subcategory)
+                        }
+                    )
+                }
+            }
+        }
     }
 }

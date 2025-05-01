@@ -68,6 +68,7 @@ data class KSDimensions(
     val loadingSpinnerSize: Dp = Dp.Unspecified,
     val pillButtonShapeSize: Dp = Dp.Unspecified,
     val iconPillButtonSize: Dp = Dp.Unspecified,
+    val iconPillButtonSizeLarge: Dp = Dp.Unspecified,
     val linearProgressBarHeight: Dp = Dp.Unspecified,
     val smallProjectCardImageHeight: Dp = Dp.Unspecified,
     val projectCardImageAspectRatio: Float = Float.NaN,
@@ -83,7 +84,7 @@ val LocalKSCustomDimensions = staticCompositionLocalOf {
 }
 
 val KSStandardDimensions = KSDimensions(
-    strokeWidth = 1.dp,
+    strokeWidth = 2.dp,
     dividerThickness = 1.dp,
     paddingXSmall = 4.dp,
     paddingSmall = 8.dp,
@@ -142,6 +143,7 @@ val KSStandardDimensions = KSDimensions(
     loadingSpinnerSize = 24.dp,
     pillButtonShapeSize = 100.dp,
     iconPillButtonSize = 40.dp,
+    iconPillButtonSizeLarge = 70.dp,
     rewardCardImageAspectRatio = 3f / 2f,
     linearProgressBarHeight = 9.dp,
     smallProjectCardImageHeight = 72.dp,

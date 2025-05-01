@@ -31,6 +31,7 @@ open class KSToolbar @JvmOverloads constructor(
     init {
         init(context)
     }
+
     private fun init(context: Context) {
         if (!isInEditMode) {
             backgroundPaint = Paint()
@@ -39,6 +40,7 @@ open class KSToolbar @JvmOverloads constructor(
             webEndpoint = environment().webEndpoint()
         }
     }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (!isInEditMode && webEndpoint != Secrets.WebEndpoint.PRODUCTION) {

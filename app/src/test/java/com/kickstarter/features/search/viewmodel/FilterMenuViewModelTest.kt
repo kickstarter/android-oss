@@ -32,7 +32,7 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(
                 object : MockApolloClientV2() {
-                    override suspend fun getRootCategories(): Result<List<Category>> {
+                    override suspend fun getCategories(): Result<List<Category>> {
                         return Result.success(CategoryFactory.rootCategories())
                     }
                 }).build()
@@ -62,7 +62,7 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(
                 object : MockApolloClientV2() {
-                    override suspend fun getRootCategories(): Result<List<Category>> {
+                    override suspend fun getCategories(): Result<List<Category>> {
                         return Result.failure(Exception())
                     }
                 }).build()

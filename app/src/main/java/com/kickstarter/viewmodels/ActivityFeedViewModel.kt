@@ -7,13 +7,16 @@ import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.ApiPaginatorV2
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Activity
+import com.kickstarter.models.Activity.Companion.CATEGORY_SHIPPED
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
@@ -27,6 +30,7 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
+import com.kickstarter.ui.viewholders.RewardShippedViewHolder
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -78,6 +82,9 @@ interface ActivityFeedViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.UpdateActivity].  */
         fun startUpdateActivity(): Observable<Activity>
 
+        /** Emits when we should open the browser to view shipment tracking.  */
+        fun trackShipmentClicked(): Observable<String>
+
         /** Emits a list of unanswered surveys to be shown in the user's activity feed  */
         fun surveys(): Observable<List<SurveyResponse>>
     }
@@ -93,6 +100,7 @@ interface ActivityFeedViewModel {
         private val friendBackingClick = PublishSubject.create<Activity>()
         private val loginClick = PublishSubject.create<Unit>()
         private val managePledgeClicked = PublishSubject.create<String>()
+        private val trackShipmentClicked = PublishSubject.create<String>()
         private val nextPage = PublishSubject.create<Unit>()
         private val projectStateChangedClick = PublishSubject.create<Activity>()
         private val projectStateChangedPositiveClick = PublishSubject.create<Activity>()
@@ -202,7 +210,15 @@ interface ActivityFeedViewModel {
                 .build()
 
             paginator.paginatedData()
-                .subscribe { activityList.onNext(it) }
+                .subscribe {
+                    if (!environment.featureFlagClient()
+                        ?.getBoolean(FlagKey.ANDROID_REWARD_SHIPMENT_TRACKING).isTrue()
+                    ) {
+                        activityList.onNext(it.filter { it.category() != CATEGORY_SHIPPED })
+                    } else {
+                        activityList.onNext(it)
+                    }
+                }
                 .addToDisposable(disposables)
 
             paginator.isFetching
@@ -256,6 +272,18 @@ interface ActivityFeedViewModel {
 
         override fun emptyActivityFeedLoginClicked(viewHolder: EmptyActivityFeedViewHolder?) {
             loginClick.onNext(Unit)
+        }
+
+        override fun projectClicked(viewHolder: RewardShippedViewHolder?, activity: Activity?) {
+            if (activity != null) {
+                projectUpdateProjectClick.onNext(activity)
+            }
+        }
+
+        override fun trackingNumberClicked(
+            url: String
+        ) {
+            trackShipmentClicked.onNext(url)
         }
 
         override fun managePledgeClicked(projectSlug: String) {
@@ -330,6 +358,7 @@ interface ActivityFeedViewModel {
         override fun loggedOutEmptyStateIsVisible(): Observable<Boolean> = loggedOutEmptyStateIsVisible
         override fun startFixPledge(): Observable<String> = startFixPledge
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
+        override fun trackShipmentClicked(): Observable<String> = trackShipmentClicked
         override fun surveys(): Observable<List<SurveyResponse>> = surveys
     }
 

@@ -48,6 +48,72 @@ import com.kickstarter.ui.views.compose.search.PillBarTestTags.pillTag
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarProjectStatusActiveFilterPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            categoryPillText = "Art",
+            projectStatusText = "Live",
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 0,
+                FilterRowPillType.PROJECT_STATUS.name to 1,
+                FilterRowPillType.FILTER.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarCategoryActiveFilterPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            categoryPillText = "Art",
+            projectStatusText = "Live",
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 1,
+                FilterRowPillType.PROJECT_STATUS.name to 0,
+                FilterRowPillType.FILTER.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarAllActiveFiltersPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            categoryPillText = "Art",
+            projectStatusText = "Live",
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 1,
+                FilterRowPillType.PROJECT_STATUS.name to 1,
+                FilterRowPillType.FILTER.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarPreviewPhase2On() {
     KSTheme {
         SearchTopBar(
@@ -223,6 +289,9 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.SORT) }
         )
         if (shouldShowPhase2) {
+            val activeFilters: Int = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0)
+
             IconPillButton(
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),
                 type = FilterRowPillType.FILTER,
@@ -230,7 +299,8 @@ fun PillBar(
                     FilterRowPillType.FILTER.name,
                     0
                 ) > 0,
-                onClick = { onPillPressed(FilterRowPillType.FILTER) }
+                onClick = { onPillPressed(FilterRowPillType.FILTER) },
+                count = activeFilters
             )
         }
         PillButton(

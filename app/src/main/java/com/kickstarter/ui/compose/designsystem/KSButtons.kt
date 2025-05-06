@@ -181,21 +181,36 @@ fun KSSmallButtonsPreview() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSSearchToolbarButtons() {
     KSTheme {
-        Column(
-            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-        ) {
+        KSSearchToolbarButtonsColumn()
+    }
+}
+
+@Composable
+fun KSSearchToolbarButtonsColumn() {
+    Column(
+        modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+    ) {
+        Row {
             KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false)
             KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true)
             KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
             KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = false)
+        }
+        Row {
             KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true, count = 3)
             KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false, count = 3)
             KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = true, count = 3)
             KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = false, count = 3)
+        }
+        Row {
             KSPillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
             KSPillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
+        }
+        Row {
             KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowIcon = false)
             KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowIcon = false)
+        }
+        Row {
             KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
             KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
         }

@@ -38,8 +38,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.models.Photo
-import com.kickstarter.ui.activities.compose.search.CardProjectState
 import com.kickstarter.ui.activities.compose.search.CustomSwitch
 import com.kickstarter.ui.compose.designsystem.FBLoginButton
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
@@ -58,16 +56,14 @@ import com.kickstarter.ui.compose.designsystem.KSGooglePayButton
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSHeadsUpRoundedText
 import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
-import com.kickstarter.ui.compose.designsystem.KSIconPillButton
 import com.kickstarter.ui.compose.designsystem.KSIntercept
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
-import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlueButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
-import com.kickstarter.ui.compose.designsystem.KSProjectCardLarge
-import com.kickstarter.ui.compose.designsystem.KSProjectCardSmall
+import com.kickstarter.ui.compose.designsystem.KSProjectCardsColumn
 import com.kickstarter.ui.compose.designsystem.KSRadioButton
+import com.kickstarter.ui.compose.designsystem.KSSearchToolbarButtonsColumn
 import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryWhiteButton
@@ -87,7 +83,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
-import com.kickstarter.ui.views.compose.search.FilterRowPillType
 import com.kickstarter.utils.WindowInsetsUtil
 
 class DesignSystemActivity : ComponentActivity() {
@@ -1026,168 +1021,15 @@ fun TypographyVisuals() {
 fun PillButtonVisuals() {
     Text(text = "Pill Buttons", style = typographyV2.title1Bold, color = colors.kds_support_700)
     Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
-    Column(
-        modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-    ) {
-        Row {
-            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false)
-            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true)
-            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
-            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = false)
-        }
-        Row {
-            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true, count = 3)
-            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false, count = 3)
-            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = true, count = 3)
-            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = false, count = 3)
-        }
-        Row {
-            KSPillButton(
-                countApiIsReady = false,
-                text = "Category",
-                isSelected = false,
-                count = 0,
-                onClick = {}
-            )
-            KSPillButton(
-                countApiIsReady = false,
-                text = "Art",
-                isSelected = true,
-                count = 0,
-                onClick = {}
-            )
-        }
-        Row {
-            KSPillButton(
-                countApiIsReady = true,
-                text = "Late Pledges",
-                isSelected = false,
-                count = 30,
-                onClick = {},
-                shouldShowIcon = false
-            )
-            KSPillButton(
-                countApiIsReady = true,
-                text = "Late Pledges",
-                isSelected = true,
-                count = 30,
-                onClick = {},
-                shouldShowIcon = false
-            )
-        }
-        Row {
-            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
-            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
-        }
-    }
+    KSSearchToolbarButtonsColumn()
 }
 
 @Composable
 fun ProjectCardVisuals() {
     Column {
         Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)
-
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
-
-        Column(
-            Modifier
-                .background(color = colors.kds_white)
-                .fillMaxWidth()
-                .padding(dimensions.paddingSmall)
-        ) {
-            KSProjectCardLarge(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
-                state = CardProjectState.LIVE,
-                fundingInfoString = "4 days to go • 50% funded",
-                fundedPercentage = 50,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardLarge(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.LATE_PLEDGES_ACTIVE,
-                fundingInfoString = "Late pledges active",
-                fundedPercentage = 100,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardLarge(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.LAUNCHING_SOON,
-                fundingInfoString = "Launching soon",
-                fundedPercentage = 0,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardLarge(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.ENDED_SUCCESSFUL,
-                fundingInfoString = "Ended",
-                fundedPercentage = 100,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardLarge(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.ENDED_UNSUCCESSFUL,
-                fundingInfoString = "Ended",
-                fundedPercentage = 50,
-                onClick = {}
-            )
-
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingMedium))
-
-            KSProjectCardSmall(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck Cat Themed Pawker Deck",
-                state = CardProjectState.LIVE,
-                fundingInfoString = "4 days to go • 50% funded",
-                fundedPercentage = 50,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardSmall(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.LATE_PLEDGES_ACTIVE,
-                fundingInfoString = "Late pledges active",
-                fundedPercentage = 100,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardSmall(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.LAUNCHING_SOON,
-                fundingInfoString = "Launching soon",
-                fundedPercentage = 0,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardSmall(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.ENDED_SUCCESSFUL,
-                fundingInfoString = "Ended",
-                fundedPercentage = 100,
-                onClick = {}
-            )
-            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
-            KSProjectCardSmall(
-                photo = Photo.builder().altText("").full("").build(),
-                title = "Cat Themed Pawker Deck",
-                state = CardProjectState.ENDED_UNSUCCESSFUL,
-                fundingInfoString = "Ended",
-                fundedPercentage = 50,
-                onClick = {}
-            )
-        }
-
+        KSProjectCardsColumn()
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
     }
 }

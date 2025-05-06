@@ -47,11 +47,11 @@ import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.compose.designsystem.PillButton
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -305,7 +305,7 @@ fun CategoryItemRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                PillButton(
+                KSPillButton(
                     text = stringResource(R.string.Project_status_all),
                     shouldShowIcon = false,
                     isSelected = selectedCategory?.isRoot == true,
@@ -315,7 +315,7 @@ fun CategoryItemRow(
                     }
                 )
                 subcategories.map { subcategory ->
-                    PillButton(
+                    KSPillButton(
                         text = subcategory.name(),
                         shouldShowIcon = false,
                         isSelected = selectedCategory?.id() == subcategory.id(),

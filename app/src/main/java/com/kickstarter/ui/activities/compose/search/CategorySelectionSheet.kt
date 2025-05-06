@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
@@ -47,6 +45,7 @@ import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -159,18 +158,14 @@ fun CategorySelectionSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (shouldShowPhase2) {
-                        IconButton(
+                        KSIconButton(
                             onClick = onNavigate,
                             modifier = Modifier
-                                .padding(start = dimensions.paddingSmall)
-                                .testTag(SearchScreenTestTag.BACK_BUTTON.name)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(id = R.string.Back),
-                                tint = colors.kds_black
-                            )
-                        }
+                                .padding(end = dimensions.paddingSmall)
+                                .testTag(SearchScreenTestTag.BACK_BUTTON.name),
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.Back)
+                        )
                     }
                     Text(
                         text = stringResource(R.string.Category),
@@ -180,12 +175,12 @@ fun CategorySelectionSheet(
                         else Modifier.weight(1f).padding(start = dimensions.paddingMediumLarge),
                         color = colors.textPrimary
                     )
-                    IconButton(
+                    KSIconButton(
                         modifier = Modifier.testTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name),
-                        onClick = onDismiss
-                    ) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close", tint = colors.icon)
-                    }
+                        onClick = onDismiss,
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close)
+                    )
                 }
 
                 if (isLoading) {

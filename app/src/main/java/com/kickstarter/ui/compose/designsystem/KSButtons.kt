@@ -24,6 +24,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
@@ -190,6 +191,9 @@ fun KSSearchToolbarButtonsColumn() {
     Column(
         modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
     ) {
+        Row {
+            KSIconButton(onClick = {}, imageVector = Icons.Filled.Close)
+        }
         Row {
             KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false)
             KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true)
@@ -390,7 +394,7 @@ fun KSFacebookButton(
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSIconButton(
+        KSIconTextButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
@@ -409,7 +413,7 @@ fun KSGooglePayButton(
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSIconButton(
+        KSIconTextButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
@@ -420,7 +424,7 @@ fun KSGooglePayButton(
 }
 
 @Composable
-fun KSIconButton(
+fun KSIconTextButton(
     modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     isEnabled: Boolean,
@@ -555,6 +559,23 @@ fun KSSmallButton(
             color = if (isEnabled) textColor else colors.textAccentGrey,
             style = typographyV2.buttonLabel
         )
+    }
+}
+
+@Composable
+fun KSIconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    imageVector: ImageVector = Icons.Filled.Close,
+    enabled: Boolean = true,
+    contentDescription: String? = null
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = onClick,
+        enabled = enabled,
+    ) {
+        Icon(imageVector = imageVector, contentDescription = contentDescription, tint = colors.icon)
     }
 }
 

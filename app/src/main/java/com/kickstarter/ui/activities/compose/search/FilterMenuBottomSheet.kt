@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSPillButton
@@ -106,6 +107,7 @@ fun FilterMenuBottomSheet(
 
             KSSearchBottomSheetFooter(
                 modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
+                leftButtonIsEnabled = projStatus.value.isNotNull(),
                 leftButtonClickAction = {
                     projStatus.value = null
                     onApply(projStatus.value, false)

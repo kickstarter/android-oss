@@ -376,14 +376,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Filled,
+            type = KSButtonType.FILLED,
             text = "Filled",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Filled,
+            type = KSButtonType.FILLED,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -391,14 +391,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Filled,
+            type = KSButtonType.FILLED,
             text = "Disabled",
             isEnabled = false,
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Filled,
+            type = KSButtonType.FILLED,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -409,14 +409,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Green,
+            type = KSButtonType.GREEN,
             text = "Green",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Green,
+            type = KSButtonType.GREEN,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -424,7 +424,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Green,
+            type = KSButtonType.GREEN,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -432,7 +432,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Green,
+            type = KSButtonType.GREEN,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -443,14 +443,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledInverted,
+            type = KSButtonType.FILLED_INVERTED,
             text = "Inverted",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledInverted,
+            type = KSButtonType.FILLED_INVERTED,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -458,7 +458,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledInverted,
+            type = KSButtonType.FILLED_INVERTED,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -466,7 +466,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledInverted,
+            type = KSButtonType.FILLED_INVERTED,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -477,14 +477,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledDestructive,
+            type = KSButtonType.FILLED_DESTRUCTIVE,
             text = "Destructive",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledDestructive,
+            type = KSButtonType.FILLED_DESTRUCTIVE,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -492,7 +492,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledDestructive,
+            type = KSButtonType.FILLED_DESTRUCTIVE,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -500,7 +500,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.FilledDestructive,
+            type = KSButtonType.FILLED_DESTRUCTIVE,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -511,14 +511,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Borderless,
+            type = KSButtonType.BORDERLESS,
             text = "Borderless",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Borderless,
+            type = KSButtonType.BORDERLESS,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -526,7 +526,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Borderless,
+            type = KSButtonType.BORDERLESS,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -534,7 +534,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Borderless,
+            type = KSButtonType.BORDERLESS,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -544,14 +544,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Outlined,
+            type = KSButtonType.OUTLINED,
             text = "Outlined",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Outlined,
+            type = KSButtonType.OUTLINED,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -559,7 +559,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Outlined,
+            type = KSButtonType.OUTLINED,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -567,7 +567,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.Outlined,
+            type = KSButtonType.OUTLINED,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -578,14 +578,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.OutlinedDestructive,
+            type = KSButtonType.OUTLINED_DESTRUCTIVE,
             text = "Outlined Destructive",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.OutlinedDestructive,
+            type = KSButtonType.OUTLINED_DESTRUCTIVE,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -593,7 +593,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.OutlinedDestructive,
+            type = KSButtonType.OUTLINED_DESTRUCTIVE,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -601,7 +601,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.OutlinedDestructive,
+            type = KSButtonType.OUTLINED_DESTRUCTIVE,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray
@@ -612,14 +612,14 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.BorderlessDestructive,
+            type = KSButtonType.BORDERLESS_DESTRUCTIVE,
             text = "Borderless Destructive",
             imageId = R.drawable.icon_eye_gray
         )
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.BorderlessDestructive,
+            type = KSButtonType.BORDERLESS_DESTRUCTIVE,
             text = "Pressed",
             isPressed = true,
             imageId = R.drawable.icon_eye_gray
@@ -627,7 +627,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.BorderlessDestructive,
+            type = KSButtonType.BORDERLESS_DESTRUCTIVE,
             text = "Disabled",
             isEnabled = false,
             imageId = R.drawable.icon_eye_gray
@@ -635,7 +635,7 @@ fun NewDesignSystemButtonsVisuals() {
         KSButton(
             modifier = Modifier.fillMaxWidth(),
             onClickAction = {},
-            type = KSButtonType.BorderlessDestructive,
+            type = KSButtonType.BORDERLESS_DESTRUCTIVE,
             text = "Loading",
             isLoading = true,
             imageId = R.drawable.icon_eye_gray

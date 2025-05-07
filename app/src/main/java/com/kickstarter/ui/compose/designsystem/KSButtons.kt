@@ -198,6 +198,7 @@ fun KSSearchToolbarButtons() {
             PillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowIcon = false)
             PillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
             PillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
+            PillButton(countApiIsReady = false, text = "% Raised", isSelected = false, count = 0, onClick = {})
         }
     }
 }

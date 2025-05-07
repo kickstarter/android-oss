@@ -56,7 +56,8 @@ object FilterMenuTestTags {
 
 enum class FilterType {
     CATEGORIES,
-    PROJECT_STATUS
+    PROJECT_STATUS,
+    PERCENTAGE_RAISED
 }
 
 @Composable
@@ -65,7 +66,7 @@ fun FilterMenuBottomSheet(
     availableFilters: List<FilterType> = FilterType.values().asList(),
     onDismiss: () -> Unit = {},
     onApply: (DiscoveryParams.State?, Boolean?) -> Unit = { a, b -> },
-    onNavigate: () -> Unit = {}
+    onNavigate: (FilterType) -> Unit = {}
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -88,7 +89,7 @@ fun FilterMenuBottomSheet(
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
-                            onClickAction = onNavigate,
+                            onClickAction = { onNavigate(FilterType.CATEGORIES) },
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
@@ -100,6 +101,12 @@ fun FilterMenuBottomSheet(
                             },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
+                        )
+                        FilterType.PERCENTAGE_RAISED -> FilterRow(
+                            text = titleForFilter(filter),
+                            onClickAction = { onNavigate(FilterType.PERCENTAGE_RAISED) },
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
                     }
                 }
@@ -271,6 +278,7 @@ private fun titleForFilter(filter: FilterType): String {
     return when (filter) {
         FilterType.CATEGORIES -> stringResource(R.string.Category)
         FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
+        FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised_fpo)
     }
 }
 

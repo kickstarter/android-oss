@@ -114,7 +114,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 projectState = projectState
                             )
                         },
-                        shouldShowPhase2 = phase2ff
+                        shouldShowPhase = phase2ff
                     )
                 }
 

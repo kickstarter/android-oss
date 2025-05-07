@@ -62,7 +62,7 @@ fun KSButton(
         KSDarkButtonColors
     }
 
-    val buttonColors = when(type) {
+    val buttonColors = when (type) {
         KSButtonType.FILLED -> filledButtonColors(colors)
         KSButtonType.GREEN -> greenButtonColors(colors)
         KSButtonType.FILLED_INVERTED -> filledInvertedButtonColors(colors)

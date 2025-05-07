@@ -70,7 +70,7 @@ data class KSButtonColors(
     val fbLoginButtonTextColor: Color = Color.Unspecified,
     val fbLoginButtonPressedColor: Color = Color.Unspecified,
 
-    //Icon Colors
+    // Icon Colors
     val iconFilled: Color = Color.Unspecified,
     val iconGreen: Color = Color.Unspecified,
     val iconGreenDisabled: Color = Color.Unspecified,
@@ -174,7 +174,7 @@ val KSDefaultButtonColors = KSButtonColors(
 
 val KSDarkButtonColors = KSButtonColors(
     // Filled Button Colors – reuse common neutral colors
-    filledBackgroundAction =  Color(0xFFFAFAFA),
+    filledBackgroundAction = Color(0xFFFAFAFA),
     filledBackgroundActionPressed = Color(0xFFE0E0E0),
     filledBackgroundActionDisabled = Color(0xFF636363),
     filledTextInverseDisabled = Color(0xFF2C2C2C),

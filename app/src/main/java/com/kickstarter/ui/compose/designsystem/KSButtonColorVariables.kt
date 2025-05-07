@@ -21,7 +21,7 @@ data class ButtonColorVariables(
 @Composable
 fun filledButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = color.filledBackgroundAction,
@@ -42,7 +42,7 @@ fun filledButtonColors(
 @Composable
 fun greenButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = color.greenBackgroundAccentBold,
@@ -63,7 +63,7 @@ fun greenButtonColors(
 @Composable
 fun filledInvertedButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = color.filledInvertedBackgroundSurfacePrimary,
@@ -84,7 +84,7 @@ fun filledInvertedButtonColors(
 @Composable
 fun filledDestructiveButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = color.destructiveBackgroundBold,
@@ -105,7 +105,7 @@ fun filledDestructiveButtonColors(
 @Composable
 fun borderlessButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = Color.Transparent,
@@ -126,7 +126,7 @@ fun borderlessButtonColors(
 @Composable
 fun outlinedButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = Color.Transparent,
@@ -147,7 +147,7 @@ fun outlinedButtonColors(
 @Composable
 fun outlinedDestructiveButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = Color.Transparent,
@@ -168,7 +168,7 @@ fun outlinedDestructiveButtonColors(
 @Composable
 fun borderLessDestructiveButtonColors(
     color: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = Color.Transparent,
@@ -189,7 +189,7 @@ fun borderLessDestructiveButtonColors(
 @Composable
 fun fbLoginButtonColors(
     colors: KSButtonColors,
-) : ButtonColorVariables {
+): ButtonColorVariables {
 
     val buttonColors = ButtonColorVariables(
         backgroundColor = colors.fbLoginButtonBackgroundColor,

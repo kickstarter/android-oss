@@ -116,6 +116,25 @@ fun DesignSystemViewPreview() {
     }
 }
 
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
+@Composable
+fun DesignSystemButtonsV2Preview() {
+    val currentTheme = isSystemInDarkTheme()
+    var darkMode = remember { mutableStateOf(currentTheme) }
+    KSTheme(
+        useDarkTheme = darkMode.value
+    ) {
+        Column(
+            Modifier
+                .background(color = colors.backgroundSurfacePrimary)
+                .padding(all = dimensions.paddingSmall)
+        ) {
+            NewDesignSystemButtonsVisuals()
+        }
+    }
+}
+
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit) {
@@ -141,13 +160,13 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                         )
                     }
                 },
-                backgroundColor = colors.kds_white
+                backgroundColor = colors.backgroundSurfaceSecondary
             )
         }
     ) { padding ->
         LazyColumn(
             Modifier
-                .background(color = colors.kds_support_100)
+                .background(color = colors.backgroundSurfacePrimary)
                 .fillMaxSize()
                 .padding(padding)
                 .clickable(

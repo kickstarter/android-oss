@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
@@ -47,11 +45,12 @@ import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSIconButton
+import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.compose.designsystem.PillButton
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -155,30 +154,26 @@ fun CategorySelectionSheet(
 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
+                    KSIconButton(
                         onClick = onNavigate,
                         modifier = Modifier
-                            .padding(start = dimensions.paddingSmall)
-                            .testTag(SearchScreenTestTag.BACK_BUTTON.name)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.Back),
-                            tint = colors.kds_black
-                        )
-                    }
+                            .padding(end = dimensions.paddingSmall)
+                            .testTag(SearchScreenTestTag.BACK_BUTTON.name),
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.Back)
+                    )
                     Text(
                         text = stringResource(R.string.Category),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
                     )
-                    IconButton(
+                    KSIconButton(
                         modifier = Modifier.testTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name),
-                        onClick = onDismiss
-                    ) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close", tint = colors.icon)
-                    }
+                        onClick = onDismiss,
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close)
+                    )
                 }
 
                 if (isLoading) {
@@ -298,7 +293,7 @@ fun CategoryItemRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                PillButton(
+                KSPillButton(
                     text = stringResource(R.string.Project_status_all),
                     shouldShowIcon = false,
                     isSelected = selectedCategory?.isRoot == true,
@@ -308,7 +303,7 @@ fun CategoryItemRow(
                     }
                 )
                 subcategories.map { subcategory ->
-                    PillButton(
+                    KSPillButton(
                         text = subcategory.name(),
                         shouldShowIcon = false,
                         isSelected = selectedCategory?.id() == subcategory.id(),

@@ -63,6 +63,10 @@ fun KSBadgesPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSBetaBadge()
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+
+            KSCountBadge(4)
         }
     }
 }

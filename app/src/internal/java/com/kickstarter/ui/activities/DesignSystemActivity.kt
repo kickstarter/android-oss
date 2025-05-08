@@ -61,8 +61,9 @@ import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlueButton
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
-import com.kickstarter.ui.compose.designsystem.KSProjectCardsPreview
+import com.kickstarter.ui.compose.designsystem.KSProjectCardsColumn
 import com.kickstarter.ui.compose.designsystem.KSRadioButton
+import com.kickstarter.ui.compose.designsystem.KSSearchToolbarButtonsColumn
 import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryWhiteButton
@@ -82,7 +83,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
-import com.kickstarter.ui.views.compose.search.PillBar
 import com.kickstarter.utils.WindowInsetsUtil
 
 class DesignSystemActivity : ComponentActivity() {
@@ -220,7 +220,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
-                PillBarVisuals()
+                PillButtonVisuals()
 
                 Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
 
@@ -1037,23 +1037,18 @@ fun TypographyVisuals() {
 }
 
 @Composable
-fun PillBarVisuals() {
-    Text(text = "Pill Bar", style = typographyV2.title1Bold, color = colors.kds_support_700)
-    PillBar(
-        selectedFilterCounts = mapOf(),
-        onPillPressed = {}
-    )
+fun PillButtonVisuals() {
+    Text(text = "Pill Buttons", style = typographyV2.title1Bold, color = colors.kds_support_700)
+    Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
+    KSSearchToolbarButtonsColumn()
 }
 
 @Composable
 fun ProjectCardVisuals() {
     Column {
         Text(text = "Project Cards", style = typographyV2.title1Bold, color = colors.kds_support_700)
-
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
-
-        KSProjectCardsPreview()
-
+        KSProjectCardsColumn()
         Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
     }
 }

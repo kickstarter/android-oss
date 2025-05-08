@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
@@ -29,8 +27,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
-import com.kickstarter.type.RaisedBuckets
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.activities.compose.search.PercentageRaisedTestTags.BUCKETS_LIST
+import com.kickstarter.ui.activities.compose.search.PercentageRaisedTestTags.bucketTag
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -43,7 +44,7 @@ private fun CategoryRowSelectedWithSubcategoriesPills() {
     KSTheme {
         PercentageRaisedSheet(
             onNavigate = {},
-            currentPercentage = RaisedBuckets.BUCKET_0,
+            currentPercentage = DiscoveryParams.RAISEDBUCKETS.BUCKET_0,
             onDismiss = {},
             onApply = { bucket, applyAndDismiss ->
             }
@@ -51,11 +52,16 @@ private fun CategoryRowSelectedWithSubcategoriesPills() {
     }
 }
 
+object PercentageRaisedTestTags {
+    const val BUCKETS_LIST = "buckets_list"
+    fun bucketTag(bucket: DiscoveryParams.RAISEDBUCKETS) = "bucket_${bucket.name}"
+}
+
 @Composable
 fun PercentageRaisedSheet(
-    currentPercentage: RaisedBuckets? = null,
-    onDismiss: () -> Unit,
-    onApply: (RaisedBuckets?, Boolean?) -> Unit,
+    currentPercentage: DiscoveryParams.RAISEDBUCKETS? = null,
+    onDismiss: () -> Unit = {},
+    onApply: (DiscoveryParams.RAISEDBUCKETS?, Boolean?) -> Unit = { a, b -> },
     onNavigate: () -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -71,6 +77,7 @@ fun PercentageRaisedSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                // TODO: extract this row as a title re-usable composable can be used with Category as well same UI, just changes the title
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -86,36 +93,33 @@ fun PercentageRaisedSheet(
 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // TODO: extract as a re-usable composable for Category as well same UI, just changes the title
-                    IconButton(
-                        onClick = onNavigate,
+                    KSIconButton(
                         modifier = Modifier
                             .padding(start = dimensions.paddingSmall)
-                            .testTag(SearchScreenTestTag.BACK_BUTTON.name)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.Back),
-                            tint = colors.kds_black
-                        )
-                    }
+                            .testTag(SearchScreenTestTag.BACK_BUTTON.name),
+                        onClick = onNavigate,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.Back)
+                    )
+
                     Text(
                         text = stringResource(R.string.Percentage_raised_fpo),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
                     )
-                    IconButton(
+
+                    KSIconButton(
                         modifier = Modifier.testTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name),
-                        onClick = onDismiss
-                    ) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close", tint = colors.icon)
-                    }
+                        onClick = onDismiss,
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close)
+                    )
                 }
 
                 LazyColumn(
                     modifier = Modifier
-                        .testTag("BUCKET")
+                        .testTag(BUCKETS_LIST)
                         .fillMaxWidth()
                         .weight(1f)
                         .drawBehind {
@@ -128,9 +132,10 @@ fun PercentageRaisedSheet(
                         }
                         .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
                 ) {
-                    items(RaisedBuckets.knownValues()) { bucket ->
+                    val validBuckets = DiscoveryParams.RAISEDBUCKETS.values().filter { it != DiscoveryParams.RAISEDBUCKETS.UNKNOWN }
+                    items(validBuckets) { bucket ->
                         Row(
-                            modifier = Modifier.testTag("Bucket Row")
+                            modifier = Modifier.testTag(bucketTag(bucket))
                                 .padding(top = dimensions.paddingMediumSmall, bottom = dimensions.paddingMediumSmall)
                                 .clickable {
                                     selectedPercentage.value = bucket
@@ -146,7 +151,6 @@ fun PercentageRaisedSheet(
                             )
                             Text(
                                 modifier = Modifier
-                                    .testTag("BUCKET TEXT")
                                     .weight(1f),
                                 color = colors.textPrimary,
                                 text = textForBucket(bucket),
@@ -172,9 +176,9 @@ fun PercentageRaisedSheet(
 }
 
 @Composable
-private fun textForBucket(bucket: RaisedBuckets) = when (bucket) {
-    RaisedBuckets.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
-    RaisedBuckets.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
-    RaisedBuckets.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)
-    RaisedBuckets.UNKNOWN__ -> ""
+private fun textForBucket(bucket: DiscoveryParams.RAISEDBUCKETS) = when (bucket) {
+    DiscoveryParams.RAISEDBUCKETS.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
+    DiscoveryParams.RAISEDBUCKETS.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
+    DiscoveryParams.RAISEDBUCKETS.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)
+    else -> ""
 }

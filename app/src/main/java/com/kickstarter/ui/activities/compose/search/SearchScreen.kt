@@ -549,7 +549,7 @@ fun FilterAndCategoryPagerSheet(
                 isLoading = false
             )
             FilterPages.PERCENTAGE_RAISED.ordinal -> PercentageRaisedSheet(
-                currentPercentage = currentPercentage,
+                currentPercentage = DiscoveryParams.RAISEDBUCKETS.fromString(currentPercentage?.name),
                 onNavigate = {
                     coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
                 },

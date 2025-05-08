@@ -2,12 +2,14 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
@@ -129,27 +131,28 @@ fun PercentageRaisedSheet(
                         }
                         .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
                 ) {
-                    items(RaisedBuckets.values()) { bucket ->
+                    items(RaisedBuckets.knownValues()) { bucket ->
                         Row(
                             modifier = Modifier.testTag("Bucket Row")
+                                .padding(top = dimensions.paddingMediumSmall, bottom = dimensions.paddingMediumSmall)
                                 .clickable {
                                     selectedPercentage.value = bucket
                                     onApply(selectedPercentage.value, false)
                                 },
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
                         ) {
                             RadioButton(
                                 selected = selectedPercentage.value == bucket,
                                 onClick = null,
                                 colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
                             )
-
                             Text(
                                 modifier = Modifier
-                                    .testTag(CategoryItemRowTestTags.ROOTCATEGORY_TITLE)
+                                    .testTag("BUCKET TEXT")
                                     .weight(1f),
                                 color = colors.textPrimary,
-                                text = bucket.name,
+                                text = textForBucket(bucket),
                                 style = typographyV2.headingLG
                             )
                         }
@@ -169,4 +172,12 @@ fun PercentageRaisedSheet(
             }
         }
     }
+}
+
+@Composable
+private fun textForBucket(bucket: RaisedBuckets) = when (bucket) {
+    RaisedBuckets.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
+    RaisedBuckets.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
+    RaisedBuckets.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)
+    RaisedBuckets.UNKNOWN__ -> ""
 }

@@ -37,12 +37,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
 import com.kickstarter.ui.compose.designsystem.KSIconPillButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarPErcentageRaisedActiveFilterPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 0,
+                FilterRowPillType.PROJECT_STATUS.name to 0,
+                FilterRowPillType.FILTER.name to 1,
+                FilterRowPillType.PERCENTAGE_RAISED.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase = true
+        )
+    }
+}
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -103,6 +124,7 @@ fun SearchTopBarAllActiveFiltersPreview() {
                 FilterRowPillType.CATEGORY.name to 1,
                 FilterRowPillType.PROJECT_STATUS.name to 1,
                 FilterRowPillType.FILTER.name to 1,
+                FilterRowPillType.PERCENTAGE_RAISED.name to 1,
             ),
             onPillPressed = {},
             shouldShowPhase = true
@@ -290,11 +312,11 @@ fun PillBar(
         )
         val activeFilters: Int =
             selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) +
-                    selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) +
-                    if (shouldShowPhase) selectedFilterCounts.getOrDefault(
-                        FilterRowPillType.PERCENTAGE_RAISED.name,
-                        0
-                    ) else 0
+                selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) +
+                if (shouldShowPhase) selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.PERCENTAGE_RAISED.name,
+                    0
+                ) else 0
 
         KSIconPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),

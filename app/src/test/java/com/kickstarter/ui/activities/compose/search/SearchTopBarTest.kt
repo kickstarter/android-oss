@@ -5,9 +5,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import com.kickstarter.ui.views.compose.search.FilterRowPillType
-import com.kickstarter.ui.views.compose.search.PillBarTestTags.pillTag
-import com.kickstarter.ui.views.compose.search.SearchTopBar
+import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
 import org.junit.Test
 
 class SearchTopBarTest : KSRobolectricTestCase() {

@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -243,7 +244,8 @@ private fun FilterRow(
                 top = dimensions.paddingLarge,
                 bottom = dimensions.paddingLarge,
                 end = dimensions.paddingMediumSmall
-            ),
+            )
+            .clickable { onClickAction.invoke() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         val style = if (text == stringResource(R.string.Filter)) {

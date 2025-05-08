@@ -38,11 +38,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.compose.designsystem.PillButton
 
 object FilterMenuTestTags {
     const val SHEET = "filter_menu_sheet"
@@ -172,7 +172,7 @@ private fun ProjectStatusRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 pillOptions.forEach { (state, label) ->
-                    PillButton(
+                    KSPillButton(
                         text = label,
                         shouldShowIcon = false,
                         isSelected = selectedStatus.value == state,

@@ -4,16 +4,14 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import com.kickstarter.ui.views.compose.search.FilterRowPillType
-import com.kickstarter.ui.views.compose.search.PillBarTestTags.pillTag
-import com.kickstarter.ui.views.compose.search.SearchTopBar
 import org.junit.Test
 
 class SearchTopBarTest : KSRobolectricTestCase() {
 
     @Test
-    fun `SearchTopBar when phase 2 feature flag is off`() {
+    fun `SearchTopBar when phase 4 feature flag is off`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -21,43 +19,51 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                     onValueChanged = {},
                     selectedFilterCounts = mapOf(
                         FilterRowPillType.SORT.name to 0,
-                        FilterRowPillType.CATEGORY.name to 0
+                        FilterRowPillType.CATEGORY.name to 0,
+                        FilterRowPillType.PROJECT_STATUS.name to 0,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0
                     ),
                     onPillPressed = {},
-                    shouldShowPhase2 = false
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertDoesNotExist()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertDoesNotExist()
-    }
-
-    @Test
-    fun `SearchTopBar when phase 2 feature flag is on`() {
-        composeTestRule.setContent {
-            KSTheme {
-                SearchTopBar(
-                    onBackPressed = {},
-                    onValueChanged = {},
-                    selectedFilterCounts = mapOf(
-                        FilterRowPillType.SORT.name to 0,
-                        FilterRowPillType.CATEGORY.name to 0
-                    ),
-                    onPillPressed = {},
-                    shouldShowPhase2 = true
+                    shouldShowPhase = false
                 )
             }
         }
 
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertDoesNotExist()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
     }
 
     @Test
-    fun `SearchTopBar pillBar 2 filters active`() {
+    fun `SearchTopBar when phase 4 feature flag is on`() {
+        composeTestRule.setContent {
+            KSTheme {
+                SearchTopBar(
+                    onBackPressed = {},
+                    onValueChanged = {},
+                    selectedFilterCounts = mapOf(
+                        FilterRowPillType.SORT.name to 0,
+                        FilterRowPillType.CATEGORY.name to 0,
+                        FilterRowPillType.PROJECT_STATUS.name to 0,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0
+                    ),
+                    onPillPressed = {},
+                    shouldShowPhase = true
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
+    }
+
+    @Test
+    fun `SearchTopBar pillBar 3 filters active`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -69,10 +75,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.SORT.name to 0,
                         FilterRowPillType.CATEGORY.name to 1,
                         FilterRowPillType.FILTER.name to 1,
-                        FilterRowPillType.PROJECT_STATUS.name to 1
+                        FilterRowPillType.PROJECT_STATUS.name to 1,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 1
                     ),
                     onPillPressed = {},
-                    shouldShowPhase2 = true
+                    shouldShowPhase = true
                 )
             }
         }
@@ -80,10 +87,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
 
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
-            .assertTextEquals("2")
+            .assertTextEquals("3")
     }
 
     @Test
@@ -99,10 +107,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.SORT.name to 0,
                         FilterRowPillType.CATEGORY.name to 1,
                         FilterRowPillType.FILTER.name to 1,
-                        FilterRowPillType.PROJECT_STATUS.name to 0
+                        FilterRowPillType.PROJECT_STATUS.name to 0,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0
                     ),
                     onPillPressed = {},
-                    shouldShowPhase2 = true
+                    shouldShowPhase = true
                 )
             }
         }
@@ -128,10 +137,41 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.SORT.name to 0,
                         FilterRowPillType.CATEGORY.name to 0,
                         FilterRowPillType.FILTER.name to 1,
-                        FilterRowPillType.PROJECT_STATUS.name to 1
+                        FilterRowPillType.PROJECT_STATUS.name to 1,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0
                     ),
                     onPillPressed = {},
-                    shouldShowPhase2 = true
+                    shouldShowPhase = true
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
+
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
+            .assertTextEquals("1")
+    }
+
+    @Test
+    fun `SearchTopBar pillBar PercentageRaised filter active`() {
+        composeTestRule.setContent {
+            KSTheme {
+                SearchTopBar(
+                    onBackPressed = {},
+                    onValueChanged = {},
+                    projectStatusText = "Live",
+                    selectedFilterCounts = mapOf(
+                        FilterRowPillType.SORT.name to 0,
+                        FilterRowPillType.CATEGORY.name to 0,
+                        FilterRowPillType.FILTER.name to 1,
+                        FilterRowPillType.PROJECT_STATUS.name to 0,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 1
+                    ),
+                    onPillPressed = {},
+                    shouldShowPhase = true
                 )
             }
         }

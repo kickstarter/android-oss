@@ -60,10 +60,12 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.type.AppDataInput
+import com.kickstarter.type.BankAccount
 import com.kickstarter.type.CheckoutStateEnum
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
 import com.kickstarter.type.CreateOrUpdateBackingAddressInput
+import com.kickstarter.type.CreditCard
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
@@ -752,15 +754,24 @@ fun commentTransformer(commentFr: com.kickstarter.fragment.Comment?): Comment {
  * @return Backing
  */
 fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
-    val payment = backingGr?.paymentSource?.payment?.let { payment ->
-        PaymentSource.builder()
-            .state(payment.state.toString())
-            .type(payment.type.rawValue)
-            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue)
-            .id(payment.id)
-            .expirationDate(payment.expirationDate)
-            .lastFour(payment.lastFour)
-            .build()
+    val payment = backingGr?.paymentSource?.paymentSourceFragment?.let { paymentSource ->
+        if (paymentSource.onBankAccount != null) {
+            PaymentSource.builder()
+                .paymentType(CreditCardPaymentType.BANK_ACCOUNT.rawValue)
+                .id(paymentSource.onBankAccount.id)
+                .lastFour(paymentSource.onBankAccount.lastFour)
+                .bankName(paymentSource.onBankAccount.bankName)
+                .build()
+        } else if (paymentSource.onCreditCard != null) {
+            PaymentSource.builder()
+                .state(paymentSource.onCreditCard.state.toString())
+                .type(paymentSource.onCreditCard.type.rawValue)
+                .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue)
+                .id(paymentSource.onCreditCard.id)
+                .expirationDate(paymentSource.onCreditCard.expirationDate)
+                .lastFour(paymentSource.onCreditCard.lastFour)
+                .build()
+        } else { null }
     }
 
     val addOns = backingGr?.addOns?.let {

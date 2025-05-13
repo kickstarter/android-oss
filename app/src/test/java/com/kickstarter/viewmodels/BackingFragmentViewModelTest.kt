@@ -414,7 +414,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        this.cardLogo.assertValue(R.drawable.generic_bank_md)
+        this.cardLogo.assertValue(R.drawable.credit_card)
     }
 
     @Test

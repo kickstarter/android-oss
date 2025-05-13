@@ -328,7 +328,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPaymentMethodIsGone_whenNotCardType() {
+    fun testPaymentMethodIsGone_whenBankAccount() {
         val paymentSource = PaymentSourceFactory.bankAccount()
         val backing = BackingFactory.backing()
             .toBuilder()
@@ -342,7 +342,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        this.paymentMethodIsGone.assertValue(true)
+        this.paymentMethodIsGone.assertValue(false)
     }
 
     @Test
@@ -397,6 +397,24 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.cardLogo.assertValue(R.drawable.visa_md)
+    }
+
+    @Test
+    fun testCardLogo_whenBankAccount() {
+        val paymentSource = PaymentSourceFactory.bankAccount()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .paymentSource(paymentSource)
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(mockApolloClientForBacking(backing))
+            .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+
+        this.cardLogo.assertValue(R.drawable.generic_bank_md)
     }
 
     @Test

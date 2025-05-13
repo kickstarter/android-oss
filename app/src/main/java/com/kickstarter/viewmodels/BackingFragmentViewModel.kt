@@ -575,7 +575,7 @@ interface BackingFragmentViewModel {
                 CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
                 CreditCardPaymentType.APPLE_PAY -> R.drawable.apple_pay_mark
                 CreditCardPaymentType.CREDIT_CARD -> paymentSource.getCardTypeDrawable()
-                CreditCardPaymentType.BANK_ACCOUNT -> R.drawable.generic_bank_md
+                CreditCardPaymentType.BANK_ACCOUNT -> R.drawable.credit_card
                 else -> R.drawable.generic_bank_md
             }
         }

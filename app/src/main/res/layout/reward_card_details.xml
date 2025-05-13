@@ -13,7 +13,7 @@
     android:layout_width="@dimen/credit_card_logo_width"
     android:layout_height="@dimen/credit_card_logo_height"
     android:contentDescription="@null"
-    android:scaleType="fitXY"
+    android:scaleType="fitCenter"
     tools:src="@drawable/mastercard_md" />
 
   <LinearLayout

@@ -60,12 +60,10 @@ import com.kickstarter.services.mutations.CreateAttributionEventData
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
 import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.type.AppDataInput
-import com.kickstarter.type.BankAccount
 import com.kickstarter.type.CheckoutStateEnum
 import com.kickstarter.type.CollaboratorPermission
 import com.kickstarter.type.CreateAttributionEventInput
 import com.kickstarter.type.CreateOrUpdateBackingAddressInput
-import com.kickstarter.type.CreditCard
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature

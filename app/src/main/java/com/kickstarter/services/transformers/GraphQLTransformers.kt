@@ -1099,7 +1099,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .imageUrl(ppoBackingData?.project?.full?.image?.url)
                 .creatorName(ppoBackingData?.project?.creator?.name)
                 .creatorID(ppoBackingData?.project?.creator?.id)
-                .viewType(PPOCardViewType.ADDRESS_CONFIRMED)
+                .viewType(getTierType(it?.node?.tierType, reward))
                 .surveyID(ppoBackingData?.project?.backerSurvey?.id)
                 .flags(flags)
                 .reward(reward)

@@ -38,12 +38,78 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.activities.compose.search.SearchScreenTestTag
-import com.kickstarter.ui.compose.designsystem.IconPillButton
+import com.kickstarter.ui.compose.designsystem.KSIconPillButton
+import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.PillButton
 import com.kickstarter.ui.views.compose.search.PillBarTestTags.pillTag
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarProjectStatusActiveFilterPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            categoryPillText = "Art",
+            projectStatusText = "Live",
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 0,
+                FilterRowPillType.PROJECT_STATUS.name to 1,
+                FilterRowPillType.FILTER.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarCategoryActiveFilterPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            categoryPillText = "Art",
+            projectStatusText = "Live",
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 1,
+                FilterRowPillType.PROJECT_STATUS.name to 0,
+                FilterRowPillType.FILTER.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarAllActiveFiltersPreview() {
+    KSTheme {
+        SearchTopBar(
+            onBackPressed = {},
+            onValueChanged = {},
+            categoryPillText = "Art",
+            projectStatusText = "Live",
+            selectedFilterCounts = mapOf(
+                FilterRowPillType.SORT.name to 0,
+                FilterRowPillType.CATEGORY.name to 1,
+                FilterRowPillType.PROJECT_STATUS.name to 1,
+                FilterRowPillType.FILTER.name to 1,
+            ),
+            onPillPressed = {},
+            shouldShowPhase2 = true
+        )
+    }
+}
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -216,24 +282,28 @@ fun PillBar(
         horizontalArrangement = Arrangement.spacedBy(dimensions.listItemSpacingSmall),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconPillButton(
+        KSIconPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.SORT)),
             type = FilterRowPillType.SORT,
             isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.SORT.name, 0) > 0,
             onClick = { onPillPressed(FilterRowPillType.SORT) }
         )
         if (shouldShowPhase2) {
-            IconPillButton(
+            val activeFilters: Int = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0)
+
+            KSIconPillButton(
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),
                 type = FilterRowPillType.FILTER,
                 isSelected = selectedFilterCounts.getOrDefault(
                     FilterRowPillType.FILTER.name,
                     0
                 ) > 0,
-                onClick = { onPillPressed(FilterRowPillType.FILTER) }
+                onClick = { onPillPressed(FilterRowPillType.FILTER) },
+                count = activeFilters
             )
         }
-        PillButton(
+        KSPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.CATEGORY)),
             countApiIsReady = countApiIsReady,
             text = categoryPillText,
@@ -243,7 +313,7 @@ fun PillBar(
         )
 
         if (shouldShowPhase2) {
-            PillButton(
+            KSPillButton(
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECT_STATUS)),
                 countApiIsReady = countApiIsReady,
                 text = projectStatusText,

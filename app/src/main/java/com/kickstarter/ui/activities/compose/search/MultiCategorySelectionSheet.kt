@@ -154,14 +154,14 @@ fun MultiCategorySelectionSheet(
                             onClickAction = {
                                 selectedCategories = selectedCategories.mapValues { false }
                             },
-                            type = KSButtonType.Outlined,
+                            type = KSButtonType.OUTLINED,
                             text = stringResource(R.string.Reset_filters),
                             isEnabled = !isLoading
                         )
                         KSButton(
                             modifier = Modifier.weight(1f),
                             onClickAction = { onApply(totalSelectedResults) },
-                            type = KSButtonType.Filled,
+                            type = KSButtonType.FILLED,
                             text = "See $totalSelectedResults results",
                             isEnabled = totalSelectedResults > 0 && !isLoading,
                         )

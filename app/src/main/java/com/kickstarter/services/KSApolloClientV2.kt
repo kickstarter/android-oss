@@ -126,6 +126,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asObservable
 import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 import kotlin.coroutines.cancellation.CancellationException
@@ -400,40 +402,26 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
-    override fun getStoredCards(): Observable<List<StoredCard>> {
-        return Observable.defer {
-            val ps = PublishSubject.create<List<StoredCard>>()
+    override fun getStoredCards(): Observable<List<StoredCard>> =
+        emitAsObservable { _getStoredCards().getOrThrow() }
 
-            val query = UserPaymentsQuery()
-            this.service
-                .query(query)
-                .rxSingle()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    } else {
-                        val cardsList = mutableListOf<StoredCard>()
-                        response.data?.me?.storedCards?.nodes?.map {
-                            it?.let { cardData ->
-                                val card = StoredCard.builder()
-                                    .expiration(cardData.expirationDate)
-                                    .id(cardData.id)
-                                    .lastFourDigits(cardData.lastFour)
-                                    .type(it.type)
-                                    .stripeCardId(it.stripeCardId)
-                                    .build()
-                                cardsList.add(card)
-                            }
-                        }
-                        ps.onNext(cardsList)
-                    }
-                    ps.onComplete()
-                }.addToDisposable(disposables)
-            return@defer ps
-        }
+    private suspend fun _getStoredCards(): Result<List<StoredCard>> = executeForResult {
+        val query = UserPaymentsQuery()
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.me?.storedCards?.nodes?.filterNotNull()?.map { cardData ->
+            StoredCard.builder()
+                .expiration(cardData.expirationDate)
+                .id(cardData.id)
+                .lastFourDigits(cardData.lastFour)
+                .type(cardData.type)
+                .stripeCardId(cardData.stripeCardId)
+                .build()
+        } ?: listOf()
     }
 
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
@@ -2005,4 +1993,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             FirebaseCrashlytics.getInstance().recordException(e)
             Result.failure(e)
         }
+
+    private fun <T : Any> emitAsObservable(block: suspend () -> T): Observable<T> =
+        flow { emit(block()) }.asObservable()
 }

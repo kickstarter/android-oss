@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -24,10 +24,12 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -180,17 +182,68 @@ fun KSSmallButtonsPreview() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSSearchToolbarButtons() {
     KSTheme {
+        KSSearchToolbarButtonsColumn()
+    }
+}
+
+@Composable
+fun KSSearchToolbarButtonsColumn() {
+    Column(
+        modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+    ) {
+        Row {
+            KSIconButton(onClick = {}, imageVector = Icons.Filled.Close)
+        }
+        Row {
+            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false)
+            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true)
+            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = true)
+            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = false)
+        }
+        Row {
+            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = true, count = 3)
+            KSIconPillButton(type = FilterRowPillType.SORT, isSelected = false, count = 3)
+            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = true, count = 3)
+            KSIconPillButton(type = FilterRowPillType.FILTER, isSelected = false, count = 3)
+        }
+        Row {
+            KSPillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
+            KSPillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
+        }
+        Row {
+            KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowIcon = false)
+            KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowIcon = false)
+        }
+        Row {
+            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
+            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSOutlinedButtons() {
+    KSTheme {
         Column(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
         ) {
-            IconPillButton(type = FilterRowPillType.SORT, isSelected = false)
-            IconPillButton(type = FilterRowPillType.SORT, isSelected = true)
-            PillButton(countApiIsReady = false, text = "Category", isSelected = false, count = 0, onClick = {})
-            PillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
-            PillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowIcon = false)
-            PillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowIcon = false)
-            PillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
-            PillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
+            KSOutlinedButton(
+                backgroundColor = colors.backgroundSurfacePrimary,
+                textColor = colors.textPrimary,
+                onClickAction = {},
+                text = "OutlinedButton",
+                isEnabled = true
+            )
+
+            KSOutlinedButton(
+                backgroundColor = colors.backgroundSurfacePrimary,
+                textColor = colors.textPrimary,
+                onClickAction = {},
+                text = "OutlinedButton Disabled",
+                isEnabled = false
+            )
         }
     }
 }
@@ -341,7 +394,7 @@ fun KSFacebookButton(
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSIconButton(
+        KSIconTextButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
@@ -360,7 +413,7 @@ fun KSGooglePayButton(
     isEnabled: Boolean
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSIconButton(
+        KSIconTextButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
@@ -371,7 +424,7 @@ fun KSGooglePayButton(
 }
 
 @Composable
-fun KSIconButton(
+fun KSIconTextButton(
     modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     isEnabled: Boolean,
@@ -510,27 +563,55 @@ fun KSSmallButton(
 }
 
 @Composable
-fun IconPillButton(
+fun KSIconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    imageVector: ImageVector = Icons.Filled.Close,
+    enabled: Boolean = true,
+    contentDescription: String? = null
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = onClick,
+        enabled = enabled,
+    ) {
+        Icon(imageVector = imageVector, contentDescription = contentDescription, tint = colors.icon)
+    }
+}
+
+@Composable
+fun KSIconPillButton(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
     onClick: () -> Unit = {},
-    type: FilterRowPillType
+    type: FilterRowPillType,
+    count: Int = 0
 ) {
     IconButton(
         onClick = onClick,
         modifier = modifier
+            .width(if (count > 0) dimensions.iconPillButtonSizeLarge else dimensions.iconPillButtonSize)
             .border(
                 if (isSelected) dimensions.strokeWidth else dimensions.borderThickness,
                 if (isSelected) colors.borderActive else colors.borderBold,
-                CircleShape
+                RoundedCornerShape(dimensions.pillButtonShapeSize)
             )
             .size(dimensions.iconPillButtonSize)
     ) {
-        Icon(
-            painter = painterForFilterType(type),
-            contentDescription = descriptionForFilterType(type),
-            tint = colors.icon
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterForFilterType(type),
+                contentDescription = descriptionForFilterType(type),
+                tint = colors.icon
+            )
+            if (count > 0) {
+                Spacer(Modifier.padding(start = dimensions.paddingXSmall))
+                KSCountBadge(count)
+            }
+        }
     }
 }
 
@@ -553,7 +634,7 @@ private fun painterForFilterType(type: FilterRowPillType): Painter {
 }
 
 @Composable
-fun PillButton(
+fun KSPillButton(
     modifier: Modifier = Modifier,
     countApiIsReady: Boolean = false,
     text: String,

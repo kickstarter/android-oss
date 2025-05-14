@@ -157,8 +157,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 else -> { }
                             }
                         },
-                        v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
-                    )
+                        v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false,
+                        onRewardReceivedChanged = { backingID, checked -> viewModel.onRewardRecievedChanged(backingID = backingID, checked = checked) },
+
+                        )
                 }
 
                 LaunchedEffect(Unit) {

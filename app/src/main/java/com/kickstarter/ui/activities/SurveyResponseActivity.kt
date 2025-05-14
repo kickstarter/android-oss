@@ -3,10 +3,16 @@ package com.kickstarter.ui.activities
 import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.kickstarter.R
 import com.kickstarter.databinding.SurveyResponseLayoutBinding
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -15,7 +21,6 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.services.RequestHandler
-import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.SurveyResponseViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
@@ -39,15 +44,29 @@ class SurveyResponseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        binding = SurveyResponseLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                bottomMargin = insets.bottom
+                rightMargin = insets.right
+                topMargin = insets.top
+            }
+
+            val imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            v.updatePadding(bottom = imeInsets.bottom)
+
+            WindowInsetsCompat.CONSUMED
+        }
+
         getEnvironment()?.let { env ->
             factory = SurveyResponseViewModel.Factory(environment = env, intent = intent)
         }
-        binding = SurveyResponseLayoutBinding.inflate(layoutInflater)
-        WindowInsetsUtil.manageEdgeToEdge(
-            window,
-            binding.root
-        )
-        setContentView(binding.root)
 
         binding.surveyResponseWebView.registerRequestHandlers(
             Arrays.asList(

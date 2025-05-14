@@ -1172,14 +1172,14 @@ fun getTierType(tierType: String?, reward: Reward) =
         PledgeTierType.ADDRESS_LOCK.tierType -> PPOCardViewType.CONFIRM_ADDRESS
         PledgeTierType.PAYMENT_AUTHENTICATION.tierType -> PPOCardViewType.AUTHENTICATE_CARD
         PledgeTierType.PLEDGE_COLLECTED.tierType -> {
-           if(RewardUtils.isNoReward(reward)) {
-               PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD
-           } else {
-               PPOCardViewType.PLEDGE_COLLECTED_REWARD
-           }
+            if (RewardUtils.isNoReward(reward)) {
+                PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD
+            } else {
+                PPOCardViewType.PLEDGE_COLLECTED_REWARD
+            }
         }
         PledgeTierType.SUVERY_SUBMITTED.tierType -> {
-            if(RewardUtils.isDigital(reward)) {
+            if (RewardUtils.isDigital(reward)) {
                 PPOCardViewType.SUVERY_SUBMITTED_DIGITAL
             } else {
                 PPOCardViewType.SUVERY_SUBMITTED_SHIPPABLE

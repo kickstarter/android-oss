@@ -214,7 +214,7 @@ fun PPOCardView(
     flags: List<Flag?>? = null,
     onRewardReceivedChanged: ((Boolean) -> Unit) = {},
     rewardReceived: Boolean = false,
-    ) {
+) {
 
     BadgedBox(
         badge = { if (isTier1Alert(viewType)) Badge(backgroundColor = colors.backgroundDangerBold) }
@@ -265,12 +265,12 @@ fun PPOCardView(
                     else -> {}
                 }
 
-                when(viewType) {
+                when (viewType) {
                     PPOCardViewType.PLEDGE_COLLECTED_REWARD,
                     PPOCardViewType.SUVERY_SUBMITTED_DIGITAL,
                     PPOCardViewType.ADDRESS_CONFIRMED,
                     PPOCardViewType.REWARD_RECEIVED,
-                        -> RewardReceivedToggleView(checked = rewardReceived, onCheckChanged = onRewardReceivedChanged)
+                    -> RewardReceivedToggleView(checked = rewardReceived, onCheckChanged = onRewardReceivedChanged)
                     else -> {}
                 }
             }
@@ -527,10 +527,11 @@ fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
 fun RewardReceivedToggleView(
     checked: Boolean,
     onCheckChanged: ((Boolean) -> Unit),
-    ) {
+) {
     var currentSelection by remember { mutableStateOf(checked) }
 
-    Row(verticalAlignment = Alignment.CenterVertically,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
@@ -542,7 +543,7 @@ fun RewardReceivedToggleView(
             text = "Reward Received",
             style = typographyV2.subHeadlineMedium
         )
-        Spacer(modifier=Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
 
         KSSwitch(
             modifier = Modifier.padding(end = dimensions.paddingXSmall).testTag(PPOCardViewTestTag.REWARD_RECEIVED_SWITCH.name),
@@ -550,7 +551,7 @@ fun RewardReceivedToggleView(
             onCheckChanged = {
                 currentSelection = it
                 onCheckChanged.invoke(it)
-                             },
+            },
             enabled = true,
         )
     }

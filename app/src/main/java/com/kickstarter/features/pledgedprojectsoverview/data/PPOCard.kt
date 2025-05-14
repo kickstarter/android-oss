@@ -5,7 +5,6 @@ import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.models.Reward
 import com.kickstarter.type.CurrencyCode
 import kotlinx.parcelize.Parcelize
-import org.joda.time.DateTime
 
 @Parcelize
 class PPOCard private constructor(
@@ -30,7 +29,7 @@ class PPOCard private constructor(
     val viewType: PPOCardViewType?,
     val reward: Reward?,
 
-    ) : Parcelable {
+) : Parcelable {
 
     fun deliveryAddress() = this.deliveryAddress
     fun amount() = this.amount
@@ -172,7 +171,7 @@ class PPOCard private constructor(
                 backingDetailsUrl() == other.backingDetailsUrl() &&
                 timeNumberForAction() == other.timeNumberForAction() &&
                 viewType() == other.viewType()
-                reward() == other.reward()
+            reward() == other.reward()
         }
         return equals
     }

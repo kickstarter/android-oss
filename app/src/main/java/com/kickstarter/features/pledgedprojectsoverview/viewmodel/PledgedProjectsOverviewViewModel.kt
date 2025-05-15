@@ -19,6 +19,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -178,6 +179,19 @@ class PledgedProjectsOverviewViewModel(
                     }.catch {
                         showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
                     }.onCompletion {
+                        emitCurrentState()
+                    }.collect()
+            }
+    }
+
+    fun onRewardRecievedChanged(backingID: String, checked: Boolean) {
+        val input = UpdateBackerCompletedData(backingID = backingID, backerCompleted = checked)
+        viewModelScope
+            .launch(ioDispatcher) {
+                apolloClient
+                    .updateBackerCompleted(input)
+                    .asFlow()
+                    .onCompletion {
                         emitCurrentState()
                     }.collect()
             }

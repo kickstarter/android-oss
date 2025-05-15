@@ -178,7 +178,7 @@ fragment backing on Backing {
         ... amount
     }
     paymentSource {
-        ... payment
+        ... paymentSourceFragment
     }
     paymentIncrements {
         ...paymentIncrement
@@ -476,13 +476,20 @@ fragment pageInfo on PageInfo {
       endCursor
 }
 
-fragment payment on CreditCard {
-    id
-    lastFour
-    expirationDate
-    type
-    state
-    stripeCardId
+fragment paymentSourceFragment on PaymentSource {
+    ... on CreditCard {
+        id
+        lastFour
+        expirationDate
+        type
+        state
+        stripeCardId
+    }
+    ... on BankAccount {
+        id
+        lastFour
+        bankName
+    }
 }
 
 fragment freeformPost on FreeformPost {

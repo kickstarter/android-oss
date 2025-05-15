@@ -384,7 +384,7 @@ interface BackingFragmentViewModel {
 
             backing
                 .map { CreditCardPaymentType.safeValueOf(it.paymentSource()?.paymentType() ?: "") }
-                .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
+                .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD || it == CreditCardPaymentType.BANK_ACCOUNT }
                 .map { it.negate() }
                 .distinctUntilChanged()
                 .subscribe { this.paymentMethodIsGone.onNext(it) }
@@ -626,6 +626,7 @@ interface BackingFragmentViewModel {
                 CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
                 CreditCardPaymentType.APPLE_PAY -> R.drawable.apple_pay_mark
                 CreditCardPaymentType.CREDIT_CARD -> paymentSource.getCardTypeDrawable()
+                CreditCardPaymentType.BANK_ACCOUNT -> R.drawable.credit_card
                 else -> R.drawable.generic_bank_md
             }
         }

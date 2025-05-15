@@ -435,11 +435,14 @@ class BackingFragment : Fragment() {
     }
 
     private fun setCardExpirationText(expiration: String) {
-        binding?.rewardCardDetails?.rewardCardExpirationDate?.text =
-            this.viewModel.ksString?.format(
-                getString(R.string.Credit_card_expiration),
-                "expiration_date", expiration
-            )
+        if (expiration.isNotEmpty()) {
+            binding?.rewardCardDetails?.rewardCardExpirationDate?.visibility = View.VISIBLE
+            binding?.rewardCardDetails?.rewardCardExpirationDate?.text =
+                this.viewModel.ksString?.format(
+                    getString(R.string.Credit_card_expiration),
+                    "expiration_date", expiration
+                )
+        }
     }
 
     private fun setCardIssuerContentDescription(cardIssuerOrStringRes: Either<String, Int>) {

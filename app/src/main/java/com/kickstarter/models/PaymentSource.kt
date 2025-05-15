@@ -11,7 +11,8 @@ class PaymentSource private constructor(
     private val state: String,
     private val type: String?,
     private val lastFour: String?,
-    private val expirationDate: Date?
+    private val expirationDate: Date?,
+    private val bankName: String?
 ) : Parcelable {
     fun id() = this.id
     fun paymentType() = this.paymentType
@@ -19,6 +20,7 @@ class PaymentSource private constructor(
     fun type() = this.type
     fun lastFour() = this.lastFour
     fun expirationDate() = this.expirationDate
+    fun bankName() = this.bankName
 
     @Parcelize
     data class Builder(
@@ -27,7 +29,8 @@ class PaymentSource private constructor(
         private var state: String = "",
         private var type: String? = "",
         private var lastFour: String? = "",
-        private var expirationDate: Date? = null
+        private var expirationDate: Date? = null,
+        private var bankName: String? = ""
     ) : Parcelable {
         fun id(id: String?) = apply { this.id = id ?: "" }
         fun paymentType(type: String?) = apply { this.paymentType = type ?: "" }
@@ -35,13 +38,15 @@ class PaymentSource private constructor(
         fun type(type: String?) = apply { this.type = type ?: "" }
         fun lastFour(lastFour: String?) = apply { this.lastFour = lastFour }
         fun expirationDate(expirationDate: Date?) = apply { this.expirationDate = expirationDate }
+        fun bankName(bankName: String?) = apply { this.bankName = bankName }
         fun build() = PaymentSource(
             id = id,
             paymentType = paymentType,
             state = state,
             type = type,
             lastFour = lastFour,
-            expirationDate = expirationDate
+            expirationDate = expirationDate,
+            bankName = bankName
         )
     }
 
@@ -56,7 +61,8 @@ class PaymentSource private constructor(
         state = state,
         type = type,
         lastFour = lastFour,
-        expirationDate = expirationDate
+        expirationDate = expirationDate,
+        bankName = bankName
     )
 
     override fun equals(other: Any?): Boolean {
@@ -67,7 +73,8 @@ class PaymentSource private constructor(
             this.state() == other.state() &&
                 this.type() == other.type() &&
                 this.lastFour() == other.lastFour() &&
-                this.expirationDate() == other.expirationDate()
+                this.expirationDate() == other.expirationDate() &&
+                this.bankName() == other.bankName()
         }
         return equals
     }

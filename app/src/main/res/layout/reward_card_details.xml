@@ -13,7 +13,7 @@
     android:layout_width="@dimen/credit_card_logo_width"
     android:layout_height="@dimen/credit_card_logo_height"
     android:contentDescription="@null"
-    android:scaleType="fitXY"
+    android:scaleType="fitCenter"
     tools:src="@drawable/mastercard_md" />
 
   <LinearLayout
@@ -36,8 +36,8 @@
       style="@style/CreditCardExpiration"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:text="Expires in 03/2020"
-      tools:visibility="visible"  />
+      android:visibility="gone"
+      tools:text="Expires in 03/2020" />
   </LinearLayout>
 
 </LinearLayout>

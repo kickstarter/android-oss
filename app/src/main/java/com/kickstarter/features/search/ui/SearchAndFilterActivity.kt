@@ -60,7 +60,7 @@ class SearchAndFilterActivity : ComponentActivity() {
             filterMenuViewModelFactory = FilterMenuViewModel.Factory(env)
             filterMenuViewModel.getRootCategories()
 
-            val phase2ff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
+            val phaseff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
 
             setContent {
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -114,7 +114,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 projectState = projectState
                             )
                         },
-                        shouldShowPhase2 = phase2ff
+                        shouldShowPhase = phaseff
                     )
                 }
 

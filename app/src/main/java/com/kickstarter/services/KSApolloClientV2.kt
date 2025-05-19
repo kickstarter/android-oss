@@ -1552,37 +1552,18 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
-    override fun getProjectBacking(slug: String): Observable<Backing> {
-        return Observable.defer {
-            val ps = PublishSubject.create<Backing>()
+    override fun getProjectBacking(slug: String): Observable<Backing> =
+        emitAsObservable { _getProjectBacking(slug).getOrThrow() }
 
-            val query = GetProjectBackingQuery(
-                slug = slug
-            )
-            this.service.query(
-                query
-            ).rxSingle()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    } else {
-                        response.data?.let { data ->
-                            data.project?.backing?.backing?.let { backingObj ->
-                                backingTransformer(
-                                    backingObj
-                                )?.let {
-                                    ps.onNext(it)
-                                }
-                            }
-                        }
-                    }
-                    ps.onComplete()
-                }.addToDisposable(disposables)
-            return@defer ps
-        }.subscribeOn(Schedulers.io())
+    private suspend fun _getProjectBacking(slug: String): Result<Backing> = executeForResult {
+        val query = GetProjectBackingQuery(slug = slug)
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        backingTransformer(response.data?.project?.backing?.backing)
     }
 
     override fun createCheckout(createCheckoutData: CreateCheckoutData): Observable<CheckoutPayment> {

@@ -187,8 +187,6 @@ interface BackingFragmentViewModel {
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
         private val refreshProject = PublishSubject.create<Unit>()
         private val isExpanded = PublishSubject.create<Boolean>()
-        private val retryBackingLoad = PublishSubject.create<Unit>()
-        private val backingLoading = BehaviorSubject.create<Boolean>()
         private val backingError = BehaviorSubject.create<Throwable>()
 
         private val backerAvatar = BehaviorSubject.create<String>()

@@ -1090,7 +1090,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 Flag.builder().message(flag.message).icon(flag.icon).type(flag.type).build()
             }
             val reward = Reward.builder()
-                .id(decodeRelayId(ppoBackingData?.reward?.id) ?: -1)
+                .id(decodeRelayId(ppoBackingData?.reward?.id) ?: 0)
                 .shippingPreference(ppoBackingData?.reward?.shippingPreference?.name?.lowercase())
                 .shippingPreferenceType(getShippingPreference(ppoBackingData?.reward?.shippingPreference))
                 .shippingType(ppoBackingData?.reward?.shippingPreference?.name?.lowercase())

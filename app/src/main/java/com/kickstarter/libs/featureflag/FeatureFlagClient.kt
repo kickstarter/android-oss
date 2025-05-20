@@ -65,7 +65,6 @@ interface FeatureFlagClientType {
 }
 enum class FlipperFlagKey(val key: String) {
     FLIPPER_PLEDGED_PROJECTS_OVERVIEW("pledge_projects_overview_2024"),
-    FLIPPER_BACKINGS_DASH_V2("backings_dash_v2_2025")
 }
 
 enum class FlagKey(val key: String) {

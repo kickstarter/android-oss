@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views.compose.search
+package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

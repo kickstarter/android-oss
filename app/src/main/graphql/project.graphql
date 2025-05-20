@@ -1,5 +1,5 @@
-query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $state: PublicProjectState,  $backed: Boolean, $recommended: Boolean, $categoryId: String, $starred: Boolean, $staffPicks: Boolean, $searchTerm: String) {
-  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred,  state: $state, staffPicks: $staffPicks, term: $searchTerm) {
+query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $state: PublicProjectState,  $backed: Boolean, $recommended: Boolean, $categoryId: String, $starred: Boolean, $staffPicks: Boolean, $searchTerm: String, $raised: RaisedBuckets) {
+  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred,  state: $state, staffPicks: $staffPicks, term: $searchTerm, raised: $raised) {
     edges {
       cursor
       node{

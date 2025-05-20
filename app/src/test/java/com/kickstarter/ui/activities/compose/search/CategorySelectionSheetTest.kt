@@ -33,8 +33,7 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
                     onApply = { selected, from ->
                         applyClickCount++
                     },
-                    isLoading = false,
-                    shouldShowPhase2 = false
+                    isLoading = false
                 )
             }
         }
@@ -120,8 +119,7 @@ class CategorySelectionSheetTest : KSRobolectricTestCase() {
                     onApply = { selected, from ->
                         selectedCategory = selected
                     },
-                    isLoading = false,
-                    shouldShowPhase2 = false
+                    isLoading = false
                 )
             }
         }

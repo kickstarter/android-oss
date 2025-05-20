@@ -360,7 +360,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
             KSTheme {
 
-                FilterAndCategoryPagerSheet(
+                FilterPagerSheet(
                     selectedProjectStatus = selectedStatus,
                     currentCategory = categories[0],
                     categories = categories,
@@ -417,7 +417,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
             KSTheme {
 
-                FilterAndCategoryPagerSheet(
+                FilterPagerSheet(
                     selectedProjectStatus = selectedStatus,
                     currentCategory = categories[0],
                     categories = categories,

@@ -39,7 +39,8 @@ class DiscoveryParams private constructor(
     private val similarTo: Project?,
     private val state: State?,
     private val tagId: Int?,
-    private val term: String?
+    private val term: String?,
+    private val raisedbucket: RaisedBuckets?
 ) : Parcelable {
 
     fun backed() = this.backed
@@ -59,6 +60,7 @@ class DiscoveryParams private constructor(
     fun state() = this.state
     fun tagId() = this.tagId
     fun term() = this.term
+    fun raisedBucket() = this.raisedbucket
     fun nextPage(): DiscoveryParams {
         val page = page()
         return if (page != null) toBuilder().page(page + 1).build() else this
@@ -82,7 +84,8 @@ class DiscoveryParams private constructor(
                 similarTo() == other.similarTo() &&
                 state() == other.state() &&
                 tagId() == other.tagId() &&
-                term() == other.term()
+                term() == other.term() &&
+                raisedBucket() == other.raisedBucket()
         }
         return equals
     }
@@ -105,7 +108,8 @@ class DiscoveryParams private constructor(
         private var similarTo: Project? = null,
         private var state: State? = null,
         private var tagId: Int? = null,
-        private var term: String? = null
+        private var term: String? = null,
+        private var raisedBucket: RaisedBuckets? = null
     ) : Parcelable {
         fun backed(backed: Int?) = apply { this.backed = backed }
         fun category(category: Category?) = apply { this.category = category }
@@ -122,6 +126,7 @@ class DiscoveryParams private constructor(
         fun recommended(recommended: Boolean?) = apply { this.recommended = recommended }
         fun similarTo(similarTo: Project?) = apply { this.similarTo = similarTo }
         fun state(state: State?) = apply { this.state = state }
+        fun raisedBucket(raisedbucket: RaisedBuckets?) = apply { this.raisedBucket = raisedbucket }
         fun tagId(tagId: Int?) = apply { this.tagId = tagId }
         fun term(term: String?) = apply { this.term = term }
         fun build() = DiscoveryParams(
@@ -141,7 +146,8 @@ class DiscoveryParams private constructor(
             similarTo = similarTo,
             state = state,
             tagId = tagId,
-            term = term
+            term = term,
+            raisedbucket = raisedBucket
         )
 
         /**
@@ -550,7 +556,7 @@ class DiscoveryParams private constructor(
         }
     }
 
-    enum class RAISEDBUCKETS {
+    enum class RaisedBuckets {
         BUCKET_0,
         BUCKET_1,
         BUCKET_2,
@@ -561,7 +567,7 @@ class DiscoveryParams private constructor(
         }
 
         companion object {
-            fun fromString(string: String?): RAISEDBUCKETS {
+            fun fromString(string: String?): RaisedBuckets {
                 return when (string) {
                     "BUCKET_0" -> BUCKET_0
                     "BUCKET_1" -> BUCKET_1

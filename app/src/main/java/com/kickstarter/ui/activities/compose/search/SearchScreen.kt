@@ -107,7 +107,7 @@ fun PagerPreview() {
                 categories = categories,
                 onDismiss = { dismissed.add(true) },
                 onApply = { state, category, bucket -> appliedFilters.add(Pair(state, category)) },
-                updateSelectedCounts = { statusCount, categoryCount ->
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket ->
                     selectedCounts.add(
                         statusCount to categoryCount
                     )
@@ -458,7 +458,7 @@ fun FilterPagerSheet(
     currentPercentage: DiscoveryParams.RaisedBuckets? = null,
     onDismiss: () -> Unit,
     onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?) -> Unit,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
     pagerState: PagerState,
     sheetState: ModalBottomSheetState,
     shouldShowPhase: Boolean
@@ -588,14 +588,15 @@ private fun applyUserSelection(
     projectState: DiscoveryParams.State?,
     category: Category?,
     bucket: DiscoveryParams.RaisedBuckets?,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
     onDismiss: () -> Unit,
     shouldDismiss: Boolean
 ) {
     onApply(projectState, category, bucket)
     updateSelectedCounts(
         if (projectState != null) 1 else 0,
-        if (category != null) 1 else 0
+        if (category != null) 1 else 0,
+        if (bucket != null) 1 else 0
     )
     if (shouldDismiss) {
         onDismiss.invoke()
@@ -698,14 +699,17 @@ private fun sheetContent(
                         categoryPillText.value = category?.name() ?: initialCategoryPillText
                         onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value, currentPercentage.value)
                     },
-                    updateSelectedCounts = { statusCount, categoryCount ->
+                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket ->
 
-                        selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0)
+                        selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0)
                         statusCount?.let {
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
                         }
                         categoryCount?.let {
                             selectedFilterCounts[FilterRowPillType.CATEGORY.name] = it
+                        }
+                        raisedBucket?.let {
+                            selectedFilterCounts[FilterRowPillType.PERCENTAGE_RAISED.name] = it
                         }
                     },
                     shouldShowPhase = shouldShowPhase

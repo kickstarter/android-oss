@@ -67,6 +67,10 @@ fun KSBadgesPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSCountBadge(4)
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+
+            KSSecretRewardBadge()
         }
     }
 }
@@ -237,5 +241,37 @@ fun KSCountBadge(
         contentAlignment = Alignment.Center
     ) {
         Text(text = count.toString(), color = colors.textAccentGrey, fontSize = 12.sp)
+    }
+}
+
+@Composable
+fun KSSecretRewardBadge() {
+    Row(
+        modifier = Modifier
+            .background(
+                color = colors.backgroundAccentGreenSubtle,
+                shape = shapes.small
+            )
+            .padding(
+                start = dimensions.paddingMediumSmall,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall,
+                end = dimensions.paddingMediumSmall
+            )
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(end = dimensions.paddingXSmall)
+                .size(dimensions.alertIconSize),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_locked),
+            contentDescription = stringResource(R.string.fpo_secret_reward),
+            colorFilter = ColorFilter.tint(colors.textAccentGreen)
+        )
+
+        Text(
+            text = stringResource(R.string.fpo_secret_reward),
+            color = colors.textAccentGreenBold,
+            style = typographyV2.headingSM
+        )
     }
 }

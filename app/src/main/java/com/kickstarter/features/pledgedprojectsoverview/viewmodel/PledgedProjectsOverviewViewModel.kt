@@ -151,7 +151,7 @@ class PledgedProjectsOverviewViewModel(
                     .flow
                     .map { pagingData ->
                         pagingData.filter {
-                            if(!isV2Enabled) !isTier2Type(it.viewType ?: PPOCardViewType.UNKNOWN) else true
+                            if (!isV2Enabled) !isTier2Type(it.viewType ?: PPOCardViewType.UNKNOWN) else true
                         }
                     }
                     .onStart {
@@ -241,8 +241,8 @@ class PledgedProjectsOverviewViewModel(
         )
     }
 
-    private fun isTier2Type(viewType: PPOCardViewType) : Boolean {
-        return when(viewType) {
+    private fun isTier2Type(viewType: PPOCardViewType): Boolean {
+        return when (viewType) {
             PPOCardViewType.ADDRESS_CONFIRMED,
             PPOCardViewType.PLEDGE_COLLECTED_REWARD,
             PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD,

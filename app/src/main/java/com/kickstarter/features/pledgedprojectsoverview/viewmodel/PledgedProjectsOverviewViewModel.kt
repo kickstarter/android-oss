@@ -13,6 +13,7 @@ import androidx.paging.filter
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.pledgedprojectsoverview.extensions.isTier2Type
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
@@ -151,7 +152,7 @@ class PledgedProjectsOverviewViewModel(
                     .flow
                     .map { pagingData ->
                         pagingData.filter {
-                            if (!isV2Enabled) !isTier2Type(it.viewType ?: PPOCardViewType.UNKNOWN) else true
+                            if (!isV2Enabled) !(it.viewType ?: PPOCardViewType.UNKNOWN).isTier2Type() else true
                         }
                     }
                     .onStart {

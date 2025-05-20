@@ -45,6 +45,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
+import com.kickstarter.features.pledgedprojectsoverview.extensions.isTier1Alert
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
@@ -217,7 +218,7 @@ fun PPOCardView(
 ) {
 
     BadgedBox(
-        badge = { if (isTier1Alert(viewType)) Badge(backgroundColor = colors.backgroundDangerBold) }
+        badge = { if (viewType.isTier1Alert()) Badge(backgroundColor = colors.backgroundDangerBold) }
     ) {
         Card(
             modifier = Modifier
@@ -555,12 +556,5 @@ fun RewardReceivedToggleView(
             },
             enabled = true,
         )
-    }
-}
-
-fun isTier1Alert(viewType: PPOCardViewType): Boolean {
-    return when (viewType) {
-        PPOCardViewType.CONFIRM_ADDRESS, PPOCardViewType.AUTHENTICATE_CARD, PPOCardViewType.OPEN_SURVEY, PPOCardViewType.FIX_PAYMENT -> true
-        else -> false
     }
 }

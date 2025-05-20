@@ -333,7 +333,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     onSearchTermChanged = {
                     },
                     onItemClicked = { },
-                    shouldShowPhase2 = true
+                    shouldShowPhase = true
                 )
             }
         }
@@ -372,7 +372,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         )
                     },
                     pagerState = testPagerState,
-                    sheetState = testSheetState
+                    sheetState = testSheetState,
+                    shouldShowPhase = true
                 )
             }
 
@@ -429,7 +430,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,
-                    shouldShowPhase2 = false
+                    shouldShowPhase = false
                 )
             }
 

@@ -352,7 +352,7 @@ fun PillBar(
             KSPillButton(
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)),
                 countApiIsReady = countApiIsReady,
-                text = "% Raised",
+                text = percentageRaisedText,
                 isSelected = selectedFilterCounts.getOrDefault(
                     FilterRowPillType.PERCENTAGE_RAISED.name,
                     0

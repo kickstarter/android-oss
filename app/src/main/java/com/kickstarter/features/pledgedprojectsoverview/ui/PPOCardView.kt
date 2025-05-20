@@ -540,7 +540,7 @@ fun RewardReceivedToggleView(
             )
     ) {
         Text(
-            text = "Reward Received",
+            text = stringResource(R.string.Reward_received),
             style = typographyV2.bodyBoldLG,
             color = colors.textPrimary
         )

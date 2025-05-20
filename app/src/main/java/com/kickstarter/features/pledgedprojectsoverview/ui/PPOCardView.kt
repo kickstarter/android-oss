@@ -541,7 +541,8 @@ fun RewardReceivedToggleView(
     ) {
         Text(
             text = "Reward Received",
-            style = typographyV2.subHeadlineMedium
+            style = typographyV2.bodyBoldLG,
+            color = colors.textPrimary
         )
         Spacer(modifier = Modifier.weight(1f))
 

@@ -9,11 +9,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import androidx.paging.filter
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
@@ -99,7 +102,7 @@ class PledgedProjectsOverviewViewModel(
     private var snackbarMessage: (stringID: Int, type: String, duration: SnackbarDuration) -> Unit = { _, _, _ -> }
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analyticEvents = requireNotNull(environment.analytics())
-
+    private var isV2Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
     val totalAlertsState = mutableTotalAlerts.asStateFlow()
 
@@ -146,6 +149,11 @@ class PledgedProjectsOverviewViewModel(
                     pagingSource
                 }
                     .flow
+                    .map { pagingData ->
+                        pagingData.filter {
+                            if(!isV2Enabled) !isTier2Type(it.viewType ?: PPOCardViewType.UNKNOWN) else true
+                        }
+                    }
                     .onStart {
                         emitCurrentState(isLoading = true)
                     }.catch {
@@ -231,6 +239,20 @@ class PledgedProjectsOverviewViewModel(
                 isErrored = isErrored,
             )
         )
+    }
+
+    private fun isTier2Type(viewType: PPOCardViewType) : Boolean {
+        return when(viewType) {
+            PPOCardViewType.ADDRESS_CONFIRMED,
+            PPOCardViewType.PLEDGE_COLLECTED_REWARD,
+            PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD,
+            PPOCardViewType.SUVERY_SUBMITTED_DIGITAL,
+            PPOCardViewType.SUVERY_SUBMITTED_SHIPPABLE,
+            PPOCardViewType.AWAITING_REWARD,
+            PPOCardViewType.PLEDGE_REDEMPTION,
+            PPOCardViewType.REWARD_RECEIVED -> true
+            else -> false
+        }
     }
 
     fun showHeadsUpSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {

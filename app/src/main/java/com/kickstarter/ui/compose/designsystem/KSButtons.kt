@@ -399,7 +399,7 @@ fun KSFacebookButton(
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = kds_black,
-            imageId = R.drawable.googlepay_button_content
+            imageId = R.drawable.com_facebook_button_icon
         )
     }
 }

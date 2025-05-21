@@ -77,8 +77,9 @@ fun KSBadgesPreview() {
 
 @Composable
 fun KSGreenBadge(
-    leadingIcon: @Composable () -> Unit = {},
+    icon: ImageVector? = null,
     text: String,
+    iconTint: Color = colors.textAccentGreen,
     textColor: Color = colors.textAccentGreen
 ) {
     Row(
@@ -94,15 +95,25 @@ fun KSGreenBadge(
                 end = dimensions.paddingMediumSmall
             )
     ) {
-        leadingIcon()
+        if (icon != null) {
+            Image(
+                modifier = Modifier
+                    .padding(end = dimensions.paddingXSmall)
+                    .size(dimensions.alertIconSize),
+                imageVector = icon,
+                contentDescription = text,
+                colorFilter = ColorFilter.tint(iconTint)
+            )
+        }
 
         Text(
-            text = text,
+            text,
             color = textColor,
-            style = typographyV2.footNoteMedium
+            style = typographyV2.headingSM
         )
     }
 }
+
 
 @Composable
 fun KSCoralBadge(
@@ -246,32 +257,12 @@ fun KSCountBadge(
 
 @Composable
 fun KSSecretRewardBadge() {
-    Row(
-        modifier = Modifier
-            .background(
-                color = colors.backgroundAccentGreenSubtle,
-                shape = shapes.small
-            )
-            .padding(
-                start = dimensions.paddingMediumSmall,
-                top = dimensions.paddingSmall,
-                bottom = dimensions.paddingSmall,
-                end = dimensions.paddingMediumSmall
-            )
-    ) {
-        Image(
-            modifier = Modifier
-                .padding(end = dimensions.paddingXSmall)
-                .size(dimensions.alertIconSize),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_locked),
-            contentDescription = stringResource(R.string.fpo_secret_reward),
-            colorFilter = ColorFilter.tint(colors.textAccentGreen)
-        )
-
-        Text(
-            text = stringResource(R.string.fpo_secret_reward),
-            color = colors.textAccentGreenBold,
-            style = typographyV2.headingSM
-        )
-    }
+    KSGreenBadge(
+        icon = ImageVector.vectorResource(id = R.drawable.ic_locked),
+        text = stringResource(R.string.fpo_secret_reward),
+        textColor = colors.textAccentGreenBold,
+    )
 }
+
+
+

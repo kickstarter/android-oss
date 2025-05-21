@@ -365,8 +365,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount ->
+                    onApply = { state, category, _ -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, _ ->
                         selectedCounts.add(
                             statusCount to categoryCount
                         )
@@ -422,8 +422,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount ->
+                    onApply = { state, category, _ -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, _ ->
                         selectedCounts.add(
                             statusCount to categoryCount
                         )

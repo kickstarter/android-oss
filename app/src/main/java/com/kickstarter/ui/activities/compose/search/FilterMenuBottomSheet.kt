@@ -47,6 +47,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 object FilterMenuTestTags {
     const val SHEET = "filter_menu_sheet"
+    const val LIST = "filters_list"
     const val DISMISS_ROW = "dismiss_row"
     const val CATEGORY_ROW = "category_filter_row"
     const val PROJECT_STATUS_ROW = "project_status_row"
@@ -87,7 +88,7 @@ fun FilterMenuBottomSheet(
                 modifier = Modifier.testTag(FilterMenuTestTags.DISMISS_ROW)
             )
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier.weight(1f).testTag(FilterMenuTestTags.LIST)) {
                 items(availableFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(

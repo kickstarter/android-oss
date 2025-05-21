@@ -41,10 +41,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
+import com.kickstarter.ui.activities.compose.search.FilterRowPillType
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
-import com.kickstarter.ui.views.compose.search.FilterRowPillType
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -398,10 +398,8 @@ fun KSFacebookButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.facebook_blue,
-            imageId = R.drawable.com_facebook_button_icon,
-            text = text,
-            textColor = kds_white
+            backgroundColor = kds_black,
+            imageId = R.drawable.com_facebook_button_icon
         )
     }
 }

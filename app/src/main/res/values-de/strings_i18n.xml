@@ -652,6 +652,7 @@ Antippen und erneut versuchen</string>
   <string name="Search_results_other" formatted="false">%{search_results_count} results</string>
   <string name="Search_results_two" formatted="false">%{search_results_count} results</string>
   <string name="Search_results_zero" formatted="false">No results</string>
+  <string name="Secret_reward" formatted="false">Secret reward</string>
   <string name="Security_code" formatted="false">Sicherheitscode</string>
   <string name="See_all_backed__projects" formatted="false">Alle unterstützten Projekte ansehen</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>

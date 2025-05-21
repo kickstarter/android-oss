@@ -119,8 +119,4 @@
   <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
   <string name="fpo_track_shipment" formatted="false">Track shipment</string>
 
-  <!-- FPO's for secret rewards-->
-  <string name="fpo_secret_reward" formatted="false">Secret reward</string>
-
-
 </resources>

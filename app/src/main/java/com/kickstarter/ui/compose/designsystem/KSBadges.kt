@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.kickstarter.R
@@ -77,10 +78,11 @@ fun KSBadgesPreview() {
 
 @Composable
 fun KSGreenBadge(
-    icon: ImageVector? = null,
     text: String,
+    leadingIcon: (@Composable (iconTint: Color) -> Unit)? = null,
     iconTint: Color = colors.textAccentGreen,
-    textColor: Color = colors.textAccentGreen
+    textColor: Color = colors.textAccentGreen,
+    textStyle: TextStyle = typographyV2.footNoteMedium
 ) {
     Row(
         modifier = Modifier
@@ -95,25 +97,14 @@ fun KSGreenBadge(
                 end = dimensions.paddingMediumSmall
             )
     ) {
-        if (icon != null) {
-            Image(
-                modifier = Modifier
-                    .padding(end = dimensions.paddingXSmall)
-                    .size(dimensions.alertIconSize),
-                imageVector = icon,
-                contentDescription = text,
-                colorFilter = ColorFilter.tint(iconTint)
-            )
-        }
-
+        leadingIcon?.invoke(iconTint)
         Text(
-            text,
+            text = text,
             color = textColor,
-            style = typographyV2.headingSM
+            style = textStyle
         )
     }
 }
-
 
 @Composable
 fun KSCoralBadge(
@@ -256,13 +247,23 @@ fun KSCountBadge(
 }
 
 @Composable
-fun KSSecretRewardBadge() {
+fun KSSecretRewardBadge(
+    iconTint: Color = colors.textAccentGreen
+) {
     KSGreenBadge(
-        icon = ImageVector.vectorResource(id = R.drawable.ic_locked),
-        text = stringResource(R.string.fpo_secret_reward),
+        text = stringResource(R.string.Secret_reward),
         textColor = colors.textAccentGreenBold,
+        iconTint = iconTint,
+        leadingIcon = { tint ->
+            Image(
+                modifier = Modifier
+                    .padding(end = dimensions.paddingXSmall)
+                    .size(dimensions.alertIconSize),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_locked),
+                contentDescription = stringResource(R.string.Secret_reward),
+                colorFilter = ColorFilter.tint(tint)
+            )
+        },
+        textStyle = typographyV2.headingSM
     )
 }
-
-
-

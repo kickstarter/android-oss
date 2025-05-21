@@ -477,6 +477,10 @@ fun FilterPagerSheet(
             if (selectedProjectStatus != projectState.value) {
                 projectState.value = selectedProjectStatus
             }
+
+            if (currentPercentage != bucket.value) {
+                bucket.value = currentPercentage
+            }
         }
     }
 
@@ -500,6 +504,7 @@ fun FilterPagerSheet(
                         // - Reset to default values
                         if (applyAndDismiss.isFalse()) {
                             category.value = null
+                            bucket.value = null
                         }
                         applyUserSelection(
                             onApply,

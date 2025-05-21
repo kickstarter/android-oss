@@ -583,12 +583,12 @@ interface BackingFragmentViewModel {
                 !slug.isNullOrBlank() -> Observable.concat(
                     Observable.just(BackingState.Loading),
                     apolloClient.getProjectBacking(slug)
-                        .timeout(15, TimeUnit.SECONDS)
+                        .timeout(5, TimeUnit.SECONDS)
                         .retry(1)
                         .map<BackingState> { BackingState.Success(it) }
                         .onErrorReturn { BackingState.Error(it) }
                 )
-                else -> Observable.just(BackingState.Error(IllegalArgumentException("Missing backing and slug")))
+                else -> Observable.empty()
             }
         }
 

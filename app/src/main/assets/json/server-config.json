@@ -41,6 +41,7 @@
       "All_Theater_Projects": "All Theater Projects",
       "Allow": "Allow",
       "Allow_app_to_track": "Allow app to track?",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "Almost there!",
       "Amount_previous_amount": "Amount: %{amount}, previous amount: %{previous_amount}",
       "Amount_reward": "Amount: %{amount}, %{reward}",
@@ -273,6 +274,7 @@
       "Explore_creative_projects": "Explore creative projects",
       "Explore_projects": "Explore projects",
       "Explore_projects_we_love": "Explore projects we love",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.",
       "Ex_using": "Ex: Using email lists from outside sources, promoting a project where it shouldn't be promoted, link bombing.",
       "ellipsis_more": "…more",
@@ -341,6 +343,7 @@
       "For_the_database_or_source_I_will_use": "For the database or source that I will use or will create, the consent of the persons whose works or information are incorporated has been or will be obtained.",
       "Funding_successful": "Funding successful",
       "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "Get notified about new messages?",
       "Get_notified_about_this_creators_live_streams": "Get notified about this creator’s live streams",
       "Get_notified_when_your_friends_back_and_launch_projects": "Get notified when your friends back and launch projects",
@@ -521,6 +524,7 @@
       "Not_delivered": "Not delivered",
       "Not_now": "Not Now",
       "Not_raising_funds": "Not raising funds for a creative project",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}, email notification, off",
       "Notification_email_notification_on": "%{notification}, email notification, on",
       "Notification_push_notification_off": "%{notification}, push notification, off",
@@ -732,7 +736,16 @@
       "Say_something_kind": "Say something kind...",
       "Scheduled": "Scheduled",
       "seconds": "seconds",
+      "Secret_reward": "Secret reward",
       "Security_code": "Security code",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "See all backed projects",
       "See_all_category_name_projects": "See all %{category_name} projects",
       "See_our_suggestions": "See our suggestions ▸",
@@ -780,6 +793,7 @@
       "Show_up_for_the_spaces_you_love": "Show up for the spaces you love",
       "Sign_up": "Sign up",
       "Sign_up_newsletter": "Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Signs up with Email.",
       "Similar_projects": "Similar projects",
       "Skip_add_ons": "Skip add-ons",
@@ -848,6 +862,7 @@
       "These_projects_could_use_your_support": "These projects could use your support.",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "This allows you to see project goal and pledge amounts in your preferred currency.",
       "This_comment_has_been_removed_by_Kickstarter": "This comment has been removed by Kickstarter.",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "This comment is under review.",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "This comment is under review for potentially violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "This Facebook account is already linked to another Kickstarter user.",
@@ -904,6 +919,7 @@
       "Upcoming_with_creator_name": "Upcoming with<br/><b>%{creator_name}</b>",
       "Update_pledge": "Update pledge",
       "Use_of_ai": "Use of AI",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "Use the hashtag #backeditbecause to share what projects you're supporting and why they're important to you.",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "Use this to keep track of which rewards you've received.",
       "Verification_email_sent": "We've just sent you a verification email. Click the link in it and your address will be verified.",
@@ -2289,6 +2305,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0 backers",
@@ -2557,6 +2596,11 @@
             "close": "Close"
           }
         },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
+        },
         "dashboard": {
           "buttons": {
             "activity": "Activity",
@@ -2627,6 +2671,7 @@
       "All_Theater_Projects": "Alle Projekte der Kategorie Theater",
       "Allow": "Erlauben",
       "Allow_app_to_track": "App-Tracking erlauben?",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "Fast geschafft!",
       "Amount_previous_amount": "Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}",
       "Amount_reward": "Betrag: %{amount}, %{reward}",
@@ -2859,6 +2904,7 @@
       "Explore_creative_projects": "Erkunde kreative Projekte",
       "Explore_projects": "Projekte erkunden",
       "Explore_projects_we_love": "Team-Favoriten erkunden",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "Beispiel: Das Posten obszöner Kommentare oder Hassreden, Doxxing oder Posten personenbezogener Daten in Kommentaren oder Aktualisierungen.",
       "Ex_using": "Beispiele: Benutzung von E-Mail-Listen Dritter, Bewerben eines Projekts an unangebrachten Stellen, massenweises Versenden von Links.",
       "ellipsis_more": "... weiterlesen",
@@ -2927,6 +2973,7 @@
       "For_the_database_or_source_I_will_use": "Für die Datenbank oder die Quelle, die ich verwenden oder entwickeln werde, wurde oder wird die Einwilligung der Personen eingeholt, deren Werke oder Informationen miteinbezogen wurden.",
       "Funding_successful": "Finanzierung erfolgreich",
       "Games_newsletter": "Jetzt abonnieren - du erhältst von Kickstarters Games-Team alle zwei Wochen News zu neuen Projekten und Updates rund um Games.",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "Möchtest du benachrichtigt werden bei neuen Nachrichten?",
       "Get_notified_about_this_creators_live_streams": "Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.",
       "Get_notified_when_your_friends_back_and_launch_projects": "Du wirst benachrichtigt, wenn deine Freunde ein Projekt unterstützen oder veröffentlichen",
@@ -3107,6 +3154,7 @@
       "Not_delivered": "Nicht verschickt",
       "Not_now": "Nicht jetzt",
       "Not_raising_funds": "Gelder werden nicht für ein kreatives Projekt gesammelt",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}, Benachrichtigung per E-Mail, Aus",
       "Notification_email_notification_on": "%{notification}, Benachrichtigung per E-Mail, An",
       "Notification_push_notification_off": "%{notification}, Push-Benachrichtigung, Aus",
@@ -3318,7 +3366,16 @@
       "Say_something_kind": "Sag etwas Nettes ...",
       "Scheduled": "Geplant",
       "seconds": "Sekunden",
+      "Secret_reward": "Secret reward",
       "Security_code": "Sicherheitscode",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "Alle unterstützten Projekte ansehen",
       "See_all_category_name_projects": "Alle %{category_name}-Projekte anzeigen",
       "See_our_suggestions": "Unsere Empfehlungen ansehen ▸",
@@ -3366,6 +3423,7 @@
       "Show_up_for_the_spaces_you_love": "Zeige deinen Lieblingslokalen deine Solidarität",
       "Sign_up": "Registrieren",
       "Sign_up_newsletter": "Abonniere unsere \"Team Favoriten\" und wir schicken dir einmal pro Woche eine Auswahl von bemerkenswerten Projekten, handverlesen von unserem Team.",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Mit E-Mail-Adresse registrieren.",
       "Similar_projects": "Ähnliche Projekte",
       "Skip_add_ons": "Keine Add-ons",
@@ -3434,6 +3492,7 @@
       "These_projects_could_use_your_support": "Diese Projekte könnten mit deiner Unterstützung verwirklicht werden.",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "Hier kannst du das Finanzierungsziel und die Finanzierungsbeiträge in deiner bevorzugten Währung ansehen.",
       "This_comment_has_been_removed_by_Kickstarter": "Dieser Kommentar wurde von Kickstarter entfernt.",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "Dieser Kommentar wird gerade überprüft.",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "Dieser Kommentar wird gerade geprüft, weil er möglicherweise gegen die <a href=\"%{community_guidelines}\">Community-Richtlinien von Kickstarter</a> verstößt.",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Dieses Facebook-Konto ist bereits einem anderen Kickstarter-Nutzer zugeordnet.",
@@ -3490,6 +3549,7 @@
       "Upcoming_with_creator_name": "Demnächst: Video von <br/><b>%{creator_name}</b>",
       "Update_pledge": "Beitrag aktualisieren",
       "Use_of_ai": "Nutzung von KI",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "Teile unter dem Hashtag #backeditbecause die Projekte, die du unterstützt hast und warum sie für dich wichtig sind.",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "Hier kannst du nachverfolgen, welche Belohnungen du bereits erhalten hast.",
       "Verification_email_sent": "Wir haben dir gerade eine Bestätigungs-E-Mail geschickt. Bitte klicke auf den Link in der E-Mail, um deine Adresse zu bestätigen.",
@@ -4875,6 +4935,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0 Unterstützer",
@@ -5143,6 +5226,11 @@
             "close": "Schließen"
           }
         },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
+        },
         "dashboard": {
           "buttons": {
             "activity": "Aktivität",
@@ -5213,6 +5301,7 @@
       "All_Theater_Projects": "Todos los proyectos",
       "Allow": "Permitir",
       "Allow_app_to_track": "¿Permitir que la aplicación realice un seguimiento de mis actividades?",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "Cerca de la meta!",
       "Amount_previous_amount": "Monto actual: %{amount}, monto previo: %{previous_amount}",
       "Amount_reward": "Monto: %{amount}, %{reward}",
@@ -5445,6 +5534,7 @@
       "Explore_creative_projects": "Explora proyectos creativos",
       "Explore_projects": "Explora proyectos",
       "Explore_projects_we_love": "Explorar Nuestros favoritos",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "Ej.: Publicar comentarios obscenos u odiosos, obtener información personal de personas (doxxing) o publicar información personal en comentarios o actualizaciones.",
       "Ex_using": "Ej.: usar listas de correos electrónicos de fuentes externas, promocionar un proyecto en un lugar indebido, bombardeos de enlaces.",
       "ellipsis_more": "... leer más",
@@ -5513,6 +5603,7 @@
       "For_the_database_or_source_I_will_use": "Recibí o recibiré el consentimiento de las personas cuyos trabajos o contenido incorporé a la base de datos o fuente de información que utilizaré o crearé.",
       "Funding_successful": "Financiado con éxito",
       "Games_newsletter": "Suscríbete para recibir, cada dos semanas, una combinación de nuevos proyectos y actualizaciones sobre todo lo relacionado a juegos, seleccionados exclusivamente para ti por el equipo de Juegos de Kickstarter.",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "¿Deseas recibir notificaciones sobre nuevos mensajes?",
       "Get_notified_about_this_creators_live_streams": "Recibe notificaciones sobre los Live Streams de este creador",
       "Get_notified_when_your_friends_back_and_launch_projects": "Recibe notificaciones cuando tus amigos patrocinan o publican un proyecto",
@@ -5693,6 +5784,7 @@
       "Not_delivered": "No entregado",
       "Not_now": "Ahora no",
       "Not_raising_funds": "No recauda fondos para un proyecto creativo",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}, notificación por correo electrónico, desactivada",
       "Notification_email_notification_on": "%{notification}, notificación por correo electrónico, activada",
       "Notification_push_notification_off": "%{notification}, notificación push, desactivada",
@@ -5904,7 +5996,16 @@
       "Say_something_kind": "Di algo amable...",
       "Scheduled": "Programado",
       "seconds": "segundos",
+      "Secret_reward": "Secret reward",
       "Security_code": "Código de seguridad",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "Ver todos los proyectos patrocinados",
       "See_all_category_name_projects": "Ver todos los proyectos de %{category_name}",
       "See_our_suggestions": "Ver nuestras sugerencias ▸",
@@ -5952,6 +6053,7 @@
       "Show_up_for_the_spaces_you_love": "Apoya tus espacios culturales favoritos",
       "Sign_up": "Registrarse",
       "Sign_up_newsletter": "Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Registro con correo electrónico.",
       "Similar_projects": "Proyectos similares",
       "Skip_add_ons": "Omitir complementos",
@@ -6020,6 +6122,7 @@
       "These_projects_could_use_your_support": "A estos proyectos les vendría bien tu apoyo.",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "Esto te permite ver la meta del proyecto y los montos de las contribuciones en la moneda de tu preferencia.",
       "This_comment_has_been_removed_by_Kickstarter": "Este comentario ha sido eliminado por Kickstarter.",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "Este comentario está en revisión.",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "Este comentario está en revisión por una posible infracción de las <a href=\"%{community_guidelines}\">Reglas de la comunidad de Kickstarter.</a>",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.",
@@ -6076,6 +6179,7 @@
       "Upcoming_with_creator_name": "Próximamente: Video de <br/><b>%{creator_name}</b>",
       "Update_pledge": "Actualizar contribución",
       "Use_of_ai": "Uso de la IA",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "Usa el hashtag #backeditbecause para compartir qué proyectos apoyas y por qué son importantes para ti.",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "Aquí puedes ver las recompensas recibidas.",
       "Verification_email_sent": "Te acabamos de enviar un correo electrónico de verificación. Haz clic en el enlace incluido y se verificará tu dirección.",
@@ -7461,6 +7565,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0 patrocinadores",
@@ -7729,6 +7856,11 @@
             "close": "Cerrar"
           }
         },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
+        },
         "dashboard": {
           "buttons": {
             "activity": "Actividad",
@@ -7799,6 +7931,7 @@
       "All_Theater_Projects": "Tous les projets de la catégorie Théâtre",
       "Allow": "Autoriser",
       "Allow_app_to_track": "Autoriser cette application à suivre mes activités ?",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "Vous y êtes presque!",
       "Amount_previous_amount": "Montant : %{amount}, montant précédant : %{previous_amount}",
       "Amount_reward": "Montant : %{amount}, %{reward}",
@@ -8031,6 +8164,7 @@
       "Explore_creative_projects": "Découvrez des projets créatifs",
       "Explore_projects": "Découvrir des projets",
       "Explore_projects_we_love": "Découvrir nos coups de cœur",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "P. ex. : commentaires obscènes ou haineux, doxxing, données personnelles publiées dans les commentaires ou les actus.",
       "Ex_using": "Par exemple : listes de distribution externes, méthodes de promotion inacceptables, bombardement de liens.",
       "ellipsis_more": "... plus",
@@ -8099,6 +8233,7 @@
       "For_the_database_or_source_I_will_use": "J'ai obtenu ou j'obtiendrai le consentement des personnes dont les œuvres ou les informations sont incorporées à la base de données ou à la source que je compte utiliser ou créer.",
       "Funding_successful": "Intégralement financé",
       "Games_newsletter": "Un mix de nouveaux projets et d'actus sur le thème des jeux, soigneusement sélectionné par l'équipe Jeux de Kickstarter.",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "Envie d'être informé des messages entrants ?",
       "Get_notified_about_this_creators_live_streams": "Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.",
       "Get_notified_when_your_friends_back_and_launch_projects": "Des notifications lorsque vous amis lancent et soutiennent des projets",
@@ -8279,6 +8414,7 @@
       "Not_delivered": "Non distribué",
       "Not_now": "Pas maintenant",
       "Not_raising_funds": "Financement destiné à un projet non créatif",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}, notifications par e-mail désactivées",
       "Notification_email_notification_on": "%{notification}, notifications par e-mail activées",
       "Notification_push_notification_off": "%{notification}, notifications push désactivées",
@@ -8490,7 +8626,16 @@
       "Say_something_kind": "Un petit mot sympa...",
       "Scheduled": "Prévu",
       "seconds": "secondes",
+      "Secret_reward": "Secret reward",
       "Security_code": "Code de sécurité",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "Afficher tous les engagements",
       "See_all_category_name_projects": "Tous les projets de la catégorie %{category_name}",
       "See_our_suggestions": "Voir nos suggestions ▸",
@@ -8538,6 +8683,7 @@
       "Show_up_for_the_spaces_you_love": "Soutenez vos espaces culturels préférés.",
       "Sign_up": "Inscription",
       "Sign_up_newsletter": "Inscrivez-vous à Coups de cœur pour recevoir une sélection hebdomadaire de projets marquants qui nous ont plu.",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Inscription avec l'adresse e-mail.",
       "Similar_projects": "Projets similaires",
       "Skip_add_ons": "Passer les compléments",
@@ -8606,6 +8752,7 @@
       "These_projects_could_use_your_support": "Ces créateurs ont besoin de vous.",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "L'objectif du projet et les montants des engagements s'afficheront ainsi dans la devise de votre choix.",
       "This_comment_has_been_removed_by_Kickstarter": "Ce commentaire a été supprimé par Kickstarter.",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "Ce commentaire est en cours de vérification.",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "Ce commentaire est en cours d'examen pour manquement possible aux <a href=\"%{community_guidelines}\">Règles de bonne conduite de Kickstarter.</a>",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Ce compte Facebook est déjà relié à un autre utilisateur Kickstarter.",
@@ -8662,6 +8809,7 @@
       "Upcoming_with_creator_name": "<br/><b>%{creator_name}</b> bientôt en direct",
       "Update_pledge": "Modifier mon engagement",
       "Use_of_ai": "Utilisation de l'IA",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "Hashtag #backeditbecause : en quoi les projets que vous soutenez sont-ils importants ?",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.",
       "Verification_email_sent": "Nous venons de vous envoyer un e-mail de vérification. Cliquez sur le lien qu'il contient pour vérifier votre adresse.",
@@ -10047,6 +10195,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0 contributeurs",
@@ -10315,6 +10486,11 @@
             "close": "Fermer"
           }
         },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
+        },
         "dashboard": {
           "buttons": {
             "activity": "Activité",
@@ -10385,6 +10561,7 @@
       "All_Theater_Projects": "All Theater Projects",
       "Allow": "Allow",
       "Allow_app_to_track": "Allow app to track?",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "Almost there!",
       "Amount_previous_amount": "Amount: %{amount}, previous amount: %{previous_amount}",
       "Amount_reward": "Amount: %{amount}, %{reward}",
@@ -10617,6 +10794,7 @@
       "Explore_creative_projects": "Explore creative projects",
       "Explore_projects": "Explore projects",
       "Explore_projects_we_love": "Explore projects we love",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.",
       "Ex_using": "Ex: Using email lists from outside sources, promoting a project where it shouldn't be promoted, link bombing.",
       "ellipsis_more": "…more",
@@ -10685,6 +10863,7 @@
       "For_the_database_or_source_I_will_use": "For the database or source that I will use or will create, the consent of the persons whose works or information are incorporated has been or will be obtained.",
       "Funding_successful": "Funding successful",
       "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "Get notified about new messages?",
       "Get_notified_about_this_creators_live_streams": "Get notified about this creator’s live streams",
       "Get_notified_when_your_friends_back_and_launch_projects": "Get notified when your friends back and launch projects",
@@ -10865,6 +11044,7 @@
       "Not_delivered": "Not delivered",
       "Not_now": "Not Now",
       "Not_raising_funds": "Not raising funds for a creative project",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}, email notification, off",
       "Notification_email_notification_on": "%{notification}, email notification, on",
       "Notification_push_notification_off": "%{notification}, push notification, off",
@@ -11076,7 +11256,16 @@
       "Say_something_kind": "Say something kind...",
       "Scheduled": "Scheduled",
       "seconds": "seconds",
+      "Secret_reward": "Secret reward",
       "Security_code": "Security code",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "See all backed projects",
       "See_all_category_name_projects": "See all %{category_name} projects",
       "See_our_suggestions": "See our suggestions ▸",
@@ -11124,6 +11313,7 @@
       "Show_up_for_the_spaces_you_love": "Show up for the spaces you love",
       "Sign_up": "Sign up",
       "Sign_up_newsletter": "Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Signs up with Email.",
       "Similar_projects": "Similar projects",
       "Skip_add_ons": "Skip add-ons",
@@ -11192,6 +11382,7 @@
       "These_projects_could_use_your_support": "These projects could use your support.",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "This allows you to see project goal and pledge amounts in your preferred currency.",
       "This_comment_has_been_removed_by_Kickstarter": "This comment has been removed by Kickstarter.",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "This comment is under review.",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "This comment is under review for potentially violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "This Facebook account is already linked to another Kickstarter user.",
@@ -11248,6 +11439,7 @@
       "Upcoming_with_creator_name": "Upcoming with<br/><b>%{creator_name}</b>",
       "Update_pledge": "Update pledge",
       "Use_of_ai": "Use of AI",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "Use the hashtag #backeditbecause to share what projects you're supporting and why they're important to you.",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "Use this to keep track of which rewards you've received.",
       "Verification_email_sent": "We've just sent you a verification email. Click the link in it and your address will be verified.",
@@ -12633,6 +12825,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0 backers",
@@ -12901,6 +13116,11 @@
             "close": "Close"
           }
         },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
+        },
         "dashboard": {
           "buttons": {
             "activity": "Activity",
@@ -12971,6 +13191,7 @@
       "All_Theater_Projects": "全ての演劇プロジェクト",
       "Allow": "許可する",
       "Allow_app_to_track": "アプリによる追跡を許可しますか？",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "もう少しです!",
       "Amount_previous_amount": "金額: %{amount}, 以前の金額: %{previous_amount}",
       "Amount_reward": "金額：%{amount}、%{reward}",
@@ -13203,6 +13424,7 @@
       "Explore_creative_projects": "クリエイティブなプロジェクトをさがす",
       "Explore_projects": "プロジェクトをさがす",
       "Explore_projects_we_love": "Projects We Love を見る",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "例: ひわいなコメントや攻撃的なコメントを投稿したり、コメントや更新情報内で他人の個人情報を投稿 (ドキシング) したりなど。",
       "Ex_using": "例: 外部ソースからのメールリストを使用したり、宣伝してはいけない場所でプロジェクトの宣伝を行ったり、リンク爆弾を用いたりなど。",
       "ellipsis_more": "さらに表示",
@@ -13271,6 +13493,7 @@
       "For_the_database_or_source_I_will_use": "私が使用する（または作成する）データベースやソースについては、採用される作品や情報の所有者からすでに同意を得ている、または同意を得る予定です。",
       "Funding_successful": "ファンディング成功",
       "Games_newsletter": "Kickstarter の「ゲーム」チーム選りすぐりの、ゲームに関するあらゆる新プロジェクトや更新情報を毎月2回お届けするニュースレターに登録しましょう。",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "新規メッセージについて通知の受信を希望しますか？",
       "Get_notified_about_this_creators_live_streams": "このクリエイターのライブ配信通知を受け取る",
       "Get_notified_when_your_friends_back_and_launch_projects": "友達がプロジェクトをバックしたりローンチしたりした際に通知を受け取りましょう。",
@@ -13451,6 +13674,7 @@
       "Not_delivered": "未配送",
       "Not_now": "後で",
       "Not_raising_funds": "クリエイティブなプロジェクトのためのファンディングではない",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}、メール通知、オフ",
       "Notification_email_notification_on": "%{notification}、メール通知、オン",
       "Notification_push_notification_off": "%{notification}、プッシュ通知、オフ",
@@ -13662,7 +13886,16 @@
       "Say_something_kind": "言葉に注意",
       "Scheduled": "スケジュール設定済み",
       "seconds": "秒",
+      "Secret_reward": "Secret reward",
       "Security_code": "セキュリティーコード",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "バック済みのプロジェクトすべてを見る",
       "See_all_category_name_projects": "%{category_name} プロジェクトをすべて見る",
       "See_our_suggestions": "おすすめを見る ▸",
@@ -13710,6 +13943,7 @@
       "Show_up_for_the_spaces_you_love": "お気に入りの場所や団体のためにできること",
       "Sign_up": "サインアップ。",
       "Sign_up_newsletter": "Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Eメールでサインアップする。",
       "Similar_projects": "よく似たプロジェクト",
       "Skip_add_ons": "アドオンをスキップする",
@@ -13778,6 +14012,7 @@
       "These_projects_could_use_your_support": "こちらのプロジェクト達があなたのサポートを待っています！",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "これにより、プロジェクトのファンディングゴールとプレッジ金額をご希望の通貨で表示することができます。",
       "This_comment_has_been_removed_by_Kickstarter": "このコメントは Kickstarter によって削除されました。",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "このコメントは現在審査中です。",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "このコメントは <a href=\"%{community_guidelines}\">Kickstarter のコミュニティガイドライン</a>に違反している可能性があるとして現在審査中です。",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "このFacebookアカウントはすでに他のKickstarterユーザーとつながっています",
@@ -13834,6 +14069,7 @@
       "Upcoming_with_creator_name": "<br/><b>%{creator_name}</b>が近日配信",
       "Update_pledge": "プレッジを更新する",
       "Use_of_ai": "AI の使用",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "ハッシュタグ #backeditbecause を使って、あなたがサポートするプロジェクトをシェアし、そのプロジェクトがなぜあなたにとって重要なのか、その理由を伝えましょう。 ",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "受け取ったリワードを確認するにはこちらをご利用ください。",
       "Verification_email_sent": "認証メールを送信しました。メール内のリンクをクリックすればメールアドレスが認証済みとなります。",
@@ -15219,6 +15455,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0バッカー",
@@ -15487,6 +15746,11 @@
             "close": "閉じる"
           }
         },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
+        },
         "dashboard": {
           "buttons": {
             "activity": "アクティビティ",
@@ -15557,6 +15821,7 @@
       "All_Theater_Projects": "All Theater Projects",
       "Allow": "Allow",
       "Allow_app_to_track": "Allow app to track?",
+      "Allow_tracking": "Allow tracking",
       "Almost_there": "Almost there!",
       "Amount_previous_amount": "Amount: %{amount}, previous amount: %{previous_amount}",
       "Amount_reward": "Amount: %{amount}, %{reward}",
@@ -15789,6 +16054,7 @@
       "Explore_creative_projects": "Explore creative projects",
       "Explore_projects": "Explore projects",
       "Explore_projects_we_love": "Explore projects we love",
+      "Explore_the_app": "Explore the app",
       "Ex_posting": "Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.",
       "Ex_using": "Ex: Using email lists from outside sources, promoting a project where it shouldn't be promoted, link bombing.",
       "ellipsis_more": "…more",
@@ -15857,6 +16123,7 @@
       "For_the_database_or_source_I_will_use": "For the database or source that I will use or will create, the consent of the persons whose works or information are incorporated has been or will be obtained.",
       "Funding_successful": "Funding successful",
       "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
+      "Get_notified": "Get notified",
       "Get_notified_about_new_messages": "Get notified about new messages?",
       "Get_notified_about_this_creators_live_streams": "Get notified about this creator’s live streams",
       "Get_notified_when_your_friends_back_and_launch_projects": "Get notified when your friends back and launch projects",
@@ -16037,6 +16304,7 @@
       "Not_delivered": "Not delivered",
       "Not_now": "Not Now",
       "Not_raising_funds": "Not raising funds for a creative project",
+      "Not_right_now": "Not right now",
       "Notification_email_notification_off": "%{notification}, email notification, off",
       "Notification_email_notification_on": "%{notification}, email notification, on",
       "Notification_push_notification_off": "%{notification}, push notification, off",
@@ -16248,7 +16516,16 @@
       "Say_something_kind": "Say something kind...",
       "Scheduled": "Scheduled",
       "seconds": "seconds",
+      "Secret_reward": "Secret reward",
       "Security_code": "Security code",
+      "Search_results": {
+        "zero": "No results",
+        "one": "%{search_results_count} result",
+        "two": "%{search_results_count} results",
+        "few": "%{search_results_count} results",
+        "many": "%{search_results_count} results",
+        "other": "%{search_results_count} results"
+      },
       "See_all_backed__projects": "See all backed projects",
       "See_all_category_name_projects": "See all %{category_name} projects",
       "See_our_suggestions": "See our suggestions ▸",
@@ -16296,6 +16573,7 @@
       "Show_up_for_the_spaces_you_love": "Show up for the spaces you love",
       "Sign_up": "Sign up",
       "Sign_up_newsletter": "Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.",
+      "Sign_up_or_log_in": "Sign up or log in",
       "Signs_up_with_Email": "Signs up with Email.",
       "Similar_projects": "Similar projects",
       "Skip_add_ons": "Skip add-ons",
@@ -16364,6 +16642,7 @@
       "These_projects_could_use_your_support": "These projects could use your support.",
       "This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency": "This allows you to see project goal and pledge amounts in your preferred currency.",
       "This_comment_has_been_removed_by_Kickstarter": "This comment has been removed by Kickstarter.",
+      "This_comment_has_been_removed_for_violating_kickstarters_community_guidelines": "This comment has been removed for violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_comment_is_under_review": "This comment is under review.",
       "This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines": "This comment is under review for potentially violating <a href=\"%{community_guidelines}\">Kickstarter’s Community Guidelines.</a>",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "This Facebook account is already linked to another Kickstarter user.",
@@ -16420,6 +16699,7 @@
       "Upcoming_with_creator_name": "Upcoming with<br/><b>%{creator_name}</b>",
       "Update_pledge": "Update pledge",
       "Use_of_ai": "Use of AI",
+      "Use_personalization": "Use personalization",
       "Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you": "Use the hashtag #backeditbecause to share what projects you're supporting and why they're important to you.",
       "Use_this_to_keep_track_of_which_rewards_youve_received": "Use this to keep track of which rewards you've received.",
       "Verification_email_sent": "We've just sent you a verification email. Click the link in it and your address will be verified.",
@@ -17805,6 +18085,29 @@
           }
         }
       },
+      "onboarding": {
+        "welcome_to_kickstarter": {
+          "title": "Welcome to Kickstarter",
+          "subtitle": "Use our app to discover and support creative projects. Browse by category, find projects near you, or explore our \"Projects We Love\" picks."
+        },
+        "save_projects_for_later": {
+          "title": "Save projects for later",
+          "subtitle": "Found a project that's caught your eye? Tap the heart to save it and you can come back to it later on your Saved tab."
+        },
+        "stay_in_the_know": {
+          "title": "Stay in the know",
+          "subtitle": "Turn on notifications to keep track of your backed projects and discover more you'll love. You can customize these anytime in your settings."
+        },
+        "personalize_your_experience": {
+          "title": "Personalize your experience",
+          "subtitle": "Allow tracking to help us improve your in-app experience.",
+          "subtitle_settings": "You can change your tracking preference anytime in your device settings."
+        },
+        "join_the_community": {
+          "title": "Join the community",
+          "subtitle": "Log in or create an account to back projects, save favorites, and follow along as creative ideas come to life."
+        }
+      },
       "general": {
         "backer_count_backers": {
           "zero": "0 backers",
@@ -18072,6 +18375,11 @@
             "star_hint_favorites_this_project": "Favorites this project.",
             "close": "Close"
           }
+        },
+        "payment_types": {
+          "apple_pay": "Apple Pay",
+          "google_pay": "Google Pay",
+          "bank_account": "Bank account"
         },
         "dashboard": {
           "buttons": {
@@ -18849,6 +19157,6 @@
       ]
     }
   },
-  "country_code": "US",
+  "country_code": "MX",
   "locale": "en"
 }

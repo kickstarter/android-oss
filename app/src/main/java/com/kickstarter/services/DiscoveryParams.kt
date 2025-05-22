@@ -226,7 +226,8 @@ class DiscoveryParams private constructor(
         similarTo = similarTo,
         state = state,
         tagId = tagId,
-        term = term
+        term = term,
+        raisedBucket = raisedbucket
     )
 
     fun queryParams(): Map<String, String> {

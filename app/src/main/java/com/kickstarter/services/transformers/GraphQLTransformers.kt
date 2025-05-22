@@ -187,7 +187,7 @@ fun rewardTransformer(
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
     val photo = getPhoto(rewardImage?.image?.url, rewardImage?.image?.altText)
-
+    val isSecretReward = rewardGr.audienceData.secret
     return Reward.builder()
         .title(title)
         .convertedMinimum(convertedAmount)
@@ -213,6 +213,7 @@ fun rewardTransformer(
         .backersCount(backersCount)
         .localReceiptLocation(localReceiptLocation)
         .image(photo)
+        .isSecretReward(isSecretReward)
         .build()
 }
 

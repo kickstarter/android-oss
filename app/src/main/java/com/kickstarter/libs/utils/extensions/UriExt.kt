@@ -211,6 +211,15 @@ fun Uri.isBackingDetailsUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_BACKING_DETAILS_URL.matcher(path()).matches()
 }
 
+fun Uri.hasSecretRewardToken(): Boolean {
+    return this.getQueryParameter("secret_reward_token")?.isNotEmpty() == true
+}
+
+fun Uri.secretRewardToken(): String {
+    return this.getQueryParameter("secret_reward_token") ?: ""
+}
+
+
 private const val VERIFICATION = "/profile/verify_email"
 private const val KSDOMAIN = "kickstarter.com"
 

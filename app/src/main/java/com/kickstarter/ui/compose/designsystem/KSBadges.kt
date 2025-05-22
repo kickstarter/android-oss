@@ -248,7 +248,7 @@ fun KSCountBadge(
 
 @Composable
 fun KSSecretRewardBadge(
-    iconTint: Color = colors.textAccentGreen
+    iconTint: Color = colors.textAccentGreenBold
 ) {
     KSGreenBadge(
         text = stringResource(R.string.Secret_reward),

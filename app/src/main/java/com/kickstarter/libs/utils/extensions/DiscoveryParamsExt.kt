@@ -8,6 +8,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
 import com.kickstarter.type.PublicProjectState
+import com.kickstarter.type.RaisedBuckets
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import java.util.TreeMap
 
@@ -261,5 +262,14 @@ fun DiscoveryParams.State.toProjectState(): PublicProjectState {
         DiscoveryParams.State.UPCOMING -> PublicProjectState.UPCOMING
         DiscoveryParams.State.LATE_PLEDGES -> PublicProjectState.LATE_PLEDGE
         else -> PublicProjectState.UNKNOWN__
+    }
+}
+
+fun DiscoveryParams.RaisedBuckets.toRaisedBucket(): RaisedBuckets {
+    return when (this) {
+        DiscoveryParams.RaisedBuckets.BUCKET_1 -> RaisedBuckets.BUCKET_1
+        DiscoveryParams.RaisedBuckets.BUCKET_2 -> RaisedBuckets.BUCKET_2
+        DiscoveryParams.RaisedBuckets.BUCKET_0 -> RaisedBuckets.BUCKET_0
+        else -> RaisedBuckets.UNKNOWN__
     }
 }

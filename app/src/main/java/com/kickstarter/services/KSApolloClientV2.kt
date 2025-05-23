@@ -65,6 +65,7 @@ import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.libs.utils.extensions.toProjectState
+import com.kickstarter.libs.utils.extensions.toRaisedBucket
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BuildPaymentPlanData
@@ -332,7 +333,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),
             backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean()),
             searchTerm = if (discoveryParams.term() == null || discoveryParams.term().isNullOrBlank()) Optional.absent() else Optional.present(discoveryParams.term()),
-            state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(discoveryParams.state()?.toProjectState())
+            state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(discoveryParams.state()?.toProjectState()),
+            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket())
         )
     }
 

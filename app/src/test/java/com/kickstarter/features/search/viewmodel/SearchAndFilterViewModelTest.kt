@@ -271,7 +271,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -304,10 +304,11 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
         assertEquals(params?.state(), null)
+        assertEquals(params?.raisedBucket(), null)
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus load two pages`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val secondPageList = listOf(ProjectFactory.caProject(), ProjectFactory.mxProject())
@@ -347,6 +348,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.category(), null)
         assertEquals(params?.term(), null)
         assertEquals(params?.state(), null)
+        assertEquals(params?.raisedBucket(), null)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
 
@@ -354,7 +356,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching a tem with category sorting and projectStatus, load two pages`() = runTest {
+    fun `test for searching a tem with category, sorting, projectStatus and percentage raised, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
 
@@ -388,7 +390,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
             viewModel.updateParamsToSearchWith(
                 CategoryFactory.gamesCategory(),
                 DiscoveryParams.Sort.MOST_FUNDED,
-                DiscoveryParams.State.LIVE
+                DiscoveryParams.State.LIVE,
+                DiscoveryParams.RaisedBuckets.BUCKET_2
             )
             viewModel.updateSearchTerm("cats")
             viewModel.loadMore()
@@ -400,6 +403,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.category(), CategoryFactory.gamesCategory())
         assertEquals(params?.term(), "cats")
         assertEquals(params?.state(), DiscoveryParams.State.LIVE)
+        assertEquals(params?.raisedBucket(), DiscoveryParams.RaisedBuckets.BUCKET_2)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
         assertEquals(errorNumber, 0)

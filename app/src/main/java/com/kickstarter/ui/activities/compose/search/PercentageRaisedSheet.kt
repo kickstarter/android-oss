@@ -44,7 +44,7 @@ private fun CategoryRowSelectedWithSubcategoriesPills() {
     KSTheme {
         PercentageRaisedSheet(
             onNavigate = {},
-            currentPercentage = DiscoveryParams.RAISEDBUCKETS.BUCKET_0,
+            currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_0,
             onDismiss = {},
             onApply = { bucket, applyAndDismiss ->
             }
@@ -54,14 +54,14 @@ private fun CategoryRowSelectedWithSubcategoriesPills() {
 
 object PercentageRaisedTestTags {
     const val BUCKETS_LIST = "buckets_list"
-    fun bucketTag(bucket: DiscoveryParams.RAISEDBUCKETS) = "bucket_${bucket.name}"
+    fun bucketTag(bucket: DiscoveryParams.RaisedBuckets) = "bucket_${bucket.name}"
 }
 
 @Composable
 fun PercentageRaisedSheet(
-    currentPercentage: DiscoveryParams.RAISEDBUCKETS? = null,
+    currentPercentage: DiscoveryParams.RaisedBuckets? = null,
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.RAISEDBUCKETS?, Boolean?) -> Unit = { a, b -> },
+    onApply: (DiscoveryParams.RaisedBuckets?, Boolean?) -> Unit = { a, b -> },
     onNavigate: () -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -132,7 +132,7 @@ fun PercentageRaisedSheet(
                         }
                         .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
                 ) {
-                    val validBuckets = DiscoveryParams.RAISEDBUCKETS.values().filter { it != DiscoveryParams.RAISEDBUCKETS.UNKNOWN }
+                    val validBuckets = DiscoveryParams.RaisedBuckets.values().filter { it != DiscoveryParams.RaisedBuckets.UNKNOWN }
                     items(validBuckets) { bucket ->
                         Row(
                             modifier = Modifier.testTag(bucketTag(bucket))
@@ -176,9 +176,9 @@ fun PercentageRaisedSheet(
 }
 
 @Composable
-private fun textForBucket(bucket: DiscoveryParams.RAISEDBUCKETS) = when (bucket) {
-    DiscoveryParams.RAISEDBUCKETS.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
-    DiscoveryParams.RAISEDBUCKETS.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
-    DiscoveryParams.RAISEDBUCKETS.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)
+private fun textForBucket(bucket: DiscoveryParams.RaisedBuckets) = when (bucket) {
+    DiscoveryParams.RaisedBuckets.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
+    DiscoveryParams.RaisedBuckets.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
+    DiscoveryParams.RaisedBuckets.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)
     else -> ""
 }

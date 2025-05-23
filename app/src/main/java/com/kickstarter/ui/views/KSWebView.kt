@@ -51,7 +51,9 @@ class KSWebView@JvmOverloads constructor(
             binding.internalWebView.webViewClient = this.client
             binding.internalWebView.webChromeClient = WebChromeClient()
             binding.internalWebView.settings.javaScriptEnabled = true
-            binding.internalWebView.settings.allowFileAccess = false
+            binding.internalWebView.settings.allowFileAccess = true
+            binding.internalWebView.settings.domStorageEnabled = true
+            binding.internalWebView.settings.allowContentAccess = true
             this.client.setDelegate(this)
 
             if (Build.isInternal() || build.isDebug) {

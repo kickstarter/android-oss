@@ -2,26 +2,24 @@ package com.kickstarter.ui.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.activity.viewModels
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
 import com.kickstarter.libs.Build
@@ -35,7 +33,13 @@ import com.kickstarter.viewmodels.VideoViewModel.Factory
 import com.kickstarter.viewmodels.VideoViewModel.VideoViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import androidx.core.net.toUri
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 
+@UnstableApi
 class VideoActivity : AppCompatActivity() {
     private lateinit var build: Build
     private var player: ExoPlayer? = null
@@ -149,6 +153,7 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(UnstableApi::class)
     private fun preparePlayer(videoUrl: String) {
         val adaptiveTrackSelectionFactory: AdaptiveTrackSelection.Factory = AdaptiveTrackSelection.Factory()
         trackSelector = DefaultTrackSelector(this, adaptiveTrackSelectionFactory)
@@ -171,12 +176,14 @@ class VideoActivity : AppCompatActivity() {
         player?.playWhenReady = true
     }
 
+    @OptIn(UnstableApi::class)
     private fun getMediaSource(videoUrl: String): MediaSource {
         val dataSourceFactory = DefaultHttpDataSource.Factory().setUserAgent(userAgent(build))
-        val videoUri = Uri.parse(videoUrl)
+        val videoUri = videoUrl.toUri()
         val fileType = Util.inferContentType(videoUri)
 
         return if (fileType == C.TYPE_HLS) {
+            //HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaBrowserCompat.MediaItem.fromUri(videoUri))
             HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(videoUri))
         } else {
             ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(videoUri))
@@ -196,7 +203,8 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
-    private val eventListener: Player.Listener = object : Player.Listener {
+    private val eventListener: Player.Listener = @UnstableApi
+    object : Player.Listener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             onStateChanged(playbackState)
         }

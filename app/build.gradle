@@ -212,6 +212,7 @@ dependencies {
 
     // Fonts
     implementation 'androidx.compose.ui:ui-text-google-fonts:1.7.7'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.7.1'
 
     // Architecture components
     def lifecycle_version = "2.2.0"
@@ -232,7 +233,9 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
     implementation("com.google.android.play:review-ktx:2.0.1")
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "com.google.android.exoplayer:exoplayer:2.17.1"
+    implementation "androidx.media3:media3-exoplayer:1.7.1"
+    implementation "androidx.media3:media3-ui:1.7.1"
+    implementation "androidx.media3:media3-common:1.7.1"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.6.1'
     final dagger_version = "2.46"

@@ -1,8 +1,9 @@
 package com.kickstarter.ui.viewholders.projectcampaign
 
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.widget.SeekBar
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
 import com.kickstarter.libs.KSLifecycleEvent
@@ -23,7 +24,7 @@ class AudioElementViewHolder(
 ) : KSViewHolder(binding.root) {
 
     private val viewModel = AudioViewElementViewHolderViewModel.AudioViewElementViewHolderViewModel(lifecycleBehaviorSubject)
-    private val mediaPlayer: MediaPlayer = MediaPlayer()
+    private var mediaPlayer: ExoPlayer? = null
     private var isPrepared = false
     private val updateObservable = io.reactivex.Observable.interval(500, TimeUnit.MILLISECONDS)
     private lateinit var updateDisposable: Disposable
@@ -51,20 +52,11 @@ class AudioElementViewHolder(
             togglePlayerState()
         }
 
-        this.mediaPlayer.setOnCompletionListener {
-            resetPlayer()
-        }
-
-        this.mediaPlayer.setOnPreparedListener {
-            isPrepared = true
-            prepareMediaPlayer()
-        }
-
         this.binding.progressbar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
-                        mediaPlayer.seekTo(progress * 1000)
+                        mediaPlayer?.seekTo((progress * 1000).toLong())
                         updateProgressTextLabel()
                     }
                 }
@@ -80,35 +72,35 @@ class AudioElementViewHolder(
     }
 
     override fun destroy() {
-        mediaPlayer.release()
+        mediaPlayer?.release()
         disposables.dispose()
         super.destroy()
     }
 
     fun togglePlayerState() {
         if (!isPrepared) return
-        if (mediaPlayer.isPlaying) {
+        if (mediaPlayer?.isPlaying == true) {
             pausePlayer()
         } else {
             startPlayer()
         }
     }
 
-    fun resetPlayer() {
+    private fun resetPlayer() {
         if (isPrepared) {
             stopPlayer()
             this.binding.progressbar.progress = 0
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
-            mediaPlayer.seekTo(0)
+            this.binding.playPause.setImageResource(R.drawable.ic_play_icon)
+            mediaPlayer?.seekTo(0)
             updateProgressTextLabel()
             prepareMediaPlayer()
         }
     }
 
     fun startPlayer() {
-        if (isPrepared && !mediaPlayer.isPlaying) {
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_pause)
-            mediaPlayer.start()
+        if (isPrepared && mediaPlayer?.isPlaying == false) {
+            this.binding.playPause.setImageResource(R.drawable.ic_play_icon) // TODO: needs a pause icon
+            mediaPlayer?.play()
 
             updateDisposable = updateObservable
                 .subscribeOn(Schedulers.io())
@@ -120,69 +112,74 @@ class AudioElementViewHolder(
     }
 
     fun updateProgressUI() {
-        if (isPrepared && mediaPlayer.isPlaying) {
+        if (isPrepared && mediaPlayer?.isPlaying == true) {
             updateProgressTextLabel()
 
-            val currentPosition = mediaPlayer.currentPosition / 1000
-            this.binding.progressbar.progress = currentPosition
+            val currentPosition = mediaPlayer?.currentPosition?.div(1000) ?: 0
+            this.binding.progressbar.progress = currentPosition.toInt()
         }
     }
 
     fun pausePlayer() {
-        if (isPrepared && mediaPlayer.isPlaying) {
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
+        if (isPrepared && mediaPlayer?.isPlaying == true) {
+            this.binding.playPause.setImageResource(R.drawable.ic_play_icon)
             updateDisposable.dispose()
-            mediaPlayer.pause()
+            mediaPlayer?.pause()
         }
     }
 
     fun stopPlayer() {
-        if (isPrepared && mediaPlayer.isPlaying) {
+        if (isPrepared && mediaPlayer?.isPlaying == true) {
             updateDisposable.dispose()
-            mediaPlayer.stop()
+            mediaPlayer?.stop()
         }
     }
 
     fun initializePlayer(url: String) {
         try {
-            mediaPlayer.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepareAsync()
+            mediaPlayer = ExoPlayer.Builder(context()).build()
+            val mediaItem = MediaItem.fromUri(url)
+            mediaPlayer?.setMediaItem(mediaItem)
+            mediaPlayer?.addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_READY) {
+                        isPrepared = true
+                        prepareMediaPlayer()
+                    } else if (playbackState == Player.STATE_ENDED) {
+                        resetPlayer()
+                    }
+                }
+            })
+            mediaPlayer?.prepare()
         } catch (e: Exception) {
             isPrepared = false
-            mediaPlayer.release()
+            mediaPlayer?.release()
         }
     }
 
     fun prepareMediaPlayer() {
         if (isPrepared) {
-            val duration = mediaPlayer.duration.toLong()
+            val duration = mediaPlayer?.duration ?: 0L
             this.binding.duration.text = String.format(
                 "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(duration)
-                )
+                    TimeUnit.MILLISECONDS.toMinutes(duration))
             )
 
             updateProgressTextLabel()
-            this.binding.progressbar.max = mediaPlayer.duration / 1000
+            this.binding.progressbar.max = ((mediaPlayer?.duration ?: (1 / 1000))).toInt()
         }
     }
 
     fun updateProgressTextLabel() {
         if (isPrepared) {
-            val currentPos = mediaPlayer.currentPosition.toLong()
+            val currentPos = mediaPlayer?.currentPosition ?: 0L
             val progress = String.format(
                 "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(currentPos),
                 TimeUnit.MILLISECONDS.toSeconds(currentPos) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(currentPos)
-                )
+                    TimeUnit.MILLISECONDS.toMinutes(currentPos))
             )
             this.binding.progress.text = progress
         }

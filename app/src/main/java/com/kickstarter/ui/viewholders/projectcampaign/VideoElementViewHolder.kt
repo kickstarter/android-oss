@@ -4,11 +4,12 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.SimpleExoPlayer
+import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.Build
@@ -17,6 +18,7 @@ import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.KSViewHolder
 
+@UnstableApi
 class VideoElementViewHolder(
     val binding: ViewElementVideoFromHtmlBinding,
     private val fullScreenDelegate: ViewElementAdapter.FullScreenDelegate,

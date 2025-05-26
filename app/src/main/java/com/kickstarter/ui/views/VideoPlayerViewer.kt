@@ -1,28 +1,30 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
 import com.kickstarter.ui.data.VideoModelElement
+import androidx.core.net.toUri
+import androidx.media3.common.C
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 
+@UnstableApi
 class VideoPlayerViewer @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -122,7 +124,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     private fun getMediaSource(videoUrl: String): MediaSource {
         val dataSourceFactory = DefaultHttpDataSource.Factory()
-        val videoUri = Uri.parse(videoUrl)
+        val videoUri = videoUrl.toUri()
         val fileType = Util.inferContentType(videoUri)
 
         return if (fileType == C.TYPE_HLS) {

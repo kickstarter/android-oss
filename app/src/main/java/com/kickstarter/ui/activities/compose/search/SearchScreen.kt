@@ -317,7 +317,7 @@ fun SearchScreen(
                         categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
                         projectStatusText = projectStatusPill.value,
-                        percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised) ,
+                        percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it

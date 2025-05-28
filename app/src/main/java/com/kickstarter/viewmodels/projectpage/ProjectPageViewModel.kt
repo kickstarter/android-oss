@@ -271,6 +271,9 @@ interface ProjectPageViewModel {
         fun showLatePledgeFlow(): Observable<Boolean>
 
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
+
+        fun continuePledgeFlow(postLoginAction: () -> Unit)
+
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -365,6 +368,7 @@ interface ProjectPageViewModel {
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
+        private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -779,8 +783,9 @@ interface ProjectPageViewModel {
                             openBackingDetailsWebview.onNext(it)
                         }
                     } else {
-                        // Open native view pledge screen
-                        this.expandPledgeSheet.onNext(Pair(true, true))
+                        continuePledgeFlow {
+                            expandPledgeSheet.onNext(Pair(true, true))
+                        }
                     }
                 }
                 .addToDisposable(disposables)
@@ -1150,6 +1155,31 @@ interface ProjectPageViewModel {
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
+
+            continuePledgeFlow
+                .withLatestFrom(currentUser.observable()) { callback, user ->
+                    Pair(callback, user)
+                }
+                .subscribe { pair ->
+                    val callback = pair.first
+                    val user = pair.second
+
+                    if (user.isPresent()) {
+                        callback()
+                    } else {
+                        startLoginToutActivity.onNext(Unit)
+
+                        currentUser.observable()
+                            .filter { it.isPresent() }
+                            .take(1)
+                            .subscribe {
+                                callback()
+                            }
+                            .addToDisposable(disposables)
+                    }
+                }
+                .addToDisposable(disposables)
+
         }
 
         override fun onCleared() {
@@ -1433,6 +1463,10 @@ interface ProjectPageViewModel {
 
         override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
             this.showPledgeRedemptionScreen
+
+        override fun continuePledgeFlow(postLoginAction: () -> Unit) {
+            this.continuePledgeFlow.onNext(postLoginAction)
+        }
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

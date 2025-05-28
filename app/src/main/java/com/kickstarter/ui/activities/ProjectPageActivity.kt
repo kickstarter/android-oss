@@ -679,16 +679,12 @@ class ProjectPageActivity :
                         pagerState = pagerState,
                         isLoading = addOnsIsLoading || checkoutLoading || rewardLoading,
                         onAddOnsContinueClicked = {
-                            // - if user not logged at this point, start login Flow, and provide after login completed callback
-                            checkoutFlowViewModel.onContinueClicked(
-                                logInCallback = { startLoginToutActivity() },
-                                continueCallback = {
-                                    val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
-                                    dataAndReason?.let { pData ->
-                                        latePledgeCheckoutViewModel.providePledgeData(pData.first)
-                                    }
+                            viewModel.continuePledgeFlow {
+                                val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
+                                dataAndReason?.let { pData ->
+                                    latePledgeCheckoutViewModel.providePledgeData(pData.first)
                                 }
-                            )
+                            }
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,

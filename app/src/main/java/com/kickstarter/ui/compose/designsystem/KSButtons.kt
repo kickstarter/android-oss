@@ -398,8 +398,10 @@ fun KSFacebookButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = kds_black,
-            imageId = R.drawable.com_facebook_button_icon
+            backgroundColor = colors.facebook_blue,
+            imageId = R.drawable.com_facebook_button_icon,
+            text = text,
+            textColor = kds_white
         )
     }
 }

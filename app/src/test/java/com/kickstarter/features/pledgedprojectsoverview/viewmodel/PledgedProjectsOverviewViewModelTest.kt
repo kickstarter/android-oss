@@ -294,7 +294,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             )
         }
 
-
     @Test
     fun `pager result is errored when network response is errored`() {
         runTest {

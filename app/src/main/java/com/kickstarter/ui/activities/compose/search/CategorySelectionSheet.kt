@@ -91,8 +91,7 @@ private fun CategorySelectionSheetPreviewPhase2Off() {
             categories = listOf(CategoryFactory.tabletopGamesCategory(), CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory(), CategoryFactory.worldMusicCategory()),
             onDismiss = {},
             onApply = { a, b -> },
-            isLoading = false,
-            shouldShowPhase2 = false
+            isLoading = false
         )
     }
 }
@@ -107,8 +106,7 @@ private fun CategorySelectionSheetPreviewPhase2On() {
             categories = listOf(CategoryFactory.tabletopGamesCategory(), CategoryFactory.textilesCategory(), CategoryFactory.digitalArtCategory(), CategoryFactory.ceramicsCategory(), CategoryFactory.worldMusicCategory()),
             onDismiss = {},
             onApply = { a, b -> },
-            isLoading = false,
-            shouldShowPhase2 = true
+            isLoading = false
         )
     }
 }
@@ -120,8 +118,7 @@ fun CategorySelectionSheet(
     onDismiss: () -> Unit,
     onApply: (Category?, Boolean?) -> Unit,
     isLoading: Boolean,
-    onNavigate: () -> Unit = {},
-    shouldShowPhase2: Boolean,
+    onNavigate: () -> Unit = {}
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -157,22 +154,18 @@ fun CategorySelectionSheet(
 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (shouldShowPhase2) {
-                        KSIconButton(
-                            onClick = onNavigate,
-                            modifier = Modifier
-                                .padding(end = dimensions.paddingSmall)
-                                .testTag(SearchScreenTestTag.BACK_BUTTON.name),
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.Back)
-                        )
-                    }
+                    KSIconButton(
+                        onClick = onNavigate,
+                        modifier = Modifier
+                            .padding(end = dimensions.paddingSmall)
+                            .testTag(SearchScreenTestTag.BACK_BUTTON.name),
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.Back)
+                    )
                     Text(
                         text = stringResource(R.string.Category),
                         style = typographyV2.headingXL,
-                        modifier =
-                        if (shouldShowPhase2) Modifier.weight(1f)
-                        else Modifier.weight(1f).padding(start = dimensions.paddingMediumLarge),
+                        modifier = Modifier.weight(1f),
                         color = colors.textPrimary
                     )
                     KSIconButton(

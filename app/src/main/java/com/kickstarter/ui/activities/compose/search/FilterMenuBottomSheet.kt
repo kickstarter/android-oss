@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -35,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSPillButton
@@ -46,9 +46,11 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 object FilterMenuTestTags {
     const val SHEET = "filter_menu_sheet"
+    const val LIST = "filters_list"
     const val DISMISS_ROW = "dismiss_row"
     const val CATEGORY_ROW = "category_filter_row"
     const val PROJECT_STATUS_ROW = "project_status_row"
+    const val PERCENTAGE_RAISED_ROW = "percentage_raised_row"
     const val FOOTER = "footer"
 
     fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
@@ -56,21 +58,23 @@ object FilterMenuTestTags {
 
 enum class FilterType {
     CATEGORIES,
-    PROJECT_STATUS
+    PROJECT_STATUS,
+    PERCENTAGE_RAISED
 }
 
 @Composable
 fun FilterMenuBottomSheet(
+    modifier: Modifier = Modifier,
     selectedProjectStatus: DiscoveryParams.State? = null,
-    availableFilters: List<FilterType> = FilterType.values().asList(),
+    availableFilters: List<FilterType> = FilterType.values().toList(),
     onDismiss: () -> Unit = {},
     onApply: (DiscoveryParams.State?, Boolean?) -> Unit = { a, b -> },
-    onNavigate: () -> Unit = {}
+    onNavigate: (FilterType) -> Unit = {},
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .testTag(FilterMenuTestTags.SHEET),
         color = colors.backgroundSurfacePrimary
     ) {
@@ -83,12 +87,12 @@ fun FilterMenuBottomSheet(
                 modifier = Modifier.testTag(FilterMenuTestTags.DISMISS_ROW)
             )
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier.weight(1f).testTag(FilterMenuTestTags.LIST)) {
                 items(availableFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
-                            onClickAction = onNavigate,
+                            onClickAction = { onNavigate(FilterType.CATEGORIES) },
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
                         )
@@ -101,13 +105,19 @@ fun FilterMenuBottomSheet(
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
                         )
+                        FilterType.PERCENTAGE_RAISED -> FilterRow(
+                            text = titleForFilter(filter),
+                            onClickAction = { onNavigate(FilterType.PERCENTAGE_RAISED) },
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW)
+                        )
                     }
                 }
             }
 
             KSSearchBottomSheetFooter(
                 modifier = Modifier.testTag(FilterMenuTestTags.FOOTER),
-                leftButtonIsEnabled = projStatus.value.isNotNull(),
+                leftButtonIsEnabled = true,
                 leftButtonClickAction = {
                     projStatus.value = null
                     onApply(projStatus.value, false)
@@ -236,7 +246,8 @@ private fun FilterRow(
                 top = dimensions.paddingLarge,
                 bottom = dimensions.paddingLarge,
                 end = dimensions.paddingMediumSmall
-            ),
+            )
+            .clickable { onClickAction.invoke() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         val style = if (text == stringResource(R.string.Filter)) {
@@ -251,6 +262,8 @@ private fun FilterRow(
             modifier = Modifier.weight(1f),
             color = colors.textPrimary
         )
+
+        // TODO: change to KSIconButton
         IconButton(
             modifier = Modifier.testTag(text),
             onClick = {
@@ -271,6 +284,7 @@ private fun titleForFilter(filter: FilterType): String {
     return when (filter) {
         FilterType.CATEGORIES -> stringResource(R.string.Category)
         FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
+        FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised_fpo)
     }
 }
 

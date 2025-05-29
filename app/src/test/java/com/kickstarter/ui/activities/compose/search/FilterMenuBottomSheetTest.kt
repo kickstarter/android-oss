@@ -2,8 +2,10 @@ package com.kickstarter.ui.activities.compose.search
 
 import androidx.compose.material.Surface
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
@@ -31,16 +33,52 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test FilterMenuBottomSheet renders all available filter Rows`() {
+    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOff`() {
+        val shouldShowPhase = false
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet()
+                FilterMenuBottomSheet(
+                    onApply = { a, b -> },
+                    onDismiss = {},
+                    onNavigate = {},
+                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                )
             }
         }
 
         composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.CATEGORY_ROW).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.PROJECT_STATUS_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertDoesNotExist()
+    }
+
+    @Test
+    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOn`() {
+        composeTestRule.setContent {
+            val shouldShowPhase = true
+            KSTheme {
+                FilterMenuBottomSheet(
+                    selectedProjectStatus = DiscoveryParams.State.LIVE,
+                    onApply = { a, b -> },
+                    onDismiss = {},
+                    onNavigate = {},
+                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.CATEGORY_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PROJECT_STATUS_ROW).assertIsDisplayed()
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
     }
 
     @Test

@@ -60,7 +60,7 @@ class SearchAndFilterActivity : ComponentActivity() {
             filterMenuViewModelFactory = FilterMenuViewModel.Factory(env)
             filterMenuViewModel.getRootCategories()
 
-            val phase2ff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
+            val phaseff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
 
             setContent {
                 var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -107,14 +107,15 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 startProjectActivity(projAndRef)
                             }
                         },
-                        onDismissBottomSheet = { category, sort, projectState ->
+                        onDismissBottomSheet = { category, sort, projectState, bucket ->
                             viewModel.updateParamsToSearchWith(
                                 category = category,
                                 projectSort = sort ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
-                                projectState = projectState
+                                projectState = projectState,
+                                raisedBucket = bucket
                             )
                         },
-                        shouldShowPhase2 = phase2ff
+                        shouldShowPhase = phaseff
                     )
                 }
 

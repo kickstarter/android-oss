@@ -271,6 +271,31 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
 
     @Test
+    fun `emits error when reward received change is errored`() =
+        runTest {
+            var snackbarAction = 0
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun getProject(slug: String): Observable<Project> {
+                            return Observable.error(Throwable("error"))
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
+            viewModel.onMessageCreatorClicked("test_project_slug", "projectID", "creatorID", listOf(PPOCardFactory.confirmAddressCard()), 10)
+
+            // Should equal error string id
+            assertEquals(
+                snackbarAction,
+                R.string.Something_went_wrong_please_try_again
+            )
+        }
+
+
+    @Test
     fun `pager result is errored when network response is errored`() {
         runTest {
             val mutableTotalAlerts = MutableStateFlow<Int>(0)

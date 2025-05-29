@@ -200,6 +200,9 @@ class PledgedProjectsOverviewViewModel(
                 apolloClient
                     .updateBackerCompleted(input)
                     .asFlow()
+                    .catch {
+                        showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
+                    }
                     .onCompletion {
                         emitCurrentState()
                     }.collect()
@@ -240,20 +243,6 @@ class PledgedProjectsOverviewViewModel(
                 isErrored = isErrored,
             )
         )
-    }
-
-    private fun isTier2Type(viewType: PPOCardViewType): Boolean {
-        return when (viewType) {
-            PPOCardViewType.ADDRESS_CONFIRMED,
-            PPOCardViewType.PLEDGE_COLLECTED_REWARD,
-            PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD,
-            PPOCardViewType.SUVERY_SUBMITTED_DIGITAL,
-            PPOCardViewType.SUVERY_SUBMITTED_SHIPPABLE,
-            PPOCardViewType.AWAITING_REWARD,
-            PPOCardViewType.PLEDGE_REDEMPTION,
-            PPOCardViewType.REWARD_RECEIVED -> true
-            else -> false
-        }
     }
 
     fun showHeadsUpSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {

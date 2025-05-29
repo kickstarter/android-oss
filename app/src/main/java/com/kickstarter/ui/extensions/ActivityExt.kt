@@ -199,7 +199,10 @@ fun Activity.startReportProjectActivity(
 }
 
 fun Activity.startCreatorBioWebViewActivity(project: Project) {
-    val reducedProject = project.reduceProjectPayload().toBuilder().backing(project.backing()).build()
+    val reducedProject = project.reduceProjectPayload().toBuilder()
+        .deadline(project.deadline())
+        .backing(project.backing())
+        .build()
     startActivity(Intent().getCreatorBioWebViewActivityIntent(this, reducedProject))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }

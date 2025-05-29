@@ -170,8 +170,8 @@ class PPOCard private constructor(
                 imageContentDescription() == other.imageContentDescription() &&
                 backingDetailsUrl() == other.backingDetailsUrl() &&
                 timeNumberForAction() == other.timeNumberForAction() &&
-                viewType() == other.viewType()
-            reward() == other.reward()
+                viewType() == other.viewType() &&
+                reward() == other.reward()
         }
         return equals
     }

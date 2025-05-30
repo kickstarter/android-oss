@@ -174,6 +174,7 @@ fun SearchTopBar(
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
     projectStatusText: String = stringResource(R.string.Project_status),
+    percentageRaisedText: String = stringResource(R.string.Percentage_raised),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -269,6 +270,7 @@ fun SearchTopBar(
             countApiIsReady = countApiIsReady,
             categoryPillText = categoryPillText,
             projectStatusText = projectStatusText,
+            percentageRaisedText = percentageRaisedText,
             selectedFilterCounts = selectedFilterCounts,
             onPillPressed = onPillPressed,
             shouldShowPhase = shouldShowPhase
@@ -285,7 +287,7 @@ fun PillBar(
     countApiIsReady: Boolean = false,
     categoryPillText: String = stringResource(R.string.Category),
     projectStatusText: String = stringResource(R.string.Project_status),
-    percentageRaisedText: String = stringResource(R.string.Percentage_raised_fpo),
+    percentageRaisedText: String = stringResource(R.string.Percentage_raised),
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase: Boolean = true

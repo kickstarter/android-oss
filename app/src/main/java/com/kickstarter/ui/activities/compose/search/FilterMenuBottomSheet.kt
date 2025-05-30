@@ -284,7 +284,7 @@ private fun titleForFilter(filter: FilterType): String {
     return when (filter) {
         FilterType.CATEGORIES -> stringResource(R.string.Category)
         FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
-        FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised_fpo)
+        FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised)
     }
 }
 

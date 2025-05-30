@@ -150,7 +150,7 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
         viewModel.inputs.configureWith(project, reward)
 
         val hasImage = reward.image()?.full()?.isNotEmpty() == true
-        val isSecret = false //TODO: Replace with actual logic to determine if the reward is secret ONCE the backend is ready
+        val isSecret = false // TODO: Replace with actual logic to determine if the reward is secret ONCE the backend is ready
 
         val badgeOverImage = binding.secretBadgeComposeOverImage
         val badgeAboveCard = binding.secretBadgeComposeAboveCard

@@ -511,6 +511,10 @@ from friends yet.</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
   <string name="Payment_methods" formatted="false">Payment methods</string>
   <string name="Payment_schedule" formatted="false">Payment schedule</string>
+  <string name="Percentage_raised" formatted="false">% raised</string>
+  <string name="Percentage_raised_bucket_0" formatted="false">Under 75%</string>
+  <string name="Percentage_raised_bucket_1" formatted="false">75% to 100%</string>
+  <string name="Percentage_raised_bucket_2" formatted="false">More than 100%</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Please enter a pledge amount between %{min} and %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Please enter an amount of %{amount} or less.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Please enter an amount of %{amount} or more.</string>

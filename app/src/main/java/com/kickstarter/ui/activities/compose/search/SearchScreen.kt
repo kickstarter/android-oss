@@ -246,6 +246,7 @@ fun SearchScreen(
 
     val currentSort = remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     val currentCategory = remember { mutableStateOf<Category?>(null) }
+
     val currentProjectState = remember { mutableStateOf<DiscoveryParams.State?>(null) }
     val currentPercentage = remember { mutableStateOf<DiscoveryParams.RaisedBuckets?>(null) }
 
@@ -316,6 +317,7 @@ fun SearchScreen(
                         categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
                         projectStatusText = projectStatusPill.value,
+                        percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it

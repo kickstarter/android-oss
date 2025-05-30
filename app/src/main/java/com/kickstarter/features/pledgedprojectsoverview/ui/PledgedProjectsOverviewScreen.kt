@@ -58,6 +58,7 @@ import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.libs.utils.extensions.isNullOrZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -92,6 +93,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
+                onRewardReceivedChanged = { backingID, checked -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
@@ -122,6 +124,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
+                onRewardReceivedChanged = { backingID, checked -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
@@ -150,6 +153,7 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
+                onRewardReceivedChanged = { backingID, checked -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 errorSnackBarHostState = SnackbarHostState(),
@@ -180,6 +184,7 @@ private fun PledgedProjectsOverviewScreenV2Preview() {
                 onPrimaryActionButtonClicked = {},
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
+                onRewardReceivedChanged = { backingID, checked -> },
                 onProjectPledgeSummaryClick = {},
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
@@ -205,6 +210,7 @@ fun PledgedProjectsOverviewScreen(
     onSeeAllBackedProjectsClick: () -> Unit,
     onPrimaryActionButtonClicked: (PPOCard) -> Unit,
     onSecondaryActionButtonClicked: (PPOCard) -> Unit,
+    onRewardReceivedChanged: ((String, Boolean) -> Unit),
     isLoading: Boolean = false,
     isErrored: Boolean = false,
     showEmptyState: Boolean = false,
@@ -327,39 +333,44 @@ fun PledgedProjectsOverviewScreen(
                         ) { index ->
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                            ppoCards[index]?.let {
+                            ppoCards[index]?.let { ppoData ->
                                 PPOCardView(
-                                    viewType = it.viewType() ?: PPOCardViewType.UNKNOWN,
+                                    viewType = ppoData.viewType() ?: PPOCardViewType.UNKNOWN,
                                     onCardClick = { },
-                                    onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(it.backingDetailsUrl() ?: "") },
-                                    projectName = it.projectName(),
-                                    pledgeAmount = it.amount?.toDoubleOrNull()?.let { amount ->
-                                        RewardViewUtils.formatCurrency(amount, it.currencyCode?.rawValue, it.currencySymbol)
+                                    onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(ppoData.backingDetailsUrl() ?: "") },
+                                    projectName = ppoData.projectName(),
+                                    pledgeAmount = ppoData.amount?.toDoubleOrNull()?.let { amount ->
+                                        RewardViewUtils.formatCurrency(amount, ppoData.currencyCode?.rawValue, ppoData.currencySymbol)
                                     },
-                                    imageUrl = it.imageUrl(),
-                                    flags = it.flags,
-                                    imageContentDescription = it.imageContentDescription(),
-                                    creatorName = it.creatorName(),
-                                    sendAMessageClickAction = { onSendMessageClick(it.projectSlug() ?: "", it.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, it.creatorID() ?: "") },
-                                    shippingAddress = it.deliveryAddress()?.getFormattedAddress() ?: "",
+                                    imageUrl = ppoData.imageUrl(),
+                                    flags = ppoData.flags,
+                                    imageContentDescription = ppoData.imageContentDescription(),
+                                    creatorName = ppoData.creatorName(),
+                                    sendAMessageClickAction = { onSendMessageClick(ppoData.projectSlug() ?: "", ppoData.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, ppoData.creatorID() ?: "") },
+                                    shippingAddress = ppoData.deliveryAddress()?.getFormattedAddress() ?: "",
                                     onActionButtonClicked = {
-                                        when (it.viewType()) {
+                                        when (ppoData.viewType()) {
                                             PPOCardViewType.CONFIRM_ADDRESS -> {
-                                                analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = it.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
-                                                confirmedAddress = it.deliveryAddress()?.getFormattedAddress() ?: ""
-                                                addressID = it.deliveryAddress()?.addressId() ?: ""
-                                                backingID = it.backingId ?: ""
-                                                projectID = it.projectId ?: ""
+                                                analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = ppoData.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
+                                                confirmedAddress = ppoData.deliveryAddress()?.getFormattedAddress() ?: ""
+                                                addressID = ppoData.deliveryAddress()?.addressId() ?: ""
+                                                backingID = ppoData.backingId ?: ""
+                                                projectID = ppoData.projectId ?: ""
                                                 openConfirmAddressAlertDialog.value = true
                                             }
                                             else -> {
-                                                onPrimaryActionButtonClicked(it)
+                                                onPrimaryActionButtonClicked(ppoData)
                                             }
                                         }
                                     },
                                     onSecondaryActionButtonClicked = {
-                                        onSecondaryActionButtonClicked(it)
+                                        onSecondaryActionButtonClicked(ppoData)
                                     },
+                                    rewardReceived = ppoData.backerCompleted().isTrue(),
+                                    onRewardReceivedChanged = {
+                                        backingID = ppoData.backingId ?: ""
+                                        onRewardReceivedChanged.invoke(backingID, it)
+                                    }
                                 )
                             }
                         }

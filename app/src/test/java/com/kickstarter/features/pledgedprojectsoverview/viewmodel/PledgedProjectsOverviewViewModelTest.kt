@@ -20,7 +20,9 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -195,6 +197,100 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                     PledgedProjectsOverviewUIState(isLoading = true, isErrored = false),
                     PledgedProjectsOverviewUIState(isLoading = false, isErrored = false)
                 )
+            )
+        }
+
+    @Test
+    fun `emits true when reward received change is true`() =
+        runTest {
+            val observable = BehaviorSubject.create<Boolean>()
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun updateBackerCompleted(input: UpdateBackerCompletedData): Observable<Boolean> {
+                            observable.onNext(true)
+                            return observable
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            viewModel.onRewardRecievedChanged("backingId", true)
+
+            assertEquals(
+                observable.value,
+                true
+            )
+
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                )
+            )
+        }
+
+    @Test
+    fun `emits false when reward received change is false`() =
+        runTest {
+            val observable = BehaviorSubject.create<Boolean>()
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun updateBackerCompleted(input: UpdateBackerCompletedData): Observable<Boolean> {
+                            observable.onNext(false)
+                            return observable
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            viewModel.onRewardRecievedChanged("backingId", false)
+
+            assertEquals(
+                observable.value,
+                false
+            )
+
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false),
+                )
+            )
+        }
+
+    @Test
+    fun `emits error when reward received change is errored`() =
+        runTest {
+            var snackbarAction = 0
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment().toBuilder()
+                    .apolloClientV2(object : MockApolloClientV2() {
+                        override fun getProject(slug: String): Observable<Project> {
+                            return Observable.error(Throwable("error"))
+                        }
+                    }).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            viewModel.provideSnackbarMessage { message, _, _ -> snackbarAction = message }
+            viewModel.onMessageCreatorClicked("test_project_slug", "projectID", "creatorID", listOf(PPOCardFactory.confirmAddressCard()), 10)
+
+            // Should equal error string id
+            assertEquals(
+                snackbarAction,
+                R.string.Something_went_wrong_please_try_again
             )
         }
 

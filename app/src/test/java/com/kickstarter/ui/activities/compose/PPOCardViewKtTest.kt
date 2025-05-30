@@ -1,9 +1,14 @@
 package com.kickstarter.ui.activities.compose
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.assertIsToggleable
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardView
@@ -19,6 +24,8 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name, true)
     private val flagsListView =
         composeTestRule.onNodeWithTag(PPOCardViewTestTag.FlAG_LIST_VIEW.name, true)
+    private val rewardReceivedSwitch =
+        composeTestRule.onNodeWithTag(PPOCardViewTestTag.REWARD_RECEIVED_SWITCH.name, true)
 
     @Test
     fun testConfirmAddressView() {
@@ -168,5 +175,60 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         flagsListView.assertIsDisplayed()
         composeTestRule.onAllNodesWithText("Address locks in 7 days")[0].assertIsNotDisplayed()
         composeTestRule.onAllNodesWithText("Open Survey")[0].assertIsDisplayed()
+    }
+
+    @Test
+    fun `test reward received toggle`() {
+        composeTestRule.setContent {
+            KSTheme {
+                PPOCardView(
+                    viewType = PPOCardViewType.ADDRESS_CONFIRMED,
+                    onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    rewardReceived = false,
+                    flags = listOf(Flag.builder().message("Address locks in 7 days").type(null).icon("time").build(), Flag.builder().message("Open Survey").type("warning").icon("time").build()),
+                )
+            }
+        }
+
+        rewardReceivedSwitch.assertIsDisplayed()
+        rewardReceivedSwitch.assertIsEnabled()
+        rewardReceivedSwitch.assertIsToggleable()
+        rewardReceivedSwitch.assertIsOff()
+
+        rewardReceivedSwitch.performClick()
+        rewardReceivedSwitch.assertIsOn()
+
+        rewardReceivedSwitch.performClick()
+        rewardReceivedSwitch.assertIsOff()
+    }
+
+    @Test
+    fun `test reward received not visible when incorrect card type`() {
+        composeTestRule.setContent {
+            KSTheme {
+                PPOCardView(
+                    viewType = PPOCardViewType.OPEN_SURVEY,
+                    onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    rewardReceived = false,
+                    flags = listOf(Flag.builder().message("Address locks in 7 days").type(null).icon("time").build(), Flag.builder().message("Open Survey").type("warning").icon("time").build()),
+                )
+            }
+        }
+
+        rewardReceivedSwitch.assertIsNotDisplayed()
     }
 }

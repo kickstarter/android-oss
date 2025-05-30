@@ -2,6 +2,7 @@ package com.kickstarter.features.pledgedprojectsoverview.data
 
 import android.os.Parcelable
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
+import com.kickstarter.models.Reward
 import com.kickstarter.type.CurrencyCode
 import kotlinx.parcelize.Parcelize
 
@@ -12,6 +13,7 @@ class PPOCard private constructor(
     val backingId: String?,
     val backingDetailsUrl: String?,
     val clientSecret: String?,
+    val backerCompleted: Boolean?,
     val creatorID: String?,
     val creatorName: String?,
     val currencyCode: CurrencyCode?,
@@ -24,7 +26,8 @@ class PPOCard private constructor(
     val projectSlug: String?,
     val timeNumberForAction: Int,
     val surveyID: String?,
-    val viewType: PPOCardViewType?
+    val viewType: PPOCardViewType?,
+    val reward: Reward?,
 
 ) : Parcelable {
 
@@ -33,6 +36,7 @@ class PPOCard private constructor(
     fun backingDetailsUrl() = this.backingDetailsUrl
     fun backingId() = this.backingId
     fun clientSecret() = this.clientSecret
+    fun backerCompleted() = this.backerCompleted
     fun creatorID() = this.creatorID
     fun surveyID() = this.surveyID
     fun creatorName() = this.creatorName
@@ -46,6 +50,7 @@ class PPOCard private constructor(
     fun projectSlug() = this.projectSlug
     fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
+    fun reward() = this.reward
 
     @Parcelize
     data class Builder(
@@ -55,6 +60,7 @@ class PPOCard private constructor(
         var backingId: String? = null,
         var clientSecret: String? = null,
         var creatorID: String? = null,
+        var backerCompleted: Boolean? = null,
         var surveyID: String? = null,
         var creatorName: String? = null,
         var currencyCode: CurrencyCode? = null,
@@ -67,6 +73,7 @@ class PPOCard private constructor(
         var projectSlug: String? = null,
         var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
+        var reward: Reward? = null,
     ) : Parcelable {
 
         fun deliveryAddress(deliveryAddress: DeliveryAddress?) = apply { this.deliveryAddress = deliveryAddress }
@@ -74,6 +81,7 @@ class PPOCard private constructor(
         fun backingDetailsUrl(backingDetailsUrl: String?) = apply { this.backingDetailsUrl = backingDetailsUrl }
         fun backingId(backingId: String?) = apply { this.backingId = backingId }
         fun clientSecret(clientSecret: String?) = apply { this.clientSecret = clientSecret }
+        fun backerCompleted(backerCompleted: Boolean?) = apply { this.backerCompleted = backerCompleted }
         fun creatorID(creatorName: String?) = apply { this.creatorID = creatorID }
         fun surveyID(surveyID: String?) = apply { this.surveyID = surveyID }
         fun creatorName(creatorName: String?) = apply { this.creatorName = creatorName }
@@ -87,6 +95,7 @@ class PPOCard private constructor(
         fun projectSlug(projectSlug: String?) = apply { this.projectSlug = projectSlug }
         fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
+        fun reward(reward: Reward?) = apply { this.reward = reward }
 
         fun build() = PPOCard(
             deliveryAddress = deliveryAddress,
@@ -94,6 +103,7 @@ class PPOCard private constructor(
             backingDetailsUrl = backingDetailsUrl,
             backingId = backingId,
             clientSecret = clientSecret,
+            backerCompleted = backerCompleted,
             creatorID = creatorID,
             surveyID = surveyID,
             creatorName = creatorName,
@@ -107,6 +117,7 @@ class PPOCard private constructor(
             projectSlug = projectSlug,
             timeNumberForAction = timeNumberForAction,
             viewType = viewType,
+            reward = reward,
         )
     }
 
@@ -116,6 +127,7 @@ class PPOCard private constructor(
         backingDetailsUrl = backingDetailsUrl,
         backingId = backingId,
         clientSecret = clientSecret,
+        backerCompleted = backerCompleted,
         creatorID = creatorID,
         surveyID = surveyID,
         creatorName = creatorName,
@@ -129,6 +141,7 @@ class PPOCard private constructor(
         projectSlug = projectSlug,
         timeNumberForAction = timeNumberForAction,
         viewType = viewType,
+        reward = reward,
     )
 
     companion object {
@@ -143,6 +156,7 @@ class PPOCard private constructor(
                 deliveryAddress() == other.deliveryAddress() &&
                 amount() == other.amount() &&
                 clientSecret() == other.clientSecret() &&
+                backerCompleted() == other.backerCompleted() &&
                 currencyCode() == other.currencyCode() &&
                 currencySymbol() == other.currencySymbol() &&
                 flags() == other.flags() &&
@@ -156,7 +170,8 @@ class PPOCard private constructor(
                 imageContentDescription() == other.imageContentDescription() &&
                 backingDetailsUrl() == other.backingDetailsUrl() &&
                 timeNumberForAction() == other.timeNumberForAction() &&
-                viewType() == other.viewType()
+                viewType() == other.viewType() &&
+                reward() == other.reward()
         }
         return equals
     }

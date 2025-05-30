@@ -26,7 +26,7 @@ class PercentageRaisedSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Percentage_raised_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Percentage_raised))
             .assertIsDisplayed()
 
         composeTestRule

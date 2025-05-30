@@ -23,6 +23,7 @@ import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.fragment.RewardImage
 import com.kickstarter.fragment.SimilarProject
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPresent
@@ -1088,12 +1089,19 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             val flags = it?.node?.flags?.map { flag ->
                 Flag.builder().message(flag.message).icon(flag.icon).type(flag.type).build()
             }
+            val reward = Reward.builder()
+                .id(decodeRelayId(ppoBackingData?.reward?.id) ?: 0)
+                .shippingPreference(ppoBackingData?.reward?.shippingPreference?.name?.lowercase())
+                .shippingPreferenceType(getShippingPreference(ppoBackingData?.reward?.shippingPreference))
+                .shippingType(ppoBackingData?.reward?.shippingPreference?.name?.lowercase())
+                .build()
             PPOCard.builder()
                 .backingId(ppoBackingData?.id)
                 .backingDetailsUrl(ppoBackingData?.backingDetailsPageRoute)
                 .clientSecret(ppoBackingData?.clientSecret)
                 .amount(ppoBackingData?.amount?.amount?.amount)
                 .currencyCode(ppoBackingData?.amount?.amount?.currency)
+                .backerCompleted(ppoBackingData?.backerCompleted)
                 .currencySymbol(ppoBackingData?.amount?.amount?.symbol)
                 .projectName(ppoBackingData?.project?.name)
                 .projectId(ppoBackingData?.project?.id)
@@ -1101,9 +1109,10 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .imageUrl(ppoBackingData?.project?.full?.image?.url)
                 .creatorName(ppoBackingData?.project?.creator?.name)
                 .creatorID(ppoBackingData?.project?.creator?.id)
-                .viewType(getTierType(it?.node?.tierType))
+                .viewType(getTierType(it?.node?.tierType, reward))
                 .surveyID(ppoBackingData?.project?.backerSurvey?.id)
                 .flags(flags)
+                .reward(reward)
                 .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress))
                 .build()
         }
@@ -1166,17 +1175,39 @@ fun getDeliveryAddress(deliveryAddress: DeliveryAddress?): com.kickstarter.featu
     } ?: return null
 }
 
-fun getTierType(tierType: String?) =
+fun getTierType(tierType: String?, reward: Reward) =
     when (tierType) {
         PledgeTierType.FAILED_PAYMENT.tierType -> PPOCardViewType.FIX_PAYMENT
         PledgeTierType.SURVEY_OPEN.tierType -> PPOCardViewType.OPEN_SURVEY
         PledgeTierType.ADDRESS_LOCK.tierType -> PPOCardViewType.CONFIRM_ADDRESS
         PledgeTierType.PAYMENT_AUTHENTICATION.tierType -> PPOCardViewType.AUTHENTICATE_CARD
-        PledgeTierType.PLEDGE_COLLECTED.tierType -> PPOCardViewType.PLEDGE_COLLECTED
-        PledgeTierType.SUVERY_SUBMITTED.tierType -> PPOCardViewType.SUVERY_SUBMITTED
+        PledgeTierType.PLEDGE_COLLECTED.tierType -> {
+            if (RewardUtils.isNoReward(reward)) {
+                PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD
+            } else {
+                PPOCardViewType.PLEDGE_COLLECTED_REWARD
+            }
+        }
+        PledgeTierType.SUVERY_SUBMITTED.tierType -> {
+            if (RewardUtils.isDigital(reward)) {
+                PPOCardViewType.SUVERY_SUBMITTED_DIGITAL
+            } else {
+                PPOCardViewType.SUVERY_SUBMITTED_SHIPPABLE
+            }
+        }
         PledgeTierType.ADDRESS_CONFIRMED.tierType -> PPOCardViewType.ADDRESS_CONFIRMED
         PledgeTierType.AWAITING_REWARD.tierType -> PPOCardViewType.AWAITING_REWARD
         PledgeTierType.PLEDGE_REDEMPTION.tierType -> PPOCardViewType.PLEDGE_REDEMPTION
         PledgeTierType.REWARD_RECEIVED.tierType -> PPOCardViewType.REWARD_RECEIVED
         else -> PPOCardViewType.UNKNOWN
     }
+
+fun getShippingPreference(shippingPreference: ShippingPreference?): Reward.ShippingPreference {
+    return when (shippingPreference) {
+        ShippingPreference.none -> Reward.ShippingPreference.NONE
+        ShippingPreference.restricted -> Reward.ShippingPreference.RESTRICTED
+        ShippingPreference.unrestricted -> Reward.ShippingPreference.UNRESTRICTED
+        ShippingPreference.local -> Reward.ShippingPreference.LOCAL
+        else -> Reward.ShippingPreference.UNKNOWN
+    }
+}

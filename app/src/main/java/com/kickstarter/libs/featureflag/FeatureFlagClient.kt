@@ -64,7 +64,7 @@ interface FeatureFlagClientType {
     fun getString(FlagKey: FlagKey): String
 }
 enum class FlipperFlagKey(val key: String) {
-    FLIPPER_PLEDGED_PROJECTS_OVERVIEW("pledge_projects_overview_2024")
+    FLIPPER_PLEDGED_PROJECTS_OVERVIEW("pledge_projects_overview_2024"),
 }
 
 enum class FlagKey(val key: String) {

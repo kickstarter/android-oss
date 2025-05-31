@@ -76,7 +76,9 @@ data class KSDimensions(
     val activityFeedProjectImageWidth: Dp = Dp.Unspecified,
     val activityFeedProjectImageHeight: Dp = Dp.Unspecified,
     val bottomSheetMinHeight: Dp = Dp.Unspecified,
-    val bottomSheetMaxHeight: Dp = Dp.Unspecified
+    val bottomSheetMaxHeight: Dp = Dp.Unspecified,
+    val secretRewardBadgeOffsetY: Dp = Dp.Unspecified,
+    val paddingXXXLarge: Dp = Dp.Unspecified,
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -94,6 +96,7 @@ val KSStandardDimensions = KSDimensions(
     paddingLarge = 24.dp,
     paddingXLarge = 32.dp,
     paddingXXLarge = 40.dp,
+    paddingXXXLarge = 42.dp,
     paddingDoubleLarge = 48.dp,
     paddingTripleLarge = 72.dp,
     minButtonHeight = 40.dp,
@@ -152,5 +155,7 @@ val KSStandardDimensions = KSDimensions(
     activityFeedProjectImageWidth = 96.dp,
     activityFeedProjectImageHeight = 54.dp,
     bottomSheetMinHeight = 200.dp,
-    bottomSheetMaxHeight = 770.dp
+    bottomSheetMaxHeight = 770.dp,
+    secretRewardBadgeOffsetY = 14.dp
+
 )

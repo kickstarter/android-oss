@@ -219,7 +219,6 @@ fun Uri.secretRewardToken(): String {
     return this.getQueryParameter("secret_reward_token") ?: ""
 }
 
-
 private const val VERIFICATION = "/profile/verify_email"
 private const val KSDOMAIN = "kickstarter.com"
 

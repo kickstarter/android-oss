@@ -6,6 +6,7 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
@@ -35,6 +36,7 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
+import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
@@ -44,6 +46,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.secretRewardToken
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
@@ -66,6 +69,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
@@ -273,7 +277,6 @@ interface ProjectPageViewModel {
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
 
         fun continuePledgeFlow(postLoginAction: () -> Unit)
-
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -645,6 +648,16 @@ interface ProjectPageViewModel {
                 .distinctUntilChanged()
                 .subscribe {
                     this.projectData.onNext(it)
+                    val deeplinkToken = it.fullDeeplink()
+                    if (deeplinkToken?.hasSecretRewardToken() == true) {
+                        val token = deeplinkToken.secretRewardToken()
+                        viewModelScope.launch {
+                            runCatching {
+                                environment.apolloClientV2()
+                                    ?.addUserToSecretRewardGroup(it.project(), token)
+                            }
+                        }
+                    }
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(
                         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT,
@@ -1179,7 +1192,6 @@ interface ProjectPageViewModel {
                     }
                 }
                 .addToDisposable(disposables)
-
         }
 
         override fun onCleared() {

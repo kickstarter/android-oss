@@ -203,7 +203,6 @@ class ProjectPageActivity :
             paymentOptionCallback = ::onPaymentOption,
             paymentResultCallback = ::onPaymentSheetResult
         )
-
         this.ksString = requireNotNull(environment?.ksString())
 
         viewModel.configureWith(intent)
@@ -256,8 +255,6 @@ class ProjectPageActivity :
         this.viewModel.outputs.projectData()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                // - Every time the ProjectData gets updated
-                // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
 
                 if (it.project().showLatePledgeFlow()) {

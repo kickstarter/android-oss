@@ -154,11 +154,20 @@ class GetShippingRulesUseCase(
     }
 
     /**
-     * Check if the given @param rule is available in the list
-     * of @param allAvailableShippingRules for this project.
+     * Filters and orders rewards based on availability, shipping rules, and reward type.
      *
-     * In case it is available, return only those rewards able to ship to
-     * the selected rule
+     * Rewards are included in the following order:
+     * 1. The "no reward" option, if available.
+     * 2. Secret rewards (with valid availability), sorted by minimum pledge.
+     * 3. Other rewards, sorted by minimum pledge and filtered based on:
+     *    - Digital or local pickup availability.
+     *    - Worldwide or restricted shipping (matching the selected location).
+     *
+     * Ensures rewards are not duplicated and only valid options are shown to the user.
+     *
+     * @param allAvailableShippingRules map of location ID to available shipping rules
+     * @param rule the selected shipping rule to match against
+     * @param rewards the full list of project rewards to filter
      */
     private suspend fun filterRewardsByLocation(
         allAvailableShippingRules: MutableMap<Long, ShippingRule>,
@@ -166,37 +175,48 @@ class GetShippingRulesUseCase(
         rewards: List<Reward>
     ) {
         filteredRewards.clear()
-        val locationId = rule.location()?.id() ?: 0
-        val isIsValidRule = allAvailableShippingRules[locationId]
 
-        rewards.map { rw ->
-            if (RewardUtils.shipsWorldwide(rw) && rw.isAvailable()) {
-                filteredRewards.add(rw)
-            }
+        val locationId = rule.location()?.id() ?: 0L
+        val validShippingRule = allAvailableShippingRules[locationId]
 
-            if (RewardUtils.isNoReward(rw)) {
-                filteredRewards.add(rw)
-            }
+        val uniqueRewards = mutableSetOf<Long?>() // Track reward IDs to avoid duplicates
 
-            if (RewardUtils.isLocalPickup(rw) && rw.isAvailable()) {
-                filteredRewards.add(rw)
-            }
-
-            if (RewardUtils.isDigital(rw) && rw.isAvailable()) {
-                filteredRewards.add(rw)
-            }
-
-            // - If shipping is restricted, make sure the reward is able to ship to selected rule
-            if (RewardUtils.shipsToRestrictedLocations(rw) && rw.isAvailable()) {
-                if (isIsValidRule != null) {
-                    rw.shippingRules()?.map {
-                        if (it.location()?.id() == locationId) {
-                            filteredRewards.add(rw)
-                        }
-                    }
-                }
+        // 1. No Reward
+        rewards.find { RewardUtils.isNoReward(it) }?.let { noReward ->
+            if (uniqueRewards.add(noReward.id())) {
+                filteredRewards.add(noReward)
             }
         }
+
+        // 2. Secret Rewards - sorted by minimum
+        rewards
+            .filter { RewardUtils.isSecret(it) && it.isAvailable() }
+            .sortedBy { it.minimum() }
+            .forEach { secret ->
+                if (uniqueRewards.add(secret.id())) {
+                    filteredRewards.add(secret)
+                }
+            }
+
+        // 3. Other rewards (sorted by minimum)
+        rewards
+            .filter { it.isAvailable() && !RewardUtils.isNoReward(it) && !RewardUtils.isSecret(it) }
+            .sortedBy { it.minimum() }
+            .forEach { rw ->
+                val shouldAdd = when {
+                    RewardUtils.shipsWorldwide(rw) -> true
+                    RewardUtils.isLocalPickup(rw) -> true
+                    RewardUtils.isDigital(rw) -> true
+                    RewardUtils.shipsToRestrictedLocations(rw) && validShippingRule != null -> {
+                        rw.shippingRules()?.any { it.location()?.id() == locationId } == true
+                    }
+                    else -> false
+                }
+
+                if (shouldAdd && uniqueRewards.add(rw.id())) {
+                    filteredRewards.add(rw)
+                }
+            }
 
         emitCurrentState(isLoading = false)
     }

@@ -211,4 +211,8 @@
   <!-- max height-->
   <dimen name="comments_edit_view_max_height">200dp</dimen>
 
+  <!-- Secret Rewards badge-->
+  <dimen name="secret_badge_margin_start">16dp</dimen>
+  <dimen name="secret_badge_margin_bottom">-14dp</dimen>
+
 </resources>

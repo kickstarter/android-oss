@@ -74,6 +74,10 @@ class InternalToolsActivity : AppCompatActivity() {
             designSystemButtonClicked()
         }
 
+        binding.mobileVisioningButton.setOnClickListener {
+            mobileVisioningButtonClicked()
+        }
+
         binding.playgroundButton.setOnClickListener {
             playgroundButtonClicked()
         }
@@ -125,6 +129,11 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun designSystemButtonClicked() {
         val intent = Intent(this, DesignSystemActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun mobileVisioningButtonClicked() {
+        val intent = Intent(this, MobileVisioningActivity::class.java)
         startActivity(intent)
     }
 

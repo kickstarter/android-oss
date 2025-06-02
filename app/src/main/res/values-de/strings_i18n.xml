@@ -509,10 +509,10 @@ Antippen und erneut versuchen</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Payment_methods" formatted="false">Zahlungsmethoden</string>
   <string name="Payment_schedule" formatted="false">Zahlungsübersicht</string>
-  <string name="Percentage_raised" formatted="false">% raised</string>
-  <string name="Percentage_raised_bucket_0" formatted="false">Under 75%</string>
-  <string name="Percentage_raised_bucket_1" formatted="false">75% to 100%</string>
-  <string name="Percentage_raised_bucket_2" formatted="false">More than 100%</string>
+  <string name="Percentage_raised" formatted="false">% finanziert</string>
+  <string name="Percentage_raised_bucket_0" formatted="false">Unter 75 %</string>
+  <string name="Percentage_raised_bucket_1" formatted="false">75–100 %</string>
+  <string name="Percentage_raised_bucket_2" formatted="false">Mehr als 100 %</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Bitte gebe einen Betrag zwischen %{min} und %{max} ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Bitte gib einen Finanzierungsbeitrag von %{amount} oder weniger ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Bitte gib einen Finanzierungsbeitrag von mindestens %{amount} ein.</string>

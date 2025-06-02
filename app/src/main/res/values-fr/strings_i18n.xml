@@ -510,10 +510,10 @@ n\'ont rien soutenu.</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Le moyen de paiement a bien été débité.</string>
   <string name="Payment_methods" formatted="false">Moyens de paiement </string>
   <string name="Payment_schedule" formatted="false">Calendrier des règlements</string>
-  <string name="Percentage_raised" formatted="false">% raised</string>
-  <string name="Percentage_raised_bucket_0" formatted="false">Under 75%</string>
-  <string name="Percentage_raised_bucket_1" formatted="false">75% to 100%</string>
-  <string name="Percentage_raised_bucket_2" formatted="false">More than 100%</string>
+  <string name="Percentage_raised" formatted="false">% de financement</string>
+  <string name="Percentage_raised_bucket_0" formatted="false">Inférieur à 75 %</string>
+  <string name="Percentage_raised_bucket_1" formatted="false">Entre 75 % et 100 %</string>
+  <string name="Percentage_raised_bucket_2" formatted="false">Supérieur à 100 %</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Veuillez saisir un engagement entre %{min} et %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Veuillez saisir un montant de %{amount} ou moins.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Veuillez saisir un montant de %{amount} ou plus.</string>

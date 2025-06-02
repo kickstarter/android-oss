@@ -68,7 +68,6 @@ import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
-import com.kickstarter.type.RaisedBuckets
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -102,13 +101,13 @@ fun PagerPreview() {
         val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
 
         Box(modifier = Modifier.size(400.dp)) {
-            FilterAndCategoryPagerSheet(
+            FilterPagerSheet(
                 selectedProjectStatus = selectedStatus,
                 currentCategory = categories[0],
                 categories = categories,
                 onDismiss = { dismissed.add(true) },
-                onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
-                updateSelectedCounts = { statusCount, categoryCount ->
+                onApply = { state, category, bucket -> appliedFilters.add(Pair(state, category)) },
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket ->
                     selectedCounts.add(
                         statusCount to categoryCount
                     )
@@ -221,7 +220,7 @@ fun SearchScreen(
     categories: List<Category>,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?) -> Unit = { category, sort, projectState -> },
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?, DiscoveryParams.RaisedBuckets?) -> Unit = { category, sort, projectState, bucket -> },
     shouldShowPhase: Boolean = true
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -236,6 +235,7 @@ fun SearchScreen(
             FilterRowPillType.CATEGORY.name to 0,
             FilterRowPillType.FILTER.name to 0,
             FilterRowPillType.PROJECT_STATUS.name to 0,
+            FilterRowPillType.PERCENTAGE_RAISED.name to 0
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
@@ -246,8 +246,9 @@ fun SearchScreen(
 
     val currentSort = remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     val currentCategory = remember { mutableStateOf<Category?>(null) }
+
     val currentProjectState = remember { mutableStateOf<DiscoveryParams.State?>(null) }
-    val currentPercentage = remember { mutableStateOf<RaisedBuckets?>(null) }
+    val currentPercentage = remember { mutableStateOf<DiscoveryParams.RaisedBuckets?>(null) }
 
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
 
@@ -316,6 +317,7 @@ fun SearchScreen(
                         categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
                         projectStatusText = projectStatusPill.value,
+                        percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
@@ -450,15 +452,15 @@ enum class FilterPages {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Composable // TODO rename, to FilterPagerSheet
-fun FilterAndCategoryPagerSheet(
+@Composable
+fun FilterPagerSheet(
     selectedProjectStatus: DiscoveryParams.State?,
     currentCategory: Category?,
     categories: List<Category>,
-    currentPercentage: RaisedBuckets? = null,
+    currentPercentage: DiscoveryParams.RaisedBuckets? = null,
     onDismiss: () -> Unit,
-    onApply: (DiscoveryParams.State?, Category?) -> Unit,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
+    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?) -> Unit,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
     pagerState: PagerState,
     sheetState: ModalBottomSheetState,
     shouldShowPhase: Boolean
@@ -466,6 +468,7 @@ fun FilterAndCategoryPagerSheet(
     val coroutineScope = rememberCoroutineScope()
     val category = remember { mutableStateOf(currentCategory) }
     val projectState = remember { mutableStateOf(selectedProjectStatus) }
+    val bucket = remember { mutableStateOf(currentPercentage) }
 
     LaunchedEffect(!sheetState.isVisible) {
         coroutineScope.launch {
@@ -475,6 +478,10 @@ fun FilterAndCategoryPagerSheet(
 
             if (selectedProjectStatus != projectState.value) {
                 projectState.value = selectedProjectStatus
+            }
+
+            if (currentPercentage != bucket.value) {
+                bucket.value = currentPercentage
             }
         }
     }
@@ -499,11 +506,13 @@ fun FilterAndCategoryPagerSheet(
                         // - Reset to default values
                         if (applyAndDismiss.isFalse()) {
                             category.value = null
+                            bucket.value = null
                         }
                         applyUserSelection(
                             onApply,
                             projectState.value,
                             category.value,
+                            bucket = bucket.value,
                             updateSelectedCounts,
                             onDismiss,
                             applyAndDismiss
@@ -540,6 +549,7 @@ fun FilterAndCategoryPagerSheet(
                             onApply,
                             projectState.value,
                             category.value,
+                            bucket = bucket.value,
                             updateSelectedCounts,
                             onDismiss,
                             applyAndDismiss
@@ -549,12 +559,24 @@ fun FilterAndCategoryPagerSheet(
                 isLoading = false
             )
             FilterPages.PERCENTAGE_RAISED.ordinal -> PercentageRaisedSheet(
-                currentPercentage = DiscoveryParams.RAISEDBUCKETS.fromString(currentPercentage?.name),
+                currentPercentage = DiscoveryParams.RaisedBuckets.fromString(currentPercentage?.name),
                 onNavigate = {
                     coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
                 },
                 onDismiss = onDismiss,
-                onApply = { bucket, applyAndDismiss ->
+                onApply = { selectedBucket, applyAndDismiss ->
+                    bucket.value = selectedBucket
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply,
+                            projectState.value,
+                            category.value,
+                            bucket = bucket.value,
+                            updateSelectedCounts,
+                            onDismiss,
+                            applyAndDismiss
+                        )
+                    }
                 }
             )
         }
@@ -569,17 +591,19 @@ fun FilterAndCategoryPagerSheet(
  *  shouldDismiss = true -> user has pressed "See results" button on the footer. (Should dismiss bottomSheet).
  */
 private fun applyUserSelection(
-    onApply: (DiscoveryParams.State?, Category?) -> Unit,
+    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?) -> Unit,
     projectState: DiscoveryParams.State?,
     category: Category?,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?) -> Unit,
+    bucket: DiscoveryParams.RaisedBuckets?,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
     onDismiss: () -> Unit,
     shouldDismiss: Boolean
 ) {
-    onApply(projectState, category)
+    onApply(projectState, category, bucket)
     updateSelectedCounts(
         if (projectState != null) 1 else 0,
-        if (category != null) 1 else 0
+        if (category != null) 1 else 0,
+        if (bucket != null) 1 else 0
     )
     if (shouldDismiss) {
         onDismiss.invoke()
@@ -631,7 +655,7 @@ private fun sheetContent(
     activeBottomSheet: MutableState<FilterRowPillType?>,
     coroutineScope: CoroutineScope,
     currentCategory: MutableState<Category?>,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?) -> Unit,
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?, DiscoveryParams.RaisedBuckets?) -> Unit,
     currentSort: MutableState<DiscoveryParams.Sort>,
     currentProjectState: MutableState<DiscoveryParams.State?>,
     categories: List<Category>,
@@ -643,7 +667,7 @@ private fun sheetContent(
     sortSheetState: ModalBottomSheetState,
     menuSheetState: ModalBottomSheetState,
     pagerState: PagerState,
-    currentPercentage: MutableState<RaisedBuckets?>,
+    currentPercentage: MutableState<DiscoveryParams.RaisedBuckets?>,
     shouldShowPhase: Boolean = true
 ): @Composable() (ColumnScope.() -> Unit) {
     val liveString = stringResource(R.string.Project_status_live)
@@ -658,7 +682,7 @@ private fun sheetContent(
             FilterRowPillType.PROJECT_STATUS,
             FilterRowPillType.PERCENTAGE_RAISED,
             FilterRowPillType.FILTER, -> {
-                FilterAndCategoryPagerSheet(
+                FilterPagerSheet(
                     sheetState = menuSheetState,
                     pagerState = pagerState,
                     selectedProjectStatus = currentProjectState.value,
@@ -668,9 +692,10 @@ private fun sheetContent(
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }
                     },
-                    onApply = { project, category ->
+                    onApply = { project, category, bucket ->
                         currentProjectState.value = project
                         currentCategory.value = category
+                        currentPercentage.value = bucket
                         projectStatusPillText.value = when (project) {
                             DiscoveryParams.State.LIVE -> liveString
                             DiscoveryParams.State.SUCCESSFUL -> successfulString
@@ -679,16 +704,19 @@ private fun sheetContent(
                             else -> defaultString
                         }
                         categoryPillText.value = category?.name() ?: initialCategoryPillText
-                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value)
+                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value, currentPercentage.value)
                     },
-                    updateSelectedCounts = { statusCount, categoryCount ->
+                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket ->
 
-                        selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0)
+                        selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0)
                         statusCount?.let {
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
                         }
                         categoryCount?.let {
                             selectedFilterCounts[FilterRowPillType.CATEGORY.name] = it
+                        }
+                        raisedBucket?.let {
+                            selectedFilterCounts[FilterRowPillType.PERCENTAGE_RAISED.name] = it
                         }
                     },
                     shouldShowPhase = shouldShowPhase
@@ -702,7 +730,7 @@ private fun sheetContent(
                     onDismiss = { sort ->
                         currentSort.value = sort
                         coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value)
+                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value, currentPercentage.value)
 
                         selectedFilterCounts[FilterRowPillType.SORT.name] =
                             if (sort == DiscoveryParams.Sort.MAGIC) 0 else 1

@@ -26,12 +26,12 @@ class PercentageRaisedSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Percentage_raised_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Percentage_raised))
             .assertIsDisplayed()
 
         composeTestRule
             .onNodeWithTag(
-                PercentageRaisedTestTags.bucketTag(DiscoveryParams.RAISEDBUCKETS.BUCKET_0)
+                PercentageRaisedTestTags.bucketTag(DiscoveryParams.RaisedBuckets.BUCKET_0)
             )
             .assertIsDisplayed()
 
@@ -41,7 +41,7 @@ class PercentageRaisedSheetTest : KSRobolectricTestCase() {
 
         composeTestRule
             .onNodeWithTag(
-                PercentageRaisedTestTags.bucketTag(DiscoveryParams.RAISEDBUCKETS.BUCKET_1)
+                PercentageRaisedTestTags.bucketTag(DiscoveryParams.RaisedBuckets.BUCKET_1)
             )
             .assertIsDisplayed()
 
@@ -51,7 +51,7 @@ class PercentageRaisedSheetTest : KSRobolectricTestCase() {
 
         composeTestRule
             .onNodeWithTag(
-                PercentageRaisedTestTags.bucketTag(DiscoveryParams.RAISEDBUCKETS.BUCKET_2)
+                PercentageRaisedTestTags.bucketTag(DiscoveryParams.RaisedBuckets.BUCKET_2)
             )
             .assertIsDisplayed()
 

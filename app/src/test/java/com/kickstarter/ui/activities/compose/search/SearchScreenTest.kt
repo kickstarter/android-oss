@@ -9,10 +9,12 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
@@ -309,36 +311,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
         assertEquals(currentSearchTerm, "this is a test")
     }
 
-    @Test
-    fun `SearchScreen when phase 2 feature flag off, has not filter menu pillBar button not project state pillbar button`() {
-
-        composeTestRule.setContent {
-            KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = false,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {
-                    },
-                    onItemClicked = { },
-                    shouldShowPhase = true
-                )
-            }
-        }
-    }
-
     @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun `pager initial State, navigates to category row, then navigate back to filter menu page`() {
@@ -360,13 +332,13 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
             KSTheme {
 
-                FilterAndCategoryPagerSheet(
+                FilterPagerSheet(
                     selectedProjectStatus = selectedStatus,
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount ->
+                    onApply = { state, category, _ -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, _ ->
                         selectedCounts.add(
                             statusCount to categoryCount
                         )
@@ -399,15 +371,14 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test
-    fun `Pager with phase2 feature flag off, back button on CategoriesSelection Screen not available, reset button behaviour`() {
+    fun `Reset button behaviour on Main filter screen`() {
 
-        var page = 0
         val categories = CategoryFactory.rootCategories()
-        val selectedStatus = DiscoveryParams.State.LIVE
 
-        val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
+        val appliedFilters = mutableListOf<Any?>()
         val dismissed = mutableListOf<Boolean>()
-        val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
+        val selectedCounts = mutableListOf<Int?>()
+
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
             val testSheetState = rememberModalBottomSheetState(
@@ -417,30 +388,28 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
             KSTheme {
 
-                FilterAndCategoryPagerSheet(
-                    selectedProjectStatus = selectedStatus,
+                FilterPagerSheet(
+                    selectedProjectStatus = DiscoveryParams.State.LIVE,
                     currentCategory = categories[0],
                     categories = categories,
+                    currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount ->
-                        selectedCounts.add(
-                            statusCount to categoryCount
-                        )
+                    onApply = { state, category, bucket ->
+                        appliedFilters.add(state)
+                        appliedFilters.add(category)
+                        appliedFilters.add(bucket)
+                    },
+                    updateSelectedCounts = { statusCount, categoryCount, bucket ->
+                        selectedCounts.add(statusCount)
+                        selectedCounts.add(categoryCount)
+                        selectedCounts.add(bucket)
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,
-                    shouldShowPhase = false
+                    shouldShowPhase = true
                 )
             }
-
-            LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context
-                page = testPagerState.currentPage
-            }
         }
-
-        composeTestRule.onNodeWithTag("Category").assertExists() // On Filters page, category row button
-        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertDoesNotExist() // On Category Selection, top left Arrow Icon
 
         // - Reset button behaviour
         composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_all_filters))
@@ -452,7 +421,95 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_all_filters))
             .performClick()
 
-        assertNull(appliedFilters.last().first)
-        assertNull(appliedFilters.last().second)
+        assertEquals(appliedFilters.filterNotNull().size, 0)
+        assertEquals(selectedCounts.last(), 0)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun `Pager with phase4 ffOff, does not display percentage raised row`() {
+
+        val categories = CategoryFactory.rootCategories()
+        val selectedStatus = DiscoveryParams.State.LIVE
+
+        composeTestRule.setContent {
+            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
+            val testSheetState = rememberModalBottomSheetState(
+                initialValue = Hidden,
+                skipHalfExpanded = true
+            )
+
+            KSTheme {
+
+                FilterPagerSheet(
+                    selectedProjectStatus = selectedStatus,
+                    currentCategory = categories[0],
+                    categories = categories,
+                    onDismiss = { },
+                    onApply = { _, _, _ -> },
+                    updateSelectedCounts = { _, _, _ ->
+                    },
+                    pagerState = testPagerState,
+                    sheetState = testSheetState,
+                    shouldShowPhase = false
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertDoesNotExist()
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun `Pager with phase4 ffOn, does display percentage raised row, can navigate to PercentageRaised screen then navigate back`() {
+
+        var page = 0
+        val categories = CategoryFactory.rootCategories()
+        val selectedStatus = DiscoveryParams.State.LIVE
+
+        composeTestRule.setContent {
+            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
+            val testSheetState = rememberModalBottomSheetState(
+                initialValue = Hidden,
+                skipHalfExpanded = true
+            )
+
+            KSTheme {
+
+                FilterPagerSheet(
+                    selectedProjectStatus = selectedStatus,
+                    currentCategory = categories[0],
+                    categories = categories,
+                    onDismiss = { },
+                    onApply = { _, _, _ -> },
+                    updateSelectedCounts = { _, _, _ ->
+                    },
+                    pagerState = testPagerState,
+                    sheetState = testSheetState,
+                    shouldShowPhase = true
+                )
+            }
+
+            LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context
+                page = testPagerState.currentPage
+            }
+        }
+        assertEquals(page, FilterPages.MAIN_FILTER.ordinal)
+
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).performClick()
+
+        composeTestRule.waitForIdle()
+        assertEquals(page, FilterPages.PERCENTAGE_RAISED.ordinal)
+
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).performClick()
+
+        composeTestRule.waitForIdle()
+        assertEquals(page, FilterPages.MAIN_FILTER.ordinal)
     }
 }

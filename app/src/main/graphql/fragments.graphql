@@ -417,6 +417,11 @@ fragment ppoCard on Backing {
     amount {
         ...amount
     }
+    reward {
+        shippingPreference
+        id
+    }
+    backerCompleted
     deliveryAddress {
         id
         addressLine1

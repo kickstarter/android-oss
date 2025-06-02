@@ -507,10 +507,10 @@
   <string name="Payment_method_was_successfully_charged" formatted="false">支払い方法が登録されました。</string>
   <string name="Payment_methods" formatted="false">お支払い方法</string>
   <string name="Payment_schedule" formatted="false">お支払いのスケジュール</string>
-  <string name="Percentage_raised" formatted="false">% raised</string>
-  <string name="Percentage_raised_bucket_0" formatted="false">Under 75%</string>
-  <string name="Percentage_raised_bucket_1" formatted="false">75% to 100%</string>
-  <string name="Percentage_raised_bucket_2" formatted="false">More than 100%</string>
+  <string name="Percentage_raised" formatted="false">％ 達成</string>
+  <string name="Percentage_raised_bucket_0" formatted="false">75%未満</string>
+  <string name="Percentage_raised_bucket_1" formatted="false">75%から100%</string>
+  <string name="Percentage_raised_bucket_2" formatted="false">100%以上</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">%{min} から %{max} までのプレッジ額を入力してください。</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">%{amount} 以下の金額を入力してくだささい。</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">%{amount} 以上の金額を入力してください。</string>

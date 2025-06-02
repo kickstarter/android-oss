@@ -104,12 +104,6 @@
   <string name="fpo_view_and_manage_your_backings_from_our_new_backings_dashboard" formatted="false">View and manage your backings from our new Backings dashboard! More functionality will become available as our beta evolves.</string>
   <string name="fpo_introducing_the_backings_tab" formatted="false">Introducing the Backings tab</string>
 
-  <!-- FPO's for search and filter Phase X -->
-  <string name="Percentage_raised_fpo" formatted="false">% Raised</string>
-  <string name="Percentage_raised_bucket_2" formatted="false">more than 100</string>
-  <string name="Percentage_raised_bucket_1" formatted="false">75% to 100%</string>
-  <string name="Percentage_raised_bucket_0" formatted="false">0% to 75%</string>
-
 
   <string name="Amount_pledged_fpo" formatted="false">Amount Pledged</string>
   <string name="Goal_fpo" formatted="false">Goal</string>

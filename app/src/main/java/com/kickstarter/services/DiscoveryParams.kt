@@ -560,20 +560,19 @@ class DiscoveryParams private constructor(
     enum class RaisedBuckets {
         BUCKET_0,
         BUCKET_1,
-        BUCKET_2,
-        UNKNOWN;
+        BUCKET_2;
 
         override fun toString(): String {
             return name.lowercase(Locale.getDefault())
         }
 
         companion object {
-            fun fromString(string: String?): RaisedBuckets {
+            fun fromString(string: String?): RaisedBuckets? {
                 return when (string) {
                     "BUCKET_0" -> BUCKET_0
                     "BUCKET_1" -> BUCKET_1
                     "BUCKET_2" -> BUCKET_2
-                    else -> { UNKNOWN }
+                    else -> { null }
                 }
             }
         }

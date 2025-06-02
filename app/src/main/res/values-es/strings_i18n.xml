@@ -510,10 +510,10 @@ Toca para intentar de nuevo.</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
   <string name="Payment_methods" formatted="false">Métodos de pago</string>
   <string name="Payment_schedule" formatted="false">Calendario de pagos</string>
-  <string name="Percentage_raised" formatted="false">% raised</string>
-  <string name="Percentage_raised_bucket_0" formatted="false">Under 75%</string>
-  <string name="Percentage_raised_bucket_1" formatted="false">75% to 100%</string>
-  <string name="Percentage_raised_bucket_2" formatted="false">More than 100%</string>
+  <string name="Percentage_raised" formatted="false">% recaudado</string>
+  <string name="Percentage_raised_bucket_0" formatted="false">Menos del 75 %</string>
+  <string name="Percentage_raised_bucket_1" formatted="false">Del 75 % al 100 %</string>
+  <string name="Percentage_raised_bucket_2" formatted="false">Más del 100 %</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Por favor ingresa un monto de contribución entre %{min} y %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Ingresa un monto de contribución de %{amount} o menor.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Ingresa un monto de contribución de %{amount} o más.</string>

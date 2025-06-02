@@ -78,6 +78,7 @@ fun KSBadgesPreview() {
 
 @Composable
 fun KSGreenBadge(
+    modifier: Modifier = Modifier,
     text: String,
     leadingIcon: (@Composable (iconTint: Color) -> Unit)? = null,
     iconTint: Color = colors.textAccentGreen,
@@ -85,7 +86,7 @@ fun KSGreenBadge(
     textStyle: TextStyle = typographyV2.footNoteMedium
 ) {
     Row(
-        modifier = Modifier
+        modifier
             .background(
                 color = colors.backgroundAccentGreenSubtle,
                 shape = shapes.small
@@ -248,9 +249,11 @@ fun KSCountBadge(
 
 @Composable
 fun KSSecretRewardBadge(
+    modifier: Modifier = Modifier,
     iconTint: Color = colors.textAccentGreenBold
 ) {
     KSGreenBadge(
+        modifier = modifier,
         text = stringResource(R.string.Secret_reward),
         textColor = colors.textAccentGreenBold,
         iconTint = iconTint,

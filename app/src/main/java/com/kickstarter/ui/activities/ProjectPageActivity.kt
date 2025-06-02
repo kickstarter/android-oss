@@ -676,7 +676,7 @@ class ProjectPageActivity :
                         pagerState = pagerState,
                         isLoading = addOnsIsLoading || checkoutLoading || rewardLoading,
                         onAddOnsContinueClicked = {
-                            viewModel.continuePledgeFlow {
+                            checkoutFlowViewModel.onContinueClicked {
                                 val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
                                 dataAndReason?.let { pData ->
                                     latePledgeCheckoutViewModel.providePledgeData(pData.first)

@@ -1349,7 +1349,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenCollapsingSheet() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
@@ -1359,13 +1369,25 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeToolbarNavigationClicked()
         this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
         this.goBack.assertNoValues()
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.CTA_CLICKED.eventName
+        )
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectLiveAndNotBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
 
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1377,7 +1399,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenProjectLiveAndBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1399,7 +1431,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenProjectEndedAndNotBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1410,7 +1452,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenProjectEndedAndBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
+
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -2084,19 +2137,28 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `test open pledge sheet when order not null but feature flag off`() {
         val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return false
-            }
+            override fun getBoolean(flagKey: FlagKey): Boolean = false
         }
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
 
-        // Start the view model with a backed project with PM checkout order
         val backedProject = ProjectFactory.backedProjectWithPMCheckoutOrder()
+        val user = UserFactory.user()
+        val mockCurrentUser = MockCurrentUserV2().apply { login(user) }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .featureFlagClient(mockFeatureFlagClient)
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
+
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        Thread.sleep(50)
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        val url = "https://ksr.com/backing/survey_responses"
         this.openBackingDetailsWebview.assertNoValues()
         this.expandPledgeSheet.assertValue(Pair(true, true))
     }
@@ -2104,19 +2166,35 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `test open pledge sheet when order null but feature flag on`() {
         val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return false
-            }
+            override fun getBoolean(flagKey: FlagKey): Boolean = false
         }
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
 
-        // Start the view model with a backed project with PM checkout order
-        val backedProject = ProjectFactory.backedProject()
+        val backing = BackingFactory.backing().toBuilder().order(null).build()
+        val backedProject = ProjectFactory.project()
+            .toBuilder()
+            .isBacking(true)
+            .backing(backing)
+            .build()
+
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .featureFlagClient(mockFeatureFlagClient)
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
+
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        Thread.sleep(50)
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        val url = "https://ksr.com/backing/survey_responses"
         this.openBackingDetailsWebview.assertNoValues()
         this.expandPledgeSheet.assertValue(Pair(true, true))
     }

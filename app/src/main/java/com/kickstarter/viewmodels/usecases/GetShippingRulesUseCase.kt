@@ -154,20 +154,26 @@ class GetShippingRulesUseCase(
     }
 
     /**
-     * Filters and orders rewards based on availability, shipping rules, and reward type.
+     * Filters and sorts the project's rewards based on availability, reward type, and the selected shipping rule.
      *
-     * Rewards are included in the following order:
-     * 1. The "no reward" option, if available.
-     * 2. Secret rewards (with valid availability), sorted by minimum pledge.
-     * 3. Other rewards, sorted by minimum pledge and filtered based on:
-     *    - Digital or local pickup availability.
-     *    - Worldwide or restricted shipping (matching the selected location).
+     * This method processes the given list of rewards and updates [filteredRewards] in a prioritized order:
      *
-     * Ensures rewards are not duplicated and only valid options are shown to the user.
+     * 1. Adds the "no reward" option, if present.
+     * 2. Adds secret rewards that are available, sorted by their minimum pledge amount.
+     * 3. Adds all other available rewards that meet one of the following criteria:
+     *    - Ships worldwide
+     *    - Is a digital or local pickup reward
+     *    - Ships to restricted locations and includes a shipping rule matching the selected location
+     *    These are also sorted by minimum pledge amount.
      *
-     * @param allAvailableShippingRules map of location ID to available shipping rules
-     * @param rule the selected shipping rule to match against
-     * @param rewards the full list of project rewards to filter
+     * Rewards are only added if available, and the method ensures no duplicates or incorrect entries
+     * by filtering and categorizing in a single pass.
+     *
+     * Once filtered, the updated state is emitted via [emitCurrentState].
+     *
+     * @param allAvailableShippingRules map of location ID to shipping rule available for the project
+     * @param rule the selected shipping rule (e.g., user's chosen location)
+     * @param rewards the full list of rewards associated with the project
      */
     private suspend fun filterRewardsByLocation(
         allAvailableShippingRules: MutableMap<Long, ShippingRule>,
@@ -178,33 +184,18 @@ class GetShippingRulesUseCase(
 
         val locationId = rule.location()?.id() ?: 0L
         val validShippingRule = allAvailableShippingRules[locationId]
+        val rewardGroups = mutableListOf<Reward>()
+        var noReward: Reward? = null
+        val secretRewards = mutableListOf<Reward>()
 
-        val uniqueRewards = mutableSetOf<Long?>() // Track reward IDs to avoid duplicates
+        rewards.forEach { rw ->
+            val isAvailable = rw.isAvailable()
 
-        // 1. No Reward
-        rewards.find { RewardUtils.isNoReward(it) }?.let { noReward ->
-            if (uniqueRewards.add(noReward.id())) {
-                filteredRewards.add(noReward)
-            }
-        }
-
-        // 2. Secret Rewards - sorted by minimum
-        rewards
-            .filter {
-                it.isSecretReward() == true && it.isAvailable()
-            }
-            .sortedBy { it.minimum() }
-            .forEach { secret ->
-                if (uniqueRewards.add(secret.id())) {
-                    filteredRewards.add(secret)
-                }
-            }
-
-        // 3. Other rewards (sorted by minimum)
-        rewards
-            .filter { it.isAvailable() && !RewardUtils.isNoReward(it) && it.isSecretReward() != true }
-            .sortedBy { it.minimum() }
-            .forEach { rw ->
+            if (RewardUtils.isNoReward(rw)) {
+                noReward = rw
+            } else if (rw.isSecretReward() == true && isAvailable) {
+                secretRewards.add(rw)
+            } else if (isAvailable) {
                 val shouldAdd = when {
                     RewardUtils.shipsWorldwide(rw) -> true
                     RewardUtils.isLocalPickup(rw) -> true
@@ -214,11 +205,13 @@ class GetShippingRulesUseCase(
                     }
                     else -> false
                 }
-
-                if (shouldAdd && uniqueRewards.add(rw.id())) {
-                    filteredRewards.add(rw)
-                }
+                if (shouldAdd) rewardGroups.add(rw)
             }
+        }
+
+        noReward?.let { filteredRewards.add(it) }
+        filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
+        filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
 
         emitCurrentState(isLoading = false)
     }

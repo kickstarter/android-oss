@@ -2155,8 +2155,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
-        Thread.sleep(50)
-
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.openBackingDetailsWebview.assertNoValues()
@@ -2190,8 +2188,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         )
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
-
-        Thread.sleep(50)
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 

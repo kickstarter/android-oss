@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,12 +18,19 @@ import kotlinx.coroutines.plus
 import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
 
+// TODO: Rename to CategoriesUIState maybe??
 data class FilterMenuUIState(
     val isLoading: Boolean = false,
     val categoriesList: List<Category> = emptyList()
 )
 
-class FilterMenuViewModel(
+data class LocationsUIState(
+    val isLoading: Boolean = false,
+    val nearLocations: List<Location> = emptyList(),
+    val searchedLocations: List<Location> = emptyList()
+)
+
+open class FilterMenuViewModel(
     private val environment: Environment,
     private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
@@ -40,7 +49,22 @@ class FilterMenuViewModel(
                 initialValue = FilterMenuUIState()
             )
 
+    private val _locations = MutableStateFlow(LocationsUIState())
+    val locationsUIState = _locations
+        .asStateFlow()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = LocationsUIState()
+        )
+
     private var categoriesList = emptyList<Category>()
+
+    init {
+        scope.launch {
+            getNearByLocations()
+        }
+    }
 
     fun getRootCategories() {
         scope.launch {
@@ -57,6 +81,19 @@ class FilterMenuViewModel(
         }
     }
 
+    suspend fun getNearByLocations() {
+        emitCurrentState(isLoading = true)
+
+        val locationsHardcodedList = listOf(LocationFactory.vancouver(), LocationFactory.mexico(), LocationFactory.sydney(), LocationFactory.germany(), LocationFactory.unitedStates())
+        emitLocationsCurrentState(
+            isLoading = false,
+            nearBy = locationsHardcodedList
+        )
+    }
+
+    suspend fun getSearchedLocations(term: String){
+    }
+
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
     }
@@ -66,6 +103,17 @@ class FilterMenuViewModel(
             FilterMenuUIState(
                 isLoading = isLoading,
                 categoriesList = categoriesList
+            )
+        )
+    }
+
+    // - the lists should probably be stored and not update every time, for now it's ok as it is hardcoded when real query is called change this
+    private suspend fun emitLocationsCurrentState(isLoading: Boolean = false, nearBy: List<Location> = emptyList(), searched: List<Location> = emptyList()) {
+        _locations.emit(
+            LocationsUIState(
+                isLoading = isLoading,
+                nearLocations = nearBy,
+                searchedLocations = searched
             )
         )
     }

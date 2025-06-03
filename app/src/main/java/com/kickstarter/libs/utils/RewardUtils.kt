@@ -253,11 +253,4 @@ object RewardUtils {
 
         return mutableList.toList()
     }
-
-    /**
-     * Returns `true` if the reward is marked as secret.
-     */
-    fun isSecret(reward: Reward): Boolean {
-        return reward.isSecretReward() == true
-    }
 }

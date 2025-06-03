@@ -190,7 +190,9 @@ class GetShippingRulesUseCase(
 
         // 2. Secret Rewards - sorted by minimum
         rewards
-            .filter { RewardUtils.isSecret(it) && it.isAvailable() }
+            .filter {
+                it.isSecretReward() == true && it.isAvailable()
+            }
             .sortedBy { it.minimum() }
             .forEach { secret ->
                 if (uniqueRewards.add(secret.id())) {
@@ -200,7 +202,7 @@ class GetShippingRulesUseCase(
 
         // 3. Other rewards (sorted by minimum)
         rewards
-            .filter { it.isAvailable() && !RewardUtils.isNoReward(it) && !RewardUtils.isSecret(it) }
+            .filter { it.isAvailable() && !RewardUtils.isNoReward(it) && it.isSecretReward() != true }
             .sortedBy { it.minimum() }
             .forEach { rw ->
                 val shouldAdd = when {

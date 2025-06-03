@@ -71,6 +71,23 @@ fun LocationSheetPreview() {
     }
 }
 
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun DefaultLocationComposablePreview() {
+
+    KSTheme {
+        Surface(
+            color = colors.backgroundSurfacePrimary
+        ) {
+            DefaultLocationComposable(
+                defaultLocations = listOf(LocationFactory.vancouver()),
+                currentLocation = remember { mutableStateOf(LocationFactory.sydney()) }
+            )
+        }
+    }
+}
+
 object LocationTestTags {
     const val LOCATION_LIST = "location_list"
     const val LOCATION_ANYWHERE = "location_anywhere"

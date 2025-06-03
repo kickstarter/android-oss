@@ -69,7 +69,11 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
@@ -275,8 +279,6 @@ interface ProjectPageViewModel {
         fun showLatePledgeFlow(): Observable<Boolean>
 
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
-
-        fun continuePledgeFlow(postLoginAction: () -> Unit)
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -663,26 +665,23 @@ interface ProjectPageViewModel {
                 }
                 .addToDisposable(disposables)
 
-            currentProjectData
-                .map { data ->
-                    val deeplink = data.fullDeeplink()
-                    val token = deeplink?.takeIf { it.hasSecretRewardToken() }?.secretRewardToken()
-                    if (token != null) Pair(data.project(), token) else null
-                }
-                .filter { true }
-                .map { requireNotNull(it) }
-                .distinctUntilChanged()
-                .subscribe { pair ->
-                    val project = pair.first
-                    val token = pair.second
-
-                    viewModelScope.launch {
-                        runCatching {
+            viewModelScope.launch {
+                runCatching {
+                    currentProjectData
+                        .asFlow()
+                        .mapNotNull { data ->
+                            val deeplink = data.fullDeeplink()
+                            val token = deeplink?.takeIf { it.hasSecretRewardToken() }?.secretRewardToken()
+                            token?.let { Pair(data.project(), it) }
+                        }
+                        .distinctUntilChanged()
+                        .collectLatest { pair ->
+                            val project = pair.first
+                            val token = pair.second
                             environment.apolloClientV2()?.addUserToSecretRewardGroup(project, token)
                         }
-                    }
                 }
-                .addToDisposable(disposables)
+            }
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
                 .map {
@@ -807,7 +806,7 @@ interface ProjectPageViewModel {
                             openBackingDetailsWebview.onNext(it)
                         }
                     } else {
-                        continuePledgeFlow {
+                        this.continuePledgeFlow.onNext {
                             expandPledgeSheet.onNext(Pair(true, true))
                         }
                     }
@@ -1181,27 +1180,22 @@ interface ProjectPageViewModel {
                 }.addToDisposable(disposables)
 
             continuePledgeFlow
-                .withLatestFrom(currentUser.observable()) { callback, user ->
-                    Pair(callback, user)
-                }
-                .subscribe { pair ->
-                    val callback = pair.first
-                    val user = pair.second
-
-                    if (user.isPresent()) {
-                        callback()
-                    } else {
-                        startLoginToutActivity.onNext(Unit)
-
-                        currentUser.observable()
-                            .filter { it.isPresent() }
-                            .take(1)
-                            .subscribe {
-                                callback()
+                .flatMap { callback ->
+                    currentUser.observable()
+                        .take(1)
+                        .flatMap { user ->
+                            if (user.isPresent()) {
+                                Observable.just(callback)
+                            } else {
+                                startLoginToutActivity.onNext(Unit)
+                                currentUser.observable()
+                                    .filter { it.isPresent() }
+                                    .take(1)
+                                    .map { callback }
                             }
-                            .addToDisposable(disposables)
-                    }
+                        }
                 }
+                .subscribe { callback -> callback() }
                 .addToDisposable(disposables)
         }
 
@@ -1486,10 +1480,6 @@ interface ProjectPageViewModel {
 
         override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
             this.showPledgeRedemptionScreen
-
-        override fun continuePledgeFlow(postLoginAction: () -> Unit) {
-            this.continuePledgeFlow.onNext(postLoginAction)
-        }
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

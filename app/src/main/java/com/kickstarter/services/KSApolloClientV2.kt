@@ -145,7 +145,7 @@ interface ApolloClientTypeV2 {
     fun createFlagging(
         project: Project? = null,
         details: String,
-        flaggingKind: String
+        flaggingKind: String,
     ): Observable<String>
 
     fun userPrivacy(): Observable<UserPrivacy>
@@ -154,25 +154,30 @@ interface ApolloClientTypeV2 {
     fun updateUserPassword(
         currentPassword: String = "",
         newPassword: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<UpdateUserPasswordMutation.Data>
 
     fun updateUserEmail(
         email: String,
-        currentPassword: String
+        currentPassword: String,
     ): Observable<UpdateUserEmailMutation.Data>
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
-    fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>>
+    fun getRewardAllowedAddOns(
+        slug: String,
+        locationId: Location,
+        rewardId: Long,
+    ): Observable<List<Reward>>
+
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
     fun createPassword(
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<CreatePasswordMutation.Data>
 
     fun creatorDetails(slug: String): Observable<CreatorDetails>
@@ -185,26 +190,26 @@ interface ApolloClientTypeV2 {
     fun getProjectUpdates(
         slug: String,
         cursor: String,
-        limit: Int = PAGE_SIZE
+        limit: Int = PAGE_SIZE,
     ): Observable<UpdatesGraphQlEnvelope>
 
     fun getComment(commentableId: String): Observable<Comment>
     fun getProjectUpdateComments(
         updateId: String,
         cursor: String,
-        limit: Int = PAGE_SIZE
+        limit: Int = PAGE_SIZE,
     ): Observable<CommentEnvelope>
 
     fun getProjectComments(
         slug: String,
         cursor: String,
-        limit: Int = PAGE_SIZE
+        limit: Int = PAGE_SIZE,
     ): Observable<CommentEnvelope>
 
     fun getRepliesForComment(
         comment: Comment,
         cursor: String? = null,
-        pageSize: Int = REPLIES_PAGE_SIZE
+        pageSize: Int = REPLIES_PAGE_SIZE,
     ): Observable<CommentEnvelope>
 
     fun createComment(comment: PostCommentData): Observable<Comment>
@@ -221,14 +226,14 @@ interface ApolloClientTypeV2 {
     fun validateCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String
+        paymentSourceId: String,
     ): Observable<PaymentValidationResponse>
 
     fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
         paymentSourceId: String?,
-        paymentSourceReusable: Boolean
+        paymentSourceReusable: Boolean,
     ): Observable<Pair<String, Boolean>>
 
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
@@ -238,8 +243,16 @@ interface ApolloClientTypeV2 {
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
-    suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
-    suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
+    suspend fun addUserToSecretRewardGroup(
+        project: Project,
+        secretRewardToken: String,
+    ): Result<Project>
+
+    suspend fun getSearchProjects(
+        discoveryParams: DiscoveryParams,
+        cursor: String? = null,
+    ): Result<SearchEnvelope>
+
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
     fun cleanDisposables()
@@ -290,7 +303,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun getProjects(
         discoveryParams: DiscoveryParams,
-        cursor: String?
+        cursor: String?,
     ): Observable<DiscoverEnvelope> {
         val ps = PublishSubject.create<DiscoverEnvelope>()
         this.service.query(query = buildFetchProjectsQuery(discoveryParams, cursor))
@@ -325,18 +338,33 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     private fun buildFetchProjectsQuery(
         discoveryParams: DiscoveryParams,
-        cursor: String?
+        cursor: String?,
     ): FetchProjectsQuery {
         return FetchProjectsQuery(
             sort = Optional.present(discoveryParams.sort()?.toProjectSort()),
-            cursor = cursor?.let { if (it.isNotEmpty()) Optional.present(it) else Optional.absent() } ?: Optional.absent(),
-            categoryId = if (discoveryParams.category()?.id() == null) Optional.absent() else Optional.present(discoveryParams.category()?.id().toString()),
-            recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(discoveryParams.recommended()),
-            starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(discoveryParams.starred().toBoolean()),
-            backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean()),
-            searchTerm = if (discoveryParams.term() == null || discoveryParams.term().isNullOrBlank()) Optional.absent() else Optional.present(discoveryParams.term()),
-            state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(discoveryParams.state()?.toProjectState()),
-            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket())
+            cursor = cursor?.let { if (it.isNotEmpty()) Optional.present(it) else Optional.absent() }
+                ?: Optional.absent(),
+            categoryId = if (discoveryParams.category()
+                ?.id() == null
+            ) Optional.absent() else Optional.present(discoveryParams.category()?.id().toString()),
+            recommended = if (discoveryParams.recommended() == null) Optional.absent() else Optional.present(
+                discoveryParams.recommended()
+            ),
+            starred = if (discoveryParams.starred() == null) Optional.absent() else Optional.present(
+                discoveryParams.starred().toBoolean()
+            ),
+            backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(
+                discoveryParams.backed().toBoolean()
+            ),
+            searchTerm = if (discoveryParams.term() == null || discoveryParams.term()
+                .isNullOrBlank()
+            ) Optional.absent() else Optional.present(discoveryParams.term()),
+            state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(
+                discoveryParams.state()?.toProjectState()
+            ),
+            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(
+                discoveryParams.raisedBucket()?.toRaisedBucket()
+            )
         )
     }
 
@@ -348,7 +376,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     projectId = Optional.present(encodeRelayId(it)),
                     setupIntentContext = Optional.present(StripeIntentContextTypes.CROWDFUNDING_CHECKOUT)
                 )
-            } ?: CreateSetupIntentMutation(Optional.absent(), Optional.present(StripeIntentContextTypes.PROFILE_SETTINGS))
+            } ?: CreateSetupIntentMutation(
+                Optional.absent(),
+                Optional.present(StripeIntentContextTypes.PROFILE_SETTINGS)
+            )
 
             this.service.mutation(mutation)
                 .rxSingle()
@@ -372,11 +403,21 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<StoredCard>()
             val mutation = SavePaymentMethodMutation(
-                paymentType = if (savePaymentMethodData.paymentType.isNotNull()) Optional.present(savePaymentMethodData.paymentType) else Optional.absent(),
-                stripeToken = if (savePaymentMethodData.stripeToken.isNotNull()) Optional.present(savePaymentMethodData.stripeToken) else Optional.absent(),
-                stripeCardId = if (savePaymentMethodData.stripeCardId.isNotNull()) Optional.present(savePaymentMethodData.stripeCardId) else Optional.absent(),
-                reusable = if (savePaymentMethodData.reusable.isNotNull()) Optional.present(savePaymentMethodData.reusable) else Optional.absent(),
-                intentClientSecret = if (savePaymentMethodData.intentClientSecret.isNotNull()) Optional.present(savePaymentMethodData.intentClientSecret) else Optional.absent()
+                paymentType = if (savePaymentMethodData.paymentType.isNotNull()) Optional.present(
+                    savePaymentMethodData.paymentType
+                ) else Optional.absent(),
+                stripeToken = if (savePaymentMethodData.stripeToken.isNotNull()) Optional.present(
+                    savePaymentMethodData.stripeToken
+                ) else Optional.absent(),
+                stripeCardId = if (savePaymentMethodData.stripeCardId.isNotNull()) Optional.present(
+                    savePaymentMethodData.stripeCardId
+                ) else Optional.absent(),
+                reusable = if (savePaymentMethodData.reusable.isNotNull()) Optional.present(
+                    savePaymentMethodData.reusable
+                ) else Optional.absent(),
+                intentClientSecret = if (savePaymentMethodData.intentClientSecret.isNotNull()) Optional.present(
+                    savePaymentMethodData.intentClientSecret
+                ) else Optional.absent()
             )
             service.mutation(
                 mutation
@@ -457,7 +498,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun createFlagging(
         project: Project?,
         details: String,
-        flaggingKind: String
+        flaggingKind: String,
     ): Observable<String> {
         return Observable.defer {
             project?.let {
@@ -578,7 +619,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun updateUserPassword(
         currentPassword: String,
         newPassword: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<UpdateUserPasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdateUserPasswordMutation.Data>()
@@ -608,7 +649,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun updateUserEmail(
         email: String,
-        currentPassword: String
+        currentPassword: String,
     ): Observable<UpdateUserEmailMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdateUserEmailMutation.Data>()
@@ -702,9 +743,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     }
 
                     response.data?.let { data ->
-                        val shippingEnvelope = data.node?.onReward?.shippingRulesExpanded?.nodes?.mapNotNull { node ->
-                            node?.shippingRule
-                        } ?: emptyList()
+                        val shippingEnvelope =
+                            data.node?.onReward?.shippingRulesExpanded?.nodes?.mapNotNull { node ->
+                                node?.shippingRule
+                            } ?: emptyList()
                         ps.onNext(shippingRulesListTransformer(shippingEnvelope))
                     }
                     ps.onComplete()
@@ -734,7 +776,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
                                 rewardTransformer(
                                     rewardGr = rwGr,
-                                    allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
+                                    allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty()
+                                        ?: false,
                                     rewardItems = complexRewardItemsTransformer(it.items?.rewardItems),
                                     simpleShippingRules = it.simpleShippingRulesExpanded.filterNotNull(),
                                     rewardImage = it.rewardImage
@@ -744,7 +787,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         // - API does not provide the Reward no reward, we need to add it first
                         val minPledge = data.project?.minPledge?.toDouble() ?: 1.0
                         val modifiedRewards = rwList.filterNotNull().toMutableList()
-                        modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+                        modifiedRewards.add(
+                            0,
+                            RewardFactory.noReward().toBuilder().minimum(minPledge).build()
+                        )
                         ps.onNext(modifiedRewards.toList())
                     }
                     ps.onComplete()
@@ -813,7 +859,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
         }?.toList() ?: emptyList()
     }
-    override fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>> {
+
+    override fun getRewardAllowedAddOns(
+        slug: String,
+        locationId: Location,
+        rewardId: Long,
+    ): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
 
@@ -884,13 +935,29 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val mutation = UpdateBackingMutation(
                 backingId = encodeRelayId(updateBackingData.backing),
-                amount = if (updateBackingData.amount.isNotNull()) Optional.present(updateBackingData.amount) else Optional.absent(),
-                locationId = if (updateBackingData.locationId.isNotNull()) Optional.present(updateBackingData.locationId) else Optional.absent(),
+                amount = if (updateBackingData.amount.isNotNull()) Optional.present(
+                    updateBackingData.amount
+                ) else Optional.absent(),
+                locationId = if (updateBackingData.locationId.isNotNull()) Optional.present(
+                    updateBackingData.locationId
+                ) else Optional.absent(),
                 rewardIds =
-                if (updateBackingData.rewardsIds.isNotNull()) Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                if (updateBackingData.rewardsIds.isNotNull()) Optional.present(
+                    updateBackingData.rewardsIds?.let { list ->
+                        list.map {
+                            encodeRelayId(
+                                it
+                            )
+                        }
+                    }
+                )
                 else Optional.absent(),
-                paymentSourceId = if (updateBackingData.paymentSourceId.isNotNull()) Optional.present(updateBackingData.paymentSourceId) else Optional.absent(),
-                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent()
+                paymentSourceId = if (updateBackingData.paymentSourceId.isNotNull()) Optional.present(
+                    updateBackingData.paymentSourceId
+                ) else Optional.absent(),
+                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(
+                    updateBackingData.intentClientSecret
+                ) else Optional.absent()
             )
             val ps = PublishSubject.create<Checkout>()
             service
@@ -932,16 +999,34 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 projectId = encodeRelayId(createBackingData.project),
                 amount = createBackingData.amount,
                 paymentType = PaymentTypes.CREDIT_CARD.rawValue,
-                paymentSourceId = if (createBackingData.paymentSourceId.isNotNull()) Optional.present(createBackingData.paymentSourceId) else Optional.absent(),
-                incremental = if (createBackingData.incremental.isNotNull()) Optional.present(createBackingData.incremental) else Optional.absent(),
+                paymentSourceId = if (createBackingData.paymentSourceId.isNotNull()) Optional.present(
+                    createBackingData.paymentSourceId
+                ) else Optional.absent(),
+                incremental = if (createBackingData.incremental.isNotNull()) Optional.present(
+                    createBackingData.incremental
+                ) else Optional.absent(),
                 setupIntentClientSecret =
-                if (createBackingData.setupIntentClientSecret.isNotNull()) Optional.present(createBackingData.setupIntentClientSecret)
+                if (createBackingData.setupIntentClientSecret.isNotNull()) Optional.present(
+                    createBackingData.setupIntentClientSecret
+                )
                 else Optional.absent(),
-                locationId = if (createBackingData.locationId.isNotNull()) Optional.present(createBackingData.locationId) else Optional.absent(),
+                locationId = if (createBackingData.locationId.isNotNull()) Optional.present(
+                    createBackingData.locationId
+                ) else Optional.absent(),
                 rewardIds =
-                if (createBackingData.rewardsIds.isNotNull()) Optional.present(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                if (createBackingData.rewardsIds.isNotNull()) Optional.present(
+                    createBackingData.rewardsIds?.let { list ->
+                        list.map {
+                            encodeRelayId(
+                                it
+                            )
+                        }
+                    }
+                )
                 else Optional.absent(),
-                refParam = if (createBackingData.refTag?.tag().isNotNull()) Optional.present(createBackingData.refTag?.tag()) else Optional.absent()
+                refParam = if (createBackingData.refTag?.tag().isNotNull()) Optional.present(
+                    createBackingData.refTag?.tag()
+                ) else Optional.absent()
             )
 
             this.service.mutation(mutation)
@@ -1009,7 +1094,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun createPassword(
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<CreatePasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
@@ -1227,7 +1312,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProjectUpdates(
         slug: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Observable<UpdatesGraphQlEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdatesGraphQlEnvelope>()
@@ -1314,7 +1399,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProjectUpdateComments(
         updateId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -1369,7 +1454,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProjectComments(
         slug: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -1421,7 +1506,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getRepliesForComment(
         comment: Comment,
         cursor: String?,
-        pageSize: Int
+        pageSize: Int,
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -1469,7 +1554,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return Observable.defer {
             val ps = PublishSubject.create<Comment>()
             val mutation = CreateCommentMutation(
-                parentId = if (comment.parent?.id().isNotNull()) Optional.present(comment.parent?.let { encodeRelayId(it) }) else Optional.absent(),
+                parentId = if (comment.parent?.id()
+                    .isNotNull()
+                ) Optional.present(comment.parent?.let { encodeRelayId(it) }) else Optional.absent(),
                 commentableId = comment.commentableId,
                 clientMutationId = Optional.present(comment.clientMutationId),
                 body = comment.body
@@ -1582,8 +1669,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                         list.map { encodeRelayId(it) }
                     }
                 ),
-                locationId = if (createCheckoutData.locationId.isNotNull()) Optional.present(createCheckoutData.locationId) else Optional.absent(),
-                refParam = if (createCheckoutData.refTag?.tag().isNotNull()) Optional.present(createCheckoutData.refTag?.tag()) else Optional.absent()
+                locationId = if (createCheckoutData.locationId.isNotNull()) Optional.present(
+                    createCheckoutData.locationId
+                ) else Optional.absent(),
+                refParam = if (createCheckoutData.refTag?.tag().isNotNull()) Optional.present(
+                    createCheckoutData.refTag?.tag()
+                ) else Optional.absent()
             )
             this.service.mutation(
                 mutation
@@ -1652,7 +1743,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun validateCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String
+        paymentSourceId: String,
     ): Observable<PaymentValidationResponse> {
         return Observable.defer {
             val ps = PublishSubject.create<PaymentValidationResponse>()
@@ -1689,7 +1780,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         checkoutId: String,
         paymentIntentClientSecret: String,
         paymentSourceId: String?,
-        paymentSourceReusable: Boolean
+        paymentSourceReusable: Boolean,
     ): Observable<Pair<String, Boolean>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<String, Boolean>>()
@@ -1790,7 +1881,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     }
 
                     response.data?.let {
-                        val backerCompleted = it.updateBackerCompleted?.backing?.backerCompleted ?: false
+                        val backerCompleted =
+                            it.updateBackerCompleted?.backing?.backerCompleted ?: false
                         ps.onNext(backerCompleted)
                     }
                     ps.onComplete()
@@ -1801,23 +1893,21 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override suspend fun addUserToSecretRewardGroup(
         project: Project,
-        secretRewardToken: String
-    ): Result<Project> {
+        secretRewardToken: String,
+    ): Result<Project> = executeForResult {
         val mutation = AddUserToSecretRewardGroupMutation(
             projectId = encodeRelayId(project).toString(),
             secretRewardToken = secretRewardToken
         )
-        return try {
-            val response = service.mutation(mutation).execute()
-            if (response.hasErrors()) {
-                val errorMessage = response.errors?.firstOrNull()?.message ?: "Unknown GraphQL error"
-                Result.failure(Exception(errorMessage))
-            } else {
-                Result.success(project)
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
+
+        val response = service.mutation(mutation).execute()
+
+        if (response.hasErrors()) {
+            throw buildClientException(response.errors)
         }
+
+        val updatedProject = response.data?.addUserToSecretRewardGroup?.project
+        projectTransformer(updatedProject)
     }
 
     // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview
@@ -1904,7 +1994,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         } ?: emptyList()
     }
 
-    override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> = executeForResult {
+    override suspend fun getSearchProjects(
+        discoveryParams: DiscoveryParams,
+        cursor: String?,
+    ): Result<SearchEnvelope> = executeForResult {
         val query = buildFetchProjectsQuery(discoveryParams, cursor)
         val response = this.service.query(query).execute()
 
@@ -1948,19 +2041,21 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     sealed class KSApolloClientV2Exception(
         message: String? = null,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : Exception(message, cause) {
         class Timeout(
             message: String? = null,
-            cause: Throwable? = null
+            cause: Throwable? = null,
         ) : KSApolloClientV2Exception(message, cause)
+
         class TooManyRequests(
             message: String? = null,
-            cause: Throwable? = null
+            cause: Throwable? = null,
         ) : KSApolloClientV2Exception(message, cause)
+
         class ApiError(
             message: String? = null,
-            cause: Throwable? = null
+            cause: Throwable? = null,
         ) : KSApolloClientV2Exception(message, cause)
     }
 
@@ -1976,12 +2071,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     else -> this
                 }
             }
+
             is ApolloHttpException -> {
                 when (statusCode) {
                     429 -> KSApolloClientV2Exception.TooManyRequests()
                     else -> this
                 }
             }
+
             else -> this
         }
 

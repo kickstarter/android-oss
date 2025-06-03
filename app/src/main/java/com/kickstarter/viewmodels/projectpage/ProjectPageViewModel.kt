@@ -648,16 +648,7 @@ interface ProjectPageViewModel {
                 .distinctUntilChanged()
                 .subscribe {
                     this.projectData.onNext(it)
-                    val deeplinkToken = it.fullDeeplink()
-                    if (deeplinkToken?.hasSecretRewardToken() == true) {
-                        val token = deeplinkToken.secretRewardToken()
-                        viewModelScope.launch {
-                            runCatching {
-                                environment.apolloClientV2()
-                                    ?.addUserToSecretRewardGroup(it.project(), token)
-                            }
-                        }
-                    }
+
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(
                         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT,
@@ -672,6 +663,26 @@ interface ProjectPageViewModel {
                 }
                 .addToDisposable(disposables)
 
+            currentProjectData
+                .map { data ->
+                    val deeplink = data.fullDeeplink()
+                    val token = deeplink?.takeIf { it.hasSecretRewardToken() }?.secretRewardToken()
+                    if (token != null) Pair(data.project(), token) else null
+                }
+                .filter { true }
+                .map { requireNotNull(it) }
+                .distinctUntilChanged()
+                .subscribe { pair ->
+                    val project = pair.first
+                    val token = pair.second
+
+                    viewModelScope.launch {
+                        runCatching {
+                            environment.apolloClientV2()?.addUserToSecretRewardGroup(project, token)
+                        }
+                    }
+                }
+                .addToDisposable(disposables)
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
                 .map {

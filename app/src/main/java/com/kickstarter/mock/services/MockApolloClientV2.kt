@@ -55,6 +55,7 @@ import com.kickstarter.type.CurrencyCode
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import java.util.Collections
+import kotlin.Result.Companion.success
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 
@@ -363,19 +364,19 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         project: Project,
         secretRewardToken: String,
     ): Result<Project> {
-        TODO("Not yet implemented")
+        return success(project)
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
-        return Result.success(emptyList())
+        return success(emptyList())
     }
 
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
-        return Result.success(SearchEnvelope())
+        return success(SearchEnvelope())
     }
 
     override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {
-        return Result.success(listOf())
+        return success(listOf())
     }
 
     override fun cleanDisposables() {

@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
@@ -21,10 +20,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -47,6 +47,7 @@ import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Location
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.LOCATION_ANYWHERE
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.locationTag
+import com.kickstarter.ui.activities.compose.search.PercentageRaisedTestTags.BUCKETS_LIST
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
@@ -59,7 +60,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 fun LocationSheetPreview() {
     val env = Environment.builder().apolloClientV2(MockApolloClientV2()).build()
-    val fakeViewModel= FilterMenuViewModel(env)
+    val fakeViewModel= FilterMenuViewModel(env, isInPreview = true)
 
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
@@ -86,7 +87,11 @@ fun LocationSheet(
 ){
     val viewModel = LocalFilterMenuViewModel.current
     val locationsUIState by viewModel.locationsUIState.collectAsStateWithLifecycle()
-    val defaultLocations = locationsUIState.nearLocations
+    val defaultLocations =
+        if (!LocalInspectionMode.current)
+            locationsUIState.nearLocations
+        else listOf(LocationFactory.vancouver())
+
     val searched = locationsUIState.searchedLocations
     val isLoading = locationsUIState.isLoading
 
@@ -185,86 +190,7 @@ fun LocationSheet(
                     singleLine = true
                 )
 
-                Column(
-                    modifier = Modifier
-                        .testTag(LocationTestTags.LOCATION_LIST)
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .drawBehind {
-                            drawLine(
-                                color = backgroundDisabledColor,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = dimensions.dividerThickness.toPx()
-                            )
-                        }
-                        .padding(
-                            horizontal = dimensions.paddingLarge,
-                            vertical = dimensions.paddingMedium
-                        ),
-                ) {
-                    defaultLocations.forEachIndexed { index, location ->
-                        if (index == 0) {
-                            Row(
-                                modifier = Modifier.testTag(LOCATION_ANYWHERE)
-                                    .padding(
-                                        top = dimensions.paddingMediumSmall,
-                                        bottom = dimensions.paddingMediumSmall
-                                    )
-                                    .clickable {
-                                        onApply(currentLocation.value, null)
-                                    },
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-                            ) {
-                                RadioButton(
-                                    selected = currentLocation.value == null || currentLocation.value?.displayableName()?.isEmpty().isTrue(),
-                                    onClick = null,
-                                    colors = RadioButtonDefaults.colors(
-                                        unselectedColor = colors.backgroundSelected,
-                                        selectedColor = colors.backgroundSelected
-                                    )
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    color = colors.textPrimary,
-                                    text = stringResource(R.string.Location_Anywhere),
-                                    style = typographyV2.headingLG
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.testTag(locationTag(location))
-                                .padding(
-                                    top = dimensions.paddingMediumSmall,
-                                    bottom = dimensions.paddingMediumSmall
-                                )
-                                .clickable {
-                                    onApply(currentLocation.value, null)
-                                },
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-                        ) {
-                            RadioButton(
-                                selected = currentLocation.value?.id() == location.id(),
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(
-                                    unselectedColor = colors.backgroundSelected,
-                                    selectedColor = colors.backgroundSelected
-                                )
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .weight(1f),
-                                color = colors.textPrimary,
-                                text = location.displayableName(),
-                                style = typographyV2.headingLG
-                            )
-                        }
-
-                    }
-                }
+                DefaultLocationComposable(modifier = Modifier.weight(1f), defaultLocations, currentLocation)
 
                 KSSearchBottomSheetFooter(
                     leftButtonIsEnabled = false,
@@ -279,4 +205,94 @@ fun LocationSheet(
             }
         }
     }
+}
+
+@Composable
+private fun DefaultLocationComposable(
+    modifier: Modifier = Modifier,
+    defaultLocations: List<Location>,
+    currentLocation: MutableState<Location?>
+) {
+
+    val backgroundDisabledColor = colors.backgroundDisabled
+    val dimensions: KSDimensions = KSTheme.dimensions
+
+    LazyColumn(
+        modifier = modifier
+            .testTag(LocationTestTags.LOCATION_LIST)
+            .fillMaxWidth()
+            .drawBehind {
+                drawLine(
+                    color = backgroundDisabledColor,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = dimensions.dividerThickness.toPx()
+                )
+            }
+            .padding(
+                horizontal = dimensions.paddingLarge,
+                vertical = dimensions.paddingMedium
+            ),
+    ) {
+        itemsIndexed(defaultLocations){ index, location ->
+            if (index == 0) {
+                Row(
+                    modifier = Modifier.testTag(LOCATION_ANYWHERE)
+                        .padding(
+                            top = dimensions.paddingMediumSmall,
+                            bottom = dimensions.paddingMediumSmall
+                        )
+                        .clickable {
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                ) {
+                    RadioButton(
+                        selected = currentLocation.value == null || currentLocation.value?.displayableName()?.isEmpty().isTrue(),
+                        onClick = null,
+                        colors = RadioButtonDefaults.colors(
+                            unselectedColor = colors.backgroundSelected,
+                            selectedColor = colors.backgroundSelected
+                        )
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        color = colors.textPrimary,
+                        text = stringResource(R.string.Location_Anywhere),
+                        style = typographyV2.headingLG
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.testTag(locationTag(location))
+                    .padding(
+                        top = dimensions.paddingMediumSmall,
+                        bottom = dimensions.paddingMediumSmall
+                    )
+                    .clickable {
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+            ) {
+                RadioButton(
+                    selected = currentLocation.value?.id() == location.id(),
+                    onClick = null,
+                    colors = RadioButtonDefaults.colors(
+                        unselectedColor = colors.backgroundSelected,
+                        selectedColor = colors.backgroundSelected
+                    )
+                )
+                Text(
+                    modifier = Modifier
+                        .weight(1f),
+                    color = colors.textPrimary,
+                    text = location.displayableName(),
+                    style = typographyV2.headingLG
+                )
+            }
+
+        }
+    }
+
 }

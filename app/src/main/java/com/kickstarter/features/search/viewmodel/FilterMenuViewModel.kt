@@ -32,7 +32,8 @@ data class LocationsUIState(
 
 open class FilterMenuViewModel(
     private val environment: Environment,
-    private val testDispatcher: CoroutineDispatcher? = null
+    private val testDispatcher: CoroutineDispatcher? = null,
+    private val isInPreview: Boolean = false
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
@@ -61,8 +62,10 @@ open class FilterMenuViewModel(
     private var categoriesList = emptyList<Category>()
 
     init {
-        scope.launch {
-            getNearByLocations()
+        if (isInPreview) {
+            scope.launch {
+                getNearByLocations()
+            }
         }
     }
 
@@ -84,7 +87,7 @@ open class FilterMenuViewModel(
     suspend fun getNearByLocations() {
         emitCurrentState(isLoading = true)
 
-        val locationsHardcodedList = listOf(LocationFactory.vancouver(), LocationFactory.mexico(), LocationFactory.sydney(), LocationFactory.germany(), LocationFactory.unitedStates())
+        val locationsHardcodedList = listOf(LocationFactory.vancouver())
         emitLocationsCurrentState(
             isLoading = false,
             nearBy = locationsHardcodedList

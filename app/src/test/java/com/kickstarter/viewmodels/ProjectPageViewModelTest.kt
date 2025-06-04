@@ -44,11 +44,17 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import io.mockk.coVerify
+import io.mockk.slot
+import io.mockk.spyk
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
@@ -2399,6 +2405,35 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         pledgeRedemptionIsVisible.assertNoValues()
+    }
+
+    @Test
+    fun addUserToSecretRewardGroup_isCalled_whenDeeplinkContainsSecretToken() {
+        val secretToken = "secret_123"
+        val deeplinkUri = Uri.parse("https://www.kickstarter.com/projects/cool-project?secret_reward_token=$secretToken")
+        val project = ProjectFactory.project()
+        val capturedProject = slot<Project>()
+        val capturedToken = slot<String>()
+
+        val mockApolloClient = spyk(MockApolloClientV2(), recordPrivateCalls = true)
+        val environment = environment().toBuilder()
+            .apolloClientV2(mockApolloClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val intent = Intent().putExtra(IntentKey.PROJECT, project).setData(deeplinkUri)
+        vm.configureWith(intent)
+
+        runBlocking {
+            delay(500)
+        }
+
+        coVerify {
+            mockApolloClient.addUserToSecretRewardGroup(capture(capturedProject), capture(capturedToken))
+        }
+
+        assertEquals(secretToken, capturedToken.captured)
     }
 
     private fun deepLinkIntent(): Intent {

@@ -238,7 +238,7 @@ interface ApolloClientTypeV2 {
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
-    suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String, ): Result<Project>
+    suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
@@ -887,8 +887,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 amount = if (updateBackingData.amount.isNotNull()) Optional.present(updateBackingData.amount) else Optional.absent(),
                 locationId = if (updateBackingData.locationId.isNotNull()) Optional.present(updateBackingData.locationId) else Optional.absent(),
                 rewardIds =
-                    if (updateBackingData.rewardsIds.isNotNull()) Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
-                    else Optional.absent(),
+                if (updateBackingData.rewardsIds.isNotNull()) Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                else Optional.absent(),
                 paymentSourceId = if (updateBackingData.paymentSourceId.isNotNull()) Optional.present(updateBackingData.paymentSourceId) else Optional.absent(),
                 intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent()
             )
@@ -935,12 +935,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 paymentSourceId = if (createBackingData.paymentSourceId.isNotNull()) Optional.present(createBackingData.paymentSourceId) else Optional.absent(),
                 incremental = if (createBackingData.incremental.isNotNull()) Optional.present(createBackingData.incremental) else Optional.absent(),
                 setupIntentClientSecret =
-                    if (createBackingData.setupIntentClientSecret.isNotNull()) Optional.present(createBackingData.setupIntentClientSecret)
-                    else Optional.absent(),
+                if (createBackingData.setupIntentClientSecret.isNotNull()) Optional.present(createBackingData.setupIntentClientSecret)
+                else Optional.absent(),
                 locationId = if (createBackingData.locationId.isNotNull()) Optional.present(createBackingData.locationId) else Optional.absent(),
                 rewardIds =
-                    if (createBackingData.rewardsIds.isNotNull()) Optional.present(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
-                    else Optional.absent(),
+                if (createBackingData.rewardsIds.isNotNull()) Optional.present(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                else Optional.absent(),
                 refParam = if (createBackingData.refTag?.tag().isNotNull()) Optional.present(createBackingData.refTag?.tag()) else Optional.absent()
             )
 

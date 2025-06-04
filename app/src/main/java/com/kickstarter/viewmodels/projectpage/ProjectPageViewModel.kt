@@ -153,7 +153,6 @@ interface ProjectPageViewModel {
         fun activityResult(result: ActivityResult)
 
         fun continuePledgeFlow(callback: () -> Unit)
-
     }
 
     interface Outputs {
@@ -282,7 +281,6 @@ interface ProjectPageViewModel {
         fun showLatePledgeFlow(): Observable<Boolean>
 
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
-
     }
 
     class ProjectPageViewModel(val environment: Environment) :

@@ -104,14 +104,14 @@ fun DefaultLocationComposablePreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SuggestedLocationComposablePreview() {
+fun SuggestedLocationsComposablePreview() {
 
     KSTheme {
         Surface(
             color = colors.backgroundSurfacePrimary
         ) {
             SuggestedLocationsComposable(
-                suggestedLocations = listOf(LocationFactory.vancouver(), LocationFactory.sydney()),
+                suggestedLocations = listOf(LocationFactory.mexico(), LocationFactory.unitedStates(), LocationFactory.germany(), LocationFactory.nigeria()),
                 currentLocation = remember { mutableStateOf(LocationFactory.sydney()) },
             )
         }
@@ -236,7 +236,12 @@ fun LocationSheet(
                 val selectedLocation = remember { mutableStateOf(currentLocation.value) }
                 var inputValue = remember { mutableStateOf("") }
 
-                InputSearchComposable(isFocused = isFocused, input = inputValue)
+                InputSearchComposable(
+                    isFocused = isFocused,
+                    input = inputValue,
+                    searchCallback = { term -> viewModel.updateQuery(term) },
+                    cancelCallback = { viewModel.cancelLocationSearch() }
+                )
 
                 if (!isFocused.value && inputValue.value.isEmpty()) {
                     DefaultLocationComposable(
@@ -295,6 +300,7 @@ private fun SuggestedLocationsComposable(
         items(suggestedLocations) { location ->
             Row(
                 modifier = Modifier.testTag(locationTag(location))
+                    .animateItem()
                     .padding(
                         top = dimensions.paddingMediumSmall,
                         start = dimensions.paddingMediumSmall,
@@ -323,6 +329,8 @@ private fun InputSearchComposable(
     modifier: Modifier = Modifier,
     isFocused: MutableState<Boolean>,
     input: MutableState<String>, // TODO: evaluate if needed here
+    searchCallback: (String) -> Unit = { a -> },
+    cancelCallback: () -> Unit = {},
 ) {
     val dimensions: KSDimensions = KSTheme.dimensions
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -346,7 +354,7 @@ private fun InputSearchComposable(
             value = input.value,
             onValueChange = {
                 input.value = it
-                // TODO: Throttle a query call to `locations` with term whatever the input value is, the responses will be consumed in a UIState
+                searchCallback(it)
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(
@@ -383,6 +391,7 @@ private fun InputSearchComposable(
                     keyboardController?.hide()
                     isFocused.value = false
                     focusManager.clearFocus()
+                    cancelCallback()
                 },
                 modifier = modifier
                     .testTag(INPUT_BUTTON)

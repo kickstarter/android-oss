@@ -13,6 +13,7 @@ import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
+import com.kickstarter.AddUserToSecretRewardGroupMutation
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CancelBackingMutation
 import com.kickstarter.ClearUserUnseenActivityMutation
@@ -237,6 +238,7 @@ interface ApolloClientTypeV2 {
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
+    suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
@@ -1795,6 +1797,25 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }.addToDisposable(disposables)
             return@defer ps
         }
+    }
+
+    override suspend fun addUserToSecretRewardGroup(
+        project: Project,
+        secretRewardToken: String,
+    ): Result<Project> = executeForResult {
+        val mutation = AddUserToSecretRewardGroupMutation(
+            projectId = encodeRelayId(project).toString(),
+            secretRewardToken = secretRewardToken
+        )
+
+        val response = service.mutation(mutation).execute()
+
+        if (response.hasErrors()) {
+            throw buildClientException(response.errors)
+        }
+
+        val updatedProject = response.data?.addUserToSecretRewardGroup?.project
+        projectTransformer(updatedProject)
     }
 
     // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview

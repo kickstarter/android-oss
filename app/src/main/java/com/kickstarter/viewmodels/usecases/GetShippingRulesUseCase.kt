@@ -154,11 +154,26 @@ class GetShippingRulesUseCase(
     }
 
     /**
-     * Check if the given @param rule is available in the list
-     * of @param allAvailableShippingRules for this project.
+     * Filters and sorts the project's rewards based on availability, reward type, and the selected shipping rule.
      *
-     * In case it is available, return only those rewards able to ship to
-     * the selected rule
+     * This method processes the given list of rewards and updates [filteredRewards] in a prioritized order:
+     *
+     * 1. Adds the "no reward" option, if present.
+     * 2. Adds secret rewards that are available, sorted by their minimum pledge amount.
+     * 3. Adds all other available rewards that meet one of the following criteria:
+     *    - Ships worldwide
+     *    - Is a digital or local pickup reward
+     *    - Ships to restricted locations and includes a shipping rule matching the selected location
+     *    These are also sorted by minimum pledge amount.
+     *
+     * Rewards are only added if available, and the method ensures no duplicates or incorrect entries
+     * by filtering and categorizing in a single pass.
+     *
+     * Once filtered, the updated state is emitted via [emitCurrentState].
+     *
+     * @param allAvailableShippingRules map of location ID to shipping rule available for the project
+     * @param rule the selected shipping rule (e.g., user's chosen location)
+     * @param rewards the full list of rewards associated with the project
      */
     private suspend fun filterRewardsByLocation(
         allAvailableShippingRules: MutableMap<Long, ShippingRule>,
@@ -166,37 +181,37 @@ class GetShippingRulesUseCase(
         rewards: List<Reward>
     ) {
         filteredRewards.clear()
-        val locationId = rule.location()?.id() ?: 0
-        val isIsValidRule = allAvailableShippingRules[locationId]
 
-        rewards.map { rw ->
-            if (RewardUtils.shipsWorldwide(rw) && rw.isAvailable()) {
-                filteredRewards.add(rw)
-            }
+        val locationId = rule.location()?.id() ?: 0L
+        val validShippingRule = allAvailableShippingRules[locationId]
+        val rewardGroups = mutableListOf<Reward>()
+        var noReward: Reward? = null
+        val secretRewards = mutableListOf<Reward>()
+
+        rewards.forEach { rw ->
+            val isAvailable = rw.isAvailable()
 
             if (RewardUtils.isNoReward(rw)) {
-                filteredRewards.add(rw)
-            }
-
-            if (RewardUtils.isLocalPickup(rw) && rw.isAvailable()) {
-                filteredRewards.add(rw)
-            }
-
-            if (RewardUtils.isDigital(rw) && rw.isAvailable()) {
-                filteredRewards.add(rw)
-            }
-
-            // - If shipping is restricted, make sure the reward is able to ship to selected rule
-            if (RewardUtils.shipsToRestrictedLocations(rw) && rw.isAvailable()) {
-                if (isIsValidRule != null) {
-                    rw.shippingRules()?.map {
-                        if (it.location()?.id() == locationId) {
-                            filteredRewards.add(rw)
-                        }
+                noReward = rw
+            } else if (rw.isSecretReward() == true && isAvailable) {
+                secretRewards.add(rw)
+            } else if (isAvailable) {
+                val shouldAdd = when {
+                    RewardUtils.shipsWorldwide(rw) -> true
+                    RewardUtils.isLocalPickup(rw) -> true
+                    RewardUtils.isDigital(rw) -> true
+                    RewardUtils.shipsToRestrictedLocations(rw) && validShippingRule != null -> {
+                        rw.shippingRules()?.any { it.location()?.id() == locationId } == true
                     }
+                    else -> false
                 }
+                if (shouldAdd) rewardGroups.add(rw)
             }
         }
+
+        noReward?.let { filteredRewards.add(it) }
+        filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
+        filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
 
         emitCurrentState(isLoading = false)
     }

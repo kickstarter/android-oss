@@ -3,6 +3,7 @@ package com.kickstarter.services.transformers
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.AddUserToSecretRewardGroupMutation
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CreateAttributionEventMutation
 import com.kickstarter.CreateOrUpdateBackingAddressMutation
@@ -188,7 +189,7 @@ fun rewardTransformer(
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
     val photo = getPhoto(rewardImage?.image?.url, rewardImage?.image?.altText)
-
+    val isSecretReward = rewardGr.audienceData.secret
     return Reward.builder()
         .title(title)
         .convertedMinimum(convertedAmount)
@@ -214,6 +215,7 @@ fun rewardTransformer(
         .backersCount(backersCount)
         .localReceiptLocation(localReceiptLocation)
         .image(photo)
+        .isSecretReward(isSecretReward)
         .build()
 }
 
@@ -899,7 +901,27 @@ fun projectTransformer(similarProjectFragment: SimilarProject?): Project {
         .slug(slug)
         .build()
 }
+/**
+ * Transform the AddUserToSecretRewardGroupMutation.Project GraphQL data structure into our own Project data model
+ * @param AddUserToSecretRewardGroupMutation.Project project
+ * @return Project
+ */
+fun projectTransformer(project: AddUserToSecretRewardGroupMutation.Project?): Project {
+    val id = decodeRelayId(project?.id) ?: -1
+    val rewards = project?.rewards?.nodes?.mapNotNull { node ->
+        node?.let {
+            Reward.builder()
+                .id(decodeRelayId(it.id) ?: -1)
+                .title(it.name)
+                .build()
+        }
+    } ?: emptyList()
 
+    return Project.builder()
+        .id(id)
+        .rewards(rewards)
+        .build()
+}
 /**
  * For addOns we receive this kind of data structure :[D, D, D, D, D, C, E, E]
  * and we need to transform it in : D(5),C(1),E(2)

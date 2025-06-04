@@ -61,14 +61,6 @@ open class FilterMenuViewModel(
 
     private var categoriesList = emptyList<Category>()
 
-    init {
-        if (isInPreview) {
-            scope.launch {
-                getNearByLocations()
-            }
-        }
-    }
-
     fun getRootCategories() {
         scope.launch {
             emitCurrentState(isLoading = true)
@@ -84,17 +76,35 @@ open class FilterMenuViewModel(
         }
     }
 
+    init {
+        if (isInPreview) {
+            viewModelScope.launch {
+                getNearByLocations()
+                // getSearchedLocations("")
+            }
+        }
+    }
+
+    val defaultHardcodedList = listOf(LocationFactory.vancouver())
+    val suggestedHardcodedList = listOf(LocationFactory.sydney(), LocationFactory.mexico(), LocationFactory.canada(), LocationFactory.germany())
     suspend fun getNearByLocations() {
         emitCurrentState(isLoading = true)
 
-        val locationsHardcodedList = listOf(LocationFactory.vancouver())
         emitLocationsCurrentState(
             isLoading = false,
-            nearBy = locationsHardcodedList
+            nearBy = defaultHardcodedList,
+            searched = suggestedHardcodedList
         )
     }
 
     suspend fun getSearchedLocations(term: String) {
+        emitCurrentState(isLoading = true)
+
+        emitLocationsCurrentState(
+            isLoading = false,
+            searched = suggestedHardcodedList,
+            nearBy = defaultHardcodedList
+        )
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
@@ -111,7 +121,7 @@ open class FilterMenuViewModel(
     }
 
     // - the lists should probably be stored and not update every time, for now it's ok as it is hardcoded when real query is called change this
-    private suspend fun emitLocationsCurrentState(isLoading: Boolean = false, nearBy: List<Location> = emptyList(), searched: List<Location> = emptyList()) {
+    private suspend fun emitLocationsCurrentState(isLoading: Boolean = false, nearBy: List<Location>, searched: List<Location>) {
         _locations.emit(
             LocationsUIState(
                 isLoading = isLoading,

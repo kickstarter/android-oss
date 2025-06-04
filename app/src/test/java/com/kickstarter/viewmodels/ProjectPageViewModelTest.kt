@@ -52,7 +52,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -60,6 +59,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectPageViewModel.ProjectPageViewModel
@@ -2434,6 +2434,58 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         }
 
         assertEquals(secretToken, capturedToken.captured)
+    }
+
+    @Test
+    fun continuePledgeFlow_userNotLoggedInThenLogsIn_callbackIsInvoked() {
+        val currentUser = MockCurrentUserV2() // logged out by default
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val callbackInvoked = AtomicBoolean(false)
+
+        // Start the pledge flow with a callback
+        vm.inputs.continuePledgeFlow {
+            callbackInvoked.set(true)
+        }
+
+        // Assert: login prompt triggered, but callback not yet run
+        this.startLoginToutActivity.assertValueCount(1)
+        assertFalse(callbackInvoked.get())
+
+        // Simulate login
+        currentUser.refresh(UserFactory.user())
+
+        // Assert: callback now triggered
+        assertTrue(callbackInvoked.get())
+    }
+
+    @Test
+    fun continuePledgeFlow_userAlreadyLoggedIn_callbackIsInvokedImmediately() {
+        val user = UserFactory.user()
+        val currentUser = MockCurrentUserV2(user) // already logged in
+
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val callbackInvoked = AtomicBoolean(false)
+
+        // Start the pledge flow
+        vm.inputs.continuePledgeFlow {
+            callbackInvoked.set(true)
+        }
+
+        // Login prompt should NOT be shown
+        this.startLoginToutActivity.assertNoValues()
+
+        // Callback should be invoked immediately
+        assertTrue(callbackInvoked.get())
     }
 
     private fun deepLinkIntent(): Intent {

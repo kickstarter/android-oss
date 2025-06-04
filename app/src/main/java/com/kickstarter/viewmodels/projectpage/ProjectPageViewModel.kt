@@ -151,6 +151,9 @@ interface ProjectPageViewModel {
         fun onVideoPlayButtonClicked()
 
         fun activityResult(result: ActivityResult)
+
+        fun continuePledgeFlow(callback: () -> Unit)
+
     }
 
     interface Outputs {
@@ -279,6 +282,7 @@ interface ProjectPageViewModel {
         fun showLatePledgeFlow(): Observable<Boolean>
 
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
+
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -374,7 +378,6 @@ interface ProjectPageViewModel {
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
         private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -1480,6 +1483,10 @@ interface ProjectPageViewModel {
 
         override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
             this.showPledgeRedemptionScreen
+
+        override fun continuePledgeFlow(callback: () -> Unit) {
+            this.continuePledgeFlow.onNext(callback)
+        }
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

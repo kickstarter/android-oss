@@ -1,11 +1,16 @@
 package com.kickstarter.ui.activities.compose.search
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +22,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -27,15 +33,21 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
 import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
@@ -47,7 +59,6 @@ import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Location
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.LOCATION_ANYWHERE
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.locationTag
-import com.kickstarter.ui.activities.compose.search.PercentageRaisedTestTags.BUCKETS_LIST
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
@@ -60,7 +71,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 fun LocationSheetPreview() {
     val env = Environment.builder().apolloClientV2(MockApolloClientV2()).build()
-    val fakeViewModel= FilterMenuViewModel(env, isInPreview = true)
+    val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
 
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
@@ -101,13 +112,13 @@ fun LocationSheet(
     onDismiss: () -> Unit = {},
     onApply: (Location?, Boolean?) -> Unit = { a, b -> },
     onNavigate: () -> Unit = {},
-){
+) {
     val viewModel = LocalFilterMenuViewModel.current
     val locationsUIState by viewModel.locationsUIState.collectAsStateWithLifecycle()
     val defaultLocations =
         if (!LocalInspectionMode.current)
             locationsUIState.nearLocations
-        else listOf(LocationFactory.vancouver())
+        else listOf(LocationFactory.vancouver()) // - Load hardcoded option while in preview
 
     val searched = locationsUIState.searchedLocations
     val isLoading = locationsUIState.isLoading
@@ -168,46 +179,87 @@ fun LocationSheet(
                     )
                 }
 
-                // OutlinedTextField can be extracted as input-text design system piece
-                OutlinedTextField(
-                    modifier = Modifier
-                        .testTag(SearchScreenTestTag.SEARCH_TEXT_INPUT.name)
-                        .padding(
-                            horizontal = dimensions.paddingLarge,
-                            vertical = dimensions.paddingMedium
-                        )
-                        .fillMaxWidth(),
-                    value = "",
-                    onValueChange = {
-//                        value = it
-//                        onValueChanged(value)
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-//                            keyboardController?.hide()
-//                            focusManager.clearFocus()
-                        }
-                    ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = colors.backgroundSurfacePrimary,
-                        errorLabelColor = colors.kds_alert,
-                        unfocusedLabelColor = colors.textSecondary,
-                        focusedLabelColor = colors.borderActive,
-                        cursorColor = colors.kds_create_700,
-                        errorCursorColor = colors.kds_alert,
-                        textColor = colors.textAccentGrey,
-                        disabledTextColor = colors.textDisabled,
-                        focusedBorderColor = colors.borderActive,
-                        unfocusedBorderColor = colors.borderBold
-                    ),
-                    label = {
-                        Text(text = stringResource(id = R.string.Location_searchbox_placeholder))
-                    },
-                    singleLine = true
-                )
+                val keyboardController = LocalSoftwareKeyboardController.current
+                val isFocused = remember { mutableStateOf(false) }
+                var inputValue by rememberSaveable { mutableStateOf("") }
+                val focusManager = LocalFocusManager.current
 
-                DefaultLocationComposable(modifier = Modifier.weight(1f), defaultLocations, currentLocation)
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium)
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .weight(1f)
+                            .onFocusChanged { it ->
+                                if (it.isFocused) isFocused.value = true
+                            }
+                            .testTag(SearchScreenTestTag.SEARCH_TEXT_INPUT.name),
+                        value = inputValue,
+                        onValueChange = {
+                            inputValue = it
+
+                            // TODO: Throttle a query call to `locations` with term whatever the input value is, the responses will be consumed in a UIState
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                keyboardController?.hide()
+                            }
+                        ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = colors.backgroundSurfacePrimary,
+                            errorLabelColor = colors.kds_alert,
+                            unfocusedLabelColor = colors.textSecondary,
+                            focusedLabelColor = colors.borderActive,
+                            cursorColor = colors.kds_create_700,
+                            errorCursorColor = colors.kds_alert,
+                            textColor = colors.textAccentGrey,
+                            disabledTextColor = colors.textDisabled,
+                            focusedBorderColor = colors.borderActive,
+                            unfocusedBorderColor = colors.borderBold
+                        ),
+                        label = {
+                            Text(text = stringResource(id = R.string.Location_searchbox_placeholder))
+                        },
+                        singleLine = true
+                    )
+
+                    AnimatedVisibility(
+                        visible = isFocused.value,
+                        enter = fadeIn() + expandHorizontally(),
+                        exit = fadeOut() + shrinkHorizontally()
+                    ) {
+                        TextButton(
+                            onClick = {
+                                inputValue = ""
+                                keyboardController?.hide()
+                                isFocused.value = false
+                                focusManager.clearFocus()
+                                // TODO: will bring back visibility for the default location and hides keyboard, is a cancelation
+                                // of the search query I assume not entirely sure
+                            },
+                            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.Cancel),
+                                color = colors.textAccentGreen,
+                                style = typographyV2.bodyLG
+                            )
+                        }
+                    }
+                }
+
+                if (!isFocused.value) {
+                    DefaultLocationComposable(
+                        modifier = Modifier.weight(1f),
+                        defaultLocations,
+                        currentLocation
+                    )
+                }
 
                 KSSearchBottomSheetFooter(
                     leftButtonIsEnabled = false,
@@ -251,7 +303,7 @@ private fun DefaultLocationComposable(
                 vertical = dimensions.paddingMedium
             ),
     ) {
-        itemsIndexed(defaultLocations){ index, location ->
+        itemsIndexed(defaultLocations) { index, location ->
             if (index == 0) {
                 Row(
                     modifier = Modifier.testTag(LOCATION_ANYWHERE)
@@ -308,8 +360,6 @@ private fun DefaultLocationComposable(
                     style = typographyV2.headingLG
                 )
             }
-
         }
     }
-
 }

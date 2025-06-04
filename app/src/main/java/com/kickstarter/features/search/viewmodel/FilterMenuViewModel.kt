@@ -94,7 +94,7 @@ open class FilterMenuViewModel(
         )
     }
 
-    suspend fun getSearchedLocations(term: String){
+    suspend fun getSearchedLocations(term: String) {
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {

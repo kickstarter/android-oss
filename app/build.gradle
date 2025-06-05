@@ -300,6 +300,11 @@ dependencies {
     implementation "androidx.paging:paging-compose:3.3.0"
     implementation "androidx.paging:paging-testing:3.3.0"
 
+    // Jetpack Media3 for Compose
+    implementation "androidx.media3:media3-exoplayer:1.7.1"
+    implementation "androidx.media3:media3-ui:1.7.1"
+    implementation "androidx.media3:media3-common:1.7.1"
+
     // Testing
     testImplementation "junit:junit:4.13.2"
     testImplementation 'org.mockito:mockito-core:4.5.1'

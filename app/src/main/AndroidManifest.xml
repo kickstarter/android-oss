@@ -193,8 +193,16 @@
             android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" >
-
         </activity>
+        <activity
+          android:name=".ui.activities.NewProjectPageActivity"
+          android:parentActivityName=".ui.activities.DiscoveryActivity"
+          android:theme="@style/ProjectActivity"
+          android:screenOrientation="portrait"
+          android:exported="true"
+          android:configChanges="screenSize|orientation"
+          android:windowSoftInputMode="adjustPan"
+          tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"
             android:parentActivityName=".ui.activities.SettingsActivity"

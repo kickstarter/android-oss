@@ -165,6 +165,7 @@ class GetShippingRulesUseCase(
      *    - Is a digital or local pickup reward
      *    - Ships to restricted locations and includes a shipping rule matching the selected location
      *    These are also sorted by minimum pledge amount.
+     * * 4. Finally, appends any unavailable rewards at the end, regardless of type.
      *
      * Rewards are only added if available, and the method ensures no duplicates or incorrect entries
      * by filtering and categorizing in a single pass.
@@ -187,15 +188,20 @@ class GetShippingRulesUseCase(
         val rewardGroups = mutableListOf<Reward>()
         var noReward: Reward? = null
         val secretRewards = mutableListOf<Reward>()
+        val notAvailableRewards = mutableListOf<Reward>()
 
         rewards.forEach { rw ->
-            val isAvailable = rw.isAvailable()
-
             if (RewardUtils.isNoReward(rw)) {
                 noReward = rw
-            } else if (rw.isSecretReward() == true && isAvailable) {
+                return@forEach
+            }
+            if (!rw.isAvailable()) {
+                notAvailableRewards.add(rw)
+                return@forEach
+            }
+            if (rw.isSecretReward() == true) {
                 secretRewards.add(rw)
-            } else if (isAvailable) {
+            } else {
                 val shouldAdd = when {
                     RewardUtils.shipsWorldwide(rw) -> true
                     RewardUtils.isLocalPickup(rw) -> true
@@ -212,6 +218,7 @@ class GetShippingRulesUseCase(
         noReward?.let { filteredRewards.add(it) }
         filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
         filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
+        filteredRewards.addAll(notAvailableRewards)
 
         emitCurrentState(isLoading = false)
     }

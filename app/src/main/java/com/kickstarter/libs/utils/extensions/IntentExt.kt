@@ -9,6 +9,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.activities.CreatorBioActivity
 import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.activities.NewProjectPageActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
@@ -22,7 +23,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.ProjectData
 
 fun Intent.getProjectIntent(context: Context): Intent {
-    return this.setClass(context, ProjectPageActivity::class.java)
+    return this.setClass(context, NewProjectPageActivity::class.java)
 }
 
 fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project: Project? = null): Intent {

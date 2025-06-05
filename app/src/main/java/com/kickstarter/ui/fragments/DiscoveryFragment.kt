@@ -323,6 +323,7 @@ class DiscoveryFragment : Fragment() {
     private fun startProjectActivity(project: Project, refTag: RefTag) {
         context?.let {
             val intent = Intent().getProjectIntent(it)
+                .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.PROJECT_PARAM, project.slug())
                 .putExtra(IntentKey.REF_TAG, refTag)
                 .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DISCOVERY.value)

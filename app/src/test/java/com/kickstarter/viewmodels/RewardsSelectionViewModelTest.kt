@@ -372,7 +372,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             testRewards[6], // available, unrestricted
             testRewards[8], // available, unrestricted
             testRewards[1], // unavailable
-            testRewards[7]  // unavailable
+            testRewards[7] // unavailable
         )
 
         val obtained = shippingUiState.last().filteredRw

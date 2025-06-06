@@ -3,19 +3,27 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Location
+import com.kickstarter.ui.activities.compose.search.LocationTestTags.INPUT_BUTTON
+import com.kickstarter.ui.activities.compose.search.LocationTestTags.INPUT_SEARCH
+import com.kickstarter.ui.activities.compose.search.LocationTestTags.SUGGESTED_LOCATIONS_LIST
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class LocationSheetTest : KSRobolectricTestCase() {
@@ -23,7 +31,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
     val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
-    fun `Initial setUp with Empty InputText, Anywhere + default Location`() {
+    fun `Initial setUp with Empty InputText, Anywhere + Mock Location as default`() {
 
         val env = Environment.builder().apolloClientV2(
             object : MockApolloClientV2() {
@@ -31,24 +39,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     useDefault: Boolean,
                     term: String?
                 ): Result<List<Location>> {
-                    if (useDefault) return Result.success(listOf(LocationFactory.vancouver()))
-                    val searched = listOf(
-                        LocationFactory.sydney(),
-                        LocationFactory.mexico(),
-                        LocationFactory.canada(),
-                        LocationFactory.germany(),
-                        LocationFactory.unitedStates(),
-                        LocationFactory.nigeria(),
-                        LocationFactory.sydney(),
-                        LocationFactory.mexico(),
-                        LocationFactory.canada(),
-                        LocationFactory.germany(),
-                        LocationFactory.unitedStates(),
-                        LocationFactory.nigeria(),
-                    )
-                    if (term.isNotNull()) return Result.success(searched)
-
-                    return Result.success(emptyList())
+                    return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
         ).build()
@@ -73,5 +64,116 @@ class LocationSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
             .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(INPUT_SEARCH)
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(INPUT_SEARCH)
+            .assertTextContains(context.resources.getString(R.string.Location_searchbox_placeholder))
+
+        composeTestRule
+            .onNodeWithTag(INPUT_BUTTON)
+            .assertDoesNotExist()
     }
+
+    @Test
+    fun `InputText focs shows cancel button`() {
+
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?
+                ): Result<List<Location>> {
+                    return Result.success(listOf(LocationFactory.vancouver()))
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet()
+                }
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Location))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(INPUT_SEARCH)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag(INPUT_BUTTON)
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+            .assertDoesNotExist()
+
+        composeTestRule
+            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `Typing text into input search updates suggestions`() {
+        runTest {
+            val env = Environment.builder().apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getLocations(
+                        useDefault: Boolean,
+                        term: String?
+                    ): Result<List<Location>> {
+                        return if (term?.contains("mexico", ignoreCase = true) == true) {
+                            Result.success(listOf(LocationFactory.mexico()))
+                        } else {
+                            Result.success(emptyList())
+                        }
+                    }
+                }
+            ).build()
+
+            val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+
+            composeTestRule.setContent {
+                KSTheme {
+                    CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                        LocationSheet()
+                    }
+                }
+            }
+
+            composeTestRule
+                .onNodeWithTag(INPUT_SEARCH)
+                .performTextInput("Mexico")
+
+            advanceUntilIdle() // Account for debounce when tipping on search input
+
+            composeTestRule
+                .onNodeWithTag(SUGGESTED_LOCATIONS_LIST)
+                .assertIsDisplayed()
+
+            composeTestRule
+                .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+                .assertDoesNotExist()
+
+            composeTestRule
+                .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+                .assertDoesNotExist()
+
+            composeTestRule
+                .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.mexico()))
+                .assertIsDisplayed()
+        }
+    }
+
+    //TODO: one more test, after typping hit cancel, should clean text and recover the default locations
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
-import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,7 +21,6 @@ import kotlinx.coroutines.plus
 import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
 
-// TODO: Rename to CategoriesUIState maybe??
 data class FilterMenuUIState(
     val isLoading: Boolean = false,
     val categoriesList: List<Category> = emptyList()
@@ -66,12 +64,16 @@ open class FilterMenuViewModel(
     private var categoriesList = emptyList<Category>()
 
     private val _searchQuery = MutableStateFlow("")
+    private var nearbyLocations = emptyList<Location>()
+    private var suggestedLocations = emptyList<Location>()
+
 
     private lateinit var searchJob: Job
 
     init {
         scope.launch {
-            getNearByLocations()
+            // - This call can potentially be moved to the Activity
+            getLocations(default = true)
 
             searchJob = scope.launch {
                 _searchQuery
@@ -79,7 +81,7 @@ open class FilterMenuViewModel(
                     .distinctUntilChanged()
                     .collectLatest { query ->
                         if (query.isNotBlank()) {
-                            getSearchedLocations(query)
+                            getLocations(default = false, term = query)
                         }
                     }
             }
@@ -113,39 +115,19 @@ open class FilterMenuViewModel(
         }
     }
 
-    suspend fun getNearByLocations() {
+    private suspend fun getLocations(default: Boolean, term: String? = null) {
         emitCurrentState(isLoading = true)
 
-        // TODO: Execute real network call to locations query
-        emitLocationsCurrentState(
-            isLoading = false,
-            nearBy = listOf(LocationFactory.vancouver()),
-        )
-    }
+        val response = apolloClient.getLocations(useDefault = default, term = term)
 
-    private val searchedList = mutableListOf(
-        LocationFactory.sydney(),
-        LocationFactory.mexico(),
-        LocationFactory.canada(),
-        LocationFactory.germany(),
-        LocationFactory.unitedStates(),
-        LocationFactory.nigeria(),
-        LocationFactory.sydney(),
-        LocationFactory.mexico(),
-        LocationFactory.canada(),
-        LocationFactory.germany(),
-        LocationFactory.unitedStates(),
-        LocationFactory.nigeria(),
-    )
-    private suspend fun getSearchedLocations(term: String) {
-        emitCurrentState(isLoading = true)
+        if (response.isSuccess) {
+            if (default) nearbyLocations = response.getOrDefault(emptyList())
+            if (!term.isNullOrEmpty()) suggestedLocations = response.getOrDefault(emptyList())
+        }
+        else
+            errorAction.invoke(response.exceptionOrNull()?.message)
 
-        // TODO: Execute real network call to locations query
-        emitLocationsCurrentState(
-            isLoading = false,
-            nearBy = listOf(LocationFactory.vancouver()),
-            searched = term.mapIndexed { index, c -> if (index < searchedList.size) searchedList[index] else Location.builder().displayableName(term).build() }
-        )
+        emitLocationsCurrentState(isLoading = false, nearBy = nearbyLocations, searched = suggestedLocations)
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
@@ -161,8 +143,7 @@ open class FilterMenuViewModel(
         )
     }
 
-    // - the lists should probably be stored and not update every time, for now it's ok as it is hardcoded when real query is called change this
-    private suspend fun emitLocationsCurrentState(isLoading: Boolean = false, nearBy: List<Location> = emptyList(), searched: List<Location> = emptyList()) {
+    private suspend fun emitLocationsCurrentState(isLoading: Boolean = false, nearBy: List<Location>, searched: List<Location>) {
         _locations.emit(
             LocationsUIState(
                 isLoading = isLoading,

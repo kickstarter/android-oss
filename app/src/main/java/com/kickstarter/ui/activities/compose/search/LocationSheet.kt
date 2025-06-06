@@ -53,6 +53,7 @@ import com.kickstarter.R
 import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -73,7 +74,33 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun LocationSheetPreview() {
-    val env = Environment.builder().apolloClientV2(MockApolloClientV2()).build()
+    val env = Environment.builder().apolloClientV2(
+        object: MockApolloClientV2(){
+            override suspend fun getLocations(
+                useDefault: Boolean,
+                term: String?
+            ): Result<List<Location>> {
+                if (useDefault) return Result.success(listOf(LocationFactory.vancouver()))
+                val searched = listOf(
+                    LocationFactory.sydney(),
+                    LocationFactory.mexico(),
+                    LocationFactory.canada(),
+                    LocationFactory.germany(),
+                    LocationFactory.unitedStates(),
+                    LocationFactory.nigeria(),
+                    LocationFactory.sydney(),
+                    LocationFactory.mexico(),
+                    LocationFactory.canada(),
+                    LocationFactory.germany(),
+                    LocationFactory.unitedStates(),
+                    LocationFactory.nigeria(),
+                )
+                if (term.isNotNull()) return Result.success(searched)
+
+                return Result.success(emptyList())
+            }
+        }
+    ).build()
     val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
 
     KSTheme {

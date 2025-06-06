@@ -363,6 +363,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return Result.success(emptyList())
     }
 
+    override suspend fun getLocations(useDefault: Boolean, term: String?): Result<List<Location>> {
+        return Result.success(emptyList())
+    }
+
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
         return Result.success(SearchEnvelope())
     }

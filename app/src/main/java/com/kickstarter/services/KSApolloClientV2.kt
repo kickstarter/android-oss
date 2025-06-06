@@ -66,6 +66,7 @@ import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.libs.utils.extensions.toProjectState
 import com.kickstarter.libs.utils.extensions.toRaisedBucket
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BuildPaymentPlanData
@@ -240,6 +241,7 @@ interface ApolloClientTypeV2 {
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
+    suspend fun getLocations(useDefault: Boolean = true, term: String?): Result<List<Location>>
     fun cleanDisposables()
 }
 
@@ -1921,6 +1923,27 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 projectTransformer(it?.similarProject)
             }
         } ?: emptyList()
+    }
+
+    override suspend fun getLocations(useDefault: Boolean, term: String?): Result<List<Location>> = executeForResult {
+        if (useDefault) Result.success(listOf(LocationFactory.vancouver()))
+        val searched = listOf(
+            LocationFactory.sydney(),
+            LocationFactory.mexico(),
+            LocationFactory.canada(),
+            LocationFactory.germany(),
+            LocationFactory.unitedStates(),
+            LocationFactory.nigeria(),
+            LocationFactory.sydney(),
+            LocationFactory.mexico(),
+            LocationFactory.canada(),
+            LocationFactory.germany(),
+            LocationFactory.unitedStates(),
+            LocationFactory.nigeria(),
+        )
+        if (term.isNotNull()) Result.success(searched)
+
+        emptyList()
     }
 
     sealed class KSApolloClientV2Exception(

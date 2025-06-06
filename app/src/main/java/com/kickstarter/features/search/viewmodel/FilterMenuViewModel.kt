@@ -67,7 +67,6 @@ open class FilterMenuViewModel(
     private var nearbyLocations = emptyList<Location>()
     private var suggestedLocations = emptyList<Location>()
 
-
     private lateinit var searchJob: Job
 
     init {
@@ -123,8 +122,7 @@ open class FilterMenuViewModel(
         if (response.isSuccess) {
             if (default) nearbyLocations = response.getOrDefault(emptyList())
             if (!term.isNullOrEmpty()) suggestedLocations = response.getOrDefault(emptyList())
-        }
-        else
+        } else
             errorAction.invoke(response.exceptionOrNull()?.message)
 
         emitLocationsCurrentState(isLoading = false, nearBy = nearbyLocations, searched = suggestedLocations)

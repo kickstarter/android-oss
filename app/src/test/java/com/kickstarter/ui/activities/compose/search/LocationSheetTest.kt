@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
@@ -25,7 +26,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
     fun `Initial setUp with Empty InputText, Anywhere + default Location`() {
 
         val env = Environment.builder().apolloClientV2(
-            object: MockApolloClientV2(){
+            object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
                     term: String?
@@ -59,18 +60,18 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     LocationSheet()
                 }
             }
-
-            composeTestRule
-                .onNodeWithText(context.resources.getString(R.string.Location))
-                .assertIsDisplayed()
-
-            composeTestRule
-                .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
-                .assertIsDisplayed()
-
-            composeTestRule
-                .onNodeWithText(LocationTestTags.locationTag(LocationFactory.vancouver()))
-                .assertIsDisplayed()
         }
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Location))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+            .assertIsDisplayed()
     }
 }

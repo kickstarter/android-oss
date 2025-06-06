@@ -75,7 +75,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 fun LocationSheetPreview() {
     val env = Environment.builder().apolloClientV2(
-        object: MockApolloClientV2(){
+        object : MockApolloClientV2() {
             override suspend fun getLocations(
                 useDefault: Boolean,
                 term: String?

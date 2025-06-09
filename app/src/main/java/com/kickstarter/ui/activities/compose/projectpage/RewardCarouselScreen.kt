@@ -193,13 +193,23 @@ fun RewardCarouselScreen(
 
                     val ctaButtonEnabled = when {
                         RewardUtils.isNoReward(reward) -> true
-                        !reward.hasAddons() && backing?.isBacked(reward) != true -> true
-                        backing?.rewardId() != reward.id() && RewardUtils.isAvailable(
-                            project,
-                            reward
-                        ) && reward.isAvailable() -> true
 
-                        reward.hasAddons() && backing?.rewardId() == reward.id() && (project.isLive || (project.postCampaignPledgingEnabled() ?: false && project.isInPostCampaignPledgingPhase() ?: false)) && reward.isAvailable() -> true
+                        !reward.isAvailable() -> false
+
+                        !reward.hasAddons() && backing?.isBacked(reward) != true -> true
+
+                        backing?.rewardId() != reward.id() &&
+                            RewardUtils.isAvailable(project, reward) -> true
+
+                        reward.hasAddons() &&
+                            backing?.rewardId() == reward.id() &&
+                            (
+                                project.isLive || (
+                                    project.postCampaignPledgingEnabled() == true &&
+                                        project.isInPostCampaignPledgingPhase() == true
+                                    )
+
+                                ) -> true
 
                         else -> false
                     }

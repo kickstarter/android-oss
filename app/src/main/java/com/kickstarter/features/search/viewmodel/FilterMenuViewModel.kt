@@ -70,19 +70,21 @@ open class FilterMenuViewModel(
     private lateinit var searchJob: Job
 
     init {
-        scope.launch {
-            // - This call can potentially be moved to the Activity
-            getLocations(default = true)
+        if (isInPreview) {
+            scope.launch {
+                // - This call can potentially be moved to the Activity
+                getLocations(default = true)
 
-            searchJob = scope.launch {
-                _searchQuery
-                    .debounce(300L)
-                    .distinctUntilChanged()
-                    .collectLatest { query ->
-                        if (query.isNotBlank()) {
-                            getLocations(default = false, term = query)
+                searchJob = scope.launch {
+                    _searchQuery
+                        .debounce(300L)
+                        .distinctUntilChanged()
+                        .collectLatest { query ->
+                            if (query.isNotBlank()) {
+                                getLocations(default = false, term = query)
+                            }
                         }
-                    }
+                }
             }
         }
     }

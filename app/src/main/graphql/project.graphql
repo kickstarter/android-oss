@@ -231,3 +231,20 @@ query FetchSimilarProjects($first: Int = 4, $similarToPid: String!, $excludePid:
     }
   }
 }
+
+mutation AddUserToSecretRewardGroup($projectId: ID!, $secretRewardToken: String!) {
+  addUserToSecretRewardGroup(input: {
+    projectId: $projectId,
+    secretRewardToken: $secretRewardToken
+  }) {
+    project {
+      id
+      rewards {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+  }
+}

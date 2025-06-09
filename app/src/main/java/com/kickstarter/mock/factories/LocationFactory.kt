@@ -74,17 +74,7 @@ object LocationFactory {
             .expandedCountry("Canada")
             .build()
     }
-
-//    "id": "TG9jYXRpb24tOTgwNw==",
-//    "latitude": 49.254648208619,
-//    "longitude": -123.130176544185,
-//    "name": "Vancouver",
-//    "county": "Greater Vancouver",
-//    "state": "BC",
-//    "countryName": "Canada",
-//    "displayableName": "Vancouver, Canada",
-//    "discoverUrl": "https://staging.kickstarter.com/discover/places/vancouver-ca"
-
+    
     fun vancouver(): Location {
         return builder()
             .id(9807)

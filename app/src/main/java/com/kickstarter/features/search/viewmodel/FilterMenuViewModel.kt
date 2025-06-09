@@ -82,12 +82,11 @@ open class FilterMenuViewModel(
                             getLocations(default = false, term = query)
                         }
                     }
+                    .runCatching {
+                        errorAction.invoke(null)
+                    }
             }
         }
-    }
-
-    fun cancelLocationSearch() {
-        searchJob.cancel()
     }
 
     fun updateQuery(query: String) {
@@ -96,6 +95,7 @@ open class FilterMenuViewModel(
 
     fun clearQuery() {
         _searchQuery.value = ""
+        suggestedLocations = emptyList()
     }
 
     fun getRootCategories() {

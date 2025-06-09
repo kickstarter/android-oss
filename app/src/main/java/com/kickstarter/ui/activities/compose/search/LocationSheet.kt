@@ -78,7 +78,11 @@ fun LocationSheetPreview() {
         object : MockApolloClientV2() {
             override suspend fun getLocations(
                 useDefault: Boolean,
-                term: String?
+                term: String?,
+                lat: Float?,
+                long: Float?,
+                radius: Float?,
+                filterByCoordinates: Boolean?
             ): Result<List<Location>> {
                 if (useDefault) return Result.success(listOf(LocationFactory.vancouver()))
                 val searched = listOf(
@@ -122,7 +126,8 @@ fun DefaultLocationComposablePreview() {
             DefaultLocationComposable(
                 defaultLocations = listOf(LocationFactory.vancouver(), LocationFactory.sydney()),
                 currentLocation = remember { mutableStateOf(LocationFactory.sydney()) },
-                input = remember { mutableStateOf("") }
+                onclickCallback = { location ->
+                }
             )
         }
     }
@@ -267,7 +272,10 @@ fun LocationSheet(
                     isFocused = isFocused,
                     input = inputValue,
                     searchCallback = { term -> viewModel.updateQuery(term) },
-                    cancelCallback = { viewModel.cancelLocationSearch() }
+                    cancelCallback = {
+                        currentLocation.value = null
+                        viewModel.clearQuery()
+                    }
                 )
 
                 if (!isFocused.value && inputValue.value.isEmpty()) {
@@ -275,7 +283,13 @@ fun LocationSheet(
                         modifier = Modifier.weight(1f),
                         defaultLocations = defaultLocations,
                         currentLocation = selectedLocation,
-                        input = inputValue
+                        onclickCallback = { locationClicked ->
+                            currentLocation.value = locationClicked
+                            inputValue.value = locationClicked?.displayableName() ?: ""
+                            locationClicked?.displayableName()?.let {
+                                viewModel.updateQuery(locationClicked.displayableName())
+                            }
+                        }
                     )
                 }
 
@@ -289,7 +303,11 @@ fun LocationSheet(
                     SuggestedLocationsComposable(
                         modifier = Modifier.weight(1f),
                         suggestedLocations = searched,
-                        currentLocation = selectedLocation
+                        currentLocation = selectedLocation,
+                        onclickCallback = { clickedLocation ->
+                            currentLocation.value = clickedLocation
+                            inputValue.value = clickedLocation?.displayableName() ?: ""
+                        }
                     )
                 }
 
@@ -297,6 +315,7 @@ fun LocationSheet(
                     leftButtonIsEnabled = false,
                     leftButtonClickAction = {
                         currentLocation.value = null
+                        inputValue.value = ""
                         onApply(currentLocation.value, false)
                     },
                     rightButtonOnClickAction = {
@@ -312,9 +331,9 @@ fun LocationSheet(
 private fun SuggestedLocationsComposable(
     modifier: Modifier = Modifier,
     suggestedLocations: List<Location> = emptyList(),
-    currentLocation: MutableState<Location?>
+    currentLocation: MutableState<Location?>,
+    onclickCallback: (Location?) -> Unit = {}
 ) {
-    val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
     LazyColumn(
@@ -334,7 +353,7 @@ private fun SuggestedLocationsComposable(
                         bottom = dimensions.paddingMediumSmall
                     )
                     .clickable {
-                        currentLocation.value = location
+                        onclickCallback(location)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
@@ -439,7 +458,7 @@ private fun DefaultLocationComposable(
     modifier: Modifier = Modifier,
     defaultLocations: List<Location>,
     currentLocation: MutableState<Location?>,
-    input: MutableState<String>,
+    onclickCallback: (Location?) -> Unit = {}
 ) {
 
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -471,14 +490,13 @@ private fun DefaultLocationComposable(
                             bottom = dimensions.paddingMediumSmall
                         )
                         .clickable {
-                            currentLocation.value = null
-                            input.value = ""
+                            onclickCallback(location)
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
                 ) {
                     RadioButton(
-                        selected = currentLocation.value.isNull() && input.value.isEmpty(),
+                        selected = currentLocation.value.isNull(),
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
                             unselectedColor = colors.backgroundSelected,
@@ -501,8 +519,7 @@ private fun DefaultLocationComposable(
                         bottom = dimensions.paddingMediumSmall
                     )
                     .clickable {
-                        currentLocation.value = location
-                        input.value = location.displayableName()
+                        onclickCallback(location)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),

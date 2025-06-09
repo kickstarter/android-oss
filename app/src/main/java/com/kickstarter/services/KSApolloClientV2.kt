@@ -35,6 +35,7 @@ import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
+import com.kickstarter.GetLocationsQuery
 import com.kickstarter.GetProjectAddOnsQuery
 import com.kickstarter.GetProjectBackingQuery
 import com.kickstarter.GetProjectCommentsQuery
@@ -63,11 +64,11 @@ import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.libs.utils.extensions.toProjectState
 import com.kickstarter.libs.utils.extensions.toRaisedBucket
-import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BuildPaymentPlanData
@@ -243,7 +244,7 @@ interface ApolloClientTypeV2 {
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
-    suspend fun getLocations(useDefault: Boolean = true, term: String?): Result<List<Location>>
+    suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float? = null, long: Float? = null, radius: Float? = null, filterByCoordinates: Boolean? = null): Result<List<Location>>
     fun cleanDisposables()
 }
 
@@ -338,7 +339,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean()),
             searchTerm = if (discoveryParams.term() == null || discoveryParams.term().isNullOrBlank()) Optional.absent() else Optional.present(discoveryParams.term()),
             state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(discoveryParams.state()?.toProjectState()),
-            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket())
+            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket()),
+            location = if (discoveryParams.location() == null) Optional.absent() else Optional.present(discoveryParams.location()?.let { encodeRelayId(it) })
         )
     }
 
@@ -1946,25 +1948,31 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         } ?: emptyList()
     }
 
-    override suspend fun getLocations(useDefault: Boolean, term: String?): Result<List<Location>> = executeForResult {
-        if (useDefault) Result.success(listOf(LocationFactory.vancouver()))
-        val searched = listOf(
-            LocationFactory.sydney(),
-            LocationFactory.mexico(),
-            LocationFactory.canada(),
-            LocationFactory.germany(),
-            LocationFactory.unitedStates(),
-            LocationFactory.nigeria(),
-            LocationFactory.sydney(),
-            LocationFactory.mexico(),
-            LocationFactory.canada(),
-            LocationFactory.germany(),
-            LocationFactory.unitedStates(),
-            LocationFactory.nigeria(),
-        )
-        if (term.isNotNull()) Result.success(searched)
+    override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> = executeForResult {
 
-        emptyList()
+        val query = GetLocationsQuery(
+            useSessionLocation = if (useDefault.isTrue()) Optional.present(useDefault) else Optional.absent(),
+            term = if (term.isNullOrEmpty()) Optional.absent() else Optional.present(term),
+            radius = if (radius == null) Optional.present(radius) else Optional.absent(),
+            filterByCoordinates = if (filterByCoordinates == null) Optional.absent() else Optional.present(filterByCoordinates),
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            responseData.locations?.nodes?.map {
+                // TODO: Add lat/long to the Location model
+                Location.builder()
+                    .name(it?.location?.name)
+                    .displayableName(it?.location?.displayableName)
+                    .id(decodeRelayId(it?.location?.id))
+                    .country(it?.location?.country)
+                    .build()
+            }
+        } ?: emptyList()
     }
 
     sealed class KSApolloClientV2Exception(

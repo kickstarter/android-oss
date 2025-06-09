@@ -70,21 +70,18 @@ open class FilterMenuViewModel(
     private lateinit var searchJob: Job
 
     init {
-        if (isInPreview) {
-            scope.launch {
-                // - This call can potentially be moved to the Activity
-                getLocations(default = true)
+        scope.launch {
+            getLocations(default = true)
 
-                searchJob = scope.launch {
-                    _searchQuery
-                        .debounce(300L)
-                        .distinctUntilChanged()
-                        .collectLatest { query ->
-                            if (query.isNotBlank()) {
-                                getLocations(default = false, term = query)
-                            }
+            searchJob = scope.launch {
+                _searchQuery
+                    .debounce(300L)
+                    .distinctUntilChanged()
+                    .collectLatest { query ->
+                        if (query.isNotBlank()) {
+                            getLocations(default = false, term = query)
                         }
-                }
+                    }
             }
         }
     }
@@ -116,7 +113,7 @@ open class FilterMenuViewModel(
         }
     }
 
-    private suspend fun getLocations(default: Boolean, term: String? = null) {
+    suspend fun getLocations(default: Boolean, term: String? = null) {
         emitCurrentState(isLoading = true)
 
         val response = apolloClient.getLocations(useDefault = default, term = term)

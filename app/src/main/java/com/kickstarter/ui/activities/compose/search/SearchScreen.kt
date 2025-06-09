@@ -64,6 +64,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
@@ -235,7 +236,8 @@ fun SearchScreen(
             FilterRowPillType.CATEGORY.name to 0,
             FilterRowPillType.FILTER.name to 0,
             FilterRowPillType.PROJECT_STATUS.name to 0,
-            FilterRowPillType.PERCENTAGE_RAISED.name to 0
+            FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+            FilterRowPillType.LOCATION.name to 0
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
@@ -249,6 +251,8 @@ fun SearchScreen(
 
     val currentProjectState = remember { mutableStateOf<DiscoveryParams.State?>(null) }
     val currentPercentage = remember { mutableStateOf<DiscoveryParams.RaisedBuckets?>(null) }
+
+    val currentLocation = remember { mutableStateOf<Location?>(null) }
 
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
 
@@ -289,6 +293,7 @@ fun SearchScreen(
             mainFilterMenuState,
             pagerState,
             currentPercentage = currentPercentage,
+            currentLocation = currentLocation,
             shouldShowPhase = shouldShowPhase
         ),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -318,6 +323,7 @@ fun SearchScreen(
                         onBackPressed = onBackClicked,
                         projectStatusText = projectStatusPill.value,
                         percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
+                        locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location_fpo),
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
@@ -448,7 +454,8 @@ fun SearchScreen(
 enum class FilterPages {
     MAIN_FILTER,
     CATEGORIES,
-    PERCENTAGE_RAISED
+    PERCENTAGE_RAISED,
+    LOCATION
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -458,6 +465,7 @@ fun FilterPagerSheet(
     currentCategory: Category?,
     categories: List<Category>,
     currentPercentage: DiscoveryParams.RaisedBuckets? = null,
+    currentLocation: Location? = null,
     onDismiss: () -> Unit,
     onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?) -> Unit,
     updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
@@ -469,6 +477,7 @@ fun FilterPagerSheet(
     val category = remember { mutableStateOf(currentCategory) }
     val projectState = remember { mutableStateOf(selectedProjectStatus) }
     val bucket = remember { mutableStateOf(currentPercentage) }
+    val currentStateLocation = remember { mutableStateOf(currentLocation) }
 
     LaunchedEffect(!sheetState.isVisible) {
         coroutineScope.launch {
@@ -482,6 +491,10 @@ fun FilterPagerSheet(
 
             if (currentPercentage != bucket.value) {
                 bucket.value = currentPercentage
+            }
+
+            if (currentLocation != currentStateLocation.value) {
+                currentStateLocation.value = currentLocation
             }
         }
     }
@@ -531,9 +544,15 @@ fun FilterPagerSheet(
                             pagerState.animateScrollToPage(FilterPages.PERCENTAGE_RAISED.ordinal)
                         }
                     }
+
+                    if (filterType == FilterType.LOCATION) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
+                        }
+                    }
                 },
                 availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                else FilterType.values().asList().filter { it != FilterType.LOCATION }
             )
             FilterPages.CATEGORIES.ordinal -> CategorySelectionSheet(
                 onNavigate = {
@@ -557,6 +576,16 @@ fun FilterPagerSheet(
                     }
                 },
                 isLoading = false
+            )
+            FilterPages.LOCATION.ordinal -> LocationSheet(
+                selectedLocation = currentLocation,
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { location, applyAndDismiss ->
+                    currentStateLocation.value = location
+                }
             )
             FilterPages.PERCENTAGE_RAISED.ordinal -> PercentageRaisedSheet(
                 currentPercentage = DiscoveryParams.RaisedBuckets.fromString(currentPercentage?.name),
@@ -639,7 +668,12 @@ private fun onPillPressed(
                     mainFilterMenuState.show()
                 }
             }
-
+            FilterRowPillType.LOCATION -> {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
+                    mainFilterMenuState.show()
+                }
+            }
             FilterRowPillType.PERCENTAGE_RAISED -> {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(FilterPages.PERCENTAGE_RAISED.ordinal)
@@ -668,6 +702,7 @@ private fun sheetContent(
     menuSheetState: ModalBottomSheetState,
     pagerState: PagerState,
     currentPercentage: MutableState<DiscoveryParams.RaisedBuckets?>,
+    currentLocation: MutableState<Location?> = mutableStateOf(null),
     shouldShowPhase: Boolean = true
 ): @Composable() (ColumnScope.() -> Unit) {
     val liveString = stringResource(R.string.Project_status_live)
@@ -681,6 +716,7 @@ private fun sheetContent(
             FilterRowPillType.CATEGORY,
             FilterRowPillType.PROJECT_STATUS,
             FilterRowPillType.PERCENTAGE_RAISED,
+            FilterRowPillType.LOCATION,
             FilterRowPillType.FILTER, -> {
                 FilterPagerSheet(
                     sheetState = menuSheetState,
@@ -753,6 +789,7 @@ private fun modalBottomSheetState(
     FilterRowPillType.PROJECT_STATUS,
     FilterRowPillType.CATEGORY,
     FilterRowPillType.PERCENTAGE_RAISED,
+    FilterRowPillType.LOCATION,
     FilterRowPillType.FILTER -> mainFilterMenuState
 
     null -> sortSheetState

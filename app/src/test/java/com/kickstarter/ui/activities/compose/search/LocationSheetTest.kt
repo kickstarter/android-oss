@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -175,5 +177,63 @@ class LocationSheetTest : KSRobolectricTestCase() {
         }
     }
 
-    //TODO: one more test, after typping hit cancel, should clean text and recover the default locations
+    @Test
+    fun `Input text contains text, cancel button will clean up and go back to default locations`() {
+
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?
+                ): Result<List<Location>> {
+                    return Result.success(listOf(LocationFactory.vancouver()))
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet()
+                }
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Location))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag(INPUT_SEARCH)
+            .assertTextContains(LocationFactory.vancouver().displayableName())
+
+        composeTestRule
+            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+            .isNotDisplayed() // Default locations no visible if text on input
+
+        composeTestRule
+            .onNodeWithTag(INPUT_BUTTON)
+            .assertExists()
+
+        composeTestRule
+            .onNodeWithTag(INPUT_BUTTON)
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
+            .isDisplayed() // Default locations visible after input cancel button
+    }
 }

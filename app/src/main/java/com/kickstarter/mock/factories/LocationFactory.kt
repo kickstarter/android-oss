@@ -74,7 +74,7 @@ object LocationFactory {
             .expandedCountry("Canada")
             .build()
     }
-    
+
     fun vancouver(): Location {
         return builder()
             .id(9807)

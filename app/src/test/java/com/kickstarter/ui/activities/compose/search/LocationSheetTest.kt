@@ -26,7 +26,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertThat
 import org.junit.Test
 
 class LocationSheetTest : KSRobolectricTestCase() {
@@ -333,7 +332,51 @@ class LocationSheetTest : KSRobolectricTestCase() {
 
         advanceUntilIdle() // wait for debounce
 
-        assertNotSame(callCount,3)
+        assertNotSame(callCount, 3)
     }
 
+    @Test
+    fun `Clicking "See Results" button sends selected location`() {
+        var selected: Location? = null
+        var applied: Boolean? = null
+
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
+                ): Result<List<Location>> {
+                    return Result.success(listOf(LocationFactory.vancouver()))
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet(
+                        onApply = { loc, confirmed ->
+                            selected = loc
+                            applied = confirmed
+                        }
+                    )
+                }
+            }
+        }
+
+        val location = LocationFactory.vancouver()
+
+        composeTestRule.onNodeWithTag(LocationTestTags.locationTag(location)).performClick()
+
+        composeTestRule.onNodeWithText(context.getString(R.string.See_results))
+            .performClick()
+
+        assertEquals(selected, location)
+        assertEquals(applied, true)
+    }
 }

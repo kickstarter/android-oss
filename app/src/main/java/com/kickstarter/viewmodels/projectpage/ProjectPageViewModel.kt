@@ -7,8 +7,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.CurrentUserV2
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
@@ -70,8 +72,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 import java.math.RoundingMode
@@ -376,6 +380,7 @@ interface ProjectPageViewModel {
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
         private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -667,21 +672,29 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             viewModelScope.launch {
-                runCatching {
-                    currentProjectData
-                        .asFlow()
-                        .mapNotNull { data ->
-                            val deeplink = data.fullDeeplink()
+                currentUser.observable()
+                    .asFlow()
+                    .combine(currentProjectData.asFlow()) { user, projectData ->
+                        if (user.isPresent()) {
+                            val deeplink = projectData.fullDeeplink()
                             val token = deeplink?.takeIf { it.hasSecretRewardToken() }?.secretRewardToken()
-                            token?.let { Pair(data.project(), it) }
+                            token?.let { Pair(projectData.project(), token) }
+                        } else {
+                            null
                         }
-                        .distinctUntilChanged()
-                        .collectLatest { pair ->
-                            val project = pair.first
-                            val token = pair.second
+                    }
+                    .filterNotNull().take(1)
+                    .distinctUntilChanged()
+                    .collectLatest { pair ->
+                        val project = pair.first
+                        val token = pair.second
+                        try {
                             environment.apolloClientV2()?.addUserToSecretRewardGroup(project, token)
+                        } catch (e: Exception) {
+                            FirebaseCrashlytics.getInstance().recordException(e)
                         }
-                }
+                    }
+
             }
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))

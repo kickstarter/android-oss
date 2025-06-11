@@ -79,6 +79,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             .asSharedFlow()
 
     fun provideProjectData(projectData: ProjectData) {
+        shippingRulesUseCase = null
         currentProjectData = projectData
         previousUserBacking =
             if (projectData.backing() != null) projectData.backing()

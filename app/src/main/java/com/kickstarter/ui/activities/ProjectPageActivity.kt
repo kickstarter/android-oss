@@ -671,7 +671,10 @@ class ProjectPageActivity :
                         expanded = expanded,
                         onContinueClicked = {     checkoutFlowViewModel.onContinueClicked(
                             logInCallback = { startLoginToutActivity() },
-                            continueCallback = {checkoutFlowViewModel.onBackThisProjectClicked() }
+                            continueCallback = {
+                                rewardsSelectionViewModel.provideProjectData(projectData)
+                                checkoutFlowViewModel.onBackThisProjectClicked()
+                                }
                         )},
                         onBackClicked = {
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)

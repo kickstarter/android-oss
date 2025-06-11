@@ -110,6 +110,10 @@ class CheckoutFlowViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onContinueClicked(continueCallback: () -> Unit) {
+        viewModelScope.launch {
+            mutableFlowUIState.emit(FlowUIState(currentPage = 4, expanded = true))
+            continueCallback()
+        }
     }
 
     class Factory(private val environment: Environment) :

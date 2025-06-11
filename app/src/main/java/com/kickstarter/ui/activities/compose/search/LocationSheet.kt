@@ -28,6 +28,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -212,6 +213,7 @@ fun LocationSheet(
     val dimensions: KSDimensions = KSTheme.dimensions
 
     val currentLocation = remember { mutableStateOf(selectedLocation) }
+
     KSTheme {
         Surface(
             color = colors.backgroundSurfacePrimary
@@ -423,7 +425,18 @@ private fun InputSearchComposable(
             label = {
                 Text(text = stringResource(id = R.string.Location_searchbox_placeholder))
             },
-            singleLine = true
+            singleLine = true,
+            trailingIcon = {
+                if (input.value.isNotEmpty()) {
+                    KSIconButton(
+                        onClick = {
+                            input.value = ""
+                        },
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = stringResource(id = R.string.social_buttons_cancel)
+                    )
+                }
+            },
         )
 
         AnimatedVisibility(
